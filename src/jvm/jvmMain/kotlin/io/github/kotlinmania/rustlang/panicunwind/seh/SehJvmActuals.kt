@@ -38,11 +38,14 @@ private object SehJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val resourcePath = "io/github/kotlinmania/rustlang/panicunwind/native/$hostPlatform-$hostArch/$libFileName"
         val stream = SehJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,8 +59,8 @@ private object SehJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangSehGetTYPEINFOVTABLE(): Byte
+    external fun panicunwindSehGetTYPEINFOVTABLE(): Byte
 }
 
 public actual val TYPE_INFO_VTABLE: UByte
-    get() = SehJniBridge.rustlangSehGetTYPEINFOVTABLE().toUByte()
+    get() = SehJniBridge.panicunwindSehGetTYPEINFOVTABLE().toUByte()

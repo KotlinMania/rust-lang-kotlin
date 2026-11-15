@@ -3,17 +3,17 @@
 
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.macho
 
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Context
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Endian
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.EndianSlice
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Mapping
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.gimli
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmap
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsStr
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.Path
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.get
-import io.github.kotlinmania.rustlang.symbolize.gimli.Context
-import io.github.kotlinmania.rustlang.symbolize.gimli.Mapping
-import io.github.kotlinmania.rustlang.symbolize.gimli.mmap
-import io.github.kotlinmania.rustlang.symbolize.gimli.stash.Stash
 
 public typealias Mach = macho.MachHeader64<NativeEndian>
 
@@ -58,12 +58,27 @@ public fun Mapping.Companion.new(path: Path): Mapping? {
     // Looks like nothing matched our UUID, so let's at least return our own
     // file. This should have the symbol table for at least some
     // symbolication purposes.
-    return Mapping.mk(map, closure@{ data1, stash ->
-        val (macho1, data2) = when (val tryResult = findHeader(data1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
-        val endian1 = when (val tryResult = macho1.endian().ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
-        val obj = when (val tryResult = Object.parse(macho1, endian1, data2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
-        Context.new(stash, obj, null, null)
-    })
+    return Mapping.mk(
+        map,
+        closure@{ data1, stash ->
+            val (macho1, data2) =
+                when (val tryResult = findHeader(data1)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
+                }
+            val endian1 =
+                when (val tryResult = macho1.endian().ok()) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
+                }
+            val obj =
+                when (val tryResult = Object.parse(macho1, endian1, data2)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
+                }
+            Context.new(stash, obj, null, null)
+        },
+    )
 }
 
 public fun Mapping.Companion.loadDsym(dir: Path, uuid: UByteArray): Mapping? {
@@ -72,12 +87,15 @@ public fun Mapping.Companion.loadDsym(dir: Path, uuid: UByteArray): Mapping? {
         val filename =
             run {
                 val matchVal = entry1.fileName().intoString()
-                when (matchVal) { is Result.Ok<*, *> -> {
-                    val name = matchVal.value
-                    name
-                }; is Result.Err<*, *> -> {
-                    continue
-                } }
+                when (matchVal) {
+                    is Result.Ok<*, *> -> {
+                        val name = matchVal.value
+                        name
+                    }
+                    is Result.Err<*, *> -> {
+                        continue
+                    }
+                }
             }
         if (!filename.endsWith(".dSYM")) {
             continue
@@ -102,16 +120,41 @@ public fun Mapping.Companion.tryDsymCandidate(dir: Path, uuid: UByteArray): Mapp
         val entry1 = (entry.ok() ?: return null)
         val map = (mmap(entry1.path()) ?: return null)
         val candidate =
-            Mapping.mk(map, closure1@{ data, stash ->
-                val (macho, data1) = when (val tryResult = findHeader(data)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }
-                val endian = when (val tryResult = macho.endian().ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }
-                val entryUuid = when (val tryResult = when (val tryResult = macho.uuid(endian, data1, 0).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }
-                if (!entryUuid.contentEquals(uuid)) {
-                    return@closure1 null
-                }
-                val obj = when (val tryResult = Object.parse(macho, endian, data1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }
-                Context.new(stash, obj, null, null)
-            })
+            Mapping.mk(
+                map,
+                closure1@{ data, stash ->
+                    val (macho, data1) =
+                        when (val tryResult = findHeader(data)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error)
+                        }
+                    val endian =
+                        when (val tryResult = macho.endian().ok()) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error)
+                        }
+                    val entryUuid =
+                        when (
+                            val tryResult =
+                                when (val tryResult = macho.uuid(endian, data1, 0).ok()) {
+                                    is Result.Ok<*, *> -> tryResult.value
+                                    is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error)
+                                }
+                        ) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error)
+                        }
+                    if (!entryUuid.contentEquals(uuid)) {
+                        return@closure1 null
+                    }
+                    val obj =
+                        when (val tryResult = Object.parse(macho, endian, data1)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error)
+                        }
+                    Context.new(stash, obj, null, null)
+                },
+            )
         if (candidate != null) {
             val candidate1 = candidate
             return candidate1
@@ -159,7 +202,9 @@ public fun findHeader(data: List<UByte>): Pair<Mach, List<UByte>>? {
             val size1 = arch1.size.get(endian1)
             data2 = (data2.readBytesAt((offset1.tryInto().ok() ?: return null), (size1.tryInto().ok() ?: return null)).ok() ?: return null)
         }
-        else -> { return null }
+        else -> {
+            return null
+        }
     }
     return Mach.parse(data2.first, 0).ok()?.let({ h -> Pair(h, data2.first) })
 }
@@ -180,10 +225,14 @@ public open class Object(
         val name1 = name.encodeToByteArray().map { it.toUByte() }
         val dwarf = (this.dwarf ?: return null)
         val section =
-            (dwarf.indexOf({ section ->
-                val sectionName = section.name()
-                sectionName == name1 || sectionName.startsWith("__".encodeToByteArray()) && name1.startsWith(".".encodeToByteArray()) && sectionName[2 until sectionName.size] == ((name1).subList(1, (name1).size))
-            }).takeIf { it >= 0 } ?: return null)
+            (
+                dwarf
+                    .indexOf({ section ->
+                        val sectionName = section.name()
+                        sectionName == name1 || sectionName.startsWith("__".encodeToByteArray()) && name1.startsWith(".".encodeToByteArray()) && sectionName[2 until sectionName.size] == ((name1).subList(1, (name1).size))
+                    })
+                    .takeIf { it >= 0 } ?: return null
+            )
         return (section.data(this.endian, this.data).ok() ?: return null)
     }
 
@@ -192,13 +241,16 @@ public open class Object(
         val i2 =
             run {
                 val matchVal = this.syms.binarySearchByKey(addr, { (_, addr1) -> addr1 })
-                when (matchVal) { is Result.Ok<*, *> -> {
-                    val i = matchVal.value
-                    i
-                }; is Result.Err<*, *> -> {
-                    val i1 = matchVal.error
-                    (i1.checkedSub(1) ?: return null)
-                } }
+                when (matchVal) {
+                    is Result.Ok<*, *> -> {
+                        val i = matchVal.value
+                        i
+                    }
+                    is Result.Err<*, *> -> {
+                        val i1 = matchVal.error
+                        (i1.checkedSub(1) ?: return null)
+                    }
+                }
             }
         val (sym, addr) = (this.syms.getOrNull(i2) ?: return null)
         return sym
@@ -226,7 +278,11 @@ public open class Object(
         // We must translate the address in order to be able to look it up
         // in the DWARF in the object file.
         check(cx1.obj.syms.isEmpty() || cx1.obj.symsSortByName)
-        val i = (cx1.obj.syms.binarySearchByKey(symbol.name(), { (name, _) -> name }).ok() ?: return null)
+        val i = (
+            cx1.obj.syms
+                .binarySearchByKey(symbol.name(), { (name, _) -> name })
+                .ok() ?: return null
+        )
         val objectSymbol = (cx1.obj.syms.get(i) ?: return null)
         val objectAddr = ((addr - symbol.address().toULong()) + (objectSymbol.second.toULong()))
         return Pair(cx1, objectAddr)
@@ -251,14 +307,23 @@ public open class Object(
                             else -> {
                                 val symtab = matchVal1
                                 val symbols = (symtab.symbols<Mach>(endian, data).ok() ?: return null)
-                                syms = symbols.iter().mapNotNull(closure2@{ nlist: MachNlist ->
-                                    val name = when (val tryResult = nlist.name(endian, symbols.strings()).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error) }
-                                    if (name.len() > 0 && nlist.isDefinition()) {
-                                        Pair(name, ULong.from(nlist.nValue(endian)))
-                                    } else {
-                                        null
-                                    }
-                                }).toMutableList()
+                                syms =
+                                    symbols
+                                        .iter()
+                                        .mapNotNull(
+                                            closure2@{ nlist: MachNlist ->
+                                                val name =
+                                                    when (val tryResult = nlist.name(endian, symbols.strings()).ok()) {
+                                                        is Result.Ok<*, *> -> tryResult.value
+                                                        is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error)
+                                                    }
+                                                if (name.len() > 0 && nlist.isDefinition()) {
+                                                    Pair(name, ULong.from(nlist.nValue(endian)))
+                                                } else {
+                                                    null
+                                                }
+                                            },
+                                        ).toMutableList()
                                 if (isObject) {
                                     // We never search object file symbols by address.
                                     // Instead, we already know the symbol name from the executable, and we
@@ -292,22 +357,55 @@ public open class Object(
 public fun objectMapping(file: ObjectMapFile): Mapping? {
     val map = (mmap(Path.new(OsStr.fromBytes(file.path()))) ?: return null)
     val memberName = file.member()
-    return Mapping.mk(map, closure3@{ data, stash ->
-        val data1 =
-            when (memberName) {
-                null -> data
-                else -> {
-                    val memberName1 = memberName
-                    val archive = when (val tryResult = Object.ArchiveFile.parse(data).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
-                    val member = when (val tryResult = archive.members().mapNotNull(Result::ok).indexOf({ m -> m.name() == memberName1 }).takeIf { it >= 0 }) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
-                    when (val tryResult = member.data(data).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
+    return Mapping.mk(
+        map,
+        closure3@{ data, stash ->
+            val data1 =
+                when (memberName) {
+                    null -> data
+                    else -> {
+                        val memberName1 = memberName
+                        val archive =
+                            when (val tryResult = Object.ArchiveFile.parse(data).ok()) {
+                                is Result.Ok<*, *> -> tryResult.value
+                                is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
+                            }
+                        val member =
+                            when (
+                                val tryResult =
+                                    archive
+                                        .members()
+                                        .mapNotNull(Result::ok)
+                                        .indexOf({ m -> m.name() == memberName1 })
+                                        .takeIf { it >= 0 }
+                            ) {
+                                is Result.Ok<*, *> -> tryResult.value
+                                is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
+                            }
+                        when (val tryResult = member.data(data).ok()) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
+                        }
+                    }
                 }
-            }
-        val (macho, data2) = when (val tryResult = findHeader(data1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
-        val endian = when (val tryResult = macho.endian().ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
-        val obj = when (val tryResult = Object.parse(macho, endian, data2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
-        Context.new(stash, obj, null, null)
-    })
+            val (macho, data2) =
+                when (val tryResult = findHeader(data1)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
+                }
+            val endian =
+                when (val tryResult = macho.endian().ok()) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
+                }
+            val obj =
+                when (val tryResult = Object.parse(macho, endian, data2)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
+                }
+            Context.new(stash, obj, null, null)
+        },
+    )
 }
 
 public fun handleSplitDwarf(pkg: gimli.DwarfPackage<EndianSlice<Endian>>?, stash: Stash, load: SplitDwarfLoad<EndianSlice<Endian>>): gimli.Dwarf<EndianSlice<Endian>>? = null

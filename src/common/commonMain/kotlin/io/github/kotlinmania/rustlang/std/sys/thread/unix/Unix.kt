@@ -5,11 +5,12 @@ package io.github.kotlinmania.rustlang.std.sys.thread.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.dropguard.DropGuard
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
@@ -17,14 +18,8 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.core.slice.get
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.fs.File
-import io.github.kotlinmania.rustlang.fs.exists
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CPU_COUNT
 import io.github.kotlinmania.rustlang.libc.clockNanosleep
@@ -48,15 +43,20 @@ import io.github.kotlinmania.rustlang.libc.wasi.PthreadT
 import io.github.kotlinmania.rustlang.libc.wasi.SC_NPROCESSORS_ONLN
 import io.github.kotlinmania.rustlang.libc.wasi.TIMER_ABSTIME
 import io.github.kotlinmania.rustlang.libc.wasi.TimeT
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.path.PathBuf
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.fs.File
+import io.github.kotlinmania.rustlang.std.fs.exists
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.helpers.copaque.COpaque
-import io.github.kotlinmania.rustlang.sys.pal.Conf
-import io.github.kotlinmania.rustlang.sys.pal.weak.syscall
-import io.github.kotlinmania.rustlang.sys.weak.dlsym
-import io.github.kotlinmania.rustlang.thread.lifecycle.ThreadInit
-import io.github.kotlinmania.rustlang.time.Instant
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.helpers.copaque.COpaque
+import io.github.kotlinmania.rustlang.std.sys.pal.Conf
+import io.github.kotlinmania.rustlang.std.sys.pal.weak.syscall
+import io.github.kotlinmania.rustlang.std.sys.weak.dlsym
+import io.github.kotlinmania.rustlang.std.thread.lifecycle.ThreadInit
+import io.github.kotlinmania.rustlang.std.time.Instant
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: Path): Pair<Any?, Path>?
@@ -74,7 +74,7 @@ public open class Thread(
     public open fun join() {
         val id = this.intoId()
         val ret = pthreadJoin(id, MutPtr(0L))
-        check(ret == 0) { "failed to join thread: ${io.github.kotlinmania.rustlang.io.Error.fromRawOsError(ret)}" }
+        check(ret == 0) { "failed to join thread: ${io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(ret)}" }
     }
 
     public open fun id(): PthreadT = this.id
@@ -128,7 +128,7 @@ public open class Thread(
             check(pthreadAttrInit(attr1.get()) == 0)
             val attr2 = DropGuard.new(attr1, { attr2 -> check(pthreadAttrDestroy(attr2.get()) == 0) })
             run {
-                val stackSize = cmp.max(stack, minStackSize(attr2.get()))
+                val stackSize = max(stack, minStackSize(attr2.get()))
                 when (val matchVal = pthreadAttrSetstacksize(attr2.get(), stackSize)) {
                     0 -> {}
                     else -> {
@@ -152,7 +152,7 @@ public open class Thread(
                 }
             }
             val data1 = Box.intoRaw(data)
-            val localStorageL107C8 = AddressableLocal(0L, ObjectSlotLayout<PthreadT>())
+            val localStorageL107C8 = AddressableLocal(0L, UnresolvedTypeLayout<PthreadT>())
             val native by localStorageL107C8
             val ret = pthreadCreate(RustMutableReference(localStorageL107C8.asMutPtr(), localStorageL107C8.layout), attr2.get(), ::threadStart, mutPtrFromRustCast(data1))
             return if (ret == 0) {
@@ -161,7 +161,7 @@ public open class Thread(
                 // The thread failed to start and as a result `data` was not consumed.
                 // Therefore, it is safe to reconstruct the box so that it gets deallocated.
                 (Box.fromRaw(data1)).let { }
-                Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(ret))
+                Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(ret))
             }
         }
     }
@@ -171,9 +171,9 @@ public fun availableParallelism(): Result<NonZero<Int>, Error> {
     var quota = Int.MAX_VALUE
     run {
         quota = quota().max(1)
-        val localStorageL178C16 = AddressableLocal(CpuSetT(), ObjectSlotLayout<CpuSetT>())
+        val localStorageL178C16 = AddressableLocal(CpuSetT(), UnresolvedTypeLayout<CpuSetT>())
         val set by localStorageL178C16
-        if (schedGetaffinity(0, sizeOf<CpuSetT>(typeLayoutT = ObjectSlotLayout<CpuSetT>()), RustMutableReference(localStorageL178C16.asMutPtr(), localStorageL178C16.layout)) == 0) {
+        if (schedGetaffinity(0, sizeOf<CpuSetT>(typeLayoutT = UnresolvedTypeLayout<CpuSetT>()), RustMutableReference(localStorageL178C16.asMutPtr(), localStorageL178C16.layout)) == 0) {
             val count = CPU_COUNT(set).toInt()
             val count1 = count.min(quota)
             // According to schedGetaffinity's API it should always be non-zero, but
@@ -190,8 +190,8 @@ public fun availableParallelism(): Result<NonZero<Int>, Error> {
         }
     }
     return when (val matchVal1 = sysconf(SC_NPROCESSORS_ONLN)) {
-        -1 -> Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
-        0 -> Result.Err(io.github.kotlinmania.rustlang.io.Error.UNKNOWN_THREAD_COUNT)
+        -1 -> Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        0 -> Result.Err(io.github.kotlinmania.rustlang.std.io.Error.UNKNOWN_THREAD_COUNT)
         else -> {
             val cpus = matchVal1
             val count3 = cpus.toInt()
@@ -242,13 +242,13 @@ public fun sleep(dur: Duration) {
     // wasi-libc prior to WebAssembly/wasi-libc#696 has a broken implementation
     // of `nanosleep` which used `CLOCK_REALTIME` even though it is unsupported
     // on WASIp2. Using `clockNanosleep` directly bypasses the issue.
-    fun nanosleep(rqtp: ConstPtr, rmtp: MutPtr): CInt = clockNanosleep(io.github.kotlinmania.rustlang.sys.time.unix.Instant.CLOCK_ID, 0, rqtp, rmtp)
+    fun nanosleep(rqtp: ConstPtr, rmtp: MutPtr): CInt = clockNanosleep(io.github.kotlinmania.rustlang.std.sys.time.unix.Instant.CLOCK_ID, 0, rqtp, rmtp)
     var secs = dur.asSecs()
     var nsecs = ((dur.subsecNanos() as Any?) as Unit)
     // If we're awoken with a signal then the return value will be -1 and
     // nanosleep will fill in `ts` with the remaining time.
     while (secs > 0 || nsecs > 0) {
-        val localStorageL610C12 = AddressableLocal(default(), ObjectSlotLayout<Any?>())
+        val localStorageL610C12 = AddressableLocal(default(), UnresolvedTypeLayout<Any?>())
         val ts by localStorageL610C12
         ts!!.tvSec = minOf(TimeT.MAX_VALUE.toULong(), secs).toLong()
         ts.tvNsec = nsecs
@@ -302,7 +302,7 @@ public fun sleepUntil(deadline: Instant) {
         return
     }
     while (true) {
-        val res = clockNanosleep(io.github.kotlinmania.rustlang.sys.time.unix.Instant.CLOCK_ID, TIMER_ABSTIME, ts, MutPtr(0L))
+        val res = clockNanosleep(io.github.kotlinmania.rustlang.std.sys.time.unix.Instant.CLOCK_ID, TIMER_ABSTIME, ts, MutPtr(0L))
         if (res == 0) {
             break
         } else {

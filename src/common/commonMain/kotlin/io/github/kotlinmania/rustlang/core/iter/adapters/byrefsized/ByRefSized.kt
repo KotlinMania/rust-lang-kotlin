@@ -1,10 +1,10 @@
 // port-lint: source iter/adapters/by_ref_sized.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized
 
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 /**
  * Like `Iterator.byRef`, but requiring `Sized` so it can forward generics.
@@ -21,14 +21,15 @@ public open class ByRefSized<I>(
             value = v
         }
 
-    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
-        override fun computeNext() {
-            when (val v = this@ByRefSized.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Item> =
+        object : AbstractIterator<Item>() {
+            override fun computeNext() {
+                when (val v = this@ByRefSized.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     // The following implementations use UFCS-style, rather than trusting autoderef,
     // to avoid accidentally calling the `Iterator` implementations.

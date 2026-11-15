@@ -1,10 +1,10 @@
 // port-lint: source math/acoshf.rs
 package io.github.kotlinmania.rustlang.libm.math.acoshf
 
-import io.github.kotlinmania.rustlang.math.arch.aarch64.sqrt.sqrtf
-import io.github.kotlinmania.rustlang.math.log1pf.log1pf
-import io.github.kotlinmania.rustlang.math.logf.logf
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrtf
+import io.github.kotlinmania.rustlang.libm.math.log1pf.log1pf
+import io.github.kotlinmania.rustlang.libm.math.logf.logf
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 
 public val LN2: kotlin.Float = 0.693147180559945309417232121458176568f
 

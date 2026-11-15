@@ -2,18 +2,18 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.stacknp
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.UintptrT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.UintptrT
 
-private object LibcNewAppleLibpthreadPthreadStacknpStackNpJniBridge {
+private object NewAppleLibpthreadPthreadStacknpStackNpJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun rustlangLibcNewAppleLibpthreadPthreadStacknpStackNpPthreadStackFrameDecodeNp(frameAddr: Long, returnAddr: Long): Long
+    external fun libcNewAppleLibpthreadPthreadStacknpStackNpPthreadStackFrameDecodeNp(frameAddr: Long, returnAddr: Long): Long
 }
 
 public actual fun pthreadStackFrameDecodeNp(frameAddr: UintptrT, returnAddr: MutPtr): UintptrT =
-    LibcNewAppleLibpthreadPthreadStacknpStackNpJniBridge.rustlangLibcNewAppleLibpthreadPthreadStacknpStackNpPthreadStackFrameDecodeNp(frameAddr.toLong(), returnAddr.rawAddress).toULong()
+    NewAppleLibpthreadPthreadStacknpStackNpJniBridge.libcNewAppleLibpthreadPthreadStacknpStackNpPthreadStackFrameDecodeNp(frameAddr.toLong(), returnAddr.rawAddress).toULong()

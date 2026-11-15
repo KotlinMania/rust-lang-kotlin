@@ -1,11 +1,11 @@
 // port-lint: source sys/thread_local/os.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.os
 
-import io.github.kotlinmania.rustlang.alloc.System
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -15,16 +15,17 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.panic.catchUnwind
-import io.github.kotlinmania.rustlang.panic.resumeUnwind
-import io.github.kotlinmania.rustlang.process.abort
+import io.github.kotlinmania.rustlang.std.alloc.System
+import io.github.kotlinmania.rustlang.std.panic.catchUnwind
+import io.github.kotlinmania.rustlang.std.panic.resumeUnwind
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sync.poison.Guard
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.abortOnDtorUnwind
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.Key
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.LazyKey
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.get
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.set
-import io.github.kotlinmania.rustlang.sync.poison.Guard
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.sys.threadlocal.abortOnDtorUnwind
 
 public fun interface NewDtorCallback {
     public operator fun invoke(arg0: MutPtr)
@@ -199,7 +200,7 @@ public fun <T> Storage<T, Align>.get(i: T?, f: () -> T, align: Int): ConstPtr {
     return if ((ptr).rawAddress.toInt() > 1) {
         // SAFETY: the check ensured the pointer is safe (its destructor
         // is not running) + it is coming from a trusted source (self).
-        (ObjectSlotLayout<Value<T>>()).readNative((ptr).rawAddress).value
+        (UnresolvedTypeLayout<Value<T>>()).readNative((ptr).rawAddress).value
     } else {
         // SAFETY: trivially correct.
         Storage.tryInitialize(key, ptr, i, f)

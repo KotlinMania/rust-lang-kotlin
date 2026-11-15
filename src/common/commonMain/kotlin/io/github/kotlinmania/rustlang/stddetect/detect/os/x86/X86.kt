@@ -4,9 +4,9 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.os.x86
 
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.detect.arch.Feature
-import io.github.kotlinmania.rustlang.detect.bit.test
-import io.github.kotlinmania.rustlang.detect.cache.cache
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
 
 // x86 run-time feature detection is OS independent.
 

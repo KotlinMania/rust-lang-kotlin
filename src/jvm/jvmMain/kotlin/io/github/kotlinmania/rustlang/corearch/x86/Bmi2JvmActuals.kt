@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-private object CorearchX86Bmi2JniBridge {
+private object X86Bmi2JniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,11 +38,14 @@ private object CorearchX86Bmi2JniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX86Bmi2JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X86Bmi2JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,20 +59,20 @@ private object CorearchX86Bmi2JniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX86Bmi2X86Bmi2Bzhi32(x: Int, y: Int): Int
+    external fun corearchX86Bmi2X86Bmi2Bzhi32(x: Int, y: Int): Int
 
     @JvmStatic
-    external fun rustlangCorearchX86Bmi2X86Bmi2Pdep32(x: Int, y: Int): Int
+    external fun corearchX86Bmi2X86Bmi2Pdep32(x: Int, y: Int): Int
 
     @JvmStatic
-    external fun rustlangCorearchX86Bmi2X86Bmi2Pext32(x: Int, y: Int): Int
+    external fun corearchX86Bmi2X86Bmi2Pext32(x: Int, y: Int): Int
 }
 
 public actual fun x86Bmi2Bzhi32(x: UInt, y: UInt): UInt =
-    CorearchX86Bmi2JniBridge.rustlangCorearchX86Bmi2X86Bmi2Bzhi32(x.toInt(), y.toInt()).toUInt()
+    X86Bmi2JniBridge.corearchX86Bmi2X86Bmi2Bzhi32(x.toInt(), y.toInt()).toUInt()
 
 public actual fun x86Bmi2Pdep32(x: UInt, y: UInt): UInt =
-    CorearchX86Bmi2JniBridge.rustlangCorearchX86Bmi2X86Bmi2Pdep32(x.toInt(), y.toInt()).toUInt()
+    X86Bmi2JniBridge.corearchX86Bmi2X86Bmi2Pdep32(x.toInt(), y.toInt()).toUInt()
 
 public actual fun x86Bmi2Pext32(x: UInt, y: UInt): UInt =
-    CorearchX86Bmi2JniBridge.rustlangCorearchX86Bmi2X86Bmi2Pext32(x.toInt(), y.toInt()).toUInt()
+    X86Bmi2JniBridge.corearchX86Bmi2X86Bmi2Pext32(x.toInt(), y.toInt()).toUInt()

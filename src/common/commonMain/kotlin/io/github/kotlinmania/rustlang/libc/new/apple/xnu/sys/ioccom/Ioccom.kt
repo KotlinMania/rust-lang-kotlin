@@ -1,12 +1,12 @@
 // port-lint: source new/apple/xnu/sys/ioccom.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `sys / ioccom.h`
 //
@@ -35,7 +35,7 @@ public fun ioc(inout: UInt, group: CUlong, num: CUlong, len: CUlong): CUlong {
     check(num <= 0xffuL)
     check(len <= IOCPARM_MAX)
     // Sanity check the cast
-    check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<CUlong>(typeLayoutT = ObjectSlotLayout<CUlong>()))
+    check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<CUlong>(typeLayoutT = UnresolvedTypeLayout<CUlong>()))
     return (inout.toULong()) or ((len and IOCPARM_MASK) shl 16) or (group shl 8) or num
 }
 

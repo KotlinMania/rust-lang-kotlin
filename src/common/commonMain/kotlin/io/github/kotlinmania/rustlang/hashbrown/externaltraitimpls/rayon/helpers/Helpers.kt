@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.helper
 
 import io.github.kotlinmania.rustlang.alloc.collections.linkedlist.LinkedList
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
-import io.github.kotlinmania.rustlang.rayon.iter.IntoParallelIterator
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.IntoParallelIterator
 
 // yes, we need linked list here for efficient appending!
 

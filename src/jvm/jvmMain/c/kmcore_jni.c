@@ -344,3 +344,664 @@ JNIEXPORT jfloat JNICALL KM_JNI_FN(kmSimdDotF32)(
     (void)env; (void)clazz;
     return (jfloat)kmSimdDotF32((int64_t)aAddr, (int64_t)bAddr, (int64_t)len);
 }
+
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCtpopU8)(JNIEnv* env, jclass clazz, jbyte value) {
+    (void)env; (void)clazz;
+    return (jint)kmCtpopU8((uint8_t)value);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCtpopU16)(JNIEnv* env, jclass clazz, jshort value) {
+    (void)env; (void)clazz;
+    return (jint)kmCtpopU16((uint16_t)value);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCtpopU32)(JNIEnv* env, jclass clazz, jint value) {
+    (void)env; (void)clazz;
+    return (jint)kmCtpopU32((uint32_t)value);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCtpopU128)(JNIEnv* env, jclass clazz, jlong lo, jlong hi) {
+    (void)env; (void)clazz;
+    return (jint)kmCtpopU128((uint64_t)lo, (uint64_t)hi);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCtlzU8)(JNIEnv* env, jclass clazz, jbyte value) {
+    (void)env; (void)clazz;
+    return (jint)kmCtlzU8((uint8_t)value);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCtlzU16)(JNIEnv* env, jclass clazz, jshort value) {
+    (void)env; (void)clazz;
+    return (jint)kmCtlzU16((uint16_t)value);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCtlzU32)(JNIEnv* env, jclass clazz, jint value) {
+    (void)env; (void)clazz;
+    return (jint)kmCtlzU32((uint32_t)value);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCtlzU128)(JNIEnv* env, jclass clazz, jlong lo, jlong hi) {
+    (void)env; (void)clazz;
+    return (jint)kmCtlzU128((uint64_t)lo, (uint64_t)hi);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCttzU8)(JNIEnv* env, jclass clazz, jbyte value) {
+    (void)env; (void)clazz;
+    return (jint)kmCttzU8((uint8_t)value);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCttzU16)(JNIEnv* env, jclass clazz, jshort value) {
+    (void)env; (void)clazz;
+    return (jint)kmCttzU16((uint16_t)value);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCttzU32)(JNIEnv* env, jclass clazz, jint value) {
+    (void)env; (void)clazz;
+    return (jint)kmCttzU32((uint32_t)value);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmCttzU128)(JNIEnv* env, jclass clazz, jlong lo, jlong hi) {
+    (void)env; (void)clazz;
+    return (jint)kmCttzU128((uint64_t)lo, (uint64_t)hi);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmBswapU128Out)(JNIEnv* env, jclass clazz, jlong lo, jlong hi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmBswapU128Out((uint64_t)lo, (uint64_t)hi, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT jbyte JNICALL KM_JNI_FN(kmBitreverseU8)(JNIEnv* env, jclass clazz, jbyte value) {
+    (void)env; (void)clazz;
+    return (jbyte)kmBitreverseU8((uint8_t)value);
+}
+JNIEXPORT jshort JNICALL KM_JNI_FN(kmBitreverseU16)(JNIEnv* env, jclass clazz, jshort value) {
+    (void)env; (void)clazz;
+    return (jshort)kmBitreverseU16((uint16_t)value);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmBitreverseU32)(JNIEnv* env, jclass clazz, jint value) {
+    (void)env; (void)clazz;
+    return (jint)kmBitreverseU32((uint32_t)value);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmBitreverseU128Out)(JNIEnv* env, jclass clazz, jlong lo, jlong hi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmBitreverseU128Out((uint64_t)lo, (uint64_t)hi, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT jbyte JNICALL KM_JNI_FN(kmRotateLeftU8)(JNIEnv* env, jclass clazz, jbyte value, jint n) {
+    (void)env; (void)clazz;
+    return (jbyte)kmRotateLeftU8((uint8_t)value, (uint32_t)n);
+}
+JNIEXPORT jshort JNICALL KM_JNI_FN(kmRotateLeftU16)(JNIEnv* env, jclass clazz, jshort value, jint n) {
+    (void)env; (void)clazz;
+    return (jshort)kmRotateLeftU16((uint16_t)value, (uint32_t)n);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmRotateLeftU32)(JNIEnv* env, jclass clazz, jint value, jint n) {
+    (void)env; (void)clazz;
+    return (jint)kmRotateLeftU32((uint32_t)value, (uint32_t)n);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmRotateLeftU64)(JNIEnv* env, jclass clazz, jlong value, jint n) {
+    (void)env; (void)clazz;
+    return (jlong)kmRotateLeftU64((uint64_t)value, (uint32_t)n);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmRotateLeftU128Out)(JNIEnv* env, jclass clazz, jlong lo, jlong hi, jint n, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmRotateLeftU128Out((uint64_t)lo, (uint64_t)hi, (uint32_t)n, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT jbyte JNICALL KM_JNI_FN(kmRotateRightU8)(JNIEnv* env, jclass clazz, jbyte value, jint n) {
+    (void)env; (void)clazz;
+    return (jbyte)kmRotateRightU8((uint8_t)value, (uint32_t)n);
+}
+JNIEXPORT jshort JNICALL KM_JNI_FN(kmRotateRightU16)(JNIEnv* env, jclass clazz, jshort value, jint n) {
+    (void)env; (void)clazz;
+    return (jshort)kmRotateRightU16((uint16_t)value, (uint32_t)n);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmRotateRightU32)(JNIEnv* env, jclass clazz, jint value, jint n) {
+    (void)env; (void)clazz;
+    return (jint)kmRotateRightU32((uint32_t)value, (uint32_t)n);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmRotateRightU64)(JNIEnv* env, jclass clazz, jlong value, jint n) {
+    (void)env; (void)clazz;
+    return (jlong)kmRotateRightU64((uint64_t)value, (uint32_t)n);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmRotateRightU128Out)(JNIEnv* env, jclass clazz, jlong lo, jlong hi, jint n, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmRotateRightU128Out((uint64_t)lo, (uint64_t)hi, (uint32_t)n, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmAddWithOverflowU8Packed)(JNIEnv* env, jclass clazz, jbyte a, jbyte b) {
+    (void)env; (void)clazz;
+    return (jlong)kmAddWithOverflowU8Packed((uint8_t)a, (uint8_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmAddWithOverflowU16Packed)(JNIEnv* env, jclass clazz, jshort a, jshort b) {
+    (void)env; (void)clazz;
+    return (jlong)kmAddWithOverflowU16Packed((uint16_t)a, (uint16_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmAddWithOverflowU32Packed)(JNIEnv* env, jclass clazz, jint a, jint b) {
+    (void)env; (void)clazz;
+    return (jlong)kmAddWithOverflowU32Packed((uint32_t)a, (uint32_t)b);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmAddWithOverflowU64Out)(JNIEnv* env, jclass clazz, jlong a, jlong b, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t res = 0;
+    uint8_t ovf = kmAddWithOverflowU64Out((uint64_t)a, (uint64_t)b, &res);
+    jlong buf[2];
+    buf[0] = (jlong)res;
+    buf[1] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmAddWithOverflowU128Out)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    uint8_t ovf = kmAddWithOverflowU128Out((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[3];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    buf[2] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 3, buf);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmAddWithOverflowI8Packed)(JNIEnv* env, jclass clazz, jbyte a, jbyte b) {
+    (void)env; (void)clazz;
+    return (jlong)kmAddWithOverflowI8Packed((int8_t)a, (int8_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmAddWithOverflowI16Packed)(JNIEnv* env, jclass clazz, jshort a, jshort b) {
+    (void)env; (void)clazz;
+    return (jlong)kmAddWithOverflowI16Packed((int16_t)a, (int16_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmAddWithOverflowI32Packed)(JNIEnv* env, jclass clazz, jint a, jint b) {
+    (void)env; (void)clazz;
+    return (jlong)kmAddWithOverflowI32Packed((int32_t)a, (int32_t)b);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmAddWithOverflowI64Out)(JNIEnv* env, jclass clazz, jlong a, jlong b, jlongArray outBuf) {
+    (void)clazz;
+    int64_t res = 0;
+    uint8_t ovf = kmAddWithOverflowI64Out((int64_t)a, (int64_t)b, &res);
+    jlong buf[2];
+    buf[0] = (jlong)res;
+    buf[1] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmAddWithOverflowI128Out)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    uint8_t ovf = kmAddWithOverflowI128Out((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[3];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    buf[2] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 3, buf);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmSubWithOverflowU8Packed)(JNIEnv* env, jclass clazz, jbyte a, jbyte b) {
+    (void)env; (void)clazz;
+    return (jlong)kmSubWithOverflowU8Packed((uint8_t)a, (uint8_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmSubWithOverflowU16Packed)(JNIEnv* env, jclass clazz, jshort a, jshort b) {
+    (void)env; (void)clazz;
+    return (jlong)kmSubWithOverflowU16Packed((uint16_t)a, (uint16_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmSubWithOverflowU32Packed)(JNIEnv* env, jclass clazz, jint a, jint b) {
+    (void)env; (void)clazz;
+    return (jlong)kmSubWithOverflowU32Packed((uint32_t)a, (uint32_t)b);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmSubWithOverflowU64Out)(JNIEnv* env, jclass clazz, jlong a, jlong b, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t res = 0;
+    uint8_t ovf = kmSubWithOverflowU64Out((uint64_t)a, (uint64_t)b, &res);
+    jlong buf[2];
+    buf[0] = (jlong)res;
+    buf[1] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmSubWithOverflowU128Out)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    uint8_t ovf = kmSubWithOverflowU128Out((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[3];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    buf[2] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 3, buf);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmSubWithOverflowI8Packed)(JNIEnv* env, jclass clazz, jbyte a, jbyte b) {
+    (void)env; (void)clazz;
+    return (jlong)kmSubWithOverflowI8Packed((int8_t)a, (int8_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmSubWithOverflowI16Packed)(JNIEnv* env, jclass clazz, jshort a, jshort b) {
+    (void)env; (void)clazz;
+    return (jlong)kmSubWithOverflowI16Packed((int16_t)a, (int16_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmSubWithOverflowI32Packed)(JNIEnv* env, jclass clazz, jint a, jint b) {
+    (void)env; (void)clazz;
+    return (jlong)kmSubWithOverflowI32Packed((int32_t)a, (int32_t)b);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmSubWithOverflowI64Out)(JNIEnv* env, jclass clazz, jlong a, jlong b, jlongArray outBuf) {
+    (void)clazz;
+    int64_t res = 0;
+    uint8_t ovf = kmSubWithOverflowI64Out((int64_t)a, (int64_t)b, &res);
+    jlong buf[2];
+    buf[0] = (jlong)res;
+    buf[1] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmSubWithOverflowI128Out)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    uint8_t ovf = kmSubWithOverflowI128Out((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[3];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    buf[2] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 3, buf);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmMulWithOverflowU8Packed)(JNIEnv* env, jclass clazz, jbyte a, jbyte b) {
+    (void)env; (void)clazz;
+    return (jlong)kmMulWithOverflowU8Packed((uint8_t)a, (uint8_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmMulWithOverflowU16Packed)(JNIEnv* env, jclass clazz, jshort a, jshort b) {
+    (void)env; (void)clazz;
+    return (jlong)kmMulWithOverflowU16Packed((uint16_t)a, (uint16_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmMulWithOverflowU32Packed)(JNIEnv* env, jclass clazz, jint a, jint b) {
+    (void)env; (void)clazz;
+    return (jlong)kmMulWithOverflowU32Packed((uint32_t)a, (uint32_t)b);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmMulWithOverflowU64Out)(JNIEnv* env, jclass clazz, jlong a, jlong b, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t res = 0;
+    uint8_t ovf = kmMulWithOverflowU64Out((uint64_t)a, (uint64_t)b, &res);
+    jlong buf[2];
+    buf[0] = (jlong)res;
+    buf[1] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmMulWithOverflowU128Out)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    uint8_t ovf = kmMulWithOverflowU128Out((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[3];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    buf[2] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 3, buf);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmMulWithOverflowI8Packed)(JNIEnv* env, jclass clazz, jbyte a, jbyte b) {
+    (void)env; (void)clazz;
+    return (jlong)kmMulWithOverflowI8Packed((int8_t)a, (int8_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmMulWithOverflowI16Packed)(JNIEnv* env, jclass clazz, jshort a, jshort b) {
+    (void)env; (void)clazz;
+    return (jlong)kmMulWithOverflowI16Packed((int16_t)a, (int16_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmMulWithOverflowI32Packed)(JNIEnv* env, jclass clazz, jint a, jint b) {
+    (void)env; (void)clazz;
+    return (jlong)kmMulWithOverflowI32Packed((int32_t)a, (int32_t)b);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmMulWithOverflowI64Out)(JNIEnv* env, jclass clazz, jlong a, jlong b, jlongArray outBuf) {
+    (void)clazz;
+    int64_t res = 0;
+    uint8_t ovf = kmMulWithOverflowI64Out((int64_t)a, (int64_t)b, &res);
+    jlong buf[2];
+    buf[0] = (jlong)res;
+    buf[1] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmMulWithOverflowI128Out)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    uint8_t ovf = kmMulWithOverflowI128Out((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[3];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    buf[2] = (jlong)(uint64_t)ovf;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 3, buf);
+}
+JNIEXPORT jbyte JNICALL KM_JNI_FN(kmSaturatingAddU8)(JNIEnv* env, jclass clazz, jbyte a, jbyte b) {
+    (void)env; (void)clazz;
+    return (jbyte)kmSaturatingAddU8((uint8_t)a, (uint8_t)b);
+}
+JNIEXPORT jshort JNICALL KM_JNI_FN(kmSaturatingAddU16)(JNIEnv* env, jclass clazz, jshort a, jshort b) {
+    (void)env; (void)clazz;
+    return (jshort)kmSaturatingAddU16((uint16_t)a, (uint16_t)b);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmSaturatingAddU32)(JNIEnv* env, jclass clazz, jint a, jint b) {
+    (void)env; (void)clazz;
+    return (jint)kmSaturatingAddU32((uint32_t)a, (uint32_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmSaturatingAddU64)(JNIEnv* env, jclass clazz, jlong a, jlong b) {
+    (void)env; (void)clazz;
+    return (jlong)kmSaturatingAddU64((uint64_t)a, (uint64_t)b);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmSaturatingAddU128Out)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmSaturatingAddU128Out((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT jbyte JNICALL KM_JNI_FN(kmSaturatingAddI8)(JNIEnv* env, jclass clazz, jbyte a, jbyte b) {
+    (void)env; (void)clazz;
+    return (jbyte)kmSaturatingAddI8((int8_t)a, (int8_t)b);
+}
+JNIEXPORT jshort JNICALL KM_JNI_FN(kmSaturatingAddI16)(JNIEnv* env, jclass clazz, jshort a, jshort b) {
+    (void)env; (void)clazz;
+    return (jshort)kmSaturatingAddI16((int16_t)a, (int16_t)b);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmSaturatingAddI32)(JNIEnv* env, jclass clazz, jint a, jint b) {
+    (void)env; (void)clazz;
+    return (jint)kmSaturatingAddI32((int32_t)a, (int32_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmSaturatingAddI64)(JNIEnv* env, jclass clazz, jlong a, jlong b) {
+    (void)env; (void)clazz;
+    return (jlong)kmSaturatingAddI64((int64_t)a, (int64_t)b);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmSaturatingAddI128Out)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmSaturatingAddI128Out((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT jbyte JNICALL KM_JNI_FN(kmSaturatingSubU8)(JNIEnv* env, jclass clazz, jbyte a, jbyte b) {
+    (void)env; (void)clazz;
+    return (jbyte)kmSaturatingSubU8((uint8_t)a, (uint8_t)b);
+}
+JNIEXPORT jshort JNICALL KM_JNI_FN(kmSaturatingSubU16)(JNIEnv* env, jclass clazz, jshort a, jshort b) {
+    (void)env; (void)clazz;
+    return (jshort)kmSaturatingSubU16((uint16_t)a, (uint16_t)b);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmSaturatingSubU32)(JNIEnv* env, jclass clazz, jint a, jint b) {
+    (void)env; (void)clazz;
+    return (jint)kmSaturatingSubU32((uint32_t)a, (uint32_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmSaturatingSubU64)(JNIEnv* env, jclass clazz, jlong a, jlong b) {
+    (void)env; (void)clazz;
+    return (jlong)kmSaturatingSubU64((uint64_t)a, (uint64_t)b);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmSaturatingSubU128Out)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmSaturatingSubU128Out((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT jbyte JNICALL KM_JNI_FN(kmSaturatingSubI8)(JNIEnv* env, jclass clazz, jbyte a, jbyte b) {
+    (void)env; (void)clazz;
+    return (jbyte)kmSaturatingSubI8((int8_t)a, (int8_t)b);
+}
+JNIEXPORT jshort JNICALL KM_JNI_FN(kmSaturatingSubI16)(JNIEnv* env, jclass clazz, jshort a, jshort b) {
+    (void)env; (void)clazz;
+    return (jshort)kmSaturatingSubI16((int16_t)a, (int16_t)b);
+}
+JNIEXPORT jint JNICALL KM_JNI_FN(kmSaturatingSubI32)(JNIEnv* env, jclass clazz, jint a, jint b) {
+    (void)env; (void)clazz;
+    return (jint)kmSaturatingSubI32((int32_t)a, (int32_t)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmSaturatingSubI64)(JNIEnv* env, jclass clazz, jlong a, jlong b) {
+    (void)env; (void)clazz;
+    return (jlong)kmSaturatingSubI64((int64_t)a, (int64_t)b);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmSaturatingSubI128Out)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmSaturatingSubI128Out((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmU128AddOut)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmU128AddOut((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmU128SubOut)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmU128SubOut((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmU128MulOut)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmU128MulOut((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmU128DivRemOut)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t qLo = 0ULL, qHi = 0ULL, rLo = 0ULL, rHi = 0ULL;
+    kmU128DivRemOut((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &qLo, &qHi, &rLo, &rHi);
+    jlong buf[4];
+    buf[0] = (jlong)qLo;
+    buf[1] = (jlong)qHi;
+    buf[2] = (jlong)rLo;
+    buf[3] = (jlong)rHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 4, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmI128DivRemOut)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jlong bLo, jlong bHi, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t qLo = 0ULL, qHi = 0ULL, rLo = 0ULL, rHi = 0ULL;
+    kmI128DivRemOut((uint64_t)aLo, (uint64_t)aHi, (uint64_t)bLo, (uint64_t)bHi, &qLo, &qHi, &rLo, &rHi);
+    jlong buf[4];
+    buf[0] = (jlong)qLo;
+    buf[1] = (jlong)qHi;
+    buf[2] = (jlong)rLo;
+    buf[3] = (jlong)rHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 4, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmU128ShlOut)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jint shift, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmU128ShlOut((uint64_t)aLo, (uint64_t)aHi, (uint32_t)shift, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmU128ShrOut)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jint shift, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmU128ShrOut((uint64_t)aLo, (uint64_t)aHi, (uint32_t)shift, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmI128ShrOut)(JNIEnv* env, jclass clazz, jlong aLo, jlong aHi, jint shift, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmI128ShrOut((uint64_t)aLo, (uint64_t)aHi, (uint32_t)shift, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmSinf32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmSinf32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmSinf64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmSinf64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmCosf32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmCosf32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmCosf64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmCosf64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmExpf32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmExpf32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmExpf64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmExpf64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmExp2f32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmExp2f32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmExp2f64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmExp2f64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmLogf32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmLogf32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmLogf64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmLogf64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmLog2f32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmLog2f32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmLog2f64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmLog2f64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmLog10f32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmLog10f32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmLog10f64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmLog10f64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmTruncf32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmTruncf32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmTruncf64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmTruncf64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmRoundf32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmRoundf32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmRoundf64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmRoundf64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmRoundTiesEvenf32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmRoundTiesEvenf32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmRoundTiesEvenf64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmRoundTiesEvenf64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmCeilf32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmCeilf32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmCeilf64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmCeilf64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmFloorf32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmFloorf32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmFloorf64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmFloorf64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmFabsf32)(JNIEnv* env, jclass clazz, jfloat x) {
+    (void)env; (void)clazz;
+    return (jfloat)kmFabsf32((float)x);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmFabsf64)(JNIEnv* env, jclass clazz, jdouble x) {
+    (void)env; (void)clazz;
+    return (jdouble)kmFabsf64((double)x);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmPowf32)(JNIEnv* env, jclass clazz, jfloat a, jfloat b) {
+    (void)env; (void)clazz;
+    return (jfloat)kmPowf32((float)a, (float)b);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmPowf64)(JNIEnv* env, jclass clazz, jdouble a, jdouble b) {
+    (void)env; (void)clazz;
+    return (jdouble)kmPowf64((double)a, (double)b);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmPowif32)(JNIEnv* env, jclass clazz, jfloat x, jint exp) {
+    (void)env; (void)clazz;
+    return (jfloat)kmPowif32((float)x, (int32_t)exp);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmPowif64)(JNIEnv* env, jclass clazz, jdouble x, jint exp) {
+    (void)env; (void)clazz;
+    return (jdouble)kmPowif64((double)x, (int32_t)exp);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmCopysignf32)(JNIEnv* env, jclass clazz, jfloat a, jfloat b) {
+    (void)env; (void)clazz;
+    return (jfloat)kmCopysignf32((float)a, (float)b);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmCopysignf64)(JNIEnv* env, jclass clazz, jdouble a, jdouble b) {
+    (void)env; (void)clazz;
+    return (jdouble)kmCopysignf64((double)a, (double)b);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmMinnumf32)(JNIEnv* env, jclass clazz, jfloat a, jfloat b) {
+    (void)env; (void)clazz;
+    return (jfloat)kmMinnumf32((float)a, (float)b);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmMinnumf64)(JNIEnv* env, jclass clazz, jdouble a, jdouble b) {
+    (void)env; (void)clazz;
+    return (jdouble)kmMinnumf64((double)a, (double)b);
+}
+JNIEXPORT jfloat JNICALL KM_JNI_FN(kmMaxnumf32)(JNIEnv* env, jclass clazz, jfloat a, jfloat b) {
+    (void)env; (void)clazz;
+    return (jfloat)kmMaxnumf32((float)a, (float)b);
+}
+JNIEXPORT jdouble JNICALL KM_JNI_FN(kmMaxnumf64)(JNIEnv* env, jclass clazz, jdouble a, jdouble b) {
+    (void)env; (void)clazz;
+    return (jdouble)kmMaxnumf64((double)a, (double)b);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmFloatToU64Unchecked)(JNIEnv* env, jclass clazz, jfloat v) {
+    (void)env; (void)clazz;
+    return (jlong)kmFloatToU64Unchecked((float)v);
+}
+JNIEXPORT jlong JNICALL KM_JNI_FN(kmDoubleToU64Unchecked)(JNIEnv* env, jclass clazz, jdouble v) {
+    (void)env; (void)clazz;
+    return (jlong)kmDoubleToU64Unchecked((double)v);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmFloatToU128UncheckedOut)(JNIEnv* env, jclass clazz, jfloat v, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmFloatToU128UncheckedOut((float)v, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}
+JNIEXPORT void JNICALL KM_JNI_FN(kmDoubleToU128UncheckedOut)(JNIEnv* env, jclass clazz, jdouble v, jlongArray outBuf) {
+    (void)clazz;
+    uint64_t outLo = 0ULL, outHi = 0ULL;
+    kmDoubleToU128UncheckedOut((double)v, &outLo, &outHi);
+    jlong buf[2];
+    buf[0] = (jlong)outLo;
+    buf[1] = (jlong)outHi;
+    (*env)->SetLongArrayRegion(env, outBuf, 0, 2, buf);
+}

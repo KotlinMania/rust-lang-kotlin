@@ -15,7 +15,7 @@
 #endif
 #endif
 
-int32_t rustlangWindowsSysEnumerateLoadedModulesW64(void* hprocess, void* enumloadedmodulescallback, void* usercontext) {
+int32_t backtraceWindowsSysEnumerateLoadedModulesW64(void* hprocess, void* enumloadedmodulescallback, void* usercontext) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -39,7 +39,7 @@ int32_t rustlangWindowsSysEnumerateLoadedModulesW64(void* hprocess, void* enumlo
 #endif
 }
 
-int32_t rustlangWindowsSysStackWalk64(uint32_t machinetype, void* hprocess, void* hthread, void* stackframe, void* contextrecord, void* readmemoryroutine, void* functiontableaccessroutine, void* getmodulebaseroutine, void* translateaddress) {
+int32_t backtraceWindowsSysStackWalk64(uint32_t machinetype, void* hprocess, void* hthread, void* stackframe, void* contextrecord, void* readmemoryroutine, void* functiontableaccessroutine, void* getmodulebaseroutine, void* translateaddress) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(uint32_t, void*, void*, void*, void*, void*, void*, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -69,7 +69,7 @@ int32_t rustlangWindowsSysStackWalk64(uint32_t machinetype, void* hprocess, void
 #endif
 }
 
-int32_t rustlangWindowsSysStackWalkEx(uint32_t machinetype, void* hprocess, void* hthread, void* stackframe, void* contextrecord, void* readmemoryroutine, void* functiontableaccessroutine, void* getmodulebaseroutine, void* translateaddress, uint32_t flags) {
+int32_t backtraceWindowsSysStackWalkEx(uint32_t machinetype, void* hprocess, void* hthread, void* stackframe, void* contextrecord, void* readmemoryroutine, void* functiontableaccessroutine, void* getmodulebaseroutine, void* translateaddress, uint32_t flags) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(uint32_t, void*, void*, void*, void*, void*, void*, void*, void*, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
@@ -100,7 +100,7 @@ int32_t rustlangWindowsSysStackWalkEx(uint32_t machinetype, void* hprocess, void
 #endif
 }
 
-uint32_t rustlangWindowsSysSymAddrIncludeInlineTrace(void* hprocess, uint64_t address) {
+uint32_t backtraceWindowsSysSymAddrIncludeInlineTrace(void* hprocess, uint64_t address) {
 #ifdef _WIN32
     typedef uint32_t (__stdcall *km_fn_t)(void*, uint64_t);
     static km_fn_t km_fn_ptr = NULL;
@@ -123,7 +123,7 @@ uint32_t rustlangWindowsSysSymAddrIncludeInlineTrace(void* hprocess, uint64_t ad
 #endif
 }
 
-int32_t rustlangWindowsSysSymFromAddrW(void* hprocess, uint64_t address, void* displacement, void* symbol) {
+int32_t backtraceWindowsSysSymFromAddrW(void* hprocess, uint64_t address, void* displacement, void* symbol) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*, uint64_t, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -148,7 +148,7 @@ int32_t rustlangWindowsSysSymFromAddrW(void* hprocess, uint64_t address, void* d
 #endif
 }
 
-int32_t rustlangWindowsSysSymFromInlineContextW(void* hprocess, uint64_t address, uint32_t inlinecontext, void* displacement, void* symbol) {
+int32_t backtraceWindowsSysSymFromInlineContextW(void* hprocess, uint64_t address, uint32_t inlinecontext, void* displacement, void* symbol) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*, uint64_t, uint32_t, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -174,7 +174,7 @@ int32_t rustlangWindowsSysSymFromInlineContextW(void* hprocess, uint64_t address
 #endif
 }
 
-void* rustlangWindowsSysSymFunctionTableAccess64(void* hprocess, uint64_t addrbase) {
+void* backtraceWindowsSysSymFunctionTableAccess64(void* hprocess, uint64_t addrbase) {
 #ifdef _WIN32
     typedef void* (__stdcall *km_fn_t)(void*, uint64_t);
     static km_fn_t km_fn_ptr = NULL;
@@ -197,7 +197,7 @@ void* rustlangWindowsSysSymFunctionTableAccess64(void* hprocess, uint64_t addrba
 #endif
 }
 
-int32_t rustlangWindowsSysSymGetLineFromAddrW64(void* hprocess, uint64_t dwaddr, void* pdwdisplacement, void* line) {
+int32_t backtraceWindowsSysSymGetLineFromAddrW64(void* hprocess, uint64_t dwaddr, void* pdwdisplacement, void* line) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*, uint64_t, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -222,7 +222,7 @@ int32_t rustlangWindowsSysSymGetLineFromAddrW64(void* hprocess, uint64_t dwaddr,
 #endif
 }
 
-int32_t rustlangWindowsSysSymGetLineFromInlineContextW(void* hprocess, uint64_t dwaddr, uint32_t inlinecontext, uint64_t qwmodulebaseaddress, void* pdwdisplacement, void* line) {
+int32_t backtraceWindowsSysSymGetLineFromInlineContextW(void* hprocess, uint64_t dwaddr, uint32_t inlinecontext, uint64_t qwmodulebaseaddress, void* pdwdisplacement, void* line) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*, uint64_t, uint32_t, uint64_t, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -249,7 +249,7 @@ int32_t rustlangWindowsSysSymGetLineFromInlineContextW(void* hprocess, uint64_t 
 #endif
 }
 
-uint64_t rustlangWindowsSysSymGetModuleBase64(void* hprocess, uint64_t qwaddr) {
+uint64_t backtraceWindowsSysSymGetModuleBase64(void* hprocess, uint64_t qwaddr) {
 #ifdef _WIN32
     typedef uint64_t (__stdcall *km_fn_t)(void*, uint64_t);
     static km_fn_t km_fn_ptr = NULL;
@@ -272,7 +272,7 @@ uint64_t rustlangWindowsSysSymGetModuleBase64(void* hprocess, uint64_t qwaddr) {
 #endif
 }
 
-uint32_t rustlangWindowsSysSymGetOptions(void) {
+uint32_t backtraceWindowsSysSymGetOptions(void) {
 #ifdef _WIN32
     typedef uint32_t (__stdcall *km_fn_t)(void);
     static km_fn_t km_fn_ptr = NULL;
@@ -293,7 +293,7 @@ uint32_t rustlangWindowsSysSymGetOptions(void) {
 #endif
 }
 
-int32_t rustlangWindowsSysSymGetSearchPathW(void* hprocess, void* searchpatha, uint32_t searchpathlength) {
+int32_t backtraceWindowsSysSymGetSearchPathW(void* hprocess, void* searchpatha, uint32_t searchpathlength) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*, void*, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
@@ -317,7 +317,7 @@ int32_t rustlangWindowsSysSymGetSearchPathW(void* hprocess, void* searchpatha, u
 #endif
 }
 
-int32_t rustlangWindowsSysSymInitializeW(void* hprocess, void* usersearchpath, int32_t finvadeprocess) {
+int32_t backtraceWindowsSysSymInitializeW(void* hprocess, void* usersearchpath, int32_t finvadeprocess) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*, void*, int32_t);
     static km_fn_t km_fn_ptr = NULL;
@@ -341,7 +341,7 @@ int32_t rustlangWindowsSysSymInitializeW(void* hprocess, void* usersearchpath, i
 #endif
 }
 
-int32_t rustlangWindowsSysSymQueryInlineTrace(void* hprocess, uint64_t startaddress, uint32_t startcontext, uint64_t startretaddress, uint64_t curaddress, void* curcontext, void* curframeindex) {
+int32_t backtraceWindowsSysSymQueryInlineTrace(void* hprocess, uint64_t startaddress, uint32_t startcontext, uint64_t startretaddress, uint64_t curaddress, void* curcontext, void* curframeindex) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*, uint64_t, uint32_t, uint64_t, uint64_t, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -369,7 +369,7 @@ int32_t rustlangWindowsSysSymQueryInlineTrace(void* hprocess, uint64_t startaddr
 #endif
 }
 
-uint32_t rustlangWindowsSysSymSetOptions(uint32_t symoptions) {
+uint32_t backtraceWindowsSysSymSetOptions(uint32_t symoptions) {
 #ifdef _WIN32
     typedef uint32_t (__stdcall *km_fn_t)(uint32_t);
     static km_fn_t km_fn_ptr = NULL;
@@ -391,7 +391,7 @@ uint32_t rustlangWindowsSysSymSetOptions(uint32_t symoptions) {
 #endif
 }
 
-int32_t rustlangWindowsSysSymSetSearchPathW(void* hprocess, void* searchpatha) {
+int32_t backtraceWindowsSysSymSetSearchPathW(void* hprocess, void* searchpatha) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -414,7 +414,7 @@ int32_t rustlangWindowsSysSymSetSearchPathW(void* hprocess, void* searchpatha) {
 #endif
 }
 
-int32_t rustlangWindowsSysCloseHandle(void* hobject) {
+int32_t backtraceWindowsSysCloseHandle(void* hobject) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -436,7 +436,7 @@ int32_t rustlangWindowsSysCloseHandle(void* hobject) {
 #endif
 }
 
-void* rustlangWindowsSysCreateFileMappingA(void* hfile, void* lpfilemappingattributes, uint32_t flprotect, uint32_t dwmaximumsizehigh, uint32_t dwmaximumsizelow, void* lpname) {
+void* backtraceWindowsSysCreateFileMappingA(void* hfile, void* lpfilemappingattributes, uint32_t flprotect, uint32_t dwmaximumsizehigh, uint32_t dwmaximumsizelow, void* lpname) {
 #ifdef _WIN32
     typedef void* (__stdcall *km_fn_t)(void*, void*, uint32_t, uint32_t, uint32_t, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -463,7 +463,7 @@ void* rustlangWindowsSysCreateFileMappingA(void* hfile, void* lpfilemappingattri
 #endif
 }
 
-void* rustlangWindowsSysCreateMutexA(void* lpmutexattributes, int32_t binitialowner, void* lpname) {
+void* backtraceWindowsSysCreateMutexA(void* lpmutexattributes, int32_t binitialowner, void* lpname) {
 #ifdef _WIN32
     typedef void* (__stdcall *km_fn_t)(void*, int32_t, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -487,7 +487,7 @@ void* rustlangWindowsSysCreateMutexA(void* lpmutexattributes, int32_t binitialow
 #endif
 }
 
-void* rustlangWindowsSysCreateToolhelp32Snapshot(uint32_t dwflags, uint32_t th32processid) {
+void* backtraceWindowsSysCreateToolhelp32Snapshot(uint32_t dwflags, uint32_t th32processid) {
 #ifdef _WIN32
     typedef void* (__stdcall *km_fn_t)(uint32_t, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
@@ -510,7 +510,7 @@ void* rustlangWindowsSysCreateToolhelp32Snapshot(uint32_t dwflags, uint32_t th32
 #endif
 }
 
-void* rustlangWindowsSysGetCurrentProcess(void) {
+void* backtraceWindowsSysGetCurrentProcess(void) {
 #ifdef _WIN32
     typedef void* (__stdcall *km_fn_t)(void);
     static km_fn_t km_fn_ptr = NULL;
@@ -531,7 +531,7 @@ void* rustlangWindowsSysGetCurrentProcess(void) {
 #endif
 }
 
-uint32_t rustlangWindowsSysGetCurrentProcessId(void) {
+uint32_t backtraceWindowsSysGetCurrentProcessId(void) {
 #ifdef _WIN32
     typedef uint32_t (__stdcall *km_fn_t)(void);
     static km_fn_t km_fn_ptr = NULL;
@@ -552,7 +552,7 @@ uint32_t rustlangWindowsSysGetCurrentProcessId(void) {
 #endif
 }
 
-void* rustlangWindowsSysGetCurrentThread(void) {
+void* backtraceWindowsSysGetCurrentThread(void) {
 #ifdef _WIN32
     typedef void* (__stdcall *km_fn_t)(void);
     static km_fn_t km_fn_ptr = NULL;
@@ -573,7 +573,7 @@ void* rustlangWindowsSysGetCurrentThread(void) {
 #endif
 }
 
-void* rustlangWindowsSysGetProcAddress(void* hmodule, void* lpprocname) {
+void* backtraceWindowsSysGetProcAddress(void* hmodule, void* lpprocname) {
 #ifdef _WIN32
     typedef void* (__stdcall *km_fn_t)(void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -596,7 +596,7 @@ void* rustlangWindowsSysGetProcAddress(void* hmodule, void* lpprocname) {
 #endif
 }
 
-void* rustlangWindowsSysLoadLibraryA(void* lplibfilename) {
+void* backtraceWindowsSysLoadLibraryA(void* lplibfilename) {
 #ifdef _WIN32
     typedef void* (__stdcall *km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -618,7 +618,7 @@ void* rustlangWindowsSysLoadLibraryA(void* lplibfilename) {
 #endif
 }
 
-int32_t rustlangWindowsSysModule32FirstW(void* hsnapshot, void* lpme) {
+int32_t backtraceWindowsSysModule32FirstW(void* hsnapshot, void* lpme) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -641,7 +641,7 @@ int32_t rustlangWindowsSysModule32FirstW(void* hsnapshot, void* lpme) {
 #endif
 }
 
-int32_t rustlangWindowsSysModule32NextW(void* hsnapshot, void* lpme) {
+int32_t backtraceWindowsSysModule32NextW(void* hsnapshot, void* lpme) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -664,7 +664,7 @@ int32_t rustlangWindowsSysModule32NextW(void* hsnapshot, void* lpme) {
 #endif
 }
 
-int32_t rustlangWindowsSysReleaseMutex(void* hmutex) {
+int32_t backtraceWindowsSysReleaseMutex(void* hmutex) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -686,7 +686,7 @@ int32_t rustlangWindowsSysReleaseMutex(void* hmutex) {
 #endif
 }
 
-void rustlangWindowsSysRtlCaptureContext(void* contextrecord) {
+void backtraceWindowsSysRtlCaptureContext(void* contextrecord) {
 #ifdef _WIN32
     typedef void (__stdcall *km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -707,7 +707,7 @@ void rustlangWindowsSysRtlCaptureContext(void* contextrecord) {
 #endif
 }
 
-void* rustlangWindowsSysRtlLookupFunctionEntry(uint64_t controlpc, void* imagebase, void* historytable) {
+void* backtraceWindowsSysRtlLookupFunctionEntry(uint64_t controlpc, void* imagebase, void* historytable) {
 #ifdef _WIN32
     typedef void* (__stdcall *km_fn_t)(uint64_t, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -731,7 +731,7 @@ void* rustlangWindowsSysRtlLookupFunctionEntry(uint64_t controlpc, void* imageba
 #endif
 }
 
-void* rustlangWindowsSysRtlVirtualUnwind(uint32_t handlertype, uint64_t imagebase, uint64_t controlpc, void* functionentry, void* contextrecord, void* handlerdata, void* establisherframe, void* contextpointers) {
+void* backtraceWindowsSysRtlVirtualUnwind(uint32_t handlertype, uint64_t imagebase, uint64_t controlpc, void* functionentry, void* contextrecord, void* handlerdata, void* establisherframe, void* contextpointers) {
 #ifdef _WIN32
     typedef void* (__stdcall *km_fn_t)(uint32_t, uint64_t, uint64_t, void*, void*, void*, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -760,7 +760,7 @@ void* rustlangWindowsSysRtlVirtualUnwind(uint32_t handlertype, uint64_t imagebas
 #endif
 }
 
-uint32_t rustlangWindowsSysWaitForSingleObjectEx(void* hhandle, uint32_t dwmilliseconds, int32_t balertable) {
+uint32_t backtraceWindowsSysWaitForSingleObjectEx(void* hhandle, uint32_t dwmilliseconds, int32_t balertable) {
 #ifdef _WIN32
     typedef uint32_t (__stdcall *km_fn_t)(void*, uint32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
@@ -784,7 +784,7 @@ uint32_t rustlangWindowsSysWaitForSingleObjectEx(void* hhandle, uint32_t dwmilli
 #endif
 }
 
-int32_t rustlangWindowsSysWideCharToMultiByte(uint32_t codepage, uint32_t dwflags, void* lpwidecharstr, int32_t cchwidechar, void* lpmultibytestr, int32_t cbmultibyte, void* lpdefaultchar, void* lpuseddefaultchar) {
+int32_t backtraceWindowsSysWideCharToMultiByte(uint32_t codepage, uint32_t dwflags, void* lpwidecharstr, int32_t cchwidechar, void* lpmultibytestr, int32_t cbmultibyte, void* lpdefaultchar, void* lpuseddefaultchar) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(uint32_t, uint32_t, void*, int32_t, void*, int32_t, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
@@ -813,7 +813,7 @@ int32_t rustlangWindowsSysWideCharToMultiByte(uint32_t codepage, uint32_t dwflag
 #endif
 }
 
-int32_t rustlangWindowsSysLstrlenW(void* lpstring) {
+int32_t backtraceWindowsSysLstrlenW(void* lpstring) {
 #ifdef _WIN32
     typedef int32_t (__stdcall *km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;

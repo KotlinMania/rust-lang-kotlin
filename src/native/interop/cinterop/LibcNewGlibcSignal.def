@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.new.glibc.signal.cinterop
-headers = libc_new_glibc_signal_wrapper.h
-headerFilter = libc_new_glibc_signal_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = libc_new_glibc_signal_wrapper.a

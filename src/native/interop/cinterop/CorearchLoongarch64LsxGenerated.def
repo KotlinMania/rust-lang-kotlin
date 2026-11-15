@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.cinterop
-headers = corearch_loongarch64_lsx_generated_wrapper.h
-headerFilter = corearch_loongarch64_lsx_generated_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = corearch_loongarch64_lsx_generated_wrapper.a

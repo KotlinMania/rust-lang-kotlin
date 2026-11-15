@@ -1,15 +1,15 @@
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt
 
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.num.floatparse.FloatErrorKind
+import io.github.kotlinmania.rustlang.core.num.floatparse.ParseFloatError
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.BiasedFp
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.lemire.computeFloat
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.parse.parseInfNan
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.parse.parseNumber
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.slow.parseLongMantissa
+import io.github.kotlinmania.rustlang.core.num.imp.traits.FloatExt
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.num.floatparse.FloatErrorKind
-import io.github.kotlinmania.rustlang.num.floatparse.ParseFloatError
-import io.github.kotlinmania.rustlang.num.imp.traits.FloatExt
 
 public fun pfeEmpty(): ParseFloatError = ParseFloatError(kind = FloatErrorKind.Empty)
 
@@ -49,8 +49,12 @@ public fun <F : Lemire<F>> dec2flt(s: String): Result<F, ParseFloatError> {
                     val r = matchVal
                     r
                 }
-                matchVal == null && parseInfNan(s2, negative) != null -> { return Result.Ok(value) }
-                else -> { return Result.Err(pfeInvalid()) }
+                matchVal == null && parseInfNan(s2, negative) != null -> {
+                    return Result.Ok(value)
+                }
+                else -> {
+                    return Result.Err(pfeInvalid())
+                }
             }
         }
     num.negative = negative

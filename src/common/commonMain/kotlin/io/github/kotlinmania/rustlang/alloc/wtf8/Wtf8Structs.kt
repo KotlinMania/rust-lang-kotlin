@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.alloc.wtf8
 
-import io.github.kotlinmania.rustlang.collections.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.core.char.methods.encodeUtf8Raw
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -317,7 +317,11 @@ public open class Wtf8Buf(
                 pos = surrogatePos + 3
                 // Surrogates and the replacement character are all 3 bytes, so
                 // they can substituted in-place.
-                run { val dstTmp0 = this.bytes; val srcTmp0 = (("�").encodeToByteArray().map { it.toUByte() }); for (idxTmp0 in srcTmp0.indices) dstTmp0[(surrogatePos) + idxTmp0] = srcTmp0[idxTmp0] }
+                run {
+                    val dstTmp0 = this.bytes
+                    val srcTmp0 = (("�").encodeToByteArray().map { it.toUByte() })
+                    for (idxTmp0 in srcTmp0.indices) dstTmp0[(surrogatePos) + idxTmp0] = srcTmp0[idxTmp0]
+                }
             }
         }
         // SAFETY: Now `self.bytes` contains valid UTF-8.
@@ -428,25 +432,28 @@ public open class Wtf8Buf(
         public fun fromWide(v: List<UShort>): Wtf8Buf {
             val string = Wtf8Buf.withCapacity(v.size)
             for (item in Char.decodeUtf16(v.iter().cloned())) {
-                when (item) { is Result.Ok<*, *> -> {
-                    val ch = item.value
-                    string.pushChar(ch)
-                }; is Result.Err<*, *> -> {
-                    val surrogate = item.error
-                    val surrogate1 = surrogate.unpairedSurrogate()
-                    // SAFETY: Surrogates are known to be in the code point range.
-                    val codePoint = CodePoint.fromU32Unchecked(surrogate1.toUInt())
-                    // The string will now contain an unpaired surrogate.
-                    string.isKnownUtf8 = false
-                    // SAFETY: `decodeUtf16` reports only unpaired surrogates here,
-                    // so this code point cannot form a surrogate pair with the
-                    // preceding and succeeding contents. The existing buffer is
-                    // well-formed WTF-8, and appending this encoded surrogate
-                    // preserves that invariant.
-                    run {
-                        string.pushCodePointUnchecked(codePoint)
+                when (item) {
+                    is Result.Ok<*, *> -> {
+                        val ch = item.value
+                        string.pushChar(ch)
                     }
-                } }
+                    is Result.Err<*, *> -> {
+                        val surrogate = item.error
+                        val surrogate1 = surrogate.unpairedSurrogate()
+                        // SAFETY: Surrogates are known to be in the code point range.
+                        val codePoint = CodePoint.fromU32Unchecked(surrogate1.toUInt())
+                        // The string will now contain an unpaired surrogate.
+                        string.isKnownUtf8 = false
+                        // SAFETY: `decodeUtf16` reports only unpaired surrogates here,
+                        // so this code point cannot form a surrogate pair with the
+                        // preceding and succeeding contents. The existing buffer is
+                        // well-formed WTF-8, and appending this encoded surrogate
+                        // preserves that invariant.
+                        run {
+                            string.pushCodePointUnchecked(codePoint)
+                        }
+                    }
+                }
             }
             return string
         }

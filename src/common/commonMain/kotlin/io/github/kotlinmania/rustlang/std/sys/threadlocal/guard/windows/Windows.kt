@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.windows
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -11,11 +12,11 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.fence
-import io.github.kotlinmania.rustlang.process.abort
-import io.github.kotlinmania.rustlang.rt.threadCleanup
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.FLS_OUT_OF_INDEXES
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.sys.threadlocal.guard.key.run
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.rt.threadCleanup
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FLS_OUT_OF_INDEXES
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.run
 
 // Support for Windows TLS destructors.
 //
@@ -30,9 +31,9 @@ import io.github.kotlinmania.rustlang.sys.threadlocal.guard.key.run
 
 public typealias Key = UInt
 
-public fun create(dtor: PflsCallbackFunction): Key {
-    val keyResult = FlsAlloc(dtor)
-    if (keyResult == FLS_OUT_OF_INDEXES) {
+public fun create(dtor: c.PflsCallbackFunction): Key {
+    val keyResult = c.FlsAlloc(dtor)
+    if (keyResult == c.FLS_OUT_OF_INDEXES) {
         run {
             when (val matchVal = panicOutput()) {
                 null -> {}
@@ -51,8 +52,8 @@ public fun create(dtor: PflsCallbackFunction): Key {
 }
 
 public fun set(key: Key, ptr: ConstPtr) {
-    val result = FlsSetValue(key, ptr)
-    if (result == FALSE) {
+    val result = c.FlsSetValue(key, ptr)
+    if (result == c.FALSE) {
         run {
             when (val matchVal = panicOutput()) {
                 null -> {}
@@ -70,8 +71,8 @@ public fun set(key: Key, ptr: ConstPtr) {
 }
 
 public fun isThreadAFiber(): Boolean {
-    val res = IsThreadAFiber()
-    return (res == TRUE).toUByte()
+    val res = c.IsThreadAFiber()
+    return (res == c.TRUE).toUByte()
 }
 
 public var KEY: AtomicU32 = AtomicU32.new(FLS_OUT_OF_INDEXES)
@@ -202,7 +203,7 @@ public fun enable() {
                         // Miri has no DLL unloading so we can skip this step here.
                         if (!false) {
                             if (cleanupIsUnloadable()) {
-                                val res = atexit(::freeFlsKeyAtExit)
+                                val res = c.atexit(::freeFlsKeyAtExit)
                                 if (res != 0) {
                                     run {
                                         when (val matchVal1 = panicOutput()) {
@@ -223,7 +224,7 @@ public fun enable() {
                         newKey
                     }; is Result.Err<*, *> -> {
                         val otherKey = matchVal.error
-                        FlsFree(newKey)
+                        c.FlsFree(newKey)
                         otherKey
                     } }
                 }
@@ -254,15 +255,15 @@ public fun enable() {
 public fun cleanupIsUnloadable(): Boolean {
     // Get a handle to the module of `cleanup`.
     val cleanupModule = run {
-        val handle: Hmodule  = MutPtr(0L)
-        val res = GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS or GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, ConstPtr((constPtrFromRustCast(::cleanup)).rawAddress), handle)
-        if (res == FALSE || handle.isNull()) {
+        val handle: c.Hmodule  = MutPtr(0L)
+        val res = c.GetModuleHandleExW(c.GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS or c.GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, ConstPtr((constPtrFromRustCast(::cleanup)).rawAddress), handle)
+        if (res == c.FALSE || handle.isNull()) {
             return true
         }
         handle
     }
     // Get a handle to the file used to create the calling process (.exe file).
-    val mainExeModule = GetModuleHandleW(ConstPtr(0L))
+    val mainExeModule = c.GetModuleHandleW(ConstPtr(0L))
     if (mainExeModule.isNull()) {
         return true
     }
@@ -277,13 +278,13 @@ public fun freeFlsKeyAtExit() {
     if (!shouldFreeKey) {
         return
     }
-    val currentKey = KEY.swap(FLS_OUT_OF_INDEXES, Ordering.AcqRel)
-    if (currentKey != FLS_OUT_OF_INDEXES) {
+    val currentKey = KEY.swap(c.FLS_OUT_OF_INDEXES, Ordering.AcqRel)
+    if (currentKey != c.FLS_OUT_OF_INDEXES) {
         // Calling `FlsFree` will cause the OS to call the `cleanup` hook, in the current thread, *for each thread* (or fiber) with a value in this FLS slot.
         // `cleanup` is safe to run repeatedly: it only drains the current thread's TLS destructor list, and we check that we are not running in a fiber before doing so.
         // We only call this when no `enable` call is active, so it cannot race with `FlsSetValue` using this key.
         // Destructors of thread locals in other threads will not run and therefore leak, which is allowed since we are exiting or unloading.
-        FlsFree(currentKey)
+        c.FlsFree(currentKey)
     }
 }
 

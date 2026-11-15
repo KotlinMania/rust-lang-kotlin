@@ -1,12 +1,12 @@
 // port-lint: source float/add.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.add
 
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.MinInt
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.support.Float
-import io.github.kotlinmania.rustlang.support.Int
-import io.github.kotlinmania.rustlang.support.MinInt
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
 
 /**
  * Returns `a + b`
@@ -120,7 +120,7 @@ public fun <F : Float> add(a: F, b: F, fromBitsFFn: (ULong) -> F, normalizeFFn: 
         // If partial cancellation occurred, we need to left-shift the result
         // and adjust the exponent:
         if (aSignificand < implicitBit shl 3) {
-            val shift = rustLeadingZeros(aSignificand).toInt() - (implicitBit shl 3u.toInt()).leadingZeros().toInt()
+            val shift = aSignificand.leadingZeros().toInt() - (implicitBit shl 3u.toInt()).leadingZeros().toInt()
             aSignificand = aSignificand shl shift
             aExponent -= shift
         }

@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.corearch.simd
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -100,7 +100,7 @@ public fun <T> Simd<T, N>.asArray(n: Int): List<T> {
     // SAFETY: We can always read the prefix of a simd type as an array.
     // There might be more padding afterwards for some widths, but
     // that's not a problem for reading less than that.
-    return (ObjectSlotLayout<List<T>>()).readNative((arrayPtr).rawAddress)
+    return (UnresolvedTypeLayout<List<T>>()).readNative((arrayPtr).rawAddress)
 }
 
 // `@derive(Clone)` causes ICE "Projecting into SIMD type coreArch.simd.Simd is banned by MCP#838"
@@ -111,12 +111,12 @@ public fun <T> Simd<T, N>.eq(other: Simd<T, N>, n: Int): Boolean = this.asArray(
 public fun <T> Simd<T, N>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "Simd", this.asArray())
 
 public fun Simd<F16, N>.toBits(n: Int): Simd<UShort> {
-    check(sizeOf<Simd<F16, N>>(typeLayoutT = ObjectSlotLayout<Simd<F16, N>>()) == sizeOf<Simd<UShort>>(typeLayoutT = ObjectSlotLayout<Simd<UShort>>()))
+    check(sizeOf<Simd<F16, N>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16, N>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
     return transmuteCopy(this)
 }
 
 public fun Simd.Companion.fromBits(bits: Simd<UShort>, n: Int): Simd<F16, N> {
-    check(sizeOf<Simd<F16, N>>(typeLayoutT = ObjectSlotLayout<Simd<F16, N>>()) == sizeOf<Simd<UShort>>(typeLayoutT = ObjectSlotLayout<Simd<UShort>>()))
+    check(sizeOf<Simd<F16, N>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16, N>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
     return transmuteCopy(bits)
 }
 
@@ -187,7 +187,7 @@ public fun <T> SimdM<T, N>.asArray(n: Int): List<T> {
     // SAFETY: We can always read the prefix of a simd type as an array.
     // There might be more padding afterwards for some widths, but
     // that's not a problem for reading less than that.
-    return (ObjectSlotLayout<List<T>>()).readNative((arrayPtr).rawAddress)
+    return (UnresolvedTypeLayout<List<T>>()).readNative((arrayPtr).rawAddress)
 }
 
 // `@derive(Clone)` causes ICE "Projecting into SIMD type coreArch.simd.SimdM is banned by MCP#838"

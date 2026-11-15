@@ -4,4 +4,6 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.int.leadingzeros.clzdi2
 /**
  * Returns the number of leading binary zeros in `x`
  */
-public fun clzdi2(x: ULong): Int = io.github.kotlinmania.rustlang.int.leadingzeros.clzdi2(x)
+public fun clzdi2(x: ULong): Int =
+    io.github.kotlinmania.rustlang.compilerbuiltins.int.leadingzeros
+        .clzdi2(x)

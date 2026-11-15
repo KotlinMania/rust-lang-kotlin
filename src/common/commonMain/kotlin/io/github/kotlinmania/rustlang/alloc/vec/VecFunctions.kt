@@ -1,12 +1,12 @@
 package io.github.kotlinmania.rustlang.alloc.vec
 
-import io.github.kotlinmania.rustlang.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
+import io.github.kotlinmania.rustlang.core.num.trailingZeros
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public fun <T> dedupSimdChunkSize(typeLayoutT: TypeLayout<T>): Int? {
@@ -15,9 +15,10 @@ public fun <T> dedupSimdChunkSize(typeLayoutT: TypeLayout<T>): Int? {
     val size = sizeOf<T>(typeLayoutT = typeLayoutT)
     // We only have SIMD implementations for these element sizes.
     if (!when (size) {
-        1, 2, 4, 8 -> true
-        else -> false
-    }) {
+            1, 2, 4, 8 -> true
+            else -> false
+        }
+    ) {
         return null
     }
     val simdWidth: Int? = SIMD_WIDTH
@@ -44,7 +45,7 @@ public fun <T> findFirstDuplicate(v: List<T>, chunkSize: Int): Int? {
             mask = mask or ((eq.toUInt()) shl j.toInt())
         }
         if (mask != 0u) {
-            return start + rustTrailingZeros(mask).toInt()
+            return start + mask.trailingZeros().toInt()
         }
         return null
     }
@@ -103,7 +104,7 @@ public fun <T> findFirstDuplicate(v: List<T>, chunkSize: Int): Int? {
 // time when we didn't have the ability to gate internal methods used by public macros.
 // NOTE: the real deprecation version is the same as the stabilization version.
 // I.e. it should never have been used even in version 1.0.
-public fun <T> fromElem(elem: T, n: Int): Vec<T> = io.github.kotlinmania.rustlang.vec.fromElemGlobal(elem, n)
+public fun <T> fromElem(elem: T, n: Int): Vec<T> = fromElemGlobal(elem, n)
 
 public fun <T> fromElemGlobal(elem: T, n: Int, fromElemTFn: (T, Int, Any?) -> Vec<T>): Vec<T> = fromElemTFn(elem, n, Global)
 

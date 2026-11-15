@@ -1,6 +1,5 @@
 package io.github.kotlinmania.rustlang.libc.windows
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
@@ -11,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.*
 
 public fun interface QsortComparCallback {
     public operator fun invoke(arg0: ConstPtr, arg1: ConstPtr): CInt
@@ -356,9 +356,9 @@ public expect fun putenv(envstring: ConstPtr): CInt
 
 public expect fun wputenv(envstring: ConstPtr): CInt
 
-public expect fun putenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.windows.ErrnoT
+public expect fun putenvS(envstring: ConstPtr, valueString: ConstPtr): ErrnoT
 
-public expect fun wputenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.windows.ErrnoT
+public expect fun wputenvS(envstring: ConstPtr, valueString: ConstPtr): ErrnoT
 
 public expect fun listen(s: Socket, backlog: CInt): CInt
 

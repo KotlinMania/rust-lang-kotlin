@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.core.F16
  * Calculates the absolute value (magnitude) of the argument `x`,
  * by direct manipulation of the bit representation of `x`.
  */
-public fun fabsf16(x: F16): F16 = io.github.kotlinmania.rustlang.math.fabs.fabs(x.toDouble())
+public fun fabsf16(x: F16): F16 = io.github.kotlinmania.rustlang.libm.math.generic.fabs(x.toDouble())
 
 /**
  * Absolute value (magnitude) (f32)
@@ -18,7 +18,7 @@ public fun fabsf16(x: F16): F16 = io.github.kotlinmania.rustlang.math.fabs.fabs(
  * Calculates the absolute value (magnitude) of the argument `x`,
  * by direct manipulation of the bit representation of `x`.
  */
-public fun fabsf(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.math.fabs.fabs(x.toDouble())
+public fun fabsf(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.libm.math.generic.fabs(x.toDouble())
 
 /**
  * Absolute value (magnitude) (f64)
@@ -26,7 +26,7 @@ public fun fabsf(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang
  * Calculates the absolute value (magnitude) of the argument `x`,
  * by direct manipulation of the bit representation of `x`.
  */
-public fun fabs(x: Double): Double = io.github.kotlinmania.rustlang.math.fabs.fabs(x)
+public fun fabs(x: Double): Double = io.github.kotlinmania.rustlang.libm.math.generic.fabs(x)
 
 /**
  * Absolute value (magnitude) (f128)
@@ -34,4 +34,4 @@ public fun fabs(x: Double): Double = io.github.kotlinmania.rustlang.math.fabs.fa
  * Calculates the absolute value (magnitude) of the argument `x`,
  * by direct manipulation of the bit representation of `x`.
  */
-public fun fabsf128(x: F128): F128 = io.github.kotlinmania.rustlang.math.fabs.fabs(x.toDouble())
+public fun fabsf128(x: F128): F128 = io.github.kotlinmania.rustlang.libm.math.generic.fabs(x.toDouble())

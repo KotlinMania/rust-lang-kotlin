@@ -44,6 +44,7 @@ public sealed class GetDisjointMutError {
      * An index provided was out-of-bounds for the slice.
      */
     public data object IndexOutOfBounds : GetDisjointMutError()
+
     /**
      * Two indices provided were overlapping.
      */
@@ -57,7 +58,10 @@ public sealed class GetDisjointMutError {
                 GetDisjointMutError.IndexOutOfBounds -> "an index is out of bounds"
                 GetDisjointMutError.OverlappingIndices -> "there were overlapping indices"
             }
-        return run { f.append((msg).toString()); Result.Ok(Unit) }
+        return run {
+            f.append((msg).toString())
+            Result.Ok(Unit)
+        }
     }
 }
 

@@ -3,3 +3,5 @@ headers = km_core_intrinsics_inline.h km_core_llvm_asm.h
 headerFilter = km_core_intrinsics_inline.h km_core_llvm_asm.h
 compilerOpts = -O2 -Isrc/native/interop/cinterop
 staticLibraries = kmcore_wrapper.a
+linkerOpts.linux = -lm
+linkerOpts.android = -lm

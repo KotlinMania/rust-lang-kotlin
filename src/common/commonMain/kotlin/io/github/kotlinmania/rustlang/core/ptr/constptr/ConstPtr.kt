@@ -1,34 +1,34 @@
 // port-lint: source ptr/const_ptr.rs
 package io.github.kotlinmania.rustlang.core.ptr.constptr
 
-import io.github.kotlinmania.rustlang.cmp.Ordering
-import io.github.kotlinmania.rustlang.cmp.Ordering.Equal
-import io.github.kotlinmania.rustlang.cmp.Ordering.Greater
-import io.github.kotlinmania.rustlang.cmp.Ordering.Less
-import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.intrinsics.alignOf
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.ptr.alignOffset
-import io.github.kotlinmania.rustlang.ptr.copy
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.ptr.metadata.fromRawParts
-import io.github.kotlinmania.rustlang.ptr.metadata.metadata
-import io.github.kotlinmania.rustlang.ptr.read
-import io.github.kotlinmania.rustlang.ptr.readUnaligned
-import io.github.kotlinmania.rustlang.ptr.readVolatile
-import io.github.kotlinmania.rustlang.ptr.sliceFromRawParts
-import io.github.kotlinmania.rustlang.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.ptr.alignOffset
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts
+import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
+import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
+import io.github.kotlinmania.rustlang.core.ptr.readVolatile
+import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
+import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 
 /**
  * # Examples
@@ -98,8 +98,8 @@ public fun <U> ConstPtr.tryCastAligned(typeLayoutU: TypeLayout<U>): ConstPtr? =
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * @feature(setPtrValue)
@@ -109,7 +109,7 @@ public fun <U> ConstPtr.tryCastAligned(typeLayoutU: TypeLayout<U>): ConstPtr? =
  *     val thin = ConstPtr(ptr.rawAddress, ptr.rawMeta)
  *     run {
  *         ptr = ConstPtr((thin).rawAddress + ((8).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf(ptr)
- *         println("${(ObjectSlotLayout<Any>()).readNative((ptr).rawAddress)}")
+ *         println("${(UnresolvedTypeLayout<Any>()).readNative((ptr).rawAddress)}")
  *         // will print "3"
  *     }
  * }
@@ -140,7 +140,7 @@ public fun <U> ConstPtr.tryCastAligned(typeLayoutU: TypeLayout<U>): ConstPtr? =
  * }
  * ```
  */
-public fun ConstPtr.withMetadataOf(meta: ConstPtr): ConstPtr = rawSliceList(ConstPtr(this.rawAddress, this.rawMeta), metadata(meta).toInt(), PrimitiveLayouts.UNIT)
+public fun ConstPtr.withMetadataOf(meta: ConstPtr): ConstPtr = linearSliceView(ConstPtr(this.rawAddress, this.rawMeta), metadata(meta).toInt(), PrimitiveLayouts.UNIT)
 
 /**
  * Changes constness without changing the type.
@@ -326,7 +326,7 @@ public fun <T> ConstPtr.asUninitRef(typeLayoutT: TypeLayout<T>): MaybeUninit<T>?
     return if (((this).rawAddress == 0L)) {
         null
     } else {
-        (ObjectSlotLayout<MaybeUninit<T>>()).readNative(((ConstPtr(this.rawAddress, this.rawMeta))).rawAddress)
+        (UnresolvedTypeLayout<MaybeUninit<T>>()).readNative(((ConstPtr(this.rawAddress, this.rawMeta))).rawAddress)
     }
 }
 
@@ -353,7 +353,7 @@ public fun <T> ConstPtr.offset(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr
     fun runtimeOffsetNowrap(thisRef: ConstPtr, count1: Int, size: Int): Boolean {
         // We can use constEvalSelect here because this is only for UB checks.
         return run {
-            val byteOffset = rustCheckedMul(count1, size) ?: return false
+            val byteOffset = count1.checkedMul(size) ?: return false
             val (_, overflow) = (thisRef).rawAddress.toInt().overflowingAddSigned(byteOffset)
             !overflow
         }
@@ -781,7 +781,7 @@ public fun ConstPtr.guaranteedNe(other: ConstPtr): Boolean? =
 public fun <T> ConstPtr.add(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr {
     fun runtimeAddNowrap(thisRef: ConstPtr, count1: Int, size: Int): Boolean {
         return run {
-            val byteOffset = rustCheckedMul(count1, size) ?: return false
+            val byteOffset = count1.checkedMul(size) ?: return false
             val (_, overflow) = (thisRef).rawAddress.toInt().overflowingAdd(byteOffset)
             byteOffset <= (Int.MAX_VALUE) && !overflow
         }
@@ -833,7 +833,7 @@ public fun ConstPtr.byteAdd(count: Int): ConstPtr {
 public fun <T> ConstPtr.sub(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr {
     fun runtimeSubNowrap(thisRef: ConstPtr, count1: Int, size: Int): Boolean {
         return run {
-            val byteOffset = rustCheckedMul(count1, size) ?: return false
+            val byteOffset = count1.checkedMul(size) ?: return false
             byteOffset <= (Int.MAX_VALUE) && (thisRef).rawAddress.toInt() >= byteOffset
         }
     }
@@ -845,7 +845,7 @@ public fun <T> ConstPtr.sub(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr {
         // SAFETY: the caller must uphold the safety contract for `offset`.
         // Because the pointee is *not* a ZST, that means that `count` is
         // at most `Long.MAX`, and thus the negation cannot overflow.
-        ConstPtr(this.rawAddress + (uncheckedSub(0, count)).toLong() * 1L)
+        ConstPtr(this.rawAddress + (((0) - (count))).toLong() * 1L)
     }
 }
 
@@ -999,7 +999,7 @@ public fun ConstPtr.wrappingByteAdd(count: Int): ConstPtr = ConstPtr((ConstPtr((
  * }
  * ```
  */
-public fun <T> ConstPtr.wrappingSub(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr = ConstPtr((this).rawAddress + ((rustWrappingNeg((count))).toLong() * (typeLayoutT).strideBytes))
+public fun <T> ConstPtr.wrappingSub(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr = ConstPtr((this).rawAddress + (((count).wrappingNeg()).toLong() * (typeLayoutT).strideBytes))
 
 /**
  * Subtracts an unsigned offset in bytes from a pointer using wrapping arithmetic.
@@ -1391,7 +1391,8 @@ public fun <T> ConstPtr.asUninitSlice(): List<MaybeUninit<T>>? =
         null
     } else {
         // SAFETY: the caller must uphold the safety contract for `asUninitSlice`.
-        io.github.kotlinmania.rustlang.slice.raw.fromRawParts(ConstPtr(this.rawAddress, this.rawMeta), this.len())
+        io.github.kotlinmania.rustlang.core.slice.raw
+            .fromRawParts(ConstPtr(this.rawAddress, this.rawMeta), this.len())
     }
 
 /**
@@ -1464,13 +1465,13 @@ public fun ConstPtr.cmp(other: ConstPtr): Ordering =
  */
 public fun ConstPtr.partialCmp(other: ConstPtr): Ordering? = this.cmp(other)
 
-public fun <T> ConstPtr.lt(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (compareNaturalOrder((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) < 0)
+public fun <T> ConstPtr.lt(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) < 0)
 
-public fun <T> ConstPtr.le(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (compareNaturalOrder((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) <= 0)
+public fun <T> ConstPtr.le(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) <= 0)
 
-public fun <T> ConstPtr.gt(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (compareNaturalOrder((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) > 0)
+public fun <T> ConstPtr.gt(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) > 0)
 
-public fun <T> ConstPtr.ge(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (compareNaturalOrder((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) >= 0)
+public fun <T> ConstPtr.ge(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) >= 0)
 
 /**
  * Returns the default value of [`nullVal`][ptr.nullVal].

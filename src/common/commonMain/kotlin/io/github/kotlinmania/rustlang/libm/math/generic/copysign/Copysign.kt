@@ -1,7 +1,7 @@
 // port-lint: source math/generic/copysign.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.copysign
 
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 
 /**
  * Copy the sign of `y` to `x`.

@@ -6,9 +6,12 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.node.ForceResult.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Handle
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.LeftOrRight.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.NodeRef
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker
-import io.github.kotlinmania.rustlang.collections.btree.node.Internal
-import io.github.kotlinmania.rustlang.collections.btree.node.Leaf
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Edge
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Internal
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.KV
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.LeafOrInternal
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Mut
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -18,19 +21,19 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * a root node that is internal, which the caller should pop from the map
  * holding the tree. The caller should also decrement the map's length.
  */
-public fun <K, V, A : AllocatorClone> Handle<NodeRef<marker.Mut, K, V, marker.LeafOrInternal>, marker.KV>.removeKvTracking(handleEmptiedInternalRoot: () -> Unit, alloc: A): Pair<Pair<K, V>, Handle<NodeRef<marker.Mut, K, V, marker.Leaf>, marker.Edge>> =
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.removeKvTracking(handleEmptiedInternalRoot: () -> Unit, alloc: A): Pair<Pair<K, V>, Handle<NodeRef<Mut, K, V, Leaf>, Edge>> =
     when (val matchVal = this.force()) {
-        is Leaf -> {
+        is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf -> {
             val (node) = matchVal
             node.removeLeafKv(handleEmptiedInternalRoot, alloc)
         }
-        is Internal -> {
+        is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal -> {
             val (node1) = matchVal
             node1.removeInternalKv(handleEmptiedInternalRoot, alloc)
         }
     }
 
-public fun <K, V, A : AllocatorClone> Handle<NodeRef<marker.Mut, K, V, marker.Leaf>, marker.KV>.removeLeafKv(handleEmptiedInternalRoot: () -> Unit, alloc: A): Pair<Pair<K, V>, Handle<NodeRef<marker.Mut, K, V, marker.Leaf>, marker.Edge>> {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.removeLeafKv(handleEmptiedInternalRoot: () -> Unit, alloc: A): Pair<Pair<K, V>, Handle<NodeRef<Mut, K, V, Leaf>, Edge>> {
     var (oldKv, pos) = this.remove()
     val len = pos.reborrow().intoNode().len()
     if (len < MIN_LEN) {
@@ -88,11 +91,16 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<marker.Mut, K, V, marker.Le
     return Pair(oldKv, pos)
 }
 
-public fun <K, V, A : AllocatorClone> Handle<NodeRef<marker.Mut, K, V, marker.Internal>, marker.KV>.removeInternalKv(handleEmptiedInternalRoot: () -> Unit, alloc: A): Pair<Pair<K, V>, Handle<NodeRef<marker.Mut, K, V, marker.Leaf>, marker.Edge>> {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, KV>.removeInternalKv(handleEmptiedInternalRoot: () -> Unit, alloc: A): Pair<Pair<K, V>, Handle<NodeRef<Mut, K, V, Leaf>, Edge>> {
     // Remove an adjacent KV from its leaf and then put it back in place of
     // the element we were asked to remove. Prefer the left adjacent KV,
     // for the reasons listed in `chooseParentKv`.
-    val leftLeafKv = this.leftEdge().descend().lastLeafEdge().leftKv()
+    val leftLeafKv =
+        this
+            .leftEdge()
+            .descend()
+            .lastLeafEdge()
+            .leftKv()
     // ignore-tidy-undocumented-unchecked
     val leftLeafKv1 = leftLeafKv.ok().unwrapUnchecked()
     val (leftKv, leftHole) = leftLeafKv1.removeLeafKv(handleEmptiedInternalRoot, alloc)

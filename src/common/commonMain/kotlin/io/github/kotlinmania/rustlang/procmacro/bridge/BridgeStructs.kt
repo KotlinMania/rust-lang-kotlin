@@ -1,17 +1,18 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
-import io.github.kotlinmania.rustlang.Delimiter
-import io.github.kotlinmania.rustlang.Span
-import io.github.kotlinmania.rustlang.TokenStream
-import io.github.kotlinmania.rustlang.bridge.closure.Closure
-import io.github.kotlinmania.rustlang.bridge.symbol.Symbol
+import io.github.kotlinmania.rustlang.core.marker.PhantomData
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.diagnostic.Level
+import io.github.kotlinmania.rustlang.procmacro.Delimiter
+import io.github.kotlinmania.rustlang.procmacro.Span
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
+import io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream
+import io.github.kotlinmania.rustlang.procmacro.bridge.closure.Closure
 import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Encode
+import io.github.kotlinmania.rustlang.procmacro.bridge.symbol.Symbol
+import io.github.kotlinmania.rustlang.procmacro.diagnostic.Level
 
 public open class Methods {
     public companion object {
@@ -62,7 +63,7 @@ public open class Marked<T, M>(
     public override fun unmark(): T = this.value
 
     public companion object {
-        public fun <T, M> mark(unmarked: T): Marked<T, M> = Marked(value = unmarked, marker = marker.PhantomData)
+        public fun <T, M> mark(unmarked: T): Marked<T, M> = Marked(value = unmarked, marker = PhantomData)
     }
 }
 

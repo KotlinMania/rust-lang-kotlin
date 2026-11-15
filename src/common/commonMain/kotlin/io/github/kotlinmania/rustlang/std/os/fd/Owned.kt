@@ -1,40 +1,40 @@
 // port-lint: source os/fd/owned.rs
 package io.github.kotlinmania.rustlang.std.os.fd
 
-import io.github.kotlinmania.rustlang.Rc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.fs.File
-import io.github.kotlinmania.rustlang.io.pipe.PipeReader
-import io.github.kotlinmania.rustlang.io.pipe.PipeWriter
-import io.github.kotlinmania.rustlang.io.stdio.IsTerminal
-import io.github.kotlinmania.rustlang.io.stdio.Stderr
-import io.github.kotlinmania.rustlang.io.stdio.StderrLock
-import io.github.kotlinmania.rustlang.io.stdio.Stdin
-import io.github.kotlinmania.rustlang.io.stdio.StdinLock
-import io.github.kotlinmania.rustlang.io.stdio.Stdout
-import io.github.kotlinmania.rustlang.io.stdio.StdoutLock
 import io.github.kotlinmania.rustlang.libc.close
 import io.github.kotlinmania.rustlang.libc.fcntl
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.F_DUPFD_CLOEXEC
-import io.github.kotlinmania.rustlang.net.tcp.TcpListener
-import io.github.kotlinmania.rustlang.net.tcp.TcpStream
-import io.github.kotlinmania.rustlang.net.udp.UdpSocket
+import io.github.kotlinmania.rustlang.std.Rc
+import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
+import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
+import io.github.kotlinmania.rustlang.std.io.stdio.IsTerminal
+import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
+import io.github.kotlinmania.rustlang.std.io.stdio.StderrLock
+import io.github.kotlinmania.rustlang.std.io.stdio.Stdin
+import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
+import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
+import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
+import io.github.kotlinmania.rustlang.std.net.tcp.TcpListener
+import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
+import io.github.kotlinmania.rustlang.std.net.udp.UdpSocket
 import io.github.kotlinmania.rustlang.std.os.raw.AsRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.RawFd
-import io.github.kotlinmania.rustlang.sync.Arc
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.fs.unix.debugAssertFdIsOpen
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sync.Arc
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.debugAssertFdIsOpen
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 // Owned and borrowed Unix-like file descriptors.
 
@@ -121,7 +121,7 @@ public open class BorrowedFd internal constructor(
         val cmd = F_DUPFD_CLOEXEC
         // Avoid using file descriptors below 3 as they are used for stdio
         val fd = when (val tryResult = cvt(fcntl(this.asRawFd(), cmd, 3))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        return Result.Ok(OwnedFd.fromRawFd(fd, fieldLayout = ObjectSlotLayout<NotAllOnes<RawFd>>()))
+        return Result.Ok(OwnedFd.fromRawFd(fd, fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawFd>>()))
     }
 
     public override fun asRawFd(): RawFd = this.fd.asInner()
@@ -130,15 +130,15 @@ public open class BorrowedFd internal constructor(
         DebugStruct(f, "BorrowedFd").field("fd", this.fd).finish()
     }
 
-    public override fun isTerminal(): Boolean = IsTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public override fun asFd(): BorrowedFd = this
 
     public open fun asRef(): File {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<File>(typeLayoutT = ObjectSlotLayout<File>()))
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<File>(typeLayoutT = UnresolvedTypeLayout<File>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = UnresolvedTypeLayout<BorrowedFd>()))
         }
         typeCheck<File>()
         return transmute(this)
@@ -147,8 +147,8 @@ public open class BorrowedFd internal constructor(
     public open fun asRefTcpStream(): TcpStream {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<TcpStream>(typeLayoutT = ObjectSlotLayout<TcpStream>()))
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<TcpStream>(typeLayoutT = UnresolvedTypeLayout<TcpStream>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = UnresolvedTypeLayout<BorrowedFd>()))
         }
         typeCheck<TcpStream>()
         return transmute(this)
@@ -157,8 +157,8 @@ public open class BorrowedFd internal constructor(
     public open fun asRefTcpListener(): TcpListener {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<TcpListener>(typeLayoutT = ObjectSlotLayout<TcpListener>()))
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<TcpListener>(typeLayoutT = UnresolvedTypeLayout<TcpListener>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = UnresolvedTypeLayout<BorrowedFd>()))
         }
         typeCheck<TcpListener>()
         return transmute(this)
@@ -167,8 +167,8 @@ public open class BorrowedFd internal constructor(
     public open fun asRefUdpSocket(): UdpSocket {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<UdpSocket>(typeLayoutT = ObjectSlotLayout<UdpSocket>()))
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<UdpSocket>(typeLayoutT = UnresolvedTypeLayout<UdpSocket>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = UnresolvedTypeLayout<BorrowedFd>()))
         }
         typeCheck<UdpSocket>()
         return transmute(this)
@@ -177,8 +177,8 @@ public open class BorrowedFd internal constructor(
     public open fun asRefPipeWriter(): PipeWriter {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<PipeWriter>(typeLayoutT = ObjectSlotLayout<PipeWriter>()))
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<PipeWriter>(typeLayoutT = UnresolvedTypeLayout<PipeWriter>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = UnresolvedTypeLayout<BorrowedFd>()))
         }
         typeCheck<PipeWriter>()
         return transmute(this)
@@ -187,8 +187,8 @@ public open class BorrowedFd internal constructor(
     public open fun asRefPipeReader(): PipeReader {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<PipeReader>(typeLayoutT = ObjectSlotLayout<PipeReader>()))
-            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<PipeReader>(typeLayoutT = UnresolvedTypeLayout<PipeReader>()))
+            check(sizeOf<RawFd>(typeLayoutT = UnresolvedTypeLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = UnresolvedTypeLayout<BorrowedFd>()))
         }
         typeCheck<PipeReader>()
         return transmute(this)
@@ -278,7 +278,7 @@ public open class OwnedFd internal constructor(
         DebugStruct(f, "OwnedFd").field("fd", this.fd).finish()
     }
 
-    public override fun isTerminal(): Boolean = IsTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public override fun asFd(): BorrowedFd {
         // Safety: `OwnedFd` and `BorrowedFd` have the same validity

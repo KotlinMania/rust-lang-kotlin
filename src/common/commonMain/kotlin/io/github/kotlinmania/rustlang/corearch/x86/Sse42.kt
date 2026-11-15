@@ -3,12 +3,11 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.U8x16
-import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 
 // Streaming SIMD Extensions 4.2 (SSE4.2)
 //
@@ -488,7 +487,7 @@ public fun mmCrc32U32(crc: UInt, v: UInt): UInt = crc323232(crc, v)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epi64)
  */
-public fun mmCmpgtEpi64(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); val res = (ObjectSlotLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); res } })
+public fun mmCmpgtEpi64(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x2>()).alignBytes)); res } })
 
 // SSE 4.2 string and text comparison ops
 public expect fun pcmpestrm128(a: I8x16, la: Int, b: I8x16, lb: Int, imm8: Byte): U8x16

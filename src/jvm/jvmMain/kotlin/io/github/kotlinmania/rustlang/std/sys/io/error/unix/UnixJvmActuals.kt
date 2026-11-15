@@ -5,7 +5,7 @@ package io.github.kotlinmania.rustlang.std.sys.io.error.unix
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object StdSysIoErrorUnixJniBridge {
+private object SysIoErrorUnixJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -41,8 +41,8 @@ private object StdSysIoErrorUnixJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = StdSysIoErrorUnixJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/std/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = SysIoErrorUnixJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -59,20 +59,20 @@ private object StdSysIoErrorUnixJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangStdSysIoErrorUnixGetLIBCERRNO(): Int
+    external fun stdSysIoErrorUnixGetLIBCERRNO(): Int
 
     @JvmStatic
-    external fun rustlangStdSysIoErrorUnixSetLIBCERRNO(value: Int)
+    external fun stdSysIoErrorUnixSetLIBCERRNO(value: Int)
 
     @JvmStatic
-    external fun rustlangStdSysIoErrorUnixErrnoLocation(): Long
+    external fun stdSysIoErrorUnixErrnoLocation(): Long
 }
 
 public actual var LIBC_ERRNO: io.github.kotlinmania.rustlang.libc.CInt
-    get() = StdSysIoErrorUnixJniBridge.rustlangStdSysIoErrorUnixGetLIBCERRNO()
+    get() = SysIoErrorUnixJniBridge.stdSysIoErrorUnixGetLIBCERRNO()
     set(value) {
-        StdSysIoErrorUnixJniBridge.rustlangStdSysIoErrorUnixSetLIBCERRNO(value)
+        SysIoErrorUnixJniBridge.stdSysIoErrorUnixSetLIBCERRNO(value)
     }
 
 public actual fun errnoLocation(): MutPtr =
-    MutPtr(StdSysIoErrorUnixJniBridge.rustlangStdSysIoErrorUnixErrnoLocation())
+    MutPtr(SysIoErrorUnixJniBridge.stdSysIoErrorUnixErrnoLocation())

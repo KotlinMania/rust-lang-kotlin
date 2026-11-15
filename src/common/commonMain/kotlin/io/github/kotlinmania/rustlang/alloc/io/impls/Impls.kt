@@ -1,7 +1,10 @@
 // port-lint: source io/impls.rs
 package io.github.kotlinmania.rustlang.alloc.io.impls
 
-import io.github.kotlinmania.rustlang.collections.vecdeque.VecDeque
+import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
+import io.github.kotlinmania.rustlang.alloc.fmt.Arguments
+import io.github.kotlinmania.rustlang.alloc.io.Error
+import io.github.kotlinmania.rustlang.alloc.io.read.appendToString
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
@@ -11,9 +14,6 @@ import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
 import io.github.kotlinmania.rustlang.core.io.sizehint.SizeHint
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.fmt.Arguments
-import io.github.kotlinmania.rustlang.io.Error
-import io.github.kotlinmania.rustlang.io.read.appendToString
 
 public fun <T> T.lowerBound(): Int = SizeHint.lowerBound(this)
 
@@ -61,7 +61,11 @@ public fun List<UByte>.read(buf: MutableList<UByte>): Result<Int> {
     if (amt == 1) {
         buf[0] = a[0]
     } else {
-        run { val dstTmp0 = buf; val srcTmp0 = a; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
+        run {
+            val dstTmp0 = buf
+            val srcTmp0 = a
+            for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
+        }
     }
     this = b
     return Result.Ok(amt)
@@ -78,7 +82,11 @@ public fun List<UByte>.readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> {
 public fun List<UByte>.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
     var nread = 0
     for (buf in bufs) {
-        nread += when (val tryResult = this.read(buf)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        nread +=
+            when (val tryResult = this.read(buf)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         if (this.isEmpty()) {
             break
         }
@@ -102,7 +110,11 @@ public fun List<UByte>.readExact(buf: MutableList<UByte>): Result<Unit> {
     if (buf.size == 1) {
         buf[0] = a[0]
     } else {
-        run { val dstTmp1 = buf; val srcTmp1 = a; for (idxTmp1 in srcTmp1.indices) dstTmp1[idxTmp1] = srcTmp1[idxTmp1] }
+        run {
+            val dstTmp1 = buf
+            val srcTmp1 = a
+            for (idxTmp1 in srcTmp1.indices) dstTmp1[idxTmp1] = srcTmp1[idxTmp1]
+        }
     }
     this = b
     return Result.Ok(Unit)
@@ -123,19 +135,35 @@ public fun List<UByte>.readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit>
 
 public fun List<UByte>.readToEnd(buf: List<UByte>): Result<Int> {
     val len = this.size
-    when (val tryResult = buf.tryReserve(len)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = buf.tryReserve(len)) {
+        is Result.Ok<*, *> -> tryResult.value
+        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+    }
     run {
-        when (val tryResult = buf.tryExtendFromSliceOfBytes(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = buf.tryExtendFromSliceOfBytes(this)) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
     } * this = ((this).subList(len, (this).size))
     return Result.Ok(len)
 }
 
 public fun List<UByte>.readToString(buf: String): Result<Int> {
-    val content = when (val tryResult = String.fromUtf8(this).mapErr({ Error.INVALID_UTF8 })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val content =
+        when (val tryResult = String.fromUtf8(this).mapErr({ Error.INVALID_UTF8 })) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
     val len = this.size
-    when (val tryResult = buf.tryReserve(len)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = buf.tryReserve(len)) {
+        is Result.Ok<*, *> -> tryResult.value
+        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+    }
     run {
-        when (val tryResult = buf.tryPushStr(content)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = buf.tryPushStr(content)) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
     } * this = ((this).subList(len, (this).size))
     return Result.Ok(len)
 }
@@ -151,15 +179,24 @@ public fun List<UByte>.consume(amt: Int) {
  * The vector will grow as needed.
  */
 public fun <A : Allocator> List<UByte>.write(buf: List<UByte>): Result<Int> {
-    when (val tryResult = List.writeAll(this, buf)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = List.writeAll(this, buf)) {
+        is Result.Ok<*, *> -> tryResult.value
+        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+    }
     return Result.Ok(buf.size)
 }
 
 public fun <A : Allocator> List<UByte>.writeVectored(bufs: List<IoSlice>): Result<Int> {
     val len = bufs.map({ b -> b.len() }).sum()
-    when (val tryResult = this.tryReserve(len)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = this.tryReserve(len)) {
+        is Result.Ok<*, *> -> tryResult.value
+        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+    }
     for (buf in bufs) {
-        when (val tryResult = List.writeAll(this, buf)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = List.writeAll(this, buf)) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
     }
     return Result.Ok(len)
 }
@@ -167,12 +204,18 @@ public fun <A : Allocator> List<UByte>.writeVectored(bufs: List<IoSlice>): Resul
 public fun <A : Allocator> List<UByte>.isWriteVectored(): Boolean = true
 
 public fun <A : Allocator> List<UByte>.writeAll(buf: List<UByte>): Result<Unit> {
-    when (val tryResult = this.tryExtendFromSliceOfBytes(buf)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = this.tryExtendFromSliceOfBytes(buf)) {
+        is Result.Ok<*, *> -> tryResult.value
+        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+    }
     return Result.Ok(Unit)
 }
 
 public fun <A : Allocator> List<UByte>.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> {
-    when (val tryResult = this.writeVectored(bufs)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = this.writeVectored(bufs)) {
+        is Result.Ok<*, *> -> tryResult.value
+        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+    }
     return Result.Ok(Unit)
 }
 
@@ -181,6 +224,7 @@ public fun <A : Allocator> List<UByte>.flush(): Result<Unit> = Result.Ok(Unit)
 /**
  * Read is implemented for `VecDeque<UByte>` by consuming bytes from the front of the `VecDeque`.
  */
+
 /**
  * Fill `buf` with the contents of the "front" slice as returned by
  * [`asSlices`][VecDeque.asSlices]. If the contained byte slices of the `VecDeque` are
@@ -188,7 +232,11 @@ public fun <A : Allocator> List<UByte>.flush(): Result<Unit> = Result.Ok(Unit)
  */
 public fun <A : Allocator> VecDeque<UByte, A>.read(buf: MutableList<UByte>): Result<Int> {
     var (front, _) = this.asSlices()
-    val n = when (val tryResult = front.read(buf)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val n =
+        when (val tryResult = front.read(buf)) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
     this.drain(0 until n)
     return Result.Ok(n)
 }
@@ -198,7 +246,12 @@ public fun <A : Allocator> VecDeque<UByte, A>.readExact(buf: MutableList<UByte>)
     // Use only the front buffer if it is big enough to fill `buf`, else use
     // the back buffer too.
     when (val matchVal = buf.splitAtMutChecked(front.len())) {
-        null -> run { val dstTmp2 = buf; val srcTmp2 = front[0 until buf.size]; for (idxTmp2 in srcTmp2.indices) dstTmp2[idxTmp2] = srcTmp2[idxTmp2] }
+        null ->
+            run {
+                val dstTmp2 = buf
+                val srcTmp2 = front[0 until buf.size]
+                for (idxTmp2 in srcTmp2.indices) dstTmp2[idxTmp2] = srcTmp2[idxTmp2]
+            }
         else -> {
             val bufFront = matchVal.first
             val bufBack = matchVal.second
@@ -222,7 +275,10 @@ public fun <A : Allocator> VecDeque<UByte, A>.readExact(buf: MutableList<UByte>)
 public fun <A : Allocator> VecDeque<UByte, A>.readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> {
     var (front, _) = this.asSlices()
     val n = minOf(cursor.capacity(), front.len())
-    when (val tryResult = front.readBuf(cursor)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = front.readBuf(cursor)) {
+        is Result.Ok<*, *> -> tryResult.value
+        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+    }
     this.drain(0 until n)
     return Result.Ok(Unit)
 }
@@ -257,7 +313,10 @@ public fun <A : Allocator> VecDeque<UByte, A>.readBufExact(cursor: BorrowedCurso
 public fun <A : Allocator> VecDeque<UByte, A>.readToEnd(buf: List<UByte>): Result<Int> {
     // The total len is known upfront so we can reserve it in a single call.
     val len = this.len()
-    when (val tryResult = buf.tryReserve(len)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = buf.tryReserve(len)) {
+        is Result.Ok<*, *> -> tryResult.value
+        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+    }
     val (front, back) = this.asSlices()
     buf.extendFromSlice(front)
     buf.extendFromSlice(back)
@@ -273,6 +332,7 @@ public fun <A : Allocator> VecDeque<UByte, A>.readToString(buf: String): Result<
 /**
  * BufRead is implemented for `VecDeque<UByte>` by reading bytes from the front of the `VecDeque`.
  */
+
 /**
  * Returns the contents of the "front" slice as returned by
  * [`asSlices`][VecDeque.asSlices]. If the contained byte slices of the `VecDeque` are
@@ -312,7 +372,10 @@ public fun <A : Allocator> VecDeque<UByte, A>.writeAll(buf: List<UByte>): Result
 }
 
 public fun <A : Allocator> VecDeque<UByte, A>.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> {
-    when (val tryResult = this.writeVectored(bufs)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = this.writeVectored(bufs)) {
+        is Result.Ok<*, *> -> tryResult.value
+        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+    }
     return Result.Ok(Unit)
 }
 

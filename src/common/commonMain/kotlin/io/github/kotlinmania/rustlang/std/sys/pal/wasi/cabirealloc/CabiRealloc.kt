@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.wasi.cabirealloc
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.sys.pal.wasi.abortInternal
+import io.github.kotlinmania.rustlang.std.sys.pal.wasi.abortInternal
 
 // This module contains a canonical definition of the `cabiRealloc` function
 // for the component model.

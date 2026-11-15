@@ -1,11 +1,11 @@
 // port-lint: source slice/sort/select.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.select
 
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
-import io.github.kotlinmania.rustlang.mem.swap
-import io.github.kotlinmania.rustlang.slice.sort.shared.pivot.choosePivot
-import io.github.kotlinmania.rustlang.slice.sort.shared.smallsort.insertionSortShiftLeft
-import io.github.kotlinmania.rustlang.slice.sort.unstable.quicksort.partition
+import io.github.kotlinmania.rustlang.core.mem.swap
+import io.github.kotlinmania.rustlang.core.num.saturatingMul
+import io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot.choosePivot
+import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.insertionSortShiftLeft
+import io.github.kotlinmania.rustlang.core.slice.sort.unstable.quicksort.partition
 
 // This module contains the implementation for `slice.selectNthUnstable`.
 // It uses an introselect algorithm based on ipnsort by Lukas Bergdoll and Orson Peters,
@@ -119,22 +119,32 @@ public fun <T> partitionAtIndexLoop(v: MutableList<T>, index: Int, ancestorPivot
  * comparator function
  */
 public fun <T> minIndex(slice: List<T>, isLess: (T, T) -> Boolean): Int? =
-    slice.mapIndexed { index, item -> Pair(index, item) }.reduce({ acc, t -> if (isLess(t.second, acc.second)) {
-        t
-    } else {
-        acc
-    } }).map({ (i, _) -> i })
+    slice
+        .mapIndexed { index, item -> Pair(index, item) }
+        .reduce({ acc, t ->
+            if (isLess(t.second, acc.second)) {
+                t
+            } else {
+                acc
+            }
+        })
+        .map({ (i, _) -> i })
 
 /**
  * Helper function that returns the index of the maximum element in the slice using the given
  * comparator function
  */
 public fun <T> maxIndex(slice: List<T>, isLess: (T, T) -> Boolean): Int? =
-    slice.mapIndexed { index, item -> Pair(index, item) }.reduce({ acc, t -> if (isLess(acc.second, t.second)) {
-        t
-    } else {
-        acc
-    } }).map({ (i, _) -> i })
+    slice
+        .mapIndexed { index, item -> Pair(index, item) }
+        .reduce({ acc, t ->
+            if (isLess(acc.second, t.second)) {
+                t
+            } else {
+                acc
+            }
+        })
+        .map({ (i, _) -> i })
 
 /**
  * Selection algorithm to select the k-th element from the slice in guaranteed O(n) time.
@@ -194,7 +204,7 @@ public fun <T> medianOfNinthers(v: MutableList<T>, isLess: (T, T) -> Boolean): I
     val frac =
         if (v.size <= 1024) {
             v.size / 12
-        } else if (v.size <= rustSaturatingMul(128, 1024)) {
+        } else if (v.size <= 128.saturatingMul(1024)) {
             v.size / 64
         } else {
             v.size / 1024

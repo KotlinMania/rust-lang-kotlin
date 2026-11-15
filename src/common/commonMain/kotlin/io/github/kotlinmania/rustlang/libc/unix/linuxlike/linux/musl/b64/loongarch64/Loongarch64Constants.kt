@@ -1,12 +1,12 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.loongarch64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TcflagT
 
 public val SYS_IO_SETUP: CLong = 0L
 
@@ -916,7 +916,7 @@ public val MCL_FUTURE: CInt = 0x0002
 
 public val MCL_ONFAULT: CInt = 0x0004
 
-public val CBAUD: TcflagT = 4111uL
+public val CBAUD: TcflagT = 4111u
 
 public val TAB1: CInt = 0x00000800
 
@@ -950,109 +950,109 @@ public val VDISCARD: Int = 13
 
 public val VTIME: Int = 5
 
-public val IXON: TcflagT = 0x00000400uL
+public val IXON: TcflagT = 0x00000400u
 
-public val IXOFF: TcflagT = 0x00001000uL
+public val IXOFF: TcflagT = 0x00001000u
 
-public val ONLCR: TcflagT = 0x4uL
+public val ONLCR: TcflagT = 0x4u
 
-public val CSIZE: TcflagT = 0x00000030uL
+public val CSIZE: TcflagT = 0x00000030u
 
-public val CS6: TcflagT = 0x00000010uL
+public val CS6: TcflagT = 0x00000010u
 
-public val CS7: TcflagT = 0x00000020uL
+public val CS7: TcflagT = 0x00000020u
 
-public val CS8: TcflagT = 0x00000030uL
+public val CS8: TcflagT = 0x00000030u
 
-public val CSTOPB: TcflagT = 0x00000040uL
+public val CSTOPB: TcflagT = 0x00000040u
 
-public val CREAD: TcflagT = 0x00000080uL
+public val CREAD: TcflagT = 0x00000080u
 
-public val PARENB: TcflagT = 0x00000100uL
+public val PARENB: TcflagT = 0x00000100u
 
-public val PARODD: TcflagT = 0x00000200uL
+public val PARODD: TcflagT = 0x00000200u
 
-public val HUPCL: TcflagT = 0x00000400uL
+public val HUPCL: TcflagT = 0x00000400u
 
-public val CLOCAL: TcflagT = 0x00000800uL
+public val CLOCAL: TcflagT = 0x00000800u
 
-public val ECHOKE: TcflagT = 0x00000800uL
+public val ECHOKE: TcflagT = 0x00000800u
 
-public val ECHOE: TcflagT = 0x00000010uL
+public val ECHOE: TcflagT = 0x00000010u
 
-public val ECHOK: TcflagT = 0x00000020uL
+public val ECHOK: TcflagT = 0x00000020u
 
-public val ECHONL: TcflagT = 0x00000040uL
+public val ECHONL: TcflagT = 0x00000040u
 
-public val ECHOPRT: TcflagT = 0x00000400uL
+public val ECHOPRT: TcflagT = 0x00000400u
 
-public val ECHOCTL: TcflagT = 0x00000200uL
+public val ECHOCTL: TcflagT = 0x00000200u
 
-public val ISIG: TcflagT = 0x00000001uL
+public val ISIG: TcflagT = 0x00000001u
 
-public val ICANON: TcflagT = 0x00000002uL
+public val ICANON: TcflagT = 0x00000002u
 
-public val PENDIN: TcflagT = 0x00004000uL
+public val PENDIN: TcflagT = 0x00004000u
 
-public val NOFLSH: TcflagT = 0x00000080uL
+public val NOFLSH: TcflagT = 0x00000080u
 
-public val CIBAUD: TcflagT = 269418496uL
+public val CIBAUD: TcflagT = 269418496u
 
-public val CBAUDEX: TcflagT = 4096uL
+public val CBAUDEX: TcflagT = 4096u
 
 public val VSWTC: Int = 7
 
-public val OLCUC: TcflagT = 2uL
+public val OLCUC: TcflagT = 2u
 
-public val NLDLY: TcflagT = 256uL
+public val NLDLY: TcflagT = 256u
 
-public val CRDLY: TcflagT = 1536uL
+public val CRDLY: TcflagT = 1536u
 
-public val TABDLY: TcflagT = 6144uL
+public val TABDLY: TcflagT = 6144u
 
-public val BSDLY: TcflagT = 8192uL
+public val BSDLY: TcflagT = 8192u
 
-public val FFDLY: TcflagT = 32768uL
+public val FFDLY: TcflagT = 32768u
 
-public val VTDLY: TcflagT = 16384uL
+public val VTDLY: TcflagT = 16384u
 
-public val XTABS: TcflagT = 6144uL
+public val XTABS: TcflagT = 6144u
 
-public val B57600: SpeedT = 4097uL
+public val B57600: SpeedT = 4097u
 
-public val B115200: SpeedT = 4098uL
+public val B115200: SpeedT = 4098u
 
-public val B230400: SpeedT = 4099uL
+public val B230400: SpeedT = 4099u
 
-public val B460800: SpeedT = 4100uL
+public val B460800: SpeedT = 4100u
 
-public val B500000: SpeedT = 4101uL
+public val B500000: SpeedT = 4101u
 
-public val B576000: SpeedT = 4102uL
+public val B576000: SpeedT = 4102u
 
-public val B921600: SpeedT = 4103uL
+public val B921600: SpeedT = 4103u
 
-public val B1000000: SpeedT = 4104uL
+public val B1000000: SpeedT = 4104u
 
-public val B1152000: SpeedT = 4105uL
+public val B1152000: SpeedT = 4105u
 
-public val B1500000: SpeedT = 4106uL
+public val B1500000: SpeedT = 4106u
 
-public val B2000000: SpeedT = 4107uL
+public val B2000000: SpeedT = 4107u
 
-public val B2500000: SpeedT = 4108uL
+public val B2500000: SpeedT = 4108u
 
-public val B3000000: SpeedT = 4109uL
+public val B3000000: SpeedT = 4109u
 
-public val B3500000: SpeedT = 4110uL
+public val B3500000: SpeedT = 4110u
 
-public val B4000000: SpeedT = 4111uL
+public val B4000000: SpeedT = 4111u
 
 public val EDEADLK: CInt = 35
 
 public val EDEADLOCK: CInt = EDEADLK
 
-public val EXTPROC: TcflagT = 0x00010000uL
+public val EXTPROC: TcflagT = 0x00010000u
 
 public val VEOL: Int = 11
 
@@ -1060,8 +1060,8 @@ public val VEOL2: Int = 16
 
 public val VMIN: Int = 6
 
-public val IEXTEN: TcflagT = 0x00008000uL
+public val IEXTEN: TcflagT = 0x00008000u
 
-public val TOSTOP: TcflagT = 0x00000100uL
+public val TOSTOP: TcflagT = 0x00000100u
 
-public val FLUSHO: TcflagT = 0x00001000uL
+public val FLUSHO: TcflagT = 0x00001000u

@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.std.sync.nonpoison
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.sync.poison.Guard
+import io.github.kotlinmania.rustlang.std.sync.poison.Guard
 
 // Non-poisoning synchronous locks.
 //

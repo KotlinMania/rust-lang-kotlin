@@ -1,12 +1,18 @@
 // port-lint: source symbolize/gimli.rs
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli
 
+import io.github.kotlinmania.rustlang.backtrace.mystd.ffi.OsString
+import io.github.kotlinmania.rustlang.backtrace.mystd.fs.File
+import io.github.kotlinmania.rustlang.backtrace.mystd.path.Path
+import io.github.kotlinmania.rustlang.backtrace.symbolize.ResolveWhat
+import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.coff.Object
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.coff.handleSplitDwarf
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.gimli.read.EndianSlice
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.lru.Lru
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmap.Mmap
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
+import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -15,12 +21,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.mystd.ffi.OsString
-import io.github.kotlinmania.rustlang.mystd.fs.File
-import io.github.kotlinmania.rustlang.mystd.path.Path
-import io.github.kotlinmania.rustlang.symbolize.ResolveWhat
-import io.github.kotlinmania.rustlang.symbolize.SymbolName
-import io.github.kotlinmania.rustlang.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.gimli.NativeEndian as Endian
 
 // Support for symbolication using the `gimli` crate on crates.io
@@ -42,10 +42,17 @@ public open class Mapping(
          * decompressed sections or auxiliary data.
          */
         public fun mk(data: Mmap, mk: (List<UByte>, Stash) -> Context?): Mapping? {
-            return Mapping.mkOrOther(data, closure@{ data1, stash ->
-                val cx = when (val tryResult = mk(data1, stash)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
-                Either.B(cx)
-            })
+            return Mapping.mkOrOther(
+                data,
+                closure@{ data1, stash ->
+                    val cx =
+                        when (val tryResult = mk(data1, stash)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
+                        }
+                    Either.B(cx)
+                },
+            )
         }
 
         /**
@@ -71,8 +78,12 @@ public open class Mapping(
 }
 
 public sealed class Either<A, B> {
-    public data class A<A, B>(public var value: A) : Either<A, B>()
-    public data class B<A, B>(public var value: B) : Either<A, B>()
+    public data class A<A, B>(
+        public var value: A,
+    ) : Either<A, B>()
+    public data class B<A, B>(
+        public var value: B,
+    ) : Either<A, B>()
 }
 
 public open class Context internal constructor(
@@ -110,45 +121,60 @@ public open class Context internal constructor(
             dwarf: Context<EndianSlice<Endian>>,
             obj: Object,
             pkg: gimli.DwarfPackage<EndianSlice<Endian>>?,
-        ): Context = Context(
-            dwarfCtorArg = dwarf,
-            obj = obj,
-            pkgCtorArg = pkg,
-        )
+        ): Context =
+            Context(
+                dwarfCtorArg = dwarf,
+                obj = obj,
+                pkgCtorArg = pkg,
+            )
 
         // @feature(optimizeAttr) is enabled when we're built inside libstd
         public fun new(stash: Stash, obj: Object, sup: Object?, dwp: Object?): Context? {
             var sections =
-                (gimli.Dwarf.load({ id ->
-                    if (true) {
-                        val data = obj.section(stash, id.name()).unwrapOr(listOf())
-                        Result.Ok(EndianSlice.new(data, Endian))
-                    } else when (val matchVal = id.xcoffName()) {
-                        null -> {
-                            Result.Ok(EndianSlice.new(listOf(), Endian))
-                        }
-                        else -> {
-                            val name = matchVal
-                            val data1 = obj.section(stash, name).unwrapOr(listOf())
-                            Result.Ok(EndianSlice.new(data1, Endian))
-                        }
-                    }
-                }).ok() ?: return null)
+                (
+                    gimli.Dwarf
+                        .load({ id ->
+                            if (true) {
+                                val data = obj.section(stash, id.name()).unwrapOr(listOf())
+                                Result.Ok(EndianSlice.new(data, Endian))
+                            } else {
+                                when (val matchVal = id.xcoffName()) {
+                                    null -> {
+                                        Result.Ok(EndianSlice.new(listOf(), Endian))
+                                    }
+                                    else -> {
+                                        val name = matchVal
+                                        val data1 = obj.section(stash, name).unwrapOr(listOf())
+                                        Result.Ok(EndianSlice.new(data1, Endian))
+                                    }
+                                }
+                            }
+                        })
+                        .ok() ?: return null
+                )
             if (sup != null) {
                 val sup1 = sup
-                (sections.loadSup({ id ->
-                    val data = sup1.section(stash, id.name()).unwrapOr(listOf())
-                    Result.Ok(EndianSlice.new(data, Endian))
-                }).ok() ?: return null)
+                (
+                    sections
+                        .loadSup({ id ->
+                            val data = sup1.section(stash, id.name()).unwrapOr(listOf())
+                            Result.Ok(EndianSlice.new(data, Endian))
+                        })
+                        .ok() ?: return null
+                )
             }
             val dwarf = (Context.fromDwarf(sections).ok() ?: return null)
             var pkg = null
             if (dwp != null) {
                 val dwp1 = dwp
-                pkg = (gimli.DwarfPackage.load({ id ->
-                    val data = id.dwoName().andThen({ name -> dwp1.section(stash, name) }).unwrapOr(listOf())
-                    Result.Ok(EndianSlice.new(data, Endian))
-                }, EndianSlice.new(listOf(), Endian)).ok() ?: return null)
+                pkg = (
+                    gimli.DwarfPackage
+                        .load({ id ->
+                            val data = id.dwoName().andThen({ name -> dwp1.section(stash, name) }).unwrapOr(listOf())
+                            Result.Ok(EndianSlice.new(data, Endian))
+                        }, EndianSlice.new(listOf(), Endian))
+                        .ok() ?: return null
+                )
             }
             return Context(dwarf = dwarf, obj = obj, pkg = pkg)
         }
@@ -186,36 +212,44 @@ public open class Cache internal constructor(
         internal set
 
     public open fun avmaToSvma(addr: ConstPtr): Pair<Int, ConstPtr>? {
-        return (this.libraries.mapIndexed { index, item -> Pair(index, item) }).mapNotNull(closure1@{ (i, lib) ->
-            // First up, test if this `lib` has any segment containing the
-            // `addr` (handling relocation). If this check passes then we
-            // can continue below and actually translate the address.
-            //
-            // Note that we're using `wrappingAdd` here to avoid overflow
-            // checks. It's been seen in the wild that the SVMA + bias
-            // computation overflows. It seems a bit odd that would happen
-            // but there's not a huge amount we can do about it other than
-            // probably just ignore those segments since they're likely
-            // pointing off into space. This originally came up in
-            // rust-lang/backtrace-rs#329.
-            if (!lib.segments.iter().any({ s ->
-                val svma = s.statedVirtualMemoryAddress
-                val start = svma.wrappingAdd(lib.bias)
-                val end = start.wrappingAdd(s.len)
-                val address = addr.rawAddress.toInt()
-                start <= address && address < end
-            })) {
-                return@closure1 null
-            }
-            // Now that we know `lib` contains `addr`, we can offset with
-            // the bias to find the stated virtual memory address.
-            val svma = ((addr.rawAddress.toInt()) - (lib.bias.toInt()))
-            Pair(i, ConstPtr(svma.toLong()))
-        }).next()
+        return (this.libraries.mapIndexed { index, item -> Pair(index, item) })
+            .mapNotNull(
+                closure1@{ (i, lib) ->
+                    // First up, test if this `lib` has any segment containing the
+                    // `addr` (handling relocation). If this check passes then we
+                    // can continue below and actually translate the address.
+                    //
+                    // Note that we're using `wrappingAdd` here to avoid overflow
+                    // checks. It's been seen in the wild that the SVMA + bias
+                    // computation overflows. It seems a bit odd that would happen
+                    // but there's not a huge amount we can do about it other than
+                    // probably just ignore those segments since they're likely
+                    // pointing off into space. This originally came up in
+                    // rust-lang/backtrace-rs#329.
+                    if (!lib.segments.iter().any({ s ->
+                            val svma = s.statedVirtualMemoryAddress
+                            val start = svma.wrappingAdd(lib.bias)
+                            val end = start.wrappingAdd(s.len)
+                            val address = addr.rawAddress.toInt()
+                            start <= address && address < end
+                        })
+                    ) {
+                        return@closure1 null
+                    }
+                    // Now that we know `lib` contains `addr`, we can offset with
+                    // the bias to find the stated virtual memory address.
+                    val svma = ((addr.rawAddress.toInt()) - (lib.bias.toInt()))
+                    Pair(i, ConstPtr(svma.toLong()))
+                },
+            ).next()
     }
 
     public open fun mappingForLib(lib: Int): Pair<Context, Stash>? {
-        val cacheIdx = this.mappings.iter().indexOfFirst({ (libId, _) -> libId == lib }).takeIf { it >= 0 }
+        val cacheIdx =
+            this.mappings
+                .iter()
+                .indexOfFirst({ (libId, _) -> libId == lib })
+                .takeIf { it >= 0 }
         val cacheEntry =
             if (cacheIdx != null) {
                 val idx = cacheIdx
@@ -237,10 +271,11 @@ public open class Cache internal constructor(
         public operator fun invoke(
             libraries: List<Library>,
             mappings: Lru<Pair<Int, Mapping>>,
-        ): Cache = Cache(
-            libraries = libraries,
-            mappingsCtorArg = mappings,
-        )
+        ): Cache =
+            Cache(
+                libraries = libraries,
+                mappingsCtorArg = mappings,
+            )
 
         public fun new(): Cache = Cache(mappings = Lru.default(), libraries = nativeLibraries())
 
@@ -257,7 +292,7 @@ public open class Cache internal constructor(
             // leverage the structures built when constructing `addr2line.Context`s to
             // get nice speedups. If we didn't have this cache, that amortization would
             // never happen, and symbolicating backtraces would be ssssllllooooowwww.
-            val MAPPINGS_CACHE: Cache?  = null
+            val MAPPINGS_CACHE: Cache? = null
             f(MAPPINGS_CACHE.getOrInsertWith(Cache::new))
         }
     }
@@ -342,7 +377,15 @@ public fun createMapping(lib: Library): Mapping? = Mapping.newAndroid(lib.name.a
  *
  * Returns `None` if the path does not contain a `! /` separator.
  */
-public fun extractZipPathAndroid(path: OsStr): OsStr? = (path.asBytes().windows(2).mapIndexed { index, item -> Pair(index, item) }.indexOf({ (_, chunk) -> chunk == "!/".encodeToByteArray() }).takeIf { it >= 0 })?.let({ (index, _) -> OsStr.fromBytes(path.asBytes().splitAt(index).first) })
+public fun extractZipPathAndroid(path: OsStr): OsStr? =
+    (
+        path
+            .asBytes()
+            .windows(2)
+            .mapIndexed { index, item -> Pair(index, item) }
+            .indexOf({ (_, chunk) -> chunk == "!/".encodeToByteArray() })
+            .takeIf { it >= 0 }
+    )?.let({ (index, _) -> OsStr.fromBytes(path.asBytes().splitAt(index).first) })
 
 // unchecked because this is required to be externally synchronized
 public fun clearSymbolCache() {
@@ -351,7 +394,7 @@ public fun clearSymbolCache() {
     }
 }
 
-public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.symbolize.gimli.Symbol) -> Unit) {
+public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit) {
     val addr = what.addressOrIp()
     var call =
         { sym: Symbol ->
@@ -360,81 +403,90 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.symbol
             // reference to it should be persisted beyond this frame anyway.
             // SAFETY: praying the above is correct
             val sym1 = sym
-            (cb)(io.github.kotlinmania.rustlang.symbolize.gimli.Symbol(inner = sym1))
+            (cb)(
+                io.github.kotlinmania.rustlang.backtrace.symbolize
+                    .Symbol(inner = sym1),
+            )
         }
     run {
-        Cache.withGlobal(closure2@{ cache ->
-            val (lib, addr1) =
-                when (val matchVal = cache.avmaToSvma(addr.castConst().cast())) {
-                    null -> { return@closure2 }
-                    else -> {
-                        val pair = matchVal
-                        pair
+        Cache.withGlobal(
+            closure2@{ cache ->
+                val (lib, addr1) =
+                    when (val matchVal = cache.avmaToSvma(addr.castConst().cast())) {
+                        null -> {
+                            return@closure2
+                        }
+                        else -> {
+                            val pair = matchVal
+                            pair
+                        }
                     }
-                }
-            // Finally, get a cached mapping or create a new mapping for this file, and
-            // evaluate the DWARF info to find the file/line/name for this address.
-            val (cx1, stash1) =
-                when (val matchVal1 = cache.mappingForLib(lib)) {
-                    null -> { return@closure2 }
-                    else -> {
-                        val cx = matchVal1.first
-                        val stash = matchVal1.second
-                        Pair(cx, stash)
+                // Finally, get a cached mapping or create a new mapping for this file, and
+                // evaluate the DWARF info to find the file/line/name for this address.
+                val (cx1, stash1) =
+                    when (val matchVal1 = cache.mappingForLib(lib)) {
+                        null -> {
+                            return@closure2
+                        }
+                        else -> {
+                            val cx = matchVal1.first
+                            val stash = matchVal1.second
+                            Pair(cx, stash)
+                        }
                     }
-                }
-            var anyFrames = false
-            when (val matchVal2 = cx1.findFrames(stash1, addr1.toULong())) {
-                is Ok -> {
-                    val frames = matchVal2.value
-                    while (true) {
-                        val matchVal3 = frames.next()
-                        if (matchVal3 !is Result.Ok<*, *>) break
-                        anyFrames = true
-                        val name =
-                            when (val matchVal4 = frame.function) {
-                                null -> cx1.obj.searchSymtab(addr1.toULong())
-                                else -> {
-                                    val f = matchVal4
-                                    f.name.slice()
+                var anyFrames = false
+                when (val matchVal2 = cx1.findFrames(stash1, addr1.toULong())) {
+                    is Ok -> {
+                        val frames = matchVal2.value
+                        while (true) {
+                            val matchVal3 = frames.next()
+                            if (matchVal3 !is Result.Ok<*, *>) break
+                            anyFrames = true
+                            val name =
+                                when (val matchVal4 = frame.function) {
+                                    null -> cx1.obj.searchSymtab(addr1.toULong())
+                                    else -> {
+                                        val f = matchVal4
+                                        f.name.slice()
+                                    }
                                 }
-                            }
-                        call(Symbol.Frame(addr = mutPtrFromRustCast(addr1), location = frame.location, name = name))
+                            call(Symbol.Frame(addr = mutPtrFromRustCast(addr1), location = frame.location, name = name))
+                        }
                     }
+                    else -> {}
                 }
-                else -> {}
-            }
-            if (!anyFrames) {
-                when (val matchVal5 = cx1.obj.searchObjectMap(addr1.toULong())) {
-                    null -> {}
-                    else -> {
-                        val objectCx = matchVal5.first
-                        val objectAddr = matchVal5.second
-                        when (val matchVal6 = objectCx.findFrames(stash1, objectAddr)) {
-                            is Ok -> {
-                                val frames1 = matchVal6.value
-                                while (true) {
-                                    val matchVal7 = frames1.next()
-                                    if (matchVal7 !is Result.Ok<*, *>) break
-                                    anyFrames = true
-                                    call(Symbol.Frame(addr = mutPtrFromRustCast(addr1), location = frame.location, name = frame.function.map({ f1 -> f1.name.slice() })))
+                if (!anyFrames) {
+                    when (val matchVal5 = cx1.obj.searchObjectMap(addr1.toULong())) {
+                        null -> {}
+                        else -> {
+                            val objectCx = matchVal5.first
+                            val objectAddr = matchVal5.second
+                            when (val matchVal6 = objectCx.findFrames(stash1, objectAddr)) {
+                                is Ok -> {
+                                    val frames1 = matchVal6.value
+                                    while (true) {
+                                        val matchVal7 = frames1.next()
+                                        if (matchVal7 !is Result.Ok<*, *>) break
+                                        anyFrames = true
+                                        call(Symbol.Frame(addr = mutPtrFromRustCast(addr1), location = frame.location, name = frame.function.map({ f1 -> f1.name.slice() })))
+                                    }
                                 }
+                                else -> {}
                             }
-                            else -> {}
                         }
                     }
                 }
-            }
-            if (!anyFrames) {
-                when (val matchVal8 = cx1.obj.searchSymtab(addr1.toULong())) {
-                    null -> {}
-                    else -> {
-                        val name1 = matchVal8
-                        call(Symbol.Symtab(name = name1))
+                if (!anyFrames) {
+                    when (val matchVal8 = cx1.obj.searchSymtab(addr1.toULong())) {
+                        null -> {}
+                        else -> {
+                            val name1 = matchVal8
+                            call(Symbol.Symtab(name = name1))
+                        }
                     }
                 }
-            }
-        })
+            },
+        )
     }
 }
 
@@ -443,7 +495,11 @@ public sealed class Symbol {
      * We were able to locate frame information for this symbol, and
      * `addr2line`s frame internally has all the nitty gritty details.
      */
-    public class Frame internal constructor(addrCtorArg: MutPtr, public var location: Location?, public var name: List<UByte>?) : Symbol() {
+    public class Frame internal constructor(
+        addrCtorArg: MutPtr,
+        public var location: Location?,
+        public var name: List<UByte>?,
+    ) : Symbol() {
         public var addr: MutPtr = addrCtorArg
             internal set
 
@@ -476,18 +532,22 @@ public sealed class Symbol {
                 addr: MutPtr,
                 location: Location?,
                 name: List<UByte>?,
-            ): Frame = Frame(
-                addrCtorArg = addr,
-                location = location,
-                name = name,
-            )
+            ): Frame =
+                Frame(
+                    addrCtorArg = addr,
+                    location = location,
+                    name = name,
+                )
         }
     }
+
     /**
      * Couldn't find debug information, but we found it in the symbol table of
      * the elf executable.
      */
-    public data class Symtab(public var name: List<UByte>) : Symbol()
+    public data class Symtab(
+        public var name: List<UByte>,
+    ) : Symbol()
 
     public open fun name(): SymbolName? {
         return when (this) {

@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.core.future
 
-import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 
 /**
  * This type is needed because:
@@ -29,8 +29,9 @@ public open class ResumeTy internal constructor(
     public companion object {
         public operator fun invoke(
             value: NonNull,
-        ): ResumeTy = ResumeTy(
-            valueCtorArg = value,
-        )
+        ): ResumeTy =
+            ResumeTy(
+                valueCtorArg = value,
+            )
     }
 }

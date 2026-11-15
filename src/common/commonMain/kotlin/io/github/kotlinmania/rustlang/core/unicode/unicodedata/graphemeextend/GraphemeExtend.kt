@@ -4,8 +4,8 @@
 package io.github.kotlinmania.rustlang.core.unicode.unicodedata.graphemeextend
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.unicode.unicodedata.ShortOffsetRunHeader
-import io.github.kotlinmania.rustlang.unicode.unicodedata.skipSearch
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.ShortOffsetRunHeader
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.skipSearch
 
 public var SHORT_OFFSET_RUNS: List<ShortOffsetRunHeader> = listOf(ShortOffsetRunHeader.new(0, 768), ShortOffsetRunHeader.new(1, 1155), ShortOffsetRunHeader.new(3, 1425), ShortOffsetRunHeader.new(5, 4957), ShortOffsetRunHeader.new(249, 5906), ShortOffsetRunHeader.new(251, 8204), ShortOffsetRunHeader.new(345, 11503), ShortOffsetRunHeader.new(349, 12330), ShortOffsetRunHeader.new(355, 42607), ShortOffsetRunHeader.new(359, 43010), ShortOffsetRunHeader.new(367, 64286), ShortOffsetRunHeader.new(433, 65024), ShortOffsetRunHeader.new(435, 65438), ShortOffsetRunHeader.new(439, 66045), ShortOffsetRunHeader.new(441, 68097), ShortOffsetRunHeader.new(447, 68900), ShortOffsetRunHeader.new(459, 69291), ShortOffsetRunHeader.new(463, 71727), ShortOffsetRunHeader.new(601, 73459), ShortOffsetRunHeader.new(671, 78912), ShortOffsetRunHeader.new(681, 90398), ShortOffsetRunHeader.new(685, 92912), ShortOffsetRunHeader.new(689, 94031), ShortOffsetRunHeader.new(693, 113821), ShortOffsetRunHeader.new(701, 118528), ShortOffsetRunHeader.new(703, 119079), ShortOffsetRunHeader.new(707, 121344), ShortOffsetRunHeader.new(729, 122880), ShortOffsetRunHeader.new(741, 123566), ShortOffsetRunHeader.new(755, 124140), ShortOffsetRunHeader.new(759, 125136), ShortOffsetRunHeader.new(771, 917536), ShortOffsetRunHeader.new(775, 2032112))
 

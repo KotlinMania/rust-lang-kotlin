@@ -4,19 +4,19 @@ package io.github.kotlinmania.rustlang.std.sys.time.unix
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.io.Error
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.CLOCK_UPTIME_RAW
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.KERN_SUCCESS
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.KernReturnT
 import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
 import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_REALTIME
 import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
-import io.github.kotlinmania.rustlang.sys.AsInner
-import io.github.kotlinmania.rustlang.sys.pal.unix.time.Timespec
+import io.github.kotlinmania.rustlang.std.io.Error
+import io.github.kotlinmania.rustlang.std.sys.AsInner
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -105,7 +105,7 @@ public open class Instant(
             public var numer: UInt,
             public var denom: UInt,
         )
-        fun machTimebaseInfo(info: MutPtr): KernReturnT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<KernReturnT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<KernReturnT>()).alignBytes)); val res = (ObjectSlotLayout<KernReturnT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<KernReturnT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<KernReturnT>()).alignBytes)); res }
+        fun machTimebaseInfo(info: MutPtr): KernReturnT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<KernReturnT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<KernReturnT>()).alignBytes)); val res = (UnresolvedTypeLayout<KernReturnT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<KernReturnT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<KernReturnT>()).alignBytes)); res }
         val secs = (ULong.tryFrom(this.t.tvSec).ok() ?: return null)
         val timebase = MachTimebaseInfo(numer = 0u, denom = 0u)
         check(machTimebaseInfo(timebase) == KERN_SUCCESS)

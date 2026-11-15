@@ -1,99 +1,27 @@
 // port-lint: source x86/avx512dq.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.simd.F32x16
-import io.github.kotlinmania.rustlang.simd.F32x4
-import io.github.kotlinmania.rustlang.simd.F32x8
-import io.github.kotlinmania.rustlang.simd.F64x2
-import io.github.kotlinmania.rustlang.simd.F64x4
-import io.github.kotlinmania.rustlang.simd.F64x8
-import io.github.kotlinmania.rustlang.simd.I32x16
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I32x8
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I64x4
-import io.github.kotlinmania.rustlang.simd.I64x8
-import io.github.kotlinmania.rustlang.simd.U64x2
-import io.github.kotlinmania.rustlang.simd.U64x4
-import io.github.kotlinmania.rustlang.simd.U64x8
-import io.github.kotlinmania.rustlang.x86.M128
-import io.github.kotlinmania.rustlang.x86.M128d
-import io.github.kotlinmania.rustlang.x86.M128i
-import io.github.kotlinmania.rustlang.x86.M256
-import io.github.kotlinmania.rustlang.x86.M256d
-import io.github.kotlinmania.rustlang.x86.M256i
-import io.github.kotlinmania.rustlang.x86.M512
-import io.github.kotlinmania.rustlang.x86.M512d
-import io.github.kotlinmania.rustlang.x86.M512i
-import io.github.kotlinmania.rustlang.x86.MM_FROUND_CUR_DIRECTION
-import io.github.kotlinmania.rustlang.x86.Mmask16
-import io.github.kotlinmania.rustlang.x86.Mmask8
-import io.github.kotlinmania.rustlang.x86.kandMask16
-import io.github.kotlinmania.rustlang.x86.kandnMask16
-import io.github.kotlinmania.rustlang.x86.mm256AndPd
-import io.github.kotlinmania.rustlang.x86.mm256AndPs
-import io.github.kotlinmania.rustlang.x86.mm256AndnotPd
-import io.github.kotlinmania.rustlang.x86.mm256AndnotPs
-import io.github.kotlinmania.rustlang.x86.mm256Castpd128Pd256
-import io.github.kotlinmania.rustlang.x86.mm256Castsi128Si256
-import io.github.kotlinmania.rustlang.x86.mm256CmpltEpi32Mask
-import io.github.kotlinmania.rustlang.x86.mm256CmpltEpi64Mask
-import io.github.kotlinmania.rustlang.x86.mm256MaskzMovEpi32
-import io.github.kotlinmania.rustlang.x86.mm256MaskzMovEpi64
-import io.github.kotlinmania.rustlang.x86.mm256OrPd
-import io.github.kotlinmania.rustlang.x86.mm256OrPs
-import io.github.kotlinmania.rustlang.x86.mm256Set1Epi32
-import io.github.kotlinmania.rustlang.x86.mm256Set1Epi64x
-import io.github.kotlinmania.rustlang.x86.mm256SetzeroPd
-import io.github.kotlinmania.rustlang.x86.mm256SetzeroPs
-import io.github.kotlinmania.rustlang.x86.mm256SetzeroSi256
-import io.github.kotlinmania.rustlang.x86.mm256UndefinedPd
-import io.github.kotlinmania.rustlang.x86.mm256UndefinedPs
-import io.github.kotlinmania.rustlang.x86.mm256UndefinedSi256
-import io.github.kotlinmania.rustlang.x86.mm256XorPd
-import io.github.kotlinmania.rustlang.x86.mm256XorPs
-import io.github.kotlinmania.rustlang.x86.mm512Castpd128Pd512
-import io.github.kotlinmania.rustlang.x86.mm512Castps256Ps512
-import io.github.kotlinmania.rustlang.x86.mm512Castsi128Si512
-import io.github.kotlinmania.rustlang.x86.mm512Castsi256Si512
-import io.github.kotlinmania.rustlang.x86.mm512CmpltEpi32Mask
-import io.github.kotlinmania.rustlang.x86.mm512CmpltEpi64Mask
-import io.github.kotlinmania.rustlang.x86.mm512MaskzMovEpi32
-import io.github.kotlinmania.rustlang.x86.mm512MaskzMovEpi64
-import io.github.kotlinmania.rustlang.x86.mm512Set1Epi32
-import io.github.kotlinmania.rustlang.x86.mm512Set1Epi64
-import io.github.kotlinmania.rustlang.x86.mm512SetzeroPd
-import io.github.kotlinmania.rustlang.x86.mm512SetzeroPs
-import io.github.kotlinmania.rustlang.x86.mm512SetzeroSi512
-import io.github.kotlinmania.rustlang.x86.mm512UndefinedEpi32
-import io.github.kotlinmania.rustlang.x86.mm512UndefinedPd
-import io.github.kotlinmania.rustlang.x86.mm512UndefinedPs
-import io.github.kotlinmania.rustlang.x86.mmAndPd
-import io.github.kotlinmania.rustlang.x86.mmAndPs
-import io.github.kotlinmania.rustlang.x86.mmAndnotPd
-import io.github.kotlinmania.rustlang.x86.mmAndnotPs
-import io.github.kotlinmania.rustlang.x86.mmCmpltEpi32Mask
-import io.github.kotlinmania.rustlang.x86.mmCmpltEpi64Mask
-import io.github.kotlinmania.rustlang.x86.mmMaskzMovEpi32
-import io.github.kotlinmania.rustlang.x86.mmMaskzMovEpi64
-import io.github.kotlinmania.rustlang.x86.mmOrPd
-import io.github.kotlinmania.rustlang.x86.mmOrPs
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi32
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
-import io.github.kotlinmania.rustlang.x86.mmSetzeroPd
-import io.github.kotlinmania.rustlang.x86.mmSetzeroPs
-import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
-import io.github.kotlinmania.rustlang.x86.mmUndefinedPd
-import io.github.kotlinmania.rustlang.x86.mmUndefinedPs
-import io.github.kotlinmania.rustlang.x86.mmUndefinedSi128
-import io.github.kotlinmania.rustlang.x86.mmXorPd
-import io.github.kotlinmania.rustlang.x86.mmXorPs
+import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.corearch.simd.F32x16
+import io.github.kotlinmania.rustlang.corearch.simd.F32x4
+import io.github.kotlinmania.rustlang.corearch.simd.F32x8
+import io.github.kotlinmania.rustlang.corearch.simd.F64x2
+import io.github.kotlinmania.rustlang.corearch.simd.F64x4
+import io.github.kotlinmania.rustlang.corearch.simd.F64x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x16
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I32x8
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I64x4
+import io.github.kotlinmania.rustlang.corearch.simd.I64x8
+import io.github.kotlinmania.rustlang.corearch.simd.U64x2
+import io.github.kotlinmania.rustlang.corearch.simd.U64x4
+import io.github.kotlinmania.rustlang.corearch.simd.U64x8
 
 // And //
 
@@ -3788,7 +3716,7 @@ public fun ktestzMask8U8(a: Mmask8, b: Mmask8): UByte = (if (kandMask8(a, b) == 
  *
  * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_load_mask8&igExpand=3999)
  */
-public fun loadMask8(memAddr: ConstPtr): Mmask8 = (ObjectSlotLayout<Mmask8>()).readNative((memAddr).rawAddress)
+public fun loadMask8(memAddr: ConstPtr): Mmask8 = (UnresolvedTypeLayout<Mmask8>()).readNative((memAddr).rawAddress)
 
 /**
  * Store 8-bit mask to memory
@@ -3797,7 +3725,7 @@ public fun loadMask8(memAddr: ConstPtr): Mmask8 = (ObjectSlotLayout<Mmask8>()).r
  */
 public fun storeMask8(memAddr: MutPtr, a: Mmask8) {
     val memAddr1 = memAddr
-    (ObjectSlotLayout<Mmask8>()).writeNative((memAddr1).rawAddress, a)
+    (UnresolvedTypeLayout<Mmask8>()).writeNative((memAddr1).rawAddress, a)
 }
 
 /**

@@ -3,14 +3,10 @@
 
 package io.github.kotlinmania.rustlang.libc
 
-import io.github.kotlinmania.rustlang.cEnum
 import io.github.kotlinmania.rustlang.core.RustTypeId
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
-import io.github.kotlinmania.rustlang.f
-import io.github.kotlinmania.rustlang.s2
-import io.github.kotlinmania.rustlang.sNoExtraTraits2
-import io.github.kotlinmania.rustlang.types.CEnumRepr
+import io.github.kotlinmania.rustlang.libc.types.CEnumRepr
 
 public fun interface FnCallback {
     public operator fun invoke(): UInt
@@ -108,12 +104,12 @@ public class MacrosInlineTests {
 
     @kotlin.test.Test
     public fun testOffsetOf() {
-        class Off2
-        data class Off1(
-            public var a: UByte = 0u,
-            public var b: UInt = 0u,
-            public var c: Off2 = Off2(),
-            public var d: ULong = 0uL,
+        open class Off2
+        open class Off1(
+            public var a: UByte,
+            public var b: UInt,
+            public var c: Off2,
+            public var d: ULong,
         )
         check(0 == 0)
         check(0 == 0)
@@ -192,7 +188,7 @@ public class MacrosInlineTests {
         val s = EnabledCfg.default()
         check(s.a == 0u)
         check((s.buf).contentEquals(UByteArray(40) { 1u.toUByte() }))
-        check(alignOf<EnabledCfg>(typeLayoutT = ObjectSlotLayout<EnabledCfg>()) == 8)
+        check(alignOf<EnabledCfg>(typeLayoutT = UnresolvedTypeLayout<EnabledCfg>()) == 8)
         check(s.x86Only == 0u.toUByte())
     }
 

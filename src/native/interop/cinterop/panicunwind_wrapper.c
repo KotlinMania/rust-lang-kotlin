@@ -15,7 +15,7 @@
 #endif
 #endif
 
-void rustlangPanicunwindRustDropPanic(void) {
+void panicunwindRustDropPanic(void) {
     typedef void (*km_fn_t)(void);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -41,7 +41,7 @@ void rustlangPanicunwindRustDropPanic(void) {
     errno = ENOSYS;
 }
 
-void rustlangPanicunwindRustForeignException(void) {
+void panicunwindRustForeignException(void) {
     typedef void (*km_fn_t)(void);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

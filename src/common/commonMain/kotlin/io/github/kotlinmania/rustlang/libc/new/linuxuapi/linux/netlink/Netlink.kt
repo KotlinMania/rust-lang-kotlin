@@ -1,19 +1,19 @@
 // port-lint: source new/linux_uapi/linux/netlink.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.netlink
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.bsd.SaFamilyT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SaFamilyT
 
 // Header: `uapi / linux / netlink.h`
 
@@ -63,12 +63,14 @@ public val NETLINK_INET_DIAG: CInt = NETLINK_SOCK_DIAG
 
 public val MAX_LINKS: CInt = 32
 
-public data class SockaddrNl(
-    public var nlFamily: SaFamilyT = 0u,
-    public var nlPad: CUshort = 0u,
-    public var nlPid: UInt = 0u,
-    public var nlGroups: UInt = 0u,
+public open class SockaddrNl(
+    public var nlFamily: SaFamilyT,
+    public var nlPad: CUshort,
+    public var nlPid: UInt,
+    public var nlGroups: UInt,
 ) {
+    public open fun clone(): SockaddrNl = SockaddrNl(nlFamily, nlPad, nlPid, nlGroups)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrNl> =
             object : TypeLayout<SockaddrNl> {
@@ -104,13 +106,15 @@ public data class SockaddrNl(
     }
 }
 
-public data class Nlmsghdr(
-    public var nlmsgLen: UInt = 0u,
-    public var nlmsgType: UShort = 0u,
-    public var nlmsgFlags: UShort = 0u,
-    public var nlmsgSeq: UInt = 0u,
-    public var nlmsgPid: UInt = 0u,
+public open class Nlmsghdr(
+    public var nlmsgLen: UInt,
+    public var nlmsgType: UShort,
+    public var nlmsgFlags: UShort,
+    public var nlmsgSeq: UInt,
+    public var nlmsgPid: UInt,
 ) {
+    public open fun clone(): Nlmsghdr = Nlmsghdr(nlmsgLen, nlmsgType, nlmsgFlags, nlmsgSeq, nlmsgPid)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Nlmsghdr> =
             object : TypeLayout<Nlmsghdr> {
@@ -194,12 +198,12 @@ public fun nlmsgLength(size: SizeT): CInt = size.toInt() + NLMSG_HDRLEN
 
 public fun nlmsgSpace(size: SizeT): CInt = nlmsgAlign(nlmsgLength(size).toULong())
 
-public fun nlmsgData(nlh: MutPtr): MutPtr = MutPtr((MutPtr((MutPtr((nlh).rawAddress)).rawAddress + ((NLMSG_HDRLEN).toLong() * (ObjectSlotLayout<CChar>()).strideBytes))).rawAddress)
+public fun nlmsgData(nlh: MutPtr): MutPtr = MutPtr((MutPtr((MutPtr((nlh).rawAddress)).rawAddress + ((NLMSG_HDRLEN).toLong() * (UnresolvedTypeLayout<CChar>()).strideBytes))).rawAddress)
 
 public fun nlmsgNext(nlh: MutPtr, size: CInt): MutPtr {
     var size1 = size
     size1 -= nlmsgAlign(((Nlmsghdr.typeLayout()).readNative((nlh).rawAddress).nlmsgLen).toULong())
-    return MutPtr((MutPtr((MutPtr((nlh).rawAddress)).rawAddress + ((nlmsgAlign(((Nlmsghdr.typeLayout()).readNative((nlh).rawAddress).nlmsgLen).toULong())).toLong() * (ObjectSlotLayout<CChar>()).strideBytes))).rawAddress)
+    return MutPtr((MutPtr((MutPtr((nlh).rawAddress)).rawAddress + ((nlmsgAlign(((Nlmsghdr.typeLayout()).readNative((nlh).rawAddress).nlmsgLen).toULong())).toLong() * (UnresolvedTypeLayout<CChar>()).strideBytes))).rawAddress)
 }
 
 public fun nlmsgOk(nlh: ConstPtr, size: CInt): Boolean = size >= sizeOf<Nlmsghdr>(typeLayoutT = Nlmsghdr.typeLayout()).toInt() && (Nlmsghdr.typeLayout()).readNative((nlh).rawAddress).nlmsgLen >= sizeOf<Nlmsghdr>(typeLayoutT = Nlmsghdr.typeLayout()).toUInt() && (Nlmsghdr.typeLayout()).readNative((nlh).rawAddress).nlmsgLen <= size.toUInt()
@@ -216,10 +220,12 @@ public val NLMSG_MIN_TYPE: CInt = 0x10
 
 public val NETLINK_ADD_MEMBERSHIP: CInt = 1
 
-public data class Nlmsgerr(
-    public var error: CInt = 0,
-    public var msg: Nlmsghdr = Nlmsghdr(),
+public open class Nlmsgerr(
+    public var error: CInt,
+    public var msg: Nlmsghdr,
 ) {
+    public open fun clone(): Nlmsgerr = Nlmsgerr(error, msg)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Nlmsgerr> =
             object : TypeLayout<Nlmsgerr> {
@@ -271,9 +277,11 @@ public val NETLINK_GET_STRICT_CHK: CInt = 12
 
 public val NLA_F_NESTED: CInt = 1 shl 15
 
-public data class NlPktinfo(
-    public var group: UInt = 0u,
+public open class NlPktinfo(
+    public var group: UInt,
 ) {
+    public open fun clone(): NlPktinfo = NlPktinfo(group)
+
     public companion object {
         public fun typeLayout(): TypeLayout<NlPktinfo> =
             object : TypeLayout<NlPktinfo> {
@@ -297,12 +305,14 @@ public data class NlPktinfo(
     }
 }
 
-public data class NlMmapReq(
-    public var nmBlockSize: CUint = 0u,
-    public var nmBlockNr: CUint = 0u,
-    public var nmFrameSize: CUint = 0u,
-    public var nmFrameNr: CUint = 0u,
+public open class NlMmapReq(
+    public var nmBlockSize: CUint,
+    public var nmBlockNr: CUint,
+    public var nmFrameSize: CUint,
+    public var nmFrameNr: CUint,
 ) {
+    public open fun clone(): NlMmapReq = NlMmapReq(nmBlockSize, nmBlockNr, nmFrameSize, nmFrameNr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<NlMmapReq> =
             object : TypeLayout<NlMmapReq> {
@@ -338,14 +348,16 @@ public data class NlMmapReq(
     }
 }
 
-public data class NlMmapHdr(
-    public var nmStatus: CUint = 0u,
-    public var nmLen: CUint = 0u,
-    public var nmGroup: UInt = 0u,
-    public var nmPid: UInt = 0u,
-    public var nmUid: UInt = 0u,
-    public var nmGid: UInt = 0u,
+public open class NlMmapHdr(
+    public var nmStatus: CUint,
+    public var nmLen: CUint,
+    public var nmGroup: UInt,
+    public var nmPid: UInt,
+    public var nmUid: UInt,
+    public var nmGid: UInt,
 ) {
+    public open fun clone(): NlMmapHdr = NlMmapHdr(nmStatus, nmLen, nmGroup, nmPid, nmUid, nmGid)
+
     public companion object {
         public fun typeLayout(): TypeLayout<NlMmapHdr> =
             object : TypeLayout<NlMmapHdr> {
@@ -389,10 +401,12 @@ public data class NlMmapHdr(
     }
 }
 
-public data class Nlattr(
-    public var nlaLen: UShort = 0u,
-    public var nlaType: UShort = 0u,
+public open class Nlattr(
+    public var nlaLen: UShort,
+    public var nlaType: UShort,
 ) {
+    public open fun clone(): Nlattr = Nlattr(nlaLen, nlaType)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Nlattr> =
             object : TypeLayout<Nlattr> {

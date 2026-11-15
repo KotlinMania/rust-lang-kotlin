@@ -4,10 +4,7 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.int.specializeddivrem
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.num.rustWrappingSub
-import io.github.kotlinmania.rustlang.int.specializeddivrem.u64ByU64DivRem
-import io.github.kotlinmania.rustlang.int.specializeddivrem.u64NormalizationShift
-import io.github.kotlinmania.rustlang.int.specializeddivrem.zeroDivFn
+import io.github.kotlinmania.rustlang.core.num.wrappingSub
 
 // Creates an unsigned division function that uses a combination of hardware division and
 // binary long division to divide integers larger than what hardware division by itself can do. This
@@ -101,7 +98,7 @@ public fun u128DivideSparc(duo: U128, div: U128, rem: RustMutableReference<U128>
                     var powLo1: ULong = 1uL shl (64 - 1).toInt()
                     var quoLo1: ULong = 0uL
                     while (true) {
-                        val sub1 = rustWrappingSub(duo3, div3)
+                        val sub1 = duo3.wrappingSub(div3)
                         if (I128(0x0L, 0x0uL) <= (sub1.toI128())) {
                             duo3 = sub1
                             quoLo1 = quoLo1 or powLo1

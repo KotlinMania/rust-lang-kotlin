@@ -1,21 +1,24 @@
 // port-lint: source io/buffered/bufwriter.rs
 package io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter
 
+import io.github.kotlinmania.rustlang.alloc.io.buffered.IntoInnerError
+import io.github.kotlinmania.rustlang.alloc.io.constError
+import io.github.kotlinmania.rustlang.alloc.io.read.DEFAULT_BUF_SIZE
+import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.seek.Seek
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
+import io.github.kotlinmania.rustlang.core.mem.take
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.io.buffered.IntoInnerError
-import io.github.kotlinmania.rustlang.io.constError
-import io.github.kotlinmania.rustlang.io.read.DEFAULT_BUF_SIZE
-import io.github.kotlinmania.rustlang.vec.Vec
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -114,7 +117,8 @@ public open class BufWriter<W : Write>(
     // flag tells the Drop impl if it should skip the flush.
     public var panicked: Boolean,
     public var inner: W,
-) : Write, Seek {
+) : Write,
+    Seek {
     /**
      * Unwraps this `BufWriter<W>`, returning the underlying writer.
      *
@@ -138,12 +142,15 @@ public open class BufWriter<W : Write>(
     public open fun intoInner(): Result<W, IntoInnerError<BufWriter<W>>> =
         run {
             val matchVal = this.flushBuf()
-            when (matchVal) { is Result.Ok<*, *> -> {
-                Result.Ok(this.intoParts().first)
-            }; is Result.Err<*, *> -> {
-                val e = matchVal.error
-                Result.Err(IntoInnerError.new(this, e))
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    Result.Ok(this.intoParts().first)
+                }
+                is Result.Err<*, *> -> {
+                    val e = matchVal.error
+                    Result.Err(IntoInnerError.new(this, e))
+                }
+            }
         }
 
     /**
@@ -185,7 +192,7 @@ public open class BufWriter<W : Write>(
                 Result.Err(WriterPanicked(buf = buf))
             }
         // SAFETY: double-drops are prevented by putting `this` in a ManuallyDrop that is never dropped
-        val inner = ptr.read(thisRef.inner)
+        val inner = read(thisRef.inner)
         return Pair(inner, buf1)
     }
 
@@ -318,9 +325,7 @@ public open class BufWriter<W : Write>(
      * val reference = buffer.getMut()
      * ```
      */
-    public open fun getMut(): kotlin.reflect.KMutableProperty0<W> {
-        return this::inner
-    }
+    public open fun getMut(): kotlin.reflect.KMutableProperty0<W> = this::inner
 
     /**
      * Returns a reference to the internally buffered data.
@@ -348,9 +353,7 @@ public open class BufWriter<W : Write>(
      * Callers should not modify the capacity as there currently is no public API to do so
      * and thus any capacity changes would be unexpected by the user.
      */
-    public open fun bufferMut(): kotlin.reflect.KMutableProperty0<List<UByte>> {
-        return this::buf
-    }
+    public open fun bufferMut(): kotlin.reflect.KMutableProperty0<List<UByte>> = this::buf
 
     /**
      * Returns the number of bytes the internal buffer can hold without flushing.
@@ -377,7 +380,10 @@ public open class BufWriter<W : Write>(
     // or their write patterns are somewhat pathological.
     public open fun writeCold(buf: List<UByte>): Result<Int> {
         if (buf.size > this.spareCapacity()) {
-            when (val tryResult = this.flushBuf()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.flushBuf()) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         }
         // Why not len > capacity? To avoid a needless trip through the buffer when the input
         // exactly fills it. We'd just need to flush it to the underlying writer anyway.
@@ -413,7 +419,10 @@ public open class BufWriter<W : Write>(
         // round trips through the buffer in the event of a series of partial
         // writes in some circumstances.
         if (buf.size > this.spareCapacity()) {
-            when (val tryResult = this.flushBuf()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.flushBuf()) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         }
         // Why not len > capacity? To avoid a needless trip through the buffer when the input
         // exactly fills it. We'd just need to flush it to the underlying writer anyway.
@@ -448,7 +457,7 @@ public open class BufWriter<W : Write>(
         // ignore-tidy-undocumented-unchecked
         run {
             val dst = MutPtr((this.buf.asMutPtr()).rawAddress + ((oldLen).toLong() * (PrimitiveLayouts.U8).strideBytes))
-            ptr.copyNonoverlapping(src, dst, bufLen)
+            copyNonoverlapping(src, dst, bufLen)
             this.buf.setLen(oldLen + bufLen)
         }
     }
@@ -494,11 +503,14 @@ public open class BufWriter<W : Write>(
             // to the inner writer's `writeVectored` method to let it handle it appropriately.
             var saturatedTotalLen: Int = 0
             for (buf in bufs) {
-                saturatedTotalLen = rustSaturatingAdd(saturatedTotalLen, buf.len())
+                saturatedTotalLen = saturatedTotalLen.saturatingAdd(buf.len())
                 if (saturatedTotalLen > this.spareCapacity() && !this.buf.isEmpty()) {
                     // Flush if the total length of the input exceeds our buffer's spare capacity.
                     // If we would have overflowed, this condition also holds, and we need to flush.
-                    when (val tryResult = this.flushBuf()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.flushBuf()) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    }
                 }
                 if (saturatedTotalLen >= this.buf.capacity()) {
                     // Forward to our inner writer if the total length of the input is greater than or
@@ -530,7 +542,10 @@ public open class BufWriter<W : Write>(
                         // This is the first non-empty slice to write, so if it does
                         // not fit in the buffer, we still get to flush and proceed.
                         if (buf1.len() > this.spareCapacity()) {
-                            when (val tryResult = this.flushBuf()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                            when (val tryResult = this.flushBuf()) {
+                                is Result.Ok<*, *> -> tryResult.value
+                                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                            }
                         }
                         if (buf1.len() >= this.buf.capacity()) {
                             // The slice is at least as large as the buffering capacity,
@@ -572,7 +587,10 @@ public open class BufWriter<W : Write>(
     public open fun isWriteVectored(): Boolean = true
 
     public open fun flush(): Result<Unit> {
-        when (val tryResult = this.flushBuf()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.flushBuf()) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
         return this.getMut().flush()
     }
 
@@ -586,7 +604,10 @@ public open class BufWriter<W : Write>(
      * Seeking always writes out the internal buffer before seeking.
      */
     public open fun seek(pos: SeekFrom): Result<ULong> {
-        when (val tryResult = this.flushBuf()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.flushBuf()) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
         return this.getMut().seek(pos)
     }
 
@@ -618,10 +639,20 @@ public open class BufWriter<W : Write>(
          */
         public fun <W : Write> tryNewWith(f: () -> Result<W>): Result<BufWriter<W>> {
             val buf =
-                when (val tryResult = Vec.tryWithCapacity(DEFAULT_BUF_SIZE).mapErr({
-                    constError(ErrorKind.OutOfMemory, "failed to allocate write buffer")
-                })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-            val inner = when (val tryResult = f()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                when (
+                    val tryResult =
+                        Vec.tryWithCapacity(DEFAULT_BUF_SIZE).mapErr({
+                            constError(ErrorKind.OutOfMemory, "failed to allocate write buffer")
+                        })
+                ) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                }
+            val inner =
+                when (val tryResult = f()) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                }
             return Result.Ok(BufWriter(inner = inner, buf = buf, panicked = false))
         }
 

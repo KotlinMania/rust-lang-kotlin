@@ -1,20 +1,20 @@
 // port-lint: source float/div.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.div
 
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.CastInto
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.HInt
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.HalfRep
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
-import io.github.kotlinmania.rustlang.core.num.rustWrappingShl
-import io.github.kotlinmania.rustlang.core.num.rustWrappingShr
+import io.github.kotlinmania.rustlang.core.num.wrappingNeg
+import io.github.kotlinmania.rustlang.core.num.wrappingShl
+import io.github.kotlinmania.rustlang.core.num.wrappingShr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.support.CastInto
-import io.github.kotlinmania.rustlang.support.Float
-import io.github.kotlinmania.rustlang.support.HInt
-import io.github.kotlinmania.rustlang.support.HalfRep
-import io.github.kotlinmania.rustlang.support.Int
 
 // Floating point division routines.
 //
@@ -331,7 +331,7 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F>, fromBitsFFn: 
             // +            [  xUq0Hw *  blo  ]
             // -                      [      bUq1       ]
             // = [      result       ][.... discarded ...]
-            val corrUq1: Int = rustWrappingNeg(((F.Int.from(xUq0Hw) * F.Int.from(bUq1Hw) + ((F.Int.from(xUq0Hw) * blo) shr hw.toInt())) - (one.toInt())))
+            val corrUq1: Int = ((F.Int.from(xUq0Hw) * F.Int.from(bUq1Hw) + ((F.Int.from(xUq0Hw) * blo) shr hw.toInt())) - (one.toInt())).wrappingNeg()
             // account for *possible* carry
             val loCorr: Int = corrUq1 and loMask
             val hiCorr: Int = corrUq1 shr hw.toInt()
@@ -428,8 +428,8 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F>, fromBitsFFn: 
             if (((significandBits.toInt()) + resExponent) < 0) {
                 return fromBitsFFn(quotientSign)
             }
-            val ret1 = rustWrappingShr(quotient, UInt.castFrom(rustWrappingNeg(resExponent)) + 1u)
-            residualLo1 = (rustWrappingShl(aSignificand, significandBits.wrappingAdd(CastInto.castLossy(resExponent)).toUInt()) - (((ret1 * (bSignificand.toInt())) shl 1).toULong()))
+            val ret1 = quotient.wrappingShr(UInt.castFrom(resExponent.wrappingNeg()) + 1u)
+            residualLo1 = (aSignificand.wrappingShl(significandBits.wrappingAdd(CastInto.castLossy(resExponent)).toUInt()) - (((ret1 * (bSignificand.toInt())) shl 1).toULong()))
             ret1
         }
     residualLo1 += absResult and one

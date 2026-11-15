@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
@@ -10,584 +9,585 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.GidT
-import io.github.kotlinmania.rustlang.unix.LocaleT
-import io.github.kotlinmania.rustlang.unix.PidT
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.SsizeT
-import io.github.kotlinmania.rustlang.unix.UidT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.DevT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.LocaleT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ModeT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.NlItem
 
-private object LibcUnixBsdJniBridge {
+private object UnixBsdJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetrlimit(resource: Int, rlim: Long): Int
+    external fun libcUnixBsdGetrlimit(resource: Int, rlim: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSetrlimit(resource: Int, rlim: Long): Int
+    external fun libcUnixBsdSetrlimit(resource: Int, rlim: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdStrerrorR(errnum: Int, buf: Long, buflen: Long): Int
+    external fun libcUnixBsdStrerrorR(errnum: Int, buf: Long, buflen: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdAbs(i: Int): Int
+    external fun libcUnixBsdAbs(i: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdLabs(i: Long): Long
+    external fun libcUnixBsdLabs(i: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdRand(): Int
+    external fun libcUnixBsdRand(): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSrand(seed: Int)
+    external fun libcUnixBsdSrand(seed: Int)
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetifaddrs(ifap: Long): Int
+    external fun libcUnixBsdGetifaddrs(ifap: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdFreeifaddrs(ifa: Long)
+    external fun libcUnixBsdFreeifaddrs(ifa: Long)
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSetgroups(ngroups: Int, ptr: Long): Int
+    external fun libcUnixBsdSetgroups(ngroups: Int, ptr: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSetlogin(name: Long): Int
+    external fun libcUnixBsdSetlogin(name: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdIoctl(fd: Int, request: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun libcUnixBsdIoctl(fd: Int, request: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdKqueue(): Int
+    external fun libcUnixBsdKqueue(): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdUnmount(target: Long, arg: Int): Int
+    external fun libcUnixBsdUnmount(target: Long, arg: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetpwent(): Long
+    external fun libcUnixBsdGetpwent(): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSetpwent()
+    external fun libcUnixBsdSetpwent()
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdEndpwent()
+    external fun libcUnixBsdEndpwent()
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdEndgrent()
+    external fun libcUnixBsdEndgrent()
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetgrent(): Long
+    external fun libcUnixBsdGetgrent(): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetprogname(): Long
+    external fun libcUnixBsdGetprogname(): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSetprogname(name: Long)
+    external fun libcUnixBsdSetprogname(name: Long)
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetloadavg(loadavg: Long, nelem: Int): Int
+    external fun libcUnixBsdGetloadavg(loadavg: Long, nelem: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdIfNameindex(): Long
+    external fun libcUnixBsdIfNameindex(): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdIfFreenameindex(ptr: Long)
+    external fun libcUnixBsdIfFreenameindex(ptr: Long)
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetpeereid(socket: Int, euid: Long, egid: Long): Int
+    external fun libcUnixBsdGetpeereid(socket: Int, euid: Long, egid: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGlob(pattern: Long, flags: Int, errfunc: Long, pglob: Long): Int
+    external fun libcUnixBsdGlob(pattern: Long, flags: Int, errfunc: Long, pglob: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGlobfree(pglob: Long)
+    external fun libcUnixBsdGlobfree(pglob: Long)
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdPosixMadvise(addr: Long, len: Long, advice: Int): Int
+    external fun libcUnixBsdPosixMadvise(addr: Long, len: Long, advice: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdShmUnlink(name: Long): Int
+    external fun libcUnixBsdShmUnlink(name: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSeekdir(dirp: Long, loc: Long)
+    external fun libcUnixBsdSeekdir(dirp: Long, loc: Long)
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdTelldir(dirp: Long): Long
+    external fun libcUnixBsdTelldir(dirp: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdMadvise(addr: Long, len: Long, advice: Int): Int
+    external fun libcUnixBsdMadvise(addr: Long, len: Long, advice: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdMinherit(addr: Long, len: Long, inherit: Int): Int
+    external fun libcUnixBsdMinherit(addr: Long, len: Long, inherit: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdMsync(addr: Long, len: Long, flags: Int): Int
+    external fun libcUnixBsdMsync(addr: Long, len: Long, flags: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdRecvfrom(socket: Int, buf: Long, len: Long, flags: Int, addr: Long, addrlen: Long): Long
+    external fun libcUnixBsdRecvfrom(socket: Int, buf: Long, len: Long, flags: Int, addr: Long, addrlen: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdMkstemps(template: Long, suffixlen: Int): Int
+    external fun libcUnixBsdMkstemps(template: Long, suffixlen: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdFutimes(fd: Int, times: Long): Int
+    external fun libcUnixBsdFutimes(fd: Int, times: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdNlLanginfo(item: Int): Long
+    external fun libcUnixBsdNlLanginfo(item: Int): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdBind(socket: Int, address: Long, addressLen: Int): Int
+    external fun libcUnixBsdBind(socket: Int, address: Long, addressLen: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdWritev(fd: Int, iov: Long, iovcnt: Int): Long
+    external fun libcUnixBsdWritev(fd: Int, iov: Long, iovcnt: Int): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdReadv(fd: Int, iov: Long, iovcnt: Int): Long
+    external fun libcUnixBsdReadv(fd: Int, iov: Long, iovcnt: Int): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSendmsg(fd: Int, msg: Long, flags: Int): Long
+    external fun libcUnixBsdSendmsg(fd: Int, msg: Long, flags: Int): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdRecvmsg(fd: Int, msg: Long, flags: Int): Long
+    external fun libcUnixBsdRecvmsg(fd: Int, msg: Long, flags: Int): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSync()
+    external fun libcUnixBsdSync()
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetgrgidR(gid: Int, grp: Long, buf: Long, buflen: Long, result: Long): Int
+    external fun libcUnixBsdGetgrgidR(gid: Int, grp: Long, buf: Long, buflen: Long, result: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSigaltstack(ss: Long, oss: Long): Int
+    external fun libcUnixBsdSigaltstack(ss: Long, oss: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSigsuspend(mask: Long): Int
+    external fun libcUnixBsdSigsuspend(mask: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSemClose(sem: Long): Int
+    external fun libcUnixBsdSemClose(sem: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetdtablesize(): Int
+    external fun libcUnixBsdGetdtablesize(): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetgrnamR(name: Long, grp: Long, buf: Long, buflen: Long, result: Long): Int
+    external fun libcUnixBsdGetgrnamR(name: Long, grp: Long, buf: Long, buflen: Long, result: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdPthreadSigmask(how: Int, set: Long, oldset: Long): Int
+    external fun libcUnixBsdPthreadSigmask(how: Int, set: Long, oldset: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSemOpen(name: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
+    external fun libcUnixBsdSemOpen(name: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetgrnam(name: Long): Long
+    external fun libcUnixBsdGetgrnam(name: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdPthreadCancel(thread: Long): Int
+    external fun libcUnixBsdPthreadCancel(thread: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdPthreadKill(thread: Long, sig: Int): Int
+    external fun libcUnixBsdPthreadKill(thread: Long, sig: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSchedGetPriorityMin(policy: Int): Int
+    external fun libcUnixBsdSchedGetPriorityMin(policy: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSchedGetPriorityMax(policy: Int): Int
+    external fun libcUnixBsdSchedGetPriorityMax(policy: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSemUnlink(name: Long): Int
+    external fun libcUnixBsdSemUnlink(name: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetpwnamR(name: Long, pwd: Long, buf: Long, buflen: Long, result: Long): Int
+    external fun libcUnixBsdGetpwnamR(name: Long, pwd: Long, buf: Long, buflen: Long, result: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetpwuidR(uid: Int, pwd: Long, buf: Long, buflen: Long, result: Long): Int
+    external fun libcUnixBsdGetpwuidR(uid: Int, pwd: Long, buf: Long, buflen: Long, result: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSigwait(set: Long, sig: Long): Int
+    external fun libcUnixBsdSigwait(set: Long, sig: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdPthreadAtfork(prepare: Long, parent: Long, child: Long): Int
+    external fun libcUnixBsdPthreadAtfork(prepare: Long, parent: Long, child: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetgrgid(gid: Int): Long
+    external fun libcUnixBsdGetgrgid(gid: Int): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdPopen(command: Long, mode: Long): Long
+    external fun libcUnixBsdPopen(command: Long, mode: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdFaccessat(dirfd: Int, pathname: Long, mode: Int, flags: Int): Int
+    external fun libcUnixBsdFaccessat(dirfd: Int, pathname: Long, mode: Int, flags: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdPthreadCreate(native: Long, attr: Long, f: Long, value: Long): Int
+    external fun libcUnixBsdPthreadCreate(native: Long, attr: Long, f: Long, value: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdAcct(filename: Long): Int
+    external fun libcUnixBsdAcct(filename: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdWait4(pid: Int, status: Long, options: Int, rusage: Long): Int
+    external fun libcUnixBsdWait4(pid: Int, status: Long, options: Int, rusage: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetitimer(which: Int, currValue: Long): Int
+    external fun libcUnixBsdGetitimer(which: Int, currValue: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSetitimer(which: Int, newValue: Long, oldValue: Long): Int
+    external fun libcUnixBsdSetitimer(which: Int, newValue: Long, oldValue: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdRegcomp(preg: Long, pattern: Long, cflags: Int): Int
+    external fun libcUnixBsdRegcomp(preg: Long, pattern: Long, cflags: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdRegexec(preg: Long, input: Long, nmatch: Long, pmatch: Long, eflags: Int): Int
+    external fun libcUnixBsdRegexec(preg: Long, input: Long, nmatch: Long, pmatch: Long, eflags: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdRegerror(errcode: Int, preg: Long, errbuf: Long, errbufSize: Long): Long
+    external fun libcUnixBsdRegerror(errcode: Int, preg: Long, errbuf: Long, errbufSize: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdRegfree(preg: Long)
+    external fun libcUnixBsdRegfree(preg: Long)
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdArc4random(): Int
+    external fun libcUnixBsdArc4random(): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdArc4randomBuf(buf: Long, size: Long)
+    external fun libcUnixBsdArc4randomBuf(buf: Long, size: Long)
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdArc4randomUniform(l: Int): Int
+    external fun libcUnixBsdArc4randomUniform(l: Int): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdDrand48(): Double
+    external fun libcUnixBsdDrand48(): Double
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdErand48(xseed: Long): Double
+    external fun libcUnixBsdErand48(xseed: Long): Double
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdLrand48(): Long
+    external fun libcUnixBsdLrand48(): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdNrand48(xseed: Long): Long
+    external fun libcUnixBsdNrand48(xseed: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdMrand48(): Long
+    external fun libcUnixBsdMrand48(): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdJrand48(xseed: Long): Long
+    external fun libcUnixBsdJrand48(xseed: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSrand48(seed: Long)
+    external fun libcUnixBsdSrand48(seed: Long)
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSeed48(xseed: Long): Long
+    external fun libcUnixBsdSeed48(xseed: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdLcong48(p: Long)
+    external fun libcUnixBsdLcong48(p: Long)
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdGetoptLong(argc: Int, argv: Long, optstring: Long, longopts: Long, longindex: Long): Int
+    external fun libcUnixBsdGetoptLong(argc: Int, argv: Long, optstring: Long, longopts: Long, longindex: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdStrftime(buf: Long, maxsize: Long, format: Long, timeptr: Long): Long
+    external fun libcUnixBsdStrftime(buf: Long, maxsize: Long, format: Long, timeptr: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdStrftimeL(buf: Long, maxsize: Long, format: Long, timeptr: Long, locale: Long): Long
+    external fun libcUnixBsdStrftimeL(buf: Long, maxsize: Long, format: Long, timeptr: Long, locale: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdDevname(dev: Int, modeT: Int): Long
+    external fun libcUnixBsdDevname(dev: Int, modeT: Short): Long
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdIssetugid(): Int
+    external fun libcUnixBsdIssetugid(): Int
 
     @JvmStatic
-    external fun rustlangLibcUnixBsdSyscall(num: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun libcUnixBsdSyscall(num: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 }
 
 public actual fun getrlimit(resource: CInt, rlim: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetrlimit(resource, rlim.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdGetrlimit(resource, rlim.rawAddress)
 
 public actual fun setrlimit(resource: CInt, rlim: ConstPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSetrlimit(resource, rlim.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdSetrlimit(resource, rlim.rawAddress)
 
 public actual fun strerrorR(errnum: CInt, buf: MutPtr, buflen: SizeT): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdStrerrorR(errnum, buf.rawAddress, buflen.toLong())
+    UnixBsdJniBridge.libcUnixBsdStrerrorR(errnum, buf.rawAddress, buflen.toLong())
 
 public actual fun abs(i: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdAbs(i)
+    UnixBsdJniBridge.libcUnixBsdAbs(i)
 
 public actual fun labs(i: CLong): CLong =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdLabs(i)
+    UnixBsdJniBridge.libcUnixBsdLabs(i)
 
 public actual fun rand(): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdRand()
+    UnixBsdJniBridge.libcUnixBsdRand()
 
 public actual fun srand(seed: CUint) {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSrand(seed.toInt())
+    UnixBsdJniBridge.libcUnixBsdSrand(seed.toInt())
 }
 
 public actual fun getifaddrs(ifap: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetifaddrs(ifap.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdGetifaddrs(ifap.rawAddress)
 
 public actual fun freeifaddrs(ifa: MutPtr) {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdFreeifaddrs(ifa.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdFreeifaddrs(ifa.rawAddress)
 }
 
 public actual fun setgroups(ngroups: CInt, ptr: ConstPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSetgroups(ngroups, ptr.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdSetgroups(ngroups, ptr.rawAddress)
 
 public actual fun setlogin(name: ConstPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSetlogin(name.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdSetlogin(name.rawAddress)
 
 public actual fun ioctl(fd: CInt, request: CUlong, vararg variadicArgs: Long): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdIoctl(fd, request.toLong(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    UnixBsdJniBridge.libcUnixBsdIoctl(fd, request.toLong(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun kqueue(): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdKqueue()
+    UnixBsdJniBridge.libcUnixBsdKqueue()
 
 public actual fun unmount(target: ConstPtr, arg: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdUnmount(target.rawAddress, arg)
+    UnixBsdJniBridge.libcUnixBsdUnmount(target.rawAddress, arg)
 
 public actual fun getpwent(): MutPtr =
-    MutPtr(LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetpwent())
+    MutPtr(UnixBsdJniBridge.libcUnixBsdGetpwent())
 
 public actual fun setpwent() {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSetpwent()
+    UnixBsdJniBridge.libcUnixBsdSetpwent()
 }
 
 public actual fun endpwent() {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdEndpwent()
+    UnixBsdJniBridge.libcUnixBsdEndpwent()
 }
 
 public actual fun endgrent() {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdEndgrent()
+    UnixBsdJniBridge.libcUnixBsdEndgrent()
 }
 
 public actual fun getgrent(): MutPtr =
-    MutPtr(LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetgrent())
+    MutPtr(UnixBsdJniBridge.libcUnixBsdGetgrent())
 
 public actual fun getprogname(): ConstPtr =
-    ConstPtr(LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetprogname())
+    ConstPtr(UnixBsdJniBridge.libcUnixBsdGetprogname())
 
 public actual fun setprogname(name: ConstPtr) {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSetprogname(name.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdSetprogname(name.rawAddress)
 }
 
 public actual fun getloadavg(loadavg: MutPtr, nelem: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetloadavg(loadavg.rawAddress, nelem)
+    UnixBsdJniBridge.libcUnixBsdGetloadavg(loadavg.rawAddress, nelem)
 
 public actual fun ifNameindex(): MutPtr =
-    MutPtr(LibcUnixBsdJniBridge.rustlangLibcUnixBsdIfNameindex())
+    MutPtr(UnixBsdJniBridge.libcUnixBsdIfNameindex())
 
 public actual fun ifFreenameindex(ptr: MutPtr) {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdIfFreenameindex(ptr.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdIfFreenameindex(ptr.rawAddress)
 }
 
 public actual fun getpeereid(socket: CInt, euid: MutPtr, egid: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetpeereid(socket, euid.rawAddress, egid.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdGetpeereid(socket, euid.rawAddress, egid.rawAddress)
 
 public actual fun glob(pattern: ConstPtr, flags: CInt, errfunc: GlobErrfuncCallback?, pglob: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGlob(pattern.rawAddress, flags, 0L, pglob.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdGlob(pattern.rawAddress, flags, 0L, pglob.rawAddress)
 
 public actual fun globfree(pglob: MutPtr) {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGlobfree(pglob.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdGlobfree(pglob.rawAddress)
 }
 
 public actual fun posixMadvise(addr: MutPtr, len: SizeT, advice: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdPosixMadvise(addr.rawAddress, len.toLong(), advice)
+    UnixBsdJniBridge.libcUnixBsdPosixMadvise(addr.rawAddress, len.toLong(), advice)
 
 public actual fun shmUnlink(name: ConstPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdShmUnlink(name.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdShmUnlink(name.rawAddress)
 
 public actual fun seekdir(dirp: MutPtr, loc: CLong) {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSeekdir(dirp.rawAddress, loc)
+    UnixBsdJniBridge.libcUnixBsdSeekdir(dirp.rawAddress, loc)
 }
 
 public actual fun telldir(dirp: MutPtr): CLong =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdTelldir(dirp.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdTelldir(dirp.rawAddress)
 
 public actual fun madvise(addr: MutPtr, len: SizeT, advice: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdMadvise(addr.rawAddress, len.toLong(), advice)
+    UnixBsdJniBridge.libcUnixBsdMadvise(addr.rawAddress, len.toLong(), advice)
 
 public actual fun minherit(addr: MutPtr, len: SizeT, inherit: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdMinherit(addr.rawAddress, len.toLong(), inherit)
+    UnixBsdJniBridge.libcUnixBsdMinherit(addr.rawAddress, len.toLong(), inherit)
 
 public actual fun msync(addr: MutPtr, len: SizeT, flags: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdMsync(addr.rawAddress, len.toLong(), flags)
+    UnixBsdJniBridge.libcUnixBsdMsync(addr.rawAddress, len.toLong(), flags)
 
 public actual fun recvfrom(socket: CInt, buf: MutPtr, len: SizeT, flags: CInt, addr: MutPtr, addrlen: MutPtr): SsizeT =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdRecvfrom(socket, buf.rawAddress, len.toLong(), flags, addr.rawAddress, addrlen.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdRecvfrom(socket, buf.rawAddress, len.toLong(), flags, addr.rawAddress, addrlen.rawAddress)
 
 public actual fun mkstemps(template: MutPtr, suffixlen: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdMkstemps(template.rawAddress, suffixlen)
+    UnixBsdJniBridge.libcUnixBsdMkstemps(template.rawAddress, suffixlen)
 
 public actual fun futimes(fd: CInt, times: ConstPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdFutimes(fd, times.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdFutimes(fd, times.rawAddress)
 
 public actual fun nlLanginfo(item: NlItem): MutPtr =
-    MutPtr(LibcUnixBsdJniBridge.rustlangLibcUnixBsdNlLanginfo(item))
+    MutPtr(UnixBsdJniBridge.libcUnixBsdNlLanginfo(item))
 
-public actual fun bind(socket: CInt, address: ConstPtr, addressLen: io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdBind(socket, address.rawAddress, addressLen.toInt())
+public actual fun bind(socket: CInt, address: ConstPtr, addressLen: SocklenT): CInt =
+    UnixBsdJniBridge.libcUnixBsdBind(socket, address.rawAddress, addressLen.toInt())
 
 public actual fun writev(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdWritev(fd, iov.rawAddress, iovcnt)
+    UnixBsdJniBridge.libcUnixBsdWritev(fd, iov.rawAddress, iovcnt)
 
 public actual fun readv(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdReadv(fd, iov.rawAddress, iovcnt)
+    UnixBsdJniBridge.libcUnixBsdReadv(fd, iov.rawAddress, iovcnt)
 
 public actual fun sendmsg(fd: CInt, msg: ConstPtr, flags: CInt): SsizeT =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSendmsg(fd, msg.rawAddress, flags)
+    UnixBsdJniBridge.libcUnixBsdSendmsg(fd, msg.rawAddress, flags)
 
 public actual fun recvmsg(fd: CInt, msg: MutPtr, flags: CInt): SsizeT =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdRecvmsg(fd, msg.rawAddress, flags)
+    UnixBsdJniBridge.libcUnixBsdRecvmsg(fd, msg.rawAddress, flags)
 
 public actual fun sync() {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSync()
+    UnixBsdJniBridge.libcUnixBsdSync()
 }
 
 public actual fun getgrgidR(gid: GidT, grp: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetgrgidR(gid, grp.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdGetgrgidR(gid, grp.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
 
 public actual fun sigaltstack(ss: ConstPtr, oss: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSigaltstack(ss.rawAddress, oss.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdSigaltstack(ss.rawAddress, oss.rawAddress)
 
 public actual fun sigsuspend(mask: ConstPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSigsuspend(mask.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdSigsuspend(mask.rawAddress)
 
 public actual fun semClose(sem: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSemClose(sem.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdSemClose(sem.rawAddress)
 
 public actual fun getdtablesize(): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetdtablesize()
+    UnixBsdJniBridge.libcUnixBsdGetdtablesize()
 
 public actual fun getgrnamR(name: ConstPtr, grp: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetgrnamR(name.rawAddress, grp.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdGetgrnamR(name.rawAddress, grp.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
 
 public actual fun pthreadSigmask(how: CInt, set: ConstPtr, oldset: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdPthreadSigmask(how, set.rawAddress, oldset.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdPthreadSigmask(how, set.rawAddress, oldset.rawAddress)
 
 public actual fun semOpen(name: ConstPtr, oflag: CInt, vararg variadicArgs: Long): MutPtr =
-    MutPtr(LibcUnixBsdJniBridge.rustlangLibcUnixBsdSemOpen(name.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L))
+    MutPtr(UnixBsdJniBridge.libcUnixBsdSemOpen(name.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L))
 
 public actual fun getgrnam(name: ConstPtr): MutPtr =
-    MutPtr(LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetgrnam(name.rawAddress))
+    MutPtr(UnixBsdJniBridge.libcUnixBsdGetgrnam(name.rawAddress))
 
-public actual fun pthreadCancel(thread: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdPthreadCancel(thread.toLong())
+public actual fun pthreadCancel(thread: PthreadT): CInt =
+    UnixBsdJniBridge.libcUnixBsdPthreadCancel(thread.toLong())
 
-public actual fun pthreadKill(thread: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT, sig: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdPthreadKill(thread.toLong(), sig)
+public actual fun pthreadKill(thread: PthreadT, sig: CInt): CInt =
+    UnixBsdJniBridge.libcUnixBsdPthreadKill(thread.toLong(), sig)
 
 public actual fun schedGetPriorityMin(policy: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSchedGetPriorityMin(policy)
+    UnixBsdJniBridge.libcUnixBsdSchedGetPriorityMin(policy)
 
 public actual fun schedGetPriorityMax(policy: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSchedGetPriorityMax(policy)
+    UnixBsdJniBridge.libcUnixBsdSchedGetPriorityMax(policy)
 
 public actual fun semUnlink(name: ConstPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSemUnlink(name.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdSemUnlink(name.rawAddress)
 
 public actual fun getpwnamR(name: ConstPtr, pwd: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetpwnamR(name.rawAddress, pwd.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdGetpwnamR(name.rawAddress, pwd.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
 
 public actual fun getpwuidR(uid: UidT, pwd: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetpwuidR(uid, pwd.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdGetpwuidR(uid, pwd.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
 
 public actual fun sigwait(set: ConstPtr, sig: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSigwait(set.rawAddress, sig.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdSigwait(set.rawAddress, sig.rawAddress)
 
 public actual fun pthreadAtfork(prepare: PthreadAtforkPrepareCallback?, parent: PthreadAtforkPrepareCallback?, child: PthreadAtforkPrepareCallback?): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdPthreadAtfork(0L, 0L, 0L)
+    UnixBsdJniBridge.libcUnixBsdPthreadAtfork(0L, 0L, 0L)
 
 public actual fun getgrgid(gid: GidT): MutPtr =
-    MutPtr(LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetgrgid(gid))
+    MutPtr(UnixBsdJniBridge.libcUnixBsdGetgrgid(gid))
 
 public actual fun popen(command: ConstPtr, mode: ConstPtr): MutPtr =
-    MutPtr(LibcUnixBsdJniBridge.rustlangLibcUnixBsdPopen(command.rawAddress, mode.rawAddress))
+    MutPtr(UnixBsdJniBridge.libcUnixBsdPopen(command.rawAddress, mode.rawAddress))
 
 public actual fun faccessat(dirfd: CInt, pathname: ConstPtr, mode: CInt, flags: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdFaccessat(dirfd, pathname.rawAddress, mode, flags)
+    UnixBsdJniBridge.libcUnixBsdFaccessat(dirfd, pathname.rawAddress, mode, flags)
 
 public actual fun pthreadCreate(native: MutPtr, attr: ConstPtr, f: PthreadCreateFCallback, value: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdPthreadCreate(native.rawAddress, attr.rawAddress, 0L, value.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdPthreadCreate(native.rawAddress, attr.rawAddress, 0L, value.rawAddress)
 
 public actual fun acct(filename: ConstPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdAcct(filename.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdAcct(filename.rawAddress)
 
 public actual fun wait4(pid: PidT, status: MutPtr, options: CInt, rusage: MutPtr): PidT =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdWait4(pid, status.rawAddress, options, rusage.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdWait4(pid, status.rawAddress, options, rusage.rawAddress)
 
 public actual fun getitimer(which: CInt, currValue: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetitimer(which, currValue.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdGetitimer(which, currValue.rawAddress)
 
 public actual fun setitimer(which: CInt, newValue: ConstPtr, oldValue: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSetitimer(which, newValue.rawAddress, oldValue.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdSetitimer(which, newValue.rawAddress, oldValue.rawAddress)
 
 public actual fun regcomp(preg: MutPtr, pattern: ConstPtr, cflags: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdRegcomp(preg.rawAddress, pattern.rawAddress, cflags)
+    UnixBsdJniBridge.libcUnixBsdRegcomp(preg.rawAddress, pattern.rawAddress, cflags)
 
 public actual fun regexec(preg: ConstPtr, input: ConstPtr, nmatch: SizeT, pmatch: MutPtr, eflags: CInt): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdRegexec(preg.rawAddress, input.rawAddress, nmatch.toLong(), pmatch.rawAddress, eflags)
+    UnixBsdJniBridge.libcUnixBsdRegexec(preg.rawAddress, input.rawAddress, nmatch.toLong(), pmatch.rawAddress, eflags)
 
 public actual fun regerror(errcode: CInt, preg: ConstPtr, errbuf: MutPtr, errbufSize: SizeT): SizeT =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdRegerror(errcode, preg.rawAddress, errbuf.rawAddress, errbufSize.toLong()).toULong()
+    UnixBsdJniBridge.libcUnixBsdRegerror(errcode, preg.rawAddress, errbuf.rawAddress, errbufSize.toLong()).toULong()
 
 public actual fun regfree(preg: MutPtr) {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdRegfree(preg.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdRegfree(preg.rawAddress)
 }
 
 public actual fun arc4random(): UInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdArc4random().toUInt()
+    UnixBsdJniBridge.libcUnixBsdArc4random().toUInt()
 
 public actual fun arc4randomBuf(buf: MutPtr, size: SizeT) {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdArc4randomBuf(buf.rawAddress, size.toLong())
+    UnixBsdJniBridge.libcUnixBsdArc4randomBuf(buf.rawAddress, size.toLong())
 }
 
 public actual fun arc4randomUniform(l: UInt): UInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdArc4randomUniform(l.toInt()).toUInt()
+    UnixBsdJniBridge.libcUnixBsdArc4randomUniform(l.toInt()).toUInt()
 
 public actual fun drand48(): CDouble =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdDrand48()
+    UnixBsdJniBridge.libcUnixBsdDrand48()
 
 public actual fun erand48(xseed: MutPtr): CDouble =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdErand48(xseed.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdErand48(xseed.rawAddress)
 
 public actual fun lrand48(): CLong =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdLrand48()
+    UnixBsdJniBridge.libcUnixBsdLrand48()
 
 public actual fun nrand48(xseed: MutPtr): CLong =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdNrand48(xseed.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdNrand48(xseed.rawAddress)
 
 public actual fun mrand48(): CLong =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdMrand48()
+    UnixBsdJniBridge.libcUnixBsdMrand48()
 
 public actual fun jrand48(xseed: MutPtr): CLong =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdJrand48(xseed.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdJrand48(xseed.rawAddress)
 
 public actual fun srand48(seed: CLong) {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSrand48(seed)
+    UnixBsdJniBridge.libcUnixBsdSrand48(seed)
 }
 
 public actual fun seed48(xseed: MutPtr): MutPtr =
-    MutPtr(LibcUnixBsdJniBridge.rustlangLibcUnixBsdSeed48(xseed.rawAddress))
+    MutPtr(UnixBsdJniBridge.libcUnixBsdSeed48(xseed.rawAddress))
 
 public actual fun lcong48(p: MutPtr) {
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdLcong48(p.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdLcong48(p.rawAddress)
 }
 
 public actual fun getoptLong(argc: CInt, argv: ConstPtr, optstring: ConstPtr, longopts: ConstPtr, longindex: MutPtr): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdGetoptLong(argc, argv.rawAddress, optstring.rawAddress, longopts.rawAddress, longindex.rawAddress)
+    UnixBsdJniBridge.libcUnixBsdGetoptLong(argc, argv.rawAddress, optstring.rawAddress, longopts.rawAddress, longindex.rawAddress)
 
 public actual fun strftime(buf: MutPtr, maxsize: SizeT, format: ConstPtr, timeptr: ConstPtr): SizeT =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdStrftime(buf.rawAddress, maxsize.toLong(), format.rawAddress, timeptr.rawAddress).toULong()
+    UnixBsdJniBridge.libcUnixBsdStrftime(buf.rawAddress, maxsize.toLong(), format.rawAddress, timeptr.rawAddress).toULong()
 
 public actual fun strftimeL(buf: MutPtr, maxsize: SizeT, format: ConstPtr, timeptr: ConstPtr, locale: LocaleT): SizeT =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdStrftimeL(buf.rawAddress, maxsize.toLong(), format.rawAddress, timeptr.rawAddress, locale.rawAddress).toULong()
+    UnixBsdJniBridge.libcUnixBsdStrftimeL(buf.rawAddress, maxsize.toLong(), format.rawAddress, timeptr.rawAddress, locale.rawAddress).toULong()
 
 public actual fun devname(dev: DevT, modeT: ModeT): MutPtr =
-    MutPtr(LibcUnixBsdJniBridge.rustlangLibcUnixBsdDevname(dev, modeT.toInt()))
+    MutPtr(UnixBsdJniBridge.libcUnixBsdDevname(dev, modeT.toShort()))
 
 public actual fun issetugid(): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdIssetugid()
+    UnixBsdJniBridge.libcUnixBsdIssetugid()
 
 public actual fun syscall(num: CInt, vararg variadicArgs: Long): CInt =
-    LibcUnixBsdJniBridge.rustlangLibcUnixBsdSyscall(num, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    UnixBsdJniBridge.libcUnixBsdSyscall(num, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)

@@ -3,30 +3,30 @@ package io.github.kotlinmania.rustlang.core.any
 
 import io.github.kotlinmania.rustlang.core.RustTypeId
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeId
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdEq
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVtable
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
+import io.github.kotlinmania.rustlang.core.mem.typeinfo.TraitImpl
+import io.github.kotlinmania.rustlang.core.mem.typeinfo.TypeKind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.metadata.DynMetadata
+import io.github.kotlinmania.rustlang.core.ptr.metadata.Pointee
+import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeId
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdEq
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdVtable
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.mem.transmutability.transmute
-import io.github.kotlinmania.rustlang.mem.typeinfo.TraitImpl
-import io.github.kotlinmania.rustlang.mem.typeinfo.TypeKind
-import io.github.kotlinmania.rustlang.ptr.metadata.DynMetadata
-import io.github.kotlinmania.rustlang.ptr.metadata.Pointee
-import io.github.kotlinmania.rustlang.ptr.readUnaligned
 
 // Utilities for dynamic typing or type reflection.
 //
@@ -575,9 +575,10 @@ public open class TypeId internal constructor(
             return null
         }
         return if (when (val matchVal = traitRepresentedByTypeId.info().kind) {
-            is TypeKind.DynTrait -> true
-            else -> false
-        } && typeIdVtable(this, traitRepresentedByTypeId) != null) {
+                is TypeKind.DynTrait -> true
+                else -> false
+            } && typeIdVtable(this, traitRepresentedByTypeId) != null
+        ) {
             TraitImpl(vtable = vtable)
         } else {
             null
@@ -587,10 +588,17 @@ public open class TypeId internal constructor(
     public open fun asU128(): U128 {
         val bytes = MutableList(16) { 0 }
         // This is a provenance-stripping memcpy.
-        for ((i, chunk) in this.data.iter().copied().mapIndexed { index, item -> Pair(index, item) }) {
+        for ((i, chunk) in this.data
+            .iter()
+            .copied()
+            .mapIndexed { index, item -> Pair(index, item) }) {
             val chunk1 = chunk.addr().toNeBytes()
             val start = i * chunk1.size
-            run { val dstTmp0 = bytes; val srcTmp0 = chunk1; for (idxTmp0 in srcTmp0.indices) dstTmp0[(start) + idxTmp0] = srcTmp0[idxTmp0] }
+            run {
+                val dstTmp0 = bytes
+                val srcTmp0 = chunk1
+                for (idxTmp0 in srcTmp0.indices) dstTmp0[(start) + idxTmp0] = srcTmp0[idxTmp0]
+            }
         }
         return U128.fromLeBytes(bytes)
     }
@@ -639,9 +647,10 @@ public open class TypeId internal constructor(
 
         public operator fun invoke(
             data: List<ConstPtr>,
-        ): TypeId = TypeId(
-            dataCtorArg = data,
-        )
+        ): TypeId =
+            TypeId(
+                dataCtorArg = data,
+            )
 
         /**
          * Returns the `TypeId` of the generic type parameter.
@@ -824,6 +833,7 @@ public interface TryAsDynCompatible : Pointee<DynMetadata<TryAsDynCompatible>>
  *
  * ```kotlin
  * import core.any.tryAsDyn
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * @feature(tryAsDyn)
@@ -847,8 +857,8 @@ public interface TryAsDynCompatible : Pointee<DynMetadata<TryAsDynCompatible>>
  *                 // SAFETY: x and y are valid for reads of sizeOf::<T>() bytes
  *                 // BytewiseEq trait guarantees we can interperet these bytes as u8's
  *                 // and compare them for equality
- *                 val x1 = sliceFromRawParts(ConstPtr(((x)).rawAddress), sizeOfVal(x))
- *                 val y1 = sliceFromRawParts(ConstPtr(((y)).rawAddress), sizeOfVal(y))
+ *                 val x1 = sliceFromRawParts(ConstPtr(((x)).rawAddress), sizeOfVal(x, typeLayoutT = UnresolvedTypeLayout<T>()))
+ *                 val y1 = sliceFromRawParts(ConstPtr(((y)).rawAddress), sizeOfVal(y, typeLayoutT = UnresolvedTypeLayout<T>()))
  *                 x1 == y1
  *             }
  *         } else {
@@ -919,12 +929,12 @@ public fun <T, U : TryAsDynCompatible> tryAsDyn(t: T): U? {
         null -> null
         else -> {
             val dynMetadata = vtable
-            val pointer = rawSliceList((constPtrFromRustCast(t)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata.toInt(), PrimitiveLayouts.UNIT)
+            val pointer = linearSliceView((constPtrFromRustCast(t)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata.toInt(), PrimitiveLayouts.UNIT)
             // SAFETY: `t` is a reference to a type, so we know it is valid.
             // `dynMetadata` is a vtable for T, implementing the trait of `U`.
             // `T` is sized here because `traitInfoOf` only returns `Some` for sized types,
             // so the thin data pointer fully describes the value.
-            (ObjectSlotLayout<T>()).readNative((pointer).rawAddress)
+            (UnresolvedTypeLayout<T>()).readNative((pointer).rawAddress)
         }
     }
 }
@@ -943,12 +953,12 @@ public fun <T, U : TryAsDynCompatible> tryAsDynMut(t: T): U? {
         null -> null
         else -> {
             val dynMetadata = vtable
-            val pointer = rawMutSliceList((mutPtrFromRustCast(t)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata.toInt(), PrimitiveLayouts.UNIT)
+            val pointer = linearMutSliceView((mutPtrFromRustCast(t)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata.toInt(), PrimitiveLayouts.UNIT)
             // SAFETY: `t` is a reference to a type, so we know it is valid.
             // `dynMetadata` is a vtable for T, implementing the trait of `U`.
             // `T` is sized here because `traitInfoOf` only returns `Some` for sized types,
             // so the thin data pointer fully describes the value.
-            RustMutableReference(MutPtr((pointer).rawAddress), ObjectSlotLayout<T>())
+            RustMutableReference(MutPtr((pointer).rawAddress), UnresolvedTypeLayout<T>())
         }
     }
 }

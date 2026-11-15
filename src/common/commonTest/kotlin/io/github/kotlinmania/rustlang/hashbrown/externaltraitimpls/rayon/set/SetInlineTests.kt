@@ -1,9 +1,9 @@
 // port-lint: tests external_trait_impls/rayon/set.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.set
 
-import io.github.kotlinmania.rustlang.HashSet
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.hashbrown.HashSet
 
 // Rayon extensions for `HashSet`.
 

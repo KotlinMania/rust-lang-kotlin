@@ -1,21 +1,21 @@
 // port-lint: source slice/sort/stable/quicksort.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.stable.quicksort
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.intrinsics.abortImmediate
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.ptr.read
-import io.github.kotlinmania.rustlang.slice.sort.shared.pivot.choosePivot
-import io.github.kotlinmania.rustlang.slice.sort.stable.drift.sort
+import io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot.choosePivot
+import io.github.kotlinmania.rustlang.core.slice.sort.stable.drift.sort
 
 // This module contains a stable quicksort and partition implementation.
 
@@ -93,7 +93,7 @@ public fun <T> quicksort(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>
 public fun <T> stablePartition(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>, pivotPos: Int, pivotGoesLeft: Boolean, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): Int {
     val len = v.size
     if (scratch.size < len || pivotPos >= len) {
-        abortImmediate()
+        kmAbort()
     }
     val vBase = v.asPtr()
     val scratchBase = scratch.asMutPtr().castInit()
@@ -119,7 +119,7 @@ public fun <T> stablePartition(v: MutableList<T>, scratch: MutableList<MaybeUnin
             // compile times but has a ~10-20% performance penalty on opt-level=s.
             if (sizeOf<T>(typeLayoutT = typeLayoutT) <= 16) {
                 val UNROLL_LEN: Int = 4
-                val unrollEnd = ConstPtr((vBase).rawAddress + ((rustSaturatingSub(loopEndPos, (UNROLL_LEN - 1).toInt())).toLong() * (typeLayoutT).strideBytes))
+                val unrollEnd = ConstPtr((vBase).rawAddress + ((loopEndPos.saturatingSub((UNROLL_LEN - 1).toInt())).toLong() * (typeLayoutT).strideBytes))
                 while (((state.scan).rawAddress.toULong() < (unrollEnd).rawAddress.toULong())) {
                     state.partitionOne(isLess((typeLayoutT).readNative((state.scan).rawAddress), (typeLayoutT).readNative((pivot).rawAddress)))
                     state.partitionOne(isLess((typeLayoutT).readNative((state.scan).rawAddress), (typeLayoutT).readNative((pivot).rawAddress)))
@@ -189,7 +189,7 @@ public open class PartitionState<T>(
             // right now is incremented at most len - 1 times. Similarly, numLeft < len and
             // numRight < len, where numRight == i - numLeft at the start of the ith
             // iteration (zero-indexed).
-            this.scratchRev = MutPtr((this.scratchRev).rawAddress - ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+            this.scratchRev = MutPtr((this.scratchRev).rawAddress - ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
             // SAFETY: now we have scratchRev == base + len - (i + 1). This means
             // scratchRev + numLeft == base + len - 1 - numRight < base + len.
             val dstBase =
@@ -198,10 +198,10 @@ public open class PartitionState<T>(
                 } else {
                     this.scratchRev
                 }
-            val dst = MutPtr((dstBase).rawAddress + ((this.numLeft).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+            val dst = MutPtr((dstBase).rawAddress + ((this.numLeft).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
             copyNonoverlapping(this.scan, dst, 1)
             this.numLeft += towardsLeft.toInt()
-            this.scan = ConstPtr((this.scan).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+            this.scan = ConstPtr((this.scan).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
             dst
         }
     }

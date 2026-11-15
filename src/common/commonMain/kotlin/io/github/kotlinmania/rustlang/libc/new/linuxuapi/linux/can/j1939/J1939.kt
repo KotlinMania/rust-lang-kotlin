@@ -7,8 +7,8 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.can.CAN_J1939
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.can.SOL_CAN_BASE
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.CAN_J1939
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.SOL_CAN_BASE
 
 // `linux / can / j1939.h`
 
@@ -83,14 +83,16 @@ public val J1939_EE_INFO_RX_DPO: CInt = 3
 
 public val J1939_EE_INFO_RX_ABORT: CInt = 4
 
-public data class J1939Filter(
-    public var name: NameT = 0uL,
-    public var nameMask: NameT = 0uL,
-    public var pgn: PgnT = 0u,
-    public var pgnMask: PgnT = 0u,
-    public var addr: UByte = 0u,
-    public var addrMask: UByte = 0u,
+public open class J1939Filter(
+    public var name: NameT,
+    public var nameMask: NameT,
+    public var pgn: PgnT,
+    public var pgnMask: PgnT,
+    public var addr: UByte,
+    public var addrMask: UByte,
 ) {
+    public open fun clone(): J1939Filter = J1939Filter(name, nameMask, pgn, pgnMask, addr, addrMask)
+
     public companion object {
         public fun typeLayout(): TypeLayout<J1939Filter> =
             object : TypeLayout<J1939Filter> {

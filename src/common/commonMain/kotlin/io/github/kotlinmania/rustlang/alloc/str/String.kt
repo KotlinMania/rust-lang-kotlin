@@ -1,29 +1,28 @@
 // port-lint: source str.rs
 package io.github.kotlinmania.rustlang.alloc.str
 
-import io.github.kotlinmania.rustlang.Alloc
-import io.github.kotlinmania.rustlang.boxed.Box
+import io.github.kotlinmania.rustlang.alloc.boxed.Box
+import io.github.kotlinmania.rustlang.alloc.slice.Join
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.pattern.Utf8Pattern
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toCasefold
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toLower
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toUpper
-import io.github.kotlinmania.rustlang.slice.Join
 
 // Utilities for the `String` primitive type.
 //
@@ -79,7 +78,9 @@ public fun <B, T, S> joinGenericCopy(slice: List<S>, sep: List<T>): List<T> wher
     // to avoid inconsistent Borrow implementations from breaking our assumptions
     val first1 =
         when (val matchVal = iter.next()) {
-            null -> { return mutableListOf() }
+            null -> {
+                return mutableListOf()
+            }
             else -> {
                 val first = matchVal
                 first.borrow().asRef()
@@ -90,11 +91,13 @@ public fun <B, T, S> joinGenericCopy(slice: List<S>, sep: List<T>): List<T> wher
     // we would have run out of memory anyway and the rest of the function requires
     // the entire Vec pre-allocated for safety
     val reservedLen =
-        (rustCheckedMul(sepLen, iter.len())?.let({ n -> n.checkedAdd(first1.len()) })?.let({ n ->
-            // iter starts from the second element as we've already taken the first
-            // it's cloned so we can reuse the same iterator below
-            iter.clone().map({ s -> s.borrow().asRef().len() }).tryFold(n, Int::checkedAdd)
-        }) ?: error("attempt to join into collection with len > usize::MAX"))
+        (
+            sepLen.checkedMul(iter.len())?.let({ n -> n.checkedAdd(first1.len()) })?.let({ n ->
+                // iter starts from the second element as we've already taken the first
+                // it's cloned so we can reuse the same iterator below
+                iter.clone().map({ s -> s.borrow().asRef().len() }).tryFold(n, Int::checkedAdd)
+            }) ?: error("attempt to join into collection with len > usize::MAX")
+        )
     // prepare an uninitialized buffer
     val result = ArrayList<T>(reservedLen)
     check(result.capacity() >= reservedLen)
@@ -107,104 +110,105 @@ public fun <B, T, S> joinGenericCopy(slice: List<S>, sep: List<T>): List<T> wher
     // to simplify implementation in specializeForLengths.
     // SAFETY: `sep` is a slice of `T`, so `sep.asPtr().cast()` is a valid pointer,
     // and `sep.len()` is the number of elements in the slice, so `fromRawParts` is safe.
-    val sepUninit = rawSliceList(sep.asPtr(), sep.size, PrimitiveLayouts.U8)
+    val sepUninit = linearSliceView(sep.asPtr(), sep.size, PrimitiveLayouts.U8)
     val iterUninit =
         iter.map({ it ->
             val it1 = it.borrow().asRef()
             // SAFETY: `it` is a slice of `T`, so `it.asPtr().cast()` is a valid pointer,
             // and `it.len()` is the number of elements in the slice, so `fromRawParts` is safe.
-            rawSliceList(it1.asPtr().cast(), it1.len().toInt(), PrimitiveLayouts.U8)
+            linearSliceView(it1.asPtr().cast(), it1.len().toInt(), PrimitiveLayouts.U8)
         })
     // copy separator and slices over without bounds checks.
     // `specializeForLengths` internally calls `s.borrow()`, but because it uses
     // the bounds-checked `splitAtMut` any misbehaving implementation
     // will not write out of bounds.
-    val remain = run {
-        var target1 = target
-        val iter1 = iterUninit
-        val sepBytes = sepUninit
-        when (sepUninit.len()) {
-            0 -> {
-                for (s in iter1) {
-                    val len = sepBytes.len()
-                    val (head, tail) = target1.splitAtMut(len)
-                    head.copyFromSlice(sepBytes)
-                    target1 = tail
-                    val contentBytes = s.borrow().asRef()
-                    val len1 = contentBytes.len()
-                    val (head1, tail1) = target1.splitAtMut(len1)
-                    head1.copyFromSlice(contentBytes)
-                    target1 = tail1
+    val remain =
+        run {
+            var target1 = target
+            val iter1 = iterUninit
+            val sepBytes = sepUninit
+            when (sepUninit.len()) {
+                0 -> {
+                    for (s in iter1) {
+                        val len = sepBytes.len()
+                        val (head, tail) = target1.splitAtMut(len)
+                        head.copyFromSlice(sepBytes)
+                        target1 = tail
+                        val contentBytes = s.borrow().asRef()
+                        val len1 = contentBytes.len()
+                        val (head1, tail1) = target1.splitAtMut(len1)
+                        head1.copyFromSlice(contentBytes)
+                        target1 = tail1
+                    }
+                }
+                1 -> {
+                    for (s1 in iter1) {
+                        val len2 = sepBytes.len()
+                        val (head2, tail2) = target1.splitAtMut(len2)
+                        head2.copyFromSlice(sepBytes)
+                        target1 = tail2
+                        val contentBytes1 = s1.borrow().asRef()
+                        val len3 = contentBytes1.len()
+                        val (head3, tail3) = target1.splitAtMut(len3)
+                        head3.copyFromSlice(contentBytes1)
+                        target1 = tail3
+                    }
+                }
+                2 -> {
+                    for (s2 in iter1) {
+                        val len4 = sepBytes.len()
+                        val (head4, tail4) = target1.splitAtMut(len4)
+                        head4.copyFromSlice(sepBytes)
+                        target1 = tail4
+                        val contentBytes2 = s2.borrow().asRef()
+                        val len5 = contentBytes2.len()
+                        val (head5, tail5) = target1.splitAtMut(len5)
+                        head5.copyFromSlice(contentBytes2)
+                        target1 = tail5
+                    }
+                }
+                3 -> {
+                    for (s3 in iter1) {
+                        val len6 = sepBytes.len()
+                        val (head6, tail6) = target1.splitAtMut(len6)
+                        head6.copyFromSlice(sepBytes)
+                        target1 = tail6
+                        val contentBytes3 = s3.borrow().asRef()
+                        val len7 = contentBytes3.len()
+                        val (head7, tail7) = target1.splitAtMut(len7)
+                        head7.copyFromSlice(contentBytes3)
+                        target1 = tail7
+                    }
+                }
+                4 -> {
+                    for (s4 in iter1) {
+                        val len8 = sepBytes.len()
+                        val (head8, tail8) = target1.splitAtMut(len8)
+                        head8.copyFromSlice(sepBytes)
+                        target1 = tail8
+                        val contentBytes4 = s4.borrow().asRef()
+                        val len9 = contentBytes4.len()
+                        val (head9, tail9) = target1.splitAtMut(len9)
+                        head9.copyFromSlice(contentBytes4)
+                        target1 = tail9
+                    }
+                }
+                else -> {
+                    for (s5 in iter1) {
+                        val len10 = sepBytes.len()
+                        val (head10, tail10) = target1.splitAtMut(len10)
+                        head10.copyFromSlice(sepBytes)
+                        target1 = tail10
+                        val contentBytes5 = s5.borrow().asRef()
+                        val len11 = contentBytes5.len()
+                        val (head11, tail11) = target1.splitAtMut(len11)
+                        head11.copyFromSlice(contentBytes5)
+                        target1 = tail11
+                    }
                 }
             }
-            1 -> {
-                for (s1 in iter1) {
-                    val len2 = sepBytes.len()
-                    val (head2, tail2) = target1.splitAtMut(len2)
-                    head2.copyFromSlice(sepBytes)
-                    target1 = tail2
-                    val contentBytes1 = s1.borrow().asRef()
-                    val len3 = contentBytes1.len()
-                    val (head3, tail3) = target1.splitAtMut(len3)
-                    head3.copyFromSlice(contentBytes1)
-                    target1 = tail3
-                }
-            }
-            2 -> {
-                for (s2 in iter1) {
-                    val len4 = sepBytes.len()
-                    val (head4, tail4) = target1.splitAtMut(len4)
-                    head4.copyFromSlice(sepBytes)
-                    target1 = tail4
-                    val contentBytes2 = s2.borrow().asRef()
-                    val len5 = contentBytes2.len()
-                    val (head5, tail5) = target1.splitAtMut(len5)
-                    head5.copyFromSlice(contentBytes2)
-                    target1 = tail5
-                }
-            }
-            3 -> {
-                for (s3 in iter1) {
-                    val len6 = sepBytes.len()
-                    val (head6, tail6) = target1.splitAtMut(len6)
-                    head6.copyFromSlice(sepBytes)
-                    target1 = tail6
-                    val contentBytes3 = s3.borrow().asRef()
-                    val len7 = contentBytes3.len()
-                    val (head7, tail7) = target1.splitAtMut(len7)
-                    head7.copyFromSlice(contentBytes3)
-                    target1 = tail7
-                }
-            }
-            4 -> {
-                for (s4 in iter1) {
-                    val len8 = sepBytes.len()
-                    val (head8, tail8) = target1.splitAtMut(len8)
-                    head8.copyFromSlice(sepBytes)
-                    target1 = tail8
-                    val contentBytes4 = s4.borrow().asRef()
-                    val len9 = contentBytes4.len()
-                    val (head9, tail9) = target1.splitAtMut(len9)
-                    head9.copyFromSlice(contentBytes4)
-                    target1 = tail9
-                }
-            }
-            else -> {
-                for (s5 in iter1) {
-                    val len10 = sepBytes.len()
-                    val (head10, tail10) = target1.splitAtMut(len10)
-                    head10.copyFromSlice(sepBytes)
-                    target1 = tail10
-                    val contentBytes5 = s5.borrow().asRef()
-                    val len11 = contentBytes5.len()
-                    val (head11, tail11) = target1.splitAtMut(len11)
-                    head11.copyFromSlice(contentBytes5)
-                    target1 = tail11
-                }
-            }
+            target1
         }
-        target1
-    }
     // A weird borrow implementation may return different
     // slices for the length calculation and the actual copy.
     // Make sure we don't expose uninitialized bytes to the caller.
@@ -230,7 +234,7 @@ public fun mapUppercaseSigma(from: String, i: Int): Char {
         }
     // See https://www.unicode.org/versions/latest/core-spec/chapter-3/#G54277
     // for the definition of `FinalSigma`.
-    val isWordFinal = caseIgnorableThenCased(from.substring(0 until i).rustStrChars().rev()) && !caseIgnorableThenCased(from.substring(i + '\u03a3'.lenUtf8()).rustStrChars())
+    val isWordFinal = caseIgnorableThenCased(from.substring(0 until i).chars().rev()) && !caseIgnorableThenCased(from.substring(i + '\u03a3'.lenUtf8()).chars())
     return if (isWordFinal) {
         '\u03c2'
     } else {
@@ -255,6 +259,7 @@ public fun String.cloneInto(target: String) {
 /**
  * Methods for string slices.
  */
+
 /**
  * Converts a `Holder<String>` into a `Holder<[UByte]>` without copying or allocating.
  *
@@ -293,26 +298,29 @@ public fun String.intoBoxedBytes(): List<UByte> = this.into()
  */
 public fun <Searcher, P : Pattern<Any?>> String.replace(from: P, to: String): String {
     // Fast path for replacing a single ASCII character with another.
-    when (val matchVal2 = when (val matchVal = from.asUtf8Pattern()) {
-        is Utf8Pattern.StringPattern -> {
-            val (s) = matchVal as Utf8Pattern.StringPattern
-            run {
-                val matchVal1 = s.encodeToByteArray().map { it.toUByte() }
-                when {
-                    matchVal1.size == 1 -> {
-                        val fromByte = matchVal1[0]
-                        fromByte
+    when (
+        val matchVal2 =
+            when (val matchVal = from.asUtf8Pattern()) {
+                is Utf8Pattern.StringPattern -> {
+                    val (s) = matchVal as Utf8Pattern.StringPattern
+                    run {
+                        val matchVal1 = s.encodeToByteArray().map { it.toUByte() }
+                        when {
+                            matchVal1.size == 1 -> {
+                                val fromByte = matchVal1[0]
+                                fromByte
+                            }
+                            else -> null
+                        }
                     }
-                    else -> null
                 }
+                is Utf8Pattern.CharPattern -> {
+                    val (c) = matchVal as Utf8Pattern.CharPattern
+                    c.asAscii().map({ asciiChar -> asciiChar.toU8() })
+                }
+                else -> null
             }
-        }
-        is Utf8Pattern.CharPattern -> {
-            val (c) = matchVal as Utf8Pattern.CharPattern
-            c.asAscii().map({ asciiChar -> asciiChar.toU8() })
-        }
-        else -> null
-    }) {
+    ) {
         null -> {}
         else -> {
             val fromByte1 = matchVal2
@@ -939,7 +947,7 @@ public fun fromBoxedUtf8Unchecked(v: List<UByte>): String {
  * Internal; same as `fromBoxedUtf8Unchecked` but allocator-generic. Name
  * probably not suitable for being made `public` as-is.
  */
-public fun <A : Alloc.Allocator> fromBoxedUtf8UncheckedIn(v: List<UByte>): String {
+public fun <A : Allocator> fromBoxedUtf8UncheckedIn(v: List<UByte>): String {
     val (ptr, alloc) = Box.intoRawWithAllocator(v)
     // SAFETY: Upheld by caller.
     return Box.fromRawIn(mutPtrFromRustCast(ptr), alloc)
@@ -987,7 +995,7 @@ public fun convertWhileAscii(s: String, convert: FnCallback): Pair<String, Strin
             break
         }
         for (j1 in 0 until N) {
-            outChunk[j1] = MaybeUninit.new(convert(chunk[j1]), ObjectSlotLayout<Pair<String, String>>())
+            outChunk[j1] = MaybeUninit.new(convert(chunk[j1]), UnresolvedTypeLayout<Pair<String, String>>())
         }
         asciiPrefixLen += N
         // SAFETY: checked in loop condition.
@@ -1003,7 +1011,7 @@ public fun convertWhileAscii(s: String, convert: FnCallback): Pair<String, Strin
         }
         // SAFETY: outSlice has at least same length as input slice
         run {
-            outSlice.getUncheckedMut(0) = MaybeUninit.new(convert(byte), ObjectSlotLayout<Pair<String, String>>())
+            outSlice.getUncheckedMut(0) = MaybeUninit.new(convert(byte), UnresolvedTypeLayout<Pair<String, String>>())
         }
         asciiPrefixLen += 1
         // SAFETY: slice has at least one byte, so slicing from 1.. is safe
@@ -1032,11 +1040,15 @@ public fun convertWhileAscii(s: String, convert: FnCallback): Pair<String, Strin
  */
 public fun replaceAscii(utf8Bytes: List<UByte>, from: UByte, to: UByte): String {
     val result: List<UByte> =
-        utf8Bytes.map({ b -> if (b == from.toInt()) {
-            to
-        } else {
-            b
-        } }).toMutableList()
+        utf8Bytes
+            .map({ b ->
+                if (b == from.toInt()) {
+                    to
+                } else {
+                    b
+                }
+            })
+            .toMutableList()
     // SAFETY: We replaced ascii with ascii on valid utf8 strings.
     return String.fromUtf8Unchecked(result)
 }

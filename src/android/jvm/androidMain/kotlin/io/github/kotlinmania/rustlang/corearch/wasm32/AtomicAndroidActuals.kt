@@ -4,26 +4,26 @@ package io.github.kotlinmania.rustlang.corearch.wasm32
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object CorearchWasm32AtomicJniBridge {
+private object Wasm32AtomicJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun rustlangCorearchWasm32AtomicLlvmAtomicWaitI32(ptr: Long, exp: Int, timeout: Long): Int
+    external fun corearchWasm32AtomicLlvmAtomicWaitI32(ptr: Long, exp: Int, timeout: Long): Int
 
     @JvmStatic
-    external fun rustlangCorearchWasm32AtomicLlvmAtomicWaitI64(ptr: Long, exp: Long, timeout: Long): Int
+    external fun corearchWasm32AtomicLlvmAtomicWaitI64(ptr: Long, exp: Long, timeout: Long): Int
 
     @JvmStatic
-    external fun rustlangCorearchWasm32AtomicLlvmAtomicNotify(ptr: Long, cnt: Int): Int
+    external fun corearchWasm32AtomicLlvmAtomicNotify(ptr: Long, cnt: Int): Int
 }
 
 public actual fun llvmAtomicWaitI32(ptr: MutPtr, exp: Int, timeout: Long): Int =
-    CorearchWasm32AtomicJniBridge.rustlangCorearchWasm32AtomicLlvmAtomicWaitI32(ptr.rawAddress, exp, timeout)
+    Wasm32AtomicJniBridge.corearchWasm32AtomicLlvmAtomicWaitI32(ptr.rawAddress, exp, timeout)
 
 public actual fun llvmAtomicWaitI64(ptr: MutPtr, exp: Long, timeout: Long): Int =
-    CorearchWasm32AtomicJniBridge.rustlangCorearchWasm32AtomicLlvmAtomicWaitI64(ptr.rawAddress, exp, timeout)
+    Wasm32AtomicJniBridge.corearchWasm32AtomicLlvmAtomicWaitI64(ptr.rawAddress, exp, timeout)
 
 public actual fun llvmAtomicNotify(ptr: MutPtr, cnt: Int): Int =
-    CorearchWasm32AtomicJniBridge.rustlangCorearchWasm32AtomicLlvmAtomicNotify(ptr.rawAddress, cnt)
+    Wasm32AtomicJniBridge.corearchWasm32AtomicLlvmAtomicNotify(ptr.rawAddress, cnt)

@@ -3,13 +3,13 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.native.eager
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
-import io.github.kotlinmania.rustlang.sys.threadlocal.abortOnDtorUnwind
-import io.github.kotlinmania.rustlang.sys.threadlocal.key.tests.destructors
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.abortOnDtorUnwind
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests.destructors
 
 public sealed class State(
     public val value: Int,
@@ -85,7 +85,7 @@ public open class Storage<T> internal constructor(
 public fun <T> destroy(ptr: MutPtr, typeLayoutT: TypeLayout<T>) {
     // Print a nice abort message if a panic occurs.
     abortOnDtorUnwind({
-        val storage = (ObjectSlotLayout<Storage<T>>()).readNative(((ConstPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress)
+        val storage = (UnresolvedTypeLayout<Storage<T>>()).readNative(((ConstPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress)
         // Update the state before running the destructor as it may attempt to
         // access the variable.
         storage.state.set(State.Destroyed)

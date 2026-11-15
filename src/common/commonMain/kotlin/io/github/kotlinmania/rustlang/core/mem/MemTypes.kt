@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.core.mem
 
-import io.github.kotlinmania.rustlang.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
 
 /**
@@ -12,10 +12,10 @@ import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
  */
 public interface SizedTypeProperties {
     public val SIZE: Int
-        get() = (ObjectSlotLayout<SizedTypeProperties>()).sizeBytes.toInt()
+        get() = (UnresolvedTypeLayout<SizedTypeProperties>()).sizeBytes.toInt()
 
     public val ALIGN: Int
-        get() = (ObjectSlotLayout<SizedTypeProperties>()).alignBytes.toInt()
+        get() = (UnresolvedTypeLayout<SizedTypeProperties>()).alignBytes.toInt()
 
     public val ALIGNMENT: Alignment
         get() = Alignment.new(SizedTypeProperties.ALIGN).unwrap()
@@ -58,11 +58,12 @@ public interface SizedTypeProperties {
      * which is never allowed for a single object.
      */
     public val MAX_SLICE_LEN: Int
-        get() = when (val matchVal = SizedTypeProperties.SIZE) {
-        0 -> Int.MAX_VALUE
-        else -> {
-            val n = matchVal
-            (Int.MAX_VALUE) / n
-        }
-    }
+        get() =
+            when (val matchVal = SizedTypeProperties.SIZE) {
+                0 -> Int.MAX_VALUE
+                else -> {
+                    val n = matchVal
+                    (Int.MAX_VALUE) / n
+                }
+            }
 }

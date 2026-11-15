@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.test.helpers.concurrency
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.std.thread.functions.availableParallelism
 
 // Helper module which helps to determine amount of threads to be used
 // during tests execution.
@@ -24,6 +25,6 @@ public fun getConcurrency(): Int =
             }
         }
         else -> {
-            thread.availableParallelism().map({ n -> n.get() }).unwrapOr(1)
+            availableParallelism().map({ n -> n.get() }).unwrapOr(1)
         }
     }

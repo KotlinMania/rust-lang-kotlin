@@ -1,9 +1,8 @@
 // port-lint: source iter/sources/empty.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.empty
 
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.marker.PhantomData
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -45,7 +44,7 @@ public class DebugStruct(
  * check(null == nope.next())
  * ```
  */
-public fun <T> empty(): Empty<T> = Empty(PhantomData)
+public fun <T> empty(): Empty<T> = Empty(Unit)
 
 /**
  * An iterator that yields nothing.
@@ -54,21 +53,23 @@ public fun <T> empty(): Empty<T> = Empty(PhantomData)
  */
 public open class Empty<T>(
     public var value: Unit,
-) : TrustedLen<Empty<T>>, Iterable<T> {
+) : TrustedLen<Empty<T>>,
+    Iterable<T> {
     public var field0: Unit
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Empty.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@Empty.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Empty").finish()
 
@@ -82,11 +83,11 @@ public open class Empty<T>(
 
     // not @derive because that adds a Clone bound on T,
     // which isn't necessary.
-    public open fun clone(): Empty<T> = Empty(PhantomData)
+    public open fun clone(): Empty<T> = Empty(Unit)
 
     public companion object {
         // not @derive because that adds a Default bound on T,
         // which isn't necessary.
-        public fun <T> default(): Empty<T> = Empty(PhantomData)
+        public fun <T> default(): Empty<T> = Empty(Unit)
     }
 }

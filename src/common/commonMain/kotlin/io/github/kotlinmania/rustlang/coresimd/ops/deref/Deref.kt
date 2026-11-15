@@ -1,7 +1,7 @@
 // port-lint: source ops/deref.rs
 package io.github.kotlinmania.rustlang.coresimd.ops.deref
 
-import io.github.kotlinmania.rustlang.Simd
+import io.github.kotlinmania.rustlang.coresimd.Simd
 
 // This module hacks in "implicit deref" for Simd's operators.
 // Ideally, Rust would take care of this itself,

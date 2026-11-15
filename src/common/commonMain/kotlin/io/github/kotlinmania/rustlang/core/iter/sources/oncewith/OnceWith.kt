@@ -1,8 +1,8 @@
 // port-lint: source iter/sources/once_with.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.oncewith
 
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
 
 /**
  * Creates an iterator that lazily generates a value exactly once by invoking
@@ -65,23 +65,31 @@ public fun <A> onceWith(make: () -> A): OnceWith<() -> A> = OnceWith(make = make
  */
 public open class OnceWith<F>(
     public var make: F?,
-) : TrustedLen<OnceWith<F>>, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@OnceWith.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<OnceWith<F>>,
+    Iterable<A> {
+    override fun iterator(): Iterator<A> =
+        object : AbstractIterator<A>() {
+            override fun computeNext() {
+                when (val v = this@OnceWith.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): OnceWith<F> = OnceWith(make)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         if (this.make != null) {
-            run { f.append("OnceWith(Some(_))"); Result.Ok(Unit) }
+            run {
+                f.append("OnceWith(Some(_))")
+                Result.Ok(Unit)
+            }
         } else {
-            run { f.append("OnceWith(None)"); Result.Ok(Unit) }
+            run {
+                f.append("OnceWith(None)")
+                Result.Ok(Unit)
+            }
         }
 
     public override fun next(): A? {

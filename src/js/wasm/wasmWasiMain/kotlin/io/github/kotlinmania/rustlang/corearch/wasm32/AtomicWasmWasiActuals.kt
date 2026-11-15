@@ -6,10 +6,10 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun llvmAtomicWaitI32(ptr: MutPtr, exp: Int, timeout: Long): Int =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchWasm32AtomicLlvmAtomicWaitI32")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchWasm32AtomicLlvmAtomicWaitI32")
 
 public actual fun llvmAtomicWaitI64(ptr: MutPtr, exp: Long, timeout: Long): Int =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchWasm32AtomicLlvmAtomicWaitI64")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchWasm32AtomicLlvmAtomicWaitI64")
 
 public actual fun llvmAtomicNotify(ptr: MutPtr, cnt: Int): Int =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchWasm32AtomicLlvmAtomicNotify")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchWasm32AtomicLlvmAtomicNotify")

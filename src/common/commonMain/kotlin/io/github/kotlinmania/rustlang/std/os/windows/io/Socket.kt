@@ -1,24 +1,24 @@
 // port-lint: source os/windows/io/socket.rs
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
-import io.github.kotlinmania.rustlang.Rc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.net.tcp.TcpListener
-import io.github.kotlinmania.rustlang.net.tcp.TcpStream
-import io.github.kotlinmania.rustlang.net.udp.UdpSocket
+import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.net.tcp.TcpListener
+import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
+import io.github.kotlinmania.rustlang.std.net.udp.UdpSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.AsRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.FromRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.IntoRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.RawSocket
-import io.github.kotlinmania.rustlang.sync.Arc
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sync.Arc
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 // Owned and borrowed OS sockets.
 
@@ -79,23 +79,23 @@ public open class BorrowedSocket internal constructor(
      * object as the existing `BorrowedSocket` instance.
      */
     public open fun tryCloneToOwned(): Result<OwnedSocket, Error> {
-        val info = MaybeUninit.zeroed(ObjectSlotLayout<Result<OwnedSocket, Error>>()).assumeInit()
+        val info = MaybeUninit.zeroed(UnresolvedTypeLayout<Result<OwnedSocket, Error>>()).assumeInit()
         val result = C.WSADuplicateSocketW(((this.asRawSocket() as Any?) as C.Socket), C.GetCurrentProcessId(), info)
         when (val tryResult = cvt(result)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         val socket = C.WSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0, C.WSA_FLAG_OVERLAPPED or C.WSA_FLAG_NO_HANDLE_INHERIT)
         return if (socket != C.INVALID_SOCKET) {
-            Result.Ok(OwnedSocket.fromRawSocket(((socket as Any?) as RawSocket), fieldLayout = ObjectSlotLayout<NotAllOnes<RawSocket>>()))
+            Result.Ok(OwnedSocket.fromRawSocket(((socket as Any?) as RawSocket), fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawSocket>>()))
         } else {
             val error = C.WSAGetLastError()
             if (error != C.WSAEPROTOTYPE && error != C.WSAEINVAL) {
-                return Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(error))
+                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
             }
             val socket1 = C.WSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0, C.WSA_FLAG_OVERLAPPED)
             if (socket1 == C.INVALID_SOCKET) {
                 return Result.Err(lastError())
             }
             run {
-                val socket2 = OwnedSocket.fromRawSocket(((socket1 as Any?) as RawSocket), fieldLayout = ObjectSlotLayout<NotAllOnes<RawSocket>>())
+                val socket2 = OwnedSocket.fromRawSocket(((socket1 as Any?) as RawSocket), fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawSocket>>())
                 when (val tryResult = socket2.setNoInherit()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 Result.Ok(socket2)
             }
@@ -161,7 +161,7 @@ public open class OwnedSocket internal constructor(
     public open fun tryClone(): Result<OwnedSocket, Error> = this.asSocket().tryCloneToOwned()
 
     // Note(strictProvenanceMagic): we defined RawSocket to be a u64 ;-;
-    public open fun setNoInherit(): Result<Unit, Error> = io.github.kotlinmania.rustlang.sys.pal.windows.cvt(C.SetHandleInformation(((this.asRawSocket() as Any?) as C.Handle), C.HANDLE_FLAG_INHERIT, 0)).map({ Unit })
+    public open fun setNoInherit(): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt(C.SetHandleInformation(((this.asRawSocket() as Any?) as C.Handle), C.HANDLE_FLAG_INHERIT, 0)).map({ Unit })
 
     public override fun asRawSocket(): RawSocket = this.socket.asInner()
 
@@ -211,7 +211,7 @@ public open class OwnedSocket internal constructor(
 /**
  * Returns the last error from the Windows socket interface.
  */
-public fun lastError(): io.github.kotlinmania.rustlang.io.Error = io.github.kotlinmania.rustlang.io.Error.fromRawOsError(C.WSAGetLastError())
+public fun lastError(): io.github.kotlinmania.rustlang.std.io.Error = io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(C.WSAGetLastError())
 
 /**
  * A trait to borrow the socket from an underlying object.

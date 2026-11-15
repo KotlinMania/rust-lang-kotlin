@@ -1,11 +1,11 @@
 package io.github.kotlinmania.rustlang.core.alloc
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 // NOTE: the above bound on allocating methods not unwinding, alongside the similar
 // bound on `AllocatorClone`, are currently load-bearing in std! see the below issues
@@ -252,7 +252,11 @@ public interface Allocator {
      * [handleAllocError]: ../../alloc/alloc/fn.handleAllocError.html
      */
     public fun allocateZeroed(layout: Layout): Result<NonNull, AllocError> {
-        val ptr = when (val tryResult = this.allocate(layout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val ptr =
+            when (val tryResult = this.allocate(layout)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         // SAFETY: `alloc` returns a valid memory block
         ptr.asNonNullPtr().asPtr().writeBytes(0, ptr.len())
         return Result.Ok(ptr)
@@ -323,7 +327,11 @@ public interface Allocator {
         if (false) {
             check(newLayout.size() >= oldLayout.size()) { "`new_layout.size()` must be greater than or equal to `old_layout.size()`" }
         }
-        val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val newPtr =
+            when (val tryResult = this.allocate(newLayout)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         // SAFETY: because `newLayout.size()` must be greater than or equal to
         // `oldLayout.size()`, both the old and new memory allocation are valid for reads and
         // writes for `oldLayout.size()` bytes. Also, because the old allocation wasn't yet
@@ -376,7 +384,11 @@ public interface Allocator {
         if (false) {
             check(newLayout.size() >= oldLayout.size()) { "`new_layout.size()` must be greater than or equal to `old_layout.size()`" }
         }
-        val newPtr = when (val tryResult = this.allocateZeroed(newLayout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val newPtr =
+            when (val tryResult = this.allocateZeroed(newLayout)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         // SAFETY: because `newLayout.size()` must be greater than or equal to
         // `oldLayout.size()`, both the old and new memory allocation are valid for reads and
         // writes for `oldLayout.size()` bytes. Also, because the old allocation wasn't yet
@@ -434,7 +446,11 @@ public interface Allocator {
         if (false) {
             check(newLayout.size() <= oldLayout.size()) { "`new_layout.size()` must be smaller than or equal to `old_layout.size()`" }
         }
-        val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val newPtr =
+            when (val tryResult = this.allocate(newLayout)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         // SAFETY: because `newLayout.size()` must be lower than or equal to
         // `oldLayout.size()`, both the old and new memory allocation are valid for reads and
         // writes for `newLayout.size()` bytes. Also, because the old allocation wasn't yet

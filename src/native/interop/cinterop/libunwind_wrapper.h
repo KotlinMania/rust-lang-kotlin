@@ -1,5 +1,5 @@
-#ifndef RUSTLANG_LIBUNWIND_LIBUNWIND_WRAPPER_H
-#define RUSTLANG_LIBUNWIND_LIBUNWIND_WRAPPER_H
+#ifndef UNWIND_LIBUNWIND_LIBUNWIND_WRAPPER_H
+#define UNWIND_LIBUNWIND_LIBUNWIND_WRAPPER_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -9,20 +9,20 @@
 extern "C" {
 #endif
 
-void rustlangLibunwindUnwindResume(void* exception);
-void rustlangLibunwindUnwindDeleteException(void* exception);
-void* rustlangLibunwindUnwindGetLanguageSpecificData(void* ctx);
-void* rustlangLibunwindUnwindGetRegionStart(void* ctx);
-void* rustlangLibunwindUnwindGetTextRelBase(void* ctx);
-void* rustlangLibunwindUnwindGetDataRelBase(void* ctx);
-void* rustlangLibunwindUnwindGetGr(void* ctx, int32_t regIndex);
-void rustlangLibunwindUnwindSetGr(void* ctx, int32_t regIndex, void* value);
-void rustlangLibunwindUnwindSetIp(void* ctx, void* value);
-void* rustlangLibunwindUnwindGetIpinfo(void* ctx, void* ipBeforeInsn);
-int32_t rustlangLibunwindGccSpecificHandler(void* exceptionRecord, void* establisherFrame, void* contextRecord, void* dispatcherContext, void* personality);
+void unwindLibunwindUnwindResume(void* exception);
+void unwindLibunwindUnwindDeleteException(void* exception);
+void* unwindLibunwindUnwindGetLanguageSpecificData(void* ctx);
+void* unwindLibunwindUnwindGetRegionStart(void* ctx);
+void* unwindLibunwindUnwindGetTextRelBase(void* ctx);
+void* unwindLibunwindUnwindGetDataRelBase(void* ctx);
+void* unwindLibunwindUnwindGetGr(void* ctx, int32_t regIndex);
+void unwindLibunwindUnwindSetGr(void* ctx, int32_t regIndex, void* value);
+void unwindLibunwindUnwindSetIp(void* ctx, void* value);
+void* unwindLibunwindUnwindGetIpinfo(void* ctx, void* ipBeforeInsn);
+int32_t unwindLibunwindGccSpecificHandler(void* exceptionRecord, void* establisherFrame, void* contextRecord, void* dispatcherContext, void* personality);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* RUSTLANG_LIBUNWIND_LIBUNWIND_WRAPPER_H */
+#endif /* UNWIND_LIBUNWIND_LIBUNWIND_WRAPPER_H */

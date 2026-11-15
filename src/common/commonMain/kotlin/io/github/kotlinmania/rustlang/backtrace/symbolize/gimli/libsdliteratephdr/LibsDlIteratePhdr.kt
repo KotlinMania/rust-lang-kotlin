@@ -1,23 +1,20 @@
 // port-lint: source symbolize/gimli/libs_dl_iterate_phdr.rs
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.libsdliteratephdr
 
-import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.env
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Library
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.LibrarySegment
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.extractZipPathAndroid
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.Env
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsStr
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.DlPhdrInfo
+import io.github.kotlinmania.rustlang.libc.SizeT
 import io.github.kotlinmania.rustlang.libc.dlIteratePhdr
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.DlPhdrInfo
-import io.github.kotlinmania.rustlang.symbolize.gimli.Library
-import io.github.kotlinmania.rustlang.symbolize.gimli.LibrarySegment
-import io.github.kotlinmania.rustlang.symbolize.gimli.extractZipPathAndroid
 
 public open class CallbackData(
     public var libs: List<Library>,
@@ -41,7 +38,7 @@ public fun inferCurrentExe(maps: List<parserunningmmaps.MapsEntry>?, baseAddr: I
             return path
         }
     }
-    return env.currentExe().map({ e -> e.into() }).unwrapOrDefault()
+    return Env.currentExe().map({ e -> e.into() }).unwrapOrDefault()
 }
 
 /**
@@ -51,12 +48,12 @@ public fun inferCurrentExe(maps: List<parserunningmmaps.MapsEntry>?, baseAddr: I
  */
 public fun callback(info: MutPtr, size: SizeT, data: MutPtr): CInt {
     // SAFETY: We are guaranteed these fields:
-    val dlpiAddr = (ObjectSlotLayout<DlPhdrInfo>()).readNative((info).rawAddress).dlpiAddr
-    val dlpiName = (ObjectSlotLayout<DlPhdrInfo>()).readNative((info).rawAddress).dlpiName
-    val dlpiPhdr = (ObjectSlotLayout<DlPhdrInfo>()).readNative((info).rawAddress).dlpiPhdr
-    val dlpiPhnum = (ObjectSlotLayout<DlPhdrInfo>()).readNative((info).rawAddress).dlpiPhnum
+    val dlpiAddr = (UnresolvedTypeLayout<DlPhdrInfo>()).readNative((info).rawAddress).dlpiAddr
+    val dlpiName = (UnresolvedTypeLayout<DlPhdrInfo>()).readNative((info).rawAddress).dlpiName
+    val dlpiPhdr = (UnresolvedTypeLayout<DlPhdrInfo>()).readNative((info).rawAddress).dlpiPhdr
+    val dlpiPhnum = (UnresolvedTypeLayout<DlPhdrInfo>()).readNative((info).rawAddress).dlpiPhnum
     // SAFETY: We assured this.
-    val structVal = RustMutableReference(MutPtr((MutPtr((data).rawAddress)).rawAddress), ObjectSlotLayout<CallbackData>())
+    val structVal = RustMutableReference(MutPtr((MutPtr((data).rawAddress)).rawAddress), UnresolvedTypeLayout<CallbackData>())
     val libs = structVal.libs
     val maps = structVal.maps
     // most implementations give us the main program first
@@ -68,7 +65,7 @@ public fun callback(info: MutPtr, size: SizeT, data: MutPtr): CInt {
     val name =
         if (isStatic) {
             // don't try to look up our name from /proc/self/maps, it'll get silly
-            env.currentExe().unwrapOrDefault().intoOsString()
+            Env.currentExe().unwrapOrDefault().intoOsString()
         } else if (isMain && noGivenName) {
             inferCurrentExe(maps, dlpiAddr.toInt())
         } else {
@@ -80,19 +77,20 @@ public fun callback(info: MutPtr, size: SizeT, data: MutPtr): CInt {
                 OsStr.fromBytes(CStr.fromPtr(dlpiName).toBytes()).toOwned()
             }
         }
-    val zipOffset: ULong? = maps?.let({ maps1 ->
-        // check if file is embedded within a ZIP archive by searching for `! /`
-        extractZipPathAndroid(name).andThen({
-            // find MapsEntry matching library's base address and get its file offset
-            (maps1.iter().indexOf({ m -> m.ipMatches(dlpiAddr.toInt()) }).takeIf { it >= 0 })?.let({ m -> m.offset() })
+    val zipOffset: ULong? =
+        maps?.let({ maps1 ->
+            // check if file is embedded within a ZIP archive by searching for `! /`
+            extractZipPathAndroid(name)?.let({
+                // find MapsEntry matching library's base address and get its file offset
+                (maps1.iter().indexOf({ m -> m.ipMatches(dlpiAddr.toInt()) }).takeIf { it >= 0 })?.let({ m -> m.offset() })
+            })
         })
-    })
     val headers =
         if (dlpiPhdr.isNull() || dlpiPhnum == 0) {
             listOf()
         } else {
             // SAFETY: We just checked for nullness or 0-len slices
-            rawSliceList(dlpiPhdr, dlpiPhnum.toInt(), PrimitiveLayouts.U8)
+            Slice.fromRawParts(dlpiPhdr, dlpiPhnum.toInt())
         }
     libs.add(Library(name = name, zipOffset = zipOffset, segments = headers.iter().map({ header -> LibrarySegment(len = header.pMemsz.toInt(), statedVirtualMemoryAddress = header.pVaddr.toInt()) }).collect(), bias = dlpiAddr.toInt()))
     return 0

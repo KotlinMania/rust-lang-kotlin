@@ -1,31 +1,31 @@
 // port-lint: source ptr/non_null.rs
 package io.github.kotlinmania.rustlang.core.ptr.nonnull
 
-import io.github.kotlinmania.rustlang.clone.TrivialClone
-import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.mem.typeinfo.of
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropGlue
+import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
+import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
+import io.github.kotlinmania.rustlang.core.ptr.withExposedProvenanceMut
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.intrinsics.alignOf
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.mem.transmutability.transmute
-import io.github.kotlinmania.rustlang.mem.typeinfo.of
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ptr.copy
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.ptr.dropGlue
-import io.github.kotlinmania.rustlang.ptr.metadata.fromRawPartsMut
-import io.github.kotlinmania.rustlang.ptr.metadata.metadata
-import io.github.kotlinmania.rustlang.ptr.withExposedProvenanceMut
-import io.github.kotlinmania.rustlang.slice.index.SliceIndex
-import io.github.kotlinmania.rustlang.slice.raw.fromRawParts
+import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
 
 /**
  * `* T` but non-zero and [covariant].
@@ -75,20 +75,21 @@ import io.github.kotlinmania.rustlang.slice.raw.fromRawParts
  * are guaranteed to have the same size and alignment:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.ptr.NonNull
  *
- * check(sizeOf<NonNull>(typeLayoutT = ObjectSlotLayout<NonNull>()) == sizeOf<NonNull?>(typeLayoutT = ObjectSlotLayout<NonNull?>()))
- * check(alignOf<NonNull>(typeLayoutT = ObjectSlotLayout<NonNull>()) == alignOf<NonNull?>(typeLayoutT = ObjectSlotLayout<NonNull?>()))
- * check(sizeOf<NonNull>(typeLayoutT = ObjectSlotLayout<NonNull>()) == sizeOf<NonNull?>(typeLayoutT = ObjectSlotLayout<NonNull?>()))
- * check(alignOf<NonNull>(typeLayoutT = ObjectSlotLayout<NonNull>()) == alignOf<NonNull?>(typeLayoutT = ObjectSlotLayout<NonNull?>()))
+ * check(sizeOf<NonNull>(typeLayoutT = UnresolvedTypeLayout<NonNull>()) == sizeOf<NonNull?>(typeLayoutT = UnresolvedTypeLayout<NonNull?>()))
+ * check(alignOf<NonNull>(typeLayoutT = UnresolvedTypeLayout<NonNull>()) == alignOf<NonNull?>(typeLayoutT = UnresolvedTypeLayout<NonNull?>()))
+ * check(sizeOf<NonNull>(typeLayoutT = UnresolvedTypeLayout<NonNull>()) == sizeOf<NonNull?>(typeLayoutT = UnresolvedTypeLayout<NonNull?>()))
+ * check(alignOf<NonNull>(typeLayoutT = UnresolvedTypeLayout<NonNull>()) == alignOf<NonNull?>(typeLayoutT = UnresolvedTypeLayout<NonNull?>()))
  * ```
  *
  * [covariant]: https://doc.rust-lang.org/reference/subtyping.html
  */
 public open class NonNull(
     public var pointer: ConstPtr,
-) : TrivialClone<NonNull>, Pointer {
+) : TrivialClone<NonNull>,
+    fmt.Pointer {
     public val rawAddress: Long
         get() = pointer.rawAddress
 
@@ -730,7 +731,8 @@ public open class NonNull(
      */
     public open fun read(): T {
         // SAFETY: the caller must uphold the safety contract for `read`.
-        return io.github.kotlinmania.rustlang.ptr.read(this.asPtr())
+        return io.github.kotlinmania.rustlang.core.ptr
+            .read(this.asPtr())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -749,7 +751,8 @@ public open class NonNull(
      */
     public open fun readVolatile(): T {
         // SAFETY: the caller must uphold the safety contract for `readVolatile`.
-        return io.github.kotlinmania.rustlang.ptr.readVolatile(this.asPtr())
+        return io.github.kotlinmania.rustlang.core.ptr
+            .readVolatile(this.asPtr())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -766,7 +769,8 @@ public open class NonNull(
      */
     public open fun readUnaligned(): T {
         // SAFETY: the caller must uphold the safety contract for `readUnaligned`.
-        return io.github.kotlinmania.rustlang.ptr.readUnaligned(this.asPtr())
+        return io.github.kotlinmania.rustlang.core.ptr
+            .readUnaligned(this.asPtr())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -861,7 +865,8 @@ public open class NonNull(
      */
     public open fun write(value: T) {
         // SAFETY: the caller must uphold the safety contract for `write`.
-        io.github.kotlinmania.rustlang.ptr.write(this.asPtr(), value)
+        io.github.kotlinmania.rustlang.core.ptr
+            .write(this.asPtr(), value)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -876,7 +881,8 @@ public open class NonNull(
      */
     public open fun writeBytes(value: UByte, count: Int) {
         // SAFETY: the caller must uphold the safety contract for `writeBytes`.
-        io.github.kotlinmania.rustlang.ptr.writeBytes(this.asPtr(), value, count)
+        io.github.kotlinmania.rustlang.core.ptr
+            .writeBytes(this.asPtr(), value, count)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -895,7 +901,8 @@ public open class NonNull(
      */
     public open fun writeVolatile(value: T) {
         // SAFETY: the caller must uphold the safety contract for `writeVolatile`.
-        io.github.kotlinmania.rustlang.ptr.writeVolatile(this.asPtr(), value)
+        io.github.kotlinmania.rustlang.core.ptr
+            .writeVolatile(this.asPtr(), value)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -912,7 +919,8 @@ public open class NonNull(
      */
     public open fun writeUnaligned(value: T) {
         // SAFETY: the caller must uphold the safety contract for `writeUnaligned`.
-        io.github.kotlinmania.rustlang.ptr.writeUnaligned(this.asPtr(), value)
+        io.github.kotlinmania.rustlang.core.ptr
+            .writeUnaligned(this.asPtr(), value)
     }
 
     /**
@@ -925,7 +933,8 @@ public open class NonNull(
      */
     public open fun replace(src: T): T {
         // SAFETY: the caller must uphold the safety contract for `replace`.
-        return io.github.kotlinmania.rustlang.ptr.replace(this.asPtr(), src)
+        return io.github.kotlinmania.rustlang.core.ptr
+            .replace(this.asPtr(), src)
     }
 
     /**
@@ -939,7 +948,8 @@ public open class NonNull(
      */
     public open fun swap(with: NonNull) {
         // SAFETY: the caller must uphold the safety contract for `swap`.
-        io.github.kotlinmania.rustlang.ptr.swap(this.asPtr(), with.asPtr())
+        io.github.kotlinmania.rustlang.core.ptr
+            .swap(this.asPtr(), with.asPtr())
     }
 
     /**
@@ -999,7 +1009,8 @@ public open class NonNull(
         if (!align.isPowerOfTwo()) {
             error("align_offset: align is not a power-of-two")
         }
-        return io.github.kotlinmania.rustlang.ptr.alignOffset(this.asPtr(), align)
+        return io.github.kotlinmania.rustlang.core.ptr
+            .alignOffset(this.asPtr(), align)
     }
 
     /**
@@ -1324,7 +1335,7 @@ public open class NonNull(
          */
         public fun fromRawParts(dataPointer: NonNull, metadata: Metadata): NonNull {
             // SAFETY: The result of `ptr.from.rawPartsMut` is non-null because `dataPointer` is.
-            return NonNull.newUnchecked(rawMutSliceList(dataPointer.asPtr(), metadata.toInt(), PrimitiveLayouts.U8))
+            return NonNull.newUnchecked(linearMutSliceView(dataPointer.asPtr(), metadata.toInt(), PrimitiveLayouts.U8))
         }
 
         /**
@@ -1486,7 +1497,7 @@ public fun NonNull.asMutPtr(): MutPtr = this.asNonNullPtr().asPtr()
  */
 public fun <T> NonNull.asUninitSlice(): List<MaybeUninit<T>> {
     // SAFETY: the caller must uphold the safety contract for `asUninitSlice`.
-    return rawSliceList(this.cast().asPtr(), this.len().toInt(), PrimitiveLayouts.U8)
+    return linearSliceView(this.cast().asPtr(), this.len().toInt(), PrimitiveLayouts.U8)
 }
 
 /**
@@ -1550,7 +1561,8 @@ public fun <T> NonNull.asUninitSlice(): List<MaybeUninit<T>> {
  */
 public fun <T> NonNull.asUninitSliceMut(): MutableList<MaybeUninit<T>> {
     // SAFETY: the caller must uphold the safety contract for `asUninitSliceMut`.
-    return io.github.kotlinmania.rustlang.slice.raw.fromRawPartsMut(this.cast().asPtr(), this.len())
+    return io.github.kotlinmania.rustlang.core.slice.raw
+        .fromRawPartsMut(this.cast().asPtr(), this.len())
 }
 
 /**

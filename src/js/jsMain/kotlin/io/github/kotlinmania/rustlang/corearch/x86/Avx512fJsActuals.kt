@@ -4,36 +4,32 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.simd.F32x16
-import io.github.kotlinmania.rustlang.simd.F32x4
-import io.github.kotlinmania.rustlang.simd.F32x8
-import io.github.kotlinmania.rustlang.simd.F64x2
-import io.github.kotlinmania.rustlang.simd.F64x4
-import io.github.kotlinmania.rustlang.simd.F64x8
-import io.github.kotlinmania.rustlang.simd.I16x16
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x16
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I32x8
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I64x4
-import io.github.kotlinmania.rustlang.simd.I64x8
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.U16x16
-import io.github.kotlinmania.rustlang.simd.U16x8
-import io.github.kotlinmania.rustlang.simd.U32x16
-import io.github.kotlinmania.rustlang.simd.U32x4
-import io.github.kotlinmania.rustlang.simd.U32x8
-import io.github.kotlinmania.rustlang.simd.U64x2
-import io.github.kotlinmania.rustlang.simd.U64x4
-import io.github.kotlinmania.rustlang.simd.U64x8
-import io.github.kotlinmania.rustlang.simd.U8x16
-import io.github.kotlinmania.rustlang.x86.M128
-import io.github.kotlinmania.rustlang.x86.M128d
-import io.github.kotlinmania.rustlang.x86.M512
-import io.github.kotlinmania.rustlang.x86.M512d
+import io.github.kotlinmania.rustlang.corearch.simd.F32x16
+import io.github.kotlinmania.rustlang.corearch.simd.F32x4
+import io.github.kotlinmania.rustlang.corearch.simd.F32x8
+import io.github.kotlinmania.rustlang.corearch.simd.F64x2
+import io.github.kotlinmania.rustlang.corearch.simd.F64x4
+import io.github.kotlinmania.rustlang.corearch.simd.F64x8
+import io.github.kotlinmania.rustlang.corearch.simd.I16x16
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x16
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I32x8
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I64x4
+import io.github.kotlinmania.rustlang.corearch.simd.I64x8
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U16x16
+import io.github.kotlinmania.rustlang.corearch.simd.U16x8
+import io.github.kotlinmania.rustlang.corearch.simd.U32x16
+import io.github.kotlinmania.rustlang.corearch.simd.U32x4
+import io.github.kotlinmania.rustlang.corearch.simd.U32x8
+import io.github.kotlinmania.rustlang.corearch.simd.U64x2
+import io.github.kotlinmania.rustlang.corearch.simd.U64x4
+import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 
-private val corearchX86Avx512fNapiAddon: dynamic =
+private val x86Avx512fNapiAddon: dynamic =
     js("(function() { if (typeof globalThis !== 'undefined' && typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore; if (typeof process === 'undefined' || !process.versions || !process.versions.node) return null; var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) return null; try { var pkg = req('@kotlinmania/kmcore-native-bindings'); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = pkg; return pkg; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { var loaded = req(c); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = loaded; return loaded; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = null; return null; })()")
 
 public actual fun vsqrtps(a: F32x16, rounding: Int): F32x16 =
@@ -357,185 +353,95 @@ public actual fun vpmovqb128(a: I64x2, src: I8x16, mask: UByte): I8x16 =
 public actual fun vpmovqd128(a: I64x2, src: I32x4, mask: UByte): I32x4 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovdwmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovdwmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsdwmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsdwmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusdwmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusdwmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovdbmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovdbmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsdbmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsdbmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusdbmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusdbmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovqwmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovqwmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsqwmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsqwmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusqwmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusqwmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovqbmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovqbmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsqbmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsqbmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusqbmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusqbmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovqdmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovqdmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsqdmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsqdmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovsqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovsqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusqdmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusqdmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovusqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovusqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vpmovqb(a: I64x8, src: I8x16, mask: UByte): I8x16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
@@ -654,101 +560,53 @@ public actual fun vpgatherqq(src: I64x8, slice: ConstPtr, offsets: I64x8, mask: 
 public actual fun vpgatherqd(src: I32x8, slice: ConstPtr, offsets: I64x8, mask: Byte, scale: Int): I32x8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterdpd(slice: MutPtr, mask: Byte, offsets: I32x8, src: F64x8, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterdpd(slice: MutPtr, mask: Byte, offsets: I32x8, src: F64x8, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterdps(slice: MutPtr, mask: Short, offsets: I32x16, src: F32x16, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterdps(slice: MutPtr, mask: Short, offsets: I32x16, src: F32x16, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterqpd(slice: MutPtr, mask: Byte, offsets: I64x8, src: F64x8, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterqpd(slice: MutPtr, mask: Byte, offsets: I64x8, src: F64x8, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterqps(slice: MutPtr, mask: Byte, offsets: I64x8, src: F32x8, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterqps(slice: MutPtr, mask: Byte, offsets: I64x8, src: F32x8, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterdq(slice: MutPtr, mask: Byte, offsets: I32x8, src: I64x8, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterdq(slice: MutPtr, mask: Byte, offsets: I32x8, src: I64x8, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterdd(slice: MutPtr, mask: Short, offsets: I32x16, src: I32x16, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterdd(slice: MutPtr, mask: Short, offsets: I32x16, src: I32x16, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterqq(slice: MutPtr, mask: Byte, offsets: I64x8, src: I64x8, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterqq(slice: MutPtr, mask: Byte, offsets: I64x8, src: I64x8, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterqd(slice: MutPtr, mask: Byte, offsets: I64x8, src: I32x8, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterqd(slice: MutPtr, mask: Byte, offsets: I64x8, src: I32x8, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterdd128(slice: MutPtr, k: UByte, offsets: I32x4, src: I32x4, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterdd128(slice: MutPtr, k: UByte, offsets: I32x4, src: I32x4, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterdq128(slice: MutPtr, k: UByte, offsets: I32x4, src: I64x2, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterdq128(slice: MutPtr, k: UByte, offsets: I32x4, src: I64x2, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterdpd128(slice: MutPtr, k: UByte, offsets: I32x4, src: F64x2, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterdpd128(slice: MutPtr, k: UByte, offsets: I32x4, src: F64x2, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterdps128(slice: MutPtr, k: UByte, offsets: I32x4, src: F32x4, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterdps128(slice: MutPtr, k: UByte, offsets: I32x4, src: F32x4, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterqd128(slice: MutPtr, k: UByte, offsets: I64x2, src: I32x4, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterqd128(slice: MutPtr, k: UByte, offsets: I64x2, src: I32x4, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterqq128(slice: MutPtr, k: UByte, offsets: I64x2, src: I64x2, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterqq128(slice: MutPtr, k: UByte, offsets: I64x2, src: I64x2, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterqpd128(slice: MutPtr, k: UByte, offsets: I64x2, src: F64x2, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterqpd128(slice: MutPtr, k: UByte, offsets: I64x2, src: F64x2, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterqps128(slice: MutPtr, k: UByte, offsets: I64x2, src: F32x4, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterqps128(slice: MutPtr, k: UByte, offsets: I64x2, src: F32x4, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterdd256(slice: MutPtr, k: UByte, offsets: I32x8, src: I32x8, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterdd256(slice: MutPtr, k: UByte, offsets: I32x8, src: I32x8, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterdq256(slice: MutPtr, k: UByte, offsets: I32x4, src: I64x4, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterdq256(slice: MutPtr, k: UByte, offsets: I32x4, src: I64x4, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterdpd256(slice: MutPtr, k: UByte, offsets: I32x4, src: F64x4, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterdpd256(slice: MutPtr, k: UByte, offsets: I32x4, src: F64x4, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterdps256(slice: MutPtr, k: UByte, offsets: I32x8, src: F32x8, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterdps256(slice: MutPtr, k: UByte, offsets: I32x8, src: F32x8, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterqd256(slice: MutPtr, k: UByte, offsets: I64x4, src: I32x4, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterqd256(slice: MutPtr, k: UByte, offsets: I64x4, src: I32x4, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpscatterqq256(slice: MutPtr, k: UByte, offsets: I64x4, src: I64x4, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpscatterqq256(slice: MutPtr, k: UByte, offsets: I64x4, src: I64x4, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterqpd256(slice: MutPtr, k: UByte, offsets: I64x4, src: F64x4, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterqpd256(slice: MutPtr, k: UByte, offsets: I64x4, src: F64x4, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vscatterqps256(slice: MutPtr, k: UByte, offsets: I64x4, src: F32x4, scale: Int) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vscatterqps256(slice: MutPtr, k: UByte, offsets: I64x4, src: F32x4, scale: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vpgatherdd128(src: I32x4, slice: ConstPtr, offsets: I32x4, k: UByte, scale: Int): I32x4 =
     throw UnsupportedOperationException("Native FFI addon is not available")
@@ -966,53 +824,29 @@ public actual fun vcompresspd256(a: F64x4, src: F64x4, mask: UByte): F64x4 =
 public actual fun vcompresspd128(a: F64x2, src: F64x2, mask: UByte): F64x2 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstored(mem: MutPtr, data: I32x16, mask: UShort) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstored(mem: MutPtr, data: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstored256(mem: MutPtr, data: I32x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstored256(mem: MutPtr, data: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstored128(mem: MutPtr, data: I32x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstored128(mem: MutPtr, data: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstoreq(mem: MutPtr, data: I64x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstoreq(mem: MutPtr, data: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstoreq256(mem: MutPtr, data: I64x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstoreq256(mem: MutPtr, data: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstoreq128(mem: MutPtr, data: I64x2, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstoreq128(mem: MutPtr, data: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstoreps(mem: MutPtr, data: F32x16, mask: UShort) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstoreps(mem: MutPtr, data: F32x16, mask: UShort): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstoreps256(mem: MutPtr, data: F32x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstoreps256(mem: MutPtr, data: F32x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstoreps128(mem: MutPtr, data: F32x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstoreps128(mem: MutPtr, data: F32x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstorepd(mem: MutPtr, data: F64x8, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstorepd(mem: MutPtr, data: F64x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstorepd256(mem: MutPtr, data: F64x4, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstorepd256(mem: MutPtr, data: F64x4, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vcompressstorepd128(mem: MutPtr, data: F64x2, mask: UByte) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vcompressstorepd128(mem: MutPtr, data: F64x2, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vpexpandd(a: I32x16, src: I32x16, mask: UShort): I32x16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
@@ -1129,10 +963,10 @@ public actual fun vscalefsd(a: F64x2, b: F64x2, src: F64x2, mask: UByte, roundin
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vfmaddssround(a: Float, b: Float, c: Float, rounding: Int): Float =
-    if (corearchX86Avx512fNapiAddon != null) (corearchX86Avx512fNapiAddon.rustlangCorearchX86Avx512fVfmaddssround(a.toDouble(), b.toDouble(), c.toDouble(), rounding) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (x86Avx512fNapiAddon != null) (x86Avx512fNapiAddon.corearchX86Avx512fVfmaddssround(a.toDouble(), b.toDouble(), c.toDouble(), rounding) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vfmaddsdround(a: Double, b: Double, c: Double, rounding: Int): Double =
-    if (corearchX86Avx512fNapiAddon != null) (corearchX86Avx512fNapiAddon.rustlangCorearchX86Avx512fVfmaddsdround(a, b, c, rounding) as Double) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (x86Avx512fNapiAddon != null) (x86Avx512fNapiAddon.corearchX86Avx512fVfmaddsdround(a, b, c, rounding) as Double) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vfixupimmss(a: F32x4, b: F32x4, c: I32x4, imm8: Int, mask: UByte, sae: Int): F32x4 =
     throw UnsupportedOperationException("Native FFI addon is not available")

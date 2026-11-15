@@ -1,17 +1,19 @@
 // port-lint: source sync/atomic.rs
 package io.github.kotlinmania.rustlang.core.sync.atomic
 
-import io.github.kotlinmania.rustlang.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.hint.spinLoop
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicFence
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicSignalFence
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.atomicCxchgWithLayout
 import io.github.kotlinmania.rustlang.core.mem.atomicLoadWithLayout
@@ -19,14 +21,12 @@ import io.github.kotlinmania.rustlang.core.mem.atomicRmwWithLayout
 import io.github.kotlinmania.rustlang.core.mem.atomicStoreWithLayout
 import io.github.kotlinmania.rustlang.core.mem.atomicXchgWithLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.*
-import io.github.kotlinmania.rustlang.hint.spinLoop
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.mem.transmutability.transmute
 
 // Atomic types
 //
@@ -277,7 +277,9 @@ public open class Align1<T>(
 
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 1L)), AlignedTypeLayout(fieldLayout, 1L))
 
@@ -296,7 +298,9 @@ public open class Align2<T>(
 
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 2L)), AlignedTypeLayout(fieldLayout, 2L))
 
@@ -315,7 +319,9 @@ public open class Align4<T>(
 
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
 
@@ -334,7 +340,9 @@ public open class Align8<T>(
 
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 8L)), AlignedTypeLayout(fieldLayout, 8L))
 
@@ -353,7 +361,9 @@ public open class Align16<T>(
 
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
@@ -395,7 +405,9 @@ public open class Atomic<T, Storage> internal constructor(
 ) {
     public var v: UnsafeCell<Storage>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        internal set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(v: UnsafeCell<Storage>, fieldLayout: TypeLayout<UnsafeCell<Storage>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
 
@@ -425,7 +437,10 @@ public val EMULATE_ATOMIC_BOOL: Boolean = false
  * **Note**: This type is only available on platforms that support atomic
  * loads and stores of `UByte`.
  */
-public class AtomicBool(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align1<UByte>>>) : Atomic<Boolean, Align1<UByte>>(fieldStorage, fieldLayout) {
+public class AtomicBool(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align1<UByte>>>,
+) : Atomic<Boolean, Align1<UByte>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align1<UByte>>, fieldLayout: TypeLayout<UnsafeCell<Align1<UByte>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -443,7 +458,10 @@ public fun defaultAtomicBool(): AtomicBool = AtomicBool.new(false)
  * **Note**: This type is only available on platforms that support atomic
  * loads and stores of pointers. Its size depends on the target pointer's size.
  */
-public class AtomicPtr(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align8<MutPtr>>>) : Atomic<MutPtr, Align8<MutPtr>>(fieldStorage, fieldLayout) {
+public class AtomicPtr(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align8<MutPtr>>>,
+) : Atomic<MutPtr, Align8<MutPtr>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align8<MutPtr>>, fieldLayout: TypeLayout<UnsafeCell<Align8<MutPtr>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -478,6 +496,7 @@ public sealed class Ordering {
      * [memoryOrderRelaxed]: https://en.cppreference.com/w/cpp/atomic/memoryOrder#RelaxedOrdering
      */
     public data object Relaxed : Ordering()
+
     /**
      * When coupled with a store, all previous operations become ordered
      * before any load of this value with [Acquire] (or stronger) ordering.
@@ -494,6 +513,7 @@ public sealed class Ordering {
      * [memoryOrderRelease]: https://en.cppreference.com/w/cpp/atomic/memoryOrder#Release-AcquireOrdering
      */
     public data object Release : Ordering()
+
     /**
      * When coupled with a load, if the loaded value was written by a store operation with
      * [Release] (or stronger) ordering, then all subsequent operations
@@ -510,6 +530,7 @@ public sealed class Ordering {
      * [memoryOrderAcquire]: https://en.cppreference.com/w/cpp/atomic/memoryOrder#Release-AcquireOrdering
      */
     public data object Acquire : Ordering()
+
     /**
      * Has the effects of both [Acquire] and [Release] together:
      * For loads it uses [Acquire] ordering. For stores it uses the [Release] ordering.
@@ -525,6 +546,7 @@ public sealed class Ordering {
      * [memoryOrderAcqRel]: https://en.cppreference.com/w/cpp/atomic/memoryOrder#Release-AcquireOrdering
      */
     public data object AcqRel : Ordering()
+
     /**
      * Like [Acquire]/[Release]/[AcqRel] (for load, store, and load-with-store
      * operations, respectively) with the additional guarantee that all threads see all
@@ -690,7 +712,7 @@ public fun AtomicBool.Companion.fromMut(v: RustMutableReference<Boolean>): Atomi
  */
 public fun AtomicBool.Companion.getMutSlice(thisRef: MutableList<AtomicBool>): MutableList<Boolean> {
     // SAFETY: the mutable reference guarantees unique ownership.
-    return RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<Boolean>>())
+    return RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Boolean>>())
 }
 
 /**
@@ -714,7 +736,7 @@ public fun AtomicBool.Companion.getMutSlice(thisRef: MutableList<AtomicBool>): M
 public fun AtomicBool.Companion.fromMutSlice(v: MutableList<Boolean>): MutableList<AtomicBool> {
     // SAFETY: the mutable reference guarantees unique ownership, and
     // alignment of both `Boolean` and `Self` is 1.
-    return RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicBool>>())
+    return RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicBool>>())
 }
 
 /**
@@ -947,13 +969,16 @@ public fun AtomicBool.swap(value: Boolean, order: Ordering): Boolean =
 public fun AtomicBool.compareAndSwap(current: Boolean, new: Boolean, order: Ordering): Boolean =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 // even without panics, this helps for Miri backtraces
@@ -1040,13 +1065,16 @@ public fun AtomicBool.compareExchange(current: Boolean, new: Boolean, success: O
         // SAFETY: data races are prevented by atomic intrinsics.
         run {
             val matchVal1 = atomicCompareExchange(MutPtr((this.v.get()).rawAddress), current.toUByte(), new.toUByte(), success, failure, typeLayoutT = PrimitiveLayouts.U8)
-            when (matchVal1) { is Result.Ok<*, *> -> {
-                val x = matchVal1.value
-                Result.Ok(x != 0)
-            }; is Result.Err<*, *> -> {
-                val x1 = matchVal1.error
-                Result.Err(x1 != 0)
-            } }
+            when (matchVal1) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal1.value
+                    Result.Ok(x != 0)
+                }
+                is Result.Err<*, *> -> {
+                    val x1 = matchVal1.error
+                    Result.Err(x1 != 0)
+                }
+            }
         }
     }
 
@@ -1113,13 +1141,16 @@ public fun AtomicBool.compareExchangeWeak(current: Boolean, new: Boolean, succes
     // SAFETY: data races are prevented by atomic intrinsics.
     return run {
         val matchVal = atomicCompareExchangeWeak(MutPtr((this.v.get()).rawAddress), current.toUByte(), new.toUByte(), success, failure, typeLayoutT = PrimitiveLayouts.U8)
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            Result.Ok(x != 0)
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            Result.Err(x1 != 0)
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                Result.Ok(x != 0)
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                Result.Err(x1 != 0)
+            }
+        }
     }
 }
 
@@ -1493,13 +1524,16 @@ public fun AtomicBool.update(setOrder: Ordering, fetchOrder: Ordering, f: (Boole
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -1690,7 +1724,7 @@ public fun AtomicPtr.Companion.fromMut(v: RustMutableReference<MutPtr>): AtomicP
  */
 public fun <T> AtomicPtr.Companion.getMutSlice(thisRef: MutableList<AtomicPtr>, typeLayoutT: TypeLayout<T>): MutableList<MutPtr> {
     // SAFETY: the mutable reference guarantees unique ownership.
-    return RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<MutPtr>>())
+    return RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<MutPtr>>())
 }
 
 /**
@@ -1726,7 +1760,7 @@ public fun AtomicPtr.Companion.fromMutSlice(v: MutableList<MutPtr>): MutableList
     // - the mutable reference guarantees unique ownership.
     // - the alignment of `* T` and `Self` is the same on all platforms
     // supported by rust, as verified above.
-    return RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicPtr>>())
+    return RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicPtr>>())
 }
 
 /**
@@ -2029,13 +2063,16 @@ public fun AtomicPtr.swap(ptr: MutPtr, order: Ordering): MutPtr {
 public fun AtomicPtr.compareAndSwap(current: MutPtr, new: MutPtr, order: Ordering): MutPtr =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 // even without panics, this helps for Miri backtraces
@@ -2310,13 +2347,16 @@ public fun AtomicPtr.update(setOrder: Ordering, fetchOrder: Ordering, f: (MutPtr
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -2707,7 +2747,10 @@ public fun fromAtomicPtrT(p: MutPtr): AtomicPtr = AtomicPtr.new(p)
  * i8
  * `].
  */
-public class AtomicI8(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align1<Byte>>>) : Atomic<Byte, Align1<Byte>>(fieldStorage, fieldLayout) {
+public class AtomicI8(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align1<Byte>>>,
+) : Atomic<Byte, Align1<Byte>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align1<Byte>>, fieldLayout: TypeLayout<UnsafeCell<Align1<Byte>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -2716,7 +2759,11 @@ public fun defaultAtomicI8(): AtomicI8 = AtomicI8.new(Default.default())
 
 public fun fromAtomicI8(v: Byte): AtomicI8 = AtomicI8.new(v)
 
-public fun AtomicI8.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicI8.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -2817,7 +2864,7 @@ public fun AtomicI8.Companion.fromMut(v: RustMutableReference<Byte>): AtomicI8 =
  * });
  * ```kotlin
  */
-public fun AtomicI8.Companion.getMutSlice(thisRef: MutableList<AtomicI8>): MutableList<Byte> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<Byte>>())
+public fun AtomicI8.Companion.getMutSlice(thisRef: MutableList<AtomicI8>): MutableList<Byte> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Byte>>())
 
 /**
  * # Examples
@@ -2833,7 +2880,7 @@ public fun AtomicI8.Companion.getMutSlice(thisRef: MutableList<AtomicI8>): Mutab
  * }
  * ```kotlin
  */
-public fun AtomicI8.Companion.fromMutSlice(v: MutableList<Byte>): MutableList<AtomicI8> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicI8>>())
+public fun AtomicI8.Companion.fromMutSlice(v: MutableList<Byte>): MutableList<AtomicI8> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI8>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -3007,13 +3054,16 @@ public fun AtomicI8.swap(value: Byte, order: Ordering): Byte = atomicSwap(this.a
 public fun AtomicI8.compareAndSwap(current: Byte, new: Byte, order: Ordering): Byte =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -3353,13 +3403,16 @@ public fun AtomicI8.update(setOrder: Ordering, fetchOrder: Ordering, f: (Byte) -
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -3464,7 +3517,10 @@ public fun AtomicI8.asPtr(): MutPtr = MutPtr((this.v.get()).rawAddress)
  * u8
  * `].
  */
-public class AtomicU8(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align1<UByte>>>) : Atomic<UByte, Align1<UByte>>(fieldStorage, fieldLayout) {
+public class AtomicU8(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align1<UByte>>>,
+) : Atomic<UByte, Align1<UByte>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align1<UByte>>, fieldLayout: TypeLayout<UnsafeCell<Align1<UByte>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -3473,7 +3529,11 @@ public fun defaultAtomicU8(): AtomicU8 = AtomicU8.new(Default.default())
 
 public fun fromAtomicU8(v: UByte): AtomicU8 = AtomicU8.new(v)
 
-public fun AtomicU8.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicU8.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -3574,7 +3634,7 @@ public fun AtomicU8.Companion.fromMut(v: RustMutableReference<UByte>): AtomicU8 
  * });
  * ```kotlin
  */
-public fun AtomicU8.Companion.getMutSlice(thisRef: MutableList<AtomicU8>): MutableList<UByte> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<UByte>>())
+public fun AtomicU8.Companion.getMutSlice(thisRef: MutableList<AtomicU8>): MutableList<UByte> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<UByte>>())
 
 /**
  * # Examples
@@ -3590,7 +3650,7 @@ public fun AtomicU8.Companion.getMutSlice(thisRef: MutableList<AtomicU8>): Mutab
  * }
  * ```kotlin
  */
-public fun AtomicU8.Companion.fromMutSlice(v: MutableList<UByte>): MutableList<AtomicU8> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicU8>>())
+public fun AtomicU8.Companion.fromMutSlice(v: MutableList<UByte>): MutableList<AtomicU8> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU8>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -3764,13 +3824,16 @@ public fun AtomicU8.swap(value: UByte, order: Ordering): UByte = atomicSwap(this
 public fun AtomicU8.compareAndSwap(current: UByte, new: UByte, order: Ordering): UByte =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -4110,13 +4173,16 @@ public fun AtomicU8.update(setOrder: Ordering, fetchOrder: Ordering, f: (UByte) 
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -4221,7 +4287,10 @@ public fun AtomicU8.asPtr(): MutPtr = MutPtr((this.v.get()).rawAddress)
  * i16
  * `].
  */
-public class AtomicI16(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align2<Short>>>) : Atomic<Short, Align2<Short>>(fieldStorage, fieldLayout) {
+public class AtomicI16(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align2<Short>>>,
+) : Atomic<Short, Align2<Short>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align2<Short>>, fieldLayout: TypeLayout<UnsafeCell<Align2<Short>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -4230,7 +4299,11 @@ public fun defaultAtomicI16(): AtomicI16 = AtomicI16.new(Default.default())
 
 public fun fromAtomicI16(v: Short): AtomicI16 = AtomicI16.new(v)
 
-public fun AtomicI16.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicI16.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -4331,7 +4404,7 @@ public fun AtomicI16.Companion.fromMut(v: RustMutableReference<Short>): AtomicI1
  * });
  * ```kotlin
  */
-public fun AtomicI16.Companion.getMutSlice(thisRef: MutableList<AtomicI16>): MutableList<Short> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<Short>>())
+public fun AtomicI16.Companion.getMutSlice(thisRef: MutableList<AtomicI16>): MutableList<Short> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Short>>())
 
 /**
  * # Examples
@@ -4347,7 +4420,7 @@ public fun AtomicI16.Companion.getMutSlice(thisRef: MutableList<AtomicI16>): Mut
  * }
  * ```kotlin
  */
-public fun AtomicI16.Companion.fromMutSlice(v: MutableList<Short>): MutableList<AtomicI16> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicI16>>())
+public fun AtomicI16.Companion.fromMutSlice(v: MutableList<Short>): MutableList<AtomicI16> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI16>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -4521,13 +4594,16 @@ public fun AtomicI16.swap(value: Short, order: Ordering): Short = atomicSwap(thi
 public fun AtomicI16.compareAndSwap(current: Short, new: Short, order: Ordering): Short =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -4867,13 +4943,16 @@ public fun AtomicI16.update(setOrder: Ordering, fetchOrder: Ordering, f: (Short)
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -4978,7 +5057,10 @@ public fun AtomicI16.asPtr(): MutPtr = MutPtr((this.v.get()).rawAddress)
  * u16
  * `].
  */
-public class AtomicU16(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align2<UShort>>>) : Atomic<UShort, Align2<UShort>>(fieldStorage, fieldLayout) {
+public class AtomicU16(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align2<UShort>>>,
+) : Atomic<UShort, Align2<UShort>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align2<UShort>>, fieldLayout: TypeLayout<UnsafeCell<Align2<UShort>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -4987,7 +5069,11 @@ public fun defaultAtomicU16(): AtomicU16 = AtomicU16.new(Default.default())
 
 public fun fromAtomicU16(v: UShort): AtomicU16 = AtomicU16.new(v)
 
-public fun AtomicU16.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicU16.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -5088,7 +5174,7 @@ public fun AtomicU16.Companion.fromMut(v: RustMutableReference<UShort>): AtomicU
  * });
  * ```kotlin
  */
-public fun AtomicU16.Companion.getMutSlice(thisRef: MutableList<AtomicU16>): MutableList<UShort> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<UShort>>())
+public fun AtomicU16.Companion.getMutSlice(thisRef: MutableList<AtomicU16>): MutableList<UShort> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<UShort>>())
 
 /**
  * # Examples
@@ -5104,7 +5190,7 @@ public fun AtomicU16.Companion.getMutSlice(thisRef: MutableList<AtomicU16>): Mut
  * }
  * ```kotlin
  */
-public fun AtomicU16.Companion.fromMutSlice(v: MutableList<UShort>): MutableList<AtomicU16> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicU16>>())
+public fun AtomicU16.Companion.fromMutSlice(v: MutableList<UShort>): MutableList<AtomicU16> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU16>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -5278,13 +5364,16 @@ public fun AtomicU16.swap(value: UShort, order: Ordering): UShort = atomicSwap(t
 public fun AtomicU16.compareAndSwap(current: UShort, new: UShort, order: Ordering): UShort =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -5624,13 +5713,16 @@ public fun AtomicU16.update(setOrder: Ordering, fetchOrder: Ordering, f: (UShort
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -5735,7 +5827,10 @@ public fun AtomicU16.asPtr(): MutPtr = MutPtr((this.v.get()).rawAddress)
  * i32
  * `].
  */
-public class AtomicI32(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align4<Int>>>) : Atomic<Int, Align4<Int>>(fieldStorage, fieldLayout) {
+public class AtomicI32(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align4<Int>>>,
+) : Atomic<Int, Align4<Int>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align4<Int>>, fieldLayout: TypeLayout<UnsafeCell<Align4<Int>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -5744,7 +5839,11 @@ public fun defaultAtomicI32(): AtomicI32 = AtomicI32.new(Default.default())
 
 public fun fromAtomicI32(v: Int): AtomicI32 = AtomicI32.new(v)
 
-public fun AtomicI32.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicI32.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -5845,7 +5944,7 @@ public fun AtomicI32.Companion.fromMut(v: RustMutableReference<Int>): AtomicI32 
  * });
  * ```kotlin
  */
-public fun AtomicI32.Companion.getMutSlice(thisRef: MutableList<AtomicI32>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<Int>>())
+public fun AtomicI32.Companion.getMutSlice(thisRef: MutableList<AtomicI32>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Int>>())
 
 /**
  * # Examples
@@ -5861,7 +5960,7 @@ public fun AtomicI32.Companion.getMutSlice(thisRef: MutableList<AtomicI32>): Mut
  * }
  * ```kotlin
  */
-public fun AtomicI32.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicI32> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicI32>>())
+public fun AtomicI32.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicI32> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI32>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -6035,13 +6134,16 @@ public fun AtomicI32.swap(value: Int, order: Ordering): Int = atomicSwap(this.as
 public fun AtomicI32.compareAndSwap(current: Int, new: Int, order: Ordering): Int =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -6381,13 +6483,16 @@ public fun AtomicI32.update(setOrder: Ordering, fetchOrder: Ordering, f: (Int) -
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -6492,7 +6597,10 @@ public fun AtomicI32.asPtr(): MutPtr = MutPtr((this.v.get()).rawAddress)
  * u32
  * `].
  */
-public class AtomicU32(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align4<UInt>>>) : Atomic<UInt, Align4<UInt>>(fieldStorage, fieldLayout) {
+public class AtomicU32(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align4<UInt>>>,
+) : Atomic<UInt, Align4<UInt>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align4<UInt>>, fieldLayout: TypeLayout<UnsafeCell<Align4<UInt>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -6501,7 +6609,11 @@ public fun defaultAtomicU32(): AtomicU32 = AtomicU32.new(Default.default())
 
 public fun fromAtomicU32(v: UInt): AtomicU32 = AtomicU32.new(v)
 
-public fun AtomicU32.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicU32.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -6602,7 +6714,7 @@ public fun AtomicU32.Companion.fromMut(v: RustMutableReference<UInt>): AtomicU32
  * });
  * ```kotlin
  */
-public fun AtomicU32.Companion.getMutSlice(thisRef: MutableList<AtomicU32>): MutableList<UInt> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<UInt>>())
+public fun AtomicU32.Companion.getMutSlice(thisRef: MutableList<AtomicU32>): MutableList<UInt> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<UInt>>())
 
 /**
  * # Examples
@@ -6618,7 +6730,7 @@ public fun AtomicU32.Companion.getMutSlice(thisRef: MutableList<AtomicU32>): Mut
  * }
  * ```kotlin
  */
-public fun AtomicU32.Companion.fromMutSlice(v: MutableList<UInt>): MutableList<AtomicU32> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicU32>>())
+public fun AtomicU32.Companion.fromMutSlice(v: MutableList<UInt>): MutableList<AtomicU32> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU32>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -6792,13 +6904,16 @@ public fun AtomicU32.swap(value: UInt, order: Ordering): UInt = atomicSwap(this.
 public fun AtomicU32.compareAndSwap(current: UInt, new: UInt, order: Ordering): UInt =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -7138,13 +7253,16 @@ public fun AtomicU32.update(setOrder: Ordering, fetchOrder: Ordering, f: (UInt) 
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -7249,7 +7367,10 @@ public fun AtomicU32.asPtr(): MutPtr = MutPtr((this.v.get()).rawAddress)
  * i64
  * `].
  */
-public class AtomicI64(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align8<Long>>>) : Atomic<Long, Align8<Long>>(fieldStorage, fieldLayout) {
+public class AtomicI64(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align8<Long>>>,
+) : Atomic<Long, Align8<Long>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align8<Long>>, fieldLayout: TypeLayout<UnsafeCell<Align8<Long>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -7258,7 +7379,11 @@ public fun defaultAtomicI64(): AtomicI64 = AtomicI64.new(Default.default())
 
 public fun fromAtomicI64(v: Long): AtomicI64 = AtomicI64.new(v)
 
-public fun AtomicI64.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicI64.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -7359,7 +7484,7 @@ public fun AtomicI64.Companion.fromMut(v: RustMutableReference<Long>): AtomicI64
  * });
  * ```kotlin
  */
-public fun AtomicI64.Companion.getMutSlice(thisRef: MutableList<AtomicI64>): MutableList<Long> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<Long>>())
+public fun AtomicI64.Companion.getMutSlice(thisRef: MutableList<AtomicI64>): MutableList<Long> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Long>>())
 
 /**
  * # Examples
@@ -7375,7 +7500,7 @@ public fun AtomicI64.Companion.getMutSlice(thisRef: MutableList<AtomicI64>): Mut
  * }
  * ```kotlin
  */
-public fun AtomicI64.Companion.fromMutSlice(v: MutableList<Long>): MutableList<AtomicI64> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicI64>>())
+public fun AtomicI64.Companion.fromMutSlice(v: MutableList<Long>): MutableList<AtomicI64> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI64>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -7549,13 +7674,16 @@ public fun AtomicI64.swap(value: Long, order: Ordering): Long = atomicSwap(this.
 public fun AtomicI64.compareAndSwap(current: Long, new: Long, order: Ordering): Long =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -7895,13 +8023,16 @@ public fun AtomicI64.update(setOrder: Ordering, fetchOrder: Ordering, f: (Long) 
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -8006,7 +8137,10 @@ public fun AtomicI64.asPtr(): MutPtr = MutPtr((this.v.get()).rawAddress)
  * u64
  * `].
  */
-public class AtomicU64(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align8<ULong>>>) : Atomic<ULong, Align8<ULong>>(fieldStorage, fieldLayout) {
+public class AtomicU64(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align8<ULong>>>,
+) : Atomic<ULong, Align8<ULong>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align8<ULong>>, fieldLayout: TypeLayout<UnsafeCell<Align8<ULong>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -8015,7 +8149,11 @@ public fun defaultAtomicU64(): AtomicU64 = AtomicU64.new(Default.default())
 
 public fun fromAtomicU64(v: ULong): AtomicU64 = AtomicU64.new(v)
 
-public fun AtomicU64.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicU64.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -8116,7 +8254,7 @@ public fun AtomicU64.Companion.fromMut(v: RustMutableReference<ULong>): AtomicU6
  * });
  * ```kotlin
  */
-public fun AtomicU64.Companion.getMutSlice(thisRef: MutableList<AtomicU64>): MutableList<ULong> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<ULong>>())
+public fun AtomicU64.Companion.getMutSlice(thisRef: MutableList<AtomicU64>): MutableList<ULong> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<ULong>>())
 
 /**
  * # Examples
@@ -8132,7 +8270,7 @@ public fun AtomicU64.Companion.getMutSlice(thisRef: MutableList<AtomicU64>): Mut
  * }
  * ```kotlin
  */
-public fun AtomicU64.Companion.fromMutSlice(v: MutableList<ULong>): MutableList<AtomicU64> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicU64>>())
+public fun AtomicU64.Companion.fromMutSlice(v: MutableList<ULong>): MutableList<AtomicU64> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU64>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -8306,13 +8444,16 @@ public fun AtomicU64.swap(value: ULong, order: Ordering): ULong = atomicSwap(thi
 public fun AtomicU64.compareAndSwap(current: ULong, new: ULong, order: Ordering): ULong =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -8652,13 +8793,16 @@ public fun AtomicU64.update(setOrder: Ordering, fetchOrder: Ordering, f: (ULong)
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -8763,7 +8907,10 @@ public fun AtomicU64.asPtr(): MutPtr = MutPtr((this.v.get()).rawAddress)
  * i128
  * `].
  */
-public class AtomicI128(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align16<I128>>>) : Atomic<I128, Align16<I128>>(fieldStorage, fieldLayout) {
+public class AtomicI128(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align16<I128>>>,
+) : Atomic<I128, Align16<I128>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align16<I128>>, fieldLayout: TypeLayout<UnsafeCell<Align16<I128>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -8772,7 +8919,11 @@ public fun defaultAtomicI128(): AtomicI128 = AtomicI128.new(Default.default())
 
 public fun fromAtomicI128(v: I128): AtomicI128 = AtomicI128.new(v)
 
-public fun AtomicI128.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicI128.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -8873,7 +9024,7 @@ public fun AtomicI128.Companion.fromMut(v: RustMutableReference<I128>): AtomicI1
  * });
  * ```kotlin
  */
-public fun AtomicI128.Companion.getMutSlice(thisRef: MutableList<AtomicI128>): MutableList<I128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<I128>>())
+public fun AtomicI128.Companion.getMutSlice(thisRef: MutableList<AtomicI128>): MutableList<I128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<I128>>())
 
 /**
  * # Examples
@@ -8889,7 +9040,7 @@ public fun AtomicI128.Companion.getMutSlice(thisRef: MutableList<AtomicI128>): M
  * }
  * ```kotlin
  */
-public fun AtomicI128.Companion.fromMutSlice(v: MutableList<I128>): MutableList<AtomicI128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicI128>>())
+public fun AtomicI128.Companion.fromMutSlice(v: MutableList<I128>): MutableList<AtomicI128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI128>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -9063,13 +9214,16 @@ public fun AtomicI128.swap(value: I128, order: Ordering): I128 = atomicSwap(this
 public fun AtomicI128.compareAndSwap(current: I128, new: I128, order: Ordering): I128 =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -9409,13 +9563,16 @@ public fun AtomicI128.update(setOrder: Ordering, fetchOrder: Ordering, f: (I128)
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -9520,7 +9677,10 @@ public fun AtomicI128.asPtr(): MutPtr = MutPtr((this.v.get()).rawAddress)
  * u128
  * `].
  */
-public class AtomicU128(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align16<U128>>>) : Atomic<U128, Align16<U128>>(fieldStorage, fieldLayout) {
+public class AtomicU128(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align16<U128>>>,
+) : Atomic<U128, Align16<U128>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align16<U128>>, fieldLayout: TypeLayout<UnsafeCell<Align16<U128>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -9529,7 +9689,11 @@ public fun defaultAtomicU128(): AtomicU128 = AtomicU128.new(Default.default())
 
 public fun fromAtomicU128(v: U128): AtomicU128 = AtomicU128.new(v)
 
-public fun AtomicU128.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicU128.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -9630,7 +9794,7 @@ public fun AtomicU128.Companion.fromMut(v: RustMutableReference<U128>): AtomicU1
  * });
  * ```kotlin
  */
-public fun AtomicU128.Companion.getMutSlice(thisRef: MutableList<AtomicU128>): MutableList<U128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<U128>>())
+public fun AtomicU128.Companion.getMutSlice(thisRef: MutableList<AtomicU128>): MutableList<U128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<U128>>())
 
 /**
  * # Examples
@@ -9646,7 +9810,7 @@ public fun AtomicU128.Companion.getMutSlice(thisRef: MutableList<AtomicU128>): M
  * }
  * ```kotlin
  */
-public fun AtomicU128.Companion.fromMutSlice(v: MutableList<U128>): MutableList<AtomicU128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicU128>>())
+public fun AtomicU128.Companion.fromMutSlice(v: MutableList<U128>): MutableList<AtomicU128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU128>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -9820,13 +9984,16 @@ public fun AtomicU128.swap(value: U128, order: Ordering): U128 = atomicSwap(this
 public fun AtomicU128.compareAndSwap(current: U128, new: U128, order: Ordering): U128 =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -10166,13 +10333,16 @@ public fun AtomicU128.update(setOrder: Ordering, fetchOrder: Ordering, f: (U128)
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -10277,7 +10447,10 @@ public fun AtomicU128.asPtr(): MutPtr = MutPtr((this.v.get()).rawAddress)
  * isize
  * `].
  */
-public class AtomicIsize(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align8<Int>>>) : Atomic<Int, Align8<Int>>(fieldStorage, fieldLayout) {
+public class AtomicIsize(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align8<Int>>>,
+) : Atomic<Int, Align8<Int>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align8<Int>>, fieldLayout: TypeLayout<UnsafeCell<Align8<Int>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -10286,7 +10459,11 @@ public fun defaultAtomicIsize(): AtomicIsize = AtomicIsize.new(Default.default()
 
 public fun fromAtomicIsize(v: Int): AtomicIsize = AtomicIsize.new(v)
 
-public fun AtomicIsize.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicIsize.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -10387,7 +10564,7 @@ public fun AtomicIsize.Companion.fromMut(v: RustMutableReference<Int>): AtomicIs
  * });
  * ```kotlin
  */
-public fun AtomicIsize.Companion.getMutSlice(thisRef: MutableList<AtomicIsize>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<Int>>())
+public fun AtomicIsize.Companion.getMutSlice(thisRef: MutableList<AtomicIsize>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Int>>())
 
 /**
  * # Examples
@@ -10403,7 +10580,7 @@ public fun AtomicIsize.Companion.getMutSlice(thisRef: MutableList<AtomicIsize>):
  * }
  * ```kotlin
  */
-public fun AtomicIsize.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicIsize> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicIsize>>())
+public fun AtomicIsize.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicIsize> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicIsize>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -10577,13 +10754,16 @@ public fun AtomicIsize.swap(value: Int, order: Ordering): Int = atomicSwap(this.
 public fun AtomicIsize.compareAndSwap(current: Int, new: Int, order: Ordering): Int =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -10923,13 +11103,16 @@ public fun AtomicIsize.update(setOrder: Ordering, fetchOrder: Ordering, f: (Int)
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -11034,7 +11217,10 @@ public fun AtomicIsize.asPtr(): MutPtr = MutPtr((this.v.get()).rawAddress)
  * Int
  * `].
  */
-public class AtomicUsize(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<Align8<Int>>>) : Atomic<Int, Align8<Int>>(fieldStorage, fieldLayout) {
+public class AtomicUsize(
+    fieldStorage: MutPtr,
+    fieldLayout: TypeLayout<UnsafeCell<Align8<Int>>>,
+) : Atomic<Int, Align8<Int>>(fieldStorage, fieldLayout) {
     public constructor(v: UnsafeCell<Align8<Int>>, fieldLayout: TypeLayout<UnsafeCell<Align8<Int>>>) : this(allocateNativeCell(v, fieldLayout), fieldLayout)
     public companion object
 }
@@ -11043,7 +11229,11 @@ public fun defaultAtomicUsize(): AtomicUsize = AtomicUsize.new(Default.default()
 
 public fun fromAtomicUsize(v: Int): AtomicUsize = AtomicUsize.new(v)
 
-public fun AtomicUsize.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicUsize.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Creates a new atomic integer.
@@ -11144,7 +11334,7 @@ public fun AtomicUsize.Companion.fromMut(v: RustMutableReference<Int>): AtomicUs
  * });
  * ```kotlin
  */
-public fun AtomicUsize.Companion.getMutSlice(thisRef: MutableList<AtomicUsize>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<Int>>())
+public fun AtomicUsize.Companion.getMutSlice(thisRef: MutableList<AtomicUsize>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Int>>())
 
 /**
  * # Examples
@@ -11160,7 +11350,7 @@ public fun AtomicUsize.Companion.getMutSlice(thisRef: MutableList<AtomicUsize>):
  * }
  * ```kotlin
  */
-public fun AtomicUsize.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicUsize> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<AtomicUsize>>())
+public fun AtomicUsize.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicUsize> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicUsize>>())
 
 /**
  * Consumes the atomic and returns the contained value.
@@ -11334,13 +11524,16 @@ public fun AtomicUsize.swap(value: Int, order: Ordering): Int = atomicSwap(this.
 public fun AtomicUsize.compareAndSwap(current: Int, new: Int, order: Ordering): Int =
     run {
         val matchVal = this.compareExchange(current, new, order, strongestFailureOrdering(order))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            val x1 = matchVal.error
-            x1
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                val x1 = matchVal.error
+                x1
+            }
+        }
     }
 
 /**
@@ -11680,13 +11873,16 @@ public fun AtomicUsize.update(setOrder: Ordering, fetchOrder: Ordering, f: (Int)
     while (true) {
         run {
             val matchVal = this.compareExchangeWeak(prev, f(prev), setOrder, fetchOrder)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val x = matchVal.value
-                break
-            }; is Result.Err<*, *> -> {
-                val nextPrev = matchVal.error
-                prev = nextPrev
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val x = matchVal.value
+                    break
+                }
+                is Result.Err<*, *> -> {
+                    val nextPrev = matchVal.error
+                    prev = nextPrev
+                }
+            }
         }
     }
 }
@@ -12339,9 +12535,17 @@ public fun compilerFence(order: Ordering) {
     }
 }
 
-public fun AtomicBool.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicBool.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
-public fun AtomicPtr.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.load(Ordering.Relaxed)).toString()); Result.Ok(Unit) }
+public fun AtomicPtr.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.load(Ordering.Relaxed)).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Signals the processor that it is inside a busy-wait spin-loop ("spin lock").

@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.corearch.armshared.barrier.cinterop
+headers = armshared_barrier_wrapper.h
+headerFilter = armshared_barrier_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = armshared_barrier_wrapper.a

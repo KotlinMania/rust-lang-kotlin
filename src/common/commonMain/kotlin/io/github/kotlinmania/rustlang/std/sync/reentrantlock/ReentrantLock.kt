@@ -5,9 +5,9 @@ import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU64
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.sys.sync.mutex.futex.Mutex
-import io.github.kotlinmania.rustlang.thread.current.currentId
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex
+import io.github.kotlinmania.rustlang.std.thread.current.currentId
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -281,7 +281,7 @@ public open class ReentrantLock<T> internal constructor(
          * }
          * ```
          */
-        public fun <T> new(t: T): ReentrantLock<T> = ReentrantLock(mutex = io.github.kotlinmania.rustlang.sys.sync.mutex.new(), owner = Tid.new(), lockCount = UnsafeCell.new(0), data = t)
+        public fun <T> new(t: T): ReentrantLock<T> = ReentrantLock(mutex = io.github.kotlinmania.rustlang.std.sys.sync.mutex.new(), owner = Tid.new(), lockCount = UnsafeCell.new(0), data = t)
 
         public fun <T> default(defaultTFn: () -> T): ReentrantLock<T> = ReentrantLock.new(defaultTFn())
 

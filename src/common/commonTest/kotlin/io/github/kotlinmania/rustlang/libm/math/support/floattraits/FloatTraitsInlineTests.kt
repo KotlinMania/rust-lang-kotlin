@@ -4,10 +4,9 @@ package io.github.kotlinmania.rustlang.libm.math.support.floattraits
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
-import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
-import io.github.kotlinmania.rustlang.math.support.hexfloat.hf32
-import io.github.kotlinmania.rustlang.math.support.hexfloat.hf64
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf32
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
 
 public class FloatTraitsInlineTests {
     @kotlin.test.Test
@@ -86,7 +85,7 @@ public class FloatTraitsInlineTests {
     @kotlin.test.Test
     public fun checkF32() {
         // Constants
-        check(kotlin.Float.EXP_SAT == 0xFF.0f.toFloat())
+        check(kotlin.Float.EXP_SAT == (0xFF).toFloat())
         check(kotlin.Float.EXP_BIAS == 127.0f.toFloat())
         check(kotlin.Float.EXP_MAX == 127.0f.toFloat())
         check(kotlin.Float.EXP_MIN == (-126.0f).toFloat())
@@ -170,7 +169,7 @@ public class FloatTraitsInlineTests {
     @kotlin.test.Test
     public fun checkF64() {
         // Constants
-        check(Double.EXP_SAT == 0x7FF.0.toDouble())
+        check(Double.EXP_SAT == (0x7FF).toDouble())
         check(Double.EXP_BIAS == 1023.0.toDouble())
         check(Double.EXP_MAX == 1023.0.toDouble())
         check(Double.EXP_MIN == (-1022.0).toDouble())

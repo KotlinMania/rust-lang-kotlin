@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.math.support.coldPath
+import io.github.kotlinmania.rustlang.libm.math.support.coldPath
 
 // Helpers for runtime target feature detection that are shared across architectures.
 //

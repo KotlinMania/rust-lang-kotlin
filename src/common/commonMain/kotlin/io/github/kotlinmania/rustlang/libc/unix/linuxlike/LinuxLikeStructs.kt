@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
@@ -16,17 +15,18 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S64
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U16
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U64
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U8
-import io.github.kotlinmania.rustlang.unix.In6Addr
-import io.github.kotlinmania.rustlang.unix.InAddrT
-import io.github.kotlinmania.rustlang.unix.InPortT
-import io.github.kotlinmania.rustlang.unix.Sigval
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S64
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U8
+import io.github.kotlinmania.rustlang.libc.unix.In6Addr
+import io.github.kotlinmania.rustlang.libc.unix.InAddrT
+import io.github.kotlinmania.rustlang.libc.unix.InPortT
+import io.github.kotlinmania.rustlang.libc.unix.Sigval
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 
 // intentionally not public, only used for fdSet
 // https://github.com/search?q=repo%3Atorvalds%2Flinux+%22%23define+_IOC_NONE%22&type=code
@@ -48,14 +48,18 @@ import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
  * representation when available.
  * </div>
  */
-public data class Timezone(
-    public var data: Unit = Unit,
-    public var marker: Unit = Unit,
-)
-
-public data class InAddr(
-    public var sAddr: InAddrT = 0u,
+public open class Timezone(
+    public var data: Unit,
+    public var marker: Unit,
 ) {
+    public open fun clone(): Timezone = Timezone(data, marker)
+}
+
+public open class InAddr(
+    public var sAddr: InAddrT,
+) {
+    public open fun clone(): InAddr = InAddr(sAddr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<InAddr> =
             object : TypeLayout<InAddr> {
@@ -79,10 +83,12 @@ public data class InAddr(
     }
 }
 
-public data class IpMreq(
-    public var imrMultiaddr: InAddr = InAddr(),
-    public var imrInterface: InAddr = InAddr(),
+public open class IpMreq(
+    public var imrMultiaddr: InAddr,
+    public var imrInterface: InAddr,
 ) {
+    public open fun clone(): IpMreq = IpMreq(imrMultiaddr, imrInterface)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IpMreq> =
             object : TypeLayout<IpMreq> {
@@ -110,11 +116,13 @@ public data class IpMreq(
     }
 }
 
-public data class IpMreqn(
-    public var imrMultiaddr: InAddr = InAddr(),
-    public var imrAddress: InAddr = InAddr(),
-    public var imrIfindex: CInt = 0,
+public open class IpMreqn(
+    public var imrMultiaddr: InAddr,
+    public var imrAddress: InAddr,
+    public var imrIfindex: CInt,
 ) {
+    public open fun clone(): IpMreqn = IpMreqn(imrMultiaddr, imrAddress, imrIfindex)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IpMreqn> =
             object : TypeLayout<IpMreqn> {
@@ -147,11 +155,13 @@ public data class IpMreqn(
 }
 
 // netinet/in.h: RFC 3678 multicast group membership requests
-public data class IpMreqSource(
-    public var imrMultiaddr: InAddr = InAddr(),
-    public var imrInterface: InAddr = InAddr(),
-    public var imrSourceaddr: InAddr = InAddr(),
+public open class IpMreqSource(
+    public var imrMultiaddr: InAddr,
+    public var imrInterface: InAddr,
+    public var imrSourceaddr: InAddr,
 ) {
+    public open fun clone(): IpMreqSource = IpMreqSource(imrMultiaddr, imrInterface, imrSourceaddr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IpMreqSource> =
             object : TypeLayout<IpMreqSource> {
@@ -183,10 +193,12 @@ public data class IpMreqSource(
     }
 }
 
-public data class GroupReq(
-    public var grInterface: UInt = 0u,
-    public var grGroup: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
+public open class GroupReq(
+    public var grInterface: UInt,
+    public var grGroup: SockaddrStorage,
 ) {
+    public open fun clone(): GroupReq = GroupReq(grInterface, grGroup)
+
     public companion object {
         public fun typeLayout(): TypeLayout<GroupReq> =
             object : TypeLayout<GroupReq> {
@@ -214,11 +226,13 @@ public data class GroupReq(
     }
 }
 
-public data class GroupSourceReq(
-    public var gsrInterface: UInt = 0u,
-    public var gsrGroup: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
-    public var gsrSource: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
+public open class GroupSourceReq(
+    public var gsrInterface: UInt,
+    public var gsrGroup: SockaddrStorage,
+    public var gsrSource: SockaddrStorage,
 ) {
+    public open fun clone(): GroupSourceReq = GroupSourceReq(gsrInterface, gsrGroup, gsrSource)
+
     public companion object {
         public fun typeLayout(): TypeLayout<GroupSourceReq> =
             object : TypeLayout<GroupSourceReq> {
@@ -251,23 +265,11 @@ public data class GroupSourceReq(
     }
 }
 
-public data class Sockaddr(
-    public var saFamily: SaFamilyT = 0u,
-    public var saData: UByteArray = UByteArray(14),
+public open class Sockaddr(
+    public var saFamily: SaFamilyT,
+    public var saData: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Sockaddr) return false
-        if (this.saFamily != other.saFamily) return false
-        if (!this.saData.contentEquals(other.saData)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.saFamily.hashCode()
-        result = 31 * result + this.saData.contentHashCode()
-        return result
-    }
+    public open fun clone(): Sockaddr = Sockaddr(saFamily, saData)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Sockaddr> =
@@ -296,29 +298,13 @@ public data class Sockaddr(
     }
 }
 
-public data class SockaddrIn(
-    public var sinFamily: SaFamilyT = 0u,
-    public var sinPort: InPortT = 0u,
-    public var sinAddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
-    public var sinZero: UByteArray = UByteArray(8),
+public open class SockaddrIn(
+    public var sinFamily: SaFamilyT,
+    public var sinPort: InPortT,
+    public var sinAddr: InAddr,
+    public var sinZero: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SockaddrIn) return false
-        if (this.sinFamily != other.sinFamily) return false
-        if (this.sinPort != other.sinPort) return false
-        if (this.sinAddr != other.sinAddr) return false
-        if (!this.sinZero.contentEquals(other.sinZero)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sinFamily.hashCode()
-        result = 31 * result + this.sinPort.hashCode()
-        result = 31 * result + this.sinAddr.hashCode()
-        result = 31 * result + this.sinZero.contentHashCode()
-        return result
-    }
+    public open fun clone(): SockaddrIn = SockaddrIn(sinFamily, sinPort, sinAddr, sinZero)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrIn> =
@@ -355,17 +341,19 @@ public data class SockaddrIn(
     }
 }
 
-public data class SockaddrIn6(
-    public var sin6Family: SaFamilyT = 0u,
-    public var sin6Port: InPortT = 0u,
-    public var sin6Flowinfo: UInt = 0u,
-    public var sin6Addr: In6Addr = In6Addr(),
-    public var sin6ScopeId: UInt = 0u,
-)
+public open class SockaddrIn6(
+    public var sin6Family: SaFamilyT,
+    public var sin6Port: InPortT,
+    public var sin6Flowinfo: UInt,
+    public var sin6Addr: In6Addr,
+    public var sin6ScopeId: UInt,
+) {
+    public open fun clone(): SockaddrIn6 = SockaddrIn6(sin6Family, sin6Port, sin6Flowinfo, sin6Addr, sin6ScopeId)
+}
 
 // The order of the `aiAddr` field in this struct is crucial
 // for converting between the Rust and C types.
-public class Addrinfo internal constructor(
+public open class Addrinfo internal constructor(
     public var aiFlags: CInt,
     public var aiFamily: CInt,
     public var aiSocktype: CInt,
@@ -384,62 +372,7 @@ public class Addrinfo internal constructor(
     public var aiNext: MutPtr = aiNextCtorArg
         internal set
 
-    public constructor() : this(
-        aiFlags = 0,
-        aiFamily = 0,
-        aiSocktype = 0,
-        aiProtocol = 0,
-        aiAddrlen = 0u,
-        aiAddrCtorArg = MutPtr(0L),
-        aiCanonnameCtorArg = MutPtr(0L),
-        aiNextCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): CInt = this.aiFlags
-
-    public operator fun component2(): CInt = this.aiFamily
-
-    public operator fun component3(): CInt = this.aiSocktype
-
-    public operator fun component4(): CInt = this.aiProtocol
-
-    public operator fun component5(): SocklenT = this.aiAddrlen
-
-    public operator fun component6(): MutPtr = this.aiAddr
-
-    public operator fun component7(): MutPtr = this.aiCanonname
-
-    public operator fun component8(): MutPtr = this.aiNext
-
-    public fun copy(aiFlags: CInt = this.aiFlags, aiFamily: CInt = this.aiFamily, aiSocktype: CInt = this.aiSocktype, aiProtocol: CInt = this.aiProtocol, aiAddrlen: SocklenT = this.aiAddrlen, aiAddr: MutPtr = this.aiAddr, aiCanonname: MutPtr = this.aiCanonname, aiNext: MutPtr = this.aiNext): Addrinfo = Addrinfo(aiFlags = aiFlags, aiFamily = aiFamily, aiSocktype = aiSocktype, aiProtocol = aiProtocol, aiAddrlen = aiAddrlen, aiAddrCtorArg = aiAddr, aiCanonnameCtorArg = aiCanonname, aiNextCtorArg = aiNext)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Addrinfo) return false
-        if (this.aiFlags != other.aiFlags) return false
-        if (this.aiFamily != other.aiFamily) return false
-        if (this.aiSocktype != other.aiSocktype) return false
-        if (this.aiProtocol != other.aiProtocol) return false
-        if (this.aiAddrlen != other.aiAddrlen) return false
-        if (this.aiAddr != other.aiAddr) return false
-        if (this.aiCanonname != other.aiCanonname) return false
-        if (this.aiNext != other.aiNext) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.aiFlags.hashCode()
-        result = 31 * result + this.aiFamily.hashCode()
-        result = 31 * result + this.aiSocktype.hashCode()
-        result = 31 * result + this.aiProtocol.hashCode()
-        result = 31 * result + this.aiAddrlen.hashCode()
-        result = 31 * result + this.aiAddr.hashCode()
-        result = 31 * result + this.aiCanonname.hashCode()
-        result = 31 * result + this.aiNext.hashCode()
-        return result
-    }
-
-    public fun clone(): Addrinfo = Addrinfo(aiFlags, aiFamily, aiSocktype, aiProtocol, aiAddrlen, aiAddr, aiCanonname, aiNext)
+    public open fun clone(): Addrinfo = Addrinfo(aiFlags, aiFamily, aiSocktype, aiProtocol, aiAddrlen, aiAddr, aiCanonname, aiNext)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Addrinfo> =
@@ -491,14 +424,14 @@ public class Addrinfo internal constructor(
             }
 
         public operator fun invoke(
-            aiFlags: CInt = 0,
-            aiFamily: CInt = 0,
-            aiSocktype: CInt = 0,
-            aiProtocol: CInt = 0,
-            aiAddrlen: SocklenT = 0u,
-            aiAddr: MutPtr = MutPtr(0L),
-            aiCanonname: MutPtr = MutPtr(0L),
-            aiNext: MutPtr = MutPtr(0L),
+            aiFlags: CInt,
+            aiFamily: CInt,
+            aiSocktype: CInt,
+            aiProtocol: CInt,
+            aiAddrlen: SocklenT,
+            aiAddr: MutPtr,
+            aiCanonname: MutPtr,
+            aiNext: MutPtr,
         ): Addrinfo = Addrinfo(
             aiFlags = aiFlags,
             aiFamily = aiFamily,
@@ -512,38 +445,16 @@ public class Addrinfo internal constructor(
     }
 }
 
-public data class SockaddrLl(
-    public var sllFamily: CUshort = 0u,
-    public var sllProtocol: CUshort = 0u,
-    public var sllIfindex: CInt = 0,
-    public var sllHatype: CUshort = 0u,
-    public var sllPkttype: CUchar = 0u,
-    public var sllHalen: CUchar = 0u,
-    public var sllAddr: UByteArray = UByteArray(8),
+public open class SockaddrLl(
+    public var sllFamily: CUshort,
+    public var sllProtocol: CUshort,
+    public var sllIfindex: CInt,
+    public var sllHatype: CUshort,
+    public var sllPkttype: CUchar,
+    public var sllHalen: CUchar,
+    public var sllAddr: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SockaddrLl) return false
-        if (this.sllFamily != other.sllFamily) return false
-        if (this.sllProtocol != other.sllProtocol) return false
-        if (this.sllIfindex != other.sllIfindex) return false
-        if (this.sllHatype != other.sllHatype) return false
-        if (this.sllPkttype != other.sllPkttype) return false
-        if (this.sllHalen != other.sllHalen) return false
-        if (!this.sllAddr.contentEquals(other.sllAddr)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sllFamily.hashCode()
-        result = 31 * result + this.sllProtocol.hashCode()
-        result = 31 * result + this.sllIfindex.hashCode()
-        result = 31 * result + this.sllHatype.hashCode()
-        result = 31 * result + this.sllPkttype.hashCode()
-        result = 31 * result + this.sllHalen.hashCode()
-        result = 31 * result + this.sllAddr.contentHashCode()
-        return result
-    }
+    public open fun clone(): SockaddrLl = SockaddrLl(sllFamily, sllProtocol, sllIfindex, sllHatype, sllPkttype, sllHalen, sllAddr)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrLl> =
@@ -592,17 +503,10 @@ public data class SockaddrLl(
     }
 }
 
-public data class FdSet(
-    public var fdsBits: ULongArray = ULongArray(FD_SETSIZE / ULONG_SIZE),
+public open class FdSet(
+    public var fdsBits: ULongArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is FdSet) return false
-        if (!this.fdsBits.contentEquals(other.fdsBits)) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.fdsBits.contentHashCode()
+    public open fun clone(): FdSet = FdSet(fdsBits)
 
     public companion object {
         public fun typeLayout(): TypeLayout<FdSet> =
@@ -627,7 +531,7 @@ public data class FdSet(
     }
 }
 
-public class Tm internal constructor(
+public open class Tm internal constructor(
     public var tmSec: CInt,
     public var tmMin: CInt,
     public var tmHour: CInt,
@@ -643,77 +547,7 @@ public class Tm internal constructor(
     public var tmZone: ConstPtr = tmZoneCtorArg
         internal set
 
-    public constructor() : this(
-        tmSec = 0,
-        tmMin = 0,
-        tmHour = 0,
-        tmMday = 0,
-        tmMon = 0,
-        tmYear = 0,
-        tmWday = 0,
-        tmYday = 0,
-        tmIsdst = 0,
-        tmGmtoff = 0L,
-        tmZoneCtorArg = ConstPtr(0L),
-    )
-
-    public operator fun component1(): CInt = this.tmSec
-
-    public operator fun component2(): CInt = this.tmMin
-
-    public operator fun component3(): CInt = this.tmHour
-
-    public operator fun component4(): CInt = this.tmMday
-
-    public operator fun component5(): CInt = this.tmMon
-
-    public operator fun component6(): CInt = this.tmYear
-
-    public operator fun component7(): CInt = this.tmWday
-
-    public operator fun component8(): CInt = this.tmYday
-
-    public operator fun component9(): CInt = this.tmIsdst
-
-    public operator fun component10(): CLong = this.tmGmtoff
-
-    public operator fun component11(): ConstPtr = this.tmZone
-
-    public fun copy(tmSec: CInt = this.tmSec, tmMin: CInt = this.tmMin, tmHour: CInt = this.tmHour, tmMday: CInt = this.tmMday, tmMon: CInt = this.tmMon, tmYear: CInt = this.tmYear, tmWday: CInt = this.tmWday, tmYday: CInt = this.tmYday, tmIsdst: CInt = this.tmIsdst, tmGmtoff: CLong = this.tmGmtoff, tmZone: ConstPtr = this.tmZone): Tm = Tm(tmSec = tmSec, tmMin = tmMin, tmHour = tmHour, tmMday = tmMday, tmMon = tmMon, tmYear = tmYear, tmWday = tmWday, tmYday = tmYday, tmIsdst = tmIsdst, tmGmtoff = tmGmtoff, tmZoneCtorArg = tmZone)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tm) return false
-        if (this.tmSec != other.tmSec) return false
-        if (this.tmMin != other.tmMin) return false
-        if (this.tmHour != other.tmHour) return false
-        if (this.tmMday != other.tmMday) return false
-        if (this.tmMon != other.tmMon) return false
-        if (this.tmYear != other.tmYear) return false
-        if (this.tmWday != other.tmWday) return false
-        if (this.tmYday != other.tmYday) return false
-        if (this.tmIsdst != other.tmIsdst) return false
-        if (this.tmGmtoff != other.tmGmtoff) return false
-        if (this.tmZone != other.tmZone) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.tmSec.hashCode()
-        result = 31 * result + this.tmMin.hashCode()
-        result = 31 * result + this.tmHour.hashCode()
-        result = 31 * result + this.tmMday.hashCode()
-        result = 31 * result + this.tmMon.hashCode()
-        result = 31 * result + this.tmYear.hashCode()
-        result = 31 * result + this.tmWday.hashCode()
-        result = 31 * result + this.tmYday.hashCode()
-        result = 31 * result + this.tmIsdst.hashCode()
-        result = 31 * result + this.tmGmtoff.hashCode()
-        result = 31 * result + this.tmZone.hashCode()
-        return result
-    }
-
-    public fun clone(): Tm = Tm(tmSec, tmMin, tmHour, tmMday, tmMon, tmYear, tmWday, tmYday, tmIsdst, tmGmtoff, tmZone)
+    public open fun clone(): Tm = Tm(tmSec, tmMin, tmHour, tmMday, tmMon, tmYear, tmWday, tmYday, tmIsdst, tmGmtoff, tmZone)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tm> =
@@ -777,17 +611,17 @@ public class Tm internal constructor(
             }
 
         public operator fun invoke(
-            tmSec: CInt = 0,
-            tmMin: CInt = 0,
-            tmHour: CInt = 0,
-            tmMday: CInt = 0,
-            tmMon: CInt = 0,
-            tmYear: CInt = 0,
-            tmWday: CInt = 0,
-            tmYday: CInt = 0,
-            tmIsdst: CInt = 0,
-            tmGmtoff: CLong = 0L,
-            tmZone: ConstPtr = ConstPtr(0L),
+            tmSec: CInt,
+            tmMin: CInt,
+            tmHour: CInt,
+            tmMday: CInt,
+            tmMon: CInt,
+            tmYear: CInt,
+            tmWday: CInt,
+            tmYday: CInt,
+            tmIsdst: CInt,
+            tmGmtoff: CLong,
+            tmZone: ConstPtr,
         ): Tm = Tm(
             tmSec = tmSec,
             tmMin = tmMin,
@@ -804,9 +638,11 @@ public class Tm internal constructor(
     }
 }
 
-public data class SchedParam(
-    public var schedPriority: CInt = 0,
+public open class SchedParam(
+    public var schedPriority: CInt,
 ) {
+    public open fun clone(): SchedParam = SchedParam(schedPriority)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SchedParam> =
             object : TypeLayout<SchedParam> {
@@ -830,7 +666,7 @@ public data class SchedParam(
     }
 }
 
-public class DlInfo internal constructor(
+public open class DlInfo internal constructor(
     dliFnameCtorArg: ConstPtr,
     dliFbaseCtorArg: MutPtr,
     dliSnameCtorArg: ConstPtr,
@@ -848,42 +684,7 @@ public class DlInfo internal constructor(
     public var dliSaddr: MutPtr = dliSaddrCtorArg
         internal set
 
-    public constructor() : this(
-        dliFnameCtorArg = ConstPtr(0L),
-        dliFbaseCtorArg = MutPtr(0L),
-        dliSnameCtorArg = ConstPtr(0L),
-        dliSaddrCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): ConstPtr = this.dliFname
-
-    public operator fun component2(): MutPtr = this.dliFbase
-
-    public operator fun component3(): ConstPtr = this.dliSname
-
-    public operator fun component4(): MutPtr = this.dliSaddr
-
-    public fun copy(dliFname: ConstPtr = this.dliFname, dliFbase: MutPtr = this.dliFbase, dliSname: ConstPtr = this.dliSname, dliSaddr: MutPtr = this.dliSaddr): DlInfo = DlInfo(dliFnameCtorArg = dliFname, dliFbaseCtorArg = dliFbase, dliSnameCtorArg = dliSname, dliSaddrCtorArg = dliSaddr)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is DlInfo) return false
-        if (this.dliFname != other.dliFname) return false
-        if (this.dliFbase != other.dliFbase) return false
-        if (this.dliSname != other.dliSname) return false
-        if (this.dliSaddr != other.dliSaddr) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.dliFname.hashCode()
-        result = 31 * result + this.dliFbase.hashCode()
-        result = 31 * result + this.dliSname.hashCode()
-        result = 31 * result + this.dliSaddr.hashCode()
-        return result
-    }
-
-    public fun clone(): DlInfo = DlInfo(dliFname, dliFbase, dliSname, dliSaddr)
+    public open fun clone(): DlInfo = DlInfo(dliFname, dliFbase, dliSname, dliSaddr)
 
     public companion object {
         public fun typeLayout(): TypeLayout<DlInfo> =
@@ -919,10 +720,10 @@ public class DlInfo internal constructor(
             }
 
         public operator fun invoke(
-            dliFname: ConstPtr = ConstPtr(0L),
-            dliFbase: MutPtr = MutPtr(0L),
-            dliSname: ConstPtr = ConstPtr(0L),
-            dliSaddr: MutPtr = MutPtr(0L),
+            dliFname: ConstPtr,
+            dliFbase: MutPtr,
+            dliSname: ConstPtr,
+            dliSaddr: MutPtr,
         ): DlInfo = DlInfo(
             dliFnameCtorArg = dliFname,
             dliFbaseCtorArg = dliFbase,
@@ -932,7 +733,7 @@ public class DlInfo internal constructor(
     }
 }
 
-public class Lconv internal constructor(
+public open class Lconv internal constructor(
     decimalPointCtorArg: MutPtr,
     thousandsSepCtorArg: MutPtr,
     groupingCtorArg: MutPtr,
@@ -988,34 +789,7 @@ public class Lconv internal constructor(
     public var negativeSign: MutPtr = negativeSignCtorArg
         internal set
 
-    public constructor() : this(
-        decimalPointCtorArg = MutPtr(0L),
-        thousandsSepCtorArg = MutPtr(0L),
-        groupingCtorArg = MutPtr(0L),
-        intCurrSymbolCtorArg = MutPtr(0L),
-        currencySymbolCtorArg = MutPtr(0L),
-        monDecimalPointCtorArg = MutPtr(0L),
-        monThousandsSepCtorArg = MutPtr(0L),
-        monGroupingCtorArg = MutPtr(0L),
-        positiveSignCtorArg = MutPtr(0L),
-        negativeSignCtorArg = MutPtr(0L),
-        intFracDigits = 0u,
-        fracDigits = 0u,
-        pCsPrecedes = 0u,
-        pSepBySpace = 0u,
-        nCsPrecedes = 0u,
-        nSepBySpace = 0u,
-        pSignPosn = 0u,
-        nSignPosn = 0u,
-        intPCsPrecedes = 0u,
-        intPSepBySpace = 0u,
-        intNCsPrecedes = 0u,
-        intNSepBySpace = 0u,
-        intPSignPosn = 0u,
-        intNSignPosn = 0u,
-    )
-
-    public fun clone(): Lconv = Lconv(decimalPoint, thousandsSep, grouping, intCurrSymbol, currencySymbol, monDecimalPoint, monThousandsSep, monGrouping, positiveSign, negativeSign, intFracDigits, fracDigits, pCsPrecedes, pSepBySpace, nCsPrecedes, nSepBySpace, pSignPosn, nSignPosn, intPCsPrecedes, intPSepBySpace, intNCsPrecedes, intNSepBySpace, intPSignPosn, intNSignPosn)
+    public open fun clone(): Lconv = Lconv(decimalPoint, thousandsSep, grouping, intCurrSymbol, currencySymbol, monDecimalPoint, monThousandsSep, monGrouping, positiveSign, negativeSign, intFracDigits, fracDigits, pCsPrecedes, pSepBySpace, nCsPrecedes, nSepBySpace, pSignPosn, nSignPosn, intPCsPrecedes, intPSepBySpace, intNCsPrecedes, intNSepBySpace, intPSignPosn, intNSignPosn)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Lconv> =
@@ -1131,30 +905,30 @@ public class Lconv internal constructor(
             }
 
         public operator fun invoke(
-            decimalPoint: MutPtr = MutPtr(0L),
-            thousandsSep: MutPtr = MutPtr(0L),
-            grouping: MutPtr = MutPtr(0L),
-            intCurrSymbol: MutPtr = MutPtr(0L),
-            currencySymbol: MutPtr = MutPtr(0L),
-            monDecimalPoint: MutPtr = MutPtr(0L),
-            monThousandsSep: MutPtr = MutPtr(0L),
-            monGrouping: MutPtr = MutPtr(0L),
-            positiveSign: MutPtr = MutPtr(0L),
-            negativeSign: MutPtr = MutPtr(0L),
-            intFracDigits: CChar = 0u,
-            fracDigits: CChar = 0u,
-            pCsPrecedes: CChar = 0u,
-            pSepBySpace: CChar = 0u,
-            nCsPrecedes: CChar = 0u,
-            nSepBySpace: CChar = 0u,
-            pSignPosn: CChar = 0u,
-            nSignPosn: CChar = 0u,
-            intPCsPrecedes: CChar = 0u,
-            intPSepBySpace: CChar = 0u,
-            intNCsPrecedes: CChar = 0u,
-            intNSepBySpace: CChar = 0u,
-            intPSignPosn: CChar = 0u,
-            intNSignPosn: CChar = 0u,
+            decimalPoint: MutPtr,
+            thousandsSep: MutPtr,
+            grouping: MutPtr,
+            intCurrSymbol: MutPtr,
+            currencySymbol: MutPtr,
+            monDecimalPoint: MutPtr,
+            monThousandsSep: MutPtr,
+            monGrouping: MutPtr,
+            positiveSign: MutPtr,
+            negativeSign: MutPtr,
+            intFracDigits: CChar,
+            fracDigits: CChar,
+            pCsPrecedes: CChar,
+            pSepBySpace: CChar,
+            nCsPrecedes: CChar,
+            nSepBySpace: CChar,
+            pSignPosn: CChar,
+            nSignPosn: CChar,
+            intPCsPrecedes: CChar,
+            intPSepBySpace: CChar,
+            intNCsPrecedes: CChar,
+            intNSepBySpace: CChar,
+            intPSignPosn: CChar,
+            intNSignPosn: CChar,
         ): Lconv = Lconv(
             decimalPointCtorArg = decimalPoint,
             thousandsSepCtorArg = thousandsSep,
@@ -1184,11 +958,13 @@ public class Lconv internal constructor(
     }
 }
 
-public data class InPktinfo(
-    public var ipiIfindex: CInt = 0,
-    public var ipiSpecDst: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
-    public var ipiAddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
+public open class InPktinfo(
+    public var ipiIfindex: CInt,
+    public var ipiSpecDst: InAddr,
+    public var ipiAddr: InAddr,
 ) {
+    public open fun clone(): InPktinfo = InPktinfo(ipiIfindex, ipiSpecDst, ipiAddr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<InPktinfo> =
             object : TypeLayout<InPktinfo> {
@@ -1220,7 +996,7 @@ public data class InPktinfo(
     }
 }
 
-public class Ifaddrs internal constructor(
+public open class Ifaddrs internal constructor(
     ifaNextCtorArg: MutPtr,
     ifaNameCtorArg: MutPtr,
     public var ifaFlags: CUint,
@@ -1248,57 +1024,7 @@ public class Ifaddrs internal constructor(
     public var ifaData: MutPtr = ifaDataCtorArg
         internal set
 
-    public constructor() : this(
-        ifaNextCtorArg = MutPtr(0L),
-        ifaNameCtorArg = MutPtr(0L),
-        ifaFlags = 0u,
-        ifaAddrCtorArg = MutPtr(0L),
-        ifaNetmaskCtorArg = MutPtr(0L),
-        ifaIfuCtorArg = MutPtr(0L),
-        ifaDataCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): MutPtr = this.ifaNext
-
-    public operator fun component2(): MutPtr = this.ifaName
-
-    public operator fun component3(): CUint = this.ifaFlags
-
-    public operator fun component4(): MutPtr = this.ifaAddr
-
-    public operator fun component5(): MutPtr = this.ifaNetmask
-
-    public operator fun component6(): MutPtr = this.ifaIfu
-
-    public operator fun component7(): MutPtr = this.ifaData
-
-    public fun copy(ifaNext: MutPtr = this.ifaNext, ifaName: MutPtr = this.ifaName, ifaFlags: CUint = this.ifaFlags, ifaAddr: MutPtr = this.ifaAddr, ifaNetmask: MutPtr = this.ifaNetmask, ifaIfu: MutPtr = this.ifaIfu, ifaData: MutPtr = this.ifaData): Ifaddrs = Ifaddrs(ifaNextCtorArg = ifaNext, ifaNameCtorArg = ifaName, ifaFlags = ifaFlags, ifaAddrCtorArg = ifaAddr, ifaNetmaskCtorArg = ifaNetmask, ifaIfuCtorArg = ifaIfu, ifaDataCtorArg = ifaData)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Ifaddrs) return false
-        if (this.ifaNext != other.ifaNext) return false
-        if (this.ifaName != other.ifaName) return false
-        if (this.ifaFlags != other.ifaFlags) return false
-        if (this.ifaAddr != other.ifaAddr) return false
-        if (this.ifaNetmask != other.ifaNetmask) return false
-        if (this.ifaIfu != other.ifaIfu) return false
-        if (this.ifaData != other.ifaData) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ifaNext.hashCode()
-        result = 31 * result + this.ifaName.hashCode()
-        result = 31 * result + this.ifaFlags.hashCode()
-        result = 31 * result + this.ifaAddr.hashCode()
-        result = 31 * result + this.ifaNetmask.hashCode()
-        result = 31 * result + this.ifaIfu.hashCode()
-        result = 31 * result + this.ifaData.hashCode()
-        return result
-    }
-
-    public fun clone(): Ifaddrs = Ifaddrs(ifaNext, ifaName, ifaFlags, ifaAddr, ifaNetmask, ifaIfu, ifaData)
+    public open fun clone(): Ifaddrs = Ifaddrs(ifaNext, ifaName, ifaFlags, ifaAddr, ifaNetmask, ifaIfu, ifaData)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Ifaddrs> =
@@ -1346,13 +1072,13 @@ public class Ifaddrs internal constructor(
             }
 
         public operator fun invoke(
-            ifaNext: MutPtr = MutPtr(0L),
-            ifaName: MutPtr = MutPtr(0L),
-            ifaFlags: CUint = 0u,
-            ifaAddr: MutPtr = MutPtr(0L),
-            ifaNetmask: MutPtr = MutPtr(0L),
-            ifaIfu: MutPtr = MutPtr(0L),
-            ifaData: MutPtr = MutPtr(0L),
+            ifaNext: MutPtr,
+            ifaName: MutPtr,
+            ifaFlags: CUint,
+            ifaAddr: MutPtr,
+            ifaNetmask: MutPtr,
+            ifaIfu: MutPtr,
+            ifaData: MutPtr,
         ): Ifaddrs = Ifaddrs(
             ifaNextCtorArg = ifaNext,
             ifaNameCtorArg = ifaName,
@@ -1365,45 +1091,29 @@ public class Ifaddrs internal constructor(
     }
 }
 
-public data class In6Rtmsg(
-    public var rtmsgDst: In6Addr = In6Addr(),
-    public var rtmsgSrc: In6Addr = In6Addr(),
-    public var rtmsgGateway: In6Addr = In6Addr(),
-    public var rtmsgType: UInt = 0u,
-    public var rtmsgDstLen: UShort = 0u,
-    public var rtmsgSrcLen: UShort = 0u,
-    public var rtmsgMetric: UInt = 0u,
-    public var rtmsgInfo: CUlong = 0uL,
-    public var rtmsgFlags: UInt = 0u,
-    public var rtmsgIfindex: CInt = 0,
-)
-
-public data class Arpreq(
-    public var arpPa: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
-    public var arpHa: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
-    public var arpFlags: CInt = 0,
-    public var arpNetmask: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
-    public var arpDev: UByteArray = UByteArray(16),
+public open class In6Rtmsg(
+    public var rtmsgDst: In6Addr,
+    public var rtmsgSrc: In6Addr,
+    public var rtmsgGateway: In6Addr,
+    public var rtmsgType: UInt,
+    public var rtmsgDstLen: UShort,
+    public var rtmsgSrcLen: UShort,
+    public var rtmsgMetric: UInt,
+    public var rtmsgInfo: CUlong,
+    public var rtmsgFlags: UInt,
+    public var rtmsgIfindex: CInt,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Arpreq) return false
-        if (this.arpPa != other.arpPa) return false
-        if (this.arpHa != other.arpHa) return false
-        if (this.arpFlags != other.arpFlags) return false
-        if (this.arpNetmask != other.arpNetmask) return false
-        if (!this.arpDev.contentEquals(other.arpDev)) return false
-        return true
-    }
+    public open fun clone(): In6Rtmsg = In6Rtmsg(rtmsgDst, rtmsgSrc, rtmsgGateway, rtmsgType, rtmsgDstLen, rtmsgSrcLen, rtmsgMetric, rtmsgInfo, rtmsgFlags, rtmsgIfindex)
+}
 
-    override fun hashCode(): Int {
-        var result = this.arpPa.hashCode()
-        result = 31 * result + this.arpHa.hashCode()
-        result = 31 * result + this.arpFlags.hashCode()
-        result = 31 * result + this.arpNetmask.hashCode()
-        result = 31 * result + this.arpDev.contentHashCode()
-        return result
-    }
+public open class Arpreq(
+    public var arpPa: Sockaddr,
+    public var arpHa: Sockaddr,
+    public var arpFlags: CInt,
+    public var arpNetmask: Sockaddr,
+    public var arpDev: UByteArray,
+) {
+    public open fun clone(): Arpreq = Arpreq(arpPa, arpHa, arpFlags, arpNetmask, arpDev)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Arpreq> =
@@ -1444,12 +1154,14 @@ public data class Arpreq(
     }
 }
 
-public data class ArpreqOld(
-    public var arpPa: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
-    public var arpHa: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
-    public var arpFlags: CInt = 0,
-    public var arpNetmask: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
+public open class ArpreqOld(
+    public var arpPa: Sockaddr,
+    public var arpHa: Sockaddr,
+    public var arpFlags: CInt,
+    public var arpNetmask: Sockaddr,
 ) {
+    public open fun clone(): ArpreqOld = ArpreqOld(arpPa, arpHa, arpFlags, arpNetmask)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ArpreqOld> =
             object : TypeLayout<ArpreqOld> {
@@ -1485,13 +1197,15 @@ public data class ArpreqOld(
     }
 }
 
-public data class Arphdr(
-    public var arHrd: UShort = 0u,
-    public var arPro: UShort = 0u,
-    public var arHln: UByte = 0u,
-    public var arPln: UByte = 0u,
-    public var arOp: UShort = 0u,
+public open class Arphdr(
+    public var arHrd: UShort,
+    public var arPro: UShort,
+    public var arHln: UByte,
+    public var arPln: UByte,
+    public var arOp: UShort,
 ) {
+    public open fun clone(): Arphdr = Arphdr(arHrd, arPro, arHln, arPln, arOp)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Arphdr> =
             object : TypeLayout<Arphdr> {
@@ -1531,23 +1245,11 @@ public data class Arphdr(
     }
 }
 
-public data class SockaddrUn(
-    public var sunFamily: SaFamilyT = 0u,
-    public var sunPath: UByteArray = UByteArray(108),
+public open class SockaddrUn(
+    public var sunFamily: SaFamilyT,
+    public var sunPath: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SockaddrUn) return false
-        if (this.sunFamily != other.sunFamily) return false
-        if (!this.sunPath.contentEquals(other.sunPath)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sunFamily.hashCode()
-        result = 31 * result + this.sunPath.contentHashCode()
-        return result
-    }
+    public open fun clone(): SockaddrUn = SockaddrUn(sunFamily, sunPath)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrUn> =
@@ -1576,26 +1278,12 @@ public data class SockaddrUn(
     }
 }
 
-public data class SockaddrStorage(
-    public var ssFamily: SaFamilyT = 0u,
-    public var ssPad2: UByteArray = UByteArray((128 - 2 - 8).toInt()),
-    public var ssAlign: SizeT = 0uL,
+public open class SockaddrStorage(
+    public var ssFamily: SaFamilyT,
+    public var ssPad2: UByteArray,
+    public var ssAlign: SizeT,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SockaddrStorage) return false
-        if (this.ssFamily != other.ssFamily) return false
-        if (!this.ssPad2.contentEquals(other.ssPad2)) return false
-        if (this.ssAlign != other.ssAlign) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ssFamily.hashCode()
-        result = 31 * result + this.ssPad2.contentHashCode()
-        result = 31 * result + this.ssAlign.hashCode()
-        return result
-    }
+    public open fun clone(): SockaddrStorage = SockaddrStorage(ssFamily, ssPad2, ssAlign)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrStorage> =
@@ -1629,35 +1317,15 @@ public data class SockaddrStorage(
     }
 }
 
-public data class Utsname(
-    public var sysname: UByteArray = UByteArray(65),
-    public var nodename: UByteArray = UByteArray(65),
-    public var release: UByteArray = UByteArray(65),
-    public var version: UByteArray = UByteArray(65),
-    public var machine: UByteArray = UByteArray(65),
-    public var domainname: UByteArray = UByteArray(65),
+public open class Utsname(
+    public var sysname: UByteArray,
+    public var nodename: UByteArray,
+    public var release: UByteArray,
+    public var version: UByteArray,
+    public var machine: UByteArray,
+    public var domainname: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Utsname) return false
-        if (!this.sysname.contentEquals(other.sysname)) return false
-        if (!this.nodename.contentEquals(other.nodename)) return false
-        if (!this.release.contentEquals(other.release)) return false
-        if (!this.version.contentEquals(other.version)) return false
-        if (!this.machine.contentEquals(other.machine)) return false
-        if (!this.domainname.contentEquals(other.domainname)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sysname.contentHashCode()
-        result = 31 * result + this.nodename.contentHashCode()
-        result = 31 * result + this.release.contentHashCode()
-        result = 31 * result + this.version.contentHashCode()
-        result = 31 * result + this.machine.contentHashCode()
-        result = 31 * result + this.domainname.contentHashCode()
-        return result
-    }
+    public open fun clone(): Utsname = Utsname(sysname, nodename, release, version, machine, domainname)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Utsname> =
@@ -1702,39 +1370,14 @@ public data class Utsname(
     }
 }
 
-public class IfNameindex internal constructor(
+public open class IfNameindex internal constructor(
     public var ifIndex: CUint,
     ifNameCtorArg: MutPtr,
 ) {
     public var ifName: MutPtr = ifNameCtorArg
         internal set
 
-    public constructor() : this(
-        ifIndex = 0u,
-        ifNameCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): CUint = this.ifIndex
-
-    public operator fun component2(): MutPtr = this.ifName
-
-    public fun copy(ifIndex: CUint = this.ifIndex, ifName: MutPtr = this.ifName): IfNameindex = IfNameindex(ifIndex = ifIndex, ifNameCtorArg = ifName)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is IfNameindex) return false
-        if (this.ifIndex != other.ifIndex) return false
-        if (this.ifName != other.ifName) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ifIndex.hashCode()
-        result = 31 * result + this.ifName.hashCode()
-        return result
-    }
-
-    public fun clone(): IfNameindex = IfNameindex(ifIndex, ifName)
+    public open fun clone(): IfNameindex = IfNameindex(ifIndex, ifName)
 
     public companion object {
         public fun typeLayout(): TypeLayout<IfNameindex> =
@@ -1762,8 +1405,8 @@ public class IfNameindex internal constructor(
             }
 
         public operator fun invoke(
-            ifIndex: CUint = 0u,
-            ifName: MutPtr = MutPtr(0L),
+            ifIndex: CUint,
+            ifName: MutPtr,
         ): IfNameindex = IfNameindex(
             ifIndex = ifIndex,
             ifNameCtorArg = ifName,
@@ -1771,12 +1414,14 @@ public class IfNameindex internal constructor(
     }
 }
 
-public data class FileCloneRange(
-    public var srcFd: S64 = 0L,
-    public var srcOffset: U64 = 0uL,
-    public var srcLength: U64 = 0uL,
-    public var destOffset: U64 = 0uL,
+public open class FileCloneRange(
+    public var srcFd: S64,
+    public var srcOffset: U64,
+    public var srcLength: U64,
+    public var destOffset: U64,
 ) {
+    public open fun clone(): FileCloneRange = FileCloneRange(srcFd, srcOffset, srcLength, destOffset)
+
     public companion object {
         public fun typeLayout(): TypeLayout<FileCloneRange> =
             object : TypeLayout<FileCloneRange> {
@@ -1813,12 +1458,14 @@ public data class FileCloneRange(
 }
 
 // linux/filter.h
-public data class SockFilter(
-    public var code: U16 = 0u,
-    public var jt: U8 = 0u,
-    public var jf: U8 = 0u,
-    public var k: U32 = 0u,
+public open class SockFilter(
+    public var code: U16,
+    public var jt: U8,
+    public var jf: U8,
+    public var k: U32,
 ) {
+    public open fun clone(): SockFilter = SockFilter(code, jt, jf, k)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SockFilter> =
             object : TypeLayout<SockFilter> {
@@ -1854,39 +1501,14 @@ public data class SockFilter(
     }
 }
 
-public class SockFprog internal constructor(
+public open class SockFprog internal constructor(
     public var len: CUshort,
     filterCtorArg: MutPtr,
 ) {
     public var filter: MutPtr = filterCtorArg
         internal set
 
-    public constructor() : this(
-        len = 0u,
-        filterCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): CUshort = this.len
-
-    public operator fun component2(): MutPtr = this.filter
-
-    public fun copy(len: CUshort = this.len, filter: MutPtr = this.filter): SockFprog = SockFprog(len = len, filterCtorArg = filter)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SockFprog) return false
-        if (this.len != other.len) return false
-        if (this.filter != other.filter) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.len.hashCode()
-        result = 31 * result + this.filter.hashCode()
-        return result
-    }
-
-    public fun clone(): SockFprog = SockFprog(len, filter)
+    public open fun clone(): SockFprog = SockFprog(len, filter)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SockFprog> =
@@ -1914,8 +1536,8 @@ public class SockFprog internal constructor(
             }
 
         public operator fun invoke(
-            len: CUshort = 0u,
-            filter: MutPtr = MutPtr(0L),
+            len: CUshort,
+            filter: MutPtr,
         ): SockFprog = SockFprog(
             len = len,
             filterCtorArg = filter,
@@ -1923,42 +1545,42 @@ public class SockFprog internal constructor(
     }
 }
 
-public class Statx(
-    public var stxMask: U32 = 0u,
-    public var stxBlksize: U32 = 0u,
-    public var stxAttributes: U64 = 0uL,
-    public var stxNlink: U32 = 0u,
-    public var stxUid: U32 = 0u,
-    public var stxGid: U32 = 0u,
-    public var stxMode: U16 = 0u,
-    public var statxPad1: UShortArray = UShortArray(1),
-    public var stxIno: U64 = 0uL,
-    public var stxSize: U64 = 0uL,
-    public var stxBlocks: U64 = 0uL,
-    public var stxAttributesMask: U64 = 0uL,
-    public var stxAtime: StatxTimestamp = StatxTimestamp(),
-    public var stxBtime: StatxTimestamp = StatxTimestamp(),
-    public var stxCtime: StatxTimestamp = StatxTimestamp(),
-    public var stxMtime: StatxTimestamp = StatxTimestamp(),
-    public var stxRdevMajor: U32 = 0u,
-    public var stxRdevMinor: U32 = 0u,
-    public var stxDevMajor: U32 = 0u,
-    public var stxDevMinor: U32 = 0u,
-    public var stxMntId: U64 = 0uL,
-    public var stxDioMemAlign: U32 = 0u,
-    public var stxDioOffsetAlign: U32 = 0u,
+public open class Statx(
+    public var stxMask: U32,
+    public var stxBlksize: U32,
+    public var stxAttributes: U64,
+    public var stxNlink: U32,
+    public var stxUid: U32,
+    public var stxGid: U32,
+    public var stxMode: U16,
+    public var statxPad1: UShortArray,
+    public var stxIno: U64,
+    public var stxSize: U64,
+    public var stxBlocks: U64,
+    public var stxAttributesMask: U64,
+    public var stxAtime: StatxTimestamp,
+    public var stxBtime: StatxTimestamp,
+    public var stxCtime: StatxTimestamp,
+    public var stxMtime: StatxTimestamp,
+    public var stxRdevMajor: U32,
+    public var stxRdevMinor: U32,
+    public var stxDevMajor: U32,
+    public var stxDevMinor: U32,
+    public var stxMntId: U64,
+    public var stxDioMemAlign: U32,
+    public var stxDioOffsetAlign: U32,
     // The following fields are not available on Android as of
     // 2026-06.
-    public var stxSubvol: U64 = 0uL,
-    public var stxAtomicWriteUnitMin: U32 = 0u,
-    public var stxAtomicWriteUnitMax: U32 = 0u,
-    public var stxAtomicWriteSegmentsMax: U32 = 0u,
-    public var stxDioReadOffsetAlign: U32 = 0u,
-    public var stxAtomicWriteUnitMaxOpt: U32 = 0u,
-    public var statxPad2: UIntArray = UIntArray(1),
-    public var statxPad3: ULongArray = ULongArray(8),
+    public var stxSubvol: U64,
+    public var stxAtomicWriteUnitMin: U32,
+    public var stxAtomicWriteUnitMax: U32,
+    public var stxAtomicWriteSegmentsMax: U32,
+    public var stxDioReadOffsetAlign: U32,
+    public var stxAtomicWriteUnitMaxOpt: U32,
+    public var statxPad2: UIntArray,
+    public var statxPad3: ULongArray,
 ) {
-    public fun clone(): Statx = Statx(stxMask, stxBlksize, stxAttributes, stxNlink, stxUid, stxGid, stxMode, statxPad1, stxIno, stxSize, stxBlocks, stxAttributesMask, stxAtime, stxBtime, stxCtime, stxMtime, stxRdevMajor, stxRdevMinor, stxDevMajor, stxDevMinor, stxMntId, stxDioMemAlign, stxDioOffsetAlign, stxSubvol, stxAtomicWriteUnitMin, stxAtomicWriteUnitMax, stxAtomicWriteSegmentsMax, stxDioReadOffsetAlign, stxAtomicWriteUnitMaxOpt, statxPad2, statxPad3)
+    public open fun clone(): Statx = Statx(stxMask, stxBlksize, stxAttributes, stxNlink, stxUid, stxGid, stxMode, statxPad1, stxIno, stxSize, stxBlocks, stxAttributesMask, stxAtime, stxBtime, stxCtime, stxMtime, stxRdevMajor, stxRdevMinor, stxDevMajor, stxDevMinor, stxMntId, stxDioMemAlign, stxDioOffsetAlign, stxSubvol, stxAtomicWriteUnitMin, stxAtomicWriteUnitMax, stxAtomicWriteSegmentsMax, stxDioReadOffsetAlign, stxAtomicWriteUnitMaxOpt, statxPad2, statxPad3)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Statx> =
@@ -2103,26 +1725,12 @@ public class Statx(
     }
 }
 
-public data class StatxTimestamp(
-    public var tvSec: S64 = 0L,
-    public var tvNsec: U32 = 0u,
-    public var statxTimestampPad1: IntArray = IntArray(1),
+public open class StatxTimestamp(
+    public var tvSec: S64,
+    public var tvNsec: U32,
+    public var statxTimestampPad1: IntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is StatxTimestamp) return false
-        if (this.tvSec != other.tvSec) return false
-        if (this.tvNsec != other.tvNsec) return false
-        if (!this.statxTimestampPad1.contentEquals(other.statxTimestampPad1)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.tvSec.hashCode()
-        result = 31 * result + this.tvNsec.hashCode()
-        result = 31 * result + this.statxTimestampPad1.contentHashCode()
-        return result
-    }
+    public open fun clone(): StatxTimestamp = StatxTimestamp(tvSec, tvNsec, statxTimestampPad1)
 
     public companion object {
         public fun typeLayout(): TypeLayout<StatxTimestamp> =
@@ -2155,11 +1763,13 @@ public data class StatxTimestamp(
     }
 }
 
-public data class EpollEvent(
-    public var events: UInt = 0u,
-    public var u64: ULong = 0uL,
+public open class EpollEvent(
+    public var events: UInt,
+    public var u64: ULong,
 ) {
-    public fun eq(other: EpollEvent): Boolean = this.events == other.events && this.u64 == other.u64
+    public open fun clone(): EpollEvent = EpollEvent(events, u64)
+
+    public open fun eq(other: EpollEvent): Boolean = this.events == other.events && this.u64 == other.u64
 
     public override fun hashCode(): Int {
         var state = 0
@@ -2197,34 +1807,25 @@ public data class EpollEvent(
     }
 }
 
-public data class Sigevent(
-    public var sigevValue: Sigval = Sigval(),
-    public var sigevSigno: CInt = 0,
-    public var sigevNotify: CInt = 0,
+public open class Sigevent(
+    public var sigevValue: Sigval,
+    public var sigevSigno: CInt,
+    public var sigevNotify: CInt,
     // Actually a union.  We only expose sigevNotifyThreadId because it's
     // the most useful member
-    public var sigevNotifyThreadId: CInt = 0,
-    public var unused1: IntArray = IntArray(11),
+    public var sigevNotifyThreadId: CInt,
+    public var unused1: IntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Sigevent) return false
-        if (this.sigevValue != other.sigevValue) return false
-        if (this.sigevSigno != other.sigevSigno) return false
-        if (this.sigevNotify != other.sigevNotify) return false
-        if (this.sigevNotifyThreadId != other.sigevNotifyThreadId) return false
-        if (!this.unused1.contentEquals(other.unused1)) return false
-        return true
-    }
+    public open fun clone(): Sigevent = Sigevent(sigevValue, sigevSigno, sigevNotify, sigevNotifyThreadId, unused1)
 
-    override fun hashCode(): Int {
-        var result = this.sigevValue.hashCode()
-        result = 31 * result + this.sigevSigno.hashCode()
-        result = 31 * result + this.sigevNotify.hashCode()
-        result = 31 * result + this.sigevNotifyThreadId.hashCode()
-        result = 31 * result + this.unused1.contentHashCode()
-        return result
-    }
+    public open fun eq(other: Sigevent): Boolean = this.sigevValue == other.sigevValue && this.sigevSigno == other.sigevSigno && this.sigevNotify == other.sigevNotify && this.sigevNotifyThreadId == other.sigevNotifyThreadId
 
-    public fun eq(other: Sigevent): Boolean = this.sigevValue == other.sigevValue && this.sigevSigno == other.sigevSigno && this.sigevNotify == other.sigevNotify && this.sigevNotifyThreadId == other.sigevNotifyThreadId
+    public override fun hashCode(): Int {
+        var state = 0
+        state = 31 * state + (this.sigevValue).hashCode()
+        state = 31 * state + (this.sigevSigno).hashCode()
+        state = 31 * state + (this.sigevNotify).hashCode()
+        state = 31 * state + (this.sigevNotifyThreadId).hashCode()
+        return state
+    }
 }

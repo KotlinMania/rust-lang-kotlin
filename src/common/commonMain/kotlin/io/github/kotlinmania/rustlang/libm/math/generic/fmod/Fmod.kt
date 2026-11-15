@@ -1,10 +1,10 @@
 // port-lint: source math/generic/fmod.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.fmod
 
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.math.support.inttraits.Int
-import io.github.kotlinmania.rustlang.math.support.modular.linearMulReduction
+import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
+import io.github.kotlinmania.rustlang.libm.math.support.modular.linearMulReduction
 
 public fun <Int, SignedInt, D, F : Float<F, Any?, Any?>> fmod(x: F, y: F, fromBitsFFn: (Int) -> F): F {
     val v1 = F.Int.ONE
@@ -51,7 +51,7 @@ public fun <Int, SignedInt, F : Float<F, Any?, Any?>> intoSigExp(bits: Int): Pai
     var bits1 = bits
     bits1 = bits1 and F.SIGN_MASK.inv()
     // Subtract 1 from the exponent, clamping at 0
-    val sat = (rustCheckedSub(bits1, F.IMPLICIT_BIT.toInt()) ?: F.Int.ZERO)
+    val sat = (bits1.checkedSub(F.IMPLICIT_BIT.toInt()) ?: F.Int.ZERO)
     return Pair(bits1 - (sat and F.EXP_MASK), UInt.castFrom(sat shr F.SIG_BITS.toInt()))
 }
 
@@ -87,10 +87,10 @@ public fun <Int, SignedInt, D, F> reduction(x: Int, e: UInt, y: Int): Int where 
     if (F.BITS == 64 && e < 32u) {
         // Assumes `x<2y`
         for (unused in 0 until e) {
-            x1 = (rustCheckedSub(x1, y) ?: x1)
+            x1 = (x1.checkedSub(y) ?: x1)
             x1 = x1 shl 1
         }
-        return (rustCheckedSub(x1, y) ?: x1)
+        return (x1.checkedSub(y) ?: x1)
     }
     // Fast path for short reductions
     if (e < F.BITS) {

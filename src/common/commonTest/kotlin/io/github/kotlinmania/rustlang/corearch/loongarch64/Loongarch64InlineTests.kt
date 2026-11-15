@@ -8,10 +8,10 @@ public class Loongarch64InlineTests {
         check(crcWBW(-1, -1) == 16777215)
         check(crcWHW(-1, -1) == 65535)
         check(crcWWW(-1, -1) == 0)
-        check(crcWDW(-1, -1) == 3736805603u.castSigned())
+        check(crcWDW(-1L, -1) == 3736805603u.castSigned())
         check(crccWBW(-1, -1) == 16777215)
         check(crccWHW(-1, -1) == 65535)
         check(crccWWW(-1, -1) == 0)
-        check(crccWDW(-1, -1) == 3080238136u.castSigned())
+        check(crccWDW(-1L, -1) == 3080238136u.castSigned())
     }
 }

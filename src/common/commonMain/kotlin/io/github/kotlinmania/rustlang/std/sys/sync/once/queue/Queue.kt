@@ -2,8 +2,9 @@
 package io.github.kotlinmania.rustlang.std.sys.sync.once.queue
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -11,13 +12,13 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
-import io.github.kotlinmania.rustlang.process.abort
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.AcqRel
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.sync.once.OnceExclusiveState
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.thread.thread.Thread
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.AcqRel
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -104,7 +105,7 @@ public open class Once internal constructor(
     // Finally, this takes an `FnMut` instead of a `FnOnce` because there's
     // currently no way to take an `FnOnce` and call it via virtual dispatch
     // without some allocation overhead.
-    public open fun call(ignorePoisoning: Boolean, init: (io.github.kotlinmania.rustlang.sync.once.OnceState) -> Unit) {
+    public open fun call(ignorePoisoning: Boolean, init: (io.github.kotlinmania.rustlang.std.sync.once.OnceState) -> Unit) {
         var current = this.stateAndQueue.load(Acquire)
         while (true) {
             val state = toState(current)
@@ -129,7 +130,7 @@ public open class Once internal constructor(
                     val waiterQueue = WaiterQueue(stateAndQueue = this.stateAndQueue, setStateOnDropTo = ptr.withoutProvenanceMut(POISONED))
                     // Run the initialization function, letting it know if we're
                     // poisoned or not.
-                    val initState = io.github.kotlinmania.rustlang.sync.once.OnceState(inner = OnceState(poisoned = (state == POISONED).toUByte(), setStateOnDropTo = Cell.new(ptr.withoutProvenanceMut(COMPLETE))))
+                    val initState = io.github.kotlinmania.rustlang.std.sync.once.OnceState(inner = OnceState(poisoned = (state == POISONED).toUByte(), setStateOnDropTo = Cell.new(ptr.withoutProvenanceMut(COMPLETE))))
                     init(initState)
                     waiterQueue.setStateOnDropTo = initState.inner.setStateOnDropTo.get()
                     return
@@ -260,9 +261,9 @@ public open class WaiterQueue internal constructor(
             // `next` first.
             var queue = toQueue(current)
             while (!((queue).rawAddress == 0L)) {
-                val next = (ObjectSlotLayout<Waiter>()).readNative((queue).rawAddress).next.get()
-                val thread = (ObjectSlotLayout<Waiter>()).readNative((queue).rawAddress).thread.clone()
-                (ObjectSlotLayout<Waiter>()).readNative((queue).rawAddress).signaled.store(true, Release)
+                val next = (UnresolvedTypeLayout<Waiter>()).readNative((queue).rawAddress).next.get()
+                val thread = (UnresolvedTypeLayout<Waiter>()).readNative((queue).rawAddress).thread.clone()
+                (UnresolvedTypeLayout<Waiter>()).readNative((queue).rawAddress).signaled.store(true, Release)
                 thread.unpark()
                 queue = next
             }
@@ -361,7 +362,7 @@ public fun wait(stateAndQueue: Atomic<MutPtr>, current: StateAndQueue, returnOnP
             node.thread.park()
         }
         // The node was removed from the queue, disarm the guard.
-        mem.forget(guard)
+        forget(guard)
         return stateAndQueue.load(Acquire)
     }
 }

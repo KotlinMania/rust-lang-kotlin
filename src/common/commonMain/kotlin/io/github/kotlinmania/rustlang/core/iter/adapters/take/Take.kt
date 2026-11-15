@@ -1,23 +1,23 @@
 // port-lint: source iter/adapters/take.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.take
 
+import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.sources.repeat.Repeat
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.iter.sources.repeat.Repeat
-import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -33,15 +33,21 @@ public typealias Source<I> = I.Source
 public open class Take<I>(
     public var iter: I,
     public var n: Int,
-) : SourceIter<Source>, InPlaceIterable, TrustedFused, TrustedLen<Take<I>>, SpecTake<Take<I>>, Iterable<Item> {
-    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
-        override fun computeNext() {
-            when (val v = this@Take.next()) {
-                null -> done()
-                else -> setNext(v)
+) : SourceIter<Source>,
+    InPlaceIterable,
+    TrustedFused,
+    TrustedLen<Take<I>>,
+    SpecTake<Take<I>>,
+    Iterable<Item> {
+    override fun iterator(): Iterator<Item> =
+        object : AbstractIterator<Item>() {
+            override fun computeNext() {
+                when (val v = this@Take.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Take<I> = Take(iter, n)
 
@@ -73,12 +79,15 @@ public open class Take<I>(
         // while benefiting from the inner iterator's `advanceBy` fast path.
         return run {
             val matchVal = this.iter.advanceBy(this.n)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                this.n
-            }; is Result.Err<*, *> -> {
-                val remaining = matchVal.error
-                this.n - remaining.get()
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    this.n
+                }
+                is Result.Err<*, *> -> {
+                    val remaining = matchVal.error
+                    this.n - remaining.get()
+                }
+            }
         }
     }
 
@@ -103,7 +112,11 @@ public open class Take<I>(
         fun <T, Acc, R : Try<R, Acc, Any?>> check(n: RustMutableReference<Int>, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
             val n1 = n
             return { acc, x ->
-                (n1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue -= (1); targetPlace.write(currentValue) }
+                (n1).let { targetPlace ->
+                    var currentValue = targetPlace.read()
+                    currentValue -= (1)
+                    targetPlace.write(currentValue)
+                }
                 val r = fold1(acc, x)
                 if ((n1).read() == 0) {
                     ControlFlow.Break(r)
@@ -131,12 +144,15 @@ public open class Take<I>(
         val rem1 =
             run {
                 val matchVal = this.iter.advanceBy(min)
-                when (matchVal) { is Result.Ok<*, *> -> {
-                    0
-                }; is Result.Err<*, *> -> {
-                    val rem = matchVal.error
-                    rem.get()
-                } }
+                when (matchVal) {
+                    is Result.Ok<*, *> -> {
+                        0
+                    }
+                    is Result.Err<*, *> -> {
+                        val rem = matchVal.error
+                        rem.get()
+                    }
+                }
             }
         val advanced = min - rem1
         this.n -= advanced
@@ -154,13 +170,13 @@ public open class Take<I>(
         } else {
             val n = this.n
             this.n -= 1
-            this.iter.nthBack(rustSaturatingSub(this.iter.len(), n))
+            this.iter.nthBack(this.iter.len().saturatingSub(n))
         }
 
     public open fun nthBack(n: Int): Item? {
         val len = this.iter.len()
         return if (this.n > n) {
-            val m = rustSaturatingSub(len, this.n) + n
+            val m = len.saturatingSub(this.n) + n
             this.n -= n + 1
             this.iter.nthBack(m)
         } else {
@@ -198,20 +214,23 @@ public open class Take<I>(
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
         // The amount by which the inner iterator needs to be shortened for it to be
         // at most as long as the take() amount.
-        val trimInner = rustSaturatingSub(this.iter.len(), this.n)
+        val trimInner = this.iter.len().saturatingSub(this.n)
         // The amount we need to advance inner to fulfill the caller's request.
         // take(), advanceBy() and len() all can be at most Int, so we don't have to worry
         // about having to advance more than usize.Max here.
-        val advanceBy = rustSaturatingAdd(trimInner, n)
+        val advanceBy = trimInner.saturatingAdd(n)
         val remainder =
             run {
                 val matchVal = this.iter.advanceBackBy(advanceBy)
-                when (matchVal) { is Result.Ok<*, *> -> {
-                    0
-                }; is Result.Err<*, *> -> {
-                    val rem = matchVal.error
-                    rem.get()
-                } }
+                when (matchVal) {
+                    is Result.Ok<*, *> -> {
+                        0
+                    }
+                    is Result.Err<*, *> -> {
+                        val rem = matchVal.error
+                        rem.get()
+                    }
+                }
             }
         val advancedByInner = advanceBy - remainder
         val advancedBy = advancedByInner - trimInner

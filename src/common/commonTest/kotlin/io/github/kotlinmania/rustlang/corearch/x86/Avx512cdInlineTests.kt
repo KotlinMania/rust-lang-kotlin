@@ -1,24 +1,6 @@
 // port-lint: tests x86/avx512cd.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.x86.Mmask16
-import io.github.kotlinmania.rustlang.x86.Mmask8
-import io.github.kotlinmania.rustlang.x86.mm256Set1Epi32
-import io.github.kotlinmania.rustlang.x86.mm256Set1Epi64x
-import io.github.kotlinmania.rustlang.x86.mm256SetEpi32
-import io.github.kotlinmania.rustlang.x86.mm256SetEpi64x
-import io.github.kotlinmania.rustlang.x86.mm256SetzeroSi256
-import io.github.kotlinmania.rustlang.x86.mm512Set1Epi32
-import io.github.kotlinmania.rustlang.x86.mm512Set1Epi64
-import io.github.kotlinmania.rustlang.x86.mm512SetEpi32
-import io.github.kotlinmania.rustlang.x86.mm512SetEpi64
-import io.github.kotlinmania.rustlang.x86.mm512SetzeroSi512
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi32
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
-import io.github.kotlinmania.rustlang.x86.mmSetEpi32
-import io.github.kotlinmania.rustlang.x86.mmSetEpi64x
-import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
-
 public fun testMm512BroadcastmwEpi32() {
     val a: Mmask16 = 2u
     val r = mm512BroadcastmwEpi32(a)

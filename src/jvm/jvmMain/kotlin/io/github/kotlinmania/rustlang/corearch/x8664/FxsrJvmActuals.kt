@@ -5,7 +5,7 @@ package io.github.kotlinmania.rustlang.corearch.x8664
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object CorearchX8664FxsrJniBridge {
+private object X8664FxsrJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -41,11 +41,14 @@ private object CorearchX8664FxsrJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX8664FxsrJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X8664FxsrJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -59,16 +62,16 @@ private object CorearchX8664FxsrJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX8664FxsrFxsave64(p: Long)
+    external fun corearchX8664FxsrFxsave64(p: Long)
 
     @JvmStatic
-    external fun rustlangCorearchX8664FxsrFxrstor64(p: Long)
+    external fun corearchX8664FxsrFxrstor64(p: Long)
 }
 
 public actual fun fxsave64(p: MutPtr) {
-    CorearchX8664FxsrJniBridge.rustlangCorearchX8664FxsrFxsave64(p.rawAddress)
+    X8664FxsrJniBridge.corearchX8664FxsrFxsave64(p.rawAddress)
 }
 
 public actual fun fxrstor64(p: ConstPtr) {
-    CorearchX8664FxsrJniBridge.rustlangCorearchX8664FxsrFxrstor64(p.rawAddress)
+    X8664FxsrJniBridge.corearchX8664FxsrFxrstor64(p.rawAddress)
 }

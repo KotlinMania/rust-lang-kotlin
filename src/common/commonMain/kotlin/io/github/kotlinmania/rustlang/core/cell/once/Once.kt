@@ -1,7 +1,7 @@
 // port-lint: source cell/once.rs
 package io.github.kotlinmania.rustlang.core.cell.once
 
-import io.github.kotlinmania.rustlang.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugTuple(
@@ -99,12 +99,15 @@ public open class OnceCell<T>(
     public open fun set(value: T): Result<Unit, T> =
         run {
             val matchVal = this.tryInsert(value)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                Result.Ok(Unit)
-            }; is Result.Err<*, *> -> {
-                val value1 = matchVal.error.second
-                Result.Err(value1)
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    Result.Ok(Unit)
+                }
+                is Result.Err<*, *> -> {
+                    val value1 = matchVal.error.second
+                    Result.Err(value1)
+                }
+            }
         }
 
     /**
@@ -289,7 +292,10 @@ public open class OnceCell<T>(
      */
     public open fun <E> getMutOrTryInit(f: () -> Result<T, E>): Result<T, E> {
         if (this.get() == null) {
-            when (val tryResult = this.tryInit(f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.tryInit(f)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         }
         return Result.Ok(this.getMut()!!)
     }
@@ -297,7 +303,11 @@ public open class OnceCell<T>(
     // Avoid inlining the initialization closure into the common path that fetches
     // the already initialized value
     public open fun <E> tryInit(f: () -> Result<T, E>): Result<T, E> {
-        val value = when (val tryResult = f()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val value =
+            when (val tryResult = f()) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         // Note that *some* forms of reentrant initialization might lead to
         // UB (see `reentrantInit` test). I believe that just removing this
         // `panic`, while keeping `tryInsert` would be sound, but it seems
@@ -356,7 +366,10 @@ public open class OnceCell<T>(
      * check(cell1.get() == null)
      * ```
      */
-    public open fun take(): T? = io.github.kotlinmania.rustlang.mem.take(this).intoInner()
+    public open fun take(): T? =
+        io.github.kotlinmania.rustlang.core.mem
+            .take(this)
+            .intoInner()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
         val d = DebugTuple(f, "OnceCell")

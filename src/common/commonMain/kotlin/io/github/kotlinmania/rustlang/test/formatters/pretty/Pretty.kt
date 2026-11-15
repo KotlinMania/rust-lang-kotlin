@@ -1,22 +1,22 @@
 // port-lint: source formatters/pretty.rs
 package io.github.kotlinmania.rustlang.test.formatters.pretty
 
-import io.github.kotlinmania.rustlang.TestDesc
-import io.github.kotlinmania.rustlang.bench.fmtBenchSamples
-import io.github.kotlinmania.rustlang.console.ConsoleTestDiscoveryState
-import io.github.kotlinmania.rustlang.console.ConsoleTestState
-import io.github.kotlinmania.rustlang.console.OutputLocation
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.formatters.OutputFormatter
-import io.github.kotlinmania.rustlang.term.color.CYAN
-import io.github.kotlinmania.rustlang.term.color.Color
-import io.github.kotlinmania.rustlang.term.color.GREEN
-import io.github.kotlinmania.rustlang.term.color.RED
-import io.github.kotlinmania.rustlang.term.color.YELLOW
-import io.github.kotlinmania.rustlang.testresult.TestResult
-import io.github.kotlinmania.rustlang.time.TEST_WARN_TIMEOUT_S
-import io.github.kotlinmania.rustlang.time.TestExecTime
-import io.github.kotlinmania.rustlang.time.TestTimeOptions
+import io.github.kotlinmania.rustlang.test.TestDesc
+import io.github.kotlinmania.rustlang.test.bench.fmtBenchSamples
+import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
+import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
+import io.github.kotlinmania.rustlang.test.console.OutputLocation
+import io.github.kotlinmania.rustlang.test.formatters.OutputFormatter
+import io.github.kotlinmania.rustlang.test.term.color.CYAN
+import io.github.kotlinmania.rustlang.test.term.color.Color
+import io.github.kotlinmania.rustlang.test.term.color.GREEN
+import io.github.kotlinmania.rustlang.test.term.color.RED
+import io.github.kotlinmania.rustlang.test.term.color.YELLOW
+import io.github.kotlinmania.rustlang.test.testresult.TestResult
+import io.github.kotlinmania.rustlang.test.time.TEST_WARN_TIMEOUT_S
+import io.github.kotlinmania.rustlang.test.time.TestExecTime
+import io.github.kotlinmania.rustlang.test.time.TestTimeOptions
 
 public open class PrettyFormatter<T>(
     public var out: OutputLocation<T>,

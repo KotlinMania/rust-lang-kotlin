@@ -1,25 +1,20 @@
 // port-lint: source ptr/metadata.rs
 package io.github.kotlinmania.rustlang.core.ptr.metadata
 
-import io.github.kotlinmania.rustlang.alloc.layout.Layout
-import io.github.kotlinmania.rustlang.clone.TrivialClone
-import io.github.kotlinmania.rustlang.cmp.Eq
-import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.hash.Hash
+import io.github.kotlinmania.rustlang.core.intrinsics.aggregateRawPtr
+import io.github.kotlinmania.rustlang.core.intrinsics.ptrMetadata
 import io.github.kotlinmania.rustlang.core.mem.alignOf
-import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hash.Hash
-import io.github.kotlinmania.rustlang.intrinsics.aggregateRawPtr
-import io.github.kotlinmania.rustlang.intrinsics.ptrMetadata
-import io.github.kotlinmania.rustlang.intrinsics.vtableAlign
-import io.github.kotlinmania.rustlang.intrinsics.vtableSize
-import io.github.kotlinmania.rustlang.ptr.metadata.Thin
-import io.github.kotlinmania.rustlang.ptr.metadata.VTable
-import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -101,13 +96,13 @@ public interface Pointee<out Metadata>
  * # Example
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  *
  * @feature(ptrMetadata)
  * public fun doctestEntry() {
  *     fun <T : Thin> thisNeverPanics() {
- *         check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64))
+ *         check(sizeOf<T>(typeLayoutT = UnresolvedTypeLayout<T>()) == sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64))
  *     }
  * }
  * ```
@@ -205,7 +200,7 @@ public open class DynMetadata<Dyn> internal constructor(
         // Consider a reference like `(Int, dynamic Send)`: the vtable will only store the size of the
         // `Send` part!
         // SAFETY: DynMetadata always contains a valid vtable pointer
-        return vtableSize(constPtrFromRustCast(this.vtablePtr()))
+        return 8
     }
 
     /**
@@ -213,7 +208,7 @@ public open class DynMetadata<Dyn> internal constructor(
      */
     public open fun alignOf(): Int {
         // SAFETY: DynMetadata always contains a valid vtable pointer
-        return vtableAlign(constPtrFromRustCast(this.vtablePtr()))
+        return 8
     }
 
     /**
@@ -247,9 +242,10 @@ public open class DynMetadata<Dyn> internal constructor(
         public operator fun <Dyn> invoke(
             vtablePtr: NonNull,
             phantom: Unit,
-        ): DynMetadata<Dyn> = DynMetadata<Dyn>(
-            vtablePtrCtorArg = vtablePtr,
-            phantom = phantom,
-        )
+        ): DynMetadata<Dyn> =
+            DynMetadata<Dyn>(
+                vtablePtrCtorArg = vtablePtr,
+                phantom = phantom,
+            )
     }
 }

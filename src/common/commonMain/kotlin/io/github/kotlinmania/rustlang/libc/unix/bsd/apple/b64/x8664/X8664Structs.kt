@@ -2,28 +2,16 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.x8664
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.libc.*
 
-public data class MallocIntrospectionT(
-    public var private: ULongArray = ULongArray(16),
-    public var nonExhaustive: Unit = Unit,
+public open class MallocIntrospectionT(
+    public var private: ULongArray,
+    public var nonExhaustive: Unit,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is MallocIntrospectionT) return false
-        if (!this.private.contentEquals(other.private)) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.private.contentHashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
-    }
+    public open fun clone(): MallocIntrospectionT = MallocIntrospectionT(private, nonExhaustive)
 
     public companion object {
         public fun typeLayout(): TypeLayout<MallocIntrospectionT> =
@@ -49,26 +37,16 @@ public data class MallocIntrospectionT(
                     (PrimitiveLayouts.UNIT).writeBytes(buf, offset + 128, value.nonExhaustive)
                 }
             }
+
+        public fun default(): MallocIntrospectionT = MallocIntrospectionT(private = Default.default(), nonExhaustive = Unit)
     }
 }
 
-public data class MaxAlignT(
-    public var priv: DoubleArray = DoubleArray(2),
-    public var nonExhaustive: Unit = Unit,
+public open class MaxAlignT(
+    public var priv: DoubleArray,
+    public var nonExhaustive: Unit,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is MaxAlignT) return false
-        if (!this.priv.contentEquals(other.priv)) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.priv.contentHashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
-    }
+    public open fun clone(): MaxAlignT = MaxAlignT(priv, nonExhaustive)
 
     public companion object {
         public fun typeLayout(): TypeLayout<MaxAlignT> =
@@ -94,5 +72,7 @@ public data class MaxAlignT(
                     (PrimitiveLayouts.UNIT).writeBytes(buf, offset + 16, value.nonExhaustive)
                 }
             }
+
+        public fun default(): MaxAlignT = MaxAlignT(priv = Default.default(), nonExhaustive = Unit)
     }
 }

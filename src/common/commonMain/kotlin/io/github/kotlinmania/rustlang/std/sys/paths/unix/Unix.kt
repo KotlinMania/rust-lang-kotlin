@@ -6,27 +6,26 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.env.varOs
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.fs.readLink
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.CS_DARWIN_USER_TEMP_DIR
 import io.github.kotlinmania.rustlang.libc.wasi.ERANGE
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.OsStringExt
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.asBytes
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.fromBytes
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.fromVec
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.path.PathBuf
+import io.github.kotlinmania.rustlang.std.env.varOs
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.fs.readLink
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.helpers.smallcstring.runPathWithCstr
-import io.github.kotlinmania.rustlang.sys.pal.unix.conf.confstr
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.OsStringExt
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.asBytes
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromVec
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runPathWithCstr
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.conf.confstr
 
 // Implementation of `std.os` functionality for unix systems
 
@@ -43,7 +42,7 @@ public fun getcwd(): Result<PathBuf, Error> {
                 buf.shrinkToFit()
                 return Result.Ok(PathBuf.from(OsString.fromVec(buf)))
             } else {
-                val error = io.github.kotlinmania.rustlang.io.Error.lastOsError()
+                val error = io.github.kotlinmania.rustlang.std.io.Error.lastOsError()
                 if (error.rawOsError() != ERANGE) {
                     return Result.Err(error)
                 }
@@ -62,7 +61,7 @@ public fun chdir(p: path.Path): Result<Unit, Error> {
     return if (result == 0) {
         Result.Ok(Unit)
     } else {
-        Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
+        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     }
 }
 
@@ -147,12 +146,9 @@ public fun darwinTempDir(): PathBuf {
     })
 }
 
-public fun tempDir(): PathBuf =
-    varOs("TMPDIR").map(PathBuf::from).unwrapOrElse({
-        darwinTempDir()
-    })
+public fun tempDir(): PathBuf = (varOs("TMPDIR")?.let(PathBuf::from) ?: darwinTempDir())
 
 public fun homeDir(): PathBuf? {
     fun fallback(): OsString? = null
-    return varOs("HOME").filter({ s -> !s.isEmpty() }).orElse({ fallback() }).map(PathBuf::from)
+    return (varOs("HOME").filter({ s -> !s.isEmpty() }) ?: fallback())?.let(PathBuf::from)
 }

@@ -15,20 +15,23 @@ public open class DedupSortedIter<K, V, I> internal constructor(
     public var iter: Peekable<I> = iterCtorArg
         internal set
 
-    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
-        override fun computeNext() {
-            when (val v = this@DedupSortedIter.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Pair<K, V>> =
+        object : AbstractIterator<Pair<K, V>>() {
+            override fun computeNext() {
+                when (val v = this@DedupSortedIter.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun next(): Pair<K, V>? {
         while (true) {
             val next1 =
                 when (val matchVal = this.iter.next()) {
-                    null -> { return null }
+                    null -> {
+                        return null
+                    }
                     else -> {
                         val next = matchVal
                         next
@@ -36,7 +39,9 @@ public open class DedupSortedIter<K, V, I> internal constructor(
                 }
             val peeked1 =
                 when (val matchVal1 = this.iter.peek()) {
-                    null -> { return next1 }
+                    null -> {
+                        return next1
+                    }
                     else -> {
                         val peeked = matchVal1
                         peeked
@@ -51,9 +56,10 @@ public open class DedupSortedIter<K, V, I> internal constructor(
     public companion object {
         public operator fun <K, V, I> invoke(
             iter: Peekable<I>,
-        ): DedupSortedIter<K, V, I> = DedupSortedIter<K, V, I>(
-            iterCtorArg = iter,
-        )
+        ): DedupSortedIter<K, V, I> =
+            DedupSortedIter<K, V, I>(
+                iterCtorArg = iter,
+            )
 
         public fun <K, V, I> new(iter: I): DedupSortedIter<K, V, I> where I : Iterator<Pair<K, V>> = DedupSortedIter(iter = iter.peekable())
     }

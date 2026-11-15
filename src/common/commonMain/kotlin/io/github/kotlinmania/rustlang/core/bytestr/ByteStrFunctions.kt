@@ -2,9 +2,9 @@ package io.github.kotlinmania.rustlang.core.bytestr
 
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.str.converts.fromUtf8
-import io.github.kotlinmania.rustlang.str.converts.fromUtf8Mut
-import io.github.kotlinmania.rustlang.str.error.Utf8Error
+import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
+import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Mut
+import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 
 // `implementation AsRef<ByteStr> for [UByte]` omitted to avoid widespread inference failures
 public fun String.asRef(): ByteStr = ByteStr.new(this)

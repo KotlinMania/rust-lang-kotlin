@@ -1,8 +1,6 @@
 // port-lint: source os/fd/stdio.rs
 package io.github.kotlinmania.rustlang.std.os.fd
 
-import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
-
 /**
  * The file descriptor for the standard input stream of the current process.
  *

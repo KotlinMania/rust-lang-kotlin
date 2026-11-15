@@ -1,15 +1,15 @@
 // port-lint: source sys/sync/thread_parking/futex.rs
 package io.github.kotlinmania.rustlang.std.sys.sync.threadparking.futex
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.sys.sync.futex.unix.SmallFutex
-import io.github.kotlinmania.rustlang.sys.sync.futex.unix.SmallPrimitive
-import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWait
-import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWake
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.SmallFutex
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.SmallPrimitive
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWait
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWake
 
 public typealias Futex = SmallFutex
 
@@ -105,7 +105,7 @@ public open class Parker(
          * requires this to happen in-place.
          */
         public fun newInPlace(parker: MutPtr) {
-            (ObjectSlotLayout<Parker>()).writeNative((parker).rawAddress, Parker(state = Futex.new(EMPTY)))
+            (UnresolvedTypeLayout<Parker>()).writeNative((parker).rawAddress, Parker(state = Futex.new(EMPTY)))
         }
     }
 }

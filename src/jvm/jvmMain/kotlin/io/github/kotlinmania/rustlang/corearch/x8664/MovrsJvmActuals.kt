@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.x8664
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
-private object CorearchX8664MovrsJniBridge {
+private object X8664MovrsJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -40,11 +40,14 @@ private object CorearchX8664MovrsJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX8664MovrsJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X8664MovrsJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -58,26 +61,26 @@ private object CorearchX8664MovrsJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX8664MovrsMovrsqi(src: Long): Byte
+    external fun corearchX8664MovrsMovrsqi(src: Long): Byte
 
     @JvmStatic
-    external fun rustlangCorearchX8664MovrsMovrshi(src: Long): Short
+    external fun corearchX8664MovrsMovrshi(src: Long): Short
 
     @JvmStatic
-    external fun rustlangCorearchX8664MovrsMovrssi(src: Long): Int
+    external fun corearchX8664MovrsMovrssi(src: Long): Int
 
     @JvmStatic
-    external fun rustlangCorearchX8664MovrsMovrsdi(src: Long): Long
+    external fun corearchX8664MovrsMovrsdi(src: Long): Long
 }
 
 public actual fun movrsqi(src: ConstPtr): Byte =
-    CorearchX8664MovrsJniBridge.rustlangCorearchX8664MovrsMovrsqi(src.rawAddress)
+    X8664MovrsJniBridge.corearchX8664MovrsMovrsqi(src.rawAddress)
 
 public actual fun movrshi(src: ConstPtr): Short =
-    CorearchX8664MovrsJniBridge.rustlangCorearchX8664MovrsMovrshi(src.rawAddress)
+    X8664MovrsJniBridge.corearchX8664MovrsMovrshi(src.rawAddress)
 
 public actual fun movrssi(src: ConstPtr): Int =
-    CorearchX8664MovrsJniBridge.rustlangCorearchX8664MovrsMovrssi(src.rawAddress)
+    X8664MovrsJniBridge.corearchX8664MovrsMovrssi(src.rawAddress)
 
 public actual fun movrsdi(src: ConstPtr): Long =
-    CorearchX8664MovrsJniBridge.rustlangCorearchX8664MovrsMovrsdi(src.rawAddress)
+    X8664MovrsJniBridge.corearchX8664MovrsMovrsdi(src.rawAddress)

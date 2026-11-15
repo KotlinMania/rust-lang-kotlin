@@ -1,19 +1,19 @@
 // port-lint: source slice/rotate.rs
 package io.github.kotlinmania.rustlang.core.slice.rotate
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.intrinsics.alignOf
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.ptr.copy
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.ptr.swapNonoverlapping
 
 public typealias BufType = IntArray
 
@@ -45,7 +45,7 @@ public fun <T> ptrRotate(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLa
         // `ratio * sizeOf<Int>() == sizeOf<T>()`. The check above guarantees
         // `mid` is aligned for `Int`, and preserving the total byte length introduces
         // no new overflow.
-        ptrRotateDispatch(left * ratio, MutPtr(mid.rawAddress, mid.rawMeta), right * ratio, typeLayoutT = ObjectSlotLayout<MaybeUninit<Int>>())
+        ptrRotateDispatch(left * ratio, MutPtr(mid.rawAddress, mid.rawMeta), right * ratio, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<Int>>())
     } else {
         // SAFETY: guaranteed by the caller
         ptrRotateDispatch(left, mid, right, typeLayoutT = typeLayoutT)
@@ -85,7 +85,7 @@ public fun <T> ptrRotateDispatch(left: Int, mid: MutPtr, right: Int, typeLayoutT
  */
 public fun <T> ptrRotateMemmove(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
     // The `[T; 0]` here is to ensure this is appropriately aligned for T
-    val rawarray = MaybeUninit.uninit(ObjectSlotLayout<Pair<BufType, List<T>>>())
+    val rawarray = MaybeUninit.uninit(UnresolvedTypeLayout<Pair<BufType, List<T>>>())
     val buf = mutPtrFromRustCast(rawarray.asMutPtr())
     // SAFETY: `mid - left <= mid - left + right<mid + right`
     val dim = MutPtr((MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes))).rawAddress + ((right).toLong() * (typeLayoutT).strideBytes))

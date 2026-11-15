@@ -3,32 +3,32 @@ package io.github.kotlinmania.rustlang.std.sys.pal.windows
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
+import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.io.constError
-import io.github.kotlinmania.rustlang.path.PathBuf
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.pal.windows.api.WinError
-import io.github.kotlinmania.rustlang.sys.pal.windows.api.getLastError
-import io.github.kotlinmania.rustlang.sys.pal.windows.api.wideStr
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.ERROR_INSUFFICIENT_BUFFER
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.INFINITE
-import io.github.kotlinmania.rustlang.sys.thread.windows.setNameWide
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.stackOverflowUwp as stackoverflow
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.getLastError
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.wideStr
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_INSUFFICIENT_BUFFER
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INFINITE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.SetLastError
+import io.github.kotlinmania.rustlang.std.sys.thread.windows.setNameWide
 
 // SAFETY: must be called only once during runtime initialization.
 // NOTE: this is not guaranteed to run, for example when Rust code is called externally.
 public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
     run {
-        stackoverflow.init()
+        io.github.kotlinmania.rustlang.std.sys.pal.windows.stackoverflowuwp.init()
         // Normally, `thread.spawn` will call `setName` but since this thread already
         // exists, we have to call it ourselves.
         setNameWide(wideStr("main"))
@@ -40,7 +40,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
 // is not guaranteed to run on the main thread (#161018 was caused by that
 // mistaken assumption).
 public fun cleanup() {
-    io.github.kotlinmania.rustlang.sys.pal.windows.cleanup()
+    io.github.kotlinmania.rustlang.std.sys.pal.windows.winsock.cleanup()
 }
 
 public fun unrolledFindU16s(needle: UShort, haystack: List<UShort>): Int? {
@@ -155,13 +155,13 @@ public fun <T> fillUtf16Buf(f1: (MutPtr, UInt) -> UInt, f2: (List<UShort>) -> T)
             // then check it again if we get the "0 error value". If the "last
             // error" is still 0 then we interpret it as a 0 length buffer and
             // not an actual error.
-            C.SetLastError(0)
+            SetLastError(0)
             val k =
                 (run {
                     val matchVal = f1(MutPtr((buf.asMutPtr()).rawAddress), n.toUInt())
                     when {
                         matchVal == 0 && getLastError().code == 0 -> 0
-                        matchVal == 0 -> { return Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError()) }
+                        matchVal == 0 -> { return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError()) }
                         else -> {
                             val n1 = matchVal
                             n1
@@ -169,7 +169,7 @@ public fun <T> fillUtf16Buf(f1: (MutPtr, UInt) -> UInt, f2: (List<UShort>) -> T)
                     }
                 }).toInt()
             if (k == n && getLastError().code == ERROR_INSUFFICIENT_BUFFER) {
-                n = rustSaturatingMul(n, 2).min(UInt.MAX_VALUE.toInt())
+                n = n.saturatingMul(2).min(UInt.MAX_VALUE.toInt())
             } else if (k > n) {
                 n = k
             } else if (k == n) {
@@ -208,7 +208,7 @@ public fun ensureNoNuls(s: OsStr): Result<OsStr, Error> =
 
 public fun <I : IsZero> cvt(i: I): Result<I, Error> =
     if (i.isZero()) {
-        Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
+        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     } else {
         Result.Ok(i)
     }
@@ -217,7 +217,7 @@ public fun <I : IsZero> cvtNz(i: I): Result<Unit, Error> =
     if (i.isZero()) {
         Result.Ok(Unit)
     } else {
-        Result.Err(io.Error.lastOsError())
+        Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     }
 
 public fun dur2timeout(dur: Duration): UInt {
@@ -256,7 +256,7 @@ public fun abortInternal(): Nothing =
         Unit
     }
 
-public fun <T> Result<T, WinError>.ioResult(): Result<T, Error> = this.mapErr({ e -> io.github.kotlinmania.rustlang.io.Error.fromRawOsError(e.code) })
+public fun <T> Result<T, WinError>.ioResult(): Result<T, Error> = this.mapErr({ e -> io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(e.code) })
 
 public fun Byte.isZero(): Boolean = (this == 0.toByte()).toUByte()
 

@@ -1,23 +1,22 @@
 // port-lint: source quote.rs
 package io.github.kotlinmania.rustlang.procmacro.quote
 
-import io.github.kotlinmania.rustlang.BitOr
-import io.github.kotlinmania.rustlang.Delimiter
-import io.github.kotlinmania.rustlang.Group
-import io.github.kotlinmania.rustlang.Ident
-import io.github.kotlinmania.rustlang.Literal
-import io.github.kotlinmania.rustlang.Punct
-import io.github.kotlinmania.rustlang.Spacing
-import io.github.kotlinmania.rustlang.Span
-import io.github.kotlinmania.rustlang.TokenStream
-import io.github.kotlinmania.rustlang.TokenTree
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.quote.minimalQuoteTt
+import io.github.kotlinmania.rustlang.procmacro.BitOr
+import io.github.kotlinmania.rustlang.procmacro.Delimiter
+import io.github.kotlinmania.rustlang.procmacro.Group
+import io.github.kotlinmania.rustlang.procmacro.Ident
+import io.github.kotlinmania.rustlang.procmacro.Literal
+import io.github.kotlinmania.rustlang.procmacro.Punct
+import io.github.kotlinmania.rustlang.procmacro.Spacing
+import io.github.kotlinmania.rustlang.procmacro.Span
+import io.github.kotlinmania.rustlang.procmacro.TokenStream
+import io.github.kotlinmania.rustlang.procmacro.TokenTree
+import io.github.kotlinmania.rustlang.procmacro.totokens.ToTokens
 import io.github.kotlinmania.rustlang.std.path.Iter
-import io.github.kotlinmania.rustlang.totokens.ToTokens
-import io.github.kotlinmania.rustlang.quote.HasIterator as HasIter
-import io.github.kotlinmania.rustlang.quote.ThereIsNoIteratorInRepetition as DoesNotHaveIter
+import io.github.kotlinmania.rustlang.procmacro.quote.HasIterator as HasIter
+import io.github.kotlinmania.rustlang.procmacro.quote.ThereIsNoIteratorInRepetition as DoesNotHaveIter
 
 // # Quasiquoter
 // This file contains the implementation internals of the quasiquoter provided by `quote`.

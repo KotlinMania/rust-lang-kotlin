@@ -3,22 +3,22 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.grisu
 
-import io.github.kotlinmania.rustlang.cmp.Eq
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.imp.diyfloat.Fp
+import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.MAX_SIG_DIGITS
+import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.Decoded
+import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.roundUp
+import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.num.imp.diyfloat.Fp
-import io.github.kotlinmania.rustlang.num.imp.flt2dec.MAX_SIG_DIGITS
-import io.github.kotlinmania.rustlang.num.imp.flt2dec.decoder.Decoded
-import io.github.kotlinmania.rustlang.num.imp.flt2dec.roundUp
-import io.github.kotlinmania.rustlang.option.Option
-import io.github.kotlinmania.rustlang.panicking.assertFailed
-import io.github.kotlinmania.rustlang.num.imp.flt2dec.strategy.grisu.formatShortest as fallback
+import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.grisu.formatShortest as fallback
 
 // Rust adaptation of the Grisu3 algorithm described in "Printing Floating-Point Numbers Quickly
 // and Accurately with Integers"[^1]. It uses about 1KB of precomputed table, and in turn, it's
@@ -218,8 +218,8 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
     check(d.mant > 0uL)
     check(d.minus > 0uL)
     check(d.plus > 0uL)
-    check(rustCheckedAdd(d.mant, d.plus) != null)
-    check(rustCheckedSub(d.mant, d.minus) != null)
+    check(d.mant.checkedAdd(d.plus) != null)
+    check(d.mant.checkedSub(d.minus) != null)
     check(buf.size >= MAX_SIG_DIGITS)
     check(d.mant + d.plus < (1uL shl 61))
     // we need at least three bits of additional precision
@@ -406,7 +406,7 @@ public fun formatShortest(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): Pai
     // SAFETY: The borrow checker is not smart enough to let us use `buf`
     // in the second branch, so we launder the scope here. But we only re-use
     // `buf` if `formatShortestOpt` returned `None` so this is okay.
-    return when (val matchVal = formatShortestOpt(d, RustMutableReference(MutPtr(((mutPtrFromRustCast(buf))).rawAddress), ObjectSlotLayout<Any?>()))) {
+    return when (val matchVal = formatShortestOpt(d, RustMutableReference(MutPtr(((mutPtrFromRustCast(buf))).rawAddress), UnresolvedTypeLayout<Any?>()))) {
         null -> fallback(d, buf)
         else -> {
             val ret = matchVal
@@ -422,6 +422,7 @@ public fun formatShortest(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): Pai
  */
 public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: Short): Pair<List<UByte>, Short>? {
     val POW10_UP_TO_9: UIntArray = uintArrayOf(1u, 10u, 100u, 1000u, 10000u, 100000u, 1000000u, 10000000u, 100000000u, 1000000000u)
+
     // we've generated all requested digits of `v`, which should be also same to corresponding
     // digits of `v - 1 ulp`. now we check if there is a unique representation shared by
     // both `v - 1 ulp` and `v + 1 ulp`; this can be either same to generated digits, or
@@ -715,7 +716,7 @@ public fun formatExact(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: 
     // SAFETY: The borrow checker is not smart enough to let us use `buf`
     // in the second branch, so we launder the scope here. But we only re-use
     // `buf` if `formatExactOpt` returned `None` so this is okay.
-    return when (val matchVal = formatExactOpt(d, RustMutableReference(MutPtr(((mutPtrFromRustCast(buf))).rawAddress), ObjectSlotLayout<Any?>()), limit)) {
+    return when (val matchVal = formatExactOpt(d, RustMutableReference(MutPtr(((mutPtrFromRustCast(buf))).rawAddress), UnresolvedTypeLayout<Any?>()), limit)) {
         null -> fallback(d, buf, limit)
         else -> {
             val ret = matchVal

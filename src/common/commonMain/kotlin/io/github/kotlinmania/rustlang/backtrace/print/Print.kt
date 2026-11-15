@@ -1,17 +1,17 @@
 // port-lint: source print.rs
 package io.github.kotlinmania.rustlang.backtrace.print
 
-import io.github.kotlinmania.rustlang.backtrace.Frame
-import io.github.kotlinmania.rustlang.capture.BacktraceFrame
-import io.github.kotlinmania.rustlang.capture.BacktraceSymbol
+import io.github.kotlinmania.rustlang.backtrace.backtrace.Frame
+import io.github.kotlinmania.rustlang.backtrace.capture.BacktraceFrame
+import io.github.kotlinmania.rustlang.backtrace.capture.BacktraceSymbol
+import io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol
+import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
+import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.symbolize.Symbol
-import io.github.kotlinmania.rustlang.symbolize.SymbolName
-import io.github.kotlinmania.rustlang.types.BytesOrWideString
 
 public val HEX_WIDTH: Int = 2 + 2 * sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)
 
@@ -95,6 +95,7 @@ public sealed class PrintFmt {
      * Prints a terser backtrace which ideally only contains relevant information
      */
     public data object Short : PrintFmt()
+
     /**
      * Prints a backtrace that contains all possible information
      */
@@ -142,7 +143,24 @@ public open class BacktraceFrameFmt(
      * enabled, and the `std` feature is enabled by default.
      */
     public open fun backtraceSymbol(frame: BacktraceFrame, symbol: BacktraceSymbol) {
-        this.printRawWithColumn(frame.ip(), symbol.name(), symbol.filename().andThen(closure@{ p -> BytesOrWideString.Bytes((when (val tryResult = p.toStr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }).encodeToByteArray().map { it.toUByte() }) }), symbol.lineno(), symbol.colno())
+        this.printRawWithColumn(
+            frame.ip(),
+            symbol.name(),
+            symbol.filename().andThen(
+                closure@{ p ->
+                    BytesOrWideString.Bytes(
+                        (
+                            when (val tryResult = p.toStr()) {
+                                is Result.Ok<*, *> -> tryResult.value
+                                is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
+                            }
+                        ).encodeToByteArray().map { it.toUByte() },
+                    )
+                },
+            ),
+            symbol.lineno(),
+            symbol.colno(),
+        )
     }
 
     /**

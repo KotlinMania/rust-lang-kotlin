@@ -5,161 +5,161 @@ package io.github.kotlinmania.rustlang.std.sys.cmath
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 
-private object StdSysCmathJniBridge {
+private object SysCmathJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun rustlangStdSysCmathAcos(n: Double): Double
+    external fun stdSysCmathAcos(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathAcosh(n: Double): Double
+    external fun stdSysCmathAcosh(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathAsin(n: Double): Double
+    external fun stdSysCmathAsin(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathAsinh(n: Double): Double
+    external fun stdSysCmathAsinh(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathAtan(n: Double): Double
+    external fun stdSysCmathAtan(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathAtan2(a: Double, b: Double): Double
+    external fun stdSysCmathAtan2(a: Double, b: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathCosh(n: Double): Double
+    external fun stdSysCmathCosh(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathExpm1(n: Double): Double
+    external fun stdSysCmathExpm1(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathExpm1f(n: Float): Float
+    external fun stdSysCmathExpm1f(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathHypot(x: Double, y: Double): Double
+    external fun stdSysCmathHypot(x: Double, y: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathHypotf(x: Float, y: Float): Float
+    external fun stdSysCmathHypotf(x: Float, y: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathLog1p(n: Double): Double
+    external fun stdSysCmathLog1p(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathLog1pf(n: Float): Float
+    external fun stdSysCmathLog1pf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathSinh(n: Double): Double
+    external fun stdSysCmathSinh(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathTan(n: Double): Double
+    external fun stdSysCmathTan(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathTanh(n: Double): Double
+    external fun stdSysCmathTanh(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathTgamma(n: Double): Double
+    external fun stdSysCmathTgamma(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathTgammaf(n: Float): Float
+    external fun stdSysCmathTgammaf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathErf(n: Double): Double
+    external fun stdSysCmathErf(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathErff(n: Float): Float
+    external fun stdSysCmathErff(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathErfc(n: Double): Double
+    external fun stdSysCmathErfc(n: Double): Double
 
     @JvmStatic
-    external fun rustlangStdSysCmathErfcf(n: Float): Float
+    external fun stdSysCmathErfcf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathAcosf(n: Float): Float
+    external fun stdSysCmathAcosf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathAcoshf(n: Float): Float
+    external fun stdSysCmathAcoshf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathAsinf(n: Float): Float
+    external fun stdSysCmathAsinf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathAsinhf(n: Float): Float
+    external fun stdSysCmathAsinhf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathAtan2f(a: Float, b: Float): Float
+    external fun stdSysCmathAtan2f(a: Float, b: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathAtanf(n: Float): Float
+    external fun stdSysCmathAtanf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathCoshf(n: Float): Float
+    external fun stdSysCmathCoshf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathSinhf(n: Float): Float
+    external fun stdSysCmathSinhf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathTanf(n: Float): Float
+    external fun stdSysCmathTanf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangStdSysCmathTanhf(n: Float): Float
+    external fun stdSysCmathTanhf(n: Float): Float
 }
 
 public actual fun acos(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathAcos(n)
+    SysCmathJniBridge.stdSysCmathAcos(n)
 
 public actual fun acosh(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathAcosh(n)
+    SysCmathJniBridge.stdSysCmathAcosh(n)
 
 public actual fun asin(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathAsin(n)
+    SysCmathJniBridge.stdSysCmathAsin(n)
 
 public actual fun asinh(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathAsinh(n)
+    SysCmathJniBridge.stdSysCmathAsinh(n)
 
 public actual fun atan(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathAtan(n)
+    SysCmathJniBridge.stdSysCmathAtan(n)
 
 public actual fun atan2(a: Double, b: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathAtan2(a, b)
+    SysCmathJniBridge.stdSysCmathAtan2(a, b)
 
 public actual fun cosh(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathCosh(n)
+    SysCmathJniBridge.stdSysCmathCosh(n)
 
 public actual fun expm1(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathExpm1(n)
+    SysCmathJniBridge.stdSysCmathExpm1(n)
 
 public actual fun expm1f(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathExpm1f(n)
+    SysCmathJniBridge.stdSysCmathExpm1f(n)
 
 public actual fun hypot(x: Double, y: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathHypot(x, y)
+    SysCmathJniBridge.stdSysCmathHypot(x, y)
 
 public actual fun hypotf(x: Float, y: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathHypotf(x, y)
+    SysCmathJniBridge.stdSysCmathHypotf(x, y)
 
 public actual fun log1p(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathLog1p(n)
+    SysCmathJniBridge.stdSysCmathLog1p(n)
 
 public actual fun log1pf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathLog1pf(n)
+    SysCmathJniBridge.stdSysCmathLog1pf(n)
 
 public actual fun sinh(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathSinh(n)
+    SysCmathJniBridge.stdSysCmathSinh(n)
 
 public actual fun tan(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathTan(n)
+    SysCmathJniBridge.stdSysCmathTan(n)
 
 public actual fun tanh(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathTanh(n)
+    SysCmathJniBridge.stdSysCmathTanh(n)
 
 public actual fun tgamma(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathTgamma(n)
+    SysCmathJniBridge.stdSysCmathTgamma(n)
 
 public actual fun tgammaf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathTgammaf(n)
+    SysCmathJniBridge.stdSysCmathTgammaf(n)
 
 public actual fun lgammaR(n: Double, s: RustMutableReference<Int>): Double =
     0.0
@@ -168,16 +168,16 @@ public actual fun lgammafR(n: Float, s: RustMutableReference<Int>): Float =
     0.0f
 
 public actual fun erf(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathErf(n)
+    SysCmathJniBridge.stdSysCmathErf(n)
 
 public actual fun erff(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathErff(n)
+    SysCmathJniBridge.stdSysCmathErff(n)
 
 public actual fun erfc(n: Double): Double =
-    StdSysCmathJniBridge.rustlangStdSysCmathErfc(n)
+    SysCmathJniBridge.stdSysCmathErfc(n)
 
 public actual fun erfcf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathErfcf(n)
+    SysCmathJniBridge.stdSysCmathErfcf(n)
 
 public actual fun acosf128(n: F128): F128 =
     F128()
@@ -234,31 +234,31 @@ public actual fun erfcf128(n: F128): F128 =
     F128()
 
 public actual fun acosf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathAcosf(n)
+    SysCmathJniBridge.stdSysCmathAcosf(n)
 
 public actual fun acoshf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathAcoshf(n)
+    SysCmathJniBridge.stdSysCmathAcoshf(n)
 
 public actual fun asinf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathAsinf(n)
+    SysCmathJniBridge.stdSysCmathAsinf(n)
 
 public actual fun asinhf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathAsinhf(n)
+    SysCmathJniBridge.stdSysCmathAsinhf(n)
 
 public actual fun atan2f(a: Float, b: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathAtan2f(a, b)
+    SysCmathJniBridge.stdSysCmathAtan2f(a, b)
 
 public actual fun atanf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathAtanf(n)
+    SysCmathJniBridge.stdSysCmathAtanf(n)
 
 public actual fun coshf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathCoshf(n)
+    SysCmathJniBridge.stdSysCmathCoshf(n)
 
 public actual fun sinhf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathSinhf(n)
+    SysCmathJniBridge.stdSysCmathSinhf(n)
 
 public actual fun tanf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathTanf(n)
+    SysCmathJniBridge.stdSysCmathTanf(n)
 
 public actual fun tanhf(n: Float): Float =
-    StdSysCmathJniBridge.rustlangStdSysCmathTanhf(n)
+    SysCmathJniBridge.stdSysCmathTanhf(n)

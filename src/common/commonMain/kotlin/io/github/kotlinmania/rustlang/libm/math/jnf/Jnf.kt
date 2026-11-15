@@ -1,12 +1,12 @@
 // port-lint: source math/jnf.rs
 package io.github.kotlinmania.rustlang.libm.math.jnf
 
-import io.github.kotlinmania.rustlang.math.fabs.fabsf
-import io.github.kotlinmania.rustlang.math.j0f.j0f
-import io.github.kotlinmania.rustlang.math.j0f.y0f
-import io.github.kotlinmania.rustlang.math.j1f.j1f
-import io.github.kotlinmania.rustlang.math.j1f.y1f
-import io.github.kotlinmania.rustlang.math.logf.logf
+import io.github.kotlinmania.rustlang.libm.math.fabs.fabsf
+import io.github.kotlinmania.rustlang.libm.math.j0f.j0f
+import io.github.kotlinmania.rustlang.libm.math.j0f.y0f
+import io.github.kotlinmania.rustlang.libm.math.j1f.j1f
+import io.github.kotlinmania.rustlang.libm.math.j1f.y1f
+import io.github.kotlinmania.rustlang.libm.math.logf.logf
 
 /**
  * Integer order of the [Bessel function](https://en.wikipedia.org/wiki/BesselFunction) of the first kind (f32).

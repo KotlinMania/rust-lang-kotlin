@@ -1,7 +1,7 @@
 // port-lint: source num/bfloat.rs
 package io.github.kotlinmania.rustlang.core.num.bfloat
 
-import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -36,7 +36,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class F16b internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<UShort>,
-) : LowerExp, UpperExp {
+) : fmt.LowerExp,
+    fmt.UpperExp {
     public var field0: UShort
         get() = value
         set(v) {
@@ -45,7 +46,9 @@ public open class F16b internal constructor(
 
     public var value: UShort
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: UShort, fieldLayout: TypeLayout<UShort>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -82,7 +85,11 @@ public open class F16b internal constructor(
 
     public open fun partialCmp(other: F16b): Ordering? = widen(this).partialCmp(widen(other))
 
-    public override fun fmt(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append((widen(this)).toString()); Result.Ok(Unit) }
+    public override fun fmt(formatter: StringBuilder): Result<Unit, Unit> =
+        run {
+            formatter.append((widen(this)).toString())
+            Result.Ok(Unit)
+        }
 
     public open fun fmtLowerExp(formatter: StringBuilder): Result<Unit, Unit> = widen(this).fmt(formatter)
 

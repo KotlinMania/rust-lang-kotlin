@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-private object CorearchX86TbmJniBridge {
+private object X86TbmJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,11 +38,14 @@ private object CorearchX86TbmJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX86TbmJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X86TbmJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,8 +59,8 @@ private object CorearchX86TbmJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX86TbmBextriU32(a: Int, control: Int): Int
+    external fun corearchX86TbmBextriU32(a: Int, control: Int): Int
 }
 
 public actual fun bextriU32(a: UInt, control: UInt): UInt =
-    CorearchX86TbmJniBridge.rustlangCorearchX86TbmBextriU32(a.toInt(), control.toInt()).toUInt()
+    X86TbmJniBridge.corearchX86TbmBextriU32(a.toInt(), control.toInt()).toUInt()

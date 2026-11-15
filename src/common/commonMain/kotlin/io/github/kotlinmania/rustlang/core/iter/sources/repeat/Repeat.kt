@@ -1,11 +1,11 @@
 // port-lint: source iter/sources/repeat.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeat
 
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
 
 /**
  * Creates a new iterator that endlessly repeats a single element.
@@ -69,15 +69,17 @@ public fun <T> repeat(elt: T): Repeat<T> = Repeat(element = elt)
  */
 public open class Repeat<A>(
     public var element: A,
-) : TrustedLen<Repeat<A>>, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@Repeat.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<Repeat<A>>,
+    Iterable<A> {
+    override fun iterator(): Iterator<A> =
+        object : AbstractIterator<A>() {
+            override fun computeNext() {
+                when (val v = this@Repeat.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Repeat<A> = Repeat(element)
 

@@ -11,17 +11,17 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.libc.nsgetEnviron
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.OsStringExt
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.asBytes
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.fromVec
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.OsStringExt
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.asBytes
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromVec
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.rwlock.RwLock
 import io.github.kotlinmania.rustlang.std.sys.env.common.Env
-import io.github.kotlinmania.rustlang.sync.nonpoison.rwlock.RwLock
-import io.github.kotlinmania.rustlang.sys.helpers.smallcstring.runWithCstr
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runWithCstr
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 // Use `_NSGetEnviron` on Apple platforms.
 //
@@ -65,7 +65,7 @@ public fun env(): Env {
         if (input.isEmpty()) {
             return null
         }
-        val pos = memchr.memchr(61u, ((input).subList(1, (input).size)))?.let({ p -> p + 1 })
+        val pos = memchr(61u, ((input).subList(1, (input).size)))?.let({ p -> p + 1 })
         return pos?.let({ p ->
             Pair(OsStringExt.fromVec(((input).subList(0, p)).toMutableList()), OsStringExt.fromVec(((input).subList(p + 1, (input).size)).toMutableList()))
         })

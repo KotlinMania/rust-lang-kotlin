@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.corearch.x86.cinterop
-headers = corearch_x86_aes_wrapper.h
-headerFilter = corearch_x86_aes_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = corearch_x86_aes_wrapper.a

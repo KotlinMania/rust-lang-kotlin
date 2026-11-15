@@ -439,14 +439,15 @@ public open class ExceptionRecord internal constructor(
             exceptionAddress: MutPtr,
             numberParameters: UInt,
             exceptionInformation: IntArray,
-        ): ExceptionRecord = ExceptionRecord(
-            exceptionCode = exceptionCode,
-            exceptionFlags = exceptionFlags,
-            exceptionRecordCtorArg = exceptionRecord,
-            exceptionAddressCtorArg = exceptionAddress,
-            numberParameters = numberParameters,
-            exceptionInformation = exceptionInformation,
-        )
+        ): ExceptionRecord =
+            ExceptionRecord(
+                exceptionCode = exceptionCode,
+                exceptionFlags = exceptionFlags,
+                exceptionRecordCtorArg = exceptionRecord,
+                exceptionAddressCtorArg = exceptionAddress,
+                numberParameters = numberParameters,
+                exceptionInformation = exceptionInformation,
+            )
     }
 }
 
@@ -600,13 +601,14 @@ public open class ImagehlpLinew64 internal constructor(
             lineNumber: UInt,
             fileName: Pwstr,
             address: ULong,
-        ): ImagehlpLinew64 = ImagehlpLinew64(
-            sizeOfStruct = sizeOfStruct,
-            keyCtorArg = key,
-            lineNumber = lineNumber,
-            fileNameCtorArg = fileName,
-            address = address,
-        )
+        ): ImagehlpLinew64 =
+            ImagehlpLinew64(
+                sizeOfStruct = sizeOfStruct,
+                keyCtorArg = key,
+                lineNumber = lineNumber,
+                fileNameCtorArg = fileName,
+                address = address,
+            )
     }
 }
 
@@ -981,28 +983,29 @@ public open class KnonvolatileContextPointers internal constructor(
             d13: MutPtr,
             d14: MutPtr,
             d15: MutPtr,
-        ): KnonvolatileContextPointers = KnonvolatileContextPointers(
-            x19CtorArg = x19,
-            x20CtorArg = x20,
-            x21CtorArg = x21,
-            x22CtorArg = x22,
-            x23CtorArg = x23,
-            x24CtorArg = x24,
-            x25CtorArg = x25,
-            x26CtorArg = x26,
-            x27CtorArg = x27,
-            x28CtorArg = x28,
-            fpCtorArg = fp,
-            lrCtorArg = lr,
-            d8CtorArg = d8,
-            d9CtorArg = d9,
-            d10CtorArg = d10,
-            d11CtorArg = d11,
-            d12CtorArg = d12,
-            d13CtorArg = d13,
-            d14CtorArg = d14,
-            d15CtorArg = d15,
-        )
+        ): KnonvolatileContextPointers =
+            KnonvolatileContextPointers(
+                x19CtorArg = x19,
+                x20CtorArg = x20,
+                x21CtorArg = x21,
+                x22CtorArg = x22,
+                x23CtorArg = x23,
+                x24CtorArg = x24,
+                x25CtorArg = x25,
+                x26CtorArg = x26,
+                x27CtorArg = x27,
+                x28CtorArg = x28,
+                fpCtorArg = fp,
+                lrCtorArg = lr,
+                d8CtorArg = d8,
+                d9CtorArg = d9,
+                d10CtorArg = d10,
+                d11CtorArg = d11,
+                d12CtorArg = d12,
+                d13CtorArg = d13,
+                d14CtorArg = d14,
+                d15CtorArg = d15,
+            )
     }
 }
 
@@ -1022,10 +1025,11 @@ public class KnonvolatileContextPointers0 internal constructor(
         public operator fun invoke(
             floatingContext: List<MutPtr>? = null,
             anonymous: KnonvolatileContextPointers00? = null,
-        ): KnonvolatileContextPointers0 = KnonvolatileContextPointers0(
-            floatingContextCtorArg = floatingContext,
-            anonymous = anonymous,
-        )
+        ): KnonvolatileContextPointers0 =
+            KnonvolatileContextPointers0(
+                floatingContextCtorArg = floatingContext,
+                anonymous = anonymous,
+            )
     }
 }
 
@@ -1195,24 +1199,25 @@ public open class KnonvolatileContextPointers00 internal constructor(
             xmm13: MutPtr,
             xmm14: MutPtr,
             xmm15: MutPtr,
-        ): KnonvolatileContextPointers00 = KnonvolatileContextPointers00(
-            xmm0CtorArg = xmm0,
-            xmm1CtorArg = xmm1,
-            xmm2CtorArg = xmm2,
-            xmm3CtorArg = xmm3,
-            xmm4CtorArg = xmm4,
-            xmm5CtorArg = xmm5,
-            xmm6CtorArg = xmm6,
-            xmm7CtorArg = xmm7,
-            xmm8CtorArg = xmm8,
-            xmm9CtorArg = xmm9,
-            xmm10CtorArg = xmm10,
-            xmm11CtorArg = xmm11,
-            xmm12CtorArg = xmm12,
-            xmm13CtorArg = xmm13,
-            xmm14CtorArg = xmm14,
-            xmm15CtorArg = xmm15,
-        )
+        ): KnonvolatileContextPointers00 =
+            KnonvolatileContextPointers00(
+                xmm0CtorArg = xmm0,
+                xmm1CtorArg = xmm1,
+                xmm2CtorArg = xmm2,
+                xmm3CtorArg = xmm3,
+                xmm4CtorArg = xmm4,
+                xmm5CtorArg = xmm5,
+                xmm6CtorArg = xmm6,
+                xmm7CtorArg = xmm7,
+                xmm8CtorArg = xmm8,
+                xmm9CtorArg = xmm9,
+                xmm10CtorArg = xmm10,
+                xmm11CtorArg = xmm11,
+                xmm12CtorArg = xmm12,
+                xmm13CtorArg = xmm13,
+                xmm14CtorArg = xmm14,
+                xmm15CtorArg = xmm15,
+            )
     }
 }
 
@@ -1232,10 +1237,11 @@ public class KnonvolatileContextPointers1 internal constructor(
         public operator fun invoke(
             integerContext: List<MutPtr>? = null,
             anonymous: KnonvolatileContextPointers10? = null,
-        ): KnonvolatileContextPointers1 = KnonvolatileContextPointers1(
-            integerContextCtorArg = integerContext,
-            anonymous = anonymous,
-        )
+        ): KnonvolatileContextPointers1 =
+            KnonvolatileContextPointers1(
+                integerContextCtorArg = integerContext,
+                anonymous = anonymous,
+            )
     }
 }
 
@@ -1405,24 +1411,25 @@ public open class KnonvolatileContextPointers10 internal constructor(
             r13: MutPtr,
             r14: MutPtr,
             r15: MutPtr,
-        ): KnonvolatileContextPointers10 = KnonvolatileContextPointers10(
-            raxCtorArg = rax,
-            rcxCtorArg = rcx,
-            rdxCtorArg = rdx,
-            rbxCtorArg = rbx,
-            rspCtorArg = rsp,
-            rbpCtorArg = rbp,
-            rsiCtorArg = rsi,
-            rdiCtorArg = rdi,
-            r8CtorArg = r8,
-            r9CtorArg = r9,
-            r10CtorArg = r10,
-            r11CtorArg = r11,
-            r12CtorArg = r12,
-            r13CtorArg = r13,
-            r14CtorArg = r14,
-            r15CtorArg = r15,
-        )
+        ): KnonvolatileContextPointers10 =
+            KnonvolatileContextPointers10(
+                raxCtorArg = rax,
+                rcxCtorArg = rcx,
+                rdxCtorArg = rdx,
+                rbxCtorArg = rbx,
+                rspCtorArg = rsp,
+                rbpCtorArg = rbp,
+                rsiCtorArg = rsi,
+                rdiCtorArg = rdi,
+                r8CtorArg = r8,
+                r9CtorArg = r9,
+                r10CtorArg = r10,
+                r11CtorArg = r11,
+                r12CtorArg = r12,
+                r13CtorArg = r13,
+                r14CtorArg = r14,
+                r15CtorArg = r15,
+            )
     }
 }
 
@@ -1492,9 +1499,10 @@ public open class MemoryMappedViewAddress internal constructor(
 
         public operator fun invoke(
             value: MutPtr,
-        ): MemoryMappedViewAddress = MemoryMappedViewAddress(
-            valueCtorArg = value,
-        )
+        ): MemoryMappedViewAddress =
+            MemoryMappedViewAddress(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -1586,18 +1594,19 @@ public open class Moduleentry32w internal constructor(
             hModule: Hmodule,
             szModule: UShortArray,
             szExePath: UShortArray,
-        ): Moduleentry32w = Moduleentry32w(
-            dwSize = dwSize,
-            th32ModuleID = th32ModuleID,
-            th32ProcessID = th32ProcessID,
-            glblcntUsage = glblcntUsage,
-            proccntUsage = proccntUsage,
-            modBaseAddrCtorArg = modBaseAddr,
-            modBaseSize = modBaseSize,
-            hModuleCtorArg = hModule,
-            szModule = szModule,
-            szExePath = szExePath,
-        )
+        ): Moduleentry32w =
+            Moduleentry32w(
+                dwSize = dwSize,
+                th32ModuleID = th32ModuleID,
+                th32ProcessID = th32ProcessID,
+                glblcntUsage = glblcntUsage,
+                proccntUsage = proccntUsage,
+                modBaseAddrCtorArg = modBaseAddr,
+                modBaseSize = modBaseSize,
+                hModuleCtorArg = hModule,
+                szModule = szModule,
+                szExePath = szExePath,
+            )
     }
 }
 
@@ -1690,11 +1699,12 @@ public open class SecurityAttributes internal constructor(
             nLength: UInt,
             lpSecurityDescriptor: MutPtr,
             bInheritHandle: Bool,
-        ): SecurityAttributes = SecurityAttributes(
-            nLength = nLength,
-            lpSecurityDescriptorCtorArg = lpSecurityDescriptor,
-            bInheritHandle = bInheritHandle,
-        )
+        ): SecurityAttributes =
+            SecurityAttributes(
+                nLength = nLength,
+                lpSecurityDescriptorCtorArg = lpSecurityDescriptor,
+                bInheritHandle = bInheritHandle,
+            )
     }
 }
 
@@ -1789,19 +1799,20 @@ public open class Stackframe64 internal constructor(
             virtual: Bool,
             reserved: ULongArray,
             kdHelp: Kdhelp64,
-        ): Stackframe64 = Stackframe64(
-            addrPC = addrPC,
-            addrReturn = addrReturn,
-            addrFrame = addrFrame,
-            addrStack = addrStack,
-            addrBStore = addrBStore,
-            funcTableEntryCtorArg = funcTableEntry,
-            params = params,
-            far = far,
-            virtual = virtual,
-            reserved = reserved,
-            kdHelp = kdHelp,
-        )
+        ): Stackframe64 =
+            Stackframe64(
+                addrPC = addrPC,
+                addrReturn = addrReturn,
+                addrFrame = addrFrame,
+                addrStack = addrStack,
+                addrBStore = addrBStore,
+                funcTableEntryCtorArg = funcTableEntry,
+                params = params,
+                far = far,
+                virtual = virtual,
+                reserved = reserved,
+                kdHelp = kdHelp,
+            )
     }
 }
 
@@ -1908,21 +1919,22 @@ public open class StackframeEx internal constructor(
             kdHelp: Kdhelp64,
             stackFrameSize: UInt,
             inlineFrameContext: UInt,
-        ): StackframeEx = StackframeEx(
-            addrPC = addrPC,
-            addrReturn = addrReturn,
-            addrFrame = addrFrame,
-            addrStack = addrStack,
-            addrBStore = addrBStore,
-            funcTableEntryCtorArg = funcTableEntry,
-            params = params,
-            far = far,
-            virtual = virtual,
-            reserved = reserved,
-            kdHelp = kdHelp,
-            stackFrameSize = stackFrameSize,
-            inlineFrameContext = inlineFrameContext,
-        )
+        ): StackframeEx =
+            StackframeEx(
+                addrPC = addrPC,
+                addrReturn = addrReturn,
+                addrFrame = addrFrame,
+                addrStack = addrStack,
+                addrBStore = addrBStore,
+                funcTableEntryCtorArg = funcTableEntry,
+                params = params,
+                far = far,
+                virtual = virtual,
+                reserved = reserved,
+                kdHelp = kdHelp,
+                stackFrameSize = stackFrameSize,
+                inlineFrameContext = inlineFrameContext,
+            )
     }
 }
 
@@ -2082,10 +2094,11 @@ public open class UnwindHistoryTableEntry internal constructor(
         public operator fun invoke(
             imageBase: Int,
             functionEntry: MutPtr,
-        ): UnwindHistoryTableEntry = UnwindHistoryTableEntry(
-            imageBase = imageBase,
-            functionEntryCtorArg = functionEntry,
-        )
+        ): UnwindHistoryTableEntry =
+            UnwindHistoryTableEntry(
+                imageBase = imageBase,
+                functionEntryCtorArg = functionEntry,
+            )
     }
 }
 

@@ -1,28 +1,28 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U16
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U8
-import io.github.kotlinmania.rustlang.unix.GidT
-import io.github.kotlinmania.rustlang.unix.PidT
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.SsizeT
-import io.github.kotlinmania.rustlang.unix.UidT
-import io.github.kotlinmania.rustlang.unix.bsd.SockaddrUn
-import io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.KeyT
-import io.github.kotlinmania.rustlang.unix.linuxlike.SockFilter
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
-import io.github.kotlinmania.rustlang.unix.strlen
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U8
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.KeyT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SockFilter
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SockaddrUn
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.libc.unix.strlen
 
 public fun interface CloneCbCallback {
     public operator fun invoke(arg0: MutPtr): CInt

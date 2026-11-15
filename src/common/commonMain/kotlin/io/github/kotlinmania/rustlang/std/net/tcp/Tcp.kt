@@ -7,12 +7,12 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.net.Shutdown
-import io.github.kotlinmania.rustlang.net.socketaddr.ToSocketAddrs
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.AsInner
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.net.Shutdown
+import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
+import io.github.kotlinmania.rustlang.std.sys.AsInner
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.IntoInner
 
 /**
  * A TCP stream between a local and a remote socket.
@@ -56,9 +56,9 @@ import io.github.kotlinmania.rustlang.sys.IntoInner
  * to disconnected socket. In some cases, getting a `SIGPIPE` would trigger process termination.
  */
 public open class TcpStream(
-    public var value: io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpStream,
-) : Read, Write, AsInner<io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpStream>, FromInner<io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpStream, TcpStream>, IntoInner<io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpStream> {
-    public var field0: io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpStream
+    public var value: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream,
+) : Read, Write, AsInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream>, FromInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream, TcpStream>, IntoInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream> {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream
         get() = value
         set(v) {
             value = v
@@ -514,7 +514,7 @@ public open class TcpStream(
      * stream.takeError().expect("No error was expected...")
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.io.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
 
     /**
      * Moves this TCP stream into or out of nonblocking mode.
@@ -585,9 +585,9 @@ public open class TcpStream(
 
     public open fun flush(): Result<Unit, Error> = Result.Ok(Unit)
 
-    public override fun asInner(): io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpStream = this.value
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream = this.value
 
-    public override fun intoInner(): io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpStream = this.value
+    public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream = this.value
 
     public open fun fmt(f: StringBuilder) {
         this.value.fmt(f)
@@ -643,7 +643,7 @@ public open class TcpStream(
          * }
          * ```
          */
-        public fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<TcpStream, Error> = io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpStream.connect(addr).map({ TcpStream(it) })
+        public fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<TcpStream, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream.connect(addr).map({ TcpStream(it) })
 
         /**
          * Opens a TCP connection to a remote host with a timeout.
@@ -658,9 +658,9 @@ public open class TcpStream(
          * then uses an OS-specific mechanism to await the completion of the
          * connection request.
          */
-        public fun connectTimeout(addr: SocketAddr, timeout: Duration): Result<TcpStream, Error> = io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpStream.connectTimeout(addr, timeout).map({ TcpStream(it) })
+        public fun connectTimeout(addr: SocketAddr, timeout: Duration): Result<TcpStream, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream.connectTimeout(addr, timeout).map({ TcpStream(it) })
 
-        public fun fromInner(inner: io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpStream): TcpStream = TcpStream(inner)
+        public fun fromInner(inner: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream): TcpStream = TcpStream(inner)
     }
 }
 
@@ -699,9 +699,9 @@ public open class TcpStream(
  * ```
  */
 public open class TcpListener(
-    public var value: io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpListener,
-) : AsInner<io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpListener>, FromInner<io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpListener, TcpListener>, IntoInner<io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpListener> {
-    public var field0: io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpListener
+    public var value: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener,
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener>, FromInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener, TcpListener>, IntoInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener> {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener
         get() = value
         set(v) {
             value = v
@@ -967,7 +967,7 @@ public open class TcpListener(
      * listener.takeError().expect("`takeError` should succeed")
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.io.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
 
     /**
      * Moves this TCP stream into or out of nonblocking mode.
@@ -1017,9 +1017,9 @@ public open class TcpListener(
      */
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.value.setNonblocking(nonblocking)
 
-    public override fun asInner(): io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpListener = this.value
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener = this.value
 
-    public override fun intoInner(): io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpListener = this.value
+    public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener = this.value
 
     public open fun fmt(f: StringBuilder) {
         this.value.fmt(f)
@@ -1074,9 +1074,9 @@ public open class TcpListener(
          * val socket = TcpListener.bind("127.0.0.1:0").unwrap()
          * ```
          */
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<TcpListener, Error> = io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpListener.bind(addr).map({ TcpListener(it) })
+        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<TcpListener, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener.bind(addr).map({ TcpListener(it) })
 
-        public fun fromInner(inner: io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpListener): TcpListener = TcpListener(inner)
+        public fun fromInner(inner: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener): TcpListener = TcpListener(inner)
     }
 }
 

@@ -3,10 +3,10 @@ package io.github.kotlinmania.rustlang.core.iter.sources.fromcoroutine
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ops.coroutine.Coroutine
+import io.github.kotlinmania.rustlang.core.ops.coroutine.CoroutineState
+import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.ops.coroutine.Coroutine
-import io.github.kotlinmania.rustlang.ops.coroutine.CoroutineState
-import io.github.kotlinmania.rustlang.pin.Pin
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -73,14 +73,15 @@ public open class FromCoroutine<G>(
             value = v
         }
 
-    override fun iterator(): Iterator<Yield> = object : AbstractIterator<Yield>() {
-        override fun computeNext() {
-            when (val v = this@FromCoroutine.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Yield> =
+        object : AbstractIterator<Yield>() {
+            override fun computeNext() {
+                when (val v = this@FromCoroutine.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): FromCoroutine<G> = FromCoroutine(value)
 

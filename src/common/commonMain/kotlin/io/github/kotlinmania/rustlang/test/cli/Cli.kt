@@ -36,7 +36,7 @@ public open class TestOpts(
      * abort as soon as possible.
      */
     public var failFast: Boolean,
-    public var options: io.github.kotlinmania.rustlang.options.Options,
+    public var options: io.github.kotlinmania.rustlang.test.options.Options,
 ) {
     public open fun useColor(): Boolean =
         when (this.color) {

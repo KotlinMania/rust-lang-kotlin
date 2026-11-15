@@ -22,18 +22,18 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.pread64
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.pwrite64
 import io.github.kotlinmania.rustlang.libc.wasi.FIONBIO
 import io.github.kotlinmania.rustlang.libc.writev
-import io.github.kotlinmania.rustlang.os.fd.AsFd
-import io.github.kotlinmania.rustlang.os.fd.AsRawFd
-import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.os.fd.FromRawFd
-import io.github.kotlinmania.rustlang.os.fd.IntoRawFd
-import io.github.kotlinmania.rustlang.os.fd.OwnedFd
-import io.github.kotlinmania.rustlang.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.AsInner
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.IntoInner
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.os.fd.AsFd
+import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
+import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.sys.AsInner
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public open class FileDesc(
     public var value: OwnedFd,

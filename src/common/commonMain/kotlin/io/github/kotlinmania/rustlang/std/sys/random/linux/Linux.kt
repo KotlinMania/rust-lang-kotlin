@@ -5,7 +5,6 @@ import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
-import io.github.kotlinmania.rustlang.fs.File
 import io.github.kotlinmania.rustlang.libc.Poll
 import io.github.kotlinmania.rustlang.libc.unix.Pollfd
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.GRND_INSECURE
@@ -16,13 +15,14 @@ import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
 import io.github.kotlinmania.rustlang.libc.wasi.ENOSYS
 import io.github.kotlinmania.rustlang.libc.wasi.EPERM
 import io.github.kotlinmania.rustlang.libc.wasi.POLLIN
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.sync.oncelock.OnceLock
-import io.github.kotlinmania.rustlang.sys.io.Errno
-import io.github.kotlinmania.rustlang.sys.pal.weak.syscall
-import io.github.kotlinmania.rustlang.sys.random.unixlegacy.DEVICE
+import io.github.kotlinmania.rustlang.std.fs.File
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
+import io.github.kotlinmania.rustlang.std.sys.io.Errno
+import io.github.kotlinmania.rustlang.std.sys.pal.weak.syscall
+import io.github.kotlinmania.rustlang.std.sys.random.unixlegacy.DEVICE
 
 // Random data generation with the Linux kernel.
 //

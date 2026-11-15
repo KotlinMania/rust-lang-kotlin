@@ -1,8 +1,8 @@
 // port-lint: source new/glibc/sysdeps/unix/linux/bits/socket_type.rs
 package io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.sockettype
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `sysdeps / unix / sysv / linux / bits / socketType.h`
 

@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.cinterop
+headers = backtrace_libunwind_wrapper.h
+headerFilter = backtrace_libunwind_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = backtrace_libunwind_wrapper.a

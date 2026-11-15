@@ -7,8 +7,8 @@ private external fun initSehNapiAddon(): Boolean
 
 private val sehNapiAvailable: Boolean = initSehNapiAddon()
 
-@JsFun("() => globalThis.__km_napi_kmcore.rustlangSehGetTYPEINFOVTABLE()")
-private external fun wasmRustlangSehGetTYPEINFOVTABLE(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.panicunwindSehGetTYPEINFOVTABLE()")
+private external fun wasmPanicunwindSehGetTYPEINFOVTABLE(): Int
 
 public actual val TYPE_INFO_VTABLE: UByte
-    get() = if (sehNapiAvailable) wasmRustlangSehGetTYPEINFOVTABLE().toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
+    get() = if (sehNapiAvailable) wasmPanicunwindSehGetTYPEINFOVTABLE().toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")

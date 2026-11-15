@@ -1,43 +1,46 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.riscv64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
+import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.unix.GidT
-import io.github.kotlinmania.rustlang.unix.UidT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.DevT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.Off64T
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.InoT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.DevT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.InoT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.TimeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
 
-public class Stat(
-    public var stDev: DevT = 0uL,
-    public var stIno: InoT = 0uL,
-    public var stMode: CUint = 0u,
-    public var stNlink: CUint = 0u,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var stRdev: DevT = 0uL,
-    public var pad1: CUlong = 0uL,
-    public var stSize: Off64T = 0L,
-    public var stBlksize: CInt = 0,
-    public var pad2: CInt = 0,
-    public var stBlocks: CLong = 0L,
-    public var stAtime: TimeT = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: TimeT = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: TimeT = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var unused4: CUint = 0u,
-    public var unused5: CUint = 0u,
+public open class Stat(
+    public var stDev: DevT,
+    public var stIno: InoT,
+    public var stMode: CUint,
+    public var stNlink: CUint,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var stRdev: DevT,
+    public var pad1: CUlong,
+    public var stSize: Off64T,
+    public var stBlksize: CInt,
+    public var pad2: CInt,
+    public var stBlocks: CLong,
+    public var stAtime: TimeT,
+    public var stAtimeNsec: CLong,
+    public var stMtime: TimeT,
+    public var stMtimeNsec: CLong,
+    public var stCtime: TimeT,
+    public var stCtimeNsec: CLong,
+    public var unused4: CUint,
+    public var unused5: CUint,
 ) {
-    public fun clone(): Stat = Stat(stDev, stIno, stMode, stNlink, stUid, stGid, stRdev, pad1, stSize, stBlksize, pad2, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused4, unused5)
+    public open fun clone(): Stat = Stat(stDev, stIno, stMode, stNlink, stUid, stGid, stRdev, pad1, stSize, stBlksize, pad2, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused4, unused5)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat> =
@@ -139,29 +142,29 @@ public class Stat(
 }
 
 // Note(1.0,deprecate): lfs binding to be removed
-public class Stat64(
-    public var stDev: DevT = 0uL,
-    public var stIno: InoT = 0uL,
-    public var stMode: CUint = 0u,
-    public var stNlink: CUint = 0u,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var stRdev: DevT = 0uL,
-    public var pad1: CUlong = 0uL,
-    public var stSize: Off64T = 0L,
-    public var stBlksize: CInt = 0,
-    public var pad2: CInt = 0,
-    public var stBlocks: CLong = 0L,
-    public var stAtime: TimeT = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: TimeT = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: TimeT = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var unused4: CUint = 0u,
-    public var unused5: CUint = 0u,
+public open class Stat64(
+    public var stDev: DevT,
+    public var stIno: InoT,
+    public var stMode: CUint,
+    public var stNlink: CUint,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var stRdev: DevT,
+    public var pad1: CUlong,
+    public var stSize: Off64T,
+    public var stBlksize: CInt,
+    public var pad2: CInt,
+    public var stBlocks: CLong,
+    public var stAtime: TimeT,
+    public var stAtimeNsec: CLong,
+    public var stMtime: TimeT,
+    public var stMtimeNsec: CLong,
+    public var stCtime: TimeT,
+    public var stCtimeNsec: CLong,
+    public var unused4: CUint,
+    public var unused5: CUint,
 ) {
-    public fun clone(): Stat64 = Stat64(stDev, stIno, stMode, stNlink, stUid, stGid, stRdev, pad1, stSize, stBlksize, pad2, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused4, unused5)
+    public open fun clone(): Stat64 = Stat64(stDev, stIno, stMode, stNlink, stUid, stGid, stRdev, pad1, stSize, stBlksize, pad2, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused4, unused5)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat64> =
@@ -262,37 +265,23 @@ public class Stat64(
     }
 }
 
-public data class MaxAlignT(
-    public var priv: FloatArray = FloatArray(8),
+public open class MaxAlignT internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<FloatArray>,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is MaxAlignT) return false
-        if (!this.priv.contentEquals(other.priv)) return false
-        return true
-    }
+    public var priv: FloatArray
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    override fun hashCode(): Int = this.priv.contentHashCode()
+    internal constructor(priv: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(priv, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+
+    public fun pointerLayout(): TypeLayout<MaxAlignT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MaxAlignT(ptr, layout) }, { it.priv })
+
+    public open fun clone(): MaxAlignT = MaxAlignT(priv, fieldLayout)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<MaxAlignT> =
-            object : TypeLayout<MaxAlignT> {
-                override val alignBytes: Long = 16L
-                override val sizeBytes: Long = 32L
-                override fun readNative(addr: Long): MaxAlignT =
-                    MaxAlignT(
-                        (PrimitiveArrayLayouts.floatArray(8)).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: MaxAlignT) {
-                    (PrimitiveArrayLayouts.floatArray(8)).writeNative(addr, value.priv)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): MaxAlignT =
-                    MaxAlignT(
-                        (PrimitiveArrayLayouts.floatArray(8)).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: MaxAlignT) {
-                    (PrimitiveArrayLayouts.floatArray(8)).writeBytes(buf, offset, value.priv)
-                }
-            }
+        public operator fun invoke(priv: FloatArray, fieldLayout: TypeLayout<FloatArray>): MaxAlignT = MaxAlignT(priv, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FloatArray>): MaxAlignT = MaxAlignT(fieldStorage, fieldLayout)
     }
 }

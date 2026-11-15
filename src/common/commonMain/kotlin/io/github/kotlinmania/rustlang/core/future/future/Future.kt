@@ -1,9 +1,9 @@
 // port-lint: source future/future.rs
 package io.github.kotlinmania.rustlang.core.future.future
 
-import io.github.kotlinmania.rustlang.pin.Pin
-import io.github.kotlinmania.rustlang.task.poll.Poll
-import io.github.kotlinmania.rustlang.task.wake.Context
+import io.github.kotlinmania.rustlang.core.pin.Pin
+import io.github.kotlinmania.rustlang.core.task.poll.Poll
+import io.github.kotlinmania.rustlang.core.task.wake.Context
 
 /**
  * A future represents an asynchronous computation, commonly obtained by use of

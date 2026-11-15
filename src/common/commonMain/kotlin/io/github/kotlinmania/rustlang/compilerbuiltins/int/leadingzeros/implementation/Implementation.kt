@@ -1,7 +1,7 @@
 // port-lint: source int/leading_zeros.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.int.leadingzeros.implementation
 
-import io.github.kotlinmania.rustlang.support.Int
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 
 /**
  * Returns the number of leading binary zeros in `x`.

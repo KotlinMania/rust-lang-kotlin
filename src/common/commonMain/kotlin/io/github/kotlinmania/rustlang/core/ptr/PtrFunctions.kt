@@ -2,43 +2,43 @@
 
 package io.github.kotlinmania.rustlang.core.ptr
 
-import io.github.kotlinmania.rustlang.cmp.Eq
-import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.intrinsics.assume
+import io.github.kotlinmania.rustlang.core.intrinsics.cttzNonzero
+import io.github.kotlinmania.rustlang.core.intrinsics.exactDiv
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopy
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.intrinsics.mulWithOverflow
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedRem
+import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl
+import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr
+import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
+import io.github.kotlinmania.rustlang.core.intrinsics.wrappingAdd
+import io.github.kotlinmania.rustlang.core.intrinsics.wrappingMul
+import io.github.kotlinmania.rustlang.core.intrinsics.wrappingSub
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
+import io.github.kotlinmania.rustlang.core.mem.transmuteNeo
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.function.FnPtr
+import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.intrinsics.assume
-import io.github.kotlinmania.rustlang.intrinsics.cttzNonzero
-import io.github.kotlinmania.rustlang.intrinsics.exactDiv
-import io.github.kotlinmania.rustlang.intrinsics.mulWithOverflow
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedRem
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedShl
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedShr
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedSub
-import io.github.kotlinmania.rustlang.intrinsics.wrappingAdd
-import io.github.kotlinmania.rustlang.intrinsics.wrappingMul
-import io.github.kotlinmania.rustlang.intrinsics.wrappingSub
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.mem.sizeOfValRaw
-import io.github.kotlinmania.rustlang.mem.transmuteNeo
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.function.FnPtr
-import io.github.kotlinmania.rustlang.option.Option
-import io.github.kotlinmania.rustlang.panicking.assertFailed
 
 // Some functions are defined here because they accidentally got made
 // available in this module on stable. See <https://github.com/rust-lang/rust/issues/15702>.
@@ -88,7 +88,7 @@ import io.github.kotlinmania.rustlang.panicking.assertFailed
  * Manually implement [Vec.append]:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  * import std.ptr
  *
@@ -103,7 +103,7 @@ import io.github.kotlinmania.rustlang.panicking.assertFailed
  *     run {
  *         // The call to add is always safe because `List` will never
  *         // allocate more than `Long.MAX` bytes.
- *         val dstPtr = MutPtr((dst.asMutPtr()).rawAddress + ((dstLen).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+ *         val dstPtr = MutPtr((dst.asMutPtr()).rawAddress + ((dstLen).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
  *         val srcPtr = src.asPtr()
  *         // Truncate `src` without dropping its contents. We do this first,
  *         // to avoid problems in case something further down panics.
@@ -588,13 +588,13 @@ public fun withExposedProvenanceMut(addr: Int): MutPtr = MutPtr(addr.toLong())
  * Note that this has subtle interactions with the rules for scope extension of temporaries in
  * tail expressions. This code is valid, albeit in a non-obvious way:
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
  *
  * // The temporary holding the return value of `foo` has its scope extended,
  * // because the surrounding expression involves no function call.
  * val p = constPtrFromRustCast(foo())
- * (ObjectSlotLayout<T>()).readNative((p).rawAddress)
+ * (UnresolvedTypeLayout<T>()).readNative((p).rawAddress)
  * ```
  * Naively replacing the cast with `fromRef` is not valid:
  * ```kotlin
@@ -629,13 +629,13 @@ public fun <T> fromRef(r: T): ConstPtr = r
  * Note that this has subtle interactions with the rules for scope extension of temporaries in
  * tail expressions. This code is valid, albeit in a non-obvious way:
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
  *
  * // The temporary holding the return value of `foo` has its scope extended,
  * // because the surrounding expression involves no function call.
  * val p = mutPtrFromRustCast(foo())
- * (ObjectSlotLayout<T>()).writeNative((p).rawAddress, T.default())
+ * (UnresolvedTypeLayout<T>()).writeNative((p).rawAddress, T.default())
  * ```
  * Naively replacing the cast with `fromMut` is not valid:
  * ```kotlin
@@ -689,7 +689,7 @@ public fun <T> fromMut(r: T): MutPtr = r
  * }
  * ```
  */
-public fun <T> sliceFromRawParts(data: ConstPtr, len: Int): ConstPtr = rawSliceList(data, len.toInt(), ObjectSlotLayout<T>())
+public fun <T> sliceFromRawParts(data: ConstPtr, len: Int): ConstPtr = linearSliceView(data, len.toInt(), UnresolvedTypeLayout<T>())
 
 /**
  * Forms a raw mutable slice from a pointer and a length.
@@ -730,7 +730,7 @@ public fun <T> sliceFromRawParts(data: ConstPtr, len: Int): ConstPtr = rawSliceL
  * }
  * ```
  */
-public fun <T> sliceFromRawPartsMut(data: MutPtr, len: Int): MutPtr = rawMutSliceList(data, len.toInt(), ObjectSlotLayout<T>())
+public fun <T> sliceFromRawPartsMut(data: MutPtr, len: Int): MutPtr = linearMutSliceView(data, len.toInt(), UnresolvedTypeLayout<T>())
 
 /**
  * Swaps the values at two mutable locations of the same type, without
@@ -927,9 +927,10 @@ public fun swapNonoverlappingBytes(x: MutPtr, y: MutPtr, bytes: NonZero<Int>) {
         val chunks1 = chunks.get()
         for (i in 0 until chunks1) {
             // SAFETY: i is in [0, chunks) so the adds and dereferences are in-bounds.
-            swapChunk(RustMutableReference(MutPtr((MutPtr((x1).rawAddress + ((i).toLong() * (ObjectSlotLayout<MaybeUninit<UByteArray>>()).strideBytes))).rawAddress), ObjectSlotLayout<MaybeUninit<UByteArray>>()), RustMutableReference(MutPtr((MutPtr((y1).rawAddress + ((i).toLong() * (ObjectSlotLayout<MaybeUninit<UByteArray>>()).strideBytes))).rawAddress), ObjectSlotLayout<MaybeUninit<UByteArray>>()))
+            swapChunk(RustMutableReference(MutPtr((MutPtr((x1).rawAddress + ((i).toLong() * (UnresolvedTypeLayout<MaybeUninit<UByteArray>>()).strideBytes))).rawAddress), UnresolvedTypeLayout<MaybeUninit<UByteArray>>()), RustMutableReference(MutPtr((MutPtr((y1).rawAddress + ((i).toLong() * (UnresolvedTypeLayout<MaybeUninit<UByteArray>>()).strideBytes))).rawAddress), UnresolvedTypeLayout<MaybeUninit<UByteArray>>()))
         }
     }
+
     // Same as `swapNonoverlappingBytes`, but accepts at most 1+2+4=7 bytes
     fun swapNonoverlappingShort(x1: MutPtr, y1: MutPtr, bytes1: NonZero<Int>) {
         // Tail handling for auto-vectorized code sometimes has element-at-a-time behaviour,
@@ -1038,7 +1039,8 @@ public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>): T {
             // type `T` are bit-identical, so we can just return `src` here.
             return src
         }
-        io.github.kotlinmania.rustlang.mem.replace(RustMutableReference(MutPtr((dst).rawAddress), typeLayoutT), src)
+        io.github.kotlinmania.rustlang.core.mem
+            .replace(RustMutableReference(MutPtr((dst).rawAddress), typeLayoutT), src)
     }
 }
 
@@ -1081,8 +1083,8 @@ public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>): T {
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.ptr
  *
  * fun <T> swap(a: T, b: T) {
@@ -1104,9 +1106,9 @@ public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>): T {
  *         // so nothing is dropped implicitly here.
  *     }
  * }
- * val localStorageL30C0 = AddressableLocal("foo".toOwned(), ObjectSlotLayout<Any?>())
+ * val localStorageL30C0 = AddressableLocal("foo".toOwned(), UnresolvedTypeLayout<Any?>())
  * var foo by localStorageL30C0
- * val localStorageL31C0 = AddressableLocal("bar".toOwned(), ObjectSlotLayout<Any?>())
+ * val localStorageL31C0 = AddressableLocal("bar".toOwned(), UnresolvedTypeLayout<Any?>())
  * var bar by localStorageL31C0
  * swap(RustMutableReference(localStorageL30C0.asMutPtr(), localStorageL30C0.layout), RustMutableReference(localStorageL31C0.asMutPtr(), localStorageL31C0.layout))
  * check(foo == "bar")
@@ -1312,8 +1314,8 @@ public fun <T> readUnaligned(src: ConstPtr, typeLayoutT: TypeLayout<T>): T {
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.ptr
  *
  * fun <T> swap(a: T, b: T) {
@@ -1335,9 +1337,9 @@ public fun <T> readUnaligned(src: ConstPtr, typeLayoutT: TypeLayout<T>): T {
  *         // so nothing is dropped implicitly here.
  *     }
  * }
- * val localStorageL30C0 = AddressableLocal("foo".toOwned(), ObjectSlotLayout<Any?>())
+ * val localStorageL30C0 = AddressableLocal("foo".toOwned(), UnresolvedTypeLayout<Any?>())
  * var foo by localStorageL30C0
- * val localStorageL31C0 = AddressableLocal("bar".toOwned(), ObjectSlotLayout<Any?>())
+ * val localStorageL31C0 = AddressableLocal("bar".toOwned(), UnresolvedTypeLayout<Any?>())
  * var bar by localStorageL31C0
  * swap(RustMutableReference(localStorageL30C0.asMutPtr(), localStorageL30C0.layout), RustMutableReference(localStorageL31C0.asMutPtr(), localStorageL31C0.layout))
  * check(foo == "bar")
@@ -1675,6 +1677,7 @@ public fun <T> alignOffset(p: ConstPtr, a: Int, typeLayoutT: TypeLayout<T>): Int
          * `0⁻¹ mod 16`, `2⁻¹ mod 16`, etc.)
          */
         val INV_TABLE_MOD_16: UByteArray = ubyteArrayOf(1u, 11u, 13u, 7u, 9u, 3u, 5u, 15u)
+
         /**
          * Modulo for which the `INV_TABLE_MOD_16` is intended.
          */
@@ -1991,4 +1994,4 @@ public fun <F : FnPtr<F>, HH> F.hash(state: HH) {
     state.writeUsize(this.addr())
 }
 
-public fun <F : FnPtr<F>> F.fmt(f: StringBuilder): Result<Unit, Unit> = pointerFmtInner(this.addr(), f)
+public fun <F : FnPtr<F>> F.fmt(f: StringBuilder): Result<Unit, Unit> = fmt.pointerFmtInner(this.addr(), f)

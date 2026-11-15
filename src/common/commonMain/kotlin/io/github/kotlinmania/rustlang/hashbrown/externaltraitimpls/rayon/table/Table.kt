@@ -1,13 +1,13 @@
 // port-lint: source external_trait_impls/rayon/table.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.table
 
-import io.github.kotlinmania.rustlang.HashTable
-import io.github.kotlinmania.rustlang.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.HashTable
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawIntoParIter
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawParDrain
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawParIter
-import io.github.kotlinmania.rustlang.rayon.iter.ParallelIterator
-import io.github.kotlinmania.rustlang.rayon.iter.plumbing.UnindexedConsumer
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.ParallelIterator
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.plumbing.UnindexedConsumer
 
 // Rayon extensions for `HashTable`.
 

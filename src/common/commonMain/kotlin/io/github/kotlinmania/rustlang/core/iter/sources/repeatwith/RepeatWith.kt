@@ -1,11 +1,11 @@
 // port-lint: source iter/sources/repeat_with.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeatwith
 
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -99,15 +99,17 @@ public fun <A> repeatWith(repeater: () -> A): RepeatWith<() -> A> = RepeatWith(r
  */
 public open class RepeatWith<F>(
     public var repeater: F,
-) : TrustedLen<RepeatWith<F>>, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@RepeatWith.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<RepeatWith<F>>,
+    Iterable<A> {
+    override fun iterator(): Iterator<A> =
+        object : AbstractIterator<A>() {
+            override fun computeNext() {
+                when (val v = this@RepeatWith.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): RepeatWith<F> = RepeatWith(repeater)
 
@@ -124,7 +126,11 @@ public open class RepeatWith<F>(
         // is the only way to exit the loop.
         while (true) {
             val item = (this.repeater)()
-            init1 = when (val tryResult = fold(init1, item)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            init1 =
+                when (val tryResult = fold(init1, item)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                }
         }
     }
 

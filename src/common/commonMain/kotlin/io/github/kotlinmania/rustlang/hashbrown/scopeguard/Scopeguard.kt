@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.hashbrown.scopeguard
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ptr.read
 
 public open class ScopeGuard<T, F>(
     public var dropfn: F,
@@ -48,9 +49,9 @@ public open class ScopeGuard<T, F>(
             // Don't use mem.forget as that might invalidate value
             val guard1 = guard
             return run {
-                val value = ptr.read(addrOf(guard1.value))
+                val value = read(addrOf(guard1.value))
                 // read the closure so that it is dropped
-                ptr.read(addrOf(guard1.dropfn))
+                read(addrOf(guard1.dropfn))
                 value
             }
         }

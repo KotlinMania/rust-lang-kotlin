@@ -9,24 +9,25 @@ import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
-import io.github.kotlinmania.rustlang.rc.Rc
-import io.github.kotlinmania.rustlang.sync.Arc
-import io.github.kotlinmania.rustlang.sys.AsInner
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.IntoInner
-import io.github.kotlinmania.rustlang.sys.osstr.bytes.Buf
-import io.github.kotlinmania.rustlang.sys.osstr.bytes.Slice
+import io.github.kotlinmania.rustlang.std.rc.Rc
+import io.github.kotlinmania.rustlang.std.sync.Arc
+import io.github.kotlinmania.rustlang.std.sys.AsInner
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Buf
+import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
 
 // The [OsStr] and [OsString] types and associated utilities.
 
@@ -466,9 +467,9 @@ public open class OsString(
         this.inner.extendFromSliceUnchecked(other)
     }
 
-    public open fun index(index: ops.RangeFull): OsStr = OsStr.fromInner(this.inner.asSlice())
+    public open fun index(index: RangeFull): OsStr = OsStr.fromInner(this.inner.asSlice())
 
-    public open fun indexMut(index: ops.RangeFull): RustMutableReference<OsStr> = OsStr.fromInnerMut(this.inner.asMutSlice())
+    public open fun indexMut(index: RangeFull): RustMutableReference<OsStr> = OsStr.fromInnerMut(this.inner.asMutSlice())
 
     public open fun deref(): OsStr = this
 
@@ -496,7 +497,7 @@ public open class OsString(
 
     public open fun eqString(other: String): Boolean = (this == other).toUByte()
 
-    public open fun partialCmp(other: OsString): cmp.Ordering? = this.partialCmp(other)
+    public open fun partialCmp(other: OsString): Ordering? = this.partialCmp(other)
 
     public open fun lt(other: OsString): Boolean = (this < other).toUByte()
 
@@ -506,9 +507,9 @@ public open class OsString(
 
     public open fun ge(other: OsString): Boolean = (this >= other).toUByte()
 
-    public open fun partialCmp(other: String): cmp.Ordering? = this.partialCmp(other)
+    public open fun partialCmp(other: String): Ordering? = this.partialCmp(other)
 
-    public open fun cmp(other: OsString): cmp.Ordering = this.cmp(other)
+    public open fun cmp(other: OsString): Ordering = this.cmp(other)
 
     public override fun hashCode(): Int {
         var state = 0
@@ -522,15 +523,15 @@ public open class OsString(
 
     public open fun eq(other: OsStr): Boolean = OsStr.eq(this, other)
 
-    public open fun partialCmp(other: OsStr): cmp.Ordering? = OsStr.partialCmp(this, other)
+    public open fun partialCmp(other: OsStr): Ordering? = OsStr.partialCmp(this, other)
 
     public open fun eqOsStr(other: OsStr): Boolean = OsStr.eq(this, other)
 
-    public open fun partialCmpOsStr(other: OsStr): cmp.Ordering? = OsStr.partialCmp(this, other)
+    public open fun partialCmpOsStr(other: OsStr): Ordering? = OsStr.partialCmp(this, other)
 
     public open fun eqCowOsStr(other: OsStr): Boolean = OsStr.eq(this, other)
 
-    public open fun partialCmpCowOsStr(other: OsStr): cmp.Ordering? = OsStr.partialCmp(this, other)
+    public open fun partialCmpCowOsStr(other: OsStr): Ordering? = OsStr.partialCmp(this, other)
 
     public open fun borrow(): OsStr = this
 
@@ -996,7 +997,7 @@ public open class OsStr internal constructor(
      * }
      * ```
      */
-    public open fun <R : ops.RangeBounds<Int>> sliceEncodedBytes(range: R): OsStr {
+    public open fun <R : RangeBounds<Int>> sliceEncodedBytes(range: R): OsStr {
         val encodedBytes = this.asEncodedBytes()
         val structVal = Slice.range(range, 0 until encodedBytes.size)
         val start = structVal.start
@@ -1176,7 +1177,7 @@ public open class OsStr internal constructor(
 
     public open fun eq(other: String): Boolean = (this == OsStr.new(other)).toUByte()
 
-    public open fun partialCmp(other: OsStr): cmp.Ordering? = this.asEncodedBytes().partialCmp(other.asEncodedBytes())
+    public open fun partialCmp(other: OsStr): Ordering? = this.asEncodedBytes().partialCmp(other.asEncodedBytes())
 
     public open fun lt(other: OsStr): Boolean = this.asEncodedBytes().lt(other.asEncodedBytes())
 
@@ -1186,19 +1187,19 @@ public open class OsStr internal constructor(
 
     public open fun ge(other: OsStr): Boolean = this.asEncodedBytes().ge(other.asEncodedBytes())
 
-    public open fun partialCmp(other: String): cmp.Ordering? = this.partialCmp(OsStr.new(other))
+    public open fun partialCmp(other: String): Ordering? = this.partialCmp(OsStr.new(other))
 
     // Note (#19470): cannot provide PartialOrd<OsStr> for str until we
     // have more flexible coherence rules.
-    public open fun cmp(other: OsStr): cmp.Ordering = this.asEncodedBytes().cmp(other.asEncodedBytes())
+    public open fun cmp(other: OsStr): Ordering = this.asEncodedBytes().cmp(other.asEncodedBytes())
 
     public open fun eq(other: OsString): Boolean = OsStr.eq(this, other)
 
-    public open fun partialCmp(other: OsString): cmp.Ordering? = OsStr.partialCmp(this, other)
+    public open fun partialCmp(other: OsString): Ordering? = OsStr.partialCmp(this, other)
 
     public open fun eqCowOsStr(other: OsStr): Boolean = OsStr.eq(this, other)
 
-    public open fun partialCmpCowOsStr(other: OsStr): cmp.Ordering? = OsStr.partialCmp(this, other)
+    public open fun partialCmpCowOsStr(other: OsStr): Ordering? = OsStr.partialCmp(this, other)
 
     public override fun hashCode(): Int {
         var state = 0
@@ -1282,7 +1283,7 @@ public open class OsStr internal constructor(
         public fun fromInner(inner: Slice): OsStr {
             // SAFETY: OsStr is just a wrapper of Slice,
             // therefore converting &Slice to &OsStr is safe.
-            return (ObjectSlotLayout<OsStr>()).readNative((((constPtrFromRustCast(inner)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+            return (UnresolvedTypeLayout<OsStr>()).readNative((((constPtrFromRustCast(inner)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
         }
 
         public fun fromInnerMut(inner: Slice): RustMutableReference<OsStr> {
@@ -1290,7 +1291,7 @@ public open class OsStr internal constructor(
             // therefore converting Slice to OsStr is safe.
             // Any method that mutates OsStr must be careful not to
             // break platform-specific encoding, in particular Wtf8 on Windows.
-            return RustMutableReference(MutPtr((((mutPtrFromRustCast(inner)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<OsStr>())
+            return RustMutableReference(MutPtr((((mutPtrFromRustCast(inner)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<OsStr>())
         }
 
         /**
@@ -1400,21 +1401,21 @@ public fun fromCowOsStr(s: OsStr): OsStr = s
  * check(asStr == "foo")
  * ```
  */
-public fun tryFromString(value: OsStr): Result<String, io.github.kotlinmania.rustlang.String.Utf8Error> = value.inner.toStr()
+public fun tryFromString(value: OsStr): Result<String, Utf8Error> = value.inner.toStr()
 
 public fun String.eq(other: OsStr): Boolean = (other == OsStr.new(this)).toUByte()
 
 public fun OsStr.eq(other: OsStr): Boolean = OsStr.eq(this, other)
 
-public fun OsStr.partialCmp(other: OsStr): cmp.Ordering? = OsStr.partialCmp(this, other)
+public fun OsStr.partialCmp(other: OsStr): Ordering? = OsStr.partialCmp(this, other)
 
 public fun OsStr.eqOsStr(other: OsStr): Boolean = OsStr.eq(this, other)
 
-public fun OsStr.partialCmpOsStr(other: OsStr): cmp.Ordering? = OsStr.partialCmp(this, other)
+public fun OsStr.partialCmpOsStr(other: OsStr): Ordering? = OsStr.partialCmp(this, other)
 
 public fun OsStr.eq(other: OsString): Boolean = OsStr.eq(this, other)
 
-public fun OsStr.partialCmp(other: OsString): cmp.Ordering? = OsStr.partialCmp(this, other)
+public fun OsStr.partialCmp(other: OsString): Ordering? = OsStr.partialCmp(this, other)
 
 /**
  * Helper struct for safely printing an [OsStr] with [format] and `{}`.

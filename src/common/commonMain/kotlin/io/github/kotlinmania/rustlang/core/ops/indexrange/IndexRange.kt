@@ -1,16 +1,14 @@
 // port-lint: source ops/index_range.rs
 package io.github.kotlinmania.rustlang.core.ops.indexrange
 
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedSub
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 /**
  * Like a `Range<Int>`, but with a safety invariant that `start <= end`.
@@ -23,15 +21,17 @@ import io.github.kotlinmania.rustlang.ops.trytrait.Try
 public open class IndexRange(
     public var start: Int,
     public var end: Int,
-) : TrustedLen<IndexRange>, Iterable<Int> {
-    override fun iterator(): Iterator<Int> = object : AbstractIterator<Int>() {
-        override fun computeNext() {
-            when (val v = this@IndexRange.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<IndexRange>,
+    Iterable<Int> {
+    override fun iterator(): Iterator<Int> =
+        object : AbstractIterator<Int>() {
+            override fun computeNext() {
+                when (val v = this@IndexRange.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): IndexRange = IndexRange(start, end)
 
@@ -42,7 +42,7 @@ public open class IndexRange(
     public open fun len(): Int {
         // SAFETY: By invariant, this cannot wrap
         // Using the intrinsic because a UB check here impedes LLVM optimization. (#131563)
-        return uncheckedSub(this.end, this.start)
+        return ((this.end) - (this.start))
     }
 
     /**
@@ -86,7 +86,7 @@ public open class IndexRange(
                 // SAFETY: We just checked that this will be between start and end,
                 // and thus the addition cannot overflow.
                 // Using the intrinsic avoids a superfluous UB check.
-                uncheckedAdd(this.start, n)
+                ((this.start) + (n))
             } else {
                 this.end
             }
@@ -108,7 +108,7 @@ public open class IndexRange(
                 // SAFETY: We just checked that this will be between start and end,
                 // and thus the subtraction cannot overflow.
                 // Using the intrinsic avoids a superfluous UB check.
-                uncheckedSub(this.end, n)
+                ((this.end) - (n))
             } else {
                 this.start
             }
@@ -150,7 +150,11 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextUnchecked()
-            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            accum1 =
+                when (val tryResult = f(accum1, i)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                }
         }
         return accum1
     }
@@ -178,7 +182,11 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextBackUnchecked()
-            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            accum1 =
+                when (val tryResult = f(accum1, i)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                }
         }
         return accum1
     }

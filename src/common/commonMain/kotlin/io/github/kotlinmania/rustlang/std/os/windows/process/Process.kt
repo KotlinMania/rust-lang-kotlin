@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.std.os.windows.process
 
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -14,18 +14,18 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.io.constError
-import io.github.kotlinmania.rustlang.os.windows.io.BorrowedHandle
-import io.github.kotlinmania.rustlang.os.windows.io.OwnedHandle
-import io.github.kotlinmania.rustlang.os.windows.io.RawHandle
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.sys.pal.windows.handle.Handle
-import io.github.kotlinmania.rustlang.sys.process.unsupported.ChildPipe
-import io.github.kotlinmania.rustlang.sys.process.unsupported.Stdio
-import io.github.kotlinmania.rustlang.sys.process.windows.Process
+import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.ChildPipe
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio
+import io.github.kotlinmania.rustlang.std.sys.process.windows.Process
 
 // Windows-specific extensions to primitives in the [std.process] module.
 
@@ -597,7 +597,7 @@ public open class ProcThreadAttributeListBuilder(
         var requiredSize by localStorageL702C8
         val attributeCount = this.attributes.size.tryInto() ?: return Result.Err(constError(ErrorKind.InvalidInput, "maximum number of ProcThreadAttributes exceeded"))
         C.InitializeProcThreadAttributeList(MutPtr(0L), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout))
-        var attributeList = mutableListOf(MaybeUninit.uninit(ObjectSlotLayout<Result<ProcThreadAttributeList, Error>>()), requiredSize).intoBoxedSlice()
+        var attributeList = mutableListOf(MaybeUninit.uninit(UnresolvedTypeLayout<Result<ProcThreadAttributeList, Error>>()), requiredSize).intoBoxedSlice()
         // Once we've allocated the necessary memory, it's safe to invoke
         // `InitializeProcThreadAttributeList` to properly initialize the list.
         when (val tryResult = cvt(C.InitializeProcThreadAttributeList(attributeList.asMutPtr().cast(), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
@@ -608,11 +608,11 @@ public open class ProcThreadAttributeListBuilder(
         for ((attribute, value) in this.attributes.iter().take(attributeCount.toInt())) {
             when (val tryResult = cvt(C.UpdateProcThreadAttribute(attributeList.asMutPtr().cast(), 0, attribute, value.ptr, value.size, MutPtr(0L), MutPtr(0L)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         }
-        return Result.Ok(ProcThreadAttributeList(attributeList = attributeList, lifetimeMarker = marker.PhantomData))
+        return Result.Ok(ProcThreadAttributeList(attributeList = attributeList, lifetimeMarker = Unit))
     }
 
     public companion object {
-        public fun new(): ProcThreadAttributeListBuilder = ProcThreadAttributeListBuilder(attributes = mutableMapOf(), lifetimeMarker = marker.PhantomData)
+        public fun new(): ProcThreadAttributeListBuilder = ProcThreadAttributeListBuilder(attributes = mutableMapOf(), lifetimeMarker = Unit)
     }
 }
 

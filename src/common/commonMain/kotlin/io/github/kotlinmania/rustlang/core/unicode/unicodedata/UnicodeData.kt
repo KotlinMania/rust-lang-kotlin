@@ -6,7 +6,7 @@ package io.github.kotlinmania.rustlang.core.unicode.unicodedata
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.num.rustRotateLeft
+import io.github.kotlinmania.rustlang.core.num.rotateLeft
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -59,7 +59,7 @@ public fun bitsetSearch(needle: UInt, chunkIdxMap: UByteArray, bitsetChunkIdx: L
                 // shift
                 word = word shr ((quantity.toULong()).toInt())
             } else {
-                word = rustRotateLeft(word, quantity.toUInt())
+                word = word.rotateLeft(quantity.toUInt())
             }
             word
         }
@@ -78,7 +78,9 @@ public open class ShortOffsetRunHeader internal constructor(
 
     public var value: UInt
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -112,13 +114,16 @@ public fun skipSearch(needle: Char, shortOffsetRuns: List<ShortOffsetRunHeader>,
     val lastIdx =
         run {
             val matchVal = shortOffsetRuns.binarySearchByKey((needle1 shl 11), { header -> header.first shl 11 })
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val idx = matchVal.value
-                idx + 1
-            }; is Result.Err<*, *> -> {
-                val idx1 = matchVal.error
-                idx1
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val idx = matchVal.value
+                    idx + 1
+                }
+                is Result.Err<*, *> -> {
+                    val idx1 = matchVal.error
+                    idx1
+                }
+            }
         }
     // SAFETY: `lastIdx` *cannot* be past the end of the array, as the last
     // element is greater than `std.char.MAX` (the largest possible needle)

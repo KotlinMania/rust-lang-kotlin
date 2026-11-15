@@ -1,6 +1,7 @@
 // port-lint: source boxed/iter.rs
 package io.github.kotlinmania.rustlang.alloc.boxed.iter
 
+import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.asynciter.asynciter.AsyncIterator
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
@@ -8,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
-import io.github.kotlinmania.rustlang.vec.Vec
 
 public class DebugTuple(
     private val out: StringBuilder,

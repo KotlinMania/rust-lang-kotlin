@@ -1,7 +1,5 @@
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple
 
-import io.github.kotlinmania.rustlang.*
-import io.github.kotlinmania.rustlang.CMSG_FIRSTHDR
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
@@ -9,22 +7,24 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.IntptrT
-import io.github.kotlinmania.rustlang.unix.LocaleT
-import io.github.kotlinmania.rustlang.unix.PidT
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.SsizeT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.b64.aarch64.BooleanT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Cmsghdr
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Msghdr
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.CMSG_FIRSTHDR
+import io.github.kotlinmania.rustlang.libc.unix.IntptrT
+import io.github.kotlinmania.rustlang.libc.unix.LocaleT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.Cmsghdr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.Msghdr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.OffT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.PthreadT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.aarch64.BooleanT
 
 public fun interface QsortRComparCallback {
     public operator fun invoke(arg0: MutPtr, arg1: ConstPtr, arg2: ConstPtr): CInt
@@ -39,21 +39,21 @@ public fun cmsgNxthdr(mhdr: ConstPtr, cmsg: ConstPtr): MutPtr {
     if (((cmsg).rawAddress == 0L)) {
         return CMSG_FIRSTHDR(mhdr)
     }
-    val cmsgLen = ((ObjectSlotLayout<Cmsghdr>()).readNative((cmsg).rawAddress).cmsgLen).toInt()
+    val cmsgLen = ((UnresolvedTypeLayout<Cmsghdr>()).readNative((cmsg).rawAddress).cmsgLen).toInt()
     val next = cmsg.rawAddress.toInt() + darwinAlign32(cmsgLen)
-    val max = ((ObjectSlotLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControl).rawAddress.toInt() + ((ObjectSlotLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControllen).toInt()
-    return if (next + darwinAlign32(sizeOf<Cmsghdr>(typeLayoutT = ObjectSlotLayout<Cmsghdr>())) > max) {
+    val max = ((UnresolvedTypeLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControl).rawAddress.toInt() + ((UnresolvedTypeLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControllen).toInt()
+    return if (next + darwinAlign32(sizeOf<Cmsghdr>(typeLayoutT = UnresolvedTypeLayout<Cmsghdr>())) > max) {
         MutPtr(0L)
     } else {
         MutPtr(next.toLong())
     }
 }
 
-public fun cmsgData(cmsg: ConstPtr): MutPtr = MutPtr(((MutPtr(cmsg.rawAddress, cmsg.rawMeta))).rawAddress + ((darwinAlign32(sizeOf<Cmsghdr>(typeLayoutT = ObjectSlotLayout<Cmsghdr>()))).toLong() * (ObjectSlotLayout<CUchar>()).strideBytes))
+public fun cmsgData(cmsg: ConstPtr): MutPtr = MutPtr(((MutPtr(cmsg.rawAddress, cmsg.rawMeta))).rawAddress + ((darwinAlign32(sizeOf<Cmsghdr>(typeLayoutT = UnresolvedTypeLayout<Cmsghdr>()))).toLong() * (UnresolvedTypeLayout<CUchar>()).strideBytes))
 
-public fun cmsgSpace(length: CUint): CUint = (darwinAlign32(sizeOf<Cmsghdr>(typeLayoutT = ObjectSlotLayout<Cmsghdr>())) + darwinAlign32(length.toInt())).toUInt()
+public fun cmsgSpace(length: CUint): CUint = (darwinAlign32(sizeOf<Cmsghdr>(typeLayoutT = UnresolvedTypeLayout<Cmsghdr>())) + darwinAlign32(length.toInt())).toUInt()
 
-public fun cmsgLen(length: CUint): CUint = (darwinAlign32(sizeOf<Cmsghdr>(typeLayoutT = ObjectSlotLayout<Cmsghdr>())) + length.toInt()).toUInt()
+public fun cmsgLen(length: CUint): CUint = (darwinAlign32(sizeOf<Cmsghdr>(typeLayoutT = UnresolvedTypeLayout<Cmsghdr>())) + length.toInt()).toUInt()
 
 public fun vmMakeTag(id: UByte): UInt = (id.toUInt()) shl 24u.toInt()
 
@@ -97,9 +97,9 @@ public expect fun lchflags(path: ConstPtr, flags: CUint): CInt
 
 public expect fun lchmod(path: ConstPtr, mode: ModeT): CInt
 
-public expect fun clockGetres(clkId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: MutPtr): CInt
+public expect fun clockGetres(clkId: ClockidT, tp: MutPtr): CInt
 
-public expect fun clockGettime(clkId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: MutPtr): CInt
+public expect fun clockGettime(clkId: ClockidT, tp: MutPtr): CInt
 
 public expect fun lioListio(mode: CInt, aiocbList: ConstPtr, nitems: CInt, sevp: MutPtr): CInt
 
@@ -189,9 +189,9 @@ public expect fun pthreadSetnameNp(name: ConstPtr): CInt
 
 public expect fun pthreadGetnameNp(thread: PthreadT, name: MutPtr, len: SizeT): CInt
 
-public expect fun pthreadMachThreadNp(thread: PthreadT): io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
+public expect fun pthreadMachThreadNp(thread: PthreadT): MachPortT
 
-public expect fun pthreadFromMachThreadNp(port: io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT): PthreadT
+public expect fun pthreadFromMachThreadNp(port: MachPortT): PthreadT
 
 public expect fun pthreadGetStackaddrNp(thread: PthreadT): MutPtr
 
@@ -211,7 +211,7 @@ public expect fun pthreadJitWriteProtectSupportedNp(): CInt
 // static callbacks: [libc.pthreadJitWriteCallbackT; 2] = [nativeJitWriteCb,
 // std.mem.transmute::<libc.pthreadJitWriteCallbackT>(std.ptr.nullVal())];
 // (a handy PTHREAD_JIT_WRITE_CALLBACK_NP macro for other languages).
-public expect fun pthreadJitWriteWithCallbackNp(callback: io.github.kotlinmania.rustlang.unix.bsd.apple.PthreadJitWriteCallbackT, ctx: MutPtr): CInt
+public expect fun pthreadJitWriteWithCallbackNp(callback: PthreadJitWriteCallbackT, ctx: MutPtr): CInt
 
 public expect fun pthreadJitWriteFreezeCallbacksNp()
 
@@ -238,15 +238,15 @@ public expect fun osUnfairLockAssertOwner(lock: OsUnfairLockT)
 
 public expect fun osUnfairLockAssertNotOwner(lock: OsUnfairLockT)
 
-public expect fun osLogCreate(subsystem: ConstPtr, category: ConstPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogT
+public expect fun osLogCreate(subsystem: ConstPtr, category: ConstPtr): OsLogT
 
-public expect fun osLogTypeEnabled(oslog: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogT, tpe: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogTypeT): Boolean
+public expect fun osLogTypeEnabled(oslog: OsLogT, tpe: OsLogTypeT): Boolean
 
-public expect fun osSignpostIdMakeWithPointer(log: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogT, ptr: ConstPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.OsSignpostIdT
+public expect fun osSignpostIdMakeWithPointer(log: OsLogT, ptr: ConstPtr): OsSignpostIdT
 
-public expect fun osSignpostIdGenerate(log: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogT): io.github.kotlinmania.rustlang.unix.bsd.apple.OsSignpostIdT
+public expect fun osSignpostIdGenerate(log: OsLogT): OsSignpostIdT
 
-public expect fun osSignpostEnabled(log: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogT): Boolean
+public expect fun osSignpostEnabled(log: OsLogT): Boolean
 
 public expect fun threadPolicySet(thread: ThreadT, flavor: ThreadPolicyFlavorT, policyInfo: ThreadPolicyT, count: MachMsgTypeNumberT): KernReturnT
 
@@ -310,9 +310,9 @@ public expect fun uselocale(loc: LocaleT): LocaleT
 
 public expect fun querylocale(mask: CInt, loc: LocaleT): ConstPtr
 
-public expect fun getpriority(which: CInt, who: io.github.kotlinmania.rustlang.unix.bsd.apple.IdT): CInt
+public expect fun getpriority(which: CInt, who: IdT): CInt
 
-public expect fun setpriority(which: CInt, who: io.github.kotlinmania.rustlang.unix.bsd.apple.IdT, prio: CInt): CInt
+public expect fun setpriority(which: CInt, who: IdT, prio: CInt): CInt
 
 public expect fun getdomainname(name: MutPtr, len: CInt): CInt
 
@@ -449,7 +449,7 @@ public expect fun copyfileStateGet(s: CopyfileStateT, flags: UInt, dst: MutPtr):
 
 public expect fun copyfileStateSet(s: CopyfileStateT, flags: UInt, src: ConstPtr): CInt
 
-public expect fun machErrorString(errorValue: io.github.kotlinmania.rustlang.unix.bsd.apple.MachErrorT): MutPtr
+public expect fun machErrorString(errorValue: MachErrorT): MutPtr
 
 // Added in macOS 10.13
 // ISO/IEC 9899:2011 ("ISO C11") K.3.7.4.1
@@ -504,7 +504,7 @@ public expect fun gethostid(): CLong
 
 public expect fun sethostid(hostid: CLong)
 
-public expect fun cCRandomGenerateBytes(bytes: MutPtr, size: SizeT): io.github.kotlinmania.rustlang.unix.bsd.apple.CCRNGStatus
+public expect fun cCRandomGenerateBytes(bytes: MutPtr, size: SizeT): CCRNGStatus
 
 public expect fun getentropy(buf: MutPtr, buflen: SizeT): CInt
 
@@ -520,35 +520,35 @@ public expect fun nsgetEnviron(): MutPtr
 
 public expect fun nsgetProgname(): MutPtr
 
-public expect fun machVmMap(targetTask: io.github.kotlinmania.rustlang.unix.bsd.apple.VmMapT, address: MutPtr, size: io.github.kotlinmania.rustlang.unix.bsd.apple.MachVmSizeT, mask: io.github.kotlinmania.rustlang.unix.bsd.apple.MachVmOffsetT, flags: CInt, obj: io.github.kotlinmania.rustlang.unix.bsd.apple.MemEntryNamePortT, offset: io.github.kotlinmania.rustlang.unix.bsd.apple.MemoryObjectOffsetT, copy: BooleanT, curProtection: io.github.kotlinmania.rustlang.unix.bsd.apple.VmProtT, maxProtection: io.github.kotlinmania.rustlang.unix.bsd.apple.VmProtT, inheritance: io.github.kotlinmania.rustlang.unix.bsd.apple.VmInheritT): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun machVmMap(targetTask: VmMapT, address: MutPtr, size: MachVmSizeT, mask: MachVmOffsetT, flags: CInt, obj: MemEntryNamePortT, offset: MemoryObjectOffsetT, copy: BooleanT, curProtection: VmProtT, maxProtection: VmProtT, inheritance: VmInheritT): KernReturnT
 
-public expect fun vmAllocate(targetTask: VmMapT, address: MutPtr, size: VmSizeT, flags: CInt): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun vmAllocate(targetTask: VmMapT, address: MutPtr, size: VmSizeT, flags: CInt): KernReturnT
 
-public expect fun vmDeallocate(targetTask: VmMapT, address: VmAddressT, size: VmSizeT): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun vmDeallocate(targetTask: VmMapT, address: VmAddressT, size: VmSizeT): KernReturnT
 
-public expect fun hostStatistics64(hostPriv: HostT, flavor: HostFlavorT, hostInfo64Out: HostInfo64T, hostInfo64OutCnt: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun hostStatistics64(hostPriv: HostT, flavor: HostFlavorT, hostInfo64Out: HostInfo64T, hostInfo64OutCnt: MutPtr): KernReturnT
 
-public expect fun hostProcessorInfo(host: HostT, flavor: ProcessorFlavorT, outProcessorCount: MutPtr, outProcessorInfo: MutPtr, outProcessorInfoCnt: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun hostProcessorInfo(host: HostT, flavor: ProcessorFlavorT, outProcessorCount: MutPtr, outProcessorInfo: MutPtr, outProcessorInfoCnt: MutPtr): KernReturnT
 
 // technically public but is an internal implementation detail.
-public expect var MACH_TASK_SELF: io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
+public expect var MACH_TASK_SELF: MachPortT
 
-public expect fun taskForPid(host: io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT, pid: PidT, task: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun taskForPid(host: MachPortT, pid: PidT, task: MutPtr): KernReturnT
 
-public expect fun taskInfo(host: io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT, flavor: TaskFlavorT, taskInfoOut: TaskInfoT, taskInfoCount: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun taskInfo(host: MachPortT, flavor: TaskFlavorT, taskInfoOut: TaskInfoT, taskInfoCount: MutPtr): KernReturnT
 
-public expect fun taskCreate(targetTask: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskT, ledgers: io.github.kotlinmania.rustlang.unix.bsd.apple.LedgerArrayT, ledgersCnt: io.github.kotlinmania.rustlang.unix.bsd.apple.MachMsgTypeNumberT, inheritMemory: BooleanT, childTask: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun taskCreate(targetTask: TaskT, ledgers: LedgerArrayT, ledgersCnt: MachMsgTypeNumberT, inheritMemory: BooleanT, childTask: MutPtr): KernReturnT
 
-public expect fun taskTerminate(targetTask: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskT): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun taskTerminate(targetTask: TaskT): KernReturnT
 
-public expect fun taskThreads(targetTask: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskInspectT, actList: MutPtr, actListCnt: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun taskThreads(targetTask: TaskInspectT, actList: MutPtr, actListCnt: MutPtr): KernReturnT
 
-public expect fun hostStatistics(hostPriv: HostT, flavor: HostFlavorT, hostInfoOut: HostInfoT, hostInfoOutCnt: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun hostStatistics(hostPriv: HostT, flavor: HostFlavorT, hostInfoOut: HostInfoT, hostInfoOutCnt: MutPtr): KernReturnT
 
 // sysdir.h
-public expect fun sysdirStartSearchPathEnumeration(dir: SysdirSearchPathDirectoryT, domainMask: SysdirSearchPathDomainMaskT): io.github.kotlinmania.rustlang.unix.bsd.apple.SysdirSearchPathEnumerationState
+public expect fun sysdirStartSearchPathEnumeration(dir: SysdirSearchPathDirectoryT, domainMask: SysdirSearchPathDomainMaskT): SysdirSearchPathEnumerationState
 
-public expect fun sysdirGetNextSearchPathEnumeration(state: io.github.kotlinmania.rustlang.unix.bsd.apple.SysdirSearchPathEnumerationState, path: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.SysdirSearchPathEnumerationState
+public expect fun sysdirGetNextSearchPathEnumeration(state: SysdirSearchPathEnumerationState, path: MutPtr): SysdirSearchPathEnumerationState
 
 public expect val VM_PAGE_SIZE: VmSizeT
 
@@ -585,9 +585,9 @@ public expect fun execvP(file: ConstPtr, searchPath: ConstPtr, argv: ConstPtr): 
 
 public expect fun qsortR(base: MutPtr, num: SizeT, size: SizeT, arg: MutPtr, compar: QsortRComparCallback?)
 
-public fun machTaskSelf(): io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT = MACH_TASK_SELF
+public fun machTaskSelf(): MachPortT = MACH_TASK_SELF
 
-public expect fun clockSettime(clockId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: ConstPtr): CInt
+public expect fun clockSettime(clockId: ClockidT, tp: ConstPtr): CInt
 
 // libproc.h
 public expect fun procListpids(t: UInt, typeinfo: UInt, buffer: MutPtr, buffersize: CInt): CInt
@@ -628,7 +628,7 @@ public expect fun procSetthreadCsm(flags: UInt): CInt
 public expect fun memmem(haystack: ConstPtr, haystacklen: SizeT, needle: ConstPtr, needlelen: SizeT): MutPtr
 
 // `taskSetInfo` is prohibited on tvOS and watchOS.
-public expect fun taskSetInfo(targetTask: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskT, flavor: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskFlavorT, taskInfoIn: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskInfoT, taskInfoInCnt: io.github.kotlinmania.rustlang.unix.bsd.apple.MachMsgTypeNumberT): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
+public expect fun taskSetInfo(targetTask: TaskT, flavor: TaskFlavorT, taskInfoIn: TaskInfoT, taskInfoInCnt: MachMsgTypeNumberT): KernReturnT
 
 // These require a dependency on `libiconv`, and including this when built as
 // part of `std` means every Rust program gets it. Ideally we would have a link

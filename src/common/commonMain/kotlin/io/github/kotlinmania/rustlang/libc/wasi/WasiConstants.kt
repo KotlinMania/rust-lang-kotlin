@@ -1,11 +1,11 @@
 package io.github.kotlinmania.rustlang.libc.wasi
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.types.u32CastLong
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.types.u32CastLong
 
 public val EXIT_SUCCESS: CInt = 0
 
@@ -650,119 +650,119 @@ public val LC_MESSAGES: CInt = 5
 
 public val LC_ALL: CInt = 6
 
-public val ABDAY_1: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20000
+public val ABDAY_1: NlItem = 0x20000
 
-public val ABDAY_2: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20001
+public val ABDAY_2: NlItem = 0x20001
 
-public val ABDAY_3: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20002
+public val ABDAY_3: NlItem = 0x20002
 
-public val ABDAY_4: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20003
+public val ABDAY_4: NlItem = 0x20003
 
-public val ABDAY_5: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20004
+public val ABDAY_5: NlItem = 0x20004
 
-public val ABDAY_6: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20005
+public val ABDAY_6: NlItem = 0x20005
 
-public val ABDAY_7: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20006
+public val ABDAY_7: NlItem = 0x20006
 
-public val DAY_1: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20007
+public val DAY_1: NlItem = 0x20007
 
-public val DAY_2: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20008
+public val DAY_2: NlItem = 0x20008
 
-public val DAY_3: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20009
+public val DAY_3: NlItem = 0x20009
 
-public val DAY_4: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2000A
+public val DAY_4: NlItem = 0x2000A
 
-public val DAY_5: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2000B
+public val DAY_5: NlItem = 0x2000B
 
-public val DAY_6: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2000C
+public val DAY_6: NlItem = 0x2000C
 
-public val DAY_7: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2000D
+public val DAY_7: NlItem = 0x2000D
 
-public val ABMON_1: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2000E
+public val ABMON_1: NlItem = 0x2000E
 
-public val ABMON_2: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2000F
+public val ABMON_2: NlItem = 0x2000F
 
-public val ABMON_3: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20010
+public val ABMON_3: NlItem = 0x20010
 
-public val ABMON_4: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20011
+public val ABMON_4: NlItem = 0x20011
 
-public val ABMON_5: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20012
+public val ABMON_5: NlItem = 0x20012
 
-public val ABMON_6: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20013
+public val ABMON_6: NlItem = 0x20013
 
-public val ABMON_7: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20014
+public val ABMON_7: NlItem = 0x20014
 
-public val ABMON_8: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20015
+public val ABMON_8: NlItem = 0x20015
 
-public val ABMON_9: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20016
+public val ABMON_9: NlItem = 0x20016
 
-public val ABMON_10: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20017
+public val ABMON_10: NlItem = 0x20017
 
-public val ABMON_11: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20018
+public val ABMON_11: NlItem = 0x20018
 
-public val ABMON_12: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20019
+public val ABMON_12: NlItem = 0x20019
 
-public val MON_1: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2001A
+public val MON_1: NlItem = 0x2001A
 
-public val MON_2: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2001B
+public val MON_2: NlItem = 0x2001B
 
-public val MON_3: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2001C
+public val MON_3: NlItem = 0x2001C
 
-public val MON_4: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2001D
+public val MON_4: NlItem = 0x2001D
 
-public val MON_5: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2001E
+public val MON_5: NlItem = 0x2001E
 
-public val MON_6: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2001F
+public val MON_6: NlItem = 0x2001F
 
-public val MON_7: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20020
+public val MON_7: NlItem = 0x20020
 
-public val MON_8: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20021
+public val MON_8: NlItem = 0x20021
 
-public val MON_9: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20022
+public val MON_9: NlItem = 0x20022
 
-public val MON_10: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20023
+public val MON_10: NlItem = 0x20023
 
-public val MON_11: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20024
+public val MON_11: NlItem = 0x20024
 
-public val MON_12: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20025
+public val MON_12: NlItem = 0x20025
 
-public val AM_STR: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20026
+public val AM_STR: NlItem = 0x20026
 
-public val PM_STR: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20027
+public val PM_STR: NlItem = 0x20027
 
-public val D_T_FMT: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20028
+public val D_T_FMT: NlItem = 0x20028
 
-public val D_FMT: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20029
+public val D_FMT: NlItem = 0x20029
 
-public val T_FMT: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2002A
+public val T_FMT: NlItem = 0x2002A
 
-public val T_FMT_AMPM: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2002B
+public val T_FMT_AMPM: NlItem = 0x2002B
 
-public val ERA: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2002C
+public val ERA: NlItem = 0x2002C
 
-public val ERA_D_FMT: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2002E
+public val ERA_D_FMT: NlItem = 0x2002E
 
-public val ALT_DIGITS: io.github.kotlinmania.rustlang.wasi.NlItem = 0x2002F
+public val ALT_DIGITS: NlItem = 0x2002F
 
-public val ERA_D_T_FMT: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20030
+public val ERA_D_T_FMT: NlItem = 0x20030
 
-public val ERA_T_FMT: io.github.kotlinmania.rustlang.wasi.NlItem = 0x20031
+public val ERA_T_FMT: NlItem = 0x20031
 
-public val CODESET: io.github.kotlinmania.rustlang.wasi.NlItem = 14
+public val CODESET: NlItem = 14
 
-public val CRNCYSTR: io.github.kotlinmania.rustlang.wasi.NlItem = 0x4000F
+public val CRNCYSTR: NlItem = 0x4000F
 
-public val RADIXCHAR: io.github.kotlinmania.rustlang.wasi.NlItem = 0x10000
+public val RADIXCHAR: NlItem = 0x10000
 
-public val THOUSEP: io.github.kotlinmania.rustlang.wasi.NlItem = 0x10001
+public val THOUSEP: NlItem = 0x10001
 
-public val YESEXPR: io.github.kotlinmania.rustlang.wasi.NlItem = 0x50000
+public val YESEXPR: NlItem = 0x50000
 
-public val NOEXPR: io.github.kotlinmania.rustlang.wasi.NlItem = 0x50001
+public val NOEXPR: NlItem = 0x50001
 
-public val YESSTR: io.github.kotlinmania.rustlang.wasi.NlItem = 0x50002
+public val YESSTR: NlItem = 0x50002
 
-public val NOSTR: io.github.kotlinmania.rustlang.wasi.NlItem = 0x50003
+public val NOSTR: NlItem = 0x50003
 
 public val PTHREAD_CREATE_JOINABLE: CInt = 0
 

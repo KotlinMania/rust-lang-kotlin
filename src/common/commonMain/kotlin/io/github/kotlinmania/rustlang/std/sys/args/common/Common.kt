@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.args.common
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 
 public open class Args(
     public var iter: ArrayDeque<OsString>,
@@ -24,7 +24,7 @@ public open class Args(
 
     public open fun next(): OsString? = this.iter.removeFirstOrNull()
 
-    public open fun nextChunk(n: Int): Result<List<OsString>, array.IntoIter<OsString>> = this.iter.nextChunk()
+    public open fun nextChunk(n: Int): Result<List<OsString>, IntoIter<OsString>> = this.iter.nextChunk()
 
     public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
 

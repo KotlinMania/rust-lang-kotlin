@@ -3,12 +3,13 @@ package io.github.kotlinmania.rustlang.panicunwind.gcc
 
 import io.github.kotlinmania.rustlang.alloc.panicking.PanicPayload
 import io.github.kotlinmania.rustlang.core.RustAny
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.rustDropPanic
-import io.github.kotlinmania.rustlang.rustForeignException
+import io.github.kotlinmania.rustlang.core.ptr.eq
+import io.github.kotlinmania.rustlang.panicunwind.rustDropPanic
+import io.github.kotlinmania.rustlang.panicunwind.rustForeignException
 import io.github.kotlinmania.rustlang.unwind.types.UnwindException
 import io.github.kotlinmania.rustlang.unwind.types.UnwindExceptionClass
 import io.github.kotlinmania.rustlang.unwind.types.UnwindReasonCode
@@ -95,7 +96,7 @@ public fun panic(data: PanicPayload): UInt {
 public fun cleanup(ptr: MutPtr): RustAny =
     run {
         val exception = MutPtr(ptr.rawAddress, ptr.rawMeta)
-        if ((ObjectSlotLayout<UnwindException>()).readNative((exception).rawAddress).exceptionClass != RUST_EXCEPTION_CLASS) {
+        if ((UnresolvedTypeLayout<UnwindException>()).readNative((exception).rawAddress).exceptionClass != RUST_EXCEPTION_CLASS) {
             unwindDeleteException(exception)
             rustForeignException()
         }
@@ -103,7 +104,7 @@ public fun cleanup(ptr: MutPtr): RustAny =
         // Just access the canary field, avoid accessing the entire `Exception` as
         // it can be a foreign Rust exception.
         val canary = (addrOf(exception1.canary)).read()
-        if (!ptr.eq(canary, CANARY)) {
+        if (!eq(canary, CANARY)) {
             // A foreign Rust exception, treat it slightly differently from other
             // foreign exceptions, because call into `_Unwind_DeleteException` will
             // call into `__rust_drop_panic` which produces a confusing

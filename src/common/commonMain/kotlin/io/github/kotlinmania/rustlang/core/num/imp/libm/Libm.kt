@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.core.num.imp.libm
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.num.complex.Complex
+import io.github.kotlinmania.rustlang.core.num.complex.Complex
 
 // Bindings to math functions provided by the system `libm` or by the `libm` crate, exposed
 // via `compiler - builtins`.

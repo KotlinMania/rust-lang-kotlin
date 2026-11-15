@@ -1,8 +1,10 @@
 // port-lint: source io/error.rs
 package io.github.kotlinmania.rustlang.alloc.io.error
 
-import io.github.kotlinmania.rustlang.boxed.Box
-import io.github.kotlinmania.rustlang.collections.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.boxed.Box
+import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.ffi.cstr.NulError
+import io.github.kotlinmania.rustlang.alloc.io.constError
 import io.github.kotlinmania.rustlang.core.io.error.Custom
 import io.github.kotlinmania.rustlang.core.io.error.CustomOwner
 import io.github.kotlinmania.rustlang.core.io.error.Error
@@ -10,8 +12,6 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.ffi.cstr.NulError
-import io.github.kotlinmania.rustlang.io.constError
 
 /**
  * Creates a new I/O error from a known kind of error as well as an
@@ -183,7 +183,7 @@ public fun Error.intoInner(): Any? {
  * check(ioError2.rawOsError() == null)
  * ```
  */
-public fun <E> Error.downcast(): result.Result<E, Error> =
+public fun <E> Error.downcast(): Result<E, Error> =
     if (this.getRef() != null && e.isMatch<E>()) {
         if (this.intoInner() != null && b.downcast<E>() is Result.Ok<*, *>) {
             Result.Ok(err)

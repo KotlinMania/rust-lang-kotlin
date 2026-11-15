@@ -1,7 +1,7 @@
 package io.github.kotlinmania.rustlang.std.sys.thread
 
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.sleep
-import io.github.kotlinmania.rustlang.time.Instant
+import io.github.kotlinmania.rustlang.std.time.Instant
 
 public fun sleepUntil(deadline: Instant) {
     // The clock source used for `sleep` might not be the same used for `Instant`.

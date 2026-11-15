@@ -11,201 +11,201 @@ private object WindowsSysJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangWindowsSysEnumerateLoadedModulesW64(hprocess: Long, enumloadedmodulescallback: Long, usercontext: Long): Int
+    external fun backtraceWindowsSysEnumerateLoadedModulesW64(hprocess: Long, enumloadedmodulescallback: Long, usercontext: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysStackWalk64(machinetype: Int, hprocess: Long, hthread: Long, stackframe: Long, contextrecord: Long, readmemoryroutine: Long, functiontableaccessroutine: Long, getmodulebaseroutine: Long, translateaddress: Long): Int
+    external fun backtraceWindowsSysStackWalk64(machinetype: Int, hprocess: Long, hthread: Long, stackframe: Long, contextrecord: Long, readmemoryroutine: Long, functiontableaccessroutine: Long, getmodulebaseroutine: Long, translateaddress: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysStackWalkEx(machinetype: Int, hprocess: Long, hthread: Long, stackframe: Long, contextrecord: Long, readmemoryroutine: Long, functiontableaccessroutine: Long, getmodulebaseroutine: Long, translateaddress: Long, flags: Int): Int
+    external fun backtraceWindowsSysStackWalkEx(machinetype: Int, hprocess: Long, hthread: Long, stackframe: Long, contextrecord: Long, readmemoryroutine: Long, functiontableaccessroutine: Long, getmodulebaseroutine: Long, translateaddress: Long, flags: Int): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysSymAddrIncludeInlineTrace(hprocess: Long, address: Long): Int
+    external fun backtraceWindowsSysSymAddrIncludeInlineTrace(hprocess: Long, address: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysSymFromAddrW(hprocess: Long, address: Long, displacement: Long, symbol: Long): Int
+    external fun backtraceWindowsSysSymFromAddrW(hprocess: Long, address: Long, displacement: Long, symbol: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysSymFromInlineContextW(hprocess: Long, address: Long, inlinecontext: Int, displacement: Long, symbol: Long): Int
+    external fun backtraceWindowsSysSymFromInlineContextW(hprocess: Long, address: Long, inlinecontext: Int, displacement: Long, symbol: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysSymFunctionTableAccess64(hprocess: Long, addrbase: Long): Long
+    external fun backtraceWindowsSysSymFunctionTableAccess64(hprocess: Long, addrbase: Long): Long
 
     @JvmStatic
-    external fun rustlangWindowsSysSymGetLineFromAddrW64(hprocess: Long, dwaddr: Long, pdwdisplacement: Long, line: Long): Int
+    external fun backtraceWindowsSysSymGetLineFromAddrW64(hprocess: Long, dwaddr: Long, pdwdisplacement: Long, line: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysSymGetLineFromInlineContextW(hprocess: Long, dwaddr: Long, inlinecontext: Int, qwmodulebaseaddress: Long, pdwdisplacement: Long, line: Long): Int
+    external fun backtraceWindowsSysSymGetLineFromInlineContextW(hprocess: Long, dwaddr: Long, inlinecontext: Int, qwmodulebaseaddress: Long, pdwdisplacement: Long, line: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysSymGetModuleBase64(hprocess: Long, qwaddr: Long): Long
+    external fun backtraceWindowsSysSymGetModuleBase64(hprocess: Long, qwaddr: Long): Long
 
     @JvmStatic
-    external fun rustlangWindowsSysSymGetOptions(): Int
+    external fun backtraceWindowsSysSymGetOptions(): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysSymGetSearchPathW(hprocess: Long, searchpatha: Long, searchpathlength: Int): Int
+    external fun backtraceWindowsSysSymGetSearchPathW(hprocess: Long, searchpatha: Long, searchpathlength: Int): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysSymInitializeW(hprocess: Long, usersearchpath: Long, finvadeprocess: Int): Int
+    external fun backtraceWindowsSysSymInitializeW(hprocess: Long, usersearchpath: Long, finvadeprocess: Int): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysSymQueryInlineTrace(hprocess: Long, startaddress: Long, startcontext: Int, startretaddress: Long, curaddress: Long, curcontext: Long, curframeindex: Long): Int
+    external fun backtraceWindowsSysSymQueryInlineTrace(hprocess: Long, startaddress: Long, startcontext: Int, startretaddress: Long, curaddress: Long, curcontext: Long, curframeindex: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysSymSetOptions(symoptions: Int): Int
+    external fun backtraceWindowsSysSymSetOptions(symoptions: Int): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysSymSetSearchPathW(hprocess: Long, searchpatha: Long): Int
+    external fun backtraceWindowsSysSymSetSearchPathW(hprocess: Long, searchpatha: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysCloseHandle(hobject: Long): Int
+    external fun backtraceWindowsSysCloseHandle(hobject: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysCreateFileMappingA(hfile: Long, lpfilemappingattributes: Long, flprotect: Int, dwmaximumsizehigh: Int, dwmaximumsizelow: Int, lpname: Long): Long
+    external fun backtraceWindowsSysCreateFileMappingA(hfile: Long, lpfilemappingattributes: Long, flprotect: Int, dwmaximumsizehigh: Int, dwmaximumsizelow: Int, lpname: Long): Long
 
     @JvmStatic
-    external fun rustlangWindowsSysCreateMutexA(lpmutexattributes: Long, binitialowner: Int, lpname: Long): Long
+    external fun backtraceWindowsSysCreateMutexA(lpmutexattributes: Long, binitialowner: Int, lpname: Long): Long
 
     @JvmStatic
-    external fun rustlangWindowsSysCreateToolhelp32Snapshot(dwflags: Int, th32processid: Int): Long
+    external fun backtraceWindowsSysCreateToolhelp32Snapshot(dwflags: Int, th32processid: Int): Long
 
     @JvmStatic
-    external fun rustlangWindowsSysGetCurrentProcess(): Long
+    external fun backtraceWindowsSysGetCurrentProcess(): Long
 
     @JvmStatic
-    external fun rustlangWindowsSysGetCurrentProcessId(): Int
+    external fun backtraceWindowsSysGetCurrentProcessId(): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysGetCurrentThread(): Long
+    external fun backtraceWindowsSysGetCurrentThread(): Long
 
     @JvmStatic
-    external fun rustlangWindowsSysGetProcAddress(hmodule: Long, lpprocname: Long): Long
+    external fun backtraceWindowsSysGetProcAddress(hmodule: Long, lpprocname: Long): Long
 
     @JvmStatic
-    external fun rustlangWindowsSysLoadLibraryA(lplibfilename: Long): Long
+    external fun backtraceWindowsSysLoadLibraryA(lplibfilename: Long): Long
 
     @JvmStatic
-    external fun rustlangWindowsSysModule32FirstW(hsnapshot: Long, lpme: Long): Int
+    external fun backtraceWindowsSysModule32FirstW(hsnapshot: Long, lpme: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysModule32NextW(hsnapshot: Long, lpme: Long): Int
+    external fun backtraceWindowsSysModule32NextW(hsnapshot: Long, lpme: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysReleaseMutex(hmutex: Long): Int
+    external fun backtraceWindowsSysReleaseMutex(hmutex: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysRtlCaptureContext(contextrecord: Long)
+    external fun backtraceWindowsSysRtlCaptureContext(contextrecord: Long)
 
     @JvmStatic
-    external fun rustlangWindowsSysRtlLookupFunctionEntry(controlpc: Long, imagebase: Long, historytable: Long): Long
+    external fun backtraceWindowsSysRtlLookupFunctionEntry(controlpc: Long, imagebase: Long, historytable: Long): Long
 
     @JvmStatic
-    external fun rustlangWindowsSysRtlVirtualUnwind(handlertype: Int, imagebase: Long, controlpc: Long, functionentry: Long, contextrecord: Long, handlerdata: Long, establisherframe: Long, contextpointers: Long): Long
+    external fun backtraceWindowsSysRtlVirtualUnwind(handlertype: Int, imagebase: Long, controlpc: Long, functionentry: Long, contextrecord: Long, handlerdata: Long, establisherframe: Long, contextpointers: Long): Long
 
     @JvmStatic
-    external fun rustlangWindowsSysWaitForSingleObjectEx(hhandle: Long, dwmilliseconds: Int, balertable: Int): Int
+    external fun backtraceWindowsSysWaitForSingleObjectEx(hhandle: Long, dwmilliseconds: Int, balertable: Int): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysWideCharToMultiByte(codepage: Int, dwflags: Int, lpwidecharstr: Long, cchwidechar: Int, lpmultibytestr: Long, cbmultibyte: Int, lpdefaultchar: Long, lpuseddefaultchar: Long): Int
+    external fun backtraceWindowsSysWideCharToMultiByte(codepage: Int, dwflags: Int, lpwidecharstr: Long, cchwidechar: Int, lpmultibytestr: Long, cbmultibyte: Int, lpdefaultchar: Long, lpuseddefaultchar: Long): Int
 
     @JvmStatic
-    external fun rustlangWindowsSysLstrlenW(lpstring: Long): Int
+    external fun backtraceWindowsSysLstrlenW(lpstring: Long): Int
 }
 
 public actual fun enumerateLoadedModulesW64(hprocess: Handle, enumloadedmodulescallback: PenumloadedModulesCallbackw64, usercontext: ConstPtr): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysEnumerateLoadedModulesW64(hprocess.rawAddress, 0L, usercontext.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysEnumerateLoadedModulesW64(hprocess.rawAddress, 0L, usercontext.rawAddress)
 
 public actual fun stackWalk64(machinetype: UInt, hprocess: Handle, hthread: Handle, stackframe: MutPtr, contextrecord: MutPtr, readmemoryroutine: PreadProcessMemoryRoutine64, functiontableaccessroutine: PfunctionTableAccessRoutine64, getmodulebaseroutine: PgetModuleBaseRoutine64, translateaddress: PtranslateAddressRoutine64): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysStackWalk64(machinetype.toInt(), hprocess.rawAddress, hthread.rawAddress, stackframe.rawAddress, contextrecord.rawAddress, 0L, 0L, 0L, 0L)
+    WindowsSysJniBridge.backtraceWindowsSysStackWalk64(machinetype.toInt(), hprocess.rawAddress, hthread.rawAddress, stackframe.rawAddress, contextrecord.rawAddress, 0L, 0L, 0L, 0L)
 
 public actual fun stackWalkEx(machinetype: UInt, hprocess: Handle, hthread: Handle, stackframe: MutPtr, contextrecord: MutPtr, readmemoryroutine: PreadProcessMemoryRoutine64, functiontableaccessroutine: PfunctionTableAccessRoutine64, getmodulebaseroutine: PgetModuleBaseRoutine64, translateaddress: PtranslateAddressRoutine64, flags: UInt): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysStackWalkEx(machinetype.toInt(), hprocess.rawAddress, hthread.rawAddress, stackframe.rawAddress, contextrecord.rawAddress, 0L, 0L, 0L, 0L, flags.toInt())
+    WindowsSysJniBridge.backtraceWindowsSysStackWalkEx(machinetype.toInt(), hprocess.rawAddress, hthread.rawAddress, stackframe.rawAddress, contextrecord.rawAddress, 0L, 0L, 0L, 0L, flags.toInt())
 
 public actual fun symAddrIncludeInlineTrace(hprocess: Handle, address: ULong): UInt =
-    WindowsSysJniBridge.rustlangWindowsSysSymAddrIncludeInlineTrace(hprocess.rawAddress, address.toLong()).toUInt()
+    WindowsSysJniBridge.backtraceWindowsSysSymAddrIncludeInlineTrace(hprocess.rawAddress, address.toLong()).toUInt()
 
 public actual fun symFromAddrW(hprocess: Handle, address: ULong, displacement: MutPtr, symbol: MutPtr): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysSymFromAddrW(hprocess.rawAddress, address.toLong(), displacement.rawAddress, symbol.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysSymFromAddrW(hprocess.rawAddress, address.toLong(), displacement.rawAddress, symbol.rawAddress)
 
 public actual fun symFromInlineContextW(hprocess: Handle, address: ULong, inlinecontext: UInt, displacement: MutPtr, symbol: MutPtr): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysSymFromInlineContextW(hprocess.rawAddress, address.toLong(), inlinecontext.toInt(), displacement.rawAddress, symbol.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysSymFromInlineContextW(hprocess.rawAddress, address.toLong(), inlinecontext.toInt(), displacement.rawAddress, symbol.rawAddress)
 
 public actual fun symFunctionTableAccess64(hprocess: Handle, addrbase: ULong): MutPtr =
-    MutPtr(WindowsSysJniBridge.rustlangWindowsSysSymFunctionTableAccess64(hprocess.rawAddress, addrbase.toLong()))
+    MutPtr(WindowsSysJniBridge.backtraceWindowsSysSymFunctionTableAccess64(hprocess.rawAddress, addrbase.toLong()))
 
 public actual fun symGetLineFromAddrW64(hprocess: Handle, dwaddr: ULong, pdwdisplacement: MutPtr, line: MutPtr): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysSymGetLineFromAddrW64(hprocess.rawAddress, dwaddr.toLong(), pdwdisplacement.rawAddress, line.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysSymGetLineFromAddrW64(hprocess.rawAddress, dwaddr.toLong(), pdwdisplacement.rawAddress, line.rawAddress)
 
 public actual fun symGetLineFromInlineContextW(hprocess: Handle, dwaddr: ULong, inlinecontext: UInt, qwmodulebaseaddress: ULong, pdwdisplacement: MutPtr, line: MutPtr): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysSymGetLineFromInlineContextW(hprocess.rawAddress, dwaddr.toLong(), inlinecontext.toInt(), qwmodulebaseaddress.toLong(), pdwdisplacement.rawAddress, line.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysSymGetLineFromInlineContextW(hprocess.rawAddress, dwaddr.toLong(), inlinecontext.toInt(), qwmodulebaseaddress.toLong(), pdwdisplacement.rawAddress, line.rawAddress)
 
 public actual fun symGetModuleBase64(hprocess: Handle, qwaddr: ULong): ULong =
-    WindowsSysJniBridge.rustlangWindowsSysSymGetModuleBase64(hprocess.rawAddress, qwaddr.toLong()).toULong()
+    WindowsSysJniBridge.backtraceWindowsSysSymGetModuleBase64(hprocess.rawAddress, qwaddr.toLong()).toULong()
 
 public actual fun symGetOptions(): UInt =
-    WindowsSysJniBridge.rustlangWindowsSysSymGetOptions().toUInt()
+    WindowsSysJniBridge.backtraceWindowsSysSymGetOptions().toUInt()
 
 public actual fun symGetSearchPathW(hprocess: Handle, searchpatha: Pwstr, searchpathlength: UInt): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysSymGetSearchPathW(hprocess.rawAddress, searchpatha.rawAddress, searchpathlength.toInt())
+    WindowsSysJniBridge.backtraceWindowsSysSymGetSearchPathW(hprocess.rawAddress, searchpatha.rawAddress, searchpathlength.toInt())
 
 public actual fun symInitializeW(hprocess: Handle, usersearchpath: Pcwstr, finvadeprocess: Bool): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysSymInitializeW(hprocess.rawAddress, usersearchpath.rawAddress, finvadeprocess)
+    WindowsSysJniBridge.backtraceWindowsSysSymInitializeW(hprocess.rawAddress, usersearchpath.rawAddress, finvadeprocess)
 
 public actual fun symQueryInlineTrace(hprocess: Handle, startaddress: ULong, startcontext: UInt, startretaddress: ULong, curaddress: ULong, curcontext: MutPtr, curframeindex: MutPtr): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysSymQueryInlineTrace(hprocess.rawAddress, startaddress.toLong(), startcontext.toInt(), startretaddress.toLong(), curaddress.toLong(), curcontext.rawAddress, curframeindex.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysSymQueryInlineTrace(hprocess.rawAddress, startaddress.toLong(), startcontext.toInt(), startretaddress.toLong(), curaddress.toLong(), curcontext.rawAddress, curframeindex.rawAddress)
 
 public actual fun symSetOptions(symoptions: UInt): UInt =
-    WindowsSysJniBridge.rustlangWindowsSysSymSetOptions(symoptions.toInt()).toUInt()
+    WindowsSysJniBridge.backtraceWindowsSysSymSetOptions(symoptions.toInt()).toUInt()
 
 public actual fun symSetSearchPathW(hprocess: Handle, searchpatha: Pcwstr): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysSymSetSearchPathW(hprocess.rawAddress, searchpatha.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysSymSetSearchPathW(hprocess.rawAddress, searchpatha.rawAddress)
 
 public actual fun closeHandle(hobject: Handle): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysCloseHandle(hobject.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysCloseHandle(hobject.rawAddress)
 
 public actual fun createFileMappingA(hfile: Handle, lpfilemappingattributes: ConstPtr, flprotect: PageProtectionFlags, dwmaximumsizehigh: UInt, dwmaximumsizelow: UInt, lpname: Pcstr): Handle =
-    MutPtr(WindowsSysJniBridge.rustlangWindowsSysCreateFileMappingA(hfile.rawAddress, lpfilemappingattributes.rawAddress, flprotect.toInt(), dwmaximumsizehigh.toInt(), dwmaximumsizelow.toInt(), lpname.rawAddress))
+    MutPtr(WindowsSysJniBridge.backtraceWindowsSysCreateFileMappingA(hfile.rawAddress, lpfilemappingattributes.rawAddress, flprotect.toInt(), dwmaximumsizehigh.toInt(), dwmaximumsizelow.toInt(), lpname.rawAddress))
 
 public actual fun createMutexA(lpmutexattributes: ConstPtr, binitialowner: Bool, lpname: Pcstr): Handle =
-    MutPtr(WindowsSysJniBridge.rustlangWindowsSysCreateMutexA(lpmutexattributes.rawAddress, binitialowner, lpname.rawAddress))
+    MutPtr(WindowsSysJniBridge.backtraceWindowsSysCreateMutexA(lpmutexattributes.rawAddress, binitialowner, lpname.rawAddress))
 
 public actual fun createToolhelp32Snapshot(dwflags: CreateToolhelpSnapshotFlags, th32processid: UInt): Handle =
-    MutPtr(WindowsSysJniBridge.rustlangWindowsSysCreateToolhelp32Snapshot(dwflags.toInt(), th32processid.toInt()))
+    MutPtr(WindowsSysJniBridge.backtraceWindowsSysCreateToolhelp32Snapshot(dwflags.toInt(), th32processid.toInt()))
 
 public actual fun getCurrentProcess(): Handle =
-    MutPtr(WindowsSysJniBridge.rustlangWindowsSysGetCurrentProcess())
+    MutPtr(WindowsSysJniBridge.backtraceWindowsSysGetCurrentProcess())
 
 public actual fun getCurrentProcessId(): UInt =
-    WindowsSysJniBridge.rustlangWindowsSysGetCurrentProcessId().toUInt()
+    WindowsSysJniBridge.backtraceWindowsSysGetCurrentProcessId().toUInt()
 
 public actual fun getCurrentThread(): Handle =
-    MutPtr(WindowsSysJniBridge.rustlangWindowsSysGetCurrentThread())
+    MutPtr(WindowsSysJniBridge.backtraceWindowsSysGetCurrentThread())
 
 public actual fun getProcAddress(hmodule: Hmodule, lpprocname: Pcstr): Farproc =
     null
 
 public actual fun loadLibraryA(lplibfilename: Pcstr): Hmodule =
-    MutPtr(WindowsSysJniBridge.rustlangWindowsSysLoadLibraryA(lplibfilename.rawAddress))
+    MutPtr(WindowsSysJniBridge.backtraceWindowsSysLoadLibraryA(lplibfilename.rawAddress))
 
 public actual fun mapViewOfFile(hfilemappingobject: Handle, dwdesiredaccess: FileMap, dwfileoffsethigh: UInt, dwfileoffsetlow: UInt, dwnumberofbytestomap: ULong): MemoryMappedViewAddress =
     MemoryMappedViewAddress()
 
 public actual fun module32FirstW(hsnapshot: Handle, lpme: MutPtr): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysModule32FirstW(hsnapshot.rawAddress, lpme.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysModule32FirstW(hsnapshot.rawAddress, lpme.rawAddress)
 
 public actual fun module32NextW(hsnapshot: Handle, lpme: MutPtr): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysModule32NextW(hsnapshot.rawAddress, lpme.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysModule32NextW(hsnapshot.rawAddress, lpme.rawAddress)
 
 public actual fun releaseMutex(hmutex: Handle): Bool =
-    WindowsSysJniBridge.rustlangWindowsSysReleaseMutex(hmutex.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysReleaseMutex(hmutex.rawAddress)
 
 public actual fun rtlCaptureContext(contextrecord: MutPtr) {
-    WindowsSysJniBridge.rustlangWindowsSysRtlCaptureContext(contextrecord.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysRtlCaptureContext(contextrecord.rawAddress)
 }
 
 public actual fun rtlLookupFunctionEntry(controlpc: ULong, imagebase: MutPtr, historytable: MutPtr): MutPtr =
-    MutPtr(WindowsSysJniBridge.rustlangWindowsSysRtlLookupFunctionEntry(controlpc.toLong(), imagebase.rawAddress, historytable.rawAddress))
+    MutPtr(WindowsSysJniBridge.backtraceWindowsSysRtlLookupFunctionEntry(controlpc.toLong(), imagebase.rawAddress, historytable.rawAddress))
 
 public actual fun rtlVirtualUnwind(handlertype: RtlVirtualUnwindHandlerType, imagebase: ULong, controlpc: ULong, functionentry: ConstPtr, contextrecord: MutPtr, handlerdata: MutPtr, establisherframe: MutPtr, contextpointers: MutPtr): ExceptionRoutine =
     null
@@ -214,10 +214,10 @@ public actual fun unmapViewOfFile(lpbaseaddress: MemoryMappedViewAddress): Bool 
     0
 
 public actual fun waitForSingleObjectEx(hhandle: Handle, dwmilliseconds: UInt, balertable: Bool): WaitEvent =
-    WindowsSysJniBridge.rustlangWindowsSysWaitForSingleObjectEx(hhandle.rawAddress, dwmilliseconds.toInt(), balertable).toUInt()
+    WindowsSysJniBridge.backtraceWindowsSysWaitForSingleObjectEx(hhandle.rawAddress, dwmilliseconds.toInt(), balertable).toUInt()
 
 public actual fun wideCharToMultiByte(codepage: UInt, dwflags: UInt, lpwidecharstr: Pcwstr, cchwidechar: Int, lpmultibytestr: Pstr, cbmultibyte: Int, lpdefaultchar: Pcstr, lpuseddefaultchar: MutPtr): Int =
-    WindowsSysJniBridge.rustlangWindowsSysWideCharToMultiByte(codepage.toInt(), dwflags.toInt(), lpwidecharstr.rawAddress, cchwidechar, lpmultibytestr.rawAddress, cbmultibyte, lpdefaultchar.rawAddress, lpuseddefaultchar.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysWideCharToMultiByte(codepage.toInt(), dwflags.toInt(), lpwidecharstr.rawAddress, cchwidechar, lpmultibytestr.rawAddress, cbmultibyte, lpdefaultchar.rawAddress, lpuseddefaultchar.rawAddress)
 
 public actual fun lstrlenW(lpstring: Pcwstr): Int =
-    WindowsSysJniBridge.rustlangWindowsSysLstrlenW(lpstring.rawAddress)
+    WindowsSysJniBridge.backtraceWindowsSysLstrlenW(lpstring.rawAddress)

@@ -3,14 +3,14 @@ package io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.sys.sync.futex.unix.Futex
-import io.github.kotlinmania.rustlang.sys.sync.futex.unix.Primitive
-import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWait
-import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWake
-import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWakeAll
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Futex
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Primitive
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWait
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWake
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWakeAll
 
 public open class RwLock(
     // The state consists of a 30-bit reader counter, a readers waiting' flag, and a writers waiting' flag.

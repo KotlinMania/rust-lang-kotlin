@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-private object CorearchX8664Sse42JniBridge {
+private object X8664Sse42JniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,11 +38,14 @@ private object CorearchX8664Sse42JniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX8664Sse42JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X8664Sse42JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,8 +59,8 @@ private object CorearchX8664Sse42JniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX8664Sse42Crc326464(crc: Long, v: Long): Long
+    external fun corearchX8664Sse42Crc326464(crc: Long, v: Long): Long
 }
 
 public actual fun crc326464(crc: ULong, v: ULong): ULong =
-    CorearchX8664Sse42JniBridge.rustlangCorearchX8664Sse42Crc326464(crc.toLong(), v.toLong()).toULong()
+    X8664Sse42JniBridge.corearchX8664Sse42Crc326464(crc.toLong(), v.toLong()).toULong()

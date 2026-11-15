@@ -7,15 +7,15 @@ private external fun initPanicunwindNapiAddon(): Boolean
 
 private val panicunwindNapiAvailable: Boolean = initPanicunwindNapiAddon()
 
-@JsFun("() => globalThis.__km_napi_kmcore.rustlangPanicunwindRustDropPanic()")
-private external fun wasmRustlangPanicunwindRustDropPanic()
+@JsFun("() => globalThis.__km_napi_kmcore.panicunwindRustDropPanic()")
+private external fun wasmPanicunwindRustDropPanic()
 
-@JsFun("() => globalThis.__km_napi_kmcore.rustlangPanicunwindRustForeignException()")
-private external fun wasmRustlangPanicunwindRustForeignException()
+@JsFun("() => globalThis.__km_napi_kmcore.panicunwindRustForeignException()")
+private external fun wasmPanicunwindRustForeignException()
 
 public actual fun rustDropPanic(): Nothing {
     if (panicunwindNapiAvailable) {
-        wasmRustlangPanicunwindRustDropPanic()
+        wasmPanicunwindRustDropPanic()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
@@ -24,7 +24,7 @@ public actual fun rustDropPanic(): Nothing {
 
 public actual fun rustForeignException(): Nothing {
     if (panicunwindNapiAvailable) {
-        wasmRustlangPanicunwindRustForeignException()
+        wasmPanicunwindRustForeignException()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

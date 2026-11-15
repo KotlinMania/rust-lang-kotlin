@@ -1,8 +1,8 @@
 // port-lint: source bool.rs
 package io.github.kotlinmania.rustlang.core.bool
 
+import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.intrinsics.disjointBitor
 
 // impl bool {}
 

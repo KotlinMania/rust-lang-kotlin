@@ -1,13 +1,13 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
-import io.github.kotlinmania.rustlang.Delimiter
 import io.github.kotlinmania.rustlang.alloc.collections.btree.map.Range
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.diagnostic.Level
+import io.github.kotlinmania.rustlang.procmacro.Delimiter
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Encode
+import io.github.kotlinmania.rustlang.procmacro.diagnostic.Level
 
 public fun <Unmarked, T> markVecT(unmarked: List<Unmarked>, markTFn: (List<Unmarked>) -> T): List<T> {
     // Should be a no-op due to std's in-place collect optimizations.

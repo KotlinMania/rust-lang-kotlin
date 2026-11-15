@@ -2,12 +2,15 @@
 package io.github.kotlinmania.rustlang.alloc.vec.sveretain
 
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.copy
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -59,11 +62,11 @@ public open class PanicGuard<T, A : Allocator>(
         for (i in 0 until this.decided) {
             if (this.mask[i]) {
                 // SAFETY: read + i < originalLen (in-bounds).
-                val src = ConstPtr((this.v.asPtr()).rawAddress + ((this.read + i).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+                val src = ConstPtr((this.v.asPtr()).rawAddress + ((this.read + i).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
                 // SAFETY: Continued from above.
-                val dstPtr = MutPtr((this.v.asMutPtr()).rawAddress + ((dst).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+                val dstPtr = MutPtr((this.v.asMutPtr()).rawAddress + ((dst).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
                 // SAFETY: src and dstPtr < originalLen
-                ptr.copy(src, dstPtr, 1)
+                copy(src, dstPtr, 1)
                 dst += 1
             }
         }
@@ -73,7 +76,7 @@ public open class PanicGuard<T, A : Allocator>(
         if (untouchedLen > 0) {
             // SAFETY: untouchedStart..originalLen are valid; dst + untouchedLen <= originalLen.
             run {
-                ptr.copy(ConstPtr((this.v.asPtr()).rawAddress + ((untouchedStart).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((this.v.asMutPtr()).rawAddress + ((dst).toLong() * (ObjectSlotLayout<T>()).strideBytes)), untouchedLen)
+                copy(ConstPtr((this.v.asPtr()).rawAddress + ((untouchedStart).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), MutPtr((this.v.asMutPtr()).rawAddress + ((dst).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), untouchedLen)
             }
             dst += untouchedLen
         }
@@ -103,7 +106,7 @@ public fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typeL
             if (!guard.mask[i]) {
                 // SAFETY: read + i < originalLen, and after marking `mask` and `decided`,
                 // the guard can properly handles the case where dropInPlace panics.
-                ptr.dropInPlace(cur)
+                dropInPlace(cur)
             }
         }
         // Phase B: SVE compress.
@@ -139,7 +142,7 @@ public fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typeL
  * - `sizeOf<T>()` equals this kernel's lane width in bytes.
  */
 public fun <T> compact8Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
-    check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 1)
+    check(sizeOf<T>(typeLayoutT = UnresolvedTypeLayout<T>()) == 1)
     val idxOut = 0
     run {
         Unit
@@ -158,7 +161,7 @@ public fun <T> compact8Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkL
  * - `sizeOf<T>()` equals this kernel's lane width in bytes.
  */
 public fun <T> compact16Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
-    check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 2)
+    check(sizeOf<T>(typeLayoutT = UnresolvedTypeLayout<T>()) == 2)
     val idxOut = 0
     run {
         Unit
@@ -177,7 +180,7 @@ public fun <T> compact16Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunk
  * - `sizeOf<T>()` equals this kernel's lane width in bytes.
  */
 public fun <T> compact32Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
-    check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 4)
+    check(sizeOf<T>(typeLayoutT = UnresolvedTypeLayout<T>()) == 4)
     val idxOut = 0
     run {
         Unit
@@ -196,7 +199,7 @@ public fun <T> compact32Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunk
  * - `sizeOf<T>()` equals this kernel's lane width in bytes.
  */
 public fun <T> compact64Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
-    check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 8)
+    check(sizeOf<T>(typeLayoutT = UnresolvedTypeLayout<T>()) == 8)
     val idxOut = 0
     run {
         Unit

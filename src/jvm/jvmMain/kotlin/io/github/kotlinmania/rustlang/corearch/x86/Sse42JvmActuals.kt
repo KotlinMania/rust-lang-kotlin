@@ -2,10 +2,10 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.U8x16
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 
-private object CorearchX86Sse42JniBridge {
+private object X86Sse42JniBridge {
     init {
         loadNativeLibrary()
     }
@@ -41,11 +41,14 @@ private object CorearchX86Sse42JniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX86Sse42JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X86Sse42JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -59,13 +62,13 @@ private object CorearchX86Sse42JniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX86Sse42Crc32328(crc: Int, v: Byte): Int
+    external fun corearchX86Sse42Crc32328(crc: Int, v: Byte): Int
 
     @JvmStatic
-    external fun rustlangCorearchX86Sse42Crc323216(crc: Int, v: Short): Int
+    external fun corearchX86Sse42Crc323216(crc: Int, v: Short): Int
 
     @JvmStatic
-    external fun rustlangCorearchX86Sse42Crc323232(crc: Int, v: Int): Int
+    external fun corearchX86Sse42Crc323232(crc: Int, v: Int): Int
 }
 
 public actual fun pcmpestrm128(a: I8x16, la: Int, b: I8x16, lb: Int, imm8: Byte): U8x16 =
@@ -111,10 +114,10 @@ public actual fun pcmpistria128(a: I8x16, b: I8x16, imm8: Byte): Int =
     0
 
 public actual fun crc32328(crc: UInt, v: UByte): UInt =
-    CorearchX86Sse42JniBridge.rustlangCorearchX86Sse42Crc32328(crc.toInt(), v.toByte()).toUInt()
+    X86Sse42JniBridge.corearchX86Sse42Crc32328(crc.toInt(), v.toByte()).toUInt()
 
 public actual fun crc323216(crc: UInt, v: UShort): UInt =
-    CorearchX86Sse42JniBridge.rustlangCorearchX86Sse42Crc323216(crc.toInt(), v.toShort()).toUInt()
+    X86Sse42JniBridge.corearchX86Sse42Crc323216(crc.toInt(), v.toShort()).toUInt()
 
 public actual fun crc323232(crc: UInt, v: UInt): UInt =
-    CorearchX86Sse42JniBridge.rustlangCorearchX86Sse42Crc323232(crc.toInt(), v.toInt()).toUInt()
+    X86Sse42JniBridge.corearchX86Sse42Crc323232(crc.toInt(), v.toInt()).toUInt()

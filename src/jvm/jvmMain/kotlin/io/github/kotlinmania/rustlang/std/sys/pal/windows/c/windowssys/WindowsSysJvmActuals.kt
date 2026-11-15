@@ -5,7 +5,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object StdSysPalWindowsCWindowssysWindowsSysJniBridge {
+private object SysPalWindowsCWindowssysWindowsSysJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -41,8 +41,8 @@ private object StdSysPalWindowsCWindowssysWindowsSysJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = StdSysPalWindowsCWindowssysWindowsSysJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/std/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = SysPalWindowsCWindowssysWindowsSysJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -59,955 +59,955 @@ private object StdSysPalWindowsCWindowssysWindowsSysJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(srwlock: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(srwlock: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(srwlock: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(srwlock: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(first: Int, handler: Long): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(first: Int, handler: Long): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCancelIo(hfile: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysCancelIo(hfile: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCloseHandle(hobject: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysCloseHandle(hobject: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(lpstring1: Long, cchcount1: Int, lpstring2: Long, cchcount2: Int, bignorecase: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(lpstring1: Long, cchcount1: Int, lpstring2: Long, cchcount2: Int, bignorecase: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCopyFileExW(lpexistingfilename: Long, lpnewfilename: Long, lpprogressroutine: Long, lpdata: Long, pbcancel: Long, dwcopyflags: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysCopyFileExW(lpexistingfilename: Long, lpnewfilename: Long, lpprogressroutine: Long, lpdata: Long, pbcancel: Long, dwcopyflags: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(lppathname: Long, lpsecurityattributes: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(lppathname: Long, lpsecurityattributes: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCreateEventW(lpeventattributes: Long, bmanualreset: Int, binitialstate: Int, lpname: Long): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysCreateEventW(lpeventattributes: Long, bmanualreset: Int, binitialstate: Int, lpname: Long): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCreateFileW(lpfilename: Long, dwdesiredaccess: Int, dwsharemode: Int, lpsecurityattributes: Long, dwcreationdisposition: Int, dwflagsandattributes: Int, htemplatefile: Long): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysCreateFileW(lpfilename: Long, dwdesiredaccess: Int, dwsharemode: Int, lpsecurityattributes: Long, dwcreationdisposition: Int, dwflagsandattributes: Int, htemplatefile: Long): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(lpfilename: Long, lpexistingfilename: Long, lpsecurityattributes: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(lpfilename: Long, lpexistingfilename: Long, lpsecurityattributes: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(lpname: Long, dwopenmode: Int, dwpipemode: Int, nmaxinstances: Int, noutbuffersize: Int, ninbuffersize: Int, ndefaulttimeout: Int, lpsecurityattributes: Long): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(lpname: Long, dwopenmode: Int, dwpipemode: Int, nmaxinstances: Int, noutbuffersize: Int, ninbuffersize: Int, ndefaulttimeout: Int, lpsecurityattributes: Long): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCreatePipe(hreadpipe: Long, hwritepipe: Long, lppipeattributes: Long, nsize: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysCreatePipe(hreadpipe: Long, hwritepipe: Long, lppipeattributes: Long, nsize: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCreateProcessW(lpapplicationname: Long, lpcommandline: Long, lpprocessattributes: Long, lpthreadattributes: Long, binherithandles: Int, dwcreationflags: Int, lpenvironment: Long, lpcurrentdirectory: Long, lpstartupinfo: Long, lpprocessinformation: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysCreateProcessW(lpapplicationname: Long, lpcommandline: Long, lpprocessattributes: Long, lpthreadattributes: Long, binherithandles: Int, dwcreationflags: Int, lpenvironment: Long, lpcurrentdirectory: Long, lpstartupinfo: Long, lpprocessinformation: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(lpsymlinkfilename: Long, lptargetfilename: Long, dwflags: Int): Byte
+    external fun stdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(lpsymlinkfilename: Long, lptargetfilename: Long, dwflags: Int): Byte
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCreateThread(lpthreadattributes: Long, dwstacksize: Long, lpstartaddress: Long, lpparameter: Long, dwcreationflags: Int, lpthreadid: Long): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysCreateThread(lpthreadattributes: Long, dwstacksize: Long, lpstartaddress: Long, lpparameter: Long, dwcreationflags: Int, lpthreadid: Long): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(lptimerattributes: Long, lptimername: Long, dwflags: Int, dwdesiredaccess: Int): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(lptimerattributes: Long, lptimername: Long, dwflags: Int, dwdesiredaccess: Int): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysDeleteFileW(lpfilename: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysDeleteFileW(lpfilename: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(lpattributelist: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(lpattributelist: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(hdevice: Long, dwiocontrolcode: Int, lpinbuffer: Long, ninbuffersize: Int, lpoutbuffer: Long, noutbuffersize: Int, lpbytesreturned: Long, lpoverlapped: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(hdevice: Long, dwiocontrolcode: Int, lpinbuffer: Long, ninbuffersize: Int, lpoutbuffer: Long, noutbuffersize: Int, lpbytesreturned: Long, lpoverlapped: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(hsourceprocesshandle: Long, hsourcehandle: Long, htargetprocesshandle: Long, lptargethandle: Long, dwdesiredaccess: Int, binherithandle: Int, dwoptions: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(hsourceprocesshandle: Long, hsourcehandle: Long, htargetprocesshandle: Long, lptargethandle: Long, dwdesiredaccess: Int, binherithandle: Int, dwoptions: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysExitProcess(uexitcode: Int)
+    external fun stdSysPalWindowsCWindowssysWindowsSysExitProcess(uexitcode: Int)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysFindClose(hfindfile: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysFindClose(hfindfile: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(lpfilename: Long, finfolevelid: Int, lpfindfiledata: Long, fsearchop: Int, lpsearchfilter: Long, dwadditionalflags: Int): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(lpfilename: Long, finfolevelid: Int, lpfindfiledata: Long, fsearchop: Int, lpsearchfilter: Long, dwadditionalflags: Int): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysFindNextFileW(hfindfile: Long, lpfindfiledata: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysFindNextFileW(hfindfile: Long, lpfindfiledata: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysFlsAlloc(lpcallback: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysFlsAlloc(lpcallback: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysFlsFree(dwflsindex: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysFlsFree(dwflsindex: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysFlsGetValue(dwflsindex: Int): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysFlsGetValue(dwflsindex: Int): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysFlsSetValue(dwflsindex: Int, lpflsdata: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysFlsSetValue(dwflsindex: Int, lpflsdata: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(hfile: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(hfile: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysFormatMessageW(dwflags: Int, lpsource: Long, dwmessageid: Int, dwlanguageid: Int, lpbuffer: Long, nsize: Int, arguments: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysFormatMessageW(dwflags: Int, lpsource: Long, dwmessageid: Int, dwlanguageid: Int, lpbuffer: Long, nsize: Int, arguments: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(penv: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(penv: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(groupnumber: Short): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(groupnumber: Short): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetCommandLineW(): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetCommandLineW(): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(hconsolehandle: Long, lpmode: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(hconsolehandle: Long, lpmode: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP(): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP(): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(nbufferlength: Int, lpbuffer: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(nbufferlength: Int, lpbuffer: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess(): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess(): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId(): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId(): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentThread(): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetCurrentThread(): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId(): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId(): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW(): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW(): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(lpname: Long, lpbuffer: Long, nsize: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(lpname: Long, lpbuffer: Long, nsize: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(hprocess: Long, lpexitcode: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(hprocess: Long, lpexitcode: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(lpfilename: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(lpfilename: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(hfile: Long, lpfileinformation: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(hfile: Long, lpfileinformation: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(hfile: Long, fileinformationclass: Int, lpfileinformation: Long, dwbuffersize: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(hfile: Long, fileinformationclass: Int, lpfileinformation: Long, dwbuffersize: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(hfile: Long, lpfilesize: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(hfile: Long, lpfilesize: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileType(hfile: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetFileType(hfile: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(hfile: Long, lpszfilepath: Long, cchfilepath: Int, dwflags: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(hfile: Long, lpszfilepath: Long, cchfilepath: Int, dwflags: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(lpfilename: Long, nbufferlength: Int, lpbuffer: Long, lpfilepart: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(lpfilename: Long, nbufferlength: Int, lpbuffer: Long, lpfilepart: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetHostNameW(name: Long, namelen: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetHostNameW(name: Long, namelen: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetLastError(): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetLastError(): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives(): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives(): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(hmodule: Long, lpfilename: Long, nsize: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(hmodule: Long, lpfilename: Long, nsize: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(lpmodulename: Long): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(lpmodulename: Long): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(dwflags: Int, lpmodulename: Long, phmodule: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(dwflags: Int, lpmodulename: Long, phmodule: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(lpmodulename: Long): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(lpmodulename: Long): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(hfile: Long, lpoverlapped: Long, lpnumberofbytestransferred: Long, bwait: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(hfile: Long, lpoverlapped: Long, lpnumberofbytestransferred: Long, bwait: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetProcAddress(hmodule: Long, lpprocname: Long): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetProcAddress(hmodule: Long, lpprocname: Long): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetProcessId(process: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetProcessId(process: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetStdHandle(nstdhandle: Int): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetStdHandle(nstdhandle: Int): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(lpbuffer: Long, usize: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(lpbuffer: Long, usize: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(lpsysteminfo: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(lpsysteminfo: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(lpsystemtimeasfiletime: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(lpsystemtimeasfiletime: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(lpsystemtimeasfiletime: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(lpsystemtimeasfiletime: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetTempPathW(nbufferlength: Int, lpbuffer: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetTempPathW(nbufferlength: Int, lpbuffer: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(htoken: Long, lpprofiledir: Long, lpcchsize: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(htoken: Long, lpprofiledir: Long, lpcchsize: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(lpbuffer: Long, usize: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(lpbuffer: Long, usize: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(lpinitonce: Long, dwflags: Int, fpending: Long, lpcontext: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(lpinitonce: Long, dwflags: Int, fpending: Long, lpcontext: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(lpinitonce: Long, dwflags: Int, lpcontext: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(lpinitonce: Long, dwflags: Int, lpcontext: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(lpattributelist: Long, dwattributecount: Int, dwflags: Int, lpsize: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(lpattributelist: Long, dwattributecount: Int, dwflags: Int, lpsize: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber(): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber(): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(lplibfilename: Long, hfile: Long, dwflags: Int): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(lplibfilename: Long, hfile: Long, dwflags: Int): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysLocalFree(hmem: Long): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysLocalFree(hmem: Long): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysLockFileEx(hfile: Long, dwflags: Int, dwreserved: Int, nnumberofbytestolocklow: Int, nnumberofbytestolockhigh: Int, lpoverlapped: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysLockFileEx(hfile: Long, dwflags: Int, dwreserved: Int, nnumberofbytestolocklow: Int, nnumberofbytestolockhigh: Int, lpoverlapped: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysMoveFileExW(lpexistingfilename: Long, lpnewfilename: Long, dwflags: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysMoveFileExW(lpexistingfilename: Long, lpnewfilename: Long, dwflags: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(codepage: Int, dwflags: Int, lpmultibytestr: Long, cbmultibyte: Int, lpwidecharstr: Long, cchwidechar: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(codepage: Int, dwflags: Int, lpmultibytestr: Long, cbmultibyte: Int, lpwidecharstr: Long, cchwidechar: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysNtCreateFile(filehandle: Long, desiredaccess: Int, objectattributes: Long, iostatusblock: Long, allocationsize: Long, fileattributes: Int, shareaccess: Int, createdisposition: Int, createoptions: Int, eabuffer: Long, ealength: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysNtCreateFile(filehandle: Long, desiredaccess: Int, objectattributes: Long, iostatusblock: Long, allocationsize: Long, fileattributes: Int, shareaccess: Int, createdisposition: Int, createoptions: Int, eabuffer: Long, ealength: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysNtOpenFile(filehandle: Long, desiredaccess: Int, objectattributes: Long, iostatusblock: Long, shareaccess: Int, openoptions: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysNtOpenFile(filehandle: Long, desiredaccess: Int, objectattributes: Long, iostatusblock: Long, shareaccess: Int, openoptions: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(filehandle: Long, iostatusblock: Long, fsinformation: Long, length: Int, fsinformationclass: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(filehandle: Long, iostatusblock: Long, fsinformation: Long, length: Int, fsinformationclass: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysNtReadFile(filehandle: Long, event: Long, apcroutine: Long, apccontext: Long, iostatusblock: Long, buffer: Long, length: Int, byteoffset: Long, key: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysNtReadFile(filehandle: Long, event: Long, apcroutine: Long, apccontext: Long, iostatusblock: Long, buffer: Long, length: Int, byteoffset: Long, key: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(filehandle: Long, iostatusblock: Long, fileinformation: Long, length: Int, fileinformationclass: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(filehandle: Long, iostatusblock: Long, fileinformation: Long, length: Int, fileinformationclass: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysNtWriteFile(filehandle: Long, event: Long, apcroutine: Long, apccontext: Long, iostatusblock: Long, buffer: Long, length: Int, byteoffset: Long, key: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysNtWriteFile(filehandle: Long, event: Long, apcroutine: Long, apccontext: Long, iostatusblock: Long, buffer: Long, length: Int, byteoffset: Long, key: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(processhandle: Long, desiredaccess: Int, tokenhandle: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(processhandle: Long, desiredaccess: Int, tokenhandle: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(lpdevicename: Long, lptargetpath: Long, ucchmax: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(lpdevicename: Long, lptargetpath: Long, ucchmax: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(lpperformancecount: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(lpperformancecount: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(lpfrequency: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(lpfrequency: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysReadConsoleW(hconsoleinput: Long, lpbuffer: Long, nnumberofcharstoread: Int, lpnumberofcharsread: Long, pinputcontrol: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysReadConsoleW(hconsoleinput: Long, lpbuffer: Long, nnumberofcharstoread: Int, lpnumberofcharsread: Long, pinputcontrol: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysReadFile(hfile: Long, lpbuffer: Long, nnumberofbytestoread: Int, lpnumberofbytesread: Long, lpoverlapped: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysReadFile(hfile: Long, lpbuffer: Long, nnumberofbytestoread: Int, lpnumberofbytesread: Long, lpoverlapped: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysReadFileEx(hfile: Long, lpbuffer: Long, nnumberofbytestoread: Int, lpoverlapped: Long, lpcompletionroutine: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysReadFileEx(hfile: Long, lpbuffer: Long, nnumberofbytestoread: Int, lpoverlapped: Long, lpcompletionroutine: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(srwlock: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(srwlock: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(srwlock: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(srwlock: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(lppathname: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(lppathname: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(randombuffer: Long, randombufferlength: Int): Byte
+    external fun stdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(randombuffer: Long, randombufferlength: Int): Byte
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(status: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(status: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(lppathname: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(lppathname: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(lpname: Long, lpvalue: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(lpname: Long, lpvalue: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(lpfilename: Long, dwfileattributes: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(lpfilename: Long, dwfileattributes: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(hfile: Long, fileinformationclass: Int, lpfileinformation: Long, dwbuffersize: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(hfile: Long, fileinformationclass: Int, lpfileinformation: Long, dwbuffersize: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(hfile: Long, lidistancetomove: Long, lpnewfilepointer: Long, dwmovemethod: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(hfile: Long, lidistancetomove: Long, lpnewfilepointer: Long, dwmovemethod: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetFileTime(hfile: Long, lpcreationtime: Long, lplastaccesstime: Long, lplastwritetime: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetFileTime(hfile: Long, lpcreationtime: Long, lplastaccesstime: Long, lplastwritetime: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(hobject: Long, dwmask: Int, dwflags: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(hobject: Long, dwmask: Int, dwflags: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetLastError(dwerrcode: Int)
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetLastError(dwerrcode: Int)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetStdHandle(nstdhandle: Int, hhandle: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetStdHandle(nstdhandle: Int, hhandle: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(stacksizeinbytes: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(stacksizeinbytes: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(htimer: Long, lpduetime: Long, lperiod: Int, pfncompletionroutine: Long, lpargtocompletionroutine: Long, fresume: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(htimer: Long, lpduetime: Long, lperiod: Int, pfncompletionroutine: Long, lpargtocompletionroutine: Long, fresume: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSleep(dwmilliseconds: Int)
+    external fun stdSysPalWindowsCWindowssysWindowsSysSleep(dwmilliseconds: Int)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(conditionvariable: Long, srwlock: Long, dwmilliseconds: Int, flags: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(conditionvariable: Long, srwlock: Long, dwmilliseconds: Int, flags: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSleepEx(dwmilliseconds: Int, balertable: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSleepEx(dwmilliseconds: Int, balertable: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSwitchToThread(): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSwitchToThread(): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysTerminateProcess(hprocess: Long, uexitcode: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysTerminateProcess(hprocess: Long, uexitcode: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysTlsAlloc(): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysTlsAlloc(): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysTlsFree(dwtlsindex: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysTlsFree(dwtlsindex: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysTlsGetValue(dwtlsindex: Int): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysTlsGetValue(dwtlsindex: Int): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysTlsSetValue(dwtlsindex: Int, lptlsvalue: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysTlsSetValue(dwtlsindex: Int, lptlsvalue: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(srwlock: Long): Byte
+    external fun stdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(srwlock: Long): Byte
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(srwlock: Long): Byte
+    external fun stdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(srwlock: Long): Byte
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysUnlockFile(hfile: Long, dwfileoffsetlow: Int, dwfileoffsethigh: Int, nnumberofbytestounlocklow: Int, nnumberofbytestounlockhigh: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysUnlockFile(hfile: Long, dwfileoffsetlow: Int, dwfileoffsethigh: Int, nnumberofbytestounlocklow: Int, nnumberofbytestounlockhigh: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(lpattributelist: Long, dwflags: Int, attribute: Long, lpvalue: Long, cbsize: Long, lppreviousvalue: Long, lpreturnsize: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(lpattributelist: Long, dwflags: Int, attribute: Long, lpvalue: Long, cbsize: Long, lppreviousvalue: Long, lpreturnsize: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWSACleanup(): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWSACleanup(): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(s: Long, dwprocessid: Int, lpprotocolinfo: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(s: Long, dwprocessid: Int, lpprotocolinfo: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWSAGetLastError(): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWSAGetLastError(): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWSARecv(s: Long, lpbuffers: Long, dwbuffercount: Int, lpnumberofbytesrecvd: Long, lpflags: Long, lpoverlapped: Long, lpcompletionroutine: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWSARecv(s: Long, lpbuffers: Long, dwbuffercount: Int, lpnumberofbytesrecvd: Long, lpflags: Long, lpoverlapped: Long, lpcompletionroutine: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWSASend(s: Long, lpbuffers: Long, dwbuffercount: Int, lpnumberofbytessent: Long, dwflags: Int, lpoverlapped: Long, lpcompletionroutine: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWSASend(s: Long, lpbuffers: Long, dwbuffercount: Int, lpnumberofbytessent: Long, dwflags: Int, lpoverlapped: Long, lpcompletionroutine: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWSASocketW(af: Int, type: Int, protocol: Int, lpprotocolinfo: Long, g: Int, dwflags: Int): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysWSASocketW(af: Int, type: Int, protocol: Int, lpprotocolinfo: Long, g: Int, dwflags: Int): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWSAStartup(wversionrequested: Short, lpwsadata: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWSAStartup(wversionrequested: Short, lpwsadata: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(ncount: Int, lphandles: Long, bwaitall: Int, dwmilliseconds: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(ncount: Int, lphandles: Long, bwaitall: Int, dwmilliseconds: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(hhandle: Long, dwmilliseconds: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(hhandle: Long, dwmilliseconds: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(address: Long, compareaddress: Long, addresssize: Long, dwmilliseconds: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(address: Long, compareaddress: Long, addresssize: Long, dwmilliseconds: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(conditionvariable: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(conditionvariable: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(address: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(address: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(address: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(address: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(conditionvariable: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(conditionvariable: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(codepage: Int, dwflags: Int, lpwidecharstr: Long, cchwidechar: Int, lpmultibytestr: Long, cbmultibyte: Int, lpdefaultchar: Long, lpuseddefaultchar: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(codepage: Int, dwflags: Int, lpwidecharstr: Long, cchwidechar: Int, lpmultibytestr: Long, cbmultibyte: Int, lpdefaultchar: Long, lpuseddefaultchar: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(hconsoleoutput: Long, lpbuffer: Long, nnumberofcharstowrite: Int, lpnumberofcharswritten: Long, lpreserved: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(hconsoleoutput: Long, lpbuffer: Long, nnumberofcharstowrite: Int, lpnumberofcharswritten: Long, lpreserved: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysWriteFileEx(hfile: Long, lpbuffer: Long, nnumberofbytestowrite: Int, lpoverlapped: Long, lpcompletionroutine: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysWriteFileEx(hfile: Long, lpbuffer: Long, nnumberofbytestowrite: Int, lpoverlapped: Long, lpcompletionroutine: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysAccept(s: Long, addr: Long, addrlen: Long): Long
+    external fun stdSysPalWindowsCWindowssysWindowsSysAccept(s: Long, addr: Long, addrlen: Long): Long
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysBind(s: Long, name: Long, namelen: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysBind(s: Long, name: Long, namelen: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysClosesocket(s: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysClosesocket(s: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysConnect(s: Long, name: Long, namelen: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysConnect(s: Long, name: Long, namelen: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(paddrinfo: Long)
+    external fun stdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(paddrinfo: Long)
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(pnodename: Long, pservicename: Long, phints: Long, ppresult: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(pnodename: Long, pservicename: Long, phints: Long, ppresult: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetpeername(s: Long, name: Long, namelen: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetpeername(s: Long, name: Long, namelen: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetsockname(s: Long, name: Long, namelen: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetsockname(s: Long, name: Long, namelen: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysGetsockopt(s: Long, level: Int, optname: Int, optval: Long, optlen: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysGetsockopt(s: Long, level: Int, optname: Int, optval: Long, optlen: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysIoctlsocket(s: Long, cmd: Int, argp: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysIoctlsocket(s: Long, cmd: Int, argp: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysListen(s: Long, backlog: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysListen(s: Long, backlog: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysLstrlenW(lpstring: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysLstrlenW(lpstring: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysRecv(s: Long, buf: Long, len: Int, flags: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysRecv(s: Long, buf: Long, len: Int, flags: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysRecvfrom(s: Long, buf: Long, len: Int, flags: Int, from: Long, fromlen: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysRecvfrom(s: Long, buf: Long, len: Int, flags: Int, from: Long, fromlen: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSelect(nfds: Int, readfds: Long, writefds: Long, exceptfds: Long, timeout: Long): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSelect(nfds: Int, readfds: Long, writefds: Long, exceptfds: Long, timeout: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSend(s: Long, buf: Long, len: Int, flags: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSend(s: Long, buf: Long, len: Int, flags: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSendto(s: Long, buf: Long, len: Int, flags: Int, to: Long, tolen: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSendto(s: Long, buf: Long, len: Int, flags: Int, to: Long, tolen: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysSetsockopt(s: Long, level: Int, optname: Int, optval: Long, optlen: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysSetsockopt(s: Long, level: Int, optname: Int, optval: Long, optlen: Int): Int
 
     @JvmStatic
-    external fun rustlangStdSysPalWindowsCWindowssysWindowsSysShutdown(s: Long, how: Int): Int
+    external fun stdSysPalWindowsCWindowssysWindowsSysShutdown(s: Long, how: Int): Int
 }
 
 public actual fun acquireSRWLockExclusive(srwlock: MutPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(srwlock.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(srwlock.rawAddress)
 }
 
 public actual fun acquireSRWLockShared(srwlock: MutPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(srwlock.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(srwlock.rawAddress)
 }
 
 public actual fun addVectoredExceptionHandler(first: UInt, handler: PvectoredExceptionHandler): MutPtr =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(first.toInt(), 0L))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(first.toInt(), 0L))
 
 public actual fun cancelIo(hfile: Handle): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCancelIo(hfile.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCancelIo(hfile.rawAddress)
 
 public actual fun closeHandle(hobject: Handle): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCloseHandle(hobject.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCloseHandle(hobject.rawAddress)
 
 public actual fun compareStringOrdinal(lpstring1: ConstPtr, cchcount1: Int, lpstring2: ConstPtr, cchcount2: Int, bignorecase: Bool): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(lpstring1.rawAddress, cchcount1, lpstring2.rawAddress, cchcount2, bignorecase)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(lpstring1.rawAddress, cchcount1, lpstring2.rawAddress, cchcount2, bignorecase)
 
 public actual fun copyFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, lpprogressroutine: LpprogressRoutine, lpdata: ConstPtr, pbcancel: MutPtr, dwcopyflags: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCopyFileExW(lpexistingfilename.rawAddress, lpnewfilename.rawAddress, 0L, lpdata.rawAddress, pbcancel.rawAddress, dwcopyflags.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCopyFileExW(lpexistingfilename.rawAddress, lpnewfilename.rawAddress, 0L, lpdata.rawAddress, pbcancel.rawAddress, dwcopyflags.toInt())
 
 public actual fun createDirectoryW(lppathname: Pcwstr, lpsecurityattributes: ConstPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(lppathname.rawAddress, lpsecurityattributes.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(lppathname.rawAddress, lpsecurityattributes.rawAddress)
 
 public actual fun createEventW(lpeventattributes: ConstPtr, bmanualreset: Bool, binitialstate: Bool, lpname: Pcwstr): Handle =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateEventW(lpeventattributes.rawAddress, bmanualreset, binitialstate, lpname.rawAddress))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCreateEventW(lpeventattributes.rawAddress, bmanualreset, binitialstate, lpname.rawAddress))
 
 public actual fun createFileW(lpfilename: Pcwstr, dwdesiredaccess: UInt, dwsharemode: UInt, lpsecurityattributes: ConstPtr, dwcreationdisposition: UInt, dwflagsandattributes: UInt, htemplatefile: Handle): Handle =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateFileW(lpfilename.rawAddress, dwdesiredaccess.toInt(), dwsharemode.toInt(), lpsecurityattributes.rawAddress, dwcreationdisposition.toInt(), dwflagsandattributes.toInt(), htemplatefile.rawAddress))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCreateFileW(lpfilename.rawAddress, dwdesiredaccess.toInt(), dwsharemode.toInt(), lpsecurityattributes.rawAddress, dwcreationdisposition.toInt(), dwflagsandattributes.toInt(), htemplatefile.rawAddress))
 
 public actual fun createHardLinkW(lpfilename: Pcwstr, lpexistingfilename: Pcwstr, lpsecurityattributes: ConstPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(lpfilename.rawAddress, lpexistingfilename.rawAddress, lpsecurityattributes.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(lpfilename.rawAddress, lpexistingfilename.rawAddress, lpsecurityattributes.rawAddress)
 
 public actual fun createNamedPipeW(lpname: Pcwstr, dwopenmode: UInt, dwpipemode: UInt, nmaxinstances: UInt, noutbuffersize: UInt, ninbuffersize: UInt, ndefaulttimeout: UInt, lpsecurityattributes: ConstPtr): Handle =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(lpname.rawAddress, dwopenmode.toInt(), dwpipemode.toInt(), nmaxinstances.toInt(), noutbuffersize.toInt(), ninbuffersize.toInt(), ndefaulttimeout.toInt(), lpsecurityattributes.rawAddress))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(lpname.rawAddress, dwopenmode.toInt(), dwpipemode.toInt(), nmaxinstances.toInt(), noutbuffersize.toInt(), ninbuffersize.toInt(), ndefaulttimeout.toInt(), lpsecurityattributes.rawAddress))
 
 public actual fun createPipe(hreadpipe: MutPtr, hwritepipe: MutPtr, lppipeattributes: ConstPtr, nsize: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCreatePipe(hreadpipe.rawAddress, hwritepipe.rawAddress, lppipeattributes.rawAddress, nsize.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCreatePipe(hreadpipe.rawAddress, hwritepipe.rawAddress, lppipeattributes.rawAddress, nsize.toInt())
 
 public actual fun createProcessW(lpapplicationname: Pcwstr, lpcommandline: Pwstr, lpprocessattributes: ConstPtr, lpthreadattributes: ConstPtr, binherithandles: Bool, dwcreationflags: UInt, lpenvironment: ConstPtr, lpcurrentdirectory: Pcwstr, lpstartupinfo: ConstPtr, lpprocessinformation: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateProcessW(lpapplicationname.rawAddress, lpcommandline.rawAddress, lpprocessattributes.rawAddress, lpthreadattributes.rawAddress, binherithandles, dwcreationflags.toInt(), lpenvironment.rawAddress, lpcurrentdirectory.rawAddress, lpstartupinfo.rawAddress, lpprocessinformation.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCreateProcessW(lpapplicationname.rawAddress, lpcommandline.rawAddress, lpprocessattributes.rawAddress, lpthreadattributes.rawAddress, binherithandles, dwcreationflags.toInt(), lpenvironment.rawAddress, lpcurrentdirectory.rawAddress, lpstartupinfo.rawAddress, lpprocessinformation.rawAddress)
 
 public actual fun createSymbolicLinkW(lpsymlinkfilename: Pcwstr, lptargetfilename: Pcwstr, dwflags: UInt): Boolean =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(lpsymlinkfilename.rawAddress, lptargetfilename.rawAddress, dwflags.toInt()).toUByte()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(lpsymlinkfilename.rawAddress, lptargetfilename.rawAddress, dwflags.toInt()).toUByte()
 
 public actual fun createThread(lpthreadattributes: ConstPtr, dwstacksize: ULong, lpstartaddress: LpthreadStartRoutine, lpparameter: ConstPtr, dwcreationflags: UInt, lpthreadid: MutPtr): Handle =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateThread(lpthreadattributes.rawAddress, dwstacksize.toLong(), 0L, lpparameter.rawAddress, dwcreationflags.toInt(), lpthreadid.rawAddress))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCreateThread(lpthreadattributes.rawAddress, dwstacksize.toLong(), 0L, lpparameter.rawAddress, dwcreationflags.toInt(), lpthreadid.rawAddress))
 
 public actual fun createWaitableTimerExW(lptimerattributes: ConstPtr, lptimername: Pcwstr, dwflags: UInt, dwdesiredaccess: UInt): Handle =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(lptimerattributes.rawAddress, lptimername.rawAddress, dwflags.toInt(), dwdesiredaccess.toInt()))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(lptimerattributes.rawAddress, lptimername.rawAddress, dwflags.toInt(), dwdesiredaccess.toInt()))
 
 public actual fun deleteFileW(lpfilename: Pcwstr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysDeleteFileW(lpfilename.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysDeleteFileW(lpfilename.rawAddress)
 
 public actual fun deleteProcThreadAttributeList(lpattributelist: MutPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(lpattributelist.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(lpattributelist.rawAddress)
 }
 
 public actual fun deviceIoControl(hdevice: Handle, dwiocontrolcode: UInt, lpinbuffer: ConstPtr, ninbuffersize: UInt, lpoutbuffer: MutPtr, noutbuffersize: UInt, lpbytesreturned: MutPtr, lpoverlapped: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(hdevice.rawAddress, dwiocontrolcode.toInt(), lpinbuffer.rawAddress, ninbuffersize.toInt(), lpoutbuffer.rawAddress, noutbuffersize.toInt(), lpbytesreturned.rawAddress, lpoverlapped.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(hdevice.rawAddress, dwiocontrolcode.toInt(), lpinbuffer.rawAddress, ninbuffersize.toInt(), lpoutbuffer.rawAddress, noutbuffersize.toInt(), lpbytesreturned.rawAddress, lpoverlapped.rawAddress)
 
 public actual fun duplicateHandle(hsourceprocesshandle: Handle, hsourcehandle: Handle, htargetprocesshandle: Handle, lptargethandle: MutPtr, dwdesiredaccess: UInt, binherithandle: Bool, dwoptions: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(hsourceprocesshandle.rawAddress, hsourcehandle.rawAddress, htargetprocesshandle.rawAddress, lptargethandle.rawAddress, dwdesiredaccess.toInt(), binherithandle, dwoptions.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(hsourceprocesshandle.rawAddress, hsourcehandle.rawAddress, htargetprocesshandle.rawAddress, lptargethandle.rawAddress, dwdesiredaccess.toInt(), binherithandle, dwoptions.toInt())
 
 public actual fun exitProcess(uexitcode: UInt): Nothing {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysExitProcess(uexitcode.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysExitProcess(uexitcode.toInt())
     error("Unreachable noreturn C function exitProcess")
 }
 
 public actual fun findClose(hfindfile: Handle): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysFindClose(hfindfile.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysFindClose(hfindfile.rawAddress)
 
 public actual fun findFirstFileExW(lpfilename: Pcwstr, finfolevelid: FindexInfoLevels, lpfindfiledata: MutPtr, fsearchop: FindexSearchOps, lpsearchfilter: ConstPtr, dwadditionalflags: UInt): Handle =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(lpfilename.rawAddress, finfolevelid, lpfindfiledata.rawAddress, fsearchop, lpsearchfilter.rawAddress, dwadditionalflags.toInt()))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(lpfilename.rawAddress, finfolevelid, lpfindfiledata.rawAddress, fsearchop, lpsearchfilter.rawAddress, dwadditionalflags.toInt()))
 
 public actual fun findNextFileW(hfindfile: Handle, lpfindfiledata: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysFindNextFileW(hfindfile.rawAddress, lpfindfiledata.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysFindNextFileW(hfindfile.rawAddress, lpfindfiledata.rawAddress)
 
 public actual fun flsAlloc(lpcallback: PflsCallbackFunction): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysFlsAlloc(0L).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysFlsAlloc(0L).toUInt()
 
 public actual fun flsFree(dwflsindex: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysFlsFree(dwflsindex.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysFlsFree(dwflsindex.toInt())
 
 public actual fun flsGetValue(dwflsindex: UInt): MutPtr =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysFlsGetValue(dwflsindex.toInt()))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysFlsGetValue(dwflsindex.toInt()))
 
 public actual fun flsSetValue(dwflsindex: UInt, lpflsdata: ConstPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysFlsSetValue(dwflsindex.toInt(), lpflsdata.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysFlsSetValue(dwflsindex.toInt(), lpflsdata.rawAddress)
 
 public actual fun flushFileBuffers(hfile: Handle): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(hfile.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(hfile.rawAddress)
 
 public actual fun formatMessageW(dwflags: UInt, lpsource: ConstPtr, dwmessageid: UInt, dwlanguageid: UInt, lpbuffer: Pcwstr, nsize: UInt, arguments: ConstPtr): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysFormatMessageW(dwflags.toInt(), lpsource.rawAddress, dwmessageid.toInt(), dwlanguageid.toInt(), lpbuffer.rawAddress, nsize.toInt(), arguments.rawAddress).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysFormatMessageW(dwflags.toInt(), lpsource.rawAddress, dwmessageid.toInt(), dwlanguageid.toInt(), lpbuffer.rawAddress, nsize.toInt(), arguments.rawAddress).toUInt()
 
 public actual fun freeEnvironmentStringsW(penv: ConstPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(penv.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(penv.rawAddress)
 
 public actual fun getActiveProcessorCount(groupnumber: UShort): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(groupnumber.toShort()).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(groupnumber.toShort()).toUInt()
 
 public actual fun getCommandLineW(): Pwstr =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCommandLineW())
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetCommandLineW())
 
 public actual fun getConsoleMode(hconsolehandle: Handle, lpmode: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(hconsolehandle.rawAddress, lpmode.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(hconsolehandle.rawAddress, lpmode.rawAddress)
 
 public actual fun getConsoleOutputCP(): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP().toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP().toUInt()
 
 public actual fun getCurrentDirectoryW(nbufferlength: UInt, lpbuffer: Pwstr): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(nbufferlength.toInt(), lpbuffer.rawAddress).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(nbufferlength.toInt(), lpbuffer.rawAddress).toUInt()
 
 public actual fun getCurrentProcess(): Handle =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess())
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess())
 
 public actual fun getCurrentProcessId(): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId().toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId().toUInt()
 
 public actual fun getCurrentThread(): Handle =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentThread())
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetCurrentThread())
 
 public actual fun getCurrentThreadId(): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId().toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId().toUInt()
 
 public actual fun getEnvironmentStringsW(): Lpwch =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW())
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW())
 
 public actual fun getEnvironmentVariableW(lpname: Pcwstr, lpbuffer: Pwstr, nsize: UInt): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(lpname.rawAddress, lpbuffer.rawAddress, nsize.toInt()).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(lpname.rawAddress, lpbuffer.rawAddress, nsize.toInt()).toUInt()
 
 public actual fun getExitCodeProcess(hprocess: Handle, lpexitcode: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(hprocess.rawAddress, lpexitcode.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(hprocess.rawAddress, lpexitcode.rawAddress)
 
 public actual fun getFileAttributesW(lpfilename: Pcwstr): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(lpfilename.rawAddress).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(lpfilename.rawAddress).toUInt()
 
 public actual fun getFileInformationByHandle(hfile: Handle, lpfileinformation: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(hfile.rawAddress, lpfileinformation.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(hfile.rawAddress, lpfileinformation.rawAddress)
 
 public actual fun getFileInformationByHandleEx(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: MutPtr, dwbuffersize: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(hfile.rawAddress, fileinformationclass, lpfileinformation.rawAddress, dwbuffersize.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(hfile.rawAddress, fileinformationclass, lpfileinformation.rawAddress, dwbuffersize.toInt())
 
 public actual fun getFileSizeEx(hfile: Handle, lpfilesize: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(hfile.rawAddress, lpfilesize.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(hfile.rawAddress, lpfilesize.rawAddress)
 
 public actual fun getFileType(hfile: Handle): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileType(hfile.rawAddress).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetFileType(hfile.rawAddress).toUInt()
 
 public actual fun getFinalPathNameByHandleW(hfile: Handle, lpszfilepath: Pwstr, cchfilepath: UInt, dwflags: UInt): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(hfile.rawAddress, lpszfilepath.rawAddress, cchfilepath.toInt(), dwflags.toInt()).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(hfile.rawAddress, lpszfilepath.rawAddress, cchfilepath.toInt(), dwflags.toInt()).toUInt()
 
 public actual fun getFullPathNameW(lpfilename: Pcwstr, nbufferlength: UInt, lpbuffer: Pwstr, lpfilepart: MutPtr): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(lpfilename.rawAddress, nbufferlength.toInt(), lpbuffer.rawAddress, lpfilepart.rawAddress).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(lpfilename.rawAddress, nbufferlength.toInt(), lpbuffer.rawAddress, lpfilepart.rawAddress).toUInt()
 
 public actual fun getHostNameW(name: Pwstr, namelen: Int): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetHostNameW(name.rawAddress, namelen)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetHostNameW(name.rawAddress, namelen)
 
 public actual fun getLastError(): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetLastError().toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetLastError().toUInt()
 
 public actual fun getLogicalDrives(): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives().toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives().toUInt()
 
 public actual fun getModuleFileNameW(hmodule: Hmodule, lpfilename: Pwstr, nsize: UInt): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(hmodule.rawAddress, lpfilename.rawAddress, nsize.toInt()).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(hmodule.rawAddress, lpfilename.rawAddress, nsize.toInt()).toUInt()
 
 public actual fun getModuleHandleA(lpmodulename: Pcstr): Hmodule =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(lpmodulename.rawAddress))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(lpmodulename.rawAddress))
 
 public actual fun getModuleHandleExW(dwflags: UInt, lpmodulename: Pcwstr, phmodule: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(dwflags.toInt(), lpmodulename.rawAddress, phmodule.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(dwflags.toInt(), lpmodulename.rawAddress, phmodule.rawAddress)
 
 public actual fun getModuleHandleW(lpmodulename: Pcwstr): Hmodule =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(lpmodulename.rawAddress))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(lpmodulename.rawAddress))
 
 public actual fun getOverlappedResult(hfile: Handle, lpoverlapped: ConstPtr, lpnumberofbytestransferred: MutPtr, bwait: Bool): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(hfile.rawAddress, lpoverlapped.rawAddress, lpnumberofbytestransferred.rawAddress, bwait)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(hfile.rawAddress, lpoverlapped.rawAddress, lpnumberofbytestransferred.rawAddress, bwait)
 
 public actual fun getProcAddress(hmodule: Hmodule, lpprocname: Pcstr): Farproc =
     null
 
 public actual fun getProcessId(process: Handle): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetProcessId(process.rawAddress).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetProcessId(process.rawAddress).toUInt()
 
 public actual fun getStdHandle(nstdhandle: UInt): Handle =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetStdHandle(nstdhandle.toInt()))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetStdHandle(nstdhandle.toInt()))
 
 public actual fun getSystemDirectoryW(lpbuffer: Pwstr, usize: UInt): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(lpbuffer.rawAddress, usize.toInt()).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(lpbuffer.rawAddress, usize.toInt()).toUInt()
 
 public actual fun getSystemInfo(lpsysteminfo: MutPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(lpsysteminfo.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(lpsysteminfo.rawAddress)
 }
 
 public actual fun getSystemTimeAsFileTime(lpsystemtimeasfiletime: MutPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(lpsystemtimeasfiletime.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(lpsystemtimeasfiletime.rawAddress)
 }
 
 public actual fun getSystemTimePreciseAsFileTime(lpsystemtimeasfiletime: MutPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(lpsystemtimeasfiletime.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(lpsystemtimeasfiletime.rawAddress)
 }
 
 public actual fun getTempPathW(nbufferlength: UInt, lpbuffer: Pwstr): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetTempPathW(nbufferlength.toInt(), lpbuffer.rawAddress).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetTempPathW(nbufferlength.toInt(), lpbuffer.rawAddress).toUInt()
 
 public actual fun getUserProfileDirectoryW(htoken: Handle, lpprofiledir: Pwstr, lpcchsize: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(htoken.rawAddress, lpprofiledir.rawAddress, lpcchsize.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(htoken.rawAddress, lpprofiledir.rawAddress, lpcchsize.rawAddress)
 
 public actual fun getWindowsDirectoryW(lpbuffer: Pwstr, usize: UInt): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(lpbuffer.rawAddress, usize.toInt()).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(lpbuffer.rawAddress, usize.toInt()).toUInt()
 
 public actual fun initOnceBeginInitialize(lpinitonce: LpinitOnce, dwflags: UInt, fpending: MutPtr, lpcontext: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(lpinitonce.rawAddress, dwflags.toInt(), fpending.rawAddress, lpcontext.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(lpinitonce.rawAddress, dwflags.toInt(), fpending.rawAddress, lpcontext.rawAddress)
 
 public actual fun initOnceComplete(lpinitonce: LpinitOnce, dwflags: UInt, lpcontext: ConstPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(lpinitonce.rawAddress, dwflags.toInt(), lpcontext.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(lpinitonce.rawAddress, dwflags.toInt(), lpcontext.rawAddress)
 
 public actual fun initializeProcThreadAttributeList(lpattributelist: MutPtr, dwattributecount: UInt, dwflags: UInt, lpsize: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(lpattributelist.rawAddress, dwattributecount.toInt(), dwflags.toInt(), lpsize.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(lpattributelist.rawAddress, dwattributecount.toInt(), dwflags.toInt(), lpsize.rawAddress)
 
 public actual fun isThreadAFiber(): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber()
 
 public actual fun loadLibraryExA(lplibfilename: Pcstr, hfile: Handle, dwflags: UInt): Hmodule =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(lplibfilename.rawAddress, hfile.rawAddress, dwflags.toInt()))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(lplibfilename.rawAddress, hfile.rawAddress, dwflags.toInt()))
 
 public actual fun localFree(hmem: Hlocal): Hlocal =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysLocalFree(hmem.rawAddress))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysLocalFree(hmem.rawAddress))
 
 public actual fun lockFileEx(hfile: Handle, dwflags: UInt, dwreserved: UInt, nnumberofbytestolocklow: UInt, nnumberofbytestolockhigh: UInt, lpoverlapped: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysLockFileEx(hfile.rawAddress, dwflags.toInt(), dwreserved.toInt(), nnumberofbytestolocklow.toInt(), nnumberofbytestolockhigh.toInt(), lpoverlapped.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysLockFileEx(hfile.rawAddress, dwflags.toInt(), dwreserved.toInt(), nnumberofbytestolocklow.toInt(), nnumberofbytestolockhigh.toInt(), lpoverlapped.rawAddress)
 
 public actual fun moveFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, dwflags: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysMoveFileExW(lpexistingfilename.rawAddress, lpnewfilename.rawAddress, dwflags.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysMoveFileExW(lpexistingfilename.rawAddress, lpnewfilename.rawAddress, dwflags.toInt())
 
 public actual fun multiByteToWideChar(codepage: UInt, dwflags: UInt, lpmultibytestr: ConstPtr, cbmultibyte: Int, lpwidecharstr: Pwstr, cchwidechar: Int): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(codepage.toInt(), dwflags.toInt(), lpmultibytestr.rawAddress, cbmultibyte, lpwidecharstr.rawAddress, cchwidechar)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(codepage.toInt(), dwflags.toInt(), lpmultibytestr.rawAddress, cbmultibyte, lpwidecharstr.rawAddress, cchwidechar)
 
 public actual fun ntCreateFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, allocationsize: ConstPtr, fileattributes: UInt, shareaccess: UInt, createdisposition: UInt, createoptions: UInt, eabuffer: ConstPtr, ealength: UInt): Ntstatus =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysNtCreateFile(filehandle.rawAddress, desiredaccess.toInt(), objectattributes.rawAddress, iostatusblock.rawAddress, allocationsize.rawAddress, fileattributes.toInt(), shareaccess.toInt(), createdisposition.toInt(), createoptions.toInt(), eabuffer.rawAddress, ealength.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysNtCreateFile(filehandle.rawAddress, desiredaccess.toInt(), objectattributes.rawAddress, iostatusblock.rawAddress, allocationsize.rawAddress, fileattributes.toInt(), shareaccess.toInt(), createdisposition.toInt(), createoptions.toInt(), eabuffer.rawAddress, ealength.toInt())
 
 public actual fun ntOpenFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, shareaccess: UInt, openoptions: UInt): Ntstatus =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysNtOpenFile(filehandle.rawAddress, desiredaccess.toInt(), objectattributes.rawAddress, iostatusblock.rawAddress, shareaccess.toInt(), openoptions.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysNtOpenFile(filehandle.rawAddress, desiredaccess.toInt(), objectattributes.rawAddress, iostatusblock.rawAddress, shareaccess.toInt(), openoptions.toInt())
 
 public actual fun ntQueryVolumeInformationFile(filehandle: Handle, iostatusblock: MutPtr, fsinformation: MutPtr, length: UInt, fsinformationclass: FsInformationClass): Ntstatus =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(filehandle.rawAddress, iostatusblock.rawAddress, fsinformation.rawAddress, length.toInt(), fsinformationclass)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(filehandle.rawAddress, iostatusblock.rawAddress, fsinformation.rawAddress, length.toInt(), fsinformationclass)
 
 public actual fun ntReadFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: MutPtr, length: UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysNtReadFile(filehandle.rawAddress, event.rawAddress, 0L, apccontext.rawAddress, iostatusblock.rawAddress, buffer.rawAddress, length.toInt(), byteoffset.rawAddress, key.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysNtReadFile(filehandle.rawAddress, event.rawAddress, 0L, apccontext.rawAddress, iostatusblock.rawAddress, buffer.rawAddress, length.toInt(), byteoffset.rawAddress, key.rawAddress)
 
 public actual fun ntSetInformationFile(filehandle: Handle, iostatusblock: MutPtr, fileinformation: ConstPtr, length: UInt, fileinformationclass: FileInformationClass): Ntstatus =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(filehandle.rawAddress, iostatusblock.rawAddress, fileinformation.rawAddress, length.toInt(), fileinformationclass)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(filehandle.rawAddress, iostatusblock.rawAddress, fileinformation.rawAddress, length.toInt(), fileinformationclass)
 
 public actual fun ntWriteFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: ConstPtr, length: UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysNtWriteFile(filehandle.rawAddress, event.rawAddress, 0L, apccontext.rawAddress, iostatusblock.rawAddress, buffer.rawAddress, length.toInt(), byteoffset.rawAddress, key.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysNtWriteFile(filehandle.rawAddress, event.rawAddress, 0L, apccontext.rawAddress, iostatusblock.rawAddress, buffer.rawAddress, length.toInt(), byteoffset.rawAddress, key.rawAddress)
 
 public actual fun openProcessToken(processhandle: Handle, desiredaccess: UInt, tokenhandle: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(processhandle.rawAddress, desiredaccess.toInt(), tokenhandle.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(processhandle.rawAddress, desiredaccess.toInt(), tokenhandle.rawAddress)
 
 public actual fun queryDosDeviceW(lpdevicename: Pcwstr, lptargetpath: Pwstr, ucchmax: UInt): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(lpdevicename.rawAddress, lptargetpath.rawAddress, ucchmax.toInt()).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(lpdevicename.rawAddress, lptargetpath.rawAddress, ucchmax.toInt()).toUInt()
 
 public actual fun queryPerformanceCounter(lpperformancecount: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(lpperformancecount.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(lpperformancecount.rawAddress)
 
 public actual fun queryPerformanceFrequency(lpfrequency: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(lpfrequency.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(lpfrequency.rawAddress)
 
 public actual fun readConsoleW(hconsoleinput: Handle, lpbuffer: MutPtr, nnumberofcharstoread: UInt, lpnumberofcharsread: MutPtr, pinputcontrol: ConstPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysReadConsoleW(hconsoleinput.rawAddress, lpbuffer.rawAddress, nnumberofcharstoread.toInt(), lpnumberofcharsread.rawAddress, pinputcontrol.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysReadConsoleW(hconsoleinput.rawAddress, lpbuffer.rawAddress, nnumberofcharstoread.toInt(), lpnumberofcharsread.rawAddress, pinputcontrol.rawAddress)
 
 public actual fun readFile(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: UInt, lpnumberofbytesread: MutPtr, lpoverlapped: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysReadFile(hfile.rawAddress, lpbuffer.rawAddress, nnumberofbytestoread.toInt(), lpnumberofbytesread.rawAddress, lpoverlapped.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysReadFile(hfile.rawAddress, lpbuffer.rawAddress, nnumberofbytestoread.toInt(), lpnumberofbytesread.rawAddress, lpoverlapped.rawAddress)
 
 public actual fun readFileEx(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysReadFileEx(hfile.rawAddress, lpbuffer.rawAddress, nnumberofbytestoread.toInt(), lpoverlapped.rawAddress, 0L)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysReadFileEx(hfile.rawAddress, lpbuffer.rawAddress, nnumberofbytestoread.toInt(), lpoverlapped.rawAddress, 0L)
 
 public actual fun releaseSRWLockExclusive(srwlock: MutPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(srwlock.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(srwlock.rawAddress)
 }
 
 public actual fun releaseSRWLockShared(srwlock: MutPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(srwlock.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(srwlock.rawAddress)
 }
 
 public actual fun removeDirectoryW(lppathname: Pcwstr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(lppathname.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(lppathname.rawAddress)
 
 public actual fun rtlGenRandom(randombuffer: MutPtr, randombufferlength: UInt): Boolean =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(randombuffer.rawAddress, randombufferlength.toInt()).toUByte()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(randombuffer.rawAddress, randombufferlength.toInt()).toUByte()
 
 public actual fun rtlNtStatusToDosError(status: Ntstatus): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(status).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(status).toUInt()
 
 public actual fun setCurrentDirectoryW(lppathname: Pcwstr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(lppathname.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(lppathname.rawAddress)
 
 public actual fun setEnvironmentVariableW(lpname: Pcwstr, lpvalue: Pcwstr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(lpname.rawAddress, lpvalue.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(lpname.rawAddress, lpvalue.rawAddress)
 
 public actual fun setFileAttributesW(lpfilename: Pcwstr, dwfileattributes: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(lpfilename.rawAddress, dwfileattributes.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(lpfilename.rawAddress, dwfileattributes.toInt())
 
 public actual fun setFileInformationByHandle(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: ConstPtr, dwbuffersize: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(hfile.rawAddress, fileinformationclass, lpfileinformation.rawAddress, dwbuffersize.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(hfile.rawAddress, fileinformationclass, lpfileinformation.rawAddress, dwbuffersize.toInt())
 
 public actual fun setFilePointerEx(hfile: Handle, lidistancetomove: Long, lpnewfilepointer: MutPtr, dwmovemethod: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(hfile.rawAddress, lidistancetomove, lpnewfilepointer.rawAddress, dwmovemethod.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(hfile.rawAddress, lidistancetomove, lpnewfilepointer.rawAddress, dwmovemethod.toInt())
 
 public actual fun setFileTime(hfile: Handle, lpcreationtime: ConstPtr, lplastaccesstime: ConstPtr, lplastwritetime: ConstPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetFileTime(hfile.rawAddress, lpcreationtime.rawAddress, lplastaccesstime.rawAddress, lplastwritetime.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetFileTime(hfile.rawAddress, lpcreationtime.rawAddress, lplastaccesstime.rawAddress, lplastwritetime.rawAddress)
 
 public actual fun setHandleInformation(hobject: Handle, dwmask: UInt, dwflags: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(hobject.rawAddress, dwmask.toInt(), dwflags.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(hobject.rawAddress, dwmask.toInt(), dwflags.toInt())
 
 public actual fun setLastError(dwerrcode: UInt) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetLastError(dwerrcode.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetLastError(dwerrcode.toInt())
 }
 
 public actual fun setStdHandle(nstdhandle: UInt, hhandle: Handle): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetStdHandle(nstdhandle.toInt(), hhandle.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetStdHandle(nstdhandle.toInt(), hhandle.rawAddress)
 
 public actual fun setThreadStackGuarantee(stacksizeinbytes: MutPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(stacksizeinbytes.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(stacksizeinbytes.rawAddress)
 
 public actual fun setWaitableTimer(htimer: Handle, lpduetime: ConstPtr, lperiod: Int, pfncompletionroutine: Ptimerapcroutine, lpargtocompletionroutine: ConstPtr, fresume: Bool): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(htimer.rawAddress, lpduetime.rawAddress, lperiod, 0L, lpargtocompletionroutine.rawAddress, fresume)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(htimer.rawAddress, lpduetime.rawAddress, lperiod, 0L, lpargtocompletionroutine.rawAddress, fresume)
 
 public actual fun sleep(dwmilliseconds: UInt) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSleep(dwmilliseconds.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSleep(dwmilliseconds.toInt())
 }
 
 public actual fun sleepConditionVariableSRW(conditionvariable: MutPtr, srwlock: MutPtr, dwmilliseconds: UInt, flags: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(conditionvariable.rawAddress, srwlock.rawAddress, dwmilliseconds.toInt(), flags.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(conditionvariable.rawAddress, srwlock.rawAddress, dwmilliseconds.toInt(), flags.toInt())
 
 public actual fun sleepEx(dwmilliseconds: UInt, balertable: Bool): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSleepEx(dwmilliseconds.toInt(), balertable).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSleepEx(dwmilliseconds.toInt(), balertable).toUInt()
 
 public actual fun switchToThread(): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSwitchToThread()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSwitchToThread()
 
 public actual fun terminateProcess(hprocess: Handle, uexitcode: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysTerminateProcess(hprocess.rawAddress, uexitcode.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysTerminateProcess(hprocess.rawAddress, uexitcode.toInt())
 
 public actual fun tlsAlloc(): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysTlsAlloc().toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysTlsAlloc().toUInt()
 
 public actual fun tlsFree(dwtlsindex: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysTlsFree(dwtlsindex.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysTlsFree(dwtlsindex.toInt())
 
 public actual fun tlsGetValue(dwtlsindex: UInt): MutPtr =
-    MutPtr(StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysTlsGetValue(dwtlsindex.toInt()))
+    MutPtr(SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysTlsGetValue(dwtlsindex.toInt()))
 
 public actual fun tlsSetValue(dwtlsindex: UInt, lptlsvalue: ConstPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysTlsSetValue(dwtlsindex.toInt(), lptlsvalue.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysTlsSetValue(dwtlsindex.toInt(), lptlsvalue.rawAddress)
 
 public actual fun tryAcquireSRWLockExclusive(srwlock: MutPtr): Boolean =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(srwlock.rawAddress).toUByte()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(srwlock.rawAddress).toUByte()
 
 public actual fun tryAcquireSRWLockShared(srwlock: MutPtr): Boolean =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(srwlock.rawAddress).toUByte()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(srwlock.rawAddress).toUByte()
 
 public actual fun unlockFile(hfile: Handle, dwfileoffsetlow: UInt, dwfileoffsethigh: UInt, nnumberofbytestounlocklow: UInt, nnumberofbytestounlockhigh: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysUnlockFile(hfile.rawAddress, dwfileoffsetlow.toInt(), dwfileoffsethigh.toInt(), nnumberofbytestounlocklow.toInt(), nnumberofbytestounlockhigh.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysUnlockFile(hfile.rawAddress, dwfileoffsetlow.toInt(), dwfileoffsethigh.toInt(), nnumberofbytestounlocklow.toInt(), nnumberofbytestounlockhigh.toInt())
 
 public actual fun updateProcThreadAttribute(lpattributelist: MutPtr, dwflags: UInt, attribute: ULong, lpvalue: ConstPtr, cbsize: ULong, lppreviousvalue: MutPtr, lpreturnsize: ConstPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(lpattributelist.rawAddress, dwflags.toInt(), attribute.toLong(), lpvalue.rawAddress, cbsize.toLong(), lppreviousvalue.rawAddress, lpreturnsize.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(lpattributelist.rawAddress, dwflags.toInt(), attribute.toLong(), lpvalue.rawAddress, cbsize.toLong(), lppreviousvalue.rawAddress, lpreturnsize.rawAddress)
 
 public actual fun wSACleanup(): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWSACleanup()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWSACleanup()
 
 public actual fun wSADuplicateSocketW(s: Socket, dwprocessid: UInt, lpprotocolinfo: MutPtr): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(s.toLong(), dwprocessid.toInt(), lpprotocolinfo.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(s.toLong(), dwprocessid.toInt(), lpprotocolinfo.rawAddress)
 
 public actual fun wSAGetLastError(): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWSAGetLastError()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWSAGetLastError()
 
 public actual fun wSARecv(s: Socket, lpbuffers: ConstPtr, dwbuffercount: UInt, lpnumberofbytesrecvd: MutPtr, lpflags: MutPtr, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWSARecv(s.toLong(), lpbuffers.rawAddress, dwbuffercount.toInt(), lpnumberofbytesrecvd.rawAddress, lpflags.rawAddress, lpoverlapped.rawAddress, 0L)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWSARecv(s.toLong(), lpbuffers.rawAddress, dwbuffercount.toInt(), lpnumberofbytesrecvd.rawAddress, lpflags.rawAddress, lpoverlapped.rawAddress, 0L)
 
 public actual fun wSASend(s: Socket, lpbuffers: ConstPtr, dwbuffercount: UInt, lpnumberofbytessent: MutPtr, dwflags: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWSASend(s.toLong(), lpbuffers.rawAddress, dwbuffercount.toInt(), lpnumberofbytessent.rawAddress, dwflags.toInt(), lpoverlapped.rawAddress, 0L)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWSASend(s.toLong(), lpbuffers.rawAddress, dwbuffercount.toInt(), lpnumberofbytessent.rawAddress, dwflags.toInt(), lpoverlapped.rawAddress, 0L)
 
 public actual fun wSASocketW(af: Int, type: Int, protocol: Int, lpprotocolinfo: ConstPtr, g: Group, dwflags: UInt): Socket =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWSASocketW(af, type, protocol, lpprotocolinfo.rawAddress, g.toInt(), dwflags.toInt()).toULong()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWSASocketW(af, type, protocol, lpprotocolinfo.rawAddress, g.toInt(), dwflags.toInt()).toULong()
 
 public actual fun wSAStartup(wversionrequested: UShort, lpwsadata: MutPtr): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWSAStartup(wversionrequested.toShort(), lpwsadata.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWSAStartup(wversionrequested.toShort(), lpwsadata.rawAddress)
 
 public actual fun waitForMultipleObjects(ncount: UInt, lphandles: ConstPtr, bwaitall: Bool, dwmilliseconds: UInt): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(ncount.toInt(), lphandles.rawAddress, bwaitall, dwmilliseconds.toInt()).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(ncount.toInt(), lphandles.rawAddress, bwaitall, dwmilliseconds.toInt()).toUInt()
 
 public actual fun waitForSingleObject(hhandle: Handle, dwmilliseconds: UInt): UInt =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(hhandle.rawAddress, dwmilliseconds.toInt()).toUInt()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(hhandle.rawAddress, dwmilliseconds.toInt()).toUInt()
 
 public actual fun waitOnAddress(address: ConstPtr, compareaddress: ConstPtr, addresssize: ULong, dwmilliseconds: UInt): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(address.rawAddress, compareaddress.rawAddress, addresssize.toLong(), dwmilliseconds.toInt())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(address.rawAddress, compareaddress.rawAddress, addresssize.toLong(), dwmilliseconds.toInt())
 
 public actual fun wakeAllConditionVariable(conditionvariable: MutPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(conditionvariable.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(conditionvariable.rawAddress)
 }
 
 public actual fun wakeByAddressAll(address: ConstPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(address.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(address.rawAddress)
 }
 
 public actual fun wakeByAddressSingle(address: ConstPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(address.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(address.rawAddress)
 }
 
 public actual fun wakeConditionVariable(conditionvariable: MutPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(conditionvariable.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(conditionvariable.rawAddress)
 }
 
 public actual fun wideCharToMultiByte(codepage: UInt, dwflags: UInt, lpwidecharstr: ConstPtr, cchwidechar: Int, lpmultibytestr: Pstr, cbmultibyte: Int, lpdefaultchar: ConstPtr, lpuseddefaultchar: MutPtr): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(codepage.toInt(), dwflags.toInt(), lpwidecharstr.rawAddress, cchwidechar, lpmultibytestr.rawAddress, cbmultibyte, lpdefaultchar.rawAddress, lpuseddefaultchar.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(codepage.toInt(), dwflags.toInt(), lpwidecharstr.rawAddress, cchwidechar, lpmultibytestr.rawAddress, cbmultibyte, lpdefaultchar.rawAddress, lpuseddefaultchar.rawAddress)
 
 public actual fun writeConsoleW(hconsoleoutput: Handle, lpbuffer: ConstPtr, nnumberofcharstowrite: UInt, lpnumberofcharswritten: MutPtr, lpreserved: ConstPtr): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(hconsoleoutput.rawAddress, lpbuffer.rawAddress, nnumberofcharstowrite.toInt(), lpnumberofcharswritten.rawAddress, lpreserved.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(hconsoleoutput.rawAddress, lpbuffer.rawAddress, nnumberofcharstowrite.toInt(), lpnumberofcharswritten.rawAddress, lpreserved.rawAddress)
 
 public actual fun writeFileEx(hfile: Handle, lpbuffer: ConstPtr, nnumberofbytestowrite: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysWriteFileEx(hfile.rawAddress, lpbuffer.rawAddress, nnumberofbytestowrite.toInt(), lpoverlapped.rawAddress, 0L)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysWriteFileEx(hfile.rawAddress, lpbuffer.rawAddress, nnumberofbytestowrite.toInt(), lpoverlapped.rawAddress, 0L)
 
 public actual fun accept(s: Socket, addr: MutPtr, addrlen: MutPtr): Socket =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysAccept(s.toLong(), addr.rawAddress, addrlen.rawAddress).toULong()
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysAccept(s.toLong(), addr.rawAddress, addrlen.rawAddress).toULong()
 
 public actual fun bind(s: Socket, name: ConstPtr, namelen: Int): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysBind(s.toLong(), name.rawAddress, namelen)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysBind(s.toLong(), name.rawAddress, namelen)
 
 public actual fun closesocket(s: Socket): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysClosesocket(s.toLong())
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysClosesocket(s.toLong())
 
 public actual fun connect(s: Socket, name: ConstPtr, namelen: Int): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysConnect(s.toLong(), name.rawAddress, namelen)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysConnect(s.toLong(), name.rawAddress, namelen)
 
 public actual fun freeaddrinfo(paddrinfo: ConstPtr) {
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(paddrinfo.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(paddrinfo.rawAddress)
 }
 
 public actual fun getaddrinfo(pnodename: Pcstr, pservicename: Pcstr, phints: ConstPtr, ppresult: MutPtr): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(pnodename.rawAddress, pservicename.rawAddress, phints.rawAddress, ppresult.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(pnodename.rawAddress, pservicename.rawAddress, phints.rawAddress, ppresult.rawAddress)
 
 public actual fun getpeername(s: Socket, name: MutPtr, namelen: MutPtr): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetpeername(s.toLong(), name.rawAddress, namelen.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetpeername(s.toLong(), name.rawAddress, namelen.rawAddress)
 
 public actual fun getsockname(s: Socket, name: MutPtr, namelen: MutPtr): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetsockname(s.toLong(), name.rawAddress, namelen.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetsockname(s.toLong(), name.rawAddress, namelen.rawAddress)
 
 public actual fun getsockopt(s: Socket, level: Int, optname: Int, optval: MutPtr, optlen: MutPtr): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysGetsockopt(s.toLong(), level, optname, optval.rawAddress, optlen.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysGetsockopt(s.toLong(), level, optname, optval.rawAddress, optlen.rawAddress)
 
 public actual fun ioctlsocket(s: Socket, cmd: Int, argp: MutPtr): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysIoctlsocket(s.toLong(), cmd, argp.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysIoctlsocket(s.toLong(), cmd, argp.rawAddress)
 
 public actual fun listen(s: Socket, backlog: Int): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysListen(s.toLong(), backlog)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysListen(s.toLong(), backlog)
 
 public actual fun lstrlenW(lpstring: Pcwstr): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysLstrlenW(lpstring.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysLstrlenW(lpstring.rawAddress)
 
 public actual fun recv(s: Socket, buf: MutPtr, len: Int, flags: Int): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysRecv(s.toLong(), buf.rawAddress, len, flags)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysRecv(s.toLong(), buf.rawAddress, len, flags)
 
 public actual fun recvfrom(s: Socket, buf: MutPtr, len: Int, flags: Int, from: MutPtr, fromlen: MutPtr): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysRecvfrom(s.toLong(), buf.rawAddress, len, flags, from.rawAddress, fromlen.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysRecvfrom(s.toLong(), buf.rawAddress, len, flags, from.rawAddress, fromlen.rawAddress)
 
 public actual fun select(nfds: Int, readfds: MutPtr, writefds: MutPtr, exceptfds: MutPtr, timeout: ConstPtr): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSelect(nfds, readfds.rawAddress, writefds.rawAddress, exceptfds.rawAddress, timeout.rawAddress)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSelect(nfds, readfds.rawAddress, writefds.rawAddress, exceptfds.rawAddress, timeout.rawAddress)
 
 public actual fun send(s: Socket, buf: ConstPtr, len: Int, flags: Int): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSend(s.toLong(), buf.rawAddress, len, flags)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSend(s.toLong(), buf.rawAddress, len, flags)
 
 public actual fun sendto(s: Socket, buf: ConstPtr, len: Int, flags: Int, to: ConstPtr, tolen: Int): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSendto(s.toLong(), buf.rawAddress, len, flags, to.rawAddress, tolen)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSendto(s.toLong(), buf.rawAddress, len, flags, to.rawAddress, tolen)
 
 public actual fun setsockopt(s: Socket, level: Int, optname: Int, optval: ConstPtr, optlen: Int): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysSetsockopt(s.toLong(), level, optname, optval.rawAddress, optlen)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysSetsockopt(s.toLong(), level, optname, optval.rawAddress, optlen)
 
 public actual fun shutdown(s: Socket, how: Int): Int =
-    StdSysPalWindowsCWindowssysWindowsSysJniBridge.rustlangStdSysPalWindowsCWindowssysWindowsSysShutdown(s.toLong(), how)
+    SysPalWindowsCWindowssysWindowsSysJniBridge.stdSysPalWindowsCWindowssysWindowsSysShutdown(s.toLong(), how)

@@ -3,18 +3,17 @@ package io.github.kotlinmania.rustlang.libm.math.round
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.libm.math.Generic
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
-import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
-import io.github.kotlinmania.rustlang.math.support.hexfloat.hf128
-import io.github.kotlinmania.rustlang.math.support.hexfloat.hf16
-import io.github.kotlinmania.rustlang.math.support.hexfloat.hf32
-import io.github.kotlinmania.rustlang.math.support.hexfloat.hf64
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf128
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf16
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf32
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
 
 public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F) -> F, cases: List<Pair<F, F>>) {
     for ((x, expRes) in cases) {
-        val value = Generic.round(x)
+        val value = io.github.kotlinmania.rustlang.libm.math.generic.round.round(x)
         run {
             val l = value
             val r = expRes

@@ -2,8 +2,7 @@
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.parserunningmmapsunix
 
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsString
-import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixInt
-import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixULong
+import io.github.kotlinmania.rustlang.core.num.fromStrRadix
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 
@@ -115,20 +114,39 @@ public open class MapsEntry(
             }
             // Pathname may be omitted in which case it will be empty
             val pathnameStr = state.trimAsciiStart()
-            val hex = { s1 -> rustFromStrRadixInt(s1, 16u).mapErr({ error("Couldn't parse hex number") }) }
-            val hex64 = { s1 -> rustFromStrRadixULong(s1, 16u).mapErr({ error("Couldn't parse hex number") }) }
+            val hex = { s1 -> Int.fromStrRadix(s1, 16u).mapErr({ error("Couldn't parse hex number") }) }
+            val hex64 = { s1 -> ULong.fromStrRadix(s1, 16u).mapErr({ error("Couldn't parse hex number") }) }
             val address =
-                when (val matchVal = rangeStr.let { s -> val idx = s.indexOf('-'); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + 1)) }) {
+                when (
+                    val matchVal =
+                        rangeStr.let { s ->
+                            val idx = s.indexOf('-')
+                            if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + 1))
+                        }
+                ) {
                     null -> {
                         return Result.Err(error("Couldn't parse address range"))
                     }
                     else -> {
                         val start = matchVal.first
                         val limit = matchVal.second
-                        Pair(when (val tryResult = hex(start)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, when (val tryResult = hex(limit)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
+                        Pair(
+                            when (val tryResult = hex(start)) {
+                                is Result.Ok<*, *> -> tryResult.value
+                                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                            },
+                            when (val tryResult = hex(limit)) {
+                                is Result.Ok<*, *> -> tryResult.value
+                                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                            },
+                        )
                     }
                 }
-            val offset = when (val tryResult = hex64(offsetStr)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            val offset =
+                when (val tryResult = hex64(offsetStr)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                }
             val pathname = pathnameStr.into()
             return Result.Ok(MapsEntry(address = address, offset = offset, pathname = pathname))
         }
@@ -146,7 +164,12 @@ public fun parseMaps(): Result<List<MapsEntry>, String> {
         // Unsafe is unfortunately necessary to get the bounds check removed (for code size).
         // SAFETY: matchIdx is the position of the newline, so it must be valid.
         val line = buf1.getUnchecked(0 until matchIdx)
-        v.add(when (val tryResult = line.parse()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
+        v.add(
+            when (val tryResult = line.parse()) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            },
+        )
         // SAFETY: matchIdx is the position of the newline, so the byte after it must be valid.
         buf1 = buf1.getUnchecked((matchIdx + 1) until Int.MAX_VALUE)
     }

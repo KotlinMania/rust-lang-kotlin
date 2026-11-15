@@ -1,7 +1,7 @@
 // port-lint: tests x86_64/sse41.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
+import io.github.kotlinmania.rustlang.corearch.x86.mmSet1Epi64x
 
 // `i686`s Streaming SIMD Extensions 4.1 (SSE4.1)
 

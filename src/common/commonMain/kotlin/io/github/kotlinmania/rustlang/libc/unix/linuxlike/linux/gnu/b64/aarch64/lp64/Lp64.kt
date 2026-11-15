@@ -1,8 +1,8 @@
 // port-lint: source unix/linux_like/linux/gnu/b64/aarch64/lp64.rs
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.lp64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.libc.*
 
 public val SIZEOF_PTHREAD_CONDATTR_T: Int = 8
 

@@ -7,4 +7,6 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.int.sdiv.moddi3
 /**
  * Returns `n % d`
  */
-public fun moddi3(a: Long, b: Long): Long = io.github.kotlinmania.rustlang.int.sdiv.moddi3(a, b)
+public fun moddi3(a: Long, b: Long): Long =
+    io.github.kotlinmania.rustlang.compilerbuiltins.int.sdiv
+        .moddi3(a, b)

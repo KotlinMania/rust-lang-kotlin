@@ -4,9 +4,8 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.x86.M128
 
-private object CorearchX86SseJniBridge {
+private object X86SseJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -42,11 +41,14 @@ private object CorearchX86SseJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX86SseJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X86SseJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -60,16 +62,16 @@ private object CorearchX86SseJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX86SseSfence()
+    external fun corearchX86SseSfence()
 
     @JvmStatic
-    external fun rustlangCorearchX86SseStmxcsr(p: Long)
+    external fun corearchX86SseStmxcsr(p: Long)
 
     @JvmStatic
-    external fun rustlangCorearchX86SseLdmxcsr(p: Long)
+    external fun corearchX86SseLdmxcsr(p: Long)
 
     @JvmStatic
-    external fun rustlangCorearchX86SsePrefetch(p: Long, rw: Int, loc: Int, ty: Int)
+    external fun corearchX86SsePrefetch(p: Long, rw: Int, loc: Int, ty: Int)
 }
 
 public actual fun rcpss(a: M128): M128 =
@@ -142,19 +144,19 @@ public actual fun cvttss2si(a: M128): Int =
     0
 
 public actual fun sfence() {
-    CorearchX86SseJniBridge.rustlangCorearchX86SseSfence()
+    X86SseJniBridge.corearchX86SseSfence()
 }
 
 public actual fun stmxcsr(p: MutPtr) {
-    CorearchX86SseJniBridge.rustlangCorearchX86SseStmxcsr(p.rawAddress)
+    X86SseJniBridge.corearchX86SseStmxcsr(p.rawAddress)
 }
 
 public actual fun ldmxcsr(p: ConstPtr) {
-    CorearchX86SseJniBridge.rustlangCorearchX86SseLdmxcsr(p.rawAddress)
+    X86SseJniBridge.corearchX86SseLdmxcsr(p.rawAddress)
 }
 
 public actual fun prefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int) {
-    CorearchX86SseJniBridge.rustlangCorearchX86SsePrefetch(p.rawAddress, rw, loc, ty)
+    X86SseJniBridge.corearchX86SsePrefetch(p.rawAddress, rw, loc, ty)
 }
 
 public actual fun cmpss(a: M128, b: M128, imm8: Byte): M128 =

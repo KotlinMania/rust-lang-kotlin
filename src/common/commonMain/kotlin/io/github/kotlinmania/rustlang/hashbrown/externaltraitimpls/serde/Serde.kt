@@ -1,11 +1,11 @@
 // port-lint: source external_trait_impls/serde.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.serde
 
-import io.github.kotlinmania.rustlang.HashMap
-import io.github.kotlinmania.rustlang.HashSet
-import io.github.kotlinmania.rustlang.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.hashbrown.HashMap
+import io.github.kotlinmania.rustlang.hashbrown.HashSet
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.SizeHint
 
 public typealias Value<K, V> = MutableMap<K, V>

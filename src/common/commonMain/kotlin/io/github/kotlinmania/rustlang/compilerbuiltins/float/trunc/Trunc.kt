@@ -1,11 +1,11 @@
 // port-lint: source float/trunc.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.trunc
 
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.num.rustWrappingShr
-import io.github.kotlinmania.rustlang.support.Float
-import io.github.kotlinmania.rustlang.support.Int
+import io.github.kotlinmania.rustlang.core.num.wrappingShr
 
 public fun <F : Float, R : Float> trunc(a: F, fromBitsRFn: (Int) -> R): R {
     val srcZero = F.Int.ZERO
@@ -97,7 +97,7 @@ public fun <F : Float, R : Float> trunc(a: F, fromBitsRFn: (Int) -> R): R {
         }
     }
     // Apply the signbit to the absolute value.
-    return fromBitsRFn(absResult or rustWrappingShr(sign, (srcBits - dstBits).toUInt()).cast().toInt())
+    return fromBitsRFn(absResult or sign.wrappingShr((srcBits - dstBits).toUInt()).cast().toInt())
 }
 
 public fun truncdfsf2(a: Double): Float = trunc(a)

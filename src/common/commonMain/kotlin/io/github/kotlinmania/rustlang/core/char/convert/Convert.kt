@@ -1,14 +1,14 @@
 // port-lint: source char/convert.rs
 package io.github.kotlinmania.rustlang.core.char.convert
 
-import io.github.kotlinmania.rustlang.char.TryFromCharError
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.char.TryFromCharError
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.mem.transmutability.transmute
+import io.github.kotlinmania.rustlang.core.str.chars
 
 // Character conversions.
 
@@ -19,12 +19,15 @@ public fun fromU32(i: UInt): Char? {
     // Note(const-Note): once Result.ok is const fn, use it here
     return run {
         val matchVal = charTryFromU32(i)
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val c = matchVal.value
-            c
-        }; is Result.Err<*, *> -> {
-            null
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val c = matchVal.value
+                c
+            }
+            is Result.Err<*, *> -> {
+                null
+            }
+        }
     }
 }
 
@@ -92,6 +95,7 @@ public fun fromU128(c: Char): U128 {
  *
  * See [`impl.From.u8.forLoop.char`](char#impl-From<u8>-for-char) for details on the encoding.
  */
+
 /**
  * Tries to convert a [char] into a [u8].
  *
@@ -110,12 +114,15 @@ public fun tryFromUByte(c: Char): Result<UByte, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = UByte.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val b = matchVal.value
-            Result.Ok(b)
-        }; is Result.Err<*, *> -> {
-            Result.Err(TryFromCharError())
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val b = matchVal.value
+                Result.Ok(b)
+            }
+            is Result.Err<*, *> -> {
+                Result.Err(TryFromCharError())
+            }
+        }
     }
 }
 
@@ -125,6 +132,7 @@ public fun tryFromUByte(c: Char): Result<UByte, TryFromCharError> {
  *
  * This corresponds to the UCS-2 encoding, as specified in ISO/IEC 10646:2003.
  */
+
 /**
  * Tries to convert a [char] into a [u16].
  *
@@ -143,12 +151,15 @@ public fun tryFromUShort(c: Char): Result<UShort, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = UShort.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            Result.Ok(x)
-        }; is Result.Err<*, *> -> {
-            Result.Err(TryFromCharError())
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                Result.Ok(x)
+            }
+            is Result.Err<*, *> -> {
+                Result.Err(TryFromCharError())
+            }
+        }
     }
 }
 
@@ -160,6 +171,7 @@ public fun tryFromUShort(c: Char): Result<UShort, TryFromCharError> {
  * Generally speaking, this conversion can be seen as obtaining the character's corresponding
  * UTF-32 code point to the extent representable by pointer addresses.
  */
+
 /**
  * Tries to convert a [char] into a [usize].
  *
@@ -187,12 +199,15 @@ public fun tryFromInt(c: Char): Result<Int, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = Int.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            Result.Ok(x)
-        }; is Result.Err<*, *> -> {
-            Result.Err(TryFromCharError())
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                Result.Ok(x)
+            }
+            is Result.Err<*, *> -> {
+                Result.Err(TryFromCharError())
+            }
+        }
     }
 }
 
@@ -217,6 +232,7 @@ public fun tryFromInt(c: Char): Result<Int, TryFromCharError> {
  * for a superset of Windows-1252 that fills the remaining blanks with corresponding
  * C0 and C1 control codes.
  */
+
 /**
  * Converts a [u8] into a [char].
  *
@@ -255,9 +271,9 @@ public sealed class CharErrorKind {
 }
 
 public fun fromStrChar(s: String): Result<Char, ParseCharError> {
-    val chars = s.rustStrChars()
+    val chars = s.chars()
     return run {
-        val matchVal = Pair(chars.nextCodeOrNull()?.toChar(), chars.nextCodeOrNull()?.toChar())
+        val matchVal = Pair(chars.next(), chars.next())
         when {
             matchVal.first == null -> Result.Err(ParseCharError(kind = CharErrorKind.EmptyString))
             matchVal.first != null && matchVal.second == null -> {

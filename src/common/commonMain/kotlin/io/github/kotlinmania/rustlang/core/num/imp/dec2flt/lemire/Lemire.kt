@@ -2,12 +2,12 @@
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.lemire
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.num.imp.dec2flt.common.BiasedFp
-import io.github.kotlinmania.rustlang.num.imp.dec2flt.table.LARGEST_POWER_OF_FIVE
-import io.github.kotlinmania.rustlang.num.imp.dec2flt.table.POWER_OF_FIVE_128
-import io.github.kotlinmania.rustlang.num.imp.dec2flt.table.SMALLEST_POWER_OF_FIVE
-import io.github.kotlinmania.rustlang.num.imp.traits.Float
+import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.BiasedFp
+import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.table.LARGEST_POWER_OF_FIVE
+import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.table.POWER_OF_FIVE_128
+import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.table.SMALLEST_POWER_OF_FIVE
+import io.github.kotlinmania.rustlang.core.num.imp.traits.Float
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
 
 // Implementation of the Eisel-Lemire algorithm.
 
@@ -43,7 +43,7 @@ public fun <Int, F : Float<F, Any?>> computeFloat(q: Long, w: ULong): BiasedFp {
         return fpInf
     }
     // Normalize our significant digits, so the most-significant bit is set.
-    val lz = rustLeadingZeros(w1)
+    val lz = w1.leadingZeros()
     w1 = w1 shl lz.toInt()
     val (lo, hi) = computeProductApprox(q, w1, F.SIG_BITS.toInt() + 3)
     if (lo == 0xFFFFFFFFFFFFFFFFuL) {

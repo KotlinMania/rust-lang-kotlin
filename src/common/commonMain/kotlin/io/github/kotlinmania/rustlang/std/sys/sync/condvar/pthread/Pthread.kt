@@ -6,11 +6,11 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.sys.sync.mutex.futex.Mutex
-import io.github.kotlinmania.rustlang.sys.sync.oncebox.OnceBox
-import io.github.kotlinmania.rustlang.time.Instant
-import io.github.kotlinmania.rustlang.sys.pal.sync as pal
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex
+import io.github.kotlinmania.rustlang.std.sys.sync.oncebox.OnceBox
+import io.github.kotlinmania.rustlang.std.time.Instant
+import io.github.kotlinmania.rustlang.std.sys.pal.sync as pal
 
 public open class Condvar internal constructor(
     cvarCtorArg: OnceBox<pal.Condvar>,

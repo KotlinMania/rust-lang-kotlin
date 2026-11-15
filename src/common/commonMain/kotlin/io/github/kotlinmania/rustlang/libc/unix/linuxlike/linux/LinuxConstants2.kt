@@ -1,19 +1,19 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U16
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U64
-import io.github.kotlinmania.rustlang.types.u32CastInt
-import io.github.kotlinmania.rustlang.unix.linuxlike.io
-import io.github.kotlinmania.rustlang.unix.linuxlike.ior
-import io.github.kotlinmania.rustlang.unix.linuxlike.iow
-import io.github.kotlinmania.rustlang.unix.linuxlike.iowr
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Ioctl
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
+import io.github.kotlinmania.rustlang.libc.types.u32CastInt
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.io
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ior
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.iow
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.iowr
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Ioctl
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 
 public val KERN_CORE_USES_PID: CInt = 52
 

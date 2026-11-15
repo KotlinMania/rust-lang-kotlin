@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.arch
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.detect.checkFor
+import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
 
 // Run-time feature detection on MIPS64.
 
@@ -38,4 +38,4 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun msa(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.msa)
+public fun msa(): Boolean = checkFor(::msa)

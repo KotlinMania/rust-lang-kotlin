@@ -2,9 +2,9 @@
 package io.github.kotlinmania.rustlang.corearch.x8664
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.loongarch64.lsx.M128d
-import io.github.kotlinmania.rustlang.loongarch64.lsx.M128i
-import io.github.kotlinmania.rustlang.x86.mmSetEpi64x
+import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128d
+import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128i
+import io.github.kotlinmania.rustlang.corearch.x86.mmSetEpi64x
 
 // `x8664`s Streaming SIMD Extensions 2 (SSE2)
 

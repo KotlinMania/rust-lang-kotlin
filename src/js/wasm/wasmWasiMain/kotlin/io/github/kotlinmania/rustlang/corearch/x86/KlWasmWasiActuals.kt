@@ -3,39 +3,36 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.x86.M128i
 
 // The host must provide the C companion wrapper exports in import module kmcore.
-public actual fun loadiwkey(integrityKey: M128i, keyLo: M128i, keyHi: M128i, control: UInt) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86KlLoadiwkey")
-}
+public actual fun loadiwkey(integrityKey: M128i, keyLo: M128i, keyHi: M128i, control: UInt): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86KlLoadiwkey")
 
 public actual fun encodekey128(keyMetadata: UInt, key: M128i): EncodeKey128Output =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86KlEncodekey128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86KlEncodekey128")
 
 public actual fun encodekey256(keyMetadata: UInt, keyLo: M128i, keyHi: M128i): EncodeKey256Output =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86KlEncodekey256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86KlEncodekey256")
 
 public actual fun aesenc128kl(data: M128i, handle: ConstPtr): AesOutput =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86KlAesenc128kl")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86KlAesenc128kl")
 
 public actual fun aesdec128kl(data: M128i, handle: ConstPtr): AesOutput =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86KlAesdec128kl")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86KlAesdec128kl")
 
 public actual fun aesenc256kl(data: M128i, handle: ConstPtr): AesOutput =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86KlAesenc256kl")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86KlAesenc256kl")
 
 public actual fun aesdec256kl(data: M128i, handle: ConstPtr): AesOutput =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86KlAesdec256kl")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86KlAesdec256kl")
 
 public actual fun aesencwide128kl(handle: ConstPtr, i0: M128i, i1: M128i, i2: M128i, i3: M128i, i4: M128i, i5: M128i, i6: M128i, i7: M128i): WideAesOutput =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86KlAesencwide128kl")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86KlAesencwide128kl")
 
 public actual fun aesdecwide128kl(handle: ConstPtr, i0: M128i, i1: M128i, i2: M128i, i3: M128i, i4: M128i, i5: M128i, i6: M128i, i7: M128i): WideAesOutput =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86KlAesdecwide128kl")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86KlAesdecwide128kl")
 
 public actual fun aesencwide256kl(handle: ConstPtr, i0: M128i, i1: M128i, i2: M128i, i3: M128i, i4: M128i, i5: M128i, i6: M128i, i7: M128i): WideAesOutput =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86KlAesencwide256kl")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86KlAesencwide256kl")
 
 public actual fun aesdecwide256kl(handle: ConstPtr, i0: M128i, i1: M128i, i2: M128i, i3: M128i, i4: M128i, i5: M128i, i6: M128i, i7: M128i): WideAesOutput =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86KlAesdecwide256kl")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86KlAesdecwide256kl")

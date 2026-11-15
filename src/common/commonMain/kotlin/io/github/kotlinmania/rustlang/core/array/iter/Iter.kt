@@ -1,16 +1,16 @@
 // port-lint: source array/iter.rs
 package io.github.kotlinmania.rustlang.core.array.iter
 
-import io.github.kotlinmania.rustlang.array.iter.iterinner.PolymorphicIter
+import io.github.kotlinmania.rustlang.core.array.iter.iterinner.PolymorphicIter
+import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
+import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.intrinsics.transmuteUnchecked
-import io.github.kotlinmania.rustlang.mem.manuallydrop.ManuallyDrop
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.mem.needsDrop
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.indexrange.IndexRange
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.ptr.read
 
 // Defines the `IntoIter` owned iterator for arrays.
 
@@ -92,7 +92,7 @@ public fun <T> IntoIter.Companion.new(array: List<T>, n: Int): IntoIter<T, N> = 
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.array.IntoIter
  * import std.mem.MaybeUninit
  *
@@ -100,7 +100,7 @@ public fun <T> IntoIter.Companion.new(array: List<T>, n: Int): IntoIter<T, N> = 
  * @feature(maybeUninitUninitArrayTranspose)
  * public fun doctestEntry() {
  *     fun <T> nextChunk(it: Any, n: Int): Result<List<T>> {
- *         var buffer = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Result<List<T>>>()) }
+ *         var buffer = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>>>()) }
  *         var i = 0
  *         while (i < n) {
  *             when (val matchVal = it.next()) {

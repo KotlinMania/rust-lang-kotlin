@@ -1,15 +1,15 @@
 // port-lint: source iter/adapters/zip.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.zip
 
+import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -50,15 +50,25 @@ public open class Zip<A, B>(
     // index, len and aLen are only used by the specialized version of zip
     public var index: Int,
     public var len: Int,
-) : ZipImpl<A, B, Zip<A, B>, Pair<Item, Item>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen<Zip<A, B>>, SourceIter<Source>, InPlaceIterable, ZipFmt<A, B>, SpecFold<Zip<A, B>>, Iterable<Pair<Item, Item>> {
-    override fun iterator(): Iterator<Pair<Item, Item>> = object : AbstractIterator<Pair<Item, Item>>() {
-        override fun computeNext() {
-            when (val v = this@Zip.next()) {
-                null -> done()
-                else -> setNext(v)
+) : ZipImpl<A, B, Zip<A, B>, Pair<Item, Item>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    TrustedFused,
+    TrustedLen<Zip<A, B>>,
+    SourceIter<Source>,
+    InPlaceIterable,
+    ZipFmt<A, B>,
+    SpecFold<Zip<A, B>>,
+    Iterable<Pair<Item, Item>> {
+    override fun iterator(): Iterator<Pair<Item, Item>> =
+        object : AbstractIterator<Pair<Item, Item>>() {
+            override fun computeNext() {
+                when (val v = this@Zip.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Zip<A, B> = Zip(a, b, index, len)
 
@@ -231,7 +241,11 @@ public open class Zip<A, B>(
         return this.a.asInner()
     }
 
-    public override fun fmt(f: StringBuilder): Result<Unit, Unit> = run { this.fmt(f); Result.Ok(Unit) }
+    public override fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            this.fmt(f)
+            Result.Ok(Unit)
+        }
 
     public open fun fmtAB(f: StringBuilder) {
         DebugStruct(f, "Zip").field("a", this.a).field("b", this.b).finish()

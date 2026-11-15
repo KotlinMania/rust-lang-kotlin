@@ -2,17 +2,17 @@
 package io.github.kotlinmania.rustlang.core.error
 
 import io.github.kotlinmania.rustlang.core.RustTypeId
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.fmt.Formatter
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -397,7 +397,7 @@ public inline fun <reified T> requestRef(err: Error): T? = requestByTypeTag<Ref<
  * Request a specific value by tag from the `Error`.
  */
 public fun <I> requestByTypeTag(err: Error): Reified? where I : Type<Any?> {
-    val tagged = Tagged(tagId = RustTypeId.of<I>(), value = TaggedOption(null, fieldLayout = ObjectSlotLayout<Reified?>()))
+    val tagged = Tagged(tagId = RustTypeId.of<I>(), value = TaggedOption(null, fieldLayout = UnresolvedTypeLayout<Reified?>()))
     err.provide(tagged.asRequest())
     return tagged.value.first
 }
@@ -494,7 +494,9 @@ public open class Request internal constructor(
 
     public var value: Tagged<Erased>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        internal set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -898,7 +900,9 @@ public open class TaggedOption<I : Type<Any?>, Reified> internal constructor(
 
     public var value: Reified?
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Reified?, fieldLayout: TypeLayout<Reified?>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -915,7 +919,7 @@ public fun <I : Type<Any?>> Tagged<TaggedOption<I, Reified>>.asRequest(): RustMu
     val erased = ((this as Any?) as Tagged<Erased>)
     // SAFETY: transmuting `Tagged<dynamic Erased<> + >` to `Request<>` is safe since
     // `Request` is repr(transparent).
-    return RustMutableReference(MutPtr((((mutPtrFromRustCast(erased)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<Request>())
+    return RustMutableReference(MutPtr((((mutPtrFromRustCast(erased)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<Request>())
 }
 
 /**
@@ -937,7 +941,7 @@ public open class Tagged<E>(
 public fun <I> Tagged<Erased>.downcast(): TaggedOption<I, Reified>? where I : Type<Any?> =
     if (this.tagId == RustTypeId.of<I>()) {
         // SAFETY: Just checked whether we're pointing to an I.
-        (ObjectSlotLayout<Tagged<TaggedOption<I, Reified>>>()).readNative((ConstPtr(((constPtrFromRustCast(this))).rawAddress)).rawAddress).value
+        (UnresolvedTypeLayout<Tagged<TaggedOption<I, Reified>>>()).readNative((ConstPtr(((constPtrFromRustCast(this))).rawAddress)).rawAddress).value
     } else {
         null
     }
@@ -948,7 +952,7 @@ public fun <I> Tagged<Erased>.downcast(): TaggedOption<I, Reified>? where I : Ty
  */
 public fun <I> Tagged<Erased>.downcastMut(): RustMutableReference<TaggedOption<I, Reified>>? where I : Type<Any?> =
     if (this.tagId == RustTypeId.of<I>()) {
-        RustMutableReference(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress)).rawAddress), ObjectSlotLayout<Tagged<TaggedOption<I, Reified>>>()).value
+        RustMutableReference(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress)).rawAddress), UnresolvedTypeLayout<Tagged<TaggedOption<I, Reified>>>()).value
     } else {
         null
     }
@@ -962,14 +966,15 @@ public fun <I> Tagged<Erased>.downcastMut(): RustMutableReference<TaggedOption<I
 public open class Source(
     public var current: Error?,
 ) : Iterable<Error> {
-    override fun iterator(): Iterator<Error> = object : AbstractIterator<Error>() {
-        override fun computeNext() {
-            when (val v = this@Source.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Error> =
+        object : AbstractIterator<Error>() {
+            override fun computeNext() {
+                when (val v = this@Source.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Source = Source(current)
 

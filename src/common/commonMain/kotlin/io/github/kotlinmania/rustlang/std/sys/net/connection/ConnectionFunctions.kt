@@ -1,12 +1,12 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.io.constError
-import io.github.kotlinmania.rustlang.net.socketaddr.ToSocketAddrs
-import io.github.kotlinmania.rustlang.os.unix.net.SocketAddr
-import io.github.kotlinmania.rustlang.sys.net.connection.socket.lookupHost
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.lookupHost
 
 public fun <Iter, A : ToSocketAddrs<Any?>, T> eachAddr(addr: A, f: (SocketAddr) -> Result<T, Error>): Result<T, Error> {
     var lastErr = null

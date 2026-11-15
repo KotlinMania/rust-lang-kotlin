@@ -1,15 +1,15 @@
 // port-lint: source iter/traits/double_ended.rs
 package io.github.kotlinmania.rustlang.core.iter.traits.doubleended
 
-import io.github.kotlinmania.rustlang.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.array.iterNextChunkBack
+import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
+import io.github.kotlinmania.rustlang.core.array.iterNextChunkBack
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
+import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 /**
  * An iterator able to yield elements from both ends.
@@ -280,7 +280,11 @@ public interface DoubleEndedIterator<T> {
             val matchVal = this.nextBack()
             if (matchVal == null) break
             val x = matchVal
-            accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            accum =
+                when (val tryResult = f(accum, x)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                }
         }
         return accum
     }
@@ -434,7 +438,11 @@ public fun <I : DoubleEndedIterator<I>, B, R> I.specTryRfold(init: B, f: (B, Ite
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        accum =
+            when (val tryResult = f(accum, x)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
     }
     return accum
 }

@@ -1,9 +1,9 @@
 // port-lint: source simd/ptr.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.ptr
 
-import io.github.kotlinmania.rustlang.Simd
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.coresimd.Simd
 
 // Traits for vectors of pointers.
 

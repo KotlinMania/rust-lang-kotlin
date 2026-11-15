@@ -3,18 +3,17 @@
 
 package io.github.kotlinmania.rustlang.hashbrown
 
-import io.github.kotlinmania.rustlang.Equivalent
-import io.github.kotlinmania.rustlang.TryReserveError
-import io.github.kotlinmania.rustlang.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
+import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hasher.DefaultHashBuilder
-import io.github.kotlinmania.rustlang.raw.Bucket
-import io.github.kotlinmania.rustlang.raw.RawDrain
-import io.github.kotlinmania.rustlang.raw.RawExtractIf
-import io.github.kotlinmania.rustlang.raw.RawIntoIter
-import io.github.kotlinmania.rustlang.raw.RawIter
-import io.github.kotlinmania.rustlang.raw.RawTable
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
+import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawDrain
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawExtractIf
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawIntoIter
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawIter
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawTable
 
 public class DebugStruct(
     private val out: StringBuilder,

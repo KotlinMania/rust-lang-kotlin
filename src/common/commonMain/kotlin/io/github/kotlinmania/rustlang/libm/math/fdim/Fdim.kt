@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.core.F16
  *
  * A range error may occur.
  */
-public fun fdimf16(x: F16, y: F16): F16 = io.github.kotlinmania.rustlang.math.fdim.fdim(x.toDouble(), y.toDouble())
+public fun fdimf16(x: F16, y: F16): F16 = io.github.kotlinmania.rustlang.libm.math.generic.fdim(x.toDouble(), y.toDouble())
 
 /**
  * Positive difference (f32)
@@ -26,7 +26,7 @@ public fun fdimf16(x: F16, y: F16): F16 = io.github.kotlinmania.rustlang.math.fd
  *
  * A range error may occur.
  */
-public fun fdimf(x: kotlin.Float, y: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.math.fdim.fdim(x.toDouble(), y.toDouble())
+public fun fdimf(x: kotlin.Float, y: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.libm.math.generic.fdim(x.toDouble(), y.toDouble())
 
 /**
  * Positive difference (f64)
@@ -38,7 +38,7 @@ public fun fdimf(x: kotlin.Float, y: kotlin.Float): kotlin.Float = io.github.kot
  *
  * A range error may occur.
  */
-public fun fdim(x: Double, y: Double): Double = io.github.kotlinmania.rustlang.math.fdim.fdim(x, y)
+public fun fdim(x: Double, y: Double): Double = io.github.kotlinmania.rustlang.libm.math.generic.fdim(x, y)
 
 /**
  * Positive difference (f128)
@@ -50,4 +50,4 @@ public fun fdim(x: Double, y: Double): Double = io.github.kotlinmania.rustlang.m
  *
  * A range error may occur.
  */
-public fun fdimf128(x: F128, y: F128): F128 = io.github.kotlinmania.rustlang.math.fdim.fdim(x.toDouble(), y.toDouble())
+public fun fdimf128(x: F128, y: F128): F128 = io.github.kotlinmania.rustlang.libm.math.generic.fdim(x.toDouble(), y.toDouble())

@@ -3,7 +3,6 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
@@ -13,48 +12,42 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.unix.CMSG_ALIGN
-import io.github.kotlinmania.rustlang.unix.CcT
-import io.github.kotlinmania.rustlang.unix.GidT
-import io.github.kotlinmania.rustlang.unix.IFNAMSIZ
-import io.github.kotlinmania.rustlang.unix.In6Addr
-import io.github.kotlinmania.rustlang.unix.LocaleT
-import io.github.kotlinmania.rustlang.unix.PidT
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.SsizeT
-import io.github.kotlinmania.rustlang.unix.UidT
-import io.github.kotlinmania.rustlang.unix.bsd.Sockaddr
-import io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.DevT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.KeyT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem
-import io.github.kotlinmania.rustlang.unix.bsd.apple.RLIM_INFINITY
-import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
-import io.github.kotlinmania.rustlang.unix.linuxlike.IPTOS_TOS_MASK
-import io.github.kotlinmania.rustlang.unix.linuxlike.MAX_ADDR_LEN
-import io.github.kotlinmania.rustlang.unix.linuxlike.TimerT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.Off64T
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Ino64T
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.NfdsT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.PthreadOnceT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Rlim64T
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Cmsghdr
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Msghdr
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timespec
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.InoT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.RlimT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.RegoffT
+import io.github.kotlinmania.rustlang.libc.unix.CcT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.In6Addr
+import io.github.kotlinmania.rustlang.libc.unix.LocaleT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.Timespec
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.RLIM_INFINITY
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.DevT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Ino64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.NfdsT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.NlItem
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.PthreadOnceT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Rlim64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Cmsghdr
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Msghdr
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.InoT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.RlimT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.RegoffT
 
 public fun interface GlobErrfuncCallback {
     public operator fun invoke(epath: ConstPtr, errnum: CInt): CInt
@@ -108,7 +101,7 @@ public typealias Elf64Rela = CAnonymousElf64Rela
 
 public typealias IconvT = MutPtr
 
-public class GlobT internal constructor(
+public open class GlobT internal constructor(
     public var glPathc: SizeT,
     glPathvCtorArg: MutPtr,
     public var glOffs: SizeT,
@@ -137,67 +130,7 @@ public class GlobT internal constructor(
     public var unused5: MutPtr = unused5CtorArg
         internal set
 
-    public constructor() : this(
-        glPathc = 0uL,
-        glPathvCtorArg = MutPtr(0L),
-        glOffs = 0uL,
-        glFlags = 0,
-        unused1CtorArg = MutPtr(0L),
-        unused2CtorArg = MutPtr(0L),
-        unused3CtorArg = MutPtr(0L),
-        unused4CtorArg = MutPtr(0L),
-        unused5CtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): SizeT = this.glPathc
-
-    public operator fun component2(): MutPtr = this.glPathv
-
-    public operator fun component3(): SizeT = this.glOffs
-
-    public operator fun component4(): CInt = this.glFlags
-
-    public operator fun component5(): MutPtr = this.unused1
-
-    public operator fun component6(): MutPtr = this.unused2
-
-    public operator fun component7(): MutPtr = this.unused3
-
-    public operator fun component8(): MutPtr = this.unused4
-
-    public operator fun component9(): MutPtr = this.unused5
-
-    public fun copy(glPathc: SizeT = this.glPathc, glPathv: MutPtr = this.glPathv, glOffs: SizeT = this.glOffs, glFlags: CInt = this.glFlags, unused1: MutPtr = this.unused1, unused2: MutPtr = this.unused2, unused3: MutPtr = this.unused3, unused4: MutPtr = this.unused4, unused5: MutPtr = this.unused5): GlobT = GlobT(glPathc = glPathc, glPathvCtorArg = glPathv, glOffs = glOffs, glFlags = glFlags, unused1CtorArg = unused1, unused2CtorArg = unused2, unused3CtorArg = unused3, unused4CtorArg = unused4, unused5CtorArg = unused5)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is GlobT) return false
-        if (this.glPathc != other.glPathc) return false
-        if (this.glPathv != other.glPathv) return false
-        if (this.glOffs != other.glOffs) return false
-        if (this.glFlags != other.glFlags) return false
-        if (this.unused1 != other.unused1) return false
-        if (this.unused2 != other.unused2) return false
-        if (this.unused3 != other.unused3) return false
-        if (this.unused4 != other.unused4) return false
-        if (this.unused5 != other.unused5) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.glPathc.hashCode()
-        result = 31 * result + this.glPathv.hashCode()
-        result = 31 * result + this.glOffs.hashCode()
-        result = 31 * result + this.glFlags.hashCode()
-        result = 31 * result + this.unused1.hashCode()
-        result = 31 * result + this.unused2.hashCode()
-        result = 31 * result + this.unused3.hashCode()
-        result = 31 * result + this.unused4.hashCode()
-        result = 31 * result + this.unused5.hashCode()
-        return result
-    }
-
-    public fun clone(): GlobT = GlobT(glPathc, glPathv, glOffs, glFlags, unused1, unused2, unused3, unused4, unused5)
+    public open fun clone(): GlobT = GlobT(glPathc, glPathv, glOffs, glFlags, unused1, unused2, unused3, unused4, unused5)
 
     public companion object {
         public fun typeLayout(): TypeLayout<GlobT> =
@@ -253,15 +186,15 @@ public class GlobT internal constructor(
             }
 
         public operator fun invoke(
-            glPathc: SizeT = 0uL,
-            glPathv: MutPtr = MutPtr(0L),
-            glOffs: SizeT = 0uL,
-            glFlags: CInt = 0,
-            unused1: MutPtr = MutPtr(0L),
-            unused2: MutPtr = MutPtr(0L),
-            unused3: MutPtr = MutPtr(0L),
-            unused4: MutPtr = MutPtr(0L),
-            unused5: MutPtr = MutPtr(0L),
+            glPathc: SizeT,
+            glPathv: MutPtr,
+            glOffs: SizeT,
+            glFlags: CInt,
+            unused1: MutPtr,
+            unused2: MutPtr,
+            unused3: MutPtr,
+            unused4: MutPtr,
+            unused5: MutPtr,
         ): GlobT = GlobT(
             glPathc = glPathc,
             glPathvCtorArg = glPathv,
@@ -276,7 +209,7 @@ public class GlobT internal constructor(
     }
 }
 
-public class Passwd internal constructor(
+public open class Passwd internal constructor(
     pwNameCtorArg: MutPtr,
     pwPasswdCtorArg: MutPtr,
     public var pwUid: UidT,
@@ -300,57 +233,7 @@ public class Passwd internal constructor(
     public var pwShell: MutPtr = pwShellCtorArg
         internal set
 
-    public constructor() : this(
-        pwNameCtorArg = MutPtr(0L),
-        pwPasswdCtorArg = MutPtr(0L),
-        pwUid = 0,
-        pwGid = 0,
-        pwGecosCtorArg = MutPtr(0L),
-        pwDirCtorArg = MutPtr(0L),
-        pwShellCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): MutPtr = this.pwName
-
-    public operator fun component2(): MutPtr = this.pwPasswd
-
-    public operator fun component3(): UidT = this.pwUid
-
-    public operator fun component4(): GidT = this.pwGid
-
-    public operator fun component5(): MutPtr = this.pwGecos
-
-    public operator fun component6(): MutPtr = this.pwDir
-
-    public operator fun component7(): MutPtr = this.pwShell
-
-    public fun copy(pwName: MutPtr = this.pwName, pwPasswd: MutPtr = this.pwPasswd, pwUid: UidT = this.pwUid, pwGid: GidT = this.pwGid, pwGecos: MutPtr = this.pwGecos, pwDir: MutPtr = this.pwDir, pwShell: MutPtr = this.pwShell): Passwd = Passwd(pwNameCtorArg = pwName, pwPasswdCtorArg = pwPasswd, pwUid = pwUid, pwGid = pwGid, pwGecosCtorArg = pwGecos, pwDirCtorArg = pwDir, pwShellCtorArg = pwShell)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Passwd) return false
-        if (this.pwName != other.pwName) return false
-        if (this.pwPasswd != other.pwPasswd) return false
-        if (this.pwUid != other.pwUid) return false
-        if (this.pwGid != other.pwGid) return false
-        if (this.pwGecos != other.pwGecos) return false
-        if (this.pwDir != other.pwDir) return false
-        if (this.pwShell != other.pwShell) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.pwName.hashCode()
-        result = 31 * result + this.pwPasswd.hashCode()
-        result = 31 * result + this.pwUid.hashCode()
-        result = 31 * result + this.pwGid.hashCode()
-        result = 31 * result + this.pwGecos.hashCode()
-        result = 31 * result + this.pwDir.hashCode()
-        result = 31 * result + this.pwShell.hashCode()
-        return result
-    }
-
-    public fun clone(): Passwd = Passwd(pwName, pwPasswd, pwUid, pwGid, pwGecos, pwDir, pwShell)
+    public open fun clone(): Passwd = Passwd(pwName, pwPasswd, pwUid, pwGid, pwGecos, pwDir, pwShell)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Passwd> =
@@ -398,13 +281,13 @@ public class Passwd internal constructor(
             }
 
         public operator fun invoke(
-            pwName: MutPtr = MutPtr(0L),
-            pwPasswd: MutPtr = MutPtr(0L),
-            pwUid: UidT = 0,
-            pwGid: GidT = 0,
-            pwGecos: MutPtr = MutPtr(0L),
-            pwDir: MutPtr = MutPtr(0L),
-            pwShell: MutPtr = MutPtr(0L),
+            pwName: MutPtr,
+            pwPasswd: MutPtr,
+            pwUid: UidT,
+            pwGid: GidT,
+            pwGecos: MutPtr,
+            pwDir: MutPtr,
+            pwShell: MutPtr,
         ): Passwd = Passwd(
             pwNameCtorArg = pwName,
             pwPasswdCtorArg = pwPasswd,
@@ -417,7 +300,7 @@ public class Passwd internal constructor(
     }
 }
 
-public class Spwd internal constructor(
+public open class Spwd internal constructor(
     spNampCtorArg: MutPtr,
     spPwdpCtorArg: MutPtr,
     public var spLstchg: CLong,
@@ -434,67 +317,7 @@ public class Spwd internal constructor(
     public var spPwdp: MutPtr = spPwdpCtorArg
         internal set
 
-    public constructor() : this(
-        spNampCtorArg = MutPtr(0L),
-        spPwdpCtorArg = MutPtr(0L),
-        spLstchg = 0L,
-        spMin = 0L,
-        spMax = 0L,
-        spWarn = 0L,
-        spInact = 0L,
-        spExpire = 0L,
-        spFlag = 0uL,
-    )
-
-    public operator fun component1(): MutPtr = this.spNamp
-
-    public operator fun component2(): MutPtr = this.spPwdp
-
-    public operator fun component3(): CLong = this.spLstchg
-
-    public operator fun component4(): CLong = this.spMin
-
-    public operator fun component5(): CLong = this.spMax
-
-    public operator fun component6(): CLong = this.spWarn
-
-    public operator fun component7(): CLong = this.spInact
-
-    public operator fun component8(): CLong = this.spExpire
-
-    public operator fun component9(): CUlong = this.spFlag
-
-    public fun copy(spNamp: MutPtr = this.spNamp, spPwdp: MutPtr = this.spPwdp, spLstchg: CLong = this.spLstchg, spMin: CLong = this.spMin, spMax: CLong = this.spMax, spWarn: CLong = this.spWarn, spInact: CLong = this.spInact, spExpire: CLong = this.spExpire, spFlag: CUlong = this.spFlag): Spwd = Spwd(spNampCtorArg = spNamp, spPwdpCtorArg = spPwdp, spLstchg = spLstchg, spMin = spMin, spMax = spMax, spWarn = spWarn, spInact = spInact, spExpire = spExpire, spFlag = spFlag)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Spwd) return false
-        if (this.spNamp != other.spNamp) return false
-        if (this.spPwdp != other.spPwdp) return false
-        if (this.spLstchg != other.spLstchg) return false
-        if (this.spMin != other.spMin) return false
-        if (this.spMax != other.spMax) return false
-        if (this.spWarn != other.spWarn) return false
-        if (this.spInact != other.spInact) return false
-        if (this.spExpire != other.spExpire) return false
-        if (this.spFlag != other.spFlag) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.spNamp.hashCode()
-        result = 31 * result + this.spPwdp.hashCode()
-        result = 31 * result + this.spLstchg.hashCode()
-        result = 31 * result + this.spMin.hashCode()
-        result = 31 * result + this.spMax.hashCode()
-        result = 31 * result + this.spWarn.hashCode()
-        result = 31 * result + this.spInact.hashCode()
-        result = 31 * result + this.spExpire.hashCode()
-        result = 31 * result + this.spFlag.hashCode()
-        return result
-    }
-
-    public fun clone(): Spwd = Spwd(spNamp, spPwdp, spLstchg, spMin, spMax, spWarn, spInact, spExpire, spFlag)
+    public open fun clone(): Spwd = Spwd(spNamp, spPwdp, spLstchg, spMin, spMax, spWarn, spInact, spExpire, spFlag)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Spwd> =
@@ -550,15 +373,15 @@ public class Spwd internal constructor(
             }
 
         public operator fun invoke(
-            spNamp: MutPtr = MutPtr(0L),
-            spPwdp: MutPtr = MutPtr(0L),
-            spLstchg: CLong = 0L,
-            spMin: CLong = 0L,
-            spMax: CLong = 0L,
-            spWarn: CLong = 0L,
-            spInact: CLong = 0L,
-            spExpire: CLong = 0L,
-            spFlag: CUlong = 0uL,
+            spNamp: MutPtr,
+            spPwdp: MutPtr,
+            spLstchg: CLong,
+            spMin: CLong,
+            spMax: CLong,
+            spWarn: CLong,
+            spInact: CLong,
+            spExpire: CLong,
+            spFlag: CUlong,
         ): Spwd = Spwd(
             spNampCtorArg = spNamp,
             spPwdpCtorArg = spPwdp,
@@ -573,22 +396,17 @@ public class Spwd internal constructor(
     }
 }
 
-public data class Itimerspec(
-    public var itInterval: Timespec = Timespec(),
-    public var itValue: Timespec = Timespec(),
-)
-
-public data class FsidT(
-    public var value: IntArray = IntArray(2),
+public open class Itimerspec(
+    public var itInterval: Timespec,
+    public var itValue: Timespec,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is FsidT) return false
-        if (!this.value.contentEquals(other.value)) return false
-        return true
-    }
+    public open fun clone(): Itimerspec = Itimerspec(itInterval, itValue)
+}
 
-    override fun hashCode(): Int = this.value.contentHashCode()
+public open class FsidT(
+    public var value: IntArray,
+) {
+    public open fun clone(): FsidT = FsidT(value)
 
     public companion object {
         public fun typeLayout(): TypeLayout<FsidT> =
@@ -613,17 +431,10 @@ public data class FsidT(
     }
 }
 
-public data class CpuSetT(
-    public var bits: ULongArray = ULongArray(16),
+public open class CpuSetT(
+    public var bits: ULongArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CpuSetT) return false
-        if (!this.bits.contentEquals(other.bits)) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.bits.contentHashCode()
+    public open fun clone(): CpuSetT = CpuSetT(bits)
 
     public companion object {
         public fun typeLayout(): TypeLayout<CpuSetT> =
@@ -648,11 +459,13 @@ public data class CpuSetT(
     }
 }
 
-public data class Sembuf(
-    public var semNum: CUshort = 0u,
-    public var semOp: CShort = 0,
-    public var semFlg: CShort = 0,
+public open class Sembuf(
+    public var semNum: CUshort,
+    public var semOp: CShort,
+    public var semFlg: CShort,
 ) {
+    public open fun clone(): Sembuf = Sembuf(semNum, semOp, semFlg)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Sembuf> =
             object : TypeLayout<Sembuf> {
@@ -684,7 +497,7 @@ public data class Sembuf(
     }
 }
 
-public class DlPhdrInfo internal constructor(
+public open class DlPhdrInfo internal constructor(
     public var dlpiAddr: Elf64Addr,
     dlpiNameCtorArg: ConstPtr,
     dlpiPhdrCtorArg: ConstPtr,
@@ -709,62 +522,7 @@ public class DlPhdrInfo internal constructor(
     public var dlpiTlsData: MutPtr = dlpiTlsDataCtorArg
         internal set
 
-    public constructor() : this(
-        dlpiAddr = 0uL,
-        dlpiNameCtorArg = ConstPtr(0L),
-        dlpiPhdrCtorArg = ConstPtr(0L),
-        dlpiPhnum = 0u,
-        dlpiAdds = 0uL,
-        dlpiSubs = 0uL,
-        dlpiTlsModid = 0uL,
-        dlpiTlsDataCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): Elf64Addr = this.dlpiAddr
-
-    public operator fun component2(): ConstPtr = this.dlpiName
-
-    public operator fun component3(): ConstPtr = this.dlpiPhdr
-
-    public operator fun component4(): Elf64Half = this.dlpiPhnum
-
-    public operator fun component5(): CUlonglong = this.dlpiAdds
-
-    public operator fun component6(): CUlonglong = this.dlpiSubs
-
-    public operator fun component7(): SizeT = this.dlpiTlsModid
-
-    public operator fun component8(): MutPtr = this.dlpiTlsData
-
-    public fun copy(dlpiAddr: Elf64Addr = this.dlpiAddr, dlpiName: ConstPtr = this.dlpiName, dlpiPhdr: ConstPtr = this.dlpiPhdr, dlpiPhnum: Elf64Half = this.dlpiPhnum, dlpiAdds: CUlonglong = this.dlpiAdds, dlpiSubs: CUlonglong = this.dlpiSubs, dlpiTlsModid: SizeT = this.dlpiTlsModid, dlpiTlsData: MutPtr = this.dlpiTlsData): DlPhdrInfo = DlPhdrInfo(dlpiAddr = dlpiAddr, dlpiNameCtorArg = dlpiName, dlpiPhdrCtorArg = dlpiPhdr, dlpiPhnum = dlpiPhnum, dlpiAdds = dlpiAdds, dlpiSubs = dlpiSubs, dlpiTlsModid = dlpiTlsModid, dlpiTlsDataCtorArg = dlpiTlsData)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is DlPhdrInfo) return false
-        if (this.dlpiAddr != other.dlpiAddr) return false
-        if (this.dlpiName != other.dlpiName) return false
-        if (this.dlpiPhdr != other.dlpiPhdr) return false
-        if (this.dlpiPhnum != other.dlpiPhnum) return false
-        if (this.dlpiAdds != other.dlpiAdds) return false
-        if (this.dlpiSubs != other.dlpiSubs) return false
-        if (this.dlpiTlsModid != other.dlpiTlsModid) return false
-        if (this.dlpiTlsData != other.dlpiTlsData) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.dlpiAddr.hashCode()
-        result = 31 * result + this.dlpiName.hashCode()
-        result = 31 * result + this.dlpiPhdr.hashCode()
-        result = 31 * result + this.dlpiPhnum.hashCode()
-        result = 31 * result + this.dlpiAdds.hashCode()
-        result = 31 * result + this.dlpiSubs.hashCode()
-        result = 31 * result + this.dlpiTlsModid.hashCode()
-        result = 31 * result + this.dlpiTlsData.hashCode()
-        return result
-    }
-
-    public fun clone(): DlPhdrInfo = DlPhdrInfo(dlpiAddr, dlpiName, dlpiPhdr, dlpiPhnum, dlpiAdds, dlpiSubs, dlpiTlsModid, dlpiTlsData)
+    public open fun clone(): DlPhdrInfo = DlPhdrInfo(dlpiAddr, dlpiName, dlpiPhdr, dlpiPhnum, dlpiAdds, dlpiSubs, dlpiTlsModid, dlpiTlsData)
 
     public companion object {
         public fun typeLayout(): TypeLayout<DlPhdrInfo> =
@@ -816,14 +574,14 @@ public class DlPhdrInfo internal constructor(
             }
 
         public operator fun invoke(
-            dlpiAddr: Elf64Addr = 0uL,
-            dlpiName: ConstPtr = ConstPtr(0L),
-            dlpiPhdr: ConstPtr = ConstPtr(0L),
-            dlpiPhnum: Elf64Half = 0u,
-            dlpiAdds: CUlonglong = 0uL,
-            dlpiSubs: CUlonglong = 0uL,
-            dlpiTlsModid: SizeT = 0uL,
-            dlpiTlsData: MutPtr = MutPtr(0L),
+            dlpiAddr: Elf64Addr,
+            dlpiName: ConstPtr,
+            dlpiPhdr: ConstPtr,
+            dlpiPhnum: Elf64Half,
+            dlpiAdds: CUlonglong,
+            dlpiSubs: CUlonglong,
+            dlpiTlsModid: SizeT,
+            dlpiTlsData: MutPtr,
         ): DlPhdrInfo = DlPhdrInfo(
             dlpiAddr = dlpiAddr,
             dlpiNameCtorArg = dlpiName,
@@ -837,59 +595,23 @@ public class DlPhdrInfo internal constructor(
     }
 }
 
-public data class Elf32Ehdr(
-    public var eIdent: UByteArray = UByteArray(16),
-    public var eType: Elf32Half = 0u,
-    public var eMachine: Elf32Half = 0u,
-    public var eVersion: Elf32Word = 0u,
-    public var eEntry: Elf32Addr = 0u,
-    public var ePhoff: Elf32Off = 0u,
-    public var eShoff: Elf32Off = 0u,
-    public var eFlags: Elf32Word = 0u,
-    public var eEhsize: Elf32Half = 0u,
-    public var ePhentsize: Elf32Half = 0u,
-    public var ePhnum: Elf32Half = 0u,
-    public var eShentsize: Elf32Half = 0u,
-    public var eShnum: Elf32Half = 0u,
-    public var eShstrndx: Elf32Half = 0u,
+public open class Elf32Ehdr(
+    public var eIdent: UByteArray,
+    public var eType: Elf32Half,
+    public var eMachine: Elf32Half,
+    public var eVersion: Elf32Word,
+    public var eEntry: Elf32Addr,
+    public var ePhoff: Elf32Off,
+    public var eShoff: Elf32Off,
+    public var eFlags: Elf32Word,
+    public var eEhsize: Elf32Half,
+    public var ePhentsize: Elf32Half,
+    public var ePhnum: Elf32Half,
+    public var eShentsize: Elf32Half,
+    public var eShnum: Elf32Half,
+    public var eShstrndx: Elf32Half,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Elf32Ehdr) return false
-        if (!this.eIdent.contentEquals(other.eIdent)) return false
-        if (this.eType != other.eType) return false
-        if (this.eMachine != other.eMachine) return false
-        if (this.eVersion != other.eVersion) return false
-        if (this.eEntry != other.eEntry) return false
-        if (this.ePhoff != other.ePhoff) return false
-        if (this.eShoff != other.eShoff) return false
-        if (this.eFlags != other.eFlags) return false
-        if (this.eEhsize != other.eEhsize) return false
-        if (this.ePhentsize != other.ePhentsize) return false
-        if (this.ePhnum != other.ePhnum) return false
-        if (this.eShentsize != other.eShentsize) return false
-        if (this.eShnum != other.eShnum) return false
-        if (this.eShstrndx != other.eShstrndx) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.eIdent.contentHashCode()
-        result = 31 * result + this.eType.hashCode()
-        result = 31 * result + this.eMachine.hashCode()
-        result = 31 * result + this.eVersion.hashCode()
-        result = 31 * result + this.eEntry.hashCode()
-        result = 31 * result + this.ePhoff.hashCode()
-        result = 31 * result + this.eShoff.hashCode()
-        result = 31 * result + this.eFlags.hashCode()
-        result = 31 * result + this.eEhsize.hashCode()
-        result = 31 * result + this.ePhentsize.hashCode()
-        result = 31 * result + this.ePhnum.hashCode()
-        result = 31 * result + this.eShentsize.hashCode()
-        result = 31 * result + this.eShnum.hashCode()
-        result = 31 * result + this.eShstrndx.hashCode()
-        return result
-    }
+    public open fun clone(): Elf32Ehdr = Elf32Ehdr(eIdent, eType, eMachine, eVersion, eEntry, ePhoff, eShoff, eFlags, eEhsize, ePhentsize, ePhnum, eShentsize, eShnum, eShstrndx)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Elf32Ehdr> =
@@ -966,59 +688,23 @@ public data class Elf32Ehdr(
     }
 }
 
-public data class Elf64Ehdr(
-    public var eIdent: UByteArray = UByteArray(16),
-    public var eType: Elf64Half = 0u,
-    public var eMachine: Elf64Half = 0u,
-    public var eVersion: Elf64Word = 0u,
-    public var eEntry: Elf64Addr = 0uL,
-    public var ePhoff: Elf64Off = 0uL,
-    public var eShoff: Elf64Off = 0uL,
-    public var eFlags: Elf64Word = 0u,
-    public var eEhsize: Elf64Half = 0u,
-    public var ePhentsize: Elf64Half = 0u,
-    public var ePhnum: Elf64Half = 0u,
-    public var eShentsize: Elf64Half = 0u,
-    public var eShnum: Elf64Half = 0u,
-    public var eShstrndx: Elf64Half = 0u,
+public open class Elf64Ehdr(
+    public var eIdent: UByteArray,
+    public var eType: Elf64Half,
+    public var eMachine: Elf64Half,
+    public var eVersion: Elf64Word,
+    public var eEntry: Elf64Addr,
+    public var ePhoff: Elf64Off,
+    public var eShoff: Elf64Off,
+    public var eFlags: Elf64Word,
+    public var eEhsize: Elf64Half,
+    public var ePhentsize: Elf64Half,
+    public var ePhnum: Elf64Half,
+    public var eShentsize: Elf64Half,
+    public var eShnum: Elf64Half,
+    public var eShstrndx: Elf64Half,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Elf64Ehdr) return false
-        if (!this.eIdent.contentEquals(other.eIdent)) return false
-        if (this.eType != other.eType) return false
-        if (this.eMachine != other.eMachine) return false
-        if (this.eVersion != other.eVersion) return false
-        if (this.eEntry != other.eEntry) return false
-        if (this.ePhoff != other.ePhoff) return false
-        if (this.eShoff != other.eShoff) return false
-        if (this.eFlags != other.eFlags) return false
-        if (this.eEhsize != other.eEhsize) return false
-        if (this.ePhentsize != other.ePhentsize) return false
-        if (this.ePhnum != other.ePhnum) return false
-        if (this.eShentsize != other.eShentsize) return false
-        if (this.eShnum != other.eShnum) return false
-        if (this.eShstrndx != other.eShstrndx) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.eIdent.contentHashCode()
-        result = 31 * result + this.eType.hashCode()
-        result = 31 * result + this.eMachine.hashCode()
-        result = 31 * result + this.eVersion.hashCode()
-        result = 31 * result + this.eEntry.hashCode()
-        result = 31 * result + this.ePhoff.hashCode()
-        result = 31 * result + this.eShoff.hashCode()
-        result = 31 * result + this.eFlags.hashCode()
-        result = 31 * result + this.eEhsize.hashCode()
-        result = 31 * result + this.ePhentsize.hashCode()
-        result = 31 * result + this.ePhnum.hashCode()
-        result = 31 * result + this.eShentsize.hashCode()
-        result = 31 * result + this.eShnum.hashCode()
-        result = 31 * result + this.eShstrndx.hashCode()
-        return result
-    }
+    public open fun clone(): Elf64Ehdr = Elf64Ehdr(eIdent, eType, eMachine, eVersion, eEntry, ePhoff, eShoff, eFlags, eEhsize, ePhentsize, ePhnum, eShentsize, eShnum, eShstrndx)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Elf64Ehdr> =
@@ -1095,14 +781,16 @@ public data class Elf64Ehdr(
     }
 }
 
-public data class Elf32Sym(
-    public var stName: Elf32Word = 0u,
-    public var stValue: Elf32Addr = 0u,
-    public var stSize: Elf32Word = 0u,
-    public var stInfo: CUchar = 0u,
-    public var stOther: CUchar = 0u,
-    public var stShndx: Elf32Section = 0u,
+public open class Elf32Sym(
+    public var stName: Elf32Word,
+    public var stValue: Elf32Addr,
+    public var stSize: Elf32Word,
+    public var stInfo: CUchar,
+    public var stOther: CUchar,
+    public var stShndx: Elf32Section,
 ) {
+    public open fun clone(): Elf32Sym = Elf32Sym(stName, stValue, stSize, stInfo, stOther, stShndx)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Elf32Sym> =
             object : TypeLayout<Elf32Sym> {
@@ -1146,14 +834,16 @@ public data class Elf32Sym(
     }
 }
 
-public data class Elf64Sym(
-    public var stName: Elf64Word = 0u,
-    public var stInfo: CUchar = 0u,
-    public var stOther: CUchar = 0u,
-    public var stShndx: Elf64Section = 0u,
-    public var stValue: Elf64Addr = 0uL,
-    public var stSize: Elf64Xword = 0uL,
+public open class Elf64Sym(
+    public var stName: Elf64Word,
+    public var stInfo: CUchar,
+    public var stOther: CUchar,
+    public var stShndx: Elf64Section,
+    public var stValue: Elf64Addr,
+    public var stSize: Elf64Xword,
 ) {
+    public open fun clone(): Elf64Sym = Elf64Sym(stName, stInfo, stOther, stShndx, stValue, stSize)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Elf64Sym> =
             object : TypeLayout<Elf64Sym> {
@@ -1197,16 +887,18 @@ public data class Elf64Sym(
     }
 }
 
-public data class Elf32Phdr(
-    public var pType: Elf32Word = 0u,
-    public var pOffset: Elf32Off = 0u,
-    public var pVaddr: Elf32Addr = 0u,
-    public var pPaddr: Elf32Addr = 0u,
-    public var pFilesz: Elf32Word = 0u,
-    public var pMemsz: Elf32Word = 0u,
-    public var pFlags: Elf32Word = 0u,
-    public var pAlign: Elf32Word = 0u,
+public open class Elf32Phdr(
+    public var pType: Elf32Word,
+    public var pOffset: Elf32Off,
+    public var pVaddr: Elf32Addr,
+    public var pPaddr: Elf32Addr,
+    public var pFilesz: Elf32Word,
+    public var pMemsz: Elf32Word,
+    public var pFlags: Elf32Word,
+    public var pAlign: Elf32Word,
 ) {
+    public open fun clone(): Elf32Phdr = Elf32Phdr(pType, pOffset, pVaddr, pPaddr, pFilesz, pMemsz, pFlags, pAlign)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Elf32Phdr> =
             object : TypeLayout<Elf32Phdr> {
@@ -1258,16 +950,18 @@ public data class Elf32Phdr(
     }
 }
 
-public data class Elf64Phdr(
-    public var pType: Elf64Word = 0u,
-    public var pFlags: Elf64Word = 0u,
-    public var pOffset: Elf64Off = 0uL,
-    public var pVaddr: Elf64Addr = 0uL,
-    public var pPaddr: Elf64Addr = 0uL,
-    public var pFilesz: Elf64Xword = 0uL,
-    public var pMemsz: Elf64Xword = 0uL,
-    public var pAlign: Elf64Xword = 0uL,
+public open class Elf64Phdr(
+    public var pType: Elf64Word,
+    public var pFlags: Elf64Word,
+    public var pOffset: Elf64Off,
+    public var pVaddr: Elf64Addr,
+    public var pPaddr: Elf64Addr,
+    public var pFilesz: Elf64Xword,
+    public var pMemsz: Elf64Xword,
+    public var pAlign: Elf64Xword,
 ) {
+    public open fun clone(): Elf64Phdr = Elf64Phdr(pType, pFlags, pOffset, pVaddr, pPaddr, pFilesz, pMemsz, pAlign)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Elf64Phdr> =
             object : TypeLayout<Elf64Phdr> {
@@ -1319,18 +1013,20 @@ public data class Elf64Phdr(
     }
 }
 
-public data class Elf32Shdr(
-    public var shName: Elf32Word = 0u,
-    public var shType: Elf32Word = 0u,
-    public var shFlags: Elf32Word = 0u,
-    public var shAddr: Elf32Addr = 0u,
-    public var shOffset: Elf32Off = 0u,
-    public var shSize: Elf32Word = 0u,
-    public var shLink: Elf32Word = 0u,
-    public var shInfo: Elf32Word = 0u,
-    public var shAddralign: Elf32Word = 0u,
-    public var shEntsize: Elf32Word = 0u,
+public open class Elf32Shdr(
+    public var shName: Elf32Word,
+    public var shType: Elf32Word,
+    public var shFlags: Elf32Word,
+    public var shAddr: Elf32Addr,
+    public var shOffset: Elf32Off,
+    public var shSize: Elf32Word,
+    public var shLink: Elf32Word,
+    public var shInfo: Elf32Word,
+    public var shAddralign: Elf32Word,
+    public var shEntsize: Elf32Word,
 ) {
+    public open fun clone(): Elf32Shdr = Elf32Shdr(shName, shType, shFlags, shAddr, shOffset, shSize, shLink, shInfo, shAddralign, shEntsize)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Elf32Shdr> =
             object : TypeLayout<Elf32Shdr> {
@@ -1390,18 +1086,20 @@ public data class Elf32Shdr(
     }
 }
 
-public data class Elf64Shdr(
-    public var shName: Elf64Word = 0u,
-    public var shType: Elf64Word = 0u,
-    public var shFlags: Elf64Xword = 0uL,
-    public var shAddr: Elf64Addr = 0uL,
-    public var shOffset: Elf64Off = 0uL,
-    public var shSize: Elf64Xword = 0uL,
-    public var shLink: Elf64Word = 0u,
-    public var shInfo: Elf64Word = 0u,
-    public var shAddralign: Elf64Xword = 0uL,
-    public var shEntsize: Elf64Xword = 0uL,
+public open class Elf64Shdr(
+    public var shName: Elf64Word,
+    public var shType: Elf64Word,
+    public var shFlags: Elf64Xword,
+    public var shAddr: Elf64Addr,
+    public var shOffset: Elf64Off,
+    public var shSize: Elf64Xword,
+    public var shLink: Elf64Word,
+    public var shInfo: Elf64Word,
+    public var shAddralign: Elf64Xword,
+    public var shEntsize: Elf64Xword,
 ) {
+    public open fun clone(): Elf64Shdr = Elf64Shdr(shName, shType, shFlags, shAddr, shOffset, shSize, shLink, shInfo, shAddralign, shEntsize)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Elf64Shdr> =
             object : TypeLayout<Elf64Shdr> {
@@ -1461,10 +1159,12 @@ public data class Elf64Shdr(
     }
 }
 
-public data class CAnonymousElf32Rel(
-    public var rOffset: Elf32Addr = 0u,
-    public var rInfo: Elf32Word = 0u,
+public open class CAnonymousElf32Rel(
+    public var rOffset: Elf32Addr,
+    public var rInfo: Elf32Word,
 ) {
+    public open fun clone(): CAnonymousElf32Rel = CAnonymousElf32Rel(rOffset, rInfo)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousElf32Rel> =
             object : TypeLayout<CAnonymousElf32Rel> {
@@ -1492,10 +1192,12 @@ public data class CAnonymousElf32Rel(
     }
 }
 
-public data class CAnonymousElf64Rel(
-    public var rOffset: Elf64Addr = 0uL,
-    public var rInfo: Elf64Xword = 0uL,
+public open class CAnonymousElf64Rel(
+    public var rOffset: Elf64Addr,
+    public var rInfo: Elf64Xword,
 ) {
+    public open fun clone(): CAnonymousElf64Rel = CAnonymousElf64Rel(rOffset, rInfo)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousElf64Rel> =
             object : TypeLayout<CAnonymousElf64Rel> {
@@ -1523,11 +1225,13 @@ public data class CAnonymousElf64Rel(
     }
 }
 
-public data class Ucred(
-    public var pid: PidT = 0,
-    public var uid: UidT = 0,
-    public var gid: GidT = 0,
+public open class Ucred(
+    public var pid: PidT,
+    public var uid: UidT,
+    public var gid: GidT,
 ) {
+    public open fun clone(): Ucred = Ucred(pid, uid, gid)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Ucred> =
             object : TypeLayout<Ucred> {
@@ -1559,7 +1263,7 @@ public data class Ucred(
     }
 }
 
-public class Mntent internal constructor(
+public open class Mntent internal constructor(
     mntFsnameCtorArg: MutPtr,
     mntDirCtorArg: MutPtr,
     mntTypeCtorArg: MutPtr,
@@ -1579,52 +1283,7 @@ public class Mntent internal constructor(
     public var mntOpts: MutPtr = mntOptsCtorArg
         internal set
 
-    public constructor() : this(
-        mntFsnameCtorArg = MutPtr(0L),
-        mntDirCtorArg = MutPtr(0L),
-        mntTypeCtorArg = MutPtr(0L),
-        mntOptsCtorArg = MutPtr(0L),
-        mntFreq = 0,
-        mntPassno = 0,
-    )
-
-    public operator fun component1(): MutPtr = this.mntFsname
-
-    public operator fun component2(): MutPtr = this.mntDir
-
-    public operator fun component3(): MutPtr = this.mntType
-
-    public operator fun component4(): MutPtr = this.mntOpts
-
-    public operator fun component5(): CInt = this.mntFreq
-
-    public operator fun component6(): CInt = this.mntPassno
-
-    public fun copy(mntFsname: MutPtr = this.mntFsname, mntDir: MutPtr = this.mntDir, mntType: MutPtr = this.mntType, mntOpts: MutPtr = this.mntOpts, mntFreq: CInt = this.mntFreq, mntPassno: CInt = this.mntPassno): Mntent = Mntent(mntFsnameCtorArg = mntFsname, mntDirCtorArg = mntDir, mntTypeCtorArg = mntType, mntOptsCtorArg = mntOpts, mntFreq = mntFreq, mntPassno = mntPassno)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Mntent) return false
-        if (this.mntFsname != other.mntFsname) return false
-        if (this.mntDir != other.mntDir) return false
-        if (this.mntType != other.mntType) return false
-        if (this.mntOpts != other.mntOpts) return false
-        if (this.mntFreq != other.mntFreq) return false
-        if (this.mntPassno != other.mntPassno) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.mntFsname.hashCode()
-        result = 31 * result + this.mntDir.hashCode()
-        result = 31 * result + this.mntType.hashCode()
-        result = 31 * result + this.mntOpts.hashCode()
-        result = 31 * result + this.mntFreq.hashCode()
-        result = 31 * result + this.mntPassno.hashCode()
-        return result
-    }
-
-    public fun clone(): Mntent = Mntent(mntFsname, mntDir, mntType, mntOpts, mntFreq, mntPassno)
+    public open fun clone(): Mntent = Mntent(mntFsname, mntDir, mntType, mntOpts, mntFreq, mntPassno)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Mntent> =
@@ -1668,12 +1327,12 @@ public class Mntent internal constructor(
             }
 
         public operator fun invoke(
-            mntFsname: MutPtr = MutPtr(0L),
-            mntDir: MutPtr = MutPtr(0L),
-            mntType: MutPtr = MutPtr(0L),
-            mntOpts: MutPtr = MutPtr(0L),
-            mntFreq: CInt = 0,
-            mntPassno: CInt = 0,
+            mntFsname: MutPtr,
+            mntDir: MutPtr,
+            mntType: MutPtr,
+            mntOpts: MutPtr,
+            mntFreq: CInt,
+            mntPassno: CInt,
         ): Mntent = Mntent(
             mntFsnameCtorArg = mntFsname,
             mntDirCtorArg = mntDir,
@@ -1685,40 +1344,22 @@ public class Mntent internal constructor(
     }
 }
 
-public data class In6Pktinfo(
-    public var ipi6Addr: In6Addr = In6Addr(),
-    public var ipi6Ifindex: CUint = 0u,
-)
-
-public data class ArpdRequest(
-    public var req: CUshort = 0u,
-    public var ip: UInt = 0u,
-    public var dev: CUlong = 0uL,
-    public var stamp: CUlong = 0uL,
-    public var updated: CUlong = 0uL,
-    public var ha: UByteArray = UByteArray(MAX_ADDR_LEN),
+public open class In6Pktinfo(
+    public var ipi6Addr: In6Addr,
+    public var ipi6Ifindex: CUint,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ArpdRequest) return false
-        if (this.req != other.req) return false
-        if (this.ip != other.ip) return false
-        if (this.dev != other.dev) return false
-        if (this.stamp != other.stamp) return false
-        if (this.updated != other.updated) return false
-        if (!this.ha.contentEquals(other.ha)) return false
-        return true
-    }
+    public open fun clone(): In6Pktinfo = In6Pktinfo(ipi6Addr, ipi6Ifindex)
+}
 
-    override fun hashCode(): Int {
-        var result = this.req.hashCode()
-        result = 31 * result + this.ip.hashCode()
-        result = 31 * result + this.dev.hashCode()
-        result = 31 * result + this.stamp.hashCode()
-        result = 31 * result + this.updated.hashCode()
-        result = 31 * result + this.ha.contentHashCode()
-        return result
-    }
+public open class ArpdRequest(
+    public var req: CUshort,
+    public var ip: UInt,
+    public var dev: CUlong,
+    public var stamp: CUlong,
+    public var updated: CUlong,
+    public var ha: UByteArray,
+) {
+    public open fun clone(): ArpdRequest = ArpdRequest(req, ip, dev, stamp, updated, ha)
 
     public companion object {
         public fun typeLayout(): TypeLayout<ArpdRequest> =
@@ -1763,10 +1404,12 @@ public data class ArpdRequest(
     }
 }
 
-public data class RegmatchT(
-    public var rmSo: RegoffT = 0L,
-    public var rmEo: RegoffT = 0L,
+public open class RegmatchT(
+    public var rmSo: RegoffT,
+    public var rmEo: RegoffT,
 ) {
+    public open fun clone(): RegmatchT = RegmatchT(rmSo, rmEo)
+
     public companion object {
         public fun typeLayout(): TypeLayout<RegmatchT> =
             object : TypeLayout<RegmatchT> {
@@ -1794,7 +1437,7 @@ public data class RegmatchT(
     }
 }
 
-public class Option internal constructor(
+public open class Option internal constructor(
     nameCtorArg: ConstPtr,
     public var hasArg: CInt,
     flagCtorArg: MutPtr,
@@ -1806,42 +1449,7 @@ public class Option internal constructor(
     public var flag: MutPtr = flagCtorArg
         internal set
 
-    public constructor() : this(
-        nameCtorArg = ConstPtr(0L),
-        hasArg = 0,
-        flagCtorArg = MutPtr(0L),
-        value = 0,
-    )
-
-    public operator fun component1(): ConstPtr = this.name
-
-    public operator fun component2(): CInt = this.hasArg
-
-    public operator fun component3(): MutPtr = this.flag
-
-    public operator fun component4(): CInt = this.value
-
-    public fun copy(name: ConstPtr = this.name, hasArg: CInt = this.hasArg, flag: MutPtr = this.flag, value: CInt = this.value): Option = Option(nameCtorArg = name, hasArg = hasArg, flagCtorArg = flag, value = value)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Option) return false
-        if (this.name != other.name) return false
-        if (this.hasArg != other.hasArg) return false
-        if (this.flag != other.flag) return false
-        if (this.value != other.value) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.name.hashCode()
-        result = 31 * result + this.hasArg.hashCode()
-        result = 31 * result + this.flag.hashCode()
-        result = 31 * result + this.value.hashCode()
-        return result
-    }
-
-    public fun clone(): Option = Option(name, hasArg, flag, value)
+    public open fun clone(): Option = Option(name, hasArg, flag, value)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Option> =
@@ -1877,10 +1485,10 @@ public class Option internal constructor(
             }
 
         public operator fun invoke(
-            name: ConstPtr = ConstPtr(0L),
-            hasArg: CInt = 0,
-            flag: MutPtr = MutPtr(0L),
-            value: CInt = 0,
+            name: ConstPtr,
+            hasArg: CInt,
+            flag: MutPtr,
+            value: CInt,
         ): Option = Option(
             nameCtorArg = name,
             hasArg = hasArg,
@@ -1891,10 +1499,12 @@ public class Option internal constructor(
 }
 
 // Note(1.0,deprecate): lfs binding to be removed
-public data class Rlimit64(
-    public var rlimCur: Rlim64T = 0uL,
-    public var rlimMax: Rlim64T = 0uL,
+public open class Rlimit64(
+    public var rlimCur: Rlim64T,
+    public var rlimMax: Rlim64T,
 ) {
+    public open fun clone(): Rlimit64 = Rlimit64(rlimCur, rlimMax)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Rlimit64> =
             object : TypeLayout<Rlimit64> {
@@ -1922,14 +1532,16 @@ public data class Rlimit64(
     }
 }
 
-public data class CAnonymousIfruMap(
-    public var memStart: CUlong = 0uL,
-    public var memEnd: CUlong = 0uL,
-    public var baseAddr: CUshort = 0u,
-    public var irq: CUchar = 0u,
-    public var dma: CUchar = 0u,
-    public var port: CUchar = 0u,
+public open class CAnonymousIfruMap(
+    public var memStart: CUlong,
+    public var memEnd: CUlong,
+    public var baseAddr: CUshort,
+    public var irq: CUchar,
+    public var dma: CUchar,
+    public var port: CUchar,
 ) {
+    public open fun clone(): CAnonymousIfruMap = CAnonymousIfruMap(memStart, memEnd, baseAddr, irq, dma, port)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousIfruMap> =
             object : TypeLayout<CAnonymousIfruMap> {
@@ -1973,32 +1585,14 @@ public data class CAnonymousIfruMap(
     }
 }
 
-public data class Dirent(
-    public var dIno: InoT = 0uL,
-    public var dOff: OffT = 0L,
-    public var dReclen: CUshort = 0u,
-    public var dType: CUchar = 0u,
-    public var dName: UByteArray = UByteArray(256),
+public open class Dirent(
+    public var dIno: InoT,
+    public var dOff: OffT,
+    public var dReclen: CUshort,
+    public var dType: CUchar,
+    public var dName: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Dirent) return false
-        if (this.dIno != other.dIno) return false
-        if (this.dOff != other.dOff) return false
-        if (this.dReclen != other.dReclen) return false
-        if (this.dType != other.dType) return false
-        if (!this.dName.contentEquals(other.dName)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.dIno.hashCode()
-        result = 31 * result + this.dOff.hashCode()
-        result = 31 * result + this.dReclen.hashCode()
-        result = 31 * result + this.dType.hashCode()
-        result = 31 * result + this.dName.contentHashCode()
-        return result
-    }
+    public open fun clone(): Dirent = Dirent(dIno, dOff, dReclen, dType, dName)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Dirent> =
@@ -2040,32 +1634,14 @@ public data class Dirent(
 }
 
 // Note(1.0,deprecate): lfs binding to be removed
-public data class Dirent64(
-    public var dIno: Ino64T = 0uL,
-    public var dOff: Off64T = 0L,
-    public var dReclen: CUshort = 0u,
-    public var dType: CUchar = 0u,
-    public var dName: UByteArray = UByteArray(256),
+public open class Dirent64(
+    public var dIno: Ino64T,
+    public var dOff: Off64T,
+    public var dReclen: CUshort,
+    public var dType: CUchar,
+    public var dName: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Dirent64) return false
-        if (this.dIno != other.dIno) return false
-        if (this.dOff != other.dOff) return false
-        if (this.dReclen != other.dReclen) return false
-        if (this.dType != other.dType) return false
-        if (!this.dName.contentEquals(other.dName)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.dIno.hashCode()
-        result = 31 * result + this.dOff.hashCode()
-        result = 31 * result + this.dReclen.hashCode()
-        result = 31 * result + this.dType.hashCode()
-        result = 31 * result + this.dName.contentHashCode()
-        return result
-    }
+    public open fun clone(): Dirent64 = Dirent64(dIno, dOff, dReclen, dType, dName)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Dirent64> =
@@ -2106,11 +1682,13 @@ public data class Dirent64(
     }
 }
 
-public data class CAnonymousElf32Rela(
-    public var rOffset: io.github.kotlinmania.rustlang.unix.linuxlike.Elf32Addr = 0u,
-    public var rInfo: io.github.kotlinmania.rustlang.unix.linuxlike.Elf32Word = 0u,
-    public var rAddend: io.github.kotlinmania.rustlang.unix.linuxlike.Elf32Sword = 0,
+public open class CAnonymousElf32Rela(
+    public var rOffset: Elf32Addr,
+    public var rInfo: Elf32Word,
+    public var rAddend: Elf32Sword,
 ) {
+    public open fun clone(): CAnonymousElf32Rela = CAnonymousElf32Rela(rOffset, rInfo, rAddend)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousElf32Rela> =
             object : TypeLayout<CAnonymousElf32Rela> {
@@ -2142,11 +1720,13 @@ public data class CAnonymousElf32Rela(
     }
 }
 
-public data class CAnonymousElf64Rela(
-    public var rOffset: io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Addr = 0uL,
-    public var rInfo: io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Xword = 0uL,
-    public var rAddend: io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Sxword = 0L,
+public open class CAnonymousElf64Rela(
+    public var rOffset: Elf64Addr,
+    public var rInfo: Elf64Xword,
+    public var rAddend: Elf64Sxword,
 ) {
+    public open fun clone(): CAnonymousElf64Rela = CAnonymousElf64Rela(rOffset, rInfo, rAddend)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousElf64Rela> =
             object : TypeLayout<CAnonymousElf64Rela> {
@@ -2179,118 +1759,54 @@ public data class CAnonymousElf64Rela(
 }
 
 public class CAnonymousIfrIfru internal constructor(
-    public var ifruAddr: Sockaddr,
-    public var ifruDstaddr: Sockaddr,
-    public var ifruBroadaddr: Sockaddr,
-    public var ifruNetmask: Sockaddr,
-    public var ifruHwaddr: Sockaddr,
-    public var ifruFlags: CShort,
-    public var ifruIfindex: CInt,
-    public var ifruMetric: CInt,
-    public var ifruMtu: CInt,
-    public var ifruMap: CAnonymousIfruMap,
-    public var ifruSlave: UByteArray,
-    public var ifruNewname: UByteArray,
-    ifruDataCtorArg: MutPtr,
+    public var ifruAddr: Sockaddr?,
+    public var ifruDstaddr: Sockaddr?,
+    public var ifruBroadaddr: Sockaddr?,
+    public var ifruNetmask: Sockaddr?,
+    public var ifruHwaddr: Sockaddr?,
+    public var ifruFlags: CShort?,
+    public var ifruIfindex: CInt?,
+    public var ifruMetric: CInt?,
+    public var ifruMtu: CInt?,
+    public var ifruMap: CAnonymousIfruMap?,
+    public var ifruSlave: UByteArray?,
+    public var ifruNewname: UByteArray?,
+    ifruDataCtorArg: MutPtr?,
 ) {
-    public var ifruData: MutPtr = ifruDataCtorArg
+    public var ifruData: MutPtr? = ifruDataCtorArg
         internal set
 
     public constructor() : this(
-        ifruAddr = Sockaddr(),
-        ifruDstaddr = Sockaddr(),
-        ifruBroadaddr = Sockaddr(),
-        ifruNetmask = Sockaddr(),
-        ifruHwaddr = Sockaddr(),
-        ifruFlags = 0,
-        ifruIfindex = 0,
-        ifruMetric = 0,
-        ifruMtu = 0,
-        ifruMap = CAnonymousIfruMap(),
-        ifruSlave = UByteArray(IFNAMSIZ.toInt()),
-        ifruNewname = UByteArray(IFNAMSIZ.toInt()),
-        ifruDataCtorArg = MutPtr(0L),
+        ifruAddr = null,
+        ifruDstaddr = null,
+        ifruBroadaddr = null,
+        ifruNetmask = null,
+        ifruHwaddr = null,
+        ifruFlags = null,
+        ifruIfindex = null,
+        ifruMetric = null,
+        ifruMtu = null,
+        ifruMap = null,
+        ifruSlave = null,
+        ifruNewname = null,
+        ifruDataCtorArg = null,
     )
-
-    public operator fun component1(): Sockaddr = this.ifruAddr
-
-    public operator fun component2(): Sockaddr = this.ifruDstaddr
-
-    public operator fun component3(): Sockaddr = this.ifruBroadaddr
-
-    public operator fun component4(): Sockaddr = this.ifruNetmask
-
-    public operator fun component5(): Sockaddr = this.ifruHwaddr
-
-    public operator fun component6(): CShort = this.ifruFlags
-
-    public operator fun component7(): CInt = this.ifruIfindex
-
-    public operator fun component8(): CInt = this.ifruMetric
-
-    public operator fun component9(): CInt = this.ifruMtu
-
-    public operator fun component10(): CAnonymousIfruMap = this.ifruMap
-
-    public operator fun component11(): UByteArray = this.ifruSlave
-
-    public operator fun component12(): UByteArray = this.ifruNewname
-
-    public operator fun component13(): MutPtr = this.ifruData
-
-    public fun copy(ifruAddr: Sockaddr = this.ifruAddr, ifruDstaddr: Sockaddr = this.ifruDstaddr, ifruBroadaddr: Sockaddr = this.ifruBroadaddr, ifruNetmask: Sockaddr = this.ifruNetmask, ifruHwaddr: Sockaddr = this.ifruHwaddr, ifruFlags: CShort = this.ifruFlags, ifruIfindex: CInt = this.ifruIfindex, ifruMetric: CInt = this.ifruMetric, ifruMtu: CInt = this.ifruMtu, ifruMap: CAnonymousIfruMap = this.ifruMap, ifruSlave: UByteArray = this.ifruSlave, ifruNewname: UByteArray = this.ifruNewname, ifruData: MutPtr = this.ifruData): CAnonymousIfrIfru = CAnonymousIfrIfru(ifruAddr = ifruAddr, ifruDstaddr = ifruDstaddr, ifruBroadaddr = ifruBroadaddr, ifruNetmask = ifruNetmask, ifruHwaddr = ifruHwaddr, ifruFlags = ifruFlags, ifruIfindex = ifruIfindex, ifruMetric = ifruMetric, ifruMtu = ifruMtu, ifruMap = ifruMap, ifruSlave = ifruSlave, ifruNewname = ifruNewname, ifruDataCtorArg = ifruData)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousIfrIfru) return false
-        if (this.ifruAddr != other.ifruAddr) return false
-        if (this.ifruDstaddr != other.ifruDstaddr) return false
-        if (this.ifruBroadaddr != other.ifruBroadaddr) return false
-        if (this.ifruNetmask != other.ifruNetmask) return false
-        if (this.ifruHwaddr != other.ifruHwaddr) return false
-        if (this.ifruFlags != other.ifruFlags) return false
-        if (this.ifruIfindex != other.ifruIfindex) return false
-        if (this.ifruMetric != other.ifruMetric) return false
-        if (this.ifruMtu != other.ifruMtu) return false
-        if (this.ifruMap != other.ifruMap) return false
-        if (!this.ifruSlave.contentEquals(other.ifruSlave)) return false
-        if (!this.ifruNewname.contentEquals(other.ifruNewname)) return false
-        if (this.ifruData != other.ifruData) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ifruAddr.hashCode()
-        result = 31 * result + this.ifruDstaddr.hashCode()
-        result = 31 * result + this.ifruBroadaddr.hashCode()
-        result = 31 * result + this.ifruNetmask.hashCode()
-        result = 31 * result + this.ifruHwaddr.hashCode()
-        result = 31 * result + this.ifruFlags.hashCode()
-        result = 31 * result + this.ifruIfindex.hashCode()
-        result = 31 * result + this.ifruMetric.hashCode()
-        result = 31 * result + this.ifruMtu.hashCode()
-        result = 31 * result + this.ifruMap.hashCode()
-        result = 31 * result + this.ifruSlave.contentHashCode()
-        result = 31 * result + this.ifruNewname.contentHashCode()
-        result = 31 * result + this.ifruData.hashCode()
-        return result
-    }
 
     public companion object {
         public operator fun invoke(
-            ifruAddr: Sockaddr = Sockaddr(),
-            ifruDstaddr: Sockaddr = Sockaddr(),
-            ifruBroadaddr: Sockaddr = Sockaddr(),
-            ifruNetmask: Sockaddr = Sockaddr(),
-            ifruHwaddr: Sockaddr = Sockaddr(),
-            ifruFlags: CShort = 0,
-            ifruIfindex: CInt = 0,
-            ifruMetric: CInt = 0,
-            ifruMtu: CInt = 0,
-            ifruMap: CAnonymousIfruMap = CAnonymousIfruMap(),
-            ifruSlave: UByteArray = UByteArray(IFNAMSIZ.toInt()),
-            ifruNewname: UByteArray = UByteArray(IFNAMSIZ.toInt()),
-            ifruData: MutPtr = MutPtr(0L),
+            ifruAddr: Sockaddr? = null,
+            ifruDstaddr: Sockaddr? = null,
+            ifruBroadaddr: Sockaddr? = null,
+            ifruNetmask: Sockaddr? = null,
+            ifruHwaddr: Sockaddr? = null,
+            ifruFlags: CShort? = null,
+            ifruIfindex: CInt? = null,
+            ifruMetric: CInt? = null,
+            ifruMtu: CInt? = null,
+            ifruMap: CAnonymousIfruMap? = null,
+            ifruSlave: UByteArray? = null,
+            ifruNewname: UByteArray? = null,
+            ifruData: MutPtr? = null,
         ): CAnonymousIfrIfru = CAnonymousIfrIfru(
             ifruAddr = ifruAddr,
             ifruDstaddr = ifruDstaddr,
@@ -2309,67 +1825,35 @@ public class CAnonymousIfrIfru internal constructor(
     }
 }
 
-public data class Ifreq(
+public open class Ifreq(
     /**
      * interface name, e.g. "en0"
      */
-    public var ifrName: UByteArray = UByteArray(IFNAMSIZ.toInt()),
-    public var ifrIfru: CAnonymousIfrIfru = CAnonymousIfrIfru(),
+    public var ifrName: UByteArray,
+    public var ifrIfru: CAnonymousIfrIfru,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Ifreq) return false
-        if (!this.ifrName.contentEquals(other.ifrName)) return false
-        if (this.ifrIfru != other.ifrIfru) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ifrName.contentHashCode()
-        result = 31 * result + this.ifrIfru.hashCode()
-        return result
-    }
+    public open fun clone(): Ifreq = Ifreq(ifrName, ifrIfru)
 }
 
 public class CAnonymousIfcIfcu internal constructor(
-    ifcuBufCtorArg: MutPtr,
-    ifcuReqCtorArg: MutPtr,
+    ifcuBufCtorArg: MutPtr?,
+    ifcuReqCtorArg: MutPtr?,
 ) {
-    public var ifcuBuf: MutPtr = ifcuBufCtorArg
+    public var ifcuBuf: MutPtr? = ifcuBufCtorArg
         internal set
 
-    public var ifcuReq: MutPtr = ifcuReqCtorArg
+    public var ifcuReq: MutPtr? = ifcuReqCtorArg
         internal set
 
     public constructor() : this(
-        ifcuBufCtorArg = MutPtr(0L),
-        ifcuReqCtorArg = MutPtr(0L),
+        ifcuBufCtorArg = null,
+        ifcuReqCtorArg = null,
     )
-
-    public operator fun component1(): MutPtr = this.ifcuBuf
-
-    public operator fun component2(): MutPtr = this.ifcuReq
-
-    public fun copy(ifcuBuf: MutPtr = this.ifcuBuf, ifcuReq: MutPtr = this.ifcuReq): CAnonymousIfcIfcu = CAnonymousIfcIfcu(ifcuBufCtorArg = ifcuBuf, ifcuReqCtorArg = ifcuReq)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousIfcIfcu) return false
-        if (this.ifcuBuf != other.ifcuBuf) return false
-        if (this.ifcuReq != other.ifcuReq) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ifcuBuf.hashCode()
-        result = 31 * result + this.ifcuReq.hashCode()
-        return result
-    }
 
     public companion object {
         public operator fun invoke(
-            ifcuBuf: MutPtr = MutPtr(0L),
-            ifcuReq: MutPtr = MutPtr(0L),
+            ifcuBuf: MutPtr? = null,
+            ifcuReq: MutPtr? = null,
         ): CAnonymousIfcIfcu = CAnonymousIfcIfcu(
             ifcuBufCtorArg = ifcuBuf,
             ifcuReqCtorArg = ifcuReq,
@@ -2381,13 +1865,15 @@ public class CAnonymousIfcIfcu internal constructor(
  * Structure used in SIOCGIFCONF request.  Used to retrieve interface configuration for
  * machine (useful for programs which must know all networks accessible).
  */
-public data class Ifconf(
+public open class Ifconf(
     /**
      * Size of buffer
      */
-    public var ifcLen: CInt = 0,
-    public var ifcIfcu: CAnonymousIfcIfcu = CAnonymousIfcIfcu(),
-)
+    public var ifcLen: CInt,
+    public var ifcIfcu: CAnonymousIfcIfcu,
+) {
+    public open fun clone(): Ifconf = Ifconf(ifcLen, ifcIfcu)
+}
 
 public val DATE_BASE: NlItem = 0x20000
 
@@ -3748,9 +3234,9 @@ public val IPV6_RTHDR_LOOSE: CInt = 0
 
 public val IPV6_RTHDR_STRICT: CInt = 1
 
-public val IUTF8: TcflagT = 0x00004000uL
+public val IUTF8: TcflagT = 0x00004000u
 
-public val CMSPAR: TcflagT = 1073741824uL
+public val CMSPAR: TcflagT = 1073741824u
 
 public val MFD_CLOEXEC: CUint = 0x0001u
 
@@ -4190,24 +3676,24 @@ public val RTLD_DEFAULT: MutPtr = MutPtr(0L)
 public val SEM_FAILED: MutPtr = MutPtr(0L)
 
 public fun cmsgNxthdr(mhdr: ConstPtr, cmsg: ConstPtr): MutPtr {
-    if ((((ObjectSlotLayout<Cmsghdr>()).readNative((cmsg).rawAddress).cmsgLen).toInt()) < sizeOf<Cmsghdr>(typeLayoutT = ObjectSlotLayout<Cmsghdr>())) {
+    if ((((UnresolvedTypeLayout<Cmsghdr>()).readNative((cmsg).rawAddress).cmsgLen).toInt()) < sizeOf<Cmsghdr>(typeLayoutT = UnresolvedTypeLayout<Cmsghdr>())) {
         return MutPtr(0L)
     }
     // Note(msrv): `.wrappingByteAdd()` stabilized in 1.75
-    val nextCmsg = ConstPtr((ConstPtr((ConstPtr((cmsg).rawAddress)).rawAddress + ((CMSG_ALIGN(((ObjectSlotLayout<Cmsghdr>()).readNative((cmsg).rawAddress).cmsgLen).toInt())).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)
+    val nextCmsg = ConstPtr((ConstPtr((ConstPtr((cmsg).rawAddress)).rawAddress + ((CMSG_ALIGN(((UnresolvedTypeLayout<Cmsghdr>()).readNative((cmsg).rawAddress).cmsgLen).toInt())).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)
     // In case the addition wrapped. `nextAddr> maxAddr`
     // would otherwise not work as intended.
     if ((nextCmsg.rawAddress.toInt()) < (cmsg.rawAddress.toInt())) {
         return MutPtr(0L)
     }
-    var maxAddr = ((ObjectSlotLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControl).rawAddress.toInt() + ((ObjectSlotLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControllen).toInt()
+    var maxAddr = ((UnresolvedTypeLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControl).rawAddress.toInt() + ((UnresolvedTypeLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControllen).toInt()
     if (false) {
         // musl and some of its descendants do `>= maxAddr`
         // comparisons in the if statement below.
         // https://www.openwall.com/lists/musl/2025/12/27/1
         maxAddr -= 1
     }
-    return if (nextCmsg.rawAddress.toInt() + sizeOf<Cmsghdr>(typeLayoutT = ObjectSlotLayout<Cmsghdr>()) > maxAddr) {
+    return if (nextCmsg.rawAddress.toInt() + sizeOf<Cmsghdr>(typeLayoutT = UnresolvedTypeLayout<Cmsghdr>()) > maxAddr) {
         MutPtr(0L)
     } else {
         MutPtr(nextCmsg.rawAddress, nextCmsg.rawMeta)
@@ -4280,27 +3766,27 @@ public fun elf64RType(value: Elf64Xword): Elf64Xword = value and 0xffffffffuL
 public fun elf64RInfo(sym: Elf64Xword, t: Elf64Xword): Elf64Xword = sym shl (32uL + t).toInt()
 
 public fun makedev(major: CUint, minor: CUint): DevT {
-    val major1 = major.toInt()
-    val minor1 = minor.toInt()
-    var dev = 0
-    dev = dev or ((major1 and 0x00000fff) shl 8)
-    dev = dev or ((major1 and 0xfffff000.toInt()) shl 32)
-    dev = dev or ((minor1 and 0x000000ff) shl 0)
-    dev = dev or ((minor1 and 0xffffff00.toInt()) shl 12)
+    val major1 = major.toULong()
+    val minor1 = minor.toULong()
+    var dev = 0uL
+    dev = dev or ((major1 and 0x00000fffuL) shl 8)
+    dev = dev or ((major1 and 0xfffff000uL) shl 32)
+    dev = dev or ((minor1 and 0x000000ffuL) shl 0)
+    dev = dev or ((minor1 and 0xffffff00uL) shl 12)
     return dev
 }
 
 public fun major(dev: DevT): CUint {
-    var major = 0
-    major = major or ((dev and 0x00000000000fff00) shr 8)
-    major = major or ((dev and 0xfffff00000000000L.toInt()) shr 32)
+    var major = 0uL
+    major = major or ((dev and 0x00000000000fff00uL) shr 8)
+    major = major or ((dev and 0xfffff00000000000uL) shr 32)
     return major.toUInt()
 }
 
 public fun minor(dev: DevT): CUint {
-    var minor = 0
-    minor = minor or ((dev and 0x00000000000000ff) shr 0)
-    minor = minor or ((dev and 0x00000ffffff00000L.toInt()) shr 12)
+    var minor = 0uL
+    minor = minor or ((dev and 0x00000000000000ffuL) shr 0)
+    minor = minor or ((dev and 0x00000ffffff00000uL) shr 12)
     return minor.toUInt()
 }
 

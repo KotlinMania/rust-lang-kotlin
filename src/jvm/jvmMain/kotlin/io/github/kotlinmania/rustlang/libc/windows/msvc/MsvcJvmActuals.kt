@@ -2,13 +2,13 @@
 
 package io.github.kotlinmania.rustlang.libc.windows.msvc
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.windows.SizeT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.windows.SizeT
 
-private object LibcWindowsMsvcJniBridge {
+private object WindowsMsvcJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -44,11 +44,14 @@ private object LibcWindowsMsvcJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = LibcWindowsMsvcJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = WindowsMsvcJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -62,20 +65,20 @@ private object LibcWindowsMsvcJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangLibcWindowsMsvcStricmp(s1: Long, s2: Long): Int
+    external fun libcWindowsMsvcStricmp(s1: Long, s2: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcWindowsMsvcStrnicmp(s1: Long, s2: Long, n: Long): Int
+    external fun libcWindowsMsvcStrnicmp(s1: Long, s2: Long, n: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcWindowsMsvcMemccpy(dest: Long, src: Long, c: Int, count: Long): Long
+    external fun libcWindowsMsvcMemccpy(dest: Long, src: Long, c: Int, count: Long): Long
 }
 
 public actual fun stricmp(s1: ConstPtr, s2: ConstPtr): CInt =
-    LibcWindowsMsvcJniBridge.rustlangLibcWindowsMsvcStricmp(s1.rawAddress, s2.rawAddress)
+    WindowsMsvcJniBridge.libcWindowsMsvcStricmp(s1.rawAddress, s2.rawAddress)
 
 public actual fun strnicmp(s1: ConstPtr, s2: ConstPtr, n: SizeT): CInt =
-    LibcWindowsMsvcJniBridge.rustlangLibcWindowsMsvcStrnicmp(s1.rawAddress, s2.rawAddress, n.toLong())
+    WindowsMsvcJniBridge.libcWindowsMsvcStrnicmp(s1.rawAddress, s2.rawAddress, n.toLong())
 
 public actual fun memccpy(dest: MutPtr, src: ConstPtr, c: CInt, count: SizeT): MutPtr =
-    MutPtr(LibcWindowsMsvcJniBridge.rustlangLibcWindowsMsvcMemccpy(dest.rawAddress, src.rawAddress, c, count.toLong()))
+    MutPtr(WindowsMsvcJniBridge.libcWindowsMsvcMemccpy(dest.rawAddress, src.rawAddress, c, count.toLong()))

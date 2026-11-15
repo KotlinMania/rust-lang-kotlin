@@ -1,68 +1,75 @@
 // port-lint: source symbolize/gimli/elf.rs
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.elf
 
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Context
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Either
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Endian
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.EndianSlice
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Mapping
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.extractZipPathAndroid
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.gimli
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmap
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmapfake.Mmap
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsStr
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.fs
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.Path
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.PathBuf
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.core.slice.get
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.symbolize.gimli.Context
-import io.github.kotlinmania.rustlang.symbolize.gimli.Either
-import io.github.kotlinmania.rustlang.symbolize.gimli.Mapping
-import io.github.kotlinmania.rustlang.symbolize.gimli.extractZipPathAndroid
-import io.github.kotlinmania.rustlang.symbolize.gimli.mmap
-import io.github.kotlinmania.rustlang.symbolize.gimli.mmapfake.Mmap
-import io.github.kotlinmania.rustlang.symbolize.gimli.stash.Stash
 
 public typealias Elf = FileHeader64<NativeEndian>
 
 public fun Mapping.Companion.new(path: Path): Mapping? {
     val map = (mmap(path) ?: return null)
-    return Mapping.mkOrOther(map, closure@{ map1, stash ->
-        val obj = when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
-        // Try to locate an external debug file using the build ID.
-        when (val matchVal = obj.buildId()?.let(::locateBuildId)) {
-            null -> {}
-            else -> {
-                val pathDebug = matchVal
-                when (val matchVal1 = Mapping.newDebug(path, pathDebug, null)) {
-                    null -> {}
-                    else -> {
-                        val mapping = matchVal1
-                        return@closure Either.A(mapping)
+    return Mapping.mkOrOther(
+        map,
+        closure@{ map1, stash ->
+            val obj =
+                when (val tryResult = Object.parse(map1)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
+                }
+            // Try to locate an external debug file using the build ID.
+            when (val matchVal = obj.buildId()?.let(::locateBuildId)) {
+                null -> {}
+                else -> {
+                    val pathDebug = matchVal
+                    when (val matchVal1 = Mapping.newDebug(path, pathDebug, null)) {
+                        null -> {}
+                        else -> {
+                            val mapping = matchVal1
+                            return@closure Either.A(mapping)
+                        }
                     }
                 }
             }
-        }
-        // Try to locate an external debug file using the GNU debug link section.
-        when (val matchVal2 = obj.gnuDebuglinkPath(path)) {
-            null -> {}
-            else -> {
-                val pathDebug1 = matchVal2.first
-                val crc = matchVal2.second
-                when (val matchVal3 = Mapping.newDebug(path, pathDebug1, crc)) {
-                    null -> {}
-                    else -> {
-                        val mapping1 = matchVal3
-                        return@closure Either.A(mapping1)
+            // Try to locate an external debug file using the GNU debug link section.
+            when (val matchVal2 = obj.gnuDebuglinkPath(path)) {
+                null -> {}
+                else -> {
+                    val pathDebug1 = matchVal2.first
+                    val crc = matchVal2.second
+                    when (val matchVal3 = Mapping.newDebug(path, pathDebug1, crc)) {
+                        null -> {}
+                        else -> {
+                            val mapping1 = matchVal3
+                            return@closure Either.A(mapping1)
+                        }
                     }
                 }
             }
-        }
-        val dwp = Mapping.loadDwarfPackage(path, stash)
-        Context.new(stash, obj, null, dwp).map(Either.B)
-    })
+            val dwp = Mapping.loadDwarfPackage(path, stash)
+            Context.new(stash, obj, null, dwp).map(Either.B)
+        },
+    )
 }
 
 /**
@@ -88,9 +95,20 @@ public fun Mapping.Companion.newAndroid(path: Path, zipOffset: ULong?): Mapping?
         // NOTE: we map the remainder of the entire archive instead of just the library so we don't have to determine its length
         // NOTE: mmap will fail if `zipOffset` is not page-aligned
         val map = (Mmap.map(file, (Int.tryFrom(len - zipOffset1.toInt()).ok() ?: return null), zipOffset1) ?: return null)
-        return Mapping.mk(map, closure1@{ map1, stash ->
-            Context.new(stash, when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }, null, null)
-        })
+        return Mapping.mk(
+            map,
+            closure1@{ map1, stash ->
+                Context.new(
+                    stash,
+                    when (val tryResult = Object.parse(map1)) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error)
+                    },
+                    null,
+                    null,
+                )
+            },
+        )
     }
     // if ZIP offset is given, try mapping as a ZIP-embedded library
     // otherwise, fallback to mapping as a literal filepath
@@ -107,39 +125,46 @@ public fun Mapping.Companion.newAndroid(path: Path, zipOffset: ULong?): Mapping?
  */
 public fun Mapping.Companion.newDebug(originalPath: Path, path: PathBuf, crc: UInt?): Mapping? {
     val map = (mmap(path) ?: return null)
-    return Mapping.mk(map, closure2@{ map1, stash ->
-        val obj = when (val tryResult = Object.parse(map1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error) }
-        if (crc != null) {
-            // Note: check crc
-        }
-        // Try to locate a supplementary object file.
-        var sup = null
-        when (val matchVal = obj.gnuDebugaltlinkPath(path)) {
-            null -> {}
-            else -> {
-                val pathSup = matchVal.first
-                val buildIdSup = matchVal.second
-                when (val matchVal1 = mmap(pathSup)) {
-                    null -> {}
-                    else -> {
-                        val mapSup = matchVal1
-                        val mapSup1 = stash.cacheMmap(mapSup)
-                        when (val matchVal2 = Object.parse(mapSup1)) {
-                            null -> {}
-                            else -> {
-                                val sup = matchVal2
-                                if (sup.buildId() == buildIdSup) {
-                                    sup = sup
+    return Mapping.mk(
+        map,
+        closure2@{ map1, stash ->
+            val obj =
+                when (val tryResult = Object.parse(map1)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error)
+                }
+            if (crc != null) {
+                // Note: check crc
+            }
+            // Try to locate a supplementary object file.
+            var sup = null
+            when (val matchVal = obj.gnuDebugaltlinkPath(path)) {
+                null -> {}
+                else -> {
+                    val pathSup = matchVal.first
+                    val buildIdSup = matchVal.second
+                    when (val matchVal1 = mmap(pathSup)) {
+                        null -> {}
+                        else -> {
+                            val mapSup = matchVal1
+                            val mapSup1 = stash.cacheMmap(mapSup)
+                            when (val matchVal2 = Object.parse(mapSup1)) {
+                                null -> {}
+                                else -> {
+                                    val sup = matchVal2
+                                    if (sup.buildId() == buildIdSup) {
+                                        sup = sup
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
-        val dwp = Mapping.loadDwarfPackage(originalPath, stash)
-        Context.new(stash, obj, sup, dwp)
-    })
+            val dwp = Mapping.loadDwarfPackage(originalPath, stash)
+            Context.new(stash, obj, sup, dwp)
+        },
+    )
 }
 
 /**
@@ -148,11 +173,14 @@ public fun Mapping.Companion.newDebug(originalPath: Path, path: PathBuf, crc: UI
 public fun Mapping.Companion.loadDwarfPackage(path: Path, stash: Stash): Object? {
     val pathDwp = path.toPathBuf()
     val dwpExtension =
-        path.extension().map({ previousExtension ->
-            var previousExtension1 = previousExtension.toOsString()
-            previousExtension1.push(".dwp")
-            previousExtension1
-        }).unwrapOrElse({ "dwp".into() })
+        path
+            .extension()
+            .map({ previousExtension ->
+                var previousExtension1 = previousExtension.toOsString()
+                previousExtension1.push(".dwp")
+                previousExtension1
+            })
+            .unwrapOrElse({ "dwp".into() })
     pathDwp.setExtension(dwpExtension)
     when (val matchVal = mmap(pathDwp)) {
         null -> {}
@@ -256,7 +284,9 @@ public open class Object internal constructor(
                         decompressZstd(data.first, buf1)
                         return buf1
                     }
-                    else -> { return null }
+                    else -> {
+                        return null
+                    }
                 }
             }
         }
@@ -269,14 +299,24 @@ public open class Object internal constructor(
         }
         val debugName = name.substring(7).encodeToByteArray().map { it.toUByte() }
         val compressedSection =
-            (this.sections.iter().mapNotNull(closure3@{ header1 ->
-                val name1 = when (val tryResult = this.sections.sectionName(this.endian, header1).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
-                if (name1.startsWith(".zdebug_".encodeToByteArray()) && name1[8 until name1.size] == debugName) {
-                    header1
-                } else {
-                    null
-                }
-            }).next() ?: return null)
+            (
+                this.sections
+                    .iter()
+                    .mapNotNull(
+                        closure3@{ header1 ->
+                            val name1 =
+                                when (val tryResult = this.sections.sectionName(this.endian, header1).ok()) {
+                                    is Result.Ok<*, *> -> tryResult.value
+                                    is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
+                                }
+                            if (name1.startsWith(".zdebug_".encodeToByteArray()) && name1[8 until name1.size] == debugName) {
+                                header1
+                            } else {
+                                null
+                            }
+                        },
+                    ).next() ?: return null
+            )
         val data1 = Bytes((compressedSection.data(this.endian, this.data).ok() ?: return null))
         if ((data1.readBytes(8).ok() ?: return null).first != "ZLIB\u0000\u0000\u0000\u0000".encodeToByteArray()) {
             return null
@@ -294,13 +334,16 @@ public open class Object internal constructor(
         val i2 =
             run {
                 val matchVal = this.syms.binarySearchByKey(addr, { sym -> sym.address })
-                when (matchVal) { is Result.Ok<*, *> -> {
-                    val i = matchVal.value
-                    i
-                }; is Result.Err<*, *> -> {
-                    val i1 = matchVal.error
-                    (i1.checkedSub(1) ?: return null)
-                } }
+                when (matchVal) {
+                    is Result.Ok<*, *> -> {
+                        val i = matchVal.value
+                        i
+                    }
+                    is Result.Err<*, *> -> {
+                        val i1 = matchVal.error
+                        (i1.checkedSub(1) ?: return null)
+                    }
+                }
             }
         val sym = (this.syms.getOrNull(i2) ?: return null)
         return if (sym.address <= addr && addr <= sym.address + sym.size) {
@@ -339,7 +382,11 @@ public open class Object internal constructor(
         val filename = OsStr.fromBytes(data[0 until len])
         val offset = (len + 1 + 3) and 3.inv()
         val crcBytes = (data.get(offset until offset + 4)?.let({ bytes -> bytes.tryInto().ok() }) ?: return null)
-        val crc = run { val bytesTmp4 = crcBytes; ((bytesTmp4[3].toUInt() shl 24) or (bytesTmp4[2].toUInt() shl 16) or (bytesTmp4[1].toUInt() shl 8) or bytesTmp4[0].toUInt()) }
+        val crc =
+            run {
+                val bytesTmp4 = crcBytes
+                ((bytesTmp4[3].toUInt() shl 24) or (bytesTmp4[2].toUInt() shl 16) or (bytesTmp4[1].toUInt() shl 8) or bytesTmp4[0].toUInt())
+            }
         val pathDebug = (locateDebuglink(path, filename) ?: return null)
         return Pair(pathDebug, crc)
     }
@@ -362,13 +409,14 @@ public open class Object internal constructor(
             sections: SectionTable<Elf>,
             strings: StringTable,
             syms: List<ParsedSym>,
-        ): Object = Object(
-            endian = endian,
-            data = data,
-            sectionsCtorArg = sections,
-            strings = strings,
-            syms = syms,
-        )
+        ): Object =
+            Object(
+                endian = endian,
+                data = data,
+                sectionsCtorArg = sections,
+                strings = strings,
+                syms = syms,
+            )
 
         public fun parse(data: List<UByte>): Object? {
             val elf = (Elf.parse(data).ok() ?: return null)
@@ -380,15 +428,20 @@ public open class Object internal constructor(
             }
             val strings = syms.strings()
             var syms1 =
-                syms.iter().filter({ sym ->
-                    val stType = sym.stType()
-                    stType == Object.elf.STT_FUNC || stType == Object.elf.STT_OBJECT
-                }).filter({ sym -> sym.stShndx(endian) != Object.elf.SHN_UNDEF }).map({ sym ->
-                    val address = sym.stValue(endian).into()
-                    val size = sym.stSize(endian).into()
-                    val name = sym.stName(endian)
-                    ParsedSym(address = address, size = size, name = name)
-                }).collect<Vec>()
+                syms
+                    .iter()
+                    .filter({ sym ->
+                        val stType = sym.stType()
+                        stType == Object.elf.STT_FUNC || stType == Object.elf.STT_OBJECT
+                    })
+                    .filter({ sym -> sym.stShndx(endian) != Object.elf.SHN_UNDEF })
+                    .map({ sym ->
+                        val address = sym.stValue(endian).into()
+                        val size = sym.stSize(endian).into()
+                        val name = sym.stName(endian)
+                        ParsedSym(address = address, size = size, name = name)
+                    })
+                    .collect<Vec>()
             syms1.sortUnstableByKey({ s -> s.address })
             return Object(endian = endian, data = data, sections = sections, strings = strings, syms = syms1)
         }
@@ -397,7 +450,8 @@ public open class Object internal constructor(
 
 public fun decompressZlib(input: List<UByte>, output: MutableList<UByte>): Unit? {
     val (status, inRead, outRead) = decompress(DecompressorOxide.new(), input, output, 0, TINFL_FLAG_USING_NON_WRAPPING_OUTPUT_BUF or TINFL_FLAG_PARSE_ZLIB_HEADER)
-    return if (status == TINFLStatus.Done && inRead == input.size && outRead == output.size) {} else {
+    return if (status == TINFLStatus.Done && inRead == input.size && outRead == output.size) {
+    } else {
         null
     }
 }
@@ -418,7 +472,9 @@ public fun decompressZstd(input: List<UByte>, output: MutableList<UByte>): Unit?
                         input1 = (input1.get(length.toInt() until Int.MAX_VALUE) ?: return null)
                         continue
                     }
-                    else -> { return null }
+                    else -> {
+                        return null
+                    }
                 }
             }
         while (true) {
@@ -439,14 +495,15 @@ public fun decompressZstd(input: List<UByte>, output: MutableList<UByte>): Unit?
 public val DEBUG_PATH: String = "/usr/lib/debug"
 
 public fun debugPathExists(): Boolean {
-    val DEBUG_PATH_EXISTS: AtomicU8  = AtomicU8.new(0)
+    val DEBUG_PATH_EXISTS: AtomicU8 = AtomicU8.new(0)
     var exists = DEBUG_PATH_EXISTS.load(Ordering.Relaxed)
     if (exists == 0) {
-        exists = if (Path.new(DEBUG_PATH).isDir()) {
-            1
-        } else {
-            2
-        }
+        exists =
+            if (Path.new(DEBUG_PATH).isDir()) {
+                1
+            } else {
+                2
+            }
         DEBUG_PATH_EXISTS.store(exists, Ordering.Relaxed)
     }
     return exists == 1
@@ -588,13 +645,16 @@ public fun handleSplitDwarf(pkg: gimli.DwarfPackage<EndianSlice<Endian>>?, stash
                 null -> {}
                 else -> {
                     val dwo = matchVal4
-                    return gimli.Dwarf.load({ id ->
-                        val data = id.dwoName().andThen({ name -> dwo.section(stash, name) }).unwrapOr(listOf())
-                        Result.Ok(EndianSlice.new(data, Endian))
-                    }).ok()?.let({ dwoDwarf ->
-                        dwoDwarf.makeDwo(load.parent)
-                        dwoDwarf
-                    })
+                    return gimli.Dwarf
+                        .load({ id ->
+                            val data = id.dwoName().andThen({ name -> dwo.section(stash, name) }).unwrapOr(listOf())
+                            Result.Ok(EndianSlice.new(data, Endian))
+                        })
+                        .ok()
+                        ?.let({ dwoDwarf ->
+                            dwoDwarf.makeDwo(load.parent)
+                            dwoDwarf
+                        })
                 }
             }
         }

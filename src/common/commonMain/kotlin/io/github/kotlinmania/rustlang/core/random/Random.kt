@@ -5,12 +5,12 @@ package io.github.kotlinmania.rustlang.core.random
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
-import io.github.kotlinmania.rustlang.ops.range.RangeFull
-import io.github.kotlinmania.rustlang.option.Option
-import io.github.kotlinmania.rustlang.panicking.AssertKind
-import io.github.kotlinmania.rustlang.panicking.assertFailed
-import io.github.kotlinmania.rustlang.range.RangeInclusive
+import io.github.kotlinmania.rustlang.core.num.wrappingNeg
+import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
+import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.AssertKind
+import io.github.kotlinmania.rustlang.core.panicking.assertFailed
+import io.github.kotlinmania.rustlang.core.range.RangeInclusive
 
 // Random value generation.
 
@@ -59,39 +59,81 @@ public fun RangeFull.sampleByte(source: Rng): Byte {
 }
 
 public fun RangeFull.sampleUShort(source: Rng): UShort {
-    val bytes = run { val rawBits = (0.toUShort()).toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
+    val bytes =
+        run {
+            val rawBits = (0.toUShort()).toUInt()
+            ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
+        }
     source.fillBytes(bytes)
-    return run { val bytesTmp0 = bytes; ((bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()).toUShort() }
+    return run {
+        val bytesTmp0 = bytes
+        ((bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()).toUShort()
+    }
 }
 
 public fun RangeFull.sampleShort(source: Rng): Short {
-    val bytes = run { val rawBits = (0.toShort()).toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
+    val bytes =
+        run {
+            val rawBits = (0.toShort()).toUInt()
+            ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
+        }
     source.fillBytes(bytes)
-    return run { val bytesTmp1 = bytes; ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toShort() }
+    return run {
+        val bytesTmp1 = bytes
+        ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toShort()
+    }
 }
 
 public fun RangeFull.sampleUInt(source: Rng): UInt {
-    val bytes = run { val rawBits = (0.toUInt()); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
+    val bytes =
+        run {
+            val rawBits = (0.toUInt())
+            ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
+        }
     source.fillBytes(bytes)
-    return run { val bytesTmp2 = bytes; ((bytesTmp2[3].toUInt() shl 24) or (bytesTmp2[2].toUInt() shl 16) or (bytesTmp2[1].toUInt() shl 8) or bytesTmp2[0].toUInt()) }
+    return run {
+        val bytesTmp2 = bytes
+        ((bytesTmp2[3].toUInt() shl 24) or (bytesTmp2[2].toUInt() shl 16) or (bytesTmp2[1].toUInt() shl 8) or bytesTmp2[0].toUInt())
+    }
 }
 
 public fun RangeFull.sampleInt(source: Rng): Int {
-    val bytes = run { val rawBits = (0).toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
+    val bytes =
+        run {
+            val rawBits = (0).toUInt()
+            ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
+        }
     source.fillBytes(bytes)
-    return run { val bytesTmp3 = bytes; ((bytesTmp3[3].toInt() shl 24) or (bytesTmp3[2].toInt() shl 16) or (bytesTmp3[1].toInt() shl 8) or bytesTmp3[0].toInt()) }
+    return run {
+        val bytesTmp3 = bytes
+        ((bytesTmp3[3].toInt() shl 24) or (bytesTmp3[2].toInt() shl 16) or (bytesTmp3[1].toInt() shl 8) or bytesTmp3[0].toInt())
+    }
 }
 
 public fun RangeFull.sampleULong(source: Rng): ULong {
-    val bytes = run { val rawBits = (0.toULong()); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
+    val bytes =
+        run {
+            val rawBits = (0.toULong())
+            ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
+        }
     source.fillBytes(bytes)
-    return run { val bytesTmp4 = bytes; ((bytesTmp4[7].toULong() shl 56) or (bytesTmp4[6].toULong() shl 48) or (bytesTmp4[5].toULong() shl 40) or (bytesTmp4[4].toULong() shl 32) or (bytesTmp4[3].toULong() shl 24) or (bytesTmp4[2].toULong() shl 16) or (bytesTmp4[1].toULong() shl 8) or bytesTmp4[0].toULong()) }
+    return run {
+        val bytesTmp4 = bytes
+        ((bytesTmp4[7].toULong() shl 56) or (bytesTmp4[6].toULong() shl 48) or (bytesTmp4[5].toULong() shl 40) or (bytesTmp4[4].toULong() shl 32) or (bytesTmp4[3].toULong() shl 24) or (bytesTmp4[2].toULong() shl 16) or (bytesTmp4[1].toULong() shl 8) or bytesTmp4[0].toULong())
+    }
 }
 
 public fun RangeFull.sampleLong(source: Rng): Long {
-    val bytes = run { val rawBits = (0.toLong()).toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
+    val bytes =
+        run {
+            val rawBits = (0.toLong()).toULong()
+            ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
+        }
     source.fillBytes(bytes)
-    return run { val bytesTmp5 = bytes; ((bytesTmp5[7].toLong() shl 56) or (bytesTmp5[6].toLong() shl 48) or (bytesTmp5[5].toLong() shl 40) or (bytesTmp5[4].toLong() shl 32) or (bytesTmp5[3].toLong() shl 24) or (bytesTmp5[2].toLong() shl 16) or (bytesTmp5[1].toLong() shl 8) or bytesTmp5[0].toLong()) }
+    return run {
+        val bytesTmp5 = bytes
+        ((bytesTmp5[7].toLong() shl 56) or (bytesTmp5[6].toLong() shl 48) or (bytesTmp5[5].toLong() shl 40) or (bytesTmp5[4].toLong() shl 32) or (bytesTmp5[3].toLong() shl 24) or (bytesTmp5[2].toLong() shl 16) or (bytesTmp5[1].toLong() shl 8) or bytesTmp5[0].toLong())
+    }
 }
 
 public fun RangeFull.sampleU128(source: Rng): U128 {
@@ -126,7 +168,7 @@ public fun bounded32(bound: UInt, source: Rng): UInt {
     val sample: UInt = (0 until 0).sample(source)
     var (l, res) = sample.carryingMul(bound, 0)
     if (l < bound) {
-        val t = rustWrappingNeg(bound) % bound
+        val t = bound.wrappingNeg() % bound
         while (l < t) {
             val sample1: UInt = (0 until 0).sample(source)
             Pair(l, res) = sample1.carryingMul(bound, 0)
@@ -154,7 +196,7 @@ public fun bounded64(bound: ULong, source: Rng): ULong {
     val sample: ULong = (0 until 0).sample(source)
     var (l, res) = sample.carryingMul(bound, 0)
     if (l < bound) {
-        val t = rustWrappingNeg(bound) % bound
+        val t = bound.wrappingNeg() % bound
         while (l < t) {
             val sample1: ULong = (0 until 0).sample(source)
             Pair(l, res) = sample1.carryingMul(bound, 0)
@@ -182,7 +224,7 @@ public fun bounded128(bound: U128, source: Rng): U128 {
     val sample: U128 = (0 until 0).sample(source)
     var (l, res) = sample.carryingMul(bound, 0)
     if (l < bound) {
-        val t = rustWrappingNeg(bound) % bound
+        val t = bound.wrappingNeg() % bound
         while (l < t) {
             val sample1: U128 = (0 until 0).sample(source)
             Pair(l, res) = sample1.carryingMul(bound, 0)
@@ -301,7 +343,11 @@ public fun RangeInclusive<Byte>.sampleByte(source: Rng): Byte {
     if (this.start == this.last) {
         return this.start
     }
-    val bound = this.last.wrappingSub(this.start).castUnsigned().checkedAdd(1) ?: return RangeFull.sample(source)
+    val bound =
+        this.last
+            .wrappingSub(this.start)
+            .castUnsigned()
+            .checkedAdd(1) ?: return RangeFull.sample(source)
     val offset =
         if (bound.isPowerOfTwo()) {
             val sample: UByte = RangeFull.sample(source)
@@ -419,7 +465,11 @@ public fun RangeInclusive<Short>.sampleShort(source: Rng): Short {
     if (this.start == this.last) {
         return this.start
     }
-    val bound = this.last.wrappingSub(this.start).castUnsigned().checkedAdd(1) ?: return RangeFull.sample(source)
+    val bound =
+        this.last
+            .wrappingSub(this.start)
+            .castUnsigned()
+            .checkedAdd(1) ?: return RangeFull.sample(source)
     val offset =
         if (bound.isPowerOfTwo()) {
             val sample: UShort = RangeFull.sample(source)
@@ -537,7 +587,11 @@ public fun IntRange.sample(source: Rng): Int {
     if (this.start == this.last) {
         return this.start
     }
-    val bound = this.last.wrappingSub(this.start).castUnsigned().checkedAdd(1) ?: return RangeFull.sample(source)
+    val bound =
+        this.last
+            .wrappingSub(this.start)
+            .castUnsigned()
+            .checkedAdd(1) ?: return RangeFull.sample(source)
     val offset =
         if (bound.isPowerOfTwo()) {
             val sample: UInt = RangeFull.sample(source)
@@ -655,7 +709,11 @@ public fun RangeInclusive<Long>.sampleLong(source: Rng): Long {
     if (this.start == this.last) {
         return this.start
     }
-    val bound = this.last.wrappingSub(this.start).castUnsigned().checkedAdd(1) ?: return RangeFull.sample(source)
+    val bound =
+        this.last
+            .wrappingSub(this.start)
+            .castUnsigned()
+            .checkedAdd(1) ?: return RangeFull.sample(source)
     val offset =
         if (bound.isPowerOfTwo()) {
             val sample: ULong = RangeFull.sample(source)
@@ -773,7 +831,11 @@ public fun RangeInclusive<I128>.sampleI128(source: Rng): I128 {
     if (this.start == this.last) {
         return this.start
     }
-    val bound = this.last.wrappingSub(this.start).castUnsigned().checkedAdd(1) ?: return RangeFull.sample(source)
+    val bound =
+        this.last
+            .wrappingSub(this.start)
+            .castUnsigned()
+            .checkedAdd(1) ?: return RangeFull.sample(source)
     val offset =
         if (bound.isPowerOfTwo()) {
             val sample: U128 = RangeFull.sample(source)

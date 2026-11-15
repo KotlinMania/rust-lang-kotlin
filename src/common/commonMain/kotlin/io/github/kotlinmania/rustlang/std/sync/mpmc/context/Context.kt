@@ -11,10 +11,10 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.currentThreadId
-import io.github.kotlinmania.rustlang.thread.LocalKey
-import io.github.kotlinmania.rustlang.thread.localimpl.threadLocalInner
-import io.github.kotlinmania.rustlang.thread.thread.Thread
-import io.github.kotlinmania.rustlang.time.Instant
+import io.github.kotlinmania.rustlang.std.thread.LocalKey
+import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
+import io.github.kotlinmania.rustlang.std.thread.thread.Thread
+import io.github.kotlinmania.rustlang.std.time.Instant
 
 // Thread-local channel context.
 

@@ -3,21 +3,21 @@
 
 package io.github.kotlinmania.rustlang.core.fmt.num
 
-import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
+import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.fmt.numbuffer.NumBuffer
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.num.rustCheckedPow
-import io.github.kotlinmania.rustlang.core.num.rustPow
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.checkedPow
+import io.github.kotlinmania.rustlang.core.num.pow
+import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.fmt.numbuffer.NumBuffer
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.option.Option
-import io.github.kotlinmania.rustlang.panicking.assertFailed
-import io.github.kotlinmania.rustlang.fmt.fmt as numfmt
+import io.github.kotlinmania.rustlang.core.fmt.fmt as numfmt
 
 // Integer and floating-point number formatting
 //
@@ -84,7 +84,11 @@ public fun UByte.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun Byte.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
+public fun Byte.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.castUnsigned()).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Format unsigned integers in the radix.
@@ -117,7 +121,11 @@ public fun UShort.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun Short.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
+public fun Short.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.castUnsigned()).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Format unsigned integers in the radix.
@@ -178,7 +186,11 @@ public fun ULong.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun Long.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
+public fun Long.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.castUnsigned()).toString())
+        Result.Ok(Unit)
+    }
 
 /**
  * Format unsigned integers in the radix.
@@ -211,7 +223,11 @@ public fun U128.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun I128.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
+public fun I128.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append((this.castUnsigned()).toString())
+        Result.Ok(Unit)
+    }
 
 // The string of all two-digit numbers in range 00..99 is used as a lookup table.
 public var DECIMAL_PAIRS: UByteArray = "00010203040506070809101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899".encodeToByteArray().toUByteArray()
@@ -241,7 +257,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
     }
     var exp = n.checkedIlog10().unwrapOr(0).toInt()
     if (false) {
-        check(n / rustPow((U128.fromLong(10.toLong())), exp.toUInt()) < U128(0x0uL, 0xauL))
+        check(n / (U128.fromLong(10.toLong())).pow(exp.toUInt()) < U128(0x0uL, 0xauL))
     }
     var coefPrec = exp
     var coef = n
@@ -264,7 +280,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
                     val fmtPrec1 = matchVal
                     val lessPrec = coefPrec - fmtPrec1
                     check(lessPrec > 0)
-                    val scale = rustCheckedPow((U128.fromLong(10.toLong())), lessPrec.toUInt()).unwrapUnchecked()
+                    val scale = (U128.fromLong(10.toLong())).checkedPow(lessPrec.toUInt()).unwrapUnchecked()
                     val floor = coef / scale
                     val over = coef % scale
                     val half = scale / 2
@@ -280,7 +296,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
                     coefPrec = fmtPrec1
                     if (roundUp != 0 && coef.checkedIlog10().unwrapOr(0).toInt() > coefPrec) {
                         if (false) {
-                            when (val matchVal1 = Pair(coef, rustPow((U128.fromLong(10.toLong())), coefPrec.toUInt() + 1u))) {
+                            when (val matchVal1 = Pair(coef, (U128.fromLong(10.toLong())).pow(coefPrec.toUInt() + 1u))) {
                                 else -> {
                                     val leftVal = matchVal1.first
                                     val rightVal = matchVal1.second
@@ -312,7 +328,11 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
                 buf[i].write(48u + digit.toUByte())
             }
             run {
-                for (i1 in fractionRange.clone().skip(1).rev().stepBy(2)) {
+                for (i1 in fractionRange
+                    .clone()
+                    .skip(1)
+                    .rev()
+                    .stepBy(2)) {
                     val pair = (remain % U128(0x0uL, 0x64uL)).toInt()
                     remain /= U128(0x0uL, 0x64uL)
                     buf[i1 - 1].write(DECIMAL_PAIRS[pair * 2 + 0])
@@ -362,7 +382,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
         val asStr = String.fromUtf8Unchecked(text)
         f.padIntegral(isNonnegative, "", asStr)
     } else {
-        val parts = listOf(Part.Copy(text[0 until coefLen]), Part.Zero(morePrec), Part.Copy(text[coefLen until text.size]))
+        val parts = listOf(numfmt.Part.Copy(text[0 until coefLen]), numfmt.Part.Zero(morePrec), numfmt.Part.Copy(text[coefLen until text.size]))
         val sign =
             if (!isNonnegative) {
                 "-"

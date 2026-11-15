@@ -2,27 +2,25 @@
 package io.github.kotlinmania.rustlang.std.os.windows.net
 
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.os.windows.io.AsRawSocket
-import io.github.kotlinmania.rustlang.os.windows.io.FromRawSocket
-import io.github.kotlinmania.rustlang.os.windows.io.IntoRawSocket
-import io.github.kotlinmania.rustlang.os.windows.io.RawSocket
-import io.github.kotlinmania.rustlang.os.windows.net.SocketAddr
-import io.github.kotlinmania.rustlang.os.windows.net.UnixStream
-import io.github.kotlinmania.rustlang.path.Path
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.net.connection.wasip1.Socket
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvtNz
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.AF_UNIX
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.SOCK_STREAM
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.SockaddrUn
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.bind
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.getsockname
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.listen
-import io.github.kotlinmania.rustlang.sys.pal.windows.winsock.startup
+import io.github.kotlinmania.rustlang.std.os.windows.io.AsRawSocket
+import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawSocket
+import io.github.kotlinmania.rustlang.std.os.windows.io.IntoRawSocket
+import io.github.kotlinmania.rustlang.std.os.windows.io.RawSocket
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtNz
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.AF_UNIX
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SOCK_STREAM
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.bind
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getsockname
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.listen
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.winsock.startup
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -130,9 +128,9 @@ public open class UnixListener(
      * ```kotlin
      */
     public open fun accept(): Result<Pair<UnixStream, SocketAddr>, Error> {
-        val localStorageL146C8 = AddressableLocal(SockaddrUn.default(), ObjectSlotLayout<Any?>())
+        val localStorageL146C8 = AddressableLocal(SockaddrUn.default(), UnresolvedTypeLayout<Any?>())
         val storage by localStorageL146C8
-        val localStorageL147C8 = AddressableLocal(null, ObjectSlotLayout<Any?>())
+        val localStorageL147C8 = AddressableLocal(null, UnresolvedTypeLayout<Any?>())
         val len by localStorageL147C8
         val inner = when (val tryResult = this.value.accept(localStorageL146C8.asMutPtr(), localStorageL147C8.asMutPtr())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         val addr = when (val tryResult = SocketAddr.fromParts(storage, len)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
@@ -218,7 +216,7 @@ public open class UnixListener(
      * }
      * ```kotlin
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.io.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
 
     /**
      * Returns an iterator over incoming connections.

@@ -14,14 +14,14 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.panic.BacktraceStyle
-import io.github.kotlinmania.rustlang.panic.getBacktraceStyle
-import io.github.kotlinmania.rustlang.process.abort
 import io.github.kotlinmania.rustlang.std.Layout
-import io.github.kotlinmania.rustlang.sys.backtrace.lock
-import io.github.kotlinmania.rustlang.sys.backtrace.rustEndShortBacktrace
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.sys.alloc.unix.alloc as imp
+import io.github.kotlinmania.rustlang.std.panic.BacktraceStyle
+import io.github.kotlinmania.rustlang.std.panic.getBacktraceStyle
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
+import io.github.kotlinmania.rustlang.std.sys.backtrace.rustEndShortBacktrace
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.alloc.unix.alloc as imp
 
 // Memory allocation APIs.
 //
@@ -205,7 +205,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                     run {
                         val newSize = newLayout.size()
                         // `realloc` probably checks for `newSize >= oldLayout.size()` or something similar.
-                        hint.assertUnchecked(newSize >= oldLayout.size())
+                        assertUnchecked(newSize >= oldLayout.size())
                         val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
                         val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                         if (zeroed) {
@@ -271,7 +271,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                     val newSize = matchVal
                     run {
                         // `realloc` probably checks for `newSize <= oldLayout.size()` or something similar.
-                        hint.assertUnchecked(newSize <= oldLayout.size())
+                        assertUnchecked(newSize <= oldLayout.size())
                         val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
                         val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                         Result.Ok(ptr1.castSlice(newSize))

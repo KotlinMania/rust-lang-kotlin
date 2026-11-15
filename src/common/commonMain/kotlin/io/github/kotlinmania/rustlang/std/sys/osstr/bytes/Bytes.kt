@@ -12,15 +12,16 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.get
-import io.github.kotlinmania.rustlang.rc.Rc
-import io.github.kotlinmania.rustlang.sync.Arc
-import io.github.kotlinmania.rustlang.sys.AsInner
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.IntoInner
+import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
+import io.github.kotlinmania.rustlang.std.rc.Rc
+import io.github.kotlinmania.rustlang.std.sync.Arc
+import io.github.kotlinmania.rustlang.std.sys.AsInner
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.IntoInner
 
 // The underlying OsString/OsStr implementation on Unix and many other
 // systems: just a `List<UByte>`/`[UByte]`.
@@ -230,7 +231,7 @@ public open class Slice internal constructor(
         return slowPath(this.inner, index)
     }
 
-    public open fun toStr(): Result<String, io.github.kotlinmania.rustlang.String.Utf8Error> = String.fromUtf8(this.inner)
+    public open fun toStr(): Result<String, Utf8Error> = String.fromUtf8(this.inner)
 
     public open fun toStringLossy(): String = String.fromUtf8Lossy(this.inner)
 

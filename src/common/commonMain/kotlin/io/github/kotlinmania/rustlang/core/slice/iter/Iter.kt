@@ -1,35 +1,35 @@
 // port-lint: source slice/iter.rs
 package io.github.kotlinmania.rustlang.core.slice.iter
 
-import io.github.kotlinmania.rustlang.convert.AsRef
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.convert.AsRef
+import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.nth
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
+import io.github.kotlinmania.rustlang.core.mem.get
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
+import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.mem.take
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.get
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.iter.adapters.fuse.nth
-import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.mem.replace
-import io.github.kotlinmania.rustlang.mem.take
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.ptr.withoutProvenance
-import io.github.kotlinmania.rustlang.ptr.withoutProvenanceMut
-import io.github.kotlinmania.rustlang.slice.iter.macros.len
+import io.github.kotlinmania.rustlang.core.slice.iter.macros.len
 
 // Definitions of a bunch of iterators for `[T]`.
 
@@ -125,7 +125,9 @@ public open class Iter<T>(
      */
     public var endOrLen: ConstPtr,
     public var marker: Unit,
-) : AsRef<List<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce {
+) : AsRef<List<T>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "Iter").field(this.asSlice()).finish()
 
     /**
@@ -218,7 +220,9 @@ public open class IterMut<T>(
      */
     public var endOrLen: MutPtr,
     public var marker: Unit,
-) : AsRef<List<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce {
+) : AsRef<List<T>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "IterMut").field(this.makeSlice()).finish()
 
     /**
@@ -252,7 +256,7 @@ public open class IterMut<T>(
         // SAFETY: the iterator was created from a mutable slice with pointer
         // `self.ptr` and length `len(self)`. This guarantees that all the prerequisites
         // for `fromRawPartsMut` are fulfilled.
-        return rawMutSliceList(this.ptr.asPtr(), (len(this)).toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.ptr.asPtr(), (len(this)).toInt(), PrimitiveLayouts.U8)
     }
 
     /**
@@ -321,7 +325,7 @@ public open class IterMut<T>(
         // SAFETY: the iterator was created from a mutable slice with pointer
         // `self.ptr` and length `len(self)`. This guarantees that all the prerequisites
         // for `fromRawPartsMut` are fulfilled.
-        return rawMutSliceList(this.ptr.asPtr(), (len(this)).toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.ptr.asPtr(), (len(this)).toInt(), PrimitiveLayouts.U8)
     }
 
     public override fun asRef(): List<T> = this.asSlice()
@@ -398,15 +402,17 @@ public open class Split<T, P>(
     public var pred: P,
     // Used for `SplitAsciiWhitespace` `asStr` method
     public var finished: Boolean,
-) : SplitIter<Split<T, P>>, Iterable<List<T>> {
-    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
-        override fun computeNext() {
-            when (val v = this@Split.next()) {
-                null -> done()
-                else -> setNext(v)
+) : SplitIter<Split<T, P>>,
+    Iterable<List<T>> {
+    override fun iterator(): Iterator<List<T>> =
+        object : AbstractIterator<List<T>>() {
+            override fun computeNext() {
+                when (val v = this@Split.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     /**
      * Returns a slice which contains items not yet handled by split.
@@ -463,7 +469,13 @@ public open class Split<T, P>(
         if (this.finished) {
             return null
         }
-        return when (val matchVal = this.v.iter().indexOfLast({ x -> (this.pred)(x) }).takeIf { it >= 0 }) {
+        return when (
+            val matchVal =
+                this.v
+                    .iter()
+                    .indexOfLast({ x -> (this.pred)(x) })
+                    .takeIf { it >= 0 }
+        ) {
             null -> this.finish()
             else -> {
                 val idx = matchVal
@@ -513,14 +525,15 @@ public open class SplitInclusive<T, P>(
     public var pred: P,
     public var finished: Boolean,
 ) : Iterable<List<T>> {
-    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
-        override fun computeNext() {
-            when (val v = this@SplitInclusive.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<List<T>> =
+        object : AbstractIterator<List<T>>() {
+            override fun computeNext() {
+                when (val v = this@SplitInclusive.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SplitInclusive").field("v", this.v).field("finished", this.finished).finish()
 
@@ -600,15 +613,17 @@ public open class SplitMut<T, P>(
     public var v: MutableList<T>,
     public var pred: P,
     public var finished: Boolean,
-) : SplitIter<SplitMut<T, P>>, Iterable<MutableList<T>> {
-    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
-        override fun computeNext() {
-            when (val v = this@SplitMut.next()) {
-                null -> done()
-                else -> setNext(v)
+) : SplitIter<SplitMut<T, P>>,
+    Iterable<MutableList<T>> {
+    override fun iterator(): Iterator<MutableList<T>> =
+        object : AbstractIterator<MutableList<T>>() {
+            override fun computeNext() {
+                when (val v = this@SplitMut.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SplitMut").field("v", this.v).field("finished", this.finished).finish()
 
@@ -653,11 +668,15 @@ public open class SplitMut<T, P>(
         if (this.finished) {
             return null
         }
-        val idxOpt = run {
-            // work around borrowck limitations
-            val pred = this.pred
-            this.v.iter().indexOfLast({ x -> pred(x) }).takeIf { it >= 0 }
-        }
+        val idxOpt =
+            run {
+                // work around borrowck limitations
+                val pred = this.pred
+                this.v
+                    .iter()
+                    .indexOfLast({ x -> pred(x) })
+                    .takeIf { it >= 0 }
+            }
         return when (idxOpt) {
             null -> this.finish()
             else -> {
@@ -697,14 +716,15 @@ public open class SplitInclusiveMut<T, P>(
     public var pred: P,
     public var finished: Boolean,
 ) : Iterable<MutableList<T>> {
-    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
-        override fun computeNext() {
-            when (val v = this@SplitInclusiveMut.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<MutableList<T>> =
+        object : AbstractIterator<MutableList<T>>() {
+            override fun computeNext() {
+                when (val v = this@SplitInclusiveMut.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SplitInclusiveMut").field("v", this.v).field("finished", this.finished).finish()
 
@@ -712,11 +732,12 @@ public open class SplitInclusiveMut<T, P>(
         if (this.finished) {
             return null
         }
-        val idxOpt = run {
-            // work around borrowck limitations
-            val pred = this.pred
-            this.v.indexOfFirst({ x -> pred(x) }).takeIf { it >= 0 }
-        }
+        val idxOpt =
+            run {
+                // work around borrowck limitations
+                val pred = this.pred
+                this.v.indexOfFirst({ x -> pred(x) }).takeIf { it >= 0 }
+            }
         val idx = idxOpt.map({ idx -> idx + 1 }).unwrapOr(this.v.size)
         if (idx == this.v.size) {
             this.finished = true
@@ -792,18 +813,20 @@ public open class SplitInclusiveMut<T, P>(
  */
 public open class RSplit<T, P> internal constructor(
     innerCtorArg: Split<T, P>,
-) : SplitIter<RSplit<T, P>>, Iterable<List<T>> {
+) : SplitIter<RSplit<T, P>>,
+    Iterable<List<T>> {
     public var inner: Split<T, P> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
-        override fun computeNext() {
-            when (val v = this@RSplit.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<List<T>> =
+        object : AbstractIterator<List<T>>() {
+            override fun computeNext() {
+                when (val v = this@RSplit.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "RSplit").field("v", this.inner.v).field("finished", this.inner.finished).finish()
 
@@ -821,9 +844,10 @@ public open class RSplit<T, P> internal constructor(
     public companion object {
         public operator fun <T, P> invoke(
             inner: Split<T, P>,
-        ): RSplit<T, P> = RSplit<T, P>(
-            innerCtorArg = inner,
-        )
+        ): RSplit<T, P> =
+            RSplit<T, P>(
+                innerCtorArg = inner,
+            )
 
         public fun <T> new(slice: List<T>, pred: (T) -> Boolean): RSplit<T, P> = RSplit(inner = Split.new(slice, pred))
     }
@@ -847,18 +871,20 @@ public open class RSplit<T, P> internal constructor(
  */
 public open class RSplitMut<T, P> internal constructor(
     innerCtorArg: SplitMut<T, P>,
-) : SplitIter<RSplitMut<T, P>>, Iterable<MutableList<T>> {
+) : SplitIter<RSplitMut<T, P>>,
+    Iterable<MutableList<T>> {
     public var inner: SplitMut<T, P> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
-        override fun computeNext() {
-            when (val v = this@RSplitMut.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<MutableList<T>> =
+        object : AbstractIterator<MutableList<T>>() {
+            override fun computeNext() {
+                when (val v = this@RSplitMut.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "RSplitMut").field("v", this.inner.v).field("finished", this.inner.finished).finish()
 
@@ -873,9 +899,10 @@ public open class RSplitMut<T, P> internal constructor(
     public companion object {
         public operator fun <T, P> invoke(
             inner: SplitMut<T, P>,
-        ): RSplitMut<T, P> = RSplitMut<T, P>(
-            innerCtorArg = inner,
-        )
+        ): RSplitMut<T, P> =
+            RSplitMut<T, P>(
+                innerCtorArg = inner,
+            )
 
         public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): RSplitMut<T, P> = RSplitMut(inner = SplitMut.new(slice, pred))
     }
@@ -890,14 +917,15 @@ public open class GenericSplitN<I>(
     public var iter: I,
     public var count: Int,
 ) : Iterable<T> {
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@GenericSplitN.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@GenericSplitN.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun next(): T? =
         when (this.count) {
@@ -975,9 +1003,10 @@ public open class SplitN<T, P> internal constructor(
     public companion object {
         public operator fun <T, P> invoke(
             inner: GenericSplitN<Split<T, P>>,
-        ): SplitN<T, P> = SplitN<T, P>(
-            innerCtorArg = inner,
-        )
+        ): SplitN<T, P> =
+            SplitN<T, P>(
+                innerCtorArg = inner,
+            )
 
         public fun <T> new(s: Split<T, (T) -> Boolean>, n: Int): SplitN<T, P> = SplitN(inner = GenericSplitN(iter = s, count = n))
     }
@@ -1014,9 +1043,10 @@ public open class RSplitN<T, P> internal constructor(
     public companion object {
         public operator fun <T, P> invoke(
             inner: GenericSplitN<RSplit<T, P>>,
-        ): RSplitN<T, P> = RSplitN<T, P>(
-            innerCtorArg = inner,
-        )
+        ): RSplitN<T, P> =
+            RSplitN<T, P>(
+                innerCtorArg = inner,
+            )
 
         public fun <T> new(s: RSplit<T, (T) -> Boolean>, n: Int): RSplitN<T, P> = RSplitN(inner = GenericSplitN(iter = s, count = n))
     }
@@ -1049,9 +1079,10 @@ public open class SplitNMut<T, P> internal constructor(
     public companion object {
         public operator fun <T, P> invoke(
             inner: GenericSplitN<SplitMut<T, P>>,
-        ): SplitNMut<T, P> = SplitNMut<T, P>(
-            innerCtorArg = inner,
-        )
+        ): SplitNMut<T, P> =
+            SplitNMut<T, P>(
+                innerCtorArg = inner,
+            )
 
         public fun <T> new(s: SplitMut<T, (T) -> Boolean>, n: Int): SplitNMut<T, P> = SplitNMut(inner = GenericSplitN(iter = s, count = n))
     }
@@ -1085,9 +1116,10 @@ public open class RSplitNMut<T, P> internal constructor(
     public companion object {
         public operator fun <T, P> invoke(
             inner: GenericSplitN<RSplitMut<T, P>>,
-        ): RSplitNMut<T, P> = RSplitNMut<T, P>(
-            innerCtorArg = inner,
-        )
+        ): RSplitNMut<T, P> =
+            RSplitNMut<T, P>(
+                innerCtorArg = inner,
+            )
 
         public fun <T> new(s: RSplitMut<T, (T) -> Boolean>, n: Int): RSplitNMut<T, P> = RSplitNMut(inner = GenericSplitN(iter = s, count = n))
     }
@@ -1115,18 +1147,22 @@ public open class RSplitNMut<T, P> internal constructor(
 public open class Windows<T> internal constructor(
     public var v: List<T>,
     sizeCtorArg: NonZero<Int>,
-) : TrustedLen<Windows<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen<Windows<T>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    Iterable<List<T>> {
     public var size: NonZero<Int> = sizeCtorArg
         internal set
 
-    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
-        override fun computeNext() {
-            when (val v = this@Windows.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<List<T>> =
+        object : AbstractIterator<List<T>>() {
+            override fun computeNext() {
+                when (val v = this@Windows.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Windows<T> = Windows(v = this.v, size = this.size)
@@ -1176,13 +1212,13 @@ public open class Windows<T> internal constructor(
         // which means that `i` cannot overflow an `Long`, and the
         // slice created by `fromRawParts` is a subslice of `self.v`
         // thus is guaranteed to be valid for the scope `a` of `self.v`.
-        return rawSliceList(ConstPtr((this.v.asPtr()).rawAddress + ((idx).toLong() * (ObjectSlotLayout<T>()).strideBytes)), this.size.get().toInt(), ObjectSlotLayout<T>())
+        return linearSliceView(ConstPtr((this.v.asPtr()).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), this.size.get().toInt(), UnresolvedTypeLayout<T>())
     }
 
     public open fun nextBack(): List<T>? = this.nthBack(0)
 
     public open fun nthBack(n: Int): List<T>? =
-        if (rustCheckedSub(this.v.size, n) != null && end.checkedSub(this.size.get()) != null) {
+        if (this.v.size.checkedSub(n) != null && end.checkedSub(this.size.get()) != null) {
             val res = ((this.v).subList(start, end))
             this.v = ((this.v).subList(0, end - 1))
             res
@@ -1196,10 +1232,11 @@ public open class Windows<T> internal constructor(
         public operator fun <T> invoke(
             v: List<T>,
             size: NonZero<Int>,
-        ): Windows<T> = Windows<T>(
-            v = v,
-            sizeCtorArg = size,
-        )
+        ): Windows<T> =
+            Windows<T>(
+                v = v,
+                sizeCtorArg = size,
+            )
 
         public fun <T> new(slice: List<T>, size: NonZero<Int>): Windows<T> = Windows(v = slice, size = size)
 
@@ -1233,15 +1270,19 @@ public open class Windows<T> internal constructor(
 public open class Chunks<T>(
     public var v: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<Chunks<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
-    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
-        override fun computeNext() {
-            when (val v = this@Chunks.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<Chunks<T>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    Iterable<List<T>> {
+    override fun iterator(): Iterator<List<T>> =
+        object : AbstractIterator<List<T>>() {
+            override fun computeNext() {
+                when (val v = this@Chunks.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Chunks<T> = Chunks(v = this.v, chunkSize = this.chunkSize)
@@ -1267,7 +1308,7 @@ public open class Chunks<T>(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): List<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && start < this.v.size) {
+        if (n.checkedMul(this.chunkSize) != null && start < this.v.size) {
             val rest = ((this.v).subList(start, (this.v).size))
             val (chunk, rest1) = rest.splitAt(this.chunkSize.min(rest.size))
             this.v = rest1
@@ -1297,12 +1338,12 @@ public open class Chunks<T>(
         // for the scope `a` of `self.v`.
         return run {
             val len = minOf(this.v.size.uncheckedSub(start), this.chunkSize)
-            rawSliceList(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (ObjectSlotLayout<T>()).strideBytes)), len.toInt(), ObjectSlotLayout<T>())
+            linearSliceView(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), len.toInt(), UnresolvedTypeLayout<T>())
         }
     }
 
-    public open fun nextBack(): List<T>? {
-        return if (this.v.isEmpty()) {
+    public open fun nextBack(): List<T>? =
+        if (this.v.isEmpty()) {
             null
         } else {
             val remainder = this.v.size % this.chunkSize
@@ -1330,7 +1371,6 @@ public open class Chunks<T>(
             this.v = fst
             snd
         }
-    }
 
     public open fun nthBack(n: Int): List<T>? {
         val len = this.len()
@@ -1377,7 +1417,10 @@ public open class ChunksMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<ChunksMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen<ChunksMut<T>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -1389,14 +1432,15 @@ public open class ChunksMut<T> internal constructor(
     public var v: MutPtr = vCtorArg
         internal set
 
-    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
-        override fun computeNext() {
-            when (val v = this@ChunksMut.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<MutableList<T>> =
+        object : AbstractIterator<MutableList<T>>() {
+            override fun computeNext() {
+                when (val v = this@ChunksMut.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public override fun next(): MutableList<T>? =
         if (this.v.isEmpty()) {
@@ -1421,7 +1465,7 @@ public open class ChunksMut<T> internal constructor(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): MutableList<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && start < this.v.len()) {
+        if (n.checkedMul(this.chunkSize) != null && start < this.v.len()) {
             // SAFETY: `start<self.v.len()` ensures this is in bounds
             val (_, rest) = this.v.splitAtMut(start)
             // SAFETY: `.min(rest.len()` ensures this is in bounds
@@ -1453,7 +1497,7 @@ public open class ChunksMut<T> internal constructor(
         // slice to be mutable.
         return run {
             val len = minOf(this.v.len().uncheckedSub(start), this.chunkSize)
-            rawMutSliceList(this.v.asMutPtr().add(start), len.toInt(), PrimitiveLayouts.U8)
+            linearMutSliceView(this.v.asMutPtr().add(start), len.toInt(), PrimitiveLayouts.U8)
         }
     }
 
@@ -1481,7 +1525,7 @@ public open class ChunksMut<T> internal constructor(
         return if (n < len) {
             val start = (len - 1 - n) * this.chunkSize
             val end =
-                when (val matchVal = rustCheckedAdd(start, this.chunkSize)) {
+                when (val matchVal = start.checkedAdd(this.chunkSize)) {
                     null -> this.v.len()
                     else -> {
                         val res = matchVal
@@ -1506,11 +1550,12 @@ public open class ChunksMut<T> internal constructor(
             v: MutPtr,
             chunkSize: Int,
             marker: Unit,
-        ): ChunksMut<T> = ChunksMut<T>(
-            vCtorArg = v,
-            chunkSize = chunkSize,
-            marker = marker,
-        )
+        ): ChunksMut<T> =
+            ChunksMut<T>(
+                vCtorArg = v,
+                chunkSize = chunkSize,
+                marker = marker,
+            )
 
         public fun <T> new(slice: MutableList<T>, size: Int): ChunksMut<T> = ChunksMut(v = slice, chunkSize = size, marker = Unit)
 
@@ -1546,15 +1591,19 @@ public open class ChunksExact<T>(
     public var v: List<T>,
     public var rem: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<ChunksExact<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
-    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
-        override fun computeNext() {
-            when (val v = this@ChunksExact.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<ChunksExact<T>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    Iterable<List<T>> {
+    override fun iterator(): Iterator<List<T>> =
+        object : AbstractIterator<List<T>>() {
+            override fun computeNext() {
+                when (val v = this@ChunksExact.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     /**
      * Returns the remainder of the original slice that is not going to be
@@ -1594,7 +1643,7 @@ public open class ChunksExact<T>(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): List<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && start < this.v.size) {
+        if (n.checkedMul(this.chunkSize) != null && start < this.v.size) {
             this.v = ((this.v).subList(start, (this.v).size))
             this.next()
         } else {
@@ -1608,7 +1657,7 @@ public open class ChunksExact<T>(
     public override fun iteratorGetUnchecked(idx: Int): List<T> {
         val start = idx * this.chunkSize
         // SAFETY: mostly identical to `Chunks.__iterator_get_unchecked`.
-        return rawSliceList(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (ObjectSlotLayout<T>()).strideBytes)), this.chunkSize.toInt(), ObjectSlotLayout<T>())
+        return linearSliceView(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), this.chunkSize.toInt(), UnresolvedTypeLayout<T>())
     }
 
     public open fun nextBack(): List<T>? =
@@ -1677,7 +1726,10 @@ public open class ChunksExactMut<T> internal constructor(
     // The iterator never yields from here, so this can be unique
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<ChunksExactMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen<ChunksExactMut<T>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -1689,14 +1741,15 @@ public open class ChunksExactMut<T> internal constructor(
     public var v: MutPtr = vCtorArg
         internal set
 
-    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
-        override fun computeNext() {
-            when (val v = this@ChunksExactMut.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<MutableList<T>> =
+        object : AbstractIterator<MutableList<T>>() {
+            override fun computeNext() {
+                when (val v = this@ChunksExactMut.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     /**
      * Returns the remainder of the original slice that is not going to be
@@ -1707,7 +1760,7 @@ public open class ChunksExactMut<T> internal constructor(
 
     public override fun next(): MutableList<T>? {
         // SAFETY: we have `self`, so are allowed to temporarily materialize a mut slice
-        return RustMutableReference(MutPtr((this.v).rawAddress), ObjectSlotLayout<List<T>>()).splitAtMutChecked(this.chunkSize).map({ (chunk, rest) ->
+        return RustMutableReference(MutPtr((this.v).rawAddress), UnresolvedTypeLayout<List<T>>()).splitAtMutChecked(this.chunkSize).map({ (chunk, rest) ->
             this.v = rest
             chunk
         })
@@ -1721,7 +1774,7 @@ public open class ChunksExactMut<T> internal constructor(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): MutableList<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && start < this.v.len()) {
+        if (n.checkedMul(this.chunkSize) != null && start < this.v.len()) {
             // SAFETY: `start<self.v.len()`
             this.v = this.v.splitAtMut(start).second
             this.next()
@@ -1735,7 +1788,7 @@ public open class ChunksExactMut<T> internal constructor(
     public override fun iteratorGetUnchecked(idx: Int): MutableList<T> {
         val start = idx * this.chunkSize
         // SAFETY: see comments for `Chunks.__iterator_get_unchecked` and `self.v`.
-        return rawMutSliceList(this.v.asMutPtr().add(start), this.chunkSize.toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.v.asMutPtr().add(start), this.chunkSize.toInt(), PrimitiveLayouts.U8)
     }
 
     public open fun nextBack(): MutableList<T>? =
@@ -1775,12 +1828,13 @@ public open class ChunksExactMut<T> internal constructor(
             rem: MutableList<T>,
             chunkSize: Int,
             marker: Unit,
-        ): ChunksExactMut<T> = ChunksExactMut<T>(
-            vCtorArg = v,
-            rem = rem,
-            chunkSize = chunkSize,
-            marker = marker,
-        )
+        ): ChunksExactMut<T> =
+            ChunksExactMut<T>(
+                vCtorArg = v,
+                rem = rem,
+                chunkSize = chunkSize,
+                marker = marker,
+            )
 
         public fun <T> new(slice: MutableList<T>, chunkSize: Int): ChunksExactMut<T> {
             val rem = slice.size % chunkSize
@@ -1832,7 +1886,7 @@ public fun <T> ArrayWindows<T, N>.next(n: Int): List<T>? {
 }
 
 public fun <T> ArrayWindows<T, N>.sizeHint(n: Int): Pair<Int, Int?> {
-    val size = rustSaturatingSub(this.v.size, n - 1)
+    val size = this.v.size.saturatingSub(n - 1)
     return Pair(size, size)
 }
 
@@ -1851,7 +1905,7 @@ public fun <T> ArrayWindows<T, N>.iteratorGetUnchecked(idx: Int, n: Int): List<T
     // which means that `idx` cannot overflow an `Long`, and the
     // "slice" created by `castArray` is a subslice of `self.v`
     // thus is guaranteed to be valid for the scope `a` of `self.v`.
-    return ConstPtr((this.v.asPtr()).rawAddress + ((idx).toLong() * (ObjectSlotLayout<T>()).strideBytes)).castArray()
+    return ConstPtr((this.v.asPtr()).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)).castArray()
 }
 
 public fun <T> ArrayWindows<T, N>.nextBack(n: Int): List<T>? {
@@ -1863,7 +1917,7 @@ public fun <T> ArrayWindows<T, N>.nextBack(n: Int): List<T>? {
 }
 
 public fun <T> ArrayWindows<T, N>.nthBack(n: Int): List<T>? {
-    val idx = rustSaturatingSub(this.v.size, n)
+    val idx = this.v.size.saturatingSub(n)
     this.v = ((this.v).subList(0, idx))
     return this.nextBack()
 }
@@ -1898,15 +1952,19 @@ public val MAY_HAVE_SIDE_EFFECT: Boolean = false
 public open class RChunks<T>(
     public var v: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<RChunks<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
-    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
-        override fun computeNext() {
-            when (val v = this@RChunks.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<RChunks<T>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    Iterable<List<T>> {
+    override fun iterator(): Iterator<List<T>> =
+        object : AbstractIterator<List<T>>() {
+            override fun computeNext() {
+                when (val v = this@RChunks.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): RChunks<T> = RChunks(v = this.v, chunkSize = this.chunkSize)
@@ -1915,7 +1973,7 @@ public open class RChunks<T>(
         if (this.v.isEmpty()) {
             null
         } else {
-            val idx = rustSaturatingSub(this.v.size, this.chunkSize)
+            val idx = this.v.size.saturatingSub(this.chunkSize)
             // SAFETY: self.chunkSize() > 0, so 0 <= idx < self.v.len().
             // Thus `idx` is in-bounds for `self.v` and can be used as a valid argument for `splitAtMutUnchecked`.
             val (rest, chunk) = this.v.splitAtUnchecked(idx)
@@ -1934,10 +1992,10 @@ public open class RChunks<T>(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): List<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && end < this.v.size) {
+        if (n.checkedMul(this.chunkSize) != null && end < this.v.size) {
             val end = this.v.size - end
             val rest = ((this.v).subList(0, end))
-            val (rest1, chunk) = rest.splitAt(rustSaturatingSub(end, this.chunkSize))
+            val (rest1, chunk) = rest.splitAt(end.saturatingSub(this.chunkSize))
             this.v = rest1
             chunk
         } else {
@@ -1962,9 +2020,9 @@ public open class RChunks<T>(
 
     public override fun iteratorGetUnchecked(idx: Int): List<T> {
         val end = this.v.size - idx * this.chunkSize
-        val start = rustSaturatingSub(end, this.chunkSize)
+        val start = end.saturatingSub(this.chunkSize)
         // SAFETY: mostly identical to `Chunks.__iterator_get_unchecked`.
-        return rawSliceList(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (ObjectSlotLayout<T>()).strideBytes)), (end - start).toInt(), ObjectSlotLayout<T>())
+        return linearSliceView(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), (end - start).toInt(), UnresolvedTypeLayout<T>())
     }
 
     public open fun nextBack(): List<T>? =
@@ -1989,7 +2047,7 @@ public open class RChunks<T>(
         return if (n < len) {
             val offsetFromEnd = (len - 1 - n) * this.chunkSize
             val end = this.v.size - offsetFromEnd
-            val start = rustSaturatingSub(end, this.chunkSize)
+            val start = end.saturatingSub(this.chunkSize)
             val nthBack = ((this.v).subList(start, end))
             this.v = ((this.v).subList(end, (this.v).size))
             nthBack
@@ -2030,7 +2088,10 @@ public open class RChunksMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<RChunksMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen<RChunksMut<T>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -2042,20 +2103,21 @@ public open class RChunksMut<T> internal constructor(
     public var v: MutPtr = vCtorArg
         internal set
 
-    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
-        override fun computeNext() {
-            when (val v = this@RChunksMut.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<MutableList<T>> =
+        object : AbstractIterator<MutableList<T>>() {
+            override fun computeNext() {
+                when (val v = this@RChunksMut.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public override fun next(): MutableList<T>? =
         if (this.v.isEmpty()) {
             null
         } else {
-            val idx = rustSaturatingSub(this.v.len(), this.chunkSize)
+            val idx = this.v.len().saturatingSub(this.chunkSize)
             // SAFETY: self.chunkSize() > 0, so 0 <= idx < self.v.len().
             // Thus `idx` is in-bounds for `self.v` and can be used as a valid argument for `splitAtMutUnchecked`.
             val (rest, chunk) = this.v.splitAtMutUnchecked(idx)
@@ -2075,12 +2137,12 @@ public open class RChunksMut<T> internal constructor(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): MutableList<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && end < this.v.len()) {
+        if (n.checkedMul(this.chunkSize) != null && end < this.v.len()) {
             val end = this.v.len() - end
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
             val (rest, _) = this.v.splitAtMut(end)
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
-            val (rest1, chunk) = rest.splitAtMut(rustSaturatingSub(end, this.chunkSize))
+            val (rest1, chunk) = rest.splitAtMut(end.saturatingSub(this.chunkSize))
             this.v = rest1
             // SAFETY: Nothing else points to or will point to the contents of this slice.
             chunk
@@ -2106,10 +2168,10 @@ public open class RChunksMut<T> internal constructor(
 
     public override fun iteratorGetUnchecked(idx: Int): MutableList<T> {
         val end = this.v.len() - idx * this.chunkSize
-        val start = rustSaturatingSub(end, this.chunkSize)
+        val start = end.saturatingSub(this.chunkSize)
         // SAFETY: see comments for `RChunks.__iterator_get_unchecked` and
         // `ChunksMut.__iterator_get_unchecked`, `self.v`.
-        return rawMutSliceList(this.v.asMutPtr().add(start), (end - start).toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.v.asMutPtr().add(start), (end - start).toInt(), PrimitiveLayouts.U8)
     }
 
     public open fun nextBack(): MutableList<T>? =
@@ -2136,7 +2198,7 @@ public open class RChunksMut<T> internal constructor(
             // can't underflow because `n<len`
             val offsetFromEnd = (len - 1 - n) * this.chunkSize
             val end = this.v.len() - offsetFromEnd
-            val start = rustSaturatingSub(end, this.chunkSize)
+            val start = end.saturatingSub(this.chunkSize)
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
             val (tmp, tail) = this.v.splitAtMut(end)
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
@@ -2155,11 +2217,12 @@ public open class RChunksMut<T> internal constructor(
             v: MutPtr,
             chunkSize: Int,
             marker: Unit,
-        ): RChunksMut<T> = RChunksMut<T>(
-            vCtorArg = v,
-            chunkSize = chunkSize,
-            marker = marker,
-        )
+        ): RChunksMut<T> =
+            RChunksMut<T>(
+                vCtorArg = v,
+                chunkSize = chunkSize,
+                marker = marker,
+            )
 
         public fun <T> new(slice: MutableList<T>, size: Int): RChunksMut<T> = RChunksMut(v = slice, chunkSize = size, marker = Unit)
 
@@ -2195,15 +2258,19 @@ public open class RChunksExact<T>(
     public var v: List<T>,
     public var rem: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<RChunksExact<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
-    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
-        override fun computeNext() {
-            when (val v = this@RChunksExact.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<RChunksExact<T>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    Iterable<List<T>> {
+    override fun iterator(): Iterator<List<T>> =
+        object : AbstractIterator<List<T>>() {
+            override fun computeNext() {
+                when (val v = this@RChunksExact.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     /**
      * Returns the remainder of the original slice that is not going to be
@@ -2246,7 +2313,7 @@ public open class RChunksExact<T>(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): List<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && end < this.v.size) {
+        if (n.checkedMul(this.chunkSize) != null && end < this.v.size) {
             this.v = ((this.v).subList(0, this.v.size - end))
             this.next()
         } else {
@@ -2261,7 +2328,7 @@ public open class RChunksExact<T>(
         val end = this.v.size - idx * this.chunkSize
         val start = end - this.chunkSize
         // SAFETY: mostly identical to `Chunks.__iterator_get_unchecked`.
-        return rawSliceList(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (ObjectSlotLayout<T>()).strideBytes)), this.chunkSize.toInt(), ObjectSlotLayout<T>())
+        return linearSliceView(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), this.chunkSize.toInt(), UnresolvedTypeLayout<T>())
     }
 
     public open fun nextBack(): List<T>? =
@@ -2330,7 +2397,10 @@ public open class RChunksExactMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var rem: MutableList<T>,
     public var chunkSize: Int,
-) : TrustedLen<RChunksExactMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen<RChunksExactMut<T>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -2342,14 +2412,15 @@ public open class RChunksExactMut<T> internal constructor(
     public var v: MutPtr = vCtorArg
         internal set
 
-    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
-        override fun computeNext() {
-            when (val v = this@RChunksExactMut.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<MutableList<T>> =
+        object : AbstractIterator<MutableList<T>>() {
+            override fun computeNext() {
+                when (val v = this@RChunksExactMut.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     /**
      * Returns the remainder of the original slice that is not going to be
@@ -2378,7 +2449,7 @@ public open class RChunksExactMut<T> internal constructor(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): MutableList<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && end < this.v.len()) {
+        if (n.checkedMul(this.chunkSize) != null && end < this.v.len()) {
             val idx = this.v.len() - end
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
             val (fst, _) = this.v.splitAtMut(idx)
@@ -2395,7 +2466,7 @@ public open class RChunksExactMut<T> internal constructor(
         val end = this.v.len() - idx * this.chunkSize
         val start = end - this.chunkSize
         // SAFETY: see comments for `RChunksMut.__iterator_get_unchecked` and `self.v`.
-        return rawMutSliceList(this.v.asMutPtr().add(start), this.chunkSize.toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.v.asMutPtr().add(start), this.chunkSize.toInt(), PrimitiveLayouts.U8)
     }
 
     public open fun nextBack(): MutableList<T>? =
@@ -2437,11 +2508,12 @@ public open class RChunksExactMut<T> internal constructor(
             v: MutPtr,
             rem: MutableList<T>,
             chunkSize: Int,
-        ): RChunksExactMut<T> = RChunksExactMut<T>(
-            vCtorArg = v,
-            rem = rem,
-            chunkSize = chunkSize,
-        )
+        ): RChunksExactMut<T> =
+            RChunksExactMut<T>(
+                vCtorArg = v,
+                rem = rem,
+                chunkSize = chunkSize,
+            )
 
         public fun <T> new(slice: MutableList<T>, chunkSize: Int): RChunksExactMut<T> {
             val rem = slice.size % chunkSize
@@ -2466,14 +2538,15 @@ public open class ChunkBy<T, P>(
     public var slice: List<T>,
     public var predicate: P,
 ) : Iterable<List<T>> {
-    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
-        override fun computeNext() {
-            when (val v = this@ChunkBy.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<List<T>> =
+        object : AbstractIterator<List<T>>() {
+            override fun computeNext() {
+                when (val v = this@ChunkBy.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun next(): List<T>? =
         if (this.slice.isEmpty()) {
@@ -2560,14 +2633,15 @@ public open class ChunkByMut<T, P>(
     public var slice: MutableList<T>,
     public var predicate: P,
 ) : Iterable<MutableList<T>> {
-    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
-        override fun computeNext() {
-            when (val v = this@ChunkByMut.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<MutableList<T>> =
+        object : AbstractIterator<MutableList<T>>() {
+            override fun computeNext() {
+                when (val v = this@ChunkByMut.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun next(): MutableList<T>? =
         if (this.slice.isEmpty()) {

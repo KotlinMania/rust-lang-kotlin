@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.core.net.socketaddr
 
 import io.github.kotlinmania.rustlang.core.net.displaybuffer.DisplayBuffer
+import io.github.kotlinmania.rustlang.core.net.ipaddr.IpAddr
+import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
+import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.net.ipaddr.IpAddr
-import io.github.kotlinmania.rustlang.net.ipaddr.Ipv4Addr
-import io.github.kotlinmania.rustlang.net.ipaddr.Ipv6Addr
 
 /**
  * An internet socket address, either IPv4 or IPv6.
@@ -40,11 +40,16 @@ public sealed class SocketAddr {
     /**
      * An IPv4 socket address.
      */
-    public data class V4(public var value: SocketAddrV4) : SocketAddr()
+    public data class V4(
+        public var value: SocketAddrV4,
+    ) : SocketAddr()
+
     /**
      * An IPv6 socket address.
      */
-    public data class V6(public var value: SocketAddrV6) : SocketAddr()
+    public data class V6(
+        public var value: SocketAddrV6,
+    ) : SocketAddr()
 
     public fun rustEquals(other: SocketAddr): Boolean = this == other
 
@@ -221,15 +226,25 @@ public sealed class SocketAddr {
         when (this) {
             is SocketAddr.V4 -> {
                 val (a) = this
-                run { a.fmt(f); Result.Ok(Unit) }
+                run {
+                    a.fmt(f)
+                    Result.Ok(Unit)
+                }
             }
             is SocketAddr.V6 -> {
                 val (a1) = this
-                run { a1.fmt(f); Result.Ok(Unit) }
+                run {
+                    a1.fmt(f)
+                    Result.Ok(Unit)
+                }
             }
         }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> =
+        run {
+            fmt.append((this).toString())
+            Result.Ok(Unit)
+        }
 
     public companion object {
         /**
@@ -445,11 +460,18 @@ public open class SocketAddrV4(
             val buf = DisplayBuffer.buffer(LONGEST_IPV4_SOCKET_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("${this.ip()}:${this.port()}").unwrap()
-            run { f.append(buf1.asStr()); Result.Ok(Unit) }
+            run {
+                f.append(buf1.asStr())
+                Result.Ok(Unit)
+            }
         }
     }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> =
+        run {
+            fmt.append((this).toString())
+            Result.Ok(Unit)
+        }
 
     public companion object {
         /**
@@ -711,11 +733,18 @@ public open class SocketAddrV6(
                     buf1.writeFmt("[${this.ip()}%$scopeId1]:${this.port()}")
                 }
             }.unwrap()
-            run { f.append(buf1.asStr()); Result.Ok(Unit) }
+            run {
+                f.append(buf1.asStr())
+                Result.Ok(Unit)
+            }
         }
     }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> =
+        run {
+            fmt.append((this).toString())
+            Result.Ok(Unit)
+        }
 
     public companion object {
         /**

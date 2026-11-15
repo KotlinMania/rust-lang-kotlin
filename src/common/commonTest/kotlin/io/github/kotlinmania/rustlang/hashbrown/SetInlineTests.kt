@@ -1,13 +1,11 @@
 // port-lint: tests set.rs
 package io.github.kotlinmania.rustlang.hashbrown
 
-import io.github.kotlinmania.rustlang.Equivalent
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.hasher.DefaultHashBuilder
-import io.github.kotlinmania.rustlang.hasher.DefaultHasher
-import io.github.kotlinmania.rustlang.makeHash
+import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
+import io.github.kotlinmania.rustlang.std.hash.random.DefaultHasher
 
 public typealias HS = HashSet<Int>
 

@@ -2,11 +2,11 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.types.u32CastInt
-import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.types.u32CastInt
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
 
 // These constants must be of the same type of sigaction.saFlags
 public val SA_NOCLDSTOP: CInt = 0x00000001

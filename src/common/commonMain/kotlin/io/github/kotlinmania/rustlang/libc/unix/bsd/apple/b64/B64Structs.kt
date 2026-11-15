@@ -1,16 +1,18 @@
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.libc.*
 
 // unlikely to change
-public data class Timeval32(
-    public var tvSec: Int = 0,
-    public var tvUsec: Int = 0,
+public open class Timeval32(
+    public var tvSec: Int,
+    public var tvUsec: Int,
 ) {
+    public open fun clone(): Timeval32 = Timeval32(tvSec, tvUsec)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Timeval32> =
             object : TypeLayout<Timeval32> {
@@ -35,42 +37,44 @@ public data class Timeval32(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 4, value.tvUsec)
                 }
             }
+
+        public fun default(): Timeval32 = Timeval32(tvSec = Default.default(), tvUsec = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class IfData(
-    public var ifiType: CUchar = 0u,
-    public var ifiTypelen: CUchar = 0u,
-    public var ifiPhysical: CUchar = 0u,
-    public var ifiAddrlen: CUchar = 0u,
-    public var ifiHdrlen: CUchar = 0u,
-    public var ifiRecvquota: CUchar = 0u,
-    public var ifiXmitquota: CUchar = 0u,
-    public var ifiUnused1: CUchar = 0u,
-    public var ifiMtu: UInt = 0u,
-    public var ifiMetric: UInt = 0u,
-    public var ifiBaudrate: UInt = 0u,
-    public var ifiIpackets: UInt = 0u,
-    public var ifiIerrors: UInt = 0u,
-    public var ifiOpackets: UInt = 0u,
-    public var ifiOerrors: UInt = 0u,
-    public var ifiCollisions: UInt = 0u,
-    public var ifiIbytes: UInt = 0u,
-    public var ifiObytes: UInt = 0u,
-    public var ifiImcasts: UInt = 0u,
-    public var ifiOmcasts: UInt = 0u,
-    public var ifiIqdrops: UInt = 0u,
-    public var ifiNoproto: UInt = 0u,
-    public var ifiRecvtiming: UInt = 0u,
-    public var ifiXmittiming: UInt = 0u,
-    public var ifiLastchange: Timeval32 = Timeval32(),
-    public var ifiUnused2: UInt = 0u,
-    public var ifiHwassist: UInt = 0u,
-    public var ifiReserved1: UInt = 0u,
-    public var ifiReserved2: UInt = 0u,
+public open class IfData(
+    public var ifiType: CUchar,
+    public var ifiTypelen: CUchar,
+    public var ifiPhysical: CUchar,
+    public var ifiAddrlen: CUchar,
+    public var ifiHdrlen: CUchar,
+    public var ifiRecvquota: CUchar,
+    public var ifiXmitquota: CUchar,
+    public var ifiUnused1: CUchar,
+    public var ifiMtu: UInt,
+    public var ifiMetric: UInt,
+    public var ifiBaudrate: UInt,
+    public var ifiIpackets: UInt,
+    public var ifiIerrors: UInt,
+    public var ifiOpackets: UInt,
+    public var ifiOerrors: UInt,
+    public var ifiCollisions: UInt,
+    public var ifiIbytes: UInt,
+    public var ifiObytes: UInt,
+    public var ifiImcasts: UInt,
+    public var ifiOmcasts: UInt,
+    public var ifiIqdrops: UInt,
+    public var ifiNoproto: UInt,
+    public var ifiRecvtiming: UInt,
+    public var ifiXmittiming: UInt,
+    public var ifiLastchange: Timeval32,
+    public var ifiUnused2: UInt,
+    public var ifiHwassist: UInt,
+    public var ifiReserved1: UInt,
+    public var ifiReserved2: UInt,
 ) {
-    public fun clone(): IfData = IfData(ifiType, ifiTypelen, ifiPhysical, ifiAddrlen, ifiHdrlen, ifiRecvquota, ifiXmitquota, ifiUnused1, ifiMtu, ifiMetric, ifiBaudrate, ifiIpackets, ifiIerrors, ifiOpackets, ifiOerrors, ifiCollisions, ifiIbytes, ifiObytes, ifiImcasts, ifiOmcasts, ifiIqdrops, ifiNoproto, ifiRecvtiming, ifiXmittiming, ifiLastchange, ifiUnused2, ifiHwassist, ifiReserved1, ifiReserved2)
+    public open fun clone(): IfData = IfData(ifiType, ifiTypelen, ifiPhysical, ifiAddrlen, ifiHdrlen, ifiRecvquota, ifiXmitquota, ifiUnused1, ifiMtu, ifiMetric, ifiBaudrate, ifiIpackets, ifiIerrors, ifiOpackets, ifiOerrors, ifiCollisions, ifiIbytes, ifiObytes, ifiImcasts, ifiOmcasts, ifiIqdrops, ifiNoproto, ifiRecvtiming, ifiXmittiming, ifiLastchange, ifiUnused2, ifiHwassist, ifiReserved1, ifiReserved2)
 
     public companion object {
         public fun typeLayout(): TypeLayout<IfData> =
@@ -204,15 +208,19 @@ public class IfData(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 92, value.ifiReserved2)
                 }
             }
+
+        public fun default(): IfData = IfData(ifiType = Default.default(), ifiTypelen = Default.default(), ifiPhysical = Default.default(), ifiAddrlen = Default.default(), ifiHdrlen = Default.default(), ifiRecvquota = Default.default(), ifiXmitquota = Default.default(), ifiUnused1 = Default.default(), ifiMtu = Default.default(), ifiMetric = Default.default(), ifiBaudrate = Default.default(), ifiIpackets = Default.default(), ifiIerrors = Default.default(), ifiOpackets = Default.default(), ifiOerrors = Default.default(), ifiCollisions = Default.default(), ifiIbytes = Default.default(), ifiObytes = Default.default(), ifiImcasts = Default.default(), ifiOmcasts = Default.default(), ifiIqdrops = Default.default(), ifiNoproto = Default.default(), ifiRecvtiming = Default.default(), ifiXmittiming = Default.default(), ifiLastchange = Default.default(), ifiUnused2 = Default.default(), ifiHwassist = Default.default(), ifiReserved1 = Default.default(), ifiReserved2 = Default.default())
     }
 }
 
-public data class BpfHdr(
-    public var bhTstamp: io.github.kotlinmania.rustlang.unix.bsd.apple.b64.Timeval32 = io.github.kotlinmania.rustlang.unix.bsd.apple.b64.Timeval32(),
-    public var bhCaplen: UInt = 0u,
-    public var bhDatalen: UInt = 0u,
-    public var bhHdrlen: CUshort = 0u,
+public open class BpfHdr(
+    public var bhTstamp: Timeval32,
+    public var bhCaplen: UInt,
+    public var bhDatalen: UInt,
+    public var bhHdrlen: CUshort,
 ) {
+    public open fun clone(): BpfHdr = BpfHdr(bhTstamp, bhCaplen, bhDatalen, bhHdrlen)
+
     public companion object {
         public fun typeLayout(): TypeLayout<BpfHdr> =
             object : TypeLayout<BpfHdr> {
@@ -245,5 +253,7 @@ public data class BpfHdr(
                     (PrimitiveLayouts.U16).writeBytes(buf, offset + 16, value.bhHdrlen)
                 }
             }
+
+        public fun default(): BpfHdr = BpfHdr(bhTstamp = Default.default(), bhCaplen = Default.default(), bhDatalen = Default.default(), bhHdrlen = Default.default())
     }
 }

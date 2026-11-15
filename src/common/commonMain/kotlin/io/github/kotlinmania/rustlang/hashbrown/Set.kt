@@ -1,10 +1,6 @@
 // port-lint: source set.rs
 package io.github.kotlinmania.rustlang.hashbrown
 
-import io.github.kotlinmania.rustlang.Equivalent
-import io.github.kotlinmania.rustlang.TryReserveError
-import io.github.kotlinmania.rustlang.alloc.Allocator
-import io.github.kotlinmania.rustlang.alloc.Global
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
@@ -17,11 +13,12 @@ import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
 import io.github.kotlinmania.rustlang.core.ops.bit.BitXor
 import io.github.kotlinmania.rustlang.core.ops.bit.BitXorAssign
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hasher.DefaultHashBuilder
-import io.github.kotlinmania.rustlang.map
-import io.github.kotlinmania.rustlang.map.HashMap
-import io.github.kotlinmania.rustlang.map.Keys
-import io.github.kotlinmania.rustlang.raw.RawExtractIf
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
+import io.github.kotlinmania.rustlang.hashbrown.map.HashMap
+import io.github.kotlinmania.rustlang.hashbrown.map.Keys
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawExtractIf
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -612,11 +609,11 @@ public open class HashSet<T, S, A : Allocator>(
      */
     public open fun getOrInsert(value: T): T =
         when (val matchVal = this.map.entry(value)) {
-            is map.Entry.Occupied -> {
+            is Entry.Occupied -> {
                 val (entry) = matchVal
                 entry
             }
-            is map.Entry.Vacant -> {
+            is Entry.Vacant -> {
                 val (entry1) = matchVal
                 entry1.insertEntry()
             }
@@ -650,11 +647,11 @@ public open class HashSet<T, S, A : Allocator>(
      */
     public open fun <Q> getOrInsertWith(value: Q, f: (Q) -> T): T where Q : Equivalent<T> =
         when (val matchVal = this.map.entryRef(value)) {
-            is map.EntryRef.Occupied -> {
+            is EntryRef.Occupied -> {
                 val (entry) = matchVal
                 entry
             }
-            is map.EntryRef.Vacant -> {
+            is EntryRef.Vacant -> {
                 val (entry1) = matchVal
                 entry1.insertEntryWithKey(f(value))
             }
@@ -701,11 +698,11 @@ public open class HashSet<T, S, A : Allocator>(
      */
     public open fun entry(value: T): Entry<T, S, A> =
         when (val matchVal = this.map.entry(value)) {
-            is map.Entry.Occupied -> {
+            is Entry.Occupied -> {
                 val (entry) = matchVal
                 Entry.Occupied(OccupiedEntry(inner = entry))
             }
-            is map.Entry.Vacant -> {
+            is Entry.Vacant -> {
                 val (entry1) = matchVal
                 Entry.Vacant(VacantEntry(inner = entry1))
             }
@@ -839,13 +836,13 @@ public open class HashSet<T, S, A : Allocator>(
         val value1 = UnsafeCell.new(value)
         // SAFETY: We know the key is no longer accessed after the initial check.
         return when (val matchVal = this.map.entryRef(value1.get())) {
-            is map.EntryRef.Occupied -> {
+            is EntryRef.Occupied -> {
                 val (entry) = matchVal
                 // SAFETY: We know the key will not be accessed any more, and
                 // that the key is equivalent to the one in the entry.
                 entry.replaceKeyUnchecked(value1.intoInner())
             }
-            is map.EntryRef.Vacant -> {
+            is EntryRef.Vacant -> {
                 val (entry1) = matchVal
                 // SAFETY: A value is equivalent to itself.
                 run {
@@ -1112,11 +1109,11 @@ public open class HashSet<T, S, A : Allocator>(
     public open fun bitxorAssign(rhs: HashSet<T, S, A>) {
         for (item in rhs) {
             when (val matchVal = this.map.entryRef(item)) {
-                is map.EntryRef.Occupied -> {
+                is EntryRef.Occupied -> {
                     val (entry) = matchVal
                     entry.remove()
                 }
-                is map.EntryRef.Vacant -> {
+                is EntryRef.Vacant -> {
                     val (entry1) = matchVal
                     entry1.insert()
                 }
@@ -1509,9 +1506,9 @@ public open class Iter<K> internal constructor(
  * [intoIter]: HashSet.intoIter
  */
 public open class IntoIter<K, A : Allocator> internal constructor(
-    iterCtorArg: map.IntoIter<K, Unit, A>,
+    iterCtorArg: IntoIter<K, Unit, A>,
 ) : Iterable<K> {
-    public var iter: map.IntoIter<K, Unit, A> = iterCtorArg
+    public var iter: IntoIter<K, Unit, A> = iterCtorArg
         internal set
 
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
@@ -1547,7 +1544,7 @@ public open class IntoIter<K, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, A : Allocator> invoke(
-            iter: map.IntoIter<K, Unit, A>,
+            iter: IntoIter<K, Unit, A>,
         ): IntoIter<K, A> = IntoIter<K, A>(
             iterCtorArg = iter,
         )
@@ -1565,9 +1562,9 @@ public open class IntoIter<K, A : Allocator> internal constructor(
  * [drain]: HashSet.drain
  */
 public open class Drain<K, A : Allocator> internal constructor(
-    iterCtorArg: map.Drain<K, Unit, A>,
+    iterCtorArg: Drain<K, Unit, A>,
 ) : Iterable<K> {
-    public var iter: map.Drain<K, Unit, A> = iterCtorArg
+    public var iter: Drain<K, Unit, A> = iterCtorArg
         internal set
 
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
@@ -1603,7 +1600,7 @@ public open class Drain<K, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, A : Allocator> invoke(
-            iter: map.Drain<K, Unit, A>,
+            iter: Drain<K, Unit, A>,
         ): Drain<K, A> = Drain<K, A>(
             iterCtorArg = iter,
         )
@@ -2117,9 +2114,9 @@ public sealed class Entry<T, S, A> {
  * ```
  */
 public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
-    innerCtorArg: map.OccupiedEntry<T, Unit, S, A>,
+    innerCtorArg: OccupiedEntry<T, Unit, S, A>,
 ) {
-    public var inner: map.OccupiedEntry<T, Unit, S, A> = innerCtorArg
+    public var inner: OccupiedEntry<T, Unit, S, A> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder) {
@@ -2179,7 +2176,7 @@ public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
-            inner: map.OccupiedEntry<T, Unit, S, A>,
+            inner: OccupiedEntry<T, Unit, S, A>,
         ): OccupiedEntry<T, S, A> = OccupiedEntry<T, S, A>(
             innerCtorArg = inner,
         )
@@ -2219,9 +2216,9 @@ public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
  * ```
  */
 public open class VacantEntry<T, S, A : Allocator> internal constructor(
-    innerCtorArg: map.VacantEntry<T, Unit, S, A>,
+    innerCtorArg: VacantEntry<T, Unit, S, A>,
 ) {
-    public var inner: map.VacantEntry<T, Unit, S, A> = innerCtorArg
+    public var inner: VacantEntry<T, Unit, S, A> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder) {
@@ -2288,7 +2285,7 @@ public open class VacantEntry<T, S, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
-            inner: map.VacantEntry<T, Unit, S, A>,
+            inner: VacantEntry<T, Unit, S, A>,
         ): VacantEntry<T, S, A> = VacantEntry<T, S, A>(
             innerCtorArg = inner,
         )

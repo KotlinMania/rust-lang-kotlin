@@ -4,12 +4,14 @@ package io.github.kotlinmania.rustlang.libm.math.support.hexfloat
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmPowif32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundTiesEvenf64
+import io.github.kotlinmania.rustlang.core.num.f16.nextUp
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.math.support.env.Round
-import io.github.kotlinmania.rustlang.math.support.env.Status
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
-import kotlin.math.pow
+import io.github.kotlinmania.rustlang.libm.math.support.env.Round
+import io.github.kotlinmania.rustlang.libm.math.support.env.Status
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
 
 // Utilities for working with hex float formats.
 
@@ -37,28 +39,28 @@ public fun roundingProperties(s: String): Result<Unit, HexFloatParseError> {
         run {
             val l = xd1.nextUp()
             val r = xu1
-            check(biteq(l, r)) { ("s=$s, xd=$xd, xu=$xu").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("s=$s, xd=$xd, xu=$xu").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
         val signs = listOf(xd1, xu1, xz1, xn1).map(F16::isSignNegative)
         if (signs.contentEquals(BooleanArray(4) { true })) {
             run {
                 val l1 = xz1
                 val r1 = xu1
-                check(biteq(l1, r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(r1)).toString() + ")" }
+                check(biteq(l1, r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
             }
         } else {
             check(signs == BooleanArray(4) { false })
             run {
                 val l2 = xz1
                 val r2 = xd1
-                check(biteq(l2, r2)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l2.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(l2)).toString() + ")\nr: " + (r).toString() + " (" + (r2.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(r2)).toString() + ")" }
+                check(biteq(l2, r2)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l2.toBits()).toString() + " " + (Hex(l2)).toString() + ")\nr: " + (r).toString() + " (" + (r2.toBits()).toString() + " " + (Hex(r2)).toString() + ")" }
             }
         }
         if (xn1.toBits() != xd1.toBits()) {
             run {
                 val l3 = xn1
                 val r3 = xu1
-                check(biteq(l3, r3)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l3.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(l3)).toString() + ")\nr: " + (r).toString() + " (" + (r3.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(r3)).toString() + ")" }
+                check(biteq(l3, r3)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l3.toBits()).toString() + " " + (Hex(l3)).toString() + ")\nr: " + (r).toString() + " (" + (r3.toBits()).toString() + " " + (Hex(r3)).toString() + ")" }
             }
         }
     }
@@ -113,16 +115,16 @@ public class HexFloatParseTestsInlineTests {
             val x = hf32(s)
             val y =
                 if (k < 0) {
-                    0.5f.pow(-k)
+                    kmPowif32(0.5f, -k)
                 } else {
-                    2.0f.pow(k)
+                    kmPowif32(2.0f, k)
                 }
             check(x == y)
         }
         val s1 = "0x.0000000p-121".encodeToByteArray()
         for (e in 0 until 40) {
             for (k1 in 0 until (1 shl 15)) {
-                val expected = kotlin.Float.fromBits(k1) * 2.0f.pow(e.toInt())
+                val expected = kotlin.Float.fromBits(k1) * kmPowif32(2.0f, e.toInt())
                 val x1 = hf32(String.fromUtf8(s1).unwrap())
                 check(x1.toRawBits().toUInt() == expected.toRawBits().toUInt())
                 for (i in (3 until 10).rev()) {
@@ -159,7 +161,7 @@ public class HexFloatParseTestsInlineTests {
         for (k in 0..111) {
             val (bits, status) = parseAny(s, 128 - k, 112 - k, Round.Nearest).unwrap()
             val scale = F128.fromDouble((U128(0x0uL, 0x1uL) shl (112 - k - 1)).toDouble())
-            val expected = (pi * scale).roundTiesEven() / scale
+            val expected = F128.fromDouble(kmRoundTiesEvenf64((pi * scale).toDouble())) / scale
             check(bits shl k == expected.toBits())
             check(expected != pi == status.inexact())
         }

@@ -1,9 +1,9 @@
 // port-lint: source math/sin.rs
 package io.github.kotlinmania.rustlang.libm.math.sin
 
-import io.github.kotlinmania.rustlang.math.kcos.kCos
-import io.github.kotlinmania.rustlang.math.ksin.kSin
-import io.github.kotlinmania.rustlang.math.rempio2.remPio2
+import io.github.kotlinmania.rustlang.libm.math.kcos.kCos
+import io.github.kotlinmania.rustlang.libm.math.ksin.kSin
+import io.github.kotlinmania.rustlang.libm.math.rempio2.remPio2
 
 // sin(x)
 // Return sine function of x.

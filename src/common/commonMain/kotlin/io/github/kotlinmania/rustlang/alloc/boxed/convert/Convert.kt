@@ -1,7 +1,7 @@
 // port-lint: source boxed/convert.rs
 package io.github.kotlinmania.rustlang.alloc.boxed.convert
 
-import io.github.kotlinmania.rustlang.boxed.Box
+import io.github.kotlinmania.rustlang.alloc.boxed.Box
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.RustTypeId
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
@@ -235,7 +235,7 @@ public inline fun <A : Allocator, reified T> RustAny.downcastUnchecked(): T {
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.error.Error
  * import std.fmt
  *
@@ -247,7 +247,7 @@ public inline fun <A : Allocator, reified T> RustAny.downcastUnchecked(): T {
  * val anError = AnError()
  * check(0 == sizeOfVal(anError))
  * val aBoxedError = Holder.from(anError)
- * check(sizeOf<Any>(typeLayoutT = ObjectSlotLayout<Any>()) == sizeOfVal(aBoxedError))
+ * check(sizeOf<Any>(typeLayoutT = UnresolvedTypeLayout<Any>()) == sizeOfVal(aBoxedError))
  * ```
  */
 public fun <E> fromBoxAny(err: E): Any = err
@@ -258,12 +258,12 @@ public fun <E> fromBoxAny(err: E): Any = err
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.error.Error
  *
  * val aStringError = "a string error".toString()
  * val aBoxedError = Holder.from(aStringError)
- * check(sizeOf<Any>(typeLayoutT = ObjectSlotLayout<Any>()) == sizeOfVal(aBoxedError))
+ * check(sizeOf<Any>(typeLayoutT = UnresolvedTypeLayout<Any>()) == sizeOfVal(aBoxedError))
  * ```
  */
 public fun fromBoxAny(err: String): Any {

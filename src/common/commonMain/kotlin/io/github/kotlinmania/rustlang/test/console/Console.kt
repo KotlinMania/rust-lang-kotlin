@@ -1,19 +1,18 @@
 // port-lint: source console.rs
 package io.github.kotlinmania.rustlang.test.console
 
-import io.github.kotlinmania.rustlang.TestFn.*
 import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.filterTests
-import io.github.kotlinmania.rustlang.runTests
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.time.Instant
+import io.github.kotlinmania.rustlang.test.TestFn.*
 import io.github.kotlinmania.rustlang.test.bench.fmtBenchSamples
 import io.github.kotlinmania.rustlang.test.cli.TestOpts
 import io.github.kotlinmania.rustlang.test.event.CompletedTest
 import io.github.kotlinmania.rustlang.test.event.TestEvent
+import io.github.kotlinmania.rustlang.test.filterTests
 import io.github.kotlinmania.rustlang.test.formatters.JsonFormatter
 import io.github.kotlinmania.rustlang.test.formatters.JunitFormatter
 import io.github.kotlinmania.rustlang.test.formatters.OutputFormatter
@@ -23,7 +22,9 @@ import io.github.kotlinmania.rustlang.test.helpers.concurrency.getConcurrency
 import io.github.kotlinmania.rustlang.test.helpers.metrics.MetricMap
 import io.github.kotlinmania.rustlang.test.options.Options
 import io.github.kotlinmania.rustlang.test.options.OutputFormat
-import io.github.kotlinmania.rustlang.test.term
+import io.github.kotlinmania.rustlang.test.runTests
+import io.github.kotlinmania.rustlang.test.term.StdoutTerminal
+import io.github.kotlinmania.rustlang.test.term.stdout
 import io.github.kotlinmania.rustlang.test.testresult.TestResult
 import io.github.kotlinmania.rustlang.test.time.TestExecTime
 import io.github.kotlinmania.rustlang.test.time.TestSuiteExecTime
@@ -177,7 +178,7 @@ public open class ConsoleTestState(
 public fun listTestsConsole(opts: TestOpts, tests: TestList): Result<Unit> {
     val output =
         when (val matchVal = stdout()) {
-            null -> OutputLocation.Raw(stdout().lock())
+            null -> OutputLocation.Raw(io.github.kotlinmania.rustlang.std.io.stdio.stdout().lock())
             else -> {
                 val t = matchVal
                 OutputLocation.Pretty(t)
@@ -309,7 +310,7 @@ public fun onTestEvent(event: TestEvent, st: ConsoleTestState, out: OutputFormat
 public fun getFormatter(opts: TestOpts, maxNameLen: Int): OutputFormatter {
     val output =
         when (val matchVal = stdout()) {
-            null -> OutputLocation.Raw(stdout())
+            null -> OutputLocation.Raw(io.github.kotlinmania.rustlang.std.io.stdio.stdout())
             else -> {
                 val t = matchVal
                 OutputLocation.Pretty(t)

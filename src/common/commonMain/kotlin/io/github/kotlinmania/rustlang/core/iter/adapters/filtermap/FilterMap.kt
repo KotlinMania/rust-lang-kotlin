@@ -1,27 +1,27 @@
 // port-lint: source iter/adapters/filter_map.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.filtermap
 
-import io.github.kotlinmania.rustlang.array.Guard
-import io.github.kotlinmania.rustlang.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.array.Guard
+import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
+import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.mem.forget
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.mem.needsDrop
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -62,15 +62,19 @@ public typealias Source<I> = I.Source
 public open class FilterMap<I, F>(
     public var iter: I,
     public var f: F,
-) : TrustedFused, SourceIter<Source>, InPlaceIterable, Iterable<B> {
-    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
-        override fun computeNext() {
-            when (val v = this@FilterMap.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedFused,
+    SourceIter<Source>,
+    InPlaceIterable,
+    Iterable<B> {
+    override fun iterator(): Iterator<B> =
+        object : AbstractIterator<B>() {
+            override fun computeNext() {
+                when (val v = this@FilterMap.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): FilterMap<I, F> = FilterMap(iter, f)
 
@@ -92,7 +96,7 @@ public open class FilterMap<I, F>(
                 }
             }
         }
-        var array: List<MaybeUninit<B>> = List(n) { MaybeUninit.uninit(ObjectSlotLayout<B>()) }
+        var array: List<MaybeUninit<B>> = List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<B>()) }
         val guard = Guard(array = array, initialized = 0)
         val result =
             this.iter.tryForEach({ element ->
@@ -102,8 +106,8 @@ public open class FilterMap<I, F>(
                 // SAFETY: Loop conditions ensure the index is in bounds.
                 run {
                     val optPayloadAt: ConstPtr = (addrOf(value)).byteAdd(0).cast()
-                    val dst = MutPtr((guard.array.asMutPtr()).rawAddress + ((idx).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))
-                    copyNonoverlapping(optPayloadAt, dst, 1, typeLayoutT = ObjectSlotLayout<MaybeUninit<B>>())
+                    val dst = MutPtr((guard.array.asMutPtr()).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))
+                    copyNonoverlapping(optPayloadAt, dst, 1, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<B>>())
                     forget(value)
                 }
                 if (guard.initialized < n) {
@@ -138,13 +142,15 @@ public open class FilterMap<I, F>(
 
     public open fun nextBack(): B? {
         fun <T, B> find(f: (T) -> B?): (Unit, T) -> ControlFlow<B> =
-            { x -> when (val matchVal = f(x)) {
-                null -> ControlFlow.Continue()
-                else -> {
-                    val x1 = matchVal
-                    ControlFlow.Break(x1)
+            { x ->
+                when (val matchVal = f(x)) {
+                    null -> ControlFlow.Continue()
+                    else -> {
+                        val x1 = matchVal
+                        ControlFlow.Break(x1)
+                    }
                 }
-            } }
+            }
         return this.iter.tryRfold(find(this.f)).breakValue()
     }
 
@@ -192,19 +198,23 @@ public open class FilterMap<I, F>(
 }
 
 public fun <T, B, Acc> filterMapFold(f: (T) -> B?, fold: (Acc, B) -> Acc): (Acc, T) -> Acc =
-    { acc, item -> when (val matchVal = f(item)) {
-        null -> acc
-        else -> {
-            val x = matchVal
-            fold(acc, x)
+    { acc, item ->
+        when (val matchVal = f(item)) {
+            null -> acc
+            else -> {
+                val x = matchVal
+                fold(acc, x)
+            }
         }
-    } }
+    }
 
 public fun <T, B, Acc, R : Try<R, Acc, Any?>> filterMapTryFold(f: (T) -> B?, fold: (Acc, B) -> R): (Acc, T) -> R =
-    { acc, item -> when (val matchVal = f(item)) {
-        null -> acc
-        else -> {
-            val x = matchVal
-            fold(acc, x)
+    { acc, item ->
+        when (val matchVal = f(item)) {
+            null -> acc
+            else -> {
+                val x = matchVal
+                fold(acc, x)
+            }
         }
-    } }
+    }

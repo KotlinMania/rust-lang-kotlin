@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.core.fmt.numbuffer
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
 
 public class DebugStruct(
     private val out: StringBuilder,

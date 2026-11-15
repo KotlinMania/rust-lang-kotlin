@@ -3,22 +3,22 @@
 
 package io.github.kotlinmania.rustlang.core.str.pattern
 
-import io.github.kotlinmania.rustlang.cmp.Eq
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
+import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.option.Option
-import io.github.kotlinmania.rustlang.panicking.assertFailed
-import io.github.kotlinmania.rustlang.slice.memchr.memchr
-import io.github.kotlinmania.rustlang.str.iter.CharIndices
-import io.github.kotlinmania.rustlang.Mask8x16 as Mask
-import io.github.kotlinmania.rustlang.U8x16 as Block
+import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
+import io.github.kotlinmania.rustlang.core.str.chars
+import io.github.kotlinmania.rustlang.core.str.iter.CharIndices
+import io.github.kotlinmania.rustlang.core.Mask8x16 as Mask
+import io.github.kotlinmania.rustlang.core.U8x16 as Block
 
 // The string Pattern API.
 //
@@ -181,8 +181,8 @@ public interface Pattern<Searcher> {
     /**
      * Removes the pattern from the front of haystack, if it matches.
      */
-    public fun stripPrefixOf(haystack: String): String? {
-        return when (val matchVal = this.intoSearcher(haystack).next()) {
+    public fun stripPrefixOf(haystack: String): String? =
+        when (val matchVal = this.intoSearcher(haystack).next()) {
             is SearchStep.Match -> {
                 val (start, len) = matchVal
                 if (false) {
@@ -204,13 +204,12 @@ public interface Pattern<Searcher> {
                 null
             }
         }
-    }
 
     /**
      * Removes the pattern from the back of haystack, if it matches.
      */
-    public fun stripSuffixOf(haystack: String): String? {
-        return when (val matchVal = this.intoSearcher(haystack).nextBack()) {
+    public fun stripSuffixOf(haystack: String): String? =
+        when (val matchVal = this.intoSearcher(haystack).nextBack()) {
             is SearchStep.Match -> {
                 val (start, end) = matchVal
                 if (false) {
@@ -232,7 +231,6 @@ public interface Pattern<Searcher> {
                 null
             }
         }
-    }
 
     /**
      * Returns the pattern as UTF-8 if possible.
@@ -251,11 +249,16 @@ public sealed class Utf8Pattern {
      * This stores `String` rather than bytes so callers cannot describe
      * non-UTF-8 string patterns through this API.
      */
-    public data class StringPattern(public var value: String) : Utf8Pattern()
+    public data class StringPattern(
+        public var value: String,
+    ) : Utf8Pattern()
+
     /**
      * Type returned by char types.
      */
-    public data class CharPattern(public var value: Char) : Utf8Pattern()
+    public data class CharPattern(
+        public var value: Char,
+    ) : Utf8Pattern()
 
     public fun rustEquals(other: Utf8Pattern): Boolean = this == other
 }
@@ -270,7 +273,11 @@ public sealed class SearchStep {
      * Expresses that a match of the pattern has been found at
      * `haystack[a .. b]`.
      */
-    public data class Match(public var field0: Int, public var field1: Int) : SearchStep()
+    public data class Match(
+        public var field0: Int,
+        public var field1: Int,
+    ) : SearchStep()
+
     /**
      * Expresses that `haystack[a .. b]` has been rejected as a possible match
      * of the pattern.
@@ -278,7 +285,11 @@ public sealed class SearchStep {
      * Note that there might be more than one `Reject` between two `Match`es,
      * there is no requirement for them to be combined into one.
      */
-    public data class Reject(public var field0: Int, public var field1: Int) : SearchStep()
+    public data class Reject(
+        public var field0: Int,
+        public var field1: Int,
+    ) : SearchStep()
+
     /**
      * Expresses that every byte of the haystack has been visited, ending
      * the iteration.
@@ -363,8 +374,12 @@ public interface Searcher {
                     val (a, b) = matchVal
                     return Pair(a, b)
                 }
-                SearchStep.Done -> { return null }
-                else -> { continue }
+                SearchStep.Done -> {
+                    return null
+                }
+                else -> {
+                    continue
+                }
             }
         }
     }
@@ -390,8 +405,12 @@ public interface Searcher {
                     val (a, b) = matchVal
                     return Pair(a, b)
                 }
-                SearchStep.Done -> { return null }
-                else -> { continue }
+                SearchStep.Done -> {
+                    return null
+                }
+                else -> {
+                    continue
+                }
             }
         }
     }
@@ -461,8 +480,12 @@ public interface ReverseSearcher : Searcher {
                     val (a, b) = matchVal
                     return Pair(a, b)
                 }
-                SearchStep.Done -> { return null }
-                else -> { continue }
+                SearchStep.Done -> {
+                    return null
+                }
+                else -> {
+                    continue
+                }
             }
         }
     }
@@ -484,8 +507,12 @@ public interface ReverseSearcher : Searcher {
                     val (a, b) = matchVal
                     return Pair(a, b)
                 }
-                SearchStep.Done -> { return null }
-                else -> { continue }
+                SearchStep.Done -> {
+                    return null
+                }
+                else -> {
+                    continue
+                }
             }
         }
     }
@@ -555,7 +582,9 @@ public open class CharSearcher(
      * A utf8 encoded copy of the `needle`
      */
     public var utf8Encoded: UByteArray,
-) : Searcher, ReverseSearcher, DoubleEndedSearcher {
+) : Searcher,
+    ReverseSearcher,
+    DoubleEndedSearcher {
     public open fun clone(): CharSearcher = CharSearcher(haystack, finger, fingerBack, needle, utf8Size, utf8Encoded)
 
     public open fun utf8Size(): Int = this.utf8Size.into()
@@ -596,7 +625,12 @@ public open class CharSearcher(
     public override fun nextMatch(): Pair<Int, Int>? {
         while (true) {
             // get the haystack after the last character found
-            val bytes = (this.haystack.encodeToByteArray().map { it.toUByte() }.get(this.finger until this.fingerBack) ?: return null)
+            val bytes = (
+                this.haystack
+                    .encodeToByteArray()
+                    .map { it.toUByte() }
+                    .get(this.finger until this.fingerBack) ?: return null
+            )
             // the last byte of the utf8 encoded needle
             // SAFETY: we have an invariant that `utf8Size<5`
             val lastByte = this.utf8Encoded.getUnchecked(this.utf8Size() - 1)
@@ -628,7 +662,13 @@ public open class CharSearcher(
                     this.finger += index + 1
                     if (this.finger >= this.utf8Size()) {
                         val foundChar = this.finger - this.utf8Size()
-                        when (val matchVal1 = this.haystack.encodeToByteArray().map { it.toUByte() }.get(foundChar until this.finger)) {
+                        when (
+                            val matchVal1 =
+                                this.haystack
+                                    .encodeToByteArray()
+                                    .map { it.toUByte() }
+                                    .get(foundChar until this.finger)
+                        ) {
                             null -> {}
                             else -> {
                                 val slice = matchVal1
@@ -736,7 +776,12 @@ public open class CharSearcher(
  */
 public fun Char.intoSearcher(haystack: String): CharSearcher {
     var utf8Encoded = MutableList((Char.MAX_LEN_UTF8).toInt()) { 0 }
-    val utf8Size = this.encodeUtf8(utf8Encoded).len().tryInto().expect("char len should be less than 255")
+    val utf8Size =
+        this
+            .encodeUtf8(utf8Encoded)
+            .len()
+            .tryInto()
+            .expect("char len should be less than 255")
     return CharSearcher(haystack = haystack, finger = 0, fingerBack = haystack.length, needle = this, utf8Size = utf8Size, utf8Encoded = utf8Encoded)
 }
 
@@ -811,7 +856,9 @@ public open class MultiCharEqSearcher<C : MultiCharEq>(
     public var charEq: C,
     public var haystack: String,
     public var charIndices: CharIndices,
-) : Searcher, ReverseSearcher, DoubleEndedSearcher {
+) : Searcher,
+    ReverseSearcher,
+    DoubleEndedSearcher {
     public open fun clone(): MultiCharEqSearcher<C> = MultiCharEqSearcher(charEq, haystack, charIndices)
 
     public override fun haystack(): String = this.haystack
@@ -866,7 +913,9 @@ public open class MultiCharEqSearcher<C : MultiCharEq>(
  */
 public open class CharArraySearcher(
     public var value: Searcher,
-) : Searcher, ReverseSearcher, DoubleEndedSearcher {
+) : Searcher,
+    ReverseSearcher,
+    DoubleEndedSearcher {
     public var field0: Searcher
         get() = value
         set(v) {
@@ -895,7 +944,9 @@ public open class CharArraySearcher(
  */
 public open class CharArrayRefSearcher(
     public var value: Searcher,
-) : Searcher, ReverseSearcher, DoubleEndedSearcher {
+) : Searcher,
+    ReverseSearcher,
+    DoubleEndedSearcher {
     public var field0: Searcher
         get() = value
         set(v) {
@@ -973,7 +1024,9 @@ public fun List<Char>.stripSuffixOf(haystack: String, n: Int): String? = (MultiC
  */
 public open class CharSliceSearcher(
     public var value: Searcher,
-) : Searcher, ReverseSearcher, DoubleEndedSearcher {
+) : Searcher,
+    ReverseSearcher,
+    DoubleEndedSearcher {
     public var field0: Searcher
         get() = value
         set(v) {
@@ -1028,7 +1081,9 @@ public fun List<Char>.stripSuffixOf(haystack: String): String? = (MultiCharEqPat
  */
 public open class CharPredicateSearcher<F>(
     public var value: Searcher,
-) : Searcher, ReverseSearcher, DoubleEndedSearcher {
+) : Searcher,
+    ReverseSearcher,
+    DoubleEndedSearcher {
     public var field0: Searcher
         get() = value
         set(v) {
@@ -1124,7 +1179,8 @@ public open class StrSearcher(
     public var haystack: String,
     public var needle: String,
     public var searcher: StrSearcherImpl,
-) : Searcher, ReverseSearcher {
+) : Searcher,
+    ReverseSearcher {
     public open fun clone(): StrSearcher = StrSearcher(haystack, needle, searcher)
 
     public override fun haystack(): String = this.haystack
@@ -1141,7 +1197,11 @@ public open class StrSearcher(
                 searcher.isMatchFw = !searcher.isMatchFw
                 val pos = searcher.position
                 run {
-                    val matchVal1 = this.haystack.substring(pos).rustStrChars().nextCodeOrNull()?.toChar()
+                    val matchVal1 =
+                        this.haystack
+                            .substring(pos)
+                            .chars()
+                            .next()
                     when {
                         isMatch -> SearchStep.Match(pos, pos)
                         matchVal1 == null -> {
@@ -1190,7 +1250,7 @@ public open class StrSearcher(
                         val (a, b) = matchVal2
                         // skip to next char boundary
                         val b1 = this.haystack.ceilCharBoundary(b)
-                        searcher2.position = max(b1, searcher2.position)
+                        searcher2.position = cmp.max(b1, searcher2.position)
                         SearchStep.Reject(a, b1)
                     }
                     else -> {
@@ -1210,7 +1270,9 @@ public open class StrSearcher(
                         val (a, b) = matchVal1
                         return Pair(a, b)
                     }
-                    SearchStep.Done -> { return null }
+                    SearchStep.Done -> {
+                        return null
+                    }
                     is SearchStep.Reject -> {}
                 }
             }
@@ -1258,7 +1320,11 @@ public open class StrSearcher(
                 searcher.isMatchBw = !searcher.isMatchBw
                 val end = searcher.end
                 run {
-                    val matchVal1 = this.haystack.substring(0 until end).rustStrChars().nextBack()
+                    val matchVal1 =
+                        this.haystack
+                            .substring(0 until end)
+                            .chars()
+                            .nextBack()
                     when {
                         isMatch -> SearchStep.Match(end, end)
                         matchVal1 == null -> {
@@ -1320,7 +1386,9 @@ public open class StrSearcher(
                         val (a, b) = matchVal1
                         return Pair(a, b)
                     }
-                    SearchStep.Done -> { return null }
+                    SearchStep.Done -> {
+                        return null
+                    }
                     is SearchStep.Reject -> {}
                 }
             }
@@ -1369,9 +1437,15 @@ public open class StrSearcher(
 }
 
 public sealed class StrSearcherImpl {
-    public data class Empty(public var value: EmptyNeedle) : StrSearcherImpl()
-    public data class Byte(public var value: ByteNeedle) : StrSearcherImpl()
-    public data class TwoWay(public var value: TwoWaySearcher) : StrSearcherImpl()
+    public data class Empty(
+        public var value: EmptyNeedle,
+    ) : StrSearcherImpl()
+    public data class Byte(
+        public var value: ByteNeedle,
+    ) : StrSearcherImpl()
+    public data class TwoWay(
+        public var value: TwoWaySearcher,
+    ) : StrSearcherImpl()
 }
 
 public open class EmptyNeedle(
@@ -1619,7 +1693,7 @@ public open class TwoWaySearcher(
                 if (longPeriod) {
                     this.critPos
                 } else {
-                    max(this.critPos, this.memory)
+                    cmp.max(this.critPos, this.memory)
                 }
             for (i in start until needle.size) {
                 // SAFETY: on every iteration of `search`, the `haystack.get(self.position + needleLast)`
@@ -1845,7 +1919,7 @@ public open class TwoWaySearcher(
                 // (critPos = 1, period = 3) while being factored with approximate
                 // period in reverse (critPos = 2, period = 2). We use the given
                 // reverse factorization but keep the exact period.
-                val critPosBack = needle.size - max(TwoWaySearcher.reverseMaximalSuffix(needle, period, false), TwoWaySearcher.reverseMaximalSuffix(needle, period, true))
+                val critPosBack = needle.size - cmp.max(TwoWaySearcher.reverseMaximalSuffix(needle, period, false), TwoWaySearcher.reverseMaximalSuffix(needle, period, true))
                 TwoWaySearcher(critPos = critPos, critPosBack = critPosBack, period = period, byteset = TwoWaySearcher.bytesetCreate(((needle).subList(0, period))), position = 0, end = end, memory = 0, memoryBack = needle.size)
             } else {
                 // long period case -- we have an approximation to the actual period,
@@ -1854,7 +1928,7 @@ public open class TwoWaySearcher(
                 // Approximate the period by lower bound max(|u|, |v|) + 1.
                 // The critical factorization is efficient to use for both forward and
                 // reverse search.
-                TwoWaySearcher(critPos = critPos, critPosBack = critPos, period = max(critPos, needle.size - critPos) + 1, byteset = TwoWaySearcher.bytesetCreate(needle), position = 0, end = end, memory = Int.MAX_VALUE, memoryBack = Int.MAX_VALUE)
+                TwoWaySearcher(critPos = critPos, critPosBack = critPos, period = cmp.max(critPos, needle.size - critPos) + 1, byteset = TwoWaySearcher.bytesetCreate(needle), position = 0, end = end, memory = Int.MAX_VALUE, memoryBack = Int.MAX_VALUE)
             }
         }
 
@@ -2042,9 +2116,10 @@ public fun simdContains(needle: String, haystack: String): Boolean? {
             1
         } else {
             // try a few bytes in case first and last byte of the needle are the same
-            val secondProbeOffset = (rustSaturatingSub(needle1.size, 4) until needle1.size).rfind({ idx -> needle1[idx] != firstProbe }) ?: // fall back to other search methods if we can't find any different bytes
-    // since we could otherwise hit some degenerate cases
-    return null
+            val secondProbeOffset =
+                (needle1.size.saturatingSub(4) until needle1.size).rfind({ idx -> needle1[idx] != firstProbe }) ?: // fall back to other search methods if we can't find any different bytes
+                    // since we could otherwise hit some degenerate cases
+                    return null
             secondProbeOffset
         }
     // do a naive search if the haystack is too small to fit
@@ -2083,9 +2158,9 @@ public fun simdContains(needle: String, haystack: String): Boolean? {
         { idx ->
             // SAFETY: this requires at least LANES bytes being readable at idx
             // that is ensured by the loop ranges (see comments below)
-            val a: Block = (ObjectSlotLayout<Block>()).readNative((ConstPtr((ConstPtr((haystack1.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)).rawAddress)
+            val a: Block = (UnresolvedTypeLayout<Block>()).readNative((ConstPtr((ConstPtr((haystack1.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)).rawAddress)
             // SAFETY: this requires LANES + blockOffset bytes being readable at idx
-            val b: Block = (ObjectSlotLayout<Block>()).readNative((ConstPtr((ConstPtr((ConstPtr((haystack1.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress + ((secondProbeOffset1).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)).rawAddress)
+            val b: Block = (UnresolvedTypeLayout<Block>()).readNative((ConstPtr((ConstPtr((ConstPtr((haystack1.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress + ((secondProbeOffset1).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)).rawAddress)
             val eqFirst: Mask = a.simdEq(firstProbe1)
             val eqLast: Mask = b.simdEq(secondProbe)
             val both = eqFirst.bitand(eqLast)

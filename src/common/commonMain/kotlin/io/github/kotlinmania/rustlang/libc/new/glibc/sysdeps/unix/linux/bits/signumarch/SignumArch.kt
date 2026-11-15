@@ -1,8 +1,8 @@
 // port-lint: source new/glibc/sysdeps/unix/linux/bits/signum_arch.rs
 package io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.signumarch
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `sysdeps / unix / sysv / linux / bits / signum - arch.h`
 

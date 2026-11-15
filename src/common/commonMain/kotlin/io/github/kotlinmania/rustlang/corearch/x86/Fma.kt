@@ -1,13 +1,7 @@
 // port-lint: source x86/fma.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.x86.M128
-import io.github.kotlinmania.rustlang.x86.M128d
-import io.github.kotlinmania.rustlang.x86.M256
-import io.github.kotlinmania.rustlang.x86.M256d
-import io.github.kotlinmania.rustlang.x86.mmCvtsdF64
-import io.github.kotlinmania.rustlang.x86.mmCvtssF32
+import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 
 // Fused Multiply-Add instruction set (FMA)
 //

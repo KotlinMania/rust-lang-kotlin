@@ -2,9 +2,9 @@
 
 package io.github.kotlinmania.rustlang.core.offload
 
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 // Region & Partitioning Strategy
 
@@ -15,7 +15,11 @@ import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 public open class LaunchError(
     public var message: String,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(this.message); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.message)
+            Result.Ok(Unit)
+        }
 
     public companion object {
         /**

@@ -1,11 +1,11 @@
 // port-lint: source iter/adapters/chain.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.chain
 
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.orElse
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 /**
  * An iterator that links two iterators together, in a chain.
@@ -35,20 +35,29 @@ public open class Chain<A, B>(
     // iterate forward or backward. If you mix directions, then both sides may be `None`.
     public var a: A?,
     public var b: B?,
-) : TrustedLen<Chain<A, B>>, Iterable<Item> {
-    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
-        override fun computeNext() {
-            when (val v = this@Chain.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<Chain<A, B>>,
+    Iterable<Item> {
+    override fun iterator(): Iterator<Item> =
+        object : AbstractIterator<Item>() {
+            override fun computeNext() {
+                when (val v = this@Chain.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Chain<A, B> = Chain(a, b)
 
     public override fun next(): Item? {
-        return andThenOrClear(this.a, Iterator::next).orElse(closure@{ when (val tryResult = this.b) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }.next() })
+        return andThenOrClear(this.a, Iterator::next).orElse(
+            closure@{
+                when (val tryResult = this.b) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
+                }.next()
+            },
+        )
     }
 
     public override fun count(): Int {
@@ -77,7 +86,11 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val a = matchVal
-                acc1 = when (val tryResult = a.tryFold(acc1, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 =
+                    when (val tryResult = a.tryFold(acc1, f)) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    }
                 this.a = null
             }
         }
@@ -85,7 +98,11 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val b = matchVal1
-                acc1 = when (val tryResult = b.tryFold(acc1, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 =
+                    when (val tryResult = b.tryFold(acc1, f)) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    }
                 // we don't fuse the second iterator
             }
         }
@@ -117,15 +134,19 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val a = matchVal
-                n1 = run {
-                    val matchVal1 = a.advanceBy(n1)
-                    when (matchVal1) { is Result.Ok<*, *> -> {
-                        return Result.Ok(Unit)
-                    }; is Result.Err<*, *> -> {
-                        val k = matchVal1.error
-                        k.get()
-                    } }
-                }
+                n1 =
+                    run {
+                        val matchVal1 = a.advanceBy(n1)
+                        when (matchVal1) {
+                            is Result.Ok<*, *> -> {
+                                return Result.Ok(Unit)
+                            }
+                            is Result.Err<*, *> -> {
+                                val k = matchVal1.error
+                                k.get()
+                            }
+                        }
+                    }
                 this.a = null
             }
         }
@@ -146,21 +167,25 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val a = matchVal
-                n1 = run {
-                    val matchVal1 = a.advanceBy(n1)
-                    when (matchVal1) { is Result.Ok<*, *> -> {
-                        when (val matchVal2 = a.next()) {
-                            null -> 0
-                            else -> {
-                                val x = matchVal2
-                                return x
+                n1 =
+                    run {
+                        val matchVal1 = a.advanceBy(n1)
+                        when (matchVal1) {
+                            is Result.Ok<*, *> -> {
+                                when (val matchVal2 = a.next()) {
+                                    null -> 0
+                                    else -> {
+                                        val x = matchVal2
+                                        return x
+                                    }
+                                }
+                            }
+                            is Result.Err<*, *> -> {
+                                val k = matchVal1.error
+                                k.get()
                             }
                         }
-                    }; is Result.Err<*, *> -> {
-                        val k = matchVal1.error
-                        k.get()
-                    } }
-                }
+                    }
                 this.a = null
             }
         }
@@ -168,7 +193,14 @@ public open class Chain<A, B>(
     }
 
     public override fun find(predicate: (A.Item) -> Boolean): Item? {
-        return andThenOrClear(this.a, { a -> a.indexOf(predicate).takeIf { it >= 0 } }).orElse(closure1@{ when (val tryResult = this.b) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }.indexOf(predicate).takeIf { it >= 0 } })
+        return andThenOrClear(this.a, { a -> a.indexOf(predicate).takeIf { it >= 0 } }).orElse(
+            closure1@{
+                when (val tryResult = this.b) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error)
+                }.indexOf(predicate).takeIf { it >= 0 }
+            },
+        )
     }
 
     public override fun last(): Item? {
@@ -212,7 +244,14 @@ public open class Chain<A, B>(
         }
 
     public open fun nextBack(): Item? {
-        return andThenOrClear(this.b, { b -> b.nextBack() }).orElse(closure2@{ when (val tryResult = this.a) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error) }.nextBack() })
+        return andThenOrClear(this.b, { b -> b.nextBack() }).orElse(
+            closure2@{
+                when (val tryResult = this.a) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error)
+                }.nextBack()
+            },
+        )
     }
 
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
@@ -221,15 +260,19 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val b = matchVal
-                n1 = run {
-                    val matchVal1 = b.advanceBackBy(n1)
-                    when (matchVal1) { is Result.Ok<*, *> -> {
-                        return Result.Ok(Unit)
-                    }; is Result.Err<*, *> -> {
-                        val k = matchVal1.error
-                        k.get()
-                    } }
-                }
+                n1 =
+                    run {
+                        val matchVal1 = b.advanceBackBy(n1)
+                        when (matchVal1) {
+                            is Result.Ok<*, *> -> {
+                                return Result.Ok(Unit)
+                            }
+                            is Result.Err<*, *> -> {
+                                val k = matchVal1.error
+                                k.get()
+                            }
+                        }
+                    }
                 this.b = null
             }
         }
@@ -250,21 +293,25 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val b = matchVal
-                n1 = run {
-                    val matchVal1 = b.advanceBackBy(n1)
-                    when (matchVal1) { is Result.Ok<*, *> -> {
-                        when (val matchVal2 = b.nextBack()) {
-                            null -> 0
-                            else -> {
-                                val x = matchVal2
-                                return x
+                n1 =
+                    run {
+                        val matchVal1 = b.advanceBackBy(n1)
+                        when (matchVal1) {
+                            is Result.Ok<*, *> -> {
+                                when (val matchVal2 = b.nextBack()) {
+                                    null -> 0
+                                    else -> {
+                                        val x = matchVal2
+                                        return x
+                                    }
+                                }
+                            }
+                            is Result.Err<*, *> -> {
+                                val k = matchVal1.error
+                                k.get()
                             }
                         }
-                    }; is Result.Err<*, *> -> {
-                        val k = matchVal1.error
-                        k.get()
-                    } }
-                }
+                    }
                 this.b = null
             }
         }
@@ -272,7 +319,14 @@ public open class Chain<A, B>(
     }
 
     public open fun rfind(predicate: (A.Item) -> Boolean): Item? {
-        return andThenOrClear(this.b, { b -> b.rfind(predicate) }).orElse(closure3@{ when (val tryResult = this.a) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }.rfind(predicate) })
+        return andThenOrClear(this.b, { b -> b.rfind(predicate) }).orElse(
+            closure3@{
+                when (val tryResult = this.a) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
+                }.rfind(predicate)
+            },
+        )
     }
 
     public open fun <Acc, R> tryRfold(acc: Acc, f: (Acc, A.Item) -> R): R where R : Try<R, Acc, Any?> {
@@ -281,7 +335,11 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val b = matchVal
-                acc1 = when (val tryResult = b.tryRfold(acc1, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 =
+                    when (val tryResult = b.tryRfold(acc1, f)) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    }
                 this.b = null
             }
         }
@@ -289,7 +347,11 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val a = matchVal1
-                acc1 = when (val tryResult = a.tryRfold(acc1, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 =
+                    when (val tryResult = a.tryRfold(acc1, f)) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    }
                 // we don't fuse the second iterator
             }
         }

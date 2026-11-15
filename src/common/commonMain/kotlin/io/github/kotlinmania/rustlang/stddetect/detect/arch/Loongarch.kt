@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.arch
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.detect.checkFor
+import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
 
 // Run-time feature detection on LoongArch.
 
@@ -116,82 +116,82 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun v32s(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.v32s)
+public fun v32s(): Boolean = checkFor(v32s)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun f(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.f)
+public fun f(): Boolean = checkFor(::f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun d(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.d)
+public fun d(): Boolean = checkFor(::d)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun frecipe(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.frecipe)
+public fun frecipe(): Boolean = checkFor(::frecipe)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun div32(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.div32)
+public fun div32(): Boolean = checkFor(::div32)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lsx(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.lsx)
+public fun lsx(): Boolean = checkFor(::lsx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lasx(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.lasx)
+public fun lasx(): Boolean = checkFor(::lasx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lamBh(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.lamBh)
+public fun lamBh(): Boolean = checkFor(::lamBh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lamcas(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.lamcas)
+public fun lamcas(): Boolean = checkFor(::lamcas)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ldSeqSa(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.ldSeqSa)
+public fun ldSeqSa(): Boolean = checkFor(::ldSeqSa)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun scq(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.scq)
+public fun scq(): Boolean = checkFor(::scq)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lbt(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.lbt)
+public fun lbt(): Boolean = checkFor(::lbt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lvz(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.lvz)
+public fun lvz(): Boolean = checkFor(::lvz)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ual(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.ual)
+public fun ual(): Boolean = checkFor(::ual)

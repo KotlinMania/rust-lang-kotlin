@@ -1,14 +1,14 @@
 // port-lint: source new/apple/libpthread/pthread_/introspection.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.introspection
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadKeyT
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadKeyT
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
 
 // Header: `pthread / introspection.h`
 //

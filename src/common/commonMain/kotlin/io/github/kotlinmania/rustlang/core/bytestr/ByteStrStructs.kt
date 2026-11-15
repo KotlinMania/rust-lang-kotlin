@@ -1,23 +1,23 @@
 package io.github.kotlinmania.rustlang.core.bytestr
 
-import io.github.kotlinmania.rustlang.borrow.Borrow
-import io.github.kotlinmania.rustlang.borrow.BorrowMut
-import io.github.kotlinmania.rustlang.convert.AsMut
-import io.github.kotlinmania.rustlang.convert.AsRef
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.borrow.Borrow
+import io.github.kotlinmania.rustlang.core.borrow.BorrowMut
+import io.github.kotlinmania.rustlang.core.convert.AsMut
+import io.github.kotlinmania.rustlang.core.convert.AsRef
+import io.github.kotlinmania.rustlang.core.fmt.Alignment
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.slice.get
-import io.github.kotlinmania.rustlang.fmt.Alignment
-import io.github.kotlinmania.rustlang.ops.deref.DerefPure
 
 /**
  * A wrapper for `[UByte]` representing a human-readable string that's conventionally, but not
@@ -52,7 +52,11 @@ import io.github.kotlinmania.rustlang.ops.deref.DerefPure
 public open class ByteStr internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<List<UByte>>,
-) : DerefPure, AsRef<List<UByte>>, AsMut<List<UByte>>, Borrow<List<UByte>>, BorrowMut<List<UByte>> {
+) : DerefPure,
+    AsRef<List<UByte>>,
+    AsMut<List<UByte>>,
+    Borrow<List<UByte>>,
+    BorrowMut<List<UByte>> {
     public var field0: List<UByte>
         get() = value
         set(v) {
@@ -61,7 +65,9 @@ public open class ByteStr internal constructor(
 
     public var value: List<UByte>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: List<UByte>, fieldLayout: TypeLayout<List<UByte>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -98,18 +104,40 @@ public open class ByteStr internal constructor(
     public open fun derefMut(): MutableList<UByte> = this.value
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("\"")) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
         for (chunk in this.utf8Chunks()) {
             for (c in chunk.valid().chars()) {
                 when (c) {
-                    '\u0000' -> { when (val tryResult = f.writeFmt("\\0")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) } }
-                    in '\u0001'..'\u007f' -> when (val tryResult = f.writeFmt("${(c.toUByte()).escapeAscii()}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                    else -> when (val tryResult = f.writeFmt("${c.escapeDebug()}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                    '\u0000' -> {
+                        when (val tryResult = f.writeFmt("\\0")) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                        }
+                    }
+                    in '\u0001'..'\u007f' ->
+                        when (val tryResult = f.writeFmt("${(c.toUByte()).escapeAscii()}")) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                        }
+                    else ->
+                        when (val tryResult = f.writeFmt("${c.escapeDebug()}")) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                        }
                 }
             }
-            when (val tryResult = f.writeFmt("${chunk.invalid().escapeAscii()}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            when (val tryResult = f.writeFmt("${chunk.invalid().escapeAscii()}")) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         }
-        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("\"")) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
         return Result.Ok(Unit)
     }
 
@@ -126,7 +154,10 @@ public open class ByteStr internal constructor(
         if (requestedWidth == 0 && f.precision() == null) {
             // Avoid counting the characters if no truncation or padding was
             // requested.
-            return run { emit(this, f); Result.Ok(Unit) }
+            return run {
+                emit(this, f)
+                Result.Ok(Unit)
+            }
         }
         val (truncated, actualWidth1) =
             run {
@@ -142,13 +173,15 @@ public open class ByteStr internal constructor(
                         var currentWidth = 0
                         var offset = 0
                         while (true) {
-                            val chunk = chunks.next() ?: // We reached the end of the string without running out
-    // of space, so print the entire string.
-    break
+                            val chunk =
+                                chunks.next() ?: // We reached the end of the string without running out
+                                    // of space, so print the entire string.
+                                    break
                             val chars = chunk.valid().charIndices()
-                            val remaining = chars.advanceBy(remainingWidth) ?: // We've counted off `precision` characters, so truncate
-    // the string at the current offset.
-    break
+                            val remaining =
+                                chars.advanceBy(remainingWidth) ?: // We've counted off `precision` characters, so truncate
+                                    // the string at the current offset.
+                                    break
                             offset += chunk.valid().len()
                             currentWidth += remainingWidth - remaining.get()
                             remainingWidth = remaining.get()
@@ -169,21 +202,28 @@ public open class ByteStr internal constructor(
                     // of characters to calculate the padding.
                     else -> {
                         val actualWidth =
-                            this.utf8Chunks().map({ chunk1 ->
-                                chunk1.valid().chars().count() +
-                                    if (chunk1.invalid().isEmpty()) {
-                                        0
-                                    } else {
-                                        1
-                                    }
-                            }).sum()
+                            this
+                                .utf8Chunks()
+                                .map({ chunk1 ->
+                                    chunk1.valid().chars().count() +
+                                        if (chunk1.invalid().isEmpty()) {
+                                            0
+                                        } else {
+                                            1
+                                        }
+                                })
+                                .sum()
                         Pair(this, actualWidth)
                     }
                 }
             }
         // The width is originally stored as a 16-bit number, so this cannot fail.
         val padding = UShort.tryFrom(requestedWidth.saturatingSub(actualWidth1)).unwrap()
-        val postPadding = when (val tryResult = f.padding(padding, Alignment.Left)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val postPadding =
+            when (val tryResult = f.padding(padding, Alignment.Left)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         emit(truncated, f)
         return postPadding.write(f)
     }
@@ -229,13 +269,13 @@ public open class ByteStr internal constructor(
         public fun fromBytes(slice: List<UByte>): ByteStr {
             // SAFETY: `ByteStr` is a transparent wrapper around `[UByte]`, so we can turn a reference to
             // the wrapped type into a reference to the wrapper type.
-            return (ObjectSlotLayout<ByteStr>()).readNative((((constPtrFromRustCast(slice)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+            return (UnresolvedTypeLayout<ByteStr>()).readNative((((constPtrFromRustCast(slice)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
         }
 
         public fun fromBytesMut(slice: MutableList<UByte>): RustMutableReference<ByteStr> {
             // SAFETY: `ByteStr` is a transparent wrapper around `[UByte]`, so we can turn a reference to
             // the wrapped type into a reference to the wrapper type.
-            return RustMutableReference(MutPtr((((mutPtrFromRustCast(slice)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<ByteStr>())
+            return RustMutableReference(MutPtr((((mutPtrFromRustCast(slice)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<ByteStr>())
         }
 
         public fun default(): ByteStr = ByteStr.fromBytes("".encodeToByteArray().map { it.toUByte() })

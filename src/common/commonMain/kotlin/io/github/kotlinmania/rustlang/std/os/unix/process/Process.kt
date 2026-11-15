@@ -2,21 +2,21 @@
 package io.github.kotlinmania.rustlang.std.os.unix.process
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGKILL
-import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.os.fd.OwnedFd
-import io.github.kotlinmania.rustlang.os.fd.RawFd
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.process.ChildStderr
-import io.github.kotlinmania.rustlang.process.ChildStdin
-import io.github.kotlinmania.rustlang.process.ChildStdout
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.sys.process.unix.common.getppid
-import io.github.kotlinmania.rustlang.sys.process.unix.unix.Process
-import io.github.kotlinmania.rustlang.sys.process.unsupported.ChildPipe
-import io.github.kotlinmania.rustlang.sys.process.unsupported.Stdio
+import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
+import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.process.ChildStderr
+import io.github.kotlinmania.rustlang.std.process.ChildStdin
+import io.github.kotlinmania.rustlang.std.process.ChildStdout
+import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.process.unix.common.getppid
+import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.Process
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.ChildPipe
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio
 
 // Unix-specific extensions to primitives in the [std.process] module.
 
@@ -153,7 +153,7 @@ public interface CommandExt {
      * required to gracefully handle errors it is recommended to use the
      * cross-platform `spawn` instead.
      */
-    public fun exec(): io.github.kotlinmania.rustlang.io.Error
+    public fun exec(): io.github.kotlinmania.rustlang.std.io.Error
 
     /**
      * Set executable argument
@@ -259,7 +259,7 @@ public fun Command.preExec(f: () -> Result<Unit, Error>): Command {
     return this
 }
 
-public fun Command.exec(): io.github.kotlinmania.rustlang.io.Error {
+public fun Command.exec(): io.github.kotlinmania.rustlang.std.io.Error {
     // NOTE: This may *not* be safe to call after `libc.fork`, because it
     // may allocate. That may be worth fixing at some point in the future.
     return this.asInnerMut().exec(Stdio.Inherit)

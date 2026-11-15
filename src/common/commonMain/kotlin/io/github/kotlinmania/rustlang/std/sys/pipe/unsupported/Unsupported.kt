@@ -5,10 +5,10 @@ import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.os.fd.OwnedFd
-import io.github.kotlinmania.rustlang.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
+import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 
 public open class Pipe(
     public var value: Nothing,
@@ -44,7 +44,7 @@ public open class Pipe(
     }
 }
 
-public fun pipe(): Result<Pair<Pipe, Pipe>, Error> = Result.Err(io.github.kotlinmania.rustlang.io.Error.UNSUPPORTED_PLATFORM)
+public fun pipe(): Result<Pair<Pipe, Pipe>, Error> = Result.Err(io.github.kotlinmania.rustlang.std.io.Error.UNSUPPORTED_PLATFORM)
 
 public fun Pipe.asRawFd(): RawFd = this.value
 

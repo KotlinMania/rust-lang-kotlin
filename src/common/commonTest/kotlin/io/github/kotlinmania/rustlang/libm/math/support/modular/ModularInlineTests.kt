@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.support.modular
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.num.rustPow
+import io.github.kotlinmania.rustlang.core.num.pow
 
 // This module provides accelerated modular multiplication by large powers
 // of two, which is needed for computing floating point remainders in `fmod`
@@ -66,8 +66,8 @@ public class ModularInlineTests {
         check(linearMulReduction<U128>(17, 100u, 123456789) == (17 shl 100) % 123456789)
         // power-of-two divisor
         check(linearMulReduction(0xdeadbeef, 100u, U128(0x0uL, 0x1uL) shl 116) == 0xbeef shl 100)
-        val x = rustPow(U128(0x0uL, 0xauL), 37u)
-        val y = rustPow(U128(0x0uL, 0xbuL), 36u)
+        val x = (U128(0x0uL, 0xauL)).pow(37u)
+        val y = (U128(0x0uL, 0xbuL)).pow(36u)
         check(x < y)
         var r = x
         for (e in 0 until 1000) {

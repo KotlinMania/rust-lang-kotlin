@@ -4,4 +4,6 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.int.bswap.bswapdi2
 /**
  * Swaps bytes in 64-bit number
  */
-public fun bswapdi2(x: ULong): ULong = io.github.kotlinmania.rustlang.int.bswap.bswapdi2(x)
+public fun bswapdi2(x: ULong): ULong =
+    io.github.kotlinmania.rustlang.compilerbuiltins.int.bswap
+        .bswapdi2(x)

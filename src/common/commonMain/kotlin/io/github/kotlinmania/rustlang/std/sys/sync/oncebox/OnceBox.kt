@@ -7,9 +7,9 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
 
 // A racily-initialized alternative to `OnceLock<Holder<T>>`.
 //

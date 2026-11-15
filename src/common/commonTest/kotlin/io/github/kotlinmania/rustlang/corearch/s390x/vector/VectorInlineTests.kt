@@ -4,23 +4,23 @@
 package io.github.kotlinmania.rustlang.corearch.s390x.vector
 
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf32
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.asPtr
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.get
-import kotlin.math.sqrt
 
 // s390x vector intrinsics.
 //
@@ -591,7 +591,7 @@ public fun testVecPermF32x4() {
 
 public fun testVecSqrt() {
     val a: STL = f32x4.new(3.1415927f, 1.0, 25.0, 2.0).into()
-    val d = f32x4.new(sqrt(3.1415927f), 1.0, 5.0, 1.4142135f)
+    val d = f32x4.new(kmSqrtf32(3.1415927f), 1.0, 5.0, 1.4142135f)
     val r = f32x4.from(vecSqrt(a))
     check(d == r)
 }
@@ -801,13 +801,15 @@ public fun testVectorLcbb() {
 
         public var value: T
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+            set(value) {
+                fieldLayout.writeNative(fieldStorage.rawAddress, value)
+            }
 
         public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align64<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align64<T>(ptr, layout) }, { it.value })
     }
-    val ARRAY: Align64<UByteArray>  = Align64(List(128) { 0 }, fieldLayout = ObjectSlotLayout<T>())
+    val ARRAY: Align64<UByteArray> = Align64(List(128) { 0 }, fieldLayout = UnresolvedTypeLayout<T>())
     check(lcbb(ARRAY.first[64 until ARRAY.first.size].asPtr(), 64) == 16u)
     check(lcbb(ARRAY.first[63 until ARRAY.first.size].asPtr(), 64) == 1u)
     check(lcbb(ARRAY.first[56 until ARRAY.first.size].asPtr(), 64) == 8u)
@@ -911,12 +913,12 @@ public fun testVecAddcU128() {
         val a = U128.MAX_VALUE
         val b = U128(0x0uL, 0x1uL)
         val d: U128 = transmute(vecAddcU128(transmute(a), transmute(b)))
-        check(rustCheckedAdd(a, b) == null)
+        check(a.checkedAdd(b) == null)
         check(d == U128(0x0uL, 0x1uL))
         val a1 = U128(0x0uL, 0x1uL)
         val b1 = U128(0x0uL, 0x1uL)
         val d1: U128 = transmute(vecAddcU128(transmute(a1), transmute(b1)))
-        check(rustCheckedAdd(a1, b1) != null)
+        check(a1.checkedAdd(b1) != null)
         check(d1 == U128(0x0uL, 0x0uL))
     }
 }
@@ -926,12 +928,12 @@ public fun testVecSubcU128() {
         val a = U128(0x0uL, 0x0uL)
         val b = U128(0x0uL, 0x1uL)
         val d: U128 = transmute(vecSubcU128(transmute(a), transmute(b)))
-        check(rustCheckedSub(a, b) == null)
+        check(a.checkedSub(b) == null)
         check(d == U128(0x0uL, 0x0uL))
         val a1 = U128(0x0uL, 0x1uL)
         val b1 = U128(0x0uL, 0x1uL)
         val d1: U128 = transmute(vecSubcU128(transmute(a1), transmute(b1)))
-        check(rustCheckedSub(a1, b1) != null)
+        check(a1.checkedSub(b1) != null)
         check(d1 == U128(0x0uL, 0x1uL))
     }
 }
@@ -1023,7 +1025,12 @@ public fun testVecSel() {
     val b = VectorSignedInt(listOf(5, 6, 7, 8))
     val e = VectorUnsignedInt(listOf(9, 10, 11, 12))
     val f = VectorUnsignedInt(listOf(9, 9, 11, 11))
-    val c: VectorBoolInt = run { val _simdArg0 = e; val _simdArg1 = f; VectorBoolInt() }
+    val c: VectorBoolInt =
+        run {
+            val _simdArg0 = e
+            val _simdArg1 = f
+            VectorBoolInt()
+        }
     check(c.asArray() == listOf(0.inv(), 0, 0.inv(), 0))
     val d: VectorSignedInt = vecSel(a, b, c)
     check((d.asArray()).contentEquals(listOf(5, 2, 7, 4)))
@@ -1560,7 +1567,19 @@ public class VectorInlineTests {
         check(genmasks(8u, (3u + 8u).toUByte(), (7u + 8u).toUByte()) == 31uL)
         // If a is greater than b, the operation is perform as if b equals 7.
         check(genmasks(8u, 5u, 4u) == genmasks(8u, 5u, 7u))
-        check(genmasks(16u, 4u, 12u).toUShort() == run { val bytesTmp0 = ubyteArrayOf(15u, (-8).toUByte()); ((bytesTmp0[0].toInt() shl 8) or bytesTmp0[1].toInt()).toUShort() })
-        check(genmasks(32u, 4u, 29u).toUInt() == run { val bytesTmp1 = ubyteArrayOf(15u, 0xFFu, 0xFFu, (-4).toUByte()); ((bytesTmp1[0].toUInt() shl 24) or (bytesTmp1[1].toUInt() shl 16) or (bytesTmp1[2].toUInt() shl 8) or bytesTmp1[3].toUInt()) })
+        check(
+            genmasks(16u, 4u, 12u).toUShort() ==
+                run {
+                    val bytesTmp0 = ubyteArrayOf(15u, (-8).toUByte())
+                    ((bytesTmp0[0].toInt() shl 8) or bytesTmp0[1].toInt()).toUShort()
+                },
+        )
+        check(
+            genmasks(32u, 4u, 29u).toUInt() ==
+                run {
+                    val bytesTmp1 = ubyteArrayOf(15u, 0xFFu, 0xFFu, (-4).toUByte())
+                    ((bytesTmp1[0].toUInt() shl 24) or (bytesTmp1[1].toUInt() shl 16) or (bytesTmp1[2].toUInt() shl 8) or bytesTmp1[3].toUInt())
+                },
+        )
     }
 }

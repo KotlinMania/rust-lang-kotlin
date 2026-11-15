@@ -1,21 +1,25 @@
 // port-lint: source types.rs
 package io.github.kotlinmania.rustlang.libc.types
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Ioctl
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Ioctl
 
 // Platform-agnostic support types.
 
@@ -27,25 +31,27 @@ import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Ioctl
  * A transparent wrapper over `MaybeUninit<T>` to represent uninitialized padding
  * while providing `Default`.
  */
-public class Padding<T> internal constructor(
-    valueCtorArg: MaybeUninit<T>,
+public open class Padding<T> internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<MaybeUninit<T>>,
 ) {
-    public var value: MaybeUninit<T> = valueCtorArg
-        internal set
-
     public var field0: MaybeUninit<T>
         get() = value
         set(v) {
             value = v
         }
 
-    public constructor() : this(
-        valueCtorArg = MaybeUninit.uninit(ObjectSlotLayout<T>()),
-    )
+    public var value: MaybeUninit<T>
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public fun clone(): Padding<T> = Padding(value)
+    internal constructor(value: MaybeUninit<T>, fieldLayout: TypeLayout<MaybeUninit<T>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
-    public fun fmt(f: StringBuilder) {
+    public fun pointerLayout(): TypeLayout<Padding<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Padding<T>(ptr, layout) }, { it.value })
+
+    public open fun clone(): Padding<T> = Padding<T>(value, fieldLayout)
+
+    public open fun fmt(f: StringBuilder) {
         // Taken from `MaybeUninit`s debug implementation
         // NB: there is no `.padFmt` so we can't use a simpler `formatArgs("Padding<{..}>").
         val fullName = "Padding"
@@ -61,25 +67,23 @@ public class Padding<T> internal constructor(
     /**
      * Padding fields are all equal, regardless of what is inside them, so they do not affect anything.
      */
-    public fun eq(other: Padding<T>): Boolean = true
+    public open fun eq(other: Padding<T>): Boolean = true
 
     /**
      * Mark that `Padding` implements `Eq` so that it can be used in types that implement it.
      */
 
     public companion object {
-        public operator fun <T> invoke(
-            value: MaybeUninit<T> = MaybeUninit.uninit(ObjectSlotLayout<T>()),
-        ): Padding<T> = Padding<T>(
-            valueCtorArg = value,
-        )
+        public operator fun <T> invoke(value: MaybeUninit<T>, fieldLayout: TypeLayout<MaybeUninit<T>>): Padding<T> = Padding<T>(value, fieldLayout)
 
-        public fun <T> default(): Padding<T> = Padding(MaybeUninit.zeroed(ObjectSlotLayout<T>()))
+        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<MaybeUninit<T>>): Padding<T> = Padding<T>(fieldStorage, fieldLayout)
+
+        public fun <T> default(fieldLayout: TypeLayout<MaybeUninit<T>>): Padding<T> = Padding(MaybeUninit.zeroed(UnresolvedTypeLayout<T>()), fieldLayout = fieldLayout)
 
         /**
          * Create a `Padding` initialized with the given value.
          */
-        public fun <T> new(value: T): Padding<T> = Padding(MaybeUninit.new(value, ObjectSlotLayout<T>()))
+        public fun <T> new(value: T, fieldLayout: TypeLayout<MaybeUninit<T>>): Padding<T> = Padding(MaybeUninit.new(value, UnresolvedTypeLayout<T>()), fieldLayout = fieldLayout)
     }
 }
 
@@ -93,7 +97,7 @@ public typealias CEnumRepr = CInt
  * out-of-range for signed.
  */
 public fun u16CastShort(x: UShort): CShort {
-    check(sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16) <= sizeOf<CShort>(typeLayoutT = ObjectSlotLayout<CShort>()))
+    check(sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16) <= sizeOf<CShort>(typeLayoutT = UnresolvedTypeLayout<CShort>()))
     // Should always be true
     return x.toShort()
 }
@@ -104,7 +108,7 @@ public fun u16CastShort(x: UShort): CShort {
  */
 public fun u32CastInt(x: UInt): CInt {
     // May not be true on 16-bit platforms, but should be everywhere this is used.
-    check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<CInt>(typeLayoutT = ObjectSlotLayout<CInt>()))
+    check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<CInt>(typeLayoutT = UnresolvedTypeLayout<CInt>()))
     return x.toInt()
 }
 
@@ -113,7 +117,7 @@ public fun u32CastInt(x: UInt): CInt {
  * out-of-range for signed.
  */
 public fun u32CastLong(x: UInt): CLong {
-    check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<CLong>(typeLayoutT = ObjectSlotLayout<CLong>()))
+    check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<CLong>(typeLayoutT = UnresolvedTypeLayout<CLong>()))
     // Should always be true
     return x.toLong()
 }
@@ -139,17 +143,17 @@ public fun ulongCastUint(x: CUlong): CUint {
  * out-of-range for signed.
  */
 public fun u32CastIoctl(x: UInt): Ioctl {
-    check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<Ioctl>(typeLayoutT = ObjectSlotLayout<Ioctl>()))
+    check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<Ioctl>(typeLayoutT = UnresolvedTypeLayout<Ioctl>()))
     // Should always be true
     return x.toULong()
 }
 
 public fun u8SliceCastCharSlice(x: List<UByte>): List<CChar> {
-    check(sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8) == sizeOf<CChar>(typeLayoutT = ObjectSlotLayout<CChar>()))
+    check(sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8) == sizeOf<CChar>(typeLayoutT = UnresolvedTypeLayout<CChar>()))
     val len = x.size
     val ptr = x.asPtr()
     // SAFETY: same repr, possibly just a sign cast
-    return rawSliceList(ConstPtr((ptr).rawAddress), len.toInt(), ObjectSlotLayout<CChar>())
+    return linearSliceView(ConstPtr((ptr).rawAddress), len.toInt(), UnresolvedTypeLayout<CChar>())
 }
 
 // Note(msrv): we can switch to `copyFromSlice` in 1.87.

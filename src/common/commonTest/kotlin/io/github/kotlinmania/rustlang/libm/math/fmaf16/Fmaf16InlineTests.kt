@@ -2,9 +2,11 @@
 package io.github.kotlinmania.rustlang.libm.math.fmaf16
 
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
-import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
-import io.github.kotlinmania.rustlang.math.support.inttraits.Int
+import io.github.kotlinmania.rustlang.core.num.f16.nextDown
+import io.github.kotlinmania.rustlang.core.num.f16.nextUp
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 public class Fmaf16InlineTests {
     @kotlin.test.Test
@@ -107,7 +109,7 @@ public class Fmaf16InlineTests {
                     }
                 }
             }
-        checkRound(one, 0, false, 1.0, F16.fromFloat(1.0f).nextUp())
+        checkRound(one, 0, false, 1.0, (F16.fromFloat(1.0f)).nextUp())
         checkRound(max, 15, true, F16.MAX, F16.INFINITY)
         checkRound(minNorm, -14, false, F16.MIN_POSITIVE_NORMAL, F16.MIN_POSITIVE_NORMAL.nextUp())
         checkRound(maxSub, -14, true, F16.MIN_POSITIVE_NORMAL.nextDown(), F16.MIN_POSITIVE_NORMAL)

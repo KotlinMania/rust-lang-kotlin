@@ -1,25 +1,24 @@
 // port-lint: source slice/cmp.rs
 package io.github.kotlinmania.rustlang.core.slice.cmp
 
-import io.github.kotlinmania.rustlang.cmp.Ordering
-import io.github.kotlinmania.rustlang.cmp.bytewise.BytewiseEq
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.cmp.bytewise.BytewiseEq
+import io.github.kotlinmania.rustlang.core.intrinsics.compareBytes
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.intrinsics.compareBytes
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedMul
-import io.github.kotlinmania.rustlang.mem.transmuteCopy
-import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.slice.memchr.memchr
+import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 
 // Comparison traits for `[T]`.
 
@@ -95,7 +94,7 @@ public fun <A, B> slicePartialEqEqualSameLengthA(lhs: ConstPtr, rhs: ConstPtr, l
     // See PR https://github.com/rust-lang/rust/pull/116846
     for (idx in 0 until len) {
         // SAFETY: idx < len, so both are in-bounds and readable
-        if ((ObjectSlotLayout<A>()).readNative((ConstPtr((lhs).rawAddress + ((idx).toLong() * (ObjectSlotLayout<A>()).strideBytes))).rawAddress) != (typeLayoutB).readNative((ConstPtr((rhs).rawAddress + ((idx).toLong() * (typeLayoutB).strideBytes))).rawAddress)) {
+        if ((UnresolvedTypeLayout<A>()).readNative((ConstPtr((lhs).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<A>()).strideBytes))).rawAddress) != (typeLayoutB).readNative((ConstPtr((rhs).rawAddress + ((idx).toLong() * (typeLayoutB).strideBytes))).rawAddress)) {
             return false
         }
     }
@@ -109,7 +108,7 @@ public fun <A, B> slicePartialEqEqualSameLengthA(lhs: ConstPtr, rhs: ConstPtr, l
     // for reading `len` values, which also means the size is guaranteed
     // not to overflow because it exists in memory;
     return run {
-        val size = uncheckedMul(len, A.SIZE)
+        val size = ((len) * (A.SIZE))
         compareBytes(((lhs as Any?) as Boolean), ((rhs as Any?) as Boolean), size) == 0
     }
 }
@@ -128,13 +127,15 @@ public typealias AlwaysBreak<B> = ControlFlow<B, Nothing>
 
 public fun <A> slicePartialOrdPartialCompareA(left: List<A>, right: List<A>): Ordering? {
     val elemChain =
-        { a, b -> when (val matchVal = a.partialCmp(b)) {
-            Ordering.Equal -> ControlFlow.Continue()
-            else -> {
-                val nonEq = matchVal
-                ControlFlow.Break(nonEq)
+        { a, b ->
+            when (val matchVal = a.partialCmp(b)) {
+                Ordering.Equal -> ControlFlow.Continue()
+                else -> {
+                    val nonEq = matchVal
+                    ControlFlow.Break(nonEq)
+                }
             }
-        } }
+        }
     val lenChain = { a: Any?, b: Any? -> ControlFlow.Break(Int.partialCmp(a, b)) }
     val tupleStructVal = chainingImpl(left, right, elemChain, lenChain)
     val b = tupleStructVal.value
@@ -152,7 +153,10 @@ public fun <A, B, C> chainingImpl(left: List<A>, right: List<A>, elemChain: (A, 
     val lhs = ((left).subList(0, l))
     val rhs = ((right).subList(0, l))
     for (i in 0 until l) {
-        when (val tryResult = elemChain(lhs[i], rhs[i])) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = elemChain(lhs[i], rhs[i])) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
     }
     return lenChain(left.size, right.size)
 }
@@ -178,13 +182,15 @@ public interface SliceOrd<T> {
 
 public fun <A> sliceOrdCompareA(left: List<A>, right: List<A>): Ordering {
     val elemChain =
-        { a, b -> when (val matchVal = a.cmp(b)) {
-            Ordering.Equal -> ControlFlow.Continue()
-            else -> {
-                val nonEq = matchVal
-                ControlFlow.Break(nonEq)
+        { a, b ->
+            when (val matchVal = a.cmp(b)) {
+                Ordering.Equal -> ControlFlow.Continue()
+                else -> {
+                    val nonEq = matchVal
+                    ControlFlow.Break(nonEq)
+                }
             }
-        } }
+        }
     val lenChain = { a: Any?, b: Any? -> ControlFlow.Break(Int.cmp(a, b)) }
     val tupleStructVal = chainingImpl(left, right, elemChain, lenChain)
     val b = tupleStructVal.value
@@ -218,7 +224,7 @@ public fun <T : BytewiseEq<T>> T.sliceContains(x: List<T>, typeLayoutT: TypeLayo
         // SAFETY: `BytewiseEq` guarantees that values have no padding or provenance and
         // compare like their underlying bytes. Since `T` is one byte, both the value and
         // slice can be read as `UByte`s.
-        val (byte, bytes) = Pair(transmuteCopy<T, UByte>(this), rawSliceList(ConstPtr((x.asPtr()).rawAddress), x.size, PrimitiveLayouts.U8))
+        val (byte, bytes) = Pair(transmuteCopy<T, UByte>(this), linearSliceView(ConstPtr((x.asPtr()).rawAddress), x.size, PrimitiveLayouts.U8))
         memchr.memchr(byte, bytes) != null
     } else {
         x.any({ y -> y == this })

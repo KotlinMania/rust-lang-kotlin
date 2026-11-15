@@ -5,20 +5,21 @@ package io.github.kotlinmania.rustlang.std.sys.platformversion.darwin
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
+import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.fs.read
 import io.github.kotlinmania.rustlang.libc.sysctlbyname
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.path.PathBuf
+import io.github.kotlinmania.rustlang.std.fs.read
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation.CFDictionaryRef
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation.CFHandle
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation.CFStringRef
@@ -108,7 +109,7 @@ public fun currentVersion(): OSVersion {
 public fun lookupVersion(): NonZero<OSVersion> {
     // Try to read from `sysctl` first (faster), but if that fails, fall back to reading the
     // property list (this is roughly what `_availability_version_check` does internally).
-    val version = (versionFromSysctl() ?: .versionFromPlist())
+    val version = (versionFromSysctl() ?: versionFromPlist())
     // Use `NonZero` to try to make it clearer to the optimizer that this will never return 0.
     return NonZero.new(version).expect("version cannot be 0.0.0")
 }
@@ -304,7 +305,7 @@ public fun parseOsVersion(version: List<UByte>): Result<OSVersion, ParseIntError
  */
 public fun rootRelative(path: String): Path =
     if (false) {
-        val root = PathBuf.from(env.varOs("IPHONE_SIMULATOR_ROOT").expect("environment variable `IPHONE_SIMULATOR_ROOT` must be set when executing under simulator"))
+        val root = PathBuf.from(Env.varOs("IPHONE_SIMULATOR_ROOT").expect("environment variable `IPHONE_SIMULATOR_ROOT` must be set when executing under simulator"))
         // Convert absolute path to relative path, to make the `.push` work as expected.
         root.push((Path.new(path).takeIf { it.startsWith("/") }?.removePrefix("/"))!!)
         root.into()

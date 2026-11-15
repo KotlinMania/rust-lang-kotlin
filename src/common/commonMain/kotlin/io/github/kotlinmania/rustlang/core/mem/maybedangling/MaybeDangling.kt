@@ -4,9 +4,9 @@ package io.github.kotlinmania.rustlang.core.mem.maybedangling
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.mem.forget
-import io.github.kotlinmania.rustlang.ptr.read
+import io.github.kotlinmania.rustlang.core.ptr.read
 
 // Note: remove `noRun` once the semantics are actually implemented
 
@@ -83,7 +83,9 @@ public open class MaybeDangling<P>(
 
     public var value: P
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(value: P, fieldLayout: TypeLayout<P>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 

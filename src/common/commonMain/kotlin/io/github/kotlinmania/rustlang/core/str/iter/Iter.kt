@@ -1,35 +1,35 @@
 // port-lint: source str/iter.rs
 package io.github.kotlinmania.rustlang.core.str.iter
 
+import io.github.kotlinmania.rustlang.core.iter.adapters.copied.Copied
+import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
+import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.FlatMap
+import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.str.BytesIsNotEmpty
+import io.github.kotlinmania.rustlang.core.str.CharEscapeDebug
+import io.github.kotlinmania.rustlang.core.str.CharEscapeDefault
+import io.github.kotlinmania.rustlang.core.str.CharEscapeUnicode
+import io.github.kotlinmania.rustlang.core.str.IsAsciiWhitespace
+import io.github.kotlinmania.rustlang.core.str.IsNotEmpty
+import io.github.kotlinmania.rustlang.core.str.IsWhitespace
+import io.github.kotlinmania.rustlang.core.str.LinesMap
+import io.github.kotlinmania.rustlang.core.str.UnsafeBytesToStr
+import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
+import io.github.kotlinmania.rustlang.core.str.count.countChars
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.validations.nextCodePoint
 import io.github.kotlinmania.rustlang.core.str.validations.nextCodePointReverse
-import io.github.kotlinmania.rustlang.iter.adapters.copied.Copied
-import io.github.kotlinmania.rustlang.iter.adapters.filter.Filter
-import io.github.kotlinmania.rustlang.iter.adapters.flatten.FlatMap
-import io.github.kotlinmania.rustlang.iter.adapters.map.Map
-import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.str.BytesIsNotEmpty
-import io.github.kotlinmania.rustlang.str.CharEscapeDebug
-import io.github.kotlinmania.rustlang.str.CharEscapeDefault
-import io.github.kotlinmania.rustlang.str.CharEscapeUnicode
-import io.github.kotlinmania.rustlang.str.IsAsciiWhitespace
-import io.github.kotlinmania.rustlang.str.IsNotEmpty
-import io.github.kotlinmania.rustlang.str.IsWhitespace
-import io.github.kotlinmania.rustlang.str.LinesMap
-import io.github.kotlinmania.rustlang.str.UnsafeBytesToStr
-import io.github.kotlinmania.rustlang.str.converts.fromUtf8Unchecked
-import io.github.kotlinmania.rustlang.str.count.countChars
-import io.github.kotlinmania.rustlang.str.validations.utf8CharWidth
-import io.github.kotlinmania.rustlang.str.validations.utf8IsContByte
-import io.github.kotlinmania.rustlang.iteratorGetUnchecked as underlyingIteratorGetUnchecked
-import io.github.kotlinmania.rustlang.slice.iter.Split as SliceSplit
+import io.github.kotlinmania.rustlang.core.str.validations.utf8CharWidth
+import io.github.kotlinmania.rustlang.core.str.validations.utf8IsContByte
+import io.github.kotlinmania.rustlang.core.iteratorGetUnchecked as underlyingIteratorGetUnchecked
+import io.github.kotlinmania.rustlang.core.slice.iter.Split as SliceSplit
 
 // Iterators for `String` methods.
 //
@@ -134,14 +134,15 @@ public class DebugTuple(
 public open class Chars(
     public var iter: ArrayDeque<UByte>,
 ) : Iterable<Char> {
-    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
-        override fun computeNext() {
-            when (val v = this@Chars.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Char> =
+        object : AbstractIterator<Char>() {
+            override fun computeNext() {
+                when (val v = this@Chars.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Chars = Chars(iter)
 
@@ -157,7 +158,12 @@ public open class Chars(
         var remainder1 = remainder
         val CHUNK_SIZE: Int = 32
         if (remainder1 >= CHUNK_SIZE) {
-            val chunks = this.iter.toList().asChunks<ChunkSize>().first.iter()
+            val chunks =
+                this.iter
+                    .toList()
+                    .asChunks<ChunkSize>()
+                    .first
+                    .iter()
             var bytesSkipped: Int = 0
             while (remainder1 > CHUNK_SIZE && chunks.next() != null) {
                 bytesSkipped += CHUNK_SIZE
@@ -202,9 +208,28 @@ public open class Chars(
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = f.writeFmt("Chars(")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        when (val tryResult = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("Chars(")) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
+        when (
+            val tryResult =
+                object {
+                    val entries = mutableListOf<Any?>()
+                    fun entry(v: Any?) = apply { entries.add(v) }
+                    fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }
+                    fun finish() {
+                        f.append(entries.joinToString(", ", "[", "]"))
+                    }
+                }.entries(this.clone()).finish()
+        ) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
+        when (val tryResult = f.writeFmt(")")) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
         return Result.Ok(Unit)
     }
 
@@ -251,14 +276,15 @@ public open class CharIndices(
     public var frontOffset: Int,
     public var iter: Chars,
 ) : Iterable<Pair<Int, Char>> {
-    override fun iterator(): Iterator<Pair<Int, Char>> = object : AbstractIterator<Pair<Int, Char>>() {
-        override fun computeNext() {
-            when (val v = this@CharIndices.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Pair<Int, Char>> =
+        object : AbstractIterator<Pair<Int, Char>>() {
+            override fun computeNext() {
+                when (val v = this@CharIndices.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): CharIndices = CharIndices(frontOffset, iter)
 
@@ -340,7 +366,10 @@ public open class CharIndices(
  */
 public open class Bytes internal constructor(
     valueCtorArg: Copied<ArrayDeque<UByte>>,
-) : TrustedLen<Bytes>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<UByte> {
+) : TrustedLen<Bytes>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    Iterable<UByte> {
     public var value: Copied<ArrayDeque<UByte>> = valueCtorArg
         internal set
 
@@ -350,14 +379,15 @@ public open class Bytes internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
-        override fun computeNext() {
-            when (val v = this@Bytes.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<UByte> =
+        object : AbstractIterator<UByte>() {
+            override fun computeNext() {
+                when (val v = this@Bytes.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Bytes = Bytes(value)
 
@@ -400,9 +430,10 @@ public open class Bytes internal constructor(
     public companion object {
         public operator fun invoke(
             value: Copied<ArrayDeque<UByte>>,
-        ): Bytes = Bytes(
-            valueCtorArg = value,
-        )
+        ): Bytes =
+            Bytes(
+                valueCtorArg = value,
+            )
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
     }
@@ -420,7 +451,14 @@ public open class SplitInternal<P : Pattern<Any?>>(
         return s.copy(matcher = s.matcher.clone())
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SplitInternal").field("start", this.start).field("end", this.end).field("matcher", this.matcher).field("allow_trailing_empty", this.allowTrailingEmpty).field("finished", this.finished).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        DebugStruct(f, "SplitInternal")
+            .field("start", this.start)
+            .field("end", this.end)
+            .field("matcher", this.matcher)
+            .field("allow_trailing_empty", this.allowTrailingEmpty)
+            .field("finished", this.finished)
+            .finish()
 
     public open fun getEnd(): String? {
         if (!this.finished) {
@@ -503,10 +541,11 @@ public open class SplitInternal<P : Pattern<Any?>>(
         val haystack = this.matcher.haystack()
         return when (val matchVal1 = this.matcher.nextMatchBack()) {
             // SAFETY: `self.start` and `self.end` always lie on unicode boundaries.
-            null -> run {
-                this.finished = true
-                haystack.getUnchecked(this.start until this.end)
-            }
+            null ->
+                run {
+                    this.finished = true
+                    haystack.getUnchecked(this.start until this.end)
+                }
             // SAFETY: `Searcher` guarantees that:
             // - `a` and `b` lie on unicode boundaries.
             // - `self.end` is either the end of the original string,
@@ -552,10 +591,11 @@ public open class SplitInternal<P : Pattern<Any?>>(
             // iterated yet. Either way, it is guaranteed to lie on unicode boundary.
             // self.end is either the end of the original string,
             // or `b` was assigned to it, so it also lies on unicode boundary.
-            null -> run {
-                this.finished = true
-                haystack.getUnchecked(this.start until this.end)
-            }
+            null ->
+                run {
+                    this.finished = true
+                    haystack.getUnchecked(this.start until this.end)
+                }
             // SAFETY: `Searcher` guarantees that:
             // - `b` lies on unicode boundary.
             // - self.end is either the end of the original string,
@@ -599,14 +639,15 @@ public open class Split<P : Pattern<Any?>> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@Split.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@Split.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "Split").field(this.value).finish()
 
@@ -640,9 +681,10 @@ public open class Split<P : Pattern<Any?>> internal constructor(
     public companion object {
         public operator fun <P : Pattern<Any?>> invoke(
             value: SplitInternal<P>,
-        ): Split<P> = Split<P>(
-            valueCtorArg = value,
-        )
+        ): Split<P> =
+            Split<P>(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -663,14 +705,15 @@ public open class RSplit<P : Pattern<Any?>> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@RSplit.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@RSplit.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "RSplit").field(this.value).finish()
 
@@ -704,9 +747,10 @@ public open class RSplit<P : Pattern<Any?>> internal constructor(
     public companion object {
         public operator fun <P : Pattern<Any?>> invoke(
             value: SplitInternal<P>,
-        ): RSplit<P> = RSplit<P>(
-            valueCtorArg = value,
-        )
+        ): RSplit<P> =
+            RSplit<P>(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -727,14 +771,15 @@ public open class SplitTerminator<P : Pattern<Any?>> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@SplitTerminator.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@SplitTerminator.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "SplitTerminator").field(this.value).finish()
 
@@ -768,9 +813,10 @@ public open class SplitTerminator<P : Pattern<Any?>> internal constructor(
     public companion object {
         public operator fun <P : Pattern<Any?>> invoke(
             value: SplitInternal<P>,
-        ): SplitTerminator<P> = SplitTerminator<P>(
-            valueCtorArg = value,
-        )
+        ): SplitTerminator<P> =
+            SplitTerminator<P>(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -791,14 +837,15 @@ public open class RSplitTerminator<P : Pattern<Any?>> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@RSplitTerminator.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@RSplitTerminator.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "RSplitTerminator").field(this.value).finish()
 
@@ -832,9 +879,10 @@ public open class RSplitTerminator<P : Pattern<Any?>> internal constructor(
     public companion object {
         public operator fun <P : Pattern<Any?>> invoke(
             value: SplitInternal<P>,
-        ): RSplitTerminator<P> = RSplitTerminator<P>(
-            valueCtorArg = value,
-        )
+        ): RSplitTerminator<P> =
+            RSplitTerminator<P>(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -887,10 +935,11 @@ public open class SplitNInternal<P : Pattern<Any?>> internal constructor(
         public operator fun <P : Pattern<Any?>> invoke(
             iter: SplitInternal<P>,
             count: Int,
-        ): SplitNInternal<P> = SplitNInternal<P>(
-            iterCtorArg = iter,
-            count = count,
-        )
+        ): SplitNInternal<P> =
+            SplitNInternal<P>(
+                iterCtorArg = iter,
+                count = count,
+            )
     }
 }
 
@@ -911,14 +960,15 @@ public open class SplitN<P : Pattern<Any?>> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@SplitN.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@SplitN.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "SplitN").field(this.value).finish()
 
@@ -950,9 +1000,10 @@ public open class SplitN<P : Pattern<Any?>> internal constructor(
     public companion object {
         public operator fun <P : Pattern<Any?>> invoke(
             value: SplitNInternal<P>,
-        ): SplitN<P> = SplitN<P>(
-            valueCtorArg = value,
-        )
+        ): SplitN<P> =
+            SplitN<P>(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -973,14 +1024,15 @@ public open class RSplitN<P : Pattern<Any?>> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@RSplitN.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@RSplitN.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "RSplitN").field(this.value).finish()
 
@@ -1012,9 +1064,10 @@ public open class RSplitN<P : Pattern<Any?>> internal constructor(
     public companion object {
         public operator fun <P : Pattern<Any?>> invoke(
             value: SplitNInternal<P>,
-        ): RSplitN<P> = RSplitN<P>(
-            valueCtorArg = value,
-        )
+        ): RSplitN<P> =
+            RSplitN<P>(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -1056,14 +1109,15 @@ public open class MatchIndices<P : Pattern<Any?>> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<Pair<Int, String>> = object : AbstractIterator<Pair<Int, String>>() {
-        override fun computeNext() {
-            when (val v = this@MatchIndices.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Pair<Int, String>> =
+        object : AbstractIterator<Pair<Int, String>>() {
+            override fun computeNext() {
+                when (val v = this@MatchIndices.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "MatchIndices").field(this.value).finish()
 
@@ -1076,9 +1130,10 @@ public open class MatchIndices<P : Pattern<Any?>> internal constructor(
     public companion object {
         public operator fun <P : Pattern<Any?>> invoke(
             value: MatchIndicesInternal<P>,
-        ): MatchIndices<P> = MatchIndices<P>(
-            valueCtorArg = value,
-        )
+        ): MatchIndices<P> =
+            MatchIndices<P>(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -1099,14 +1154,15 @@ public open class RMatchIndices<P : Pattern<Any?>> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<Pair<Int, String>> = object : AbstractIterator<Pair<Int, String>>() {
-        override fun computeNext() {
-            when (val v = this@RMatchIndices.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Pair<Int, String>> =
+        object : AbstractIterator<Pair<Int, String>>() {
+            override fun computeNext() {
+                when (val v = this@RMatchIndices.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "RMatchIndices").field(this.value).finish()
 
@@ -1119,9 +1175,10 @@ public open class RMatchIndices<P : Pattern<Any?>> internal constructor(
     public companion object {
         public operator fun <P : Pattern<Any?>> invoke(
             value: MatchIndicesInternal<P>,
-        ): RMatchIndices<P> = RMatchIndices<P>(
-            valueCtorArg = value,
-        )
+        ): RMatchIndices<P> =
+            RMatchIndices<P>(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -1169,14 +1226,15 @@ public open class Matches<P : Pattern<Any?>> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@Matches.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@Matches.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "Matches").field(this.value).finish()
 
@@ -1189,9 +1247,10 @@ public open class Matches<P : Pattern<Any?>> internal constructor(
     public companion object {
         public operator fun <P : Pattern<Any?>> invoke(
             value: MatchesInternal<P>,
-        ): Matches<P> = Matches<P>(
-            valueCtorArg = value,
-        )
+        ): Matches<P> =
+            Matches<P>(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -1212,14 +1271,15 @@ public open class RMatches<P : Pattern<Any?>> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@RMatches.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@RMatches.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "RMatches").field(this.value).finish()
 
@@ -1232,9 +1292,10 @@ public open class RMatches<P : Pattern<Any?>> internal constructor(
     public companion object {
         public operator fun <P : Pattern<Any?>> invoke(
             value: MatchesInternal<P>,
-        ): RMatches<P> = RMatches<P>(
-            valueCtorArg = value,
-        )
+        ): RMatches<P> =
+            RMatches<P>(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -1258,14 +1319,15 @@ public open class Lines internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@Lines.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@Lines.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Lines = Lines(value)
 
@@ -1299,9 +1361,10 @@ public open class Lines internal constructor(
     public companion object {
         public operator fun invoke(
             value: Map<SplitInclusive<Char>, LinesMap>,
-        ): Lines = Lines(
-            valueCtorArg = value,
-        )
+        ): Lines =
+            Lines(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -1319,14 +1382,15 @@ public open class LinesAny(
             value = v
         }
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@LinesAny.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@LinesAny.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): LinesAny = LinesAny(value)
 
@@ -1352,14 +1416,15 @@ public open class SplitWhitespace internal constructor(
     public var inner: Filter<Split<IsWhitespace>, IsNotEmpty> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@SplitWhitespace.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@SplitWhitespace.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): SplitWhitespace = SplitWhitespace(inner)
 
@@ -1393,9 +1458,10 @@ public open class SplitWhitespace internal constructor(
     public companion object {
         public operator fun invoke(
             inner: Filter<Split<IsWhitespace>, IsNotEmpty>,
-        ): SplitWhitespace = SplitWhitespace(
-            innerCtorArg = inner,
-        )
+        ): SplitWhitespace =
+            SplitWhitespace(
+                innerCtorArg = inner,
+            )
     }
 }
 
@@ -1414,14 +1480,15 @@ public open class SplitAsciiWhitespace internal constructor(
     public var inner: Map<Filter<SliceSplit<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>, UnsafeBytesToStr> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@SplitAsciiWhitespace.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@SplitAsciiWhitespace.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): SplitAsciiWhitespace = SplitAsciiWhitespace(inner)
 
@@ -1463,9 +1530,10 @@ public open class SplitAsciiWhitespace internal constructor(
     public companion object {
         public operator fun invoke(
             inner: Map<Filter<SliceSplit<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>, UnsafeBytesToStr>,
-        ): SplitAsciiWhitespace = SplitAsciiWhitespace(
-            innerCtorArg = inner,
-        )
+        ): SplitAsciiWhitespace =
+            SplitAsciiWhitespace(
+                innerCtorArg = inner,
+            )
     }
 }
 
@@ -1492,14 +1560,15 @@ public open class SplitInclusive<P : Pattern<Any?>> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
-        override fun computeNext() {
-            when (val v = this@SplitInclusive.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<String> =
+        object : AbstractIterator<String>() {
+            override fun computeNext() {
+                when (val v = this@SplitInclusive.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun next(): String? = this.value.nextInclusive()
 
@@ -1534,9 +1603,10 @@ public open class SplitInclusive<P : Pattern<Any?>> internal constructor(
     public companion object {
         public operator fun <P : Pattern<Any?>> invoke(
             value: SplitInternal<P>,
-        ): SplitInclusive<P> = SplitInclusive<P>(
-            valueCtorArg = value,
-        )
+        ): SplitInclusive<P> =
+            SplitInclusive<P>(
+                valueCtorArg = value,
+            )
     }
 }
 
@@ -1552,14 +1622,15 @@ public open class EncodeUtf16(
     public var chars: Chars,
     public var extra: UShort,
 ) : Iterable<UShort> {
-    override fun iterator(): Iterator<UShort> = object : AbstractIterator<UShort>() {
-        override fun computeNext() {
-            when (val v = this@EncodeUtf16.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<UShort> =
+        object : AbstractIterator<UShort>() {
+            override fun computeNext() {
+                when (val v = this@EncodeUtf16.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): EncodeUtf16 = EncodeUtf16(chars, extra)
 
@@ -1616,23 +1687,25 @@ public open class EncodeUtf16(
         // Because we never map to larger values the result is never larger than
         // `self.chars.asStr().len()` so the sum can never overflow
         return this.chars.asStr().encodeToByteArray().map { it.toUByte() }.fold(extra, { acc, byte ->
-            acc.wrappingAdd(if (byte < 0x80) {
-                // 0b0xxxXxxx: ASCII-compatible U+0000 to U+007F
-                1
-            } else if (byte < 0xC0) {
-                // 0b10xxXxxx: UTF-8 continuation byte, skip
-                0
-            } else if (byte < 0xF0) {
-                // 0b110xXxxx: start of a 2-byte UTF-8 sequence for U+0080 to U+07FF
-                // 0b1110Xxxx: start of a 3-byte UTF-8 sequence for U+0800 to U+FFFF
-                1
-            } else {
-                // 0b11110xxx: start of a 4-byte UTF-8 sequence for U+010000 to U+10FFFF
-                // This is exactly the range encoded as a surrogate pair in UTF-16
-                //
-                // 0b11111xxx: would fall here but never occurs in valid UTF-8
-                2
-            })
+            acc.wrappingAdd(
+                if (byte < 0x80) {
+                    // 0b0xxxXxxx: ASCII-compatible U+0000 to U+007F
+                    1
+                } else if (byte < 0xC0) {
+                    // 0b10xxXxxx: UTF-8 continuation byte, skip
+                    0
+                } else if (byte < 0xF0) {
+                    // 0b110xXxxx: start of a 2-byte UTF-8 sequence for U+0080 to U+07FF
+                    // 0b1110Xxxx: start of a 3-byte UTF-8 sequence for U+0800 to U+FFFF
+                    1
+                } else {
+                    // 0b11110xxx: start of a 4-byte UTF-8 sequence for U+010000 to U+10FFFF
+                    // This is exactly the range encoded as a surrogate pair in UTF-16
+                    //
+                    // 0b11111xxx: would fall here but never occurs in valid UTF-8
+                    2
+                },
+            )
         })
     }
 }
@@ -1641,19 +1714,20 @@ public open class EncodeUtf16(
  * The return type of [str.escapeDebug].
  */
 public open class EscapeDebug internal constructor(
-    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDebug, CharEscapeDebug>,
+    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDebug, CharEscapeDebug>,
 ) : Iterable<Char> {
-    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDebug, CharEscapeDebug> = innerCtorArg
+    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDebug, CharEscapeDebug> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
-        override fun computeNext() {
-            when (val v = this@EscapeDebug.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Char> =
+        object : AbstractIterator<Char>() {
+            override fun computeNext() {
+                when (val v = this@EscapeDebug.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): EscapeDebug = EscapeDebug(inner)
 
@@ -1669,10 +1743,11 @@ public open class EscapeDebug internal constructor(
 
     public companion object {
         public operator fun invoke(
-            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDebug, CharEscapeDebug>,
-        ): EscapeDebug = EscapeDebug(
-            innerCtorArg = inner,
-        )
+            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDebug, CharEscapeDebug>,
+        ): EscapeDebug =
+            EscapeDebug(
+                innerCtorArg = inner,
+            )
     }
 }
 
@@ -1680,19 +1755,20 @@ public open class EscapeDebug internal constructor(
  * The return type of [str.escapeDefault].
  */
 public open class EscapeDefault internal constructor(
-    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDefault, CharEscapeDefault>,
+    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDefault, CharEscapeDefault>,
 ) : Iterable<Char> {
-    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDefault, CharEscapeDefault> = innerCtorArg
+    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDefault, CharEscapeDefault> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
-        override fun computeNext() {
-            when (val v = this@EscapeDefault.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Char> =
+        object : AbstractIterator<Char>() {
+            override fun computeNext() {
+                when (val v = this@EscapeDefault.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): EscapeDefault = EscapeDefault(inner)
 
@@ -1714,10 +1790,11 @@ public open class EscapeDefault internal constructor(
 
     public companion object {
         public operator fun invoke(
-            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDefault, CharEscapeDefault>,
-        ): EscapeDefault = EscapeDefault(
-            innerCtorArg = inner,
-        )
+            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDefault, CharEscapeDefault>,
+        ): EscapeDefault =
+            EscapeDefault(
+                innerCtorArg = inner,
+            )
     }
 }
 
@@ -1725,19 +1802,20 @@ public open class EscapeDefault internal constructor(
  * The return type of [str.escapeUnicode].
  */
 public open class EscapeUnicode internal constructor(
-    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeUnicode, CharEscapeUnicode>,
+    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeUnicode, CharEscapeUnicode>,
 ) : Iterable<Char> {
-    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeUnicode, CharEscapeUnicode> = innerCtorArg
+    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeUnicode, CharEscapeUnicode> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
-        override fun computeNext() {
-            when (val v = this@EscapeUnicode.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Char> =
+        object : AbstractIterator<Char>() {
+            override fun computeNext() {
+                when (val v = this@EscapeUnicode.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): EscapeUnicode = EscapeUnicode(inner)
 
@@ -1753,9 +1831,10 @@ public open class EscapeUnicode internal constructor(
 
     public companion object {
         public operator fun invoke(
-            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeUnicode, CharEscapeUnicode>,
-        ): EscapeUnicode = EscapeUnicode(
-            innerCtorArg = inner,
-        )
+            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeUnicode, CharEscapeUnicode>,
+        ): EscapeUnicode =
+            EscapeUnicode(
+                innerCtorArg = inner,
+            )
     }
 }

@@ -3,20 +3,20 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unix.time
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.nichetypes.Nanoseconds
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.io.Error
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.clockGettime
 import io.github.kotlinmania.rustlang.libc.timespec.default
 import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
 import io.github.kotlinmania.rustlang.libc.wasi.TimeT
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.io.Error
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public val NSEC_PER_SEC: ULong = 1000000000uL
 
@@ -107,7 +107,7 @@ public open class Timespec(
     // is 2^64 nanoseconds
     public open fun toTimespecCapped(): io.github.kotlinmania.rustlang.libc.unix.Timespec? {
         // Check if timeout in nanoseconds would fit into an u64
-        if (rustCheckedAdd((this.tvNsec.asInner().toULong()), ((rustCheckedMul((this.tvSec.toULong()), NSEC_PER_SEC) ?: return null)).toULong()) == null) {
+        if ((this.tvNsec.asInner().toULong()).checkedAdd((((this.tvSec.toULong()).checkedMul(NSEC_PER_SEC) ?: return null)).toULong()) == null) {
             return null
         }
         return this.toTimespec()

@@ -2,8 +2,6 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.x86.M128i
-
 public actual fun aesdec(a: M128i, roundKey: M128i): M128i =
     throw UnsupportedOperationException("Native FFI addon is not available")
 

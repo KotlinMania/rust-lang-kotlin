@@ -6,10 +6,10 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.cinterop.rustlangCorearchS390xVectorLcbb
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.cinterop.corearchS390xVectorLcbb
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
@@ -150,7 +150,7 @@ public actual fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr) {
 }
 
 public actual fun lcbb(a: ConstPtr, b: UInt): UInt =
-    rustlangCorearchS390xVectorLcbb(a.rawAddress.toCPointer<ByteVar>(), b)
+    corearchS390xVectorLcbb(a.rawAddress.toCPointer<ByteVar>(), b)
 
 public actual fun vlbb(a: ConstPtr, b: UInt): MaybeUninit<VectorSignedChar> =
     MaybeUninit.uninit(VectorSignedChar.typeLayout())

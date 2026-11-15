@@ -2,9 +2,9 @@
 package io.github.kotlinmania.rustlang.std.os.net.linuxext.socket
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.os.unix.net.UnixDatagram
-import io.github.kotlinmania.rustlang.os.unix.net.UnixStream
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.os.unix.net.UnixDatagram
+import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
 
 // Linux and Android-specific socket functionality.
 

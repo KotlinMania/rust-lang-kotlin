@@ -1,19 +1,19 @@
 // port-lint: source slice/sort/unstable/quicksort.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.unstable.quicksort
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.intrinsics.abortImmediate
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.mem.forget
-import io.github.kotlinmania.rustlang.ptr.copy
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.ptr.read
-import io.github.kotlinmania.rustlang.slice.sort.shared.pivot.choosePivot
-import io.github.kotlinmania.rustlang.slice.sort.unstable.heapsort.heapsort
+import io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot.choosePivot
+import io.github.kotlinmania.rustlang.core.slice.sort.unstable.heapsort.heapsort
 
 // This module contains an unstable quicksort and two partition implementations.
 
@@ -93,7 +93,7 @@ public fun <T> partition(v: MutableList<T>, pivot: Int, isLess: (T, T) -> Boolea
         return 0
     }
     if (pivot >= len) {
-        abortImmediate()
+        kmAbort()
     }
     // SAFETY: We checked that `pivot` is in-bounds.
     run {
@@ -111,7 +111,7 @@ public fun <T> partition(v: MutableList<T>, pivot: Int, isLess: (T, T) -> Boolea
     // compile-time by only instantiating the code that is needed. Idea by Frank Steffahn.
     val numLt = (instPartition<T, (T, T) -> Boolean>(typeLayoutT = typeLayoutT))(vWithoutPivot, pivot2, isLess)
     if (numLt >= len) {
-        abortImmediate()
+        kmAbort()
     }
     // SAFETY: We checked that `numLt` is in-bounds.
     run {
@@ -159,16 +159,16 @@ public fun <T> partitionHoareBranchyCyclic(v: MutableList<T>, pivot: T, isLess: 
     return run {
         val vBase = v.asMutPtr()
         var left = vBase
-        var right = MutPtr((vBase).rawAddress + ((len).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+        var right = MutPtr((vBase).rawAddress + ((len).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
         while (true) {
             // Find the first element greater than the pivot.
-            while (((left).rawAddress.toULong() < (right).rawAddress.toULong()) && isLess((ObjectSlotLayout<T>()).readNative((left).rawAddress), pivot)) {
-                left = MutPtr((left).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+            while (((left).rawAddress.toULong() < (right).rawAddress.toULong()) && isLess((UnresolvedTypeLayout<T>()).readNative((left).rawAddress), pivot)) {
+                left = MutPtr((left).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
             }
             // Find the last element equal to the pivot.
             while (true) {
-                right = MutPtr((right).rawAddress - ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-                if (((left).rawAddress.toULong() >= (right).rawAddress.toULong()) || isLess((ObjectSlotLayout<T>()).readNative((right).rawAddress), pivot)) {
+                right = MutPtr((right).rawAddress - ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+                if (((left).rawAddress.toULong() >= (right).rawAddress.toULong()) || isLess((UnresolvedTypeLayout<T>()).readNative((right).rawAddress), pivot)) {
                     break
                 }
             }
@@ -187,7 +187,7 @@ public fun <T> partitionHoareBranchyCyclic(v: MutableList<T>, pivot: T, isLess: 
             }
             gap.pos = right
             copyNonoverlapping(right, left, 1)
-            left = MutPtr((left).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+            left = MutPtr((left).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
         }
         left.offsetFromUnsigned(vBase)
         // `gapOpt` goes out of scope and overwrites the last wrong-side element on the right side
@@ -270,11 +270,12 @@ public fun <T> partitionLomutoBranchlessCyclic(v: MutableList<T>, pivot: T, isLe
         val end = MutPtr((vBase).rawAddress + ((len).toLong() * (typeLayoutT).strideBytes))
         while (true) {
             val isDone = ((state.right).rawAddress.toULong() == (end).rawAddress.toULong())
-            state.right = if (isDone) {
-                state.gap.value
-            } else {
-                state.right
-            }
+            state.right =
+                if (isDone) {
+                    state.gap.value
+                } else {
+                    state.right
+                }
             loopBody(state)
             if (isDone) {
                 forget(state.gap)

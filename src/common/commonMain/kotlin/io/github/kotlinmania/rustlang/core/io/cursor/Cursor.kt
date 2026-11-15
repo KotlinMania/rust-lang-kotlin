@@ -3,17 +3,17 @@
 
 package io.github.kotlinmania.rustlang.core.io.cursor
 
+import io.github.kotlinmania.rustlang.core.io.constError
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.WRITE_ALL_EOF
+import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
+import io.github.kotlinmania.rustlang.core.io.seek.Seek
+import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.io.constError
-import io.github.kotlinmania.rustlang.io.error.ErrorKind
-import io.github.kotlinmania.rustlang.io.error.WRITE_ALL_EOF
-import io.github.kotlinmania.rustlang.io.ioslice.IoSlice
-import io.github.kotlinmania.rustlang.io.seek.Seek
-import io.github.kotlinmania.rustlang.io.seek.SeekFrom
 
 // Note(#74481): Hard-links required to link from `core` to `std`
 
@@ -111,9 +111,7 @@ public open class Cursor<T>(
      * val reference = buff.getMut()
      * ```
      */
-    public open fun getMut(): kotlin.reflect.KMutableProperty0<T> {
-        return this::inner
-    }
+    public open fun getMut(): kotlin.reflect.KMutableProperty0<T> = this::inner
 
     /**
      * Returns the current position of this cursor.
@@ -225,7 +223,14 @@ public open class Cursor<T>(
                 }
                 is SeekFrom.End -> {
                     val (n1) = style
-                    Pair(this.getRef().asRef().len().toULong(), n1)
+                    Pair(
+                        this
+                            .getRef()
+                            .asRef()
+                            .len()
+                            .toULong(),
+                        n1,
+                    )
                 }
                 is SeekFrom.Current -> {
                     val (n2) = style
@@ -242,7 +247,14 @@ public open class Cursor<T>(
         }
     }
 
-    public override fun streamLen(): Result<ULong> = Result.Ok(this.getRef().asRef().len().toULong())
+    public override fun streamLen(): Result<ULong> =
+        Result.Ok(
+            this
+                .getRef()
+                .asRef()
+                .len()
+                .toULong(),
+        )
 
     public override fun streamPosition(): Result<ULong> = Result.Ok(this.position())
 
@@ -304,8 +316,16 @@ public fun sliceWrite(posMut: RustMutableReference<ULong>, slice: MutableList<UB
     val pos = minOf((posMut1).read(), slice.size.toULong())
     val dst = slice.subList((pos.toInt()), slice.size)
     val amt = minOf(buf.size, dst.size)
-    run { val dstTmp0 = dst; val srcTmp0 = ((buf).subList(0, amt)); for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
-    (posMut1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (amt.toULong()); targetPlace.write(currentValue) }
+    run {
+        val dstTmp0 = dst
+        val srcTmp0 = ((buf).subList(0, amt))
+        for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
+    }
+    (posMut1).let { targetPlace ->
+        var currentValue = targetPlace.read()
+        currentValue += (amt.toULong())
+        targetPlace.write(currentValue)
+    }
     return Result.Ok(amt)
 }
 
@@ -316,7 +336,11 @@ public fun sliceWrite(posMut: RustMutableReference<ULong>, slice: MutableList<UB
 public fun sliceWriteVectored(posMut: RustMutableReference<ULong>, slice: MutableList<UByte>, bufs: List<IoSlice>): Result<Int> {
     var nwritten = 0
     for (buf in bufs) {
-        val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val n =
+            when (val tryResult = sliceWrite(posMut, slice, buf)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         nwritten += n
         if (n < buf.len()) {
             break
@@ -330,7 +354,11 @@ public fun sliceWriteVectored(posMut: RustMutableReference<ULong>, slice: Mutabl
  * Exported for `Cursor<Holder<[UByte], A>>`s implementation of [Write].
  */
 public fun sliceWriteAll(posMut: RustMutableReference<ULong>, slice: MutableList<UByte>, buf: List<UByte>): Result<Unit> {
-    val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val n =
+        when (val tryResult = sliceWrite(posMut, slice, buf)) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
     return if (n < buf.size) {
         Result.Err(WRITE_ALL_EOF)
     } else {
@@ -344,7 +372,11 @@ public fun sliceWriteAll(posMut: RustMutableReference<ULong>, slice: MutableList
  */
 public fun sliceWriteAllVectored(posMut: RustMutableReference<ULong>, slice: MutableList<UByte>, bufs: List<IoSlice>): Result<Unit> {
     for (buf in bufs) {
-        val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val n =
+            when (val tryResult = sliceWrite(posMut, slice, buf)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         if (n < buf.len()) {
             return Result.Err(WRITE_ALL_EOF)
         }

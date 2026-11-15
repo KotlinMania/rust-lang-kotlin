@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-private object CorearchX86RtmJniBridge {
+private object X86RtmJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,11 +38,14 @@ private object CorearchX86RtmJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX86RtmJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X86RtmJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,28 +59,28 @@ private object CorearchX86RtmJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX86RtmX86Xbegin(): Int
+    external fun corearchX86RtmX86Xbegin(): Int
 
     @JvmStatic
-    external fun rustlangCorearchX86RtmX86Xend()
+    external fun corearchX86RtmX86Xend()
 
     @JvmStatic
-    external fun rustlangCorearchX86RtmX86Xabort(imm8: Byte)
+    external fun corearchX86RtmX86Xabort(imm8: Byte)
 
     @JvmStatic
-    external fun rustlangCorearchX86RtmX86Xtest(): Int
+    external fun corearchX86RtmX86Xtest(): Int
 }
 
 public actual fun x86Xbegin(): Int =
-    CorearchX86RtmJniBridge.rustlangCorearchX86RtmX86Xbegin()
+    X86RtmJniBridge.corearchX86RtmX86Xbegin()
 
 public actual fun x86Xend() {
-    CorearchX86RtmJniBridge.rustlangCorearchX86RtmX86Xend()
+    X86RtmJniBridge.corearchX86RtmX86Xend()
 }
 
 public actual fun x86Xabort(imm8: Byte) {
-    CorearchX86RtmJniBridge.rustlangCorearchX86RtmX86Xabort(imm8)
+    X86RtmJniBridge.corearchX86RtmX86Xabort(imm8)
 }
 
 public actual fun x86Xtest(): Int =
-    CorearchX86RtmJniBridge.rustlangCorearchX86RtmX86Xtest()
+    X86RtmJniBridge.corearchX86RtmX86Xtest()

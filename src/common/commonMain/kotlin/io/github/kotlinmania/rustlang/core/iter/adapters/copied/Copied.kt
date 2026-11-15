@@ -1,26 +1,26 @@
 // port-lint: source iter/adapters/copied.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.copied
 
-import io.github.kotlinmania.rustlang.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.array.iterNextChunk
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
+import io.github.kotlinmania.rustlang.core.array.iterNextChunk
+import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.slice.iter.Iter
+import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 
 public typealias Source<I> = I.Source
 
@@ -35,15 +35,21 @@ public typealias Source<I> = I.Source
  */
 public open class Copied<I>(
     public var it: I,
-) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Copied<I>>, SourceIter<Source>, InPlaceIterable, Iterable<T> {
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Copied.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    TrustedLen<Copied<I>>,
+    SourceIter<Source>,
+    InPlaceIterable,
+    Iterable<T> {
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@Copied.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Copied<I> = Copied(it)
 
@@ -143,7 +149,7 @@ public interface SpecNextChunk<T, SelfType> : Iterator<T> {
 public fun <I, T> I.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T> = iterNextChunk(this.copied())
 
 public fun <T> Iter<T>.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> {
-    val rawArray = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Result<List<T>, IntoIter<T>>>()) }
+    val rawArray = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>, IntoIter<T>>>()) }
     val len = this.len()
     if (T.IS_ZST) {
         if (len < n) {

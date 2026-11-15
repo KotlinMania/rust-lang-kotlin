@@ -1,31 +1,31 @@
 // port-lint: source sys/path/windows.rs
 package io.github.kotlinmania.rustlang.std.sys.path.windows
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.get
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.io.constError
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.path.PathBuf
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.api.utf16
+import io.github.kotlinmania.rustlang.std.sys.pal.c
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.os2path
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
 import io.github.kotlinmania.rustlang.std.sys.path.windowsprefix.parsePrefix
-import io.github.kotlinmania.rustlang.sys.api.utf16
-import io.github.kotlinmania.rustlang.sys.pal.c
-import io.github.kotlinmania.rustlang.sys.pal.windows.fillUtf16Buf
-import io.github.kotlinmania.rustlang.sys.pal.windows.os2path
-import io.github.kotlinmania.rustlang.sys.pal.windows.toU16s
 
 public val HAS_PREFIXES: Boolean = true
 
@@ -69,7 +69,7 @@ public open class WCStr internal constructor(
          *
          * The slice must end in a null.
          */
-        public fun fromWcharsWithNullUnchecked(s: List<UShort>): WCStr = (ObjectSlotLayout<WCStr>()).readNative((((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+        public fun fromWcharsWithNullUnchecked(s: List<UShort>): WCStr = (UnresolvedTypeLayout<WCStr>()).readNative((((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
     }
 }
 

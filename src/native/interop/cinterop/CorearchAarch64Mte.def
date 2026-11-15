@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.corearch.aarch64.cinterop
-headers = corearch_aarch64_mte_wrapper.h
-headerFilter = corearch_aarch64_mte_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = corearch_aarch64_mte_wrapper.a

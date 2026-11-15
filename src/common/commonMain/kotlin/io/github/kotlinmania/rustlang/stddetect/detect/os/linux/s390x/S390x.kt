@@ -6,10 +6,11 @@ package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.detect.arch.Feature
-import io.github.kotlinmania.rustlang.detect.bit.test
-import io.github.kotlinmania.rustlang.detect.cache.Cache
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 
 // Run-time feature detection for s390x on Linux.
 
@@ -17,7 +18,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec
  * Try to read the features from the auxiliary vector
  */
 public fun detectFeatures(): Initializer {
-    val optHwcap: AtHwcap? = auxvec.auxv().ok()?.let(Into::into)
+    val optHwcap: AtHwcap? = auxv().ok()?.let(Into::into)
     val facilities = ExtendedFacilityList.new()
     return cache(optHwcap, facilities)
 }
@@ -159,7 +160,7 @@ public open class AtHwcap(
         /**
          * Reads AtHwcap from the auxiliary vector.
          */
-        public fun from(auxv: auxvec.AuxVec): AtHwcap = AtHwcap(esan3 = test(auxv.hwcap, 0u), zarch = test(auxv.hwcap, 1u), stfle = test(auxv.hwcap, 2u), msa = test(auxv.hwcap, 3u), ldisp = test(auxv.hwcap, 4u), eimm = test(auxv.hwcap, 5u), dfp = test(auxv.hwcap, 6u), hpage = test(auxv.hwcap, 7u), etf3eh = test(auxv.hwcap, 8u), highGprs = test(auxv.hwcap, 9u), te = test(auxv.hwcap, 10u), vxrs = test(auxv.hwcap, 11u), vxrsBcd = test(auxv.hwcap, 12u), vxrsExt = test(auxv.hwcap, 13u), gs = test(auxv.hwcap, 14u), vxrsExt2 = test(auxv.hwcap, 15u), vxrsPde = test(auxv.hwcap, 16u), sort = test(auxv.hwcap, 17u), dflt = test(auxv.hwcap, 18u), vxrsPde2 = test(auxv.hwcap, 19u), nnpa = test(auxv.hwcap, 20u), pciMio = test(auxv.hwcap, 21u), sie = test(auxv.hwcap, 22u))
+        public fun from(auxv: AuxVec): AtHwcap = AtHwcap(esan3 = test(auxv.hwcap, 0u), zarch = test(auxv.hwcap, 1u), stfle = test(auxv.hwcap, 2u), msa = test(auxv.hwcap, 3u), ldisp = test(auxv.hwcap, 4u), eimm = test(auxv.hwcap, 5u), dfp = test(auxv.hwcap, 6u), hpage = test(auxv.hwcap, 7u), etf3eh = test(auxv.hwcap, 8u), highGprs = test(auxv.hwcap, 9u), te = test(auxv.hwcap, 10u), vxrs = test(auxv.hwcap, 11u), vxrsBcd = test(auxv.hwcap, 12u), vxrsExt = test(auxv.hwcap, 13u), gs = test(auxv.hwcap, 14u), vxrsExt2 = test(auxv.hwcap, 15u), vxrsPde = test(auxv.hwcap, 16u), sort = test(auxv.hwcap, 17u), dflt = test(auxv.hwcap, 18u), vxrsPde2 = test(auxv.hwcap, 19u), nnpa = test(auxv.hwcap, 20u), pciMio = test(auxv.hwcap, 21u), sie = test(auxv.hwcap, 22u))
     }
 }
 

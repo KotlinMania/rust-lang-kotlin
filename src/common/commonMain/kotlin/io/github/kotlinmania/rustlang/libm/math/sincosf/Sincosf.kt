@@ -1,9 +1,9 @@
 // port-lint: source math/sincosf.rs
 package io.github.kotlinmania.rustlang.libm.math.sincosf
 
-import io.github.kotlinmania.rustlang.math.kcosf.kCosf
-import io.github.kotlinmania.rustlang.math.ksinf.kSinf
-import io.github.kotlinmania.rustlang.math.rempio2f.remPio2f
+import io.github.kotlinmania.rustlang.libm.math.kcosf.kCosf
+import io.github.kotlinmania.rustlang.libm.math.ksinf.kSinf
+import io.github.kotlinmania.rustlang.libm.math.rempio2f.remPio2f
 
 // Small multiples of pi/2 rounded to double precision.
 public val PI_2: Double = 0.5 * 3.1415926535897931160e00

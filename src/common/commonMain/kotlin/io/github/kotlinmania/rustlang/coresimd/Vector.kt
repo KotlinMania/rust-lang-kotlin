@@ -1,12 +1,10 @@
 // port-lint: source vector.rs
 package io.github.kotlinmania.rustlang.coresimd
 
-import io.github.kotlinmania.rustlang.Mask
-import io.github.kotlinmania.rustlang.MaskElement
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
@@ -218,7 +216,7 @@ public fun <Mask, T> Simd<T, N>.asMutArray(n: Int, typeLayoutT: TypeLayout<T>): 
 public fun <Mask, T> Simd.Companion.load(ptr: ConstPtr, n: Int, typeLayoutT: TypeLayout<T>): Simd<T, N> {
     // There are potentially simpler ways to write this function, but this should result in
     // LLVM `load<N x T>`
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<Simd<T, N>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<Simd<T, N>>())
     // SAFETY: `Simd<T, N>` always contains `N` elements of type `T`.  It may have padding
     // which does not need to be initialized.  The safety of reading `ptr` is ensured by the
     // caller.
@@ -264,7 +262,7 @@ public fun <Mask, T> Simd.Companion.fromArray(array: List<T>, n: Int): Simd<T, N
  * Converts a SIMD vector to an array.
  */
 public fun <Mask, T> Simd<T, N>.toArray(n: Int): List<T> {
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<T>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<T>>())
     // SAFETY: writing to `tmp` is safe and initializes it.
     //
     // Note: We currently use a pointer store instead of `transmuteCopy` because `repr(simd)`

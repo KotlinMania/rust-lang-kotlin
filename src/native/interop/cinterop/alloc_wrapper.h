@@ -1,5 +1,5 @@
-#ifndef RUSTLANG_ALLOC_ALLOC_WRAPPER_H
-#define RUSTLANG_ALLOC_ALLOC_WRAPPER_H
+#ifndef ALLOC_ALLOC_WRAPPER_H
+#define ALLOC_ALLOC_WRAPPER_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -9,10 +9,10 @@
 extern "C" {
 #endif
 
-void rustlangAllocRustAllocErrorHandler(uint64_t size, uint64_t align);
+void allocRustAllocErrorHandler(uint64_t size, uint64_t align);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* RUSTLANG_ALLOC_ALLOC_WRAPPER_H */
+#endif /* ALLOC_ALLOC_WRAPPER_H */

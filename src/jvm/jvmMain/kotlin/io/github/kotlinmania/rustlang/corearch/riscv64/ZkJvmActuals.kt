@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.riscv64
 
-private object CorearchRiscv64ZkJniBridge {
+private object Riscv64ZkJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,11 +38,14 @@ private object CorearchRiscv64ZkJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchRiscv64ZkJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = Riscv64ZkJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,56 +59,56 @@ private object CorearchRiscv64ZkJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchRiscv64ZkAes64es(rs1: Long, rs2: Long): Long
+    external fun corearchRiscv64ZkAes64es(rs1: Long, rs2: Long): Long
 
     @JvmStatic
-    external fun rustlangCorearchRiscv64ZkAes64esm(rs1: Long, rs2: Long): Long
+    external fun corearchRiscv64ZkAes64esm(rs1: Long, rs2: Long): Long
 
     @JvmStatic
-    external fun rustlangCorearchRiscv64ZkAes64ds(rs1: Long, rs2: Long): Long
+    external fun corearchRiscv64ZkAes64ds(rs1: Long, rs2: Long): Long
 
     @JvmStatic
-    external fun rustlangCorearchRiscv64ZkAes64dsm(rs1: Long, rs2: Long): Long
+    external fun corearchRiscv64ZkAes64dsm(rs1: Long, rs2: Long): Long
 
     @JvmStatic
-    external fun rustlangCorearchRiscv64ZkAes64im(rs1: Long): Long
+    external fun corearchRiscv64ZkAes64im(rs1: Long): Long
 
     @JvmStatic
-    external fun rustlangCorearchRiscv64ZkSha512sig0(rs1: Long): Long
+    external fun corearchRiscv64ZkSha512sig0(rs1: Long): Long
 
     @JvmStatic
-    external fun rustlangCorearchRiscv64ZkSha512sig1(rs1: Long): Long
+    external fun corearchRiscv64ZkSha512sig1(rs1: Long): Long
 
     @JvmStatic
-    external fun rustlangCorearchRiscv64ZkSha512sum0(rs1: Long): Long
+    external fun corearchRiscv64ZkSha512sum0(rs1: Long): Long
 
     @JvmStatic
-    external fun rustlangCorearchRiscv64ZkSha512sum1(rs1: Long): Long
+    external fun corearchRiscv64ZkSha512sum1(rs1: Long): Long
 }
 
 public actual fun aes64es(rs1: Long, rs2: Long): Long =
-    CorearchRiscv64ZkJniBridge.rustlangCorearchRiscv64ZkAes64es(rs1, rs2)
+    Riscv64ZkJniBridge.corearchRiscv64ZkAes64es(rs1, rs2)
 
 public actual fun aes64esm(rs1: Long, rs2: Long): Long =
-    CorearchRiscv64ZkJniBridge.rustlangCorearchRiscv64ZkAes64esm(rs1, rs2)
+    Riscv64ZkJniBridge.corearchRiscv64ZkAes64esm(rs1, rs2)
 
 public actual fun aes64ds(rs1: Long, rs2: Long): Long =
-    CorearchRiscv64ZkJniBridge.rustlangCorearchRiscv64ZkAes64ds(rs1, rs2)
+    Riscv64ZkJniBridge.corearchRiscv64ZkAes64ds(rs1, rs2)
 
 public actual fun aes64dsm(rs1: Long, rs2: Long): Long =
-    CorearchRiscv64ZkJniBridge.rustlangCorearchRiscv64ZkAes64dsm(rs1, rs2)
+    Riscv64ZkJniBridge.corearchRiscv64ZkAes64dsm(rs1, rs2)
 
 public actual fun aes64im(rs1: Long): Long =
-    CorearchRiscv64ZkJniBridge.rustlangCorearchRiscv64ZkAes64im(rs1)
+    Riscv64ZkJniBridge.corearchRiscv64ZkAes64im(rs1)
 
 public actual fun sha512sig0(rs1: Long): Long =
-    CorearchRiscv64ZkJniBridge.rustlangCorearchRiscv64ZkSha512sig0(rs1)
+    Riscv64ZkJniBridge.corearchRiscv64ZkSha512sig0(rs1)
 
 public actual fun sha512sig1(rs1: Long): Long =
-    CorearchRiscv64ZkJniBridge.rustlangCorearchRiscv64ZkSha512sig1(rs1)
+    Riscv64ZkJniBridge.corearchRiscv64ZkSha512sig1(rs1)
 
 public actual fun sha512sum0(rs1: Long): Long =
-    CorearchRiscv64ZkJniBridge.rustlangCorearchRiscv64ZkSha512sum0(rs1)
+    Riscv64ZkJniBridge.corearchRiscv64ZkSha512sum0(rs1)
 
 public actual fun sha512sum1(rs1: Long): Long =
-    CorearchRiscv64ZkJniBridge.rustlangCorearchRiscv64ZkSha512sum1(rs1)
+    Riscv64ZkJniBridge.corearchRiscv64ZkSha512sum1(rs1)

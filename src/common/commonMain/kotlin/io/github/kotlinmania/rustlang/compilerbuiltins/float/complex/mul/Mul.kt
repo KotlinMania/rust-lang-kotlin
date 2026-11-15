@@ -1,10 +1,10 @@
 // port-lint: source float/complex/mul.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.complex.mul
 
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.num.complex.Complex
-import io.github.kotlinmania.rustlang.support.Float
 
 /**
  * Returns the product of `a + ib` and `c + id`.
@@ -27,11 +27,13 @@ public fun <F : Float> complexMul(a: F, b: F, c: F, d: F): Complex<F> {
         return z
     }
     val zeroIfNan =
-        { x: F -> if (x.isNan()) {
-            F.ZERO.copysign(x)
-        } else {
-            x
-        } }
+        { x: F ->
+            if (x.isNan()) {
+                F.ZERO.copysign(x)
+            } else {
+                x
+            }
+        }
     val signedUnitIfInf =
         { x: F ->
             val mag =

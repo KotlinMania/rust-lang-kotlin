@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.libc.wasi
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
@@ -13,549 +12,550 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiAbort
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiAbs
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiAccess
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiAlignedAlloc
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiArc4random
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiArc4randomBuf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiArc4randomUniform
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiAsctimeR
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiAtQuickExit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiAtexit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiAtof
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiAtoi
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiAtol
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiAtoll
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiCalloc
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiChdir
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiChmod
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiClearenv
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiClearerr
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiClock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiClose
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiClosedir
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiCreat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiCtimeR
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiDifftime
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiDirfd
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiDuplocale
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiErrnoLocation
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiExit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFaccessat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFchmod
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFclose
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFcntl
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFdatasync
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFdopen
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFdopendir
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFeof
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFerror
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFflush
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFgetc
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFgetpos
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFgets
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFileno
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFopen
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFpathconf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFprintf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFputc
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFputs
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFread
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFree
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFreelocale
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFreopen
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFscanf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFseek
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFseeko
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFsetpos
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFstat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFstatat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFsync
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFtell
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFtello
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFtruncate
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFutimens
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiFwrite
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetCLOCKMONOTONIC1
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetCLOCKREALTIME1
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetENVIRON
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetc
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetchar
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetcharUnlocked
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetcwd
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetentropy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetenv
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetline
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetopt
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGetrusage
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGettimeofday
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGmtime
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiGmtimeR
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIoctl
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIsalnum
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIsalpha
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIsatty
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIsblank
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIscntrl
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIsdigit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIsgraph
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIslower
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIsprint
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIspunct
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIsspace
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIsupper
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiIsxdigit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiLabs
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiLink
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiLinkat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiLocaleconv
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiLocaltime
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiLocaltimeR
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiLseek
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiLstat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiMalloc
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiMallocUsableSize
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiMemchr
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiMemcmp
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiMemcpy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiMemmove
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiMemrchr
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiMemset
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiMkdir
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiMkdirat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiMktime
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiNanosleep
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiNewlocale
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiNlLanginfo
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiNlLanginfoL
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiOpen
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiOpenat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiOpendir
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPathconf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPerror
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPoll
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPosixFadvise
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPosixFallocate
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPosixMemalign
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPread
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPreadv
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPrintf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadAttrDestroy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadAttrGetdetachstate
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadAttrGetguardsize
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadAttrGetstack
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadAttrGetstacksize
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadAttrInit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadAttrSetdetachstate
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadAttrSetguardsize
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadAttrSetstack
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadAttrSetstacksize
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadBarrierDestroy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadBarrierInit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadBarrierWait
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadBarrierattrDestroy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadBarrierattrGetpshared
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadBarrierattrInit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadBarrierattrSetpshared
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCondBroadcast
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCondDestroy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCondInit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCondSignal
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCondTimedwait
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCondWait
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCondattrDestroy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCondattrGetclock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCondattrGetpshared
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCondattrInit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCondattrSetpshared
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadCreate
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadDetach
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadEqual
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadGetattrNp
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadGetspecific
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadJoin
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadKeyCreate
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadKeyDelete
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexConsistent
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexDestroy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexGetprioceiling
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexInit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexLock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexTimedlock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexTrylock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexUnlock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexattrDestroy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexattrGetprotocol
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexattrGetpshared
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexattrGetrobust
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexattrGettype
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexattrInit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexattrSetprotocol
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexattrSetpshared
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexattrSetrobust
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadMutexattrSettype
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadOnce
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockDestroy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockInit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockRdlock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockTimedrdlock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockTimedwrlock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockTryrdlock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockTrywrlock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockUnlock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockWrlock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockattrDestroy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockattrGetpshared
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockattrInit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadRwlockattrSetpshared
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadSelf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadSetcancelstate
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadSetcanceltype
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadSetspecific
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadSpinDestroy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadSpinInit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadSpinLock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadSpinTrylock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadSpinUnlock
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPthreadTestcancel
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPutc
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPutchar
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPutcharUnlocked
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPutenv
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPuts
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPwrite
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiPwritev
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiQuickExit
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRand
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRandR
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRandom
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRead
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiReaddir
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiReadlink
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiReadlinkat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiReadv
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRealloc
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRealpath
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRecv
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRemove
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRename
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRenameat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRewind
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRewinddir
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiRmdir
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSbrk
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiScanf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSchedYield
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSeekdir
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSelect
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSend
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSetENVIRON
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSetbuf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSetenv
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSetlocale
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSetvbuf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiShutdown
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSleep
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSnprintf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSprintf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSrand
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSrandom
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSscanf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrcasecmp
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrcasestr
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrcat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrchr
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrcmp
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrcoll
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrcpy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrcspn
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrdup
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrerror
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrerrorR
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrftime
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrlen
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrncasecmp
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrncat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrncmp
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrncpy
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrndup
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrnlen
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrpbrk
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrrchr
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrspn
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrstr
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrtod
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrtof
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrtok
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrtol
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrtoll
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrtoul
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrtoull
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiStrxfrm
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSymlink
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSymlinkat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiSysconf
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiTelldir
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiTime
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiTimegm
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiTimes
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiTolower
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiToupper
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiTruncate
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiUngetc
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiUnlink
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiUnlinkat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiUnsetenv
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiUselocale
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiUsleep
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiUtimensat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcAccess
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcFdRenumber
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcFindRelpath
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcLink
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcLinkNewat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcLinkOldat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdFaccessat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdFstatat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdLinkat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdMkdiratNomode
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdOpenatNomode
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdOpendirat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdReadlinkat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdRenameat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdSymlinkat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdUtimensat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdWasilibcRmdirat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcNocwdWasilibcUnlinkat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcRegisterPreopenedFd
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcRenameNewat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcRenameOldat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcRmdirat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcStat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcTell
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcUnlinkat
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWasilibcUtimens
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWrite
-import io.github.kotlinmania.rustlang.libc.wasi.cinterop.rustlangLibcWasiWritev
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiAbort
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiAbs
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiAccess
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiAlignedAlloc
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiArc4random
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiArc4randomBuf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiArc4randomUniform
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiAsctimeR
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiAtQuickExit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiAtexit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiAtof
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiAtoi
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiAtol
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiAtoll
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiCalloc
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiChdir
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiChmod
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiClearenv
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiClearerr
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiClock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiClose
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiClosedir
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiCreat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiCtimeR
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiDifftime
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiDirfd
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiDuplocale
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiErrnoLocation
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiExit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFaccessat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFchmod
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFclose
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFcntl
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFdatasync
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFdopen
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFdopendir
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFeof
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFerror
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFflush
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFgetc
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFgetpos
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFgets
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFileno
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFopen
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFpathconf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFprintf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFputc
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFputs
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFread
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFree
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFreelocale
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFreopen
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFscanf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFseek
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFseeko
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFsetpos
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFstat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFstatat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFsync
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFtell
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFtello
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFtruncate
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFutimens
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiFwrite
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetCLOCKMONOTONIC1
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetCLOCKREALTIME1
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetENVIRON
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetc
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetchar
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetcharUnlocked
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetcwd
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetentropy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetenv
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetline
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetopt
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGetrusage
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGettimeofday
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGmtime
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiGmtimeR
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIoctl
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIsalnum
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIsalpha
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIsatty
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIsblank
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIscntrl
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIsdigit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIsgraph
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIslower
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIsprint
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIspunct
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIsspace
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIsupper
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiIsxdigit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiLabs
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiLink
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiLinkat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiLocaleconv
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiLocaltime
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiLocaltimeR
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiLseek
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiLstat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiMalloc
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiMallocUsableSize
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiMemchr
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiMemcmp
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiMemcpy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiMemmove
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiMemrchr
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiMemset
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiMkdir
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiMkdirat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiMktime
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiNanosleep
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiNewlocale
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiNlLanginfo
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiNlLanginfoL
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiOpen
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiOpenat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiOpendir
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPathconf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPerror
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPoll
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPosixFadvise
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPosixFallocate
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPosixMemalign
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPread
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPreadv
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPrintf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadAttrDestroy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadAttrGetdetachstate
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadAttrGetguardsize
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadAttrGetstack
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadAttrGetstacksize
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadAttrInit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadAttrSetdetachstate
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadAttrSetguardsize
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadAttrSetstack
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadAttrSetstacksize
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadBarrierDestroy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadBarrierInit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadBarrierWait
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadBarrierattrDestroy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadBarrierattrGetpshared
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadBarrierattrInit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadBarrierattrSetpshared
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCondBroadcast
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCondDestroy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCondInit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCondSignal
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCondTimedwait
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCondWait
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCondattrDestroy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCondattrGetclock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCondattrGetpshared
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCondattrInit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCondattrSetpshared
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadCreate
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadDetach
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadEqual
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadGetattrNp
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadGetspecific
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadJoin
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadKeyCreate
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadKeyDelete
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexConsistent
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexDestroy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexGetprioceiling
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexInit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexLock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexTimedlock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexTrylock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexUnlock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexattrDestroy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexattrGetprotocol
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexattrGetpshared
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexattrGetrobust
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexattrGettype
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexattrInit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexattrSetprotocol
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexattrSetpshared
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexattrSetrobust
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadMutexattrSettype
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadOnce
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockDestroy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockInit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockRdlock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockTimedrdlock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockTimedwrlock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockTryrdlock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockTrywrlock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockUnlock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockWrlock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockattrDestroy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockattrGetpshared
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockattrInit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadRwlockattrSetpshared
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadSelf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadSetcancelstate
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadSetcanceltype
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadSetspecific
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadSpinDestroy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadSpinInit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadSpinLock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadSpinTrylock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadSpinUnlock
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPthreadTestcancel
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPutc
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPutchar
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPutcharUnlocked
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPutenv
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPuts
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPwrite
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiPwritev
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiQuickExit
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRand
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRandR
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRandom
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRead
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiReaddir
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiReadlink
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiReadlinkat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiReadv
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRealloc
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRealpath
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRecv
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRemove
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRename
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRenameat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRewind
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRewinddir
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiRmdir
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSbrk
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiScanf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSchedYield
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSeekdir
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSelect
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSend
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSetENVIRON
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSetbuf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSetenv
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSetlocale
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSetvbuf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiShutdown
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSleep
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSnprintf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSprintf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSrand
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSrandom
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSscanf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrcasecmp
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrcasestr
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrcat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrchr
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrcmp
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrcoll
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrcpy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrcspn
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrdup
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrerror
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrerrorR
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrftime
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrlen
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrncasecmp
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrncat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrncmp
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrncpy
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrndup
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrnlen
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrpbrk
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrrchr
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrspn
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrstr
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrtod
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrtof
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrtok
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrtol
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrtoll
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrtoul
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrtoull
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiStrxfrm
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSymlink
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSymlinkat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiSysconf
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiTelldir
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiTime
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiTimegm
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiTimes
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiTolower
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiToupper
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiTruncate
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiUngetc
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiUnlink
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiUnlinkat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiUnsetenv
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiUselocale
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiUsleep
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiUtimensat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcAccess
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcFdRenumber
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcFindRelpath
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcLink
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcLinkNewat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcLinkOldat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdFaccessat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdFstatat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdLinkat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdMkdiratNomode
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdOpenatNomode
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdOpendirat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdReadlinkat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdRenameat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdSymlinkat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdUtimensat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdWasilibcRmdirat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcNocwdWasilibcUnlinkat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcRegisterPreopenedFd
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcRenameNewat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcRenameOldat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcRmdirat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcStat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcTell
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcUnlinkat
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWasilibcUtimens
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWrite
+import io.github.kotlinmania.rustlang.libc.wasi.cinterop.libcWasiWritev
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toLong
 
 public actual var ENVIRON: MutPtr
-    get() = MutPtr(rustlangLibcWasiGetENVIRON()?.toLong() ?: 0L)
+    get() = MutPtr(libcWasiGetENVIRON()?.toLong() ?: 0L)
     set(value) {
-        rustlangLibcWasiSetENVIRON(value.rawAddress.toCPointer<ByteVar>())
+        libcWasiSetENVIRON(value.rawAddress.toCPointer<ByteVar>())
     }
 
 public actual val CLOCK_MONOTONIC1: UByte
-    get() = rustlangLibcWasiGetCLOCKMONOTONIC1()
+    get() = libcWasiGetCLOCKMONOTONIC1()
 
 public actual val CLOCK_REALTIME1: UByte
-    get() = rustlangLibcWasiGetCLOCKREALTIME1()
+    get() = libcWasiGetCLOCKREALTIME1()
 
 public actual fun exit(code: CInt): Nothing {
-    rustlangLibcWasiExit(code)
+    libcWasiExit(code)
     error("Unreachable noreturn C function exit")
 }
 
 public actual fun abort(): Nothing {
-    rustlangLibcWasiAbort()
+    libcWasiAbort()
     error("Unreachable noreturn C function abort")
 }
 
 public actual fun alignedAlloc(a: SizeT, b: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiAlignedAlloc(a, b)?.toLong() ?: 0L)
+    MutPtr(libcWasiAlignedAlloc(a, b)?.toLong() ?: 0L)
 
 public actual fun calloc(amt: SizeT, amt2: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiCalloc(amt, amt2)?.toLong() ?: 0L)
+    MutPtr(libcWasiCalloc(amt, amt2)?.toLong() ?: 0L)
 
 public actual fun free(ptr: MutPtr) {
-    rustlangLibcWasiFree(ptr.rawAddress.toCPointer<ByteVar>())
+    libcWasiFree(ptr.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun getenv(s: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiGetenv(s.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiGetenv(s.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun malloc(amt: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiMalloc(amt)?.toLong() ?: 0L)
+    MutPtr(libcWasiMalloc(amt)?.toLong() ?: 0L)
 
 public actual fun mallocUsableSize(ptr: MutPtr): SizeT =
-    rustlangLibcWasiMallocUsableSize(ptr.rawAddress.toCPointer<ByteVar>())
+    libcWasiMallocUsableSize(ptr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun sbrk(increment: IntptrT): MutPtr =
-    MutPtr(rustlangLibcWasiSbrk(increment)?.toLong() ?: 0L)
+    MutPtr(libcWasiSbrk(increment)?.toLong() ?: 0L)
 
 public actual fun rand(): CInt =
-    rustlangLibcWasiRand()
+    libcWasiRand()
 
 public actual fun read(fd: CInt, ptr: MutPtr, size: SizeT): SsizeT =
-    rustlangLibcWasiRead(fd, ptr.rawAddress.toCPointer<ByteVar>(), size)
+    libcWasiRead(fd, ptr.rawAddress.toCPointer<ByteVar>(), size)
 
 public actual fun realloc(ptr: MutPtr, amt: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiRealloc(ptr.rawAddress.toCPointer<ByteVar>(), amt)?.toLong() ?: 0L)
+    MutPtr(libcWasiRealloc(ptr.rawAddress.toCPointer<ByteVar>(), amt)?.toLong() ?: 0L)
 
 public actual fun setenv(k: ConstPtr, v: ConstPtr, a: CInt): CInt =
-    rustlangLibcWasiSetenv(k.rawAddress.toCPointer<ByteVar>(), v.rawAddress.toCPointer<ByteVar>(), a)
+    libcWasiSetenv(k.rawAddress.toCPointer<ByteVar>(), v.rawAddress.toCPointer<ByteVar>(), a)
 
 public actual fun unsetenv(k: ConstPtr): CInt =
-    rustlangLibcWasiUnsetenv(k.rawAddress.toCPointer<ByteVar>())
+    libcWasiUnsetenv(k.rawAddress.toCPointer<ByteVar>())
 
 public actual fun clearenv(): CInt =
-    rustlangLibcWasiClearenv()
+    libcWasiClearenv()
 
 public actual fun write(fd: CInt, ptr: ConstPtr, size: SizeT): SsizeT =
-    rustlangLibcWasiWrite(fd, ptr.rawAddress.toCPointer<ByteVar>(), size)
+    libcWasiWrite(fd, ptr.rawAddress.toCPointer<ByteVar>(), size)
 
 public actual fun fopen(a: ConstPtr, b: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiFopen(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiFopen(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun freopen(a: ConstPtr, b: ConstPtr, f: MutPtr): MutPtr =
-    MutPtr(rustlangLibcWasiFreopen(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>(), f.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiFreopen(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>(), f.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun fclose(f: MutPtr): CInt =
-    rustlangLibcWasiFclose(f.rawAddress.toCPointer<ByteVar>())
+    libcWasiFclose(f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun remove(a: ConstPtr): CInt =
-    rustlangLibcWasiRemove(a.rawAddress.toCPointer<ByteVar>())
+    libcWasiRemove(a.rawAddress.toCPointer<ByteVar>())
 
 public actual fun rename(a: ConstPtr, b: ConstPtr): CInt =
-    rustlangLibcWasiRename(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
+    libcWasiRename(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun feof(f: MutPtr): CInt =
-    rustlangLibcWasiFeof(f.rawAddress.toCPointer<ByteVar>())
+    libcWasiFeof(f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun ferror(f: MutPtr): CInt =
-    rustlangLibcWasiFerror(f.rawAddress.toCPointer<ByteVar>())
+    libcWasiFerror(f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fflush(f: MutPtr): CInt =
-    rustlangLibcWasiFflush(f.rawAddress.toCPointer<ByteVar>())
+    libcWasiFflush(f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun clearerr(f: MutPtr) {
-    rustlangLibcWasiClearerr(f.rawAddress.toCPointer<ByteVar>())
+    libcWasiClearerr(f.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun fseek(f: MutPtr, b: CLong, c: CInt): CInt =
-    rustlangLibcWasiFseek(f.rawAddress.toCPointer<ByteVar>(), b, c)
+    libcWasiFseek(f.rawAddress.toCPointer<ByteVar>(), b, c)
 
 public actual fun ftell(f: MutPtr): CLong =
-    rustlangLibcWasiFtell(f.rawAddress.toCPointer<ByteVar>())
+    libcWasiFtell(f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun rewind(f: MutPtr) {
-    rustlangLibcWasiRewind(f.rawAddress.toCPointer<ByteVar>())
+    libcWasiRewind(f.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun fgetpos(f: MutPtr, pos: MutPtr): CInt =
-    rustlangLibcWasiFgetpos(f.rawAddress.toCPointer<ByteVar>(), pos.rawAddress.toCPointer<ByteVar>())
+    libcWasiFgetpos(f.rawAddress.toCPointer<ByteVar>(), pos.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fsetpos(f: MutPtr, pos: ConstPtr): CInt =
-    rustlangLibcWasiFsetpos(f.rawAddress.toCPointer<ByteVar>(), pos.rawAddress.toCPointer<ByteVar>())
+    libcWasiFsetpos(f.rawAddress.toCPointer<ByteVar>(), pos.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fread(buf: MutPtr, a: SizeT, b: SizeT, f: MutPtr): SizeT =
-    rustlangLibcWasiFread(buf.rawAddress.toCPointer<ByteVar>(), a, b, f.rawAddress.toCPointer<ByteVar>())
+    libcWasiFread(buf.rawAddress.toCPointer<ByteVar>(), a, b, f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fwrite(buf: ConstPtr, a: SizeT, b: SizeT, f: MutPtr): SizeT =
-    rustlangLibcWasiFwrite(buf.rawAddress.toCPointer<ByteVar>(), a, b, f.rawAddress.toCPointer<ByteVar>())
+    libcWasiFwrite(buf.rawAddress.toCPointer<ByteVar>(), a, b, f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fgetc(f: MutPtr): CInt =
-    rustlangLibcWasiFgetc(f.rawAddress.toCPointer<ByteVar>())
+    libcWasiFgetc(f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getc(f: MutPtr): CInt =
-    rustlangLibcWasiGetc(f.rawAddress.toCPointer<ByteVar>())
+    libcWasiGetc(f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getchar(): CInt =
-    rustlangLibcWasiGetchar()
+    libcWasiGetchar()
 
 public actual fun ungetc(a: CInt, f: MutPtr): CInt =
-    rustlangLibcWasiUngetc(a, f.rawAddress.toCPointer<ByteVar>())
+    libcWasiUngetc(a, f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fputc(a: CInt, f: MutPtr): CInt =
-    rustlangLibcWasiFputc(a, f.rawAddress.toCPointer<ByteVar>())
+    libcWasiFputc(a, f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun putc(a: CInt, f: MutPtr): CInt =
-    rustlangLibcWasiPutc(a, f.rawAddress.toCPointer<ByteVar>())
+    libcWasiPutc(a, f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun putchar(a: CInt): CInt =
-    rustlangLibcWasiPutchar(a)
+    libcWasiPutchar(a)
 
 public actual fun fputs(a: ConstPtr, f: MutPtr): CInt =
-    rustlangLibcWasiFputs(a.rawAddress.toCPointer<ByteVar>(), f.rawAddress.toCPointer<ByteVar>())
+    libcWasiFputs(a.rawAddress.toCPointer<ByteVar>(), f.rawAddress.toCPointer<ByteVar>())
 
 public actual fun puts(a: ConstPtr): CInt =
-    rustlangLibcWasiPuts(a.rawAddress.toCPointer<ByteVar>())
+    libcWasiPuts(a.rawAddress.toCPointer<ByteVar>())
 
 public actual fun perror(a: ConstPtr) {
-    rustlangLibcWasiPerror(a.rawAddress.toCPointer<ByteVar>())
+    libcWasiPerror(a.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun srand(a: CUint) {
-    rustlangLibcWasiSrand(a)
+    libcWasiSrand(a)
 }
 
 public actual fun atexit(a: AtexitACallback): CInt =
-    rustlangLibcWasiAtexit(0L.toCPointer<ByteVar>())
+    libcWasiAtexit(0L.toCPointer<ByteVar>())
 
 public actual fun atQuickExit(a: AtexitACallback): CInt =
-    rustlangLibcWasiAtQuickExit(0L.toCPointer<ByteVar>())
+    libcWasiAtQuickExit(0L.toCPointer<ByteVar>())
 
 public actual fun quickExit(a: CInt): Nothing {
-    rustlangLibcWasiQuickExit(a)
+    libcWasiQuickExit(a)
     error("Unreachable noreturn C function quickExit")
 }
 
 public actual fun posixMemalign(a: MutPtr, b: SizeT, c: SizeT): CInt =
-    rustlangLibcWasiPosixMemalign(a.rawAddress.toCPointer<ByteVar>(), b, c)
+    libcWasiPosixMemalign(a.rawAddress.toCPointer<ByteVar>(), b, c)
 
 public actual fun randR(a: MutPtr): CInt =
-    rustlangLibcWasiRandR(a.rawAddress.toCPointer<ByteVar>())
+    libcWasiRandR(a.rawAddress.toCPointer<ByteVar>())
 
 public actual fun random(): CLong =
-    rustlangLibcWasiRandom()
+    libcWasiRandom()
 
 public actual fun srandom(a: CUint) {
-    rustlangLibcWasiSrandom(a)
+    libcWasiSrandom(a)
 }
 
 public actual fun putenv(a: MutPtr): CInt =
-    rustlangLibcWasiPutenv(a.rawAddress.toCPointer<ByteVar>())
+    libcWasiPutenv(a.rawAddress.toCPointer<ByteVar>())
 
 public actual fun clock(): ClockT =
-    rustlangLibcWasiClock()
+    libcWasiClock()
 
 public actual fun time(a: MutPtr): TimeT =
-    rustlangLibcWasiTime(a.rawAddress.toCPointer<ByteVar>())
+    libcWasiTime(a.rawAddress.toCPointer<ByteVar>())
 
 public actual fun difftime(a: TimeT, b: TimeT): CDouble =
-    rustlangLibcWasiDifftime(a, b)
+    libcWasiDifftime(a, b)
 
 public actual fun mktime(a: MutPtr): TimeT =
-    rustlangLibcWasiMktime(a.rawAddress.toCPointer<ByteVar>())
+    libcWasiMktime(a.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strftime(a: MutPtr, b: SizeT, c: ConstPtr, d: ConstPtr): SizeT =
-    rustlangLibcWasiStrftime(a.rawAddress.toCPointer<ByteVar>(), b, c.rawAddress.toCPointer<ByteVar>(), d.rawAddress.toCPointer<ByteVar>())
+    libcWasiStrftime(a.rawAddress.toCPointer<ByteVar>(), b, c.rawAddress.toCPointer<ByteVar>(), d.rawAddress.toCPointer<ByteVar>())
 
 public actual fun gmtime(a: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiGmtime(a.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiGmtime(a.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun gmtimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    MutPtr(rustlangLibcWasiGmtimeR(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiGmtimeR(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun localtime(a: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiLocaltime(a.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiLocaltime(a.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun localtimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    MutPtr(rustlangLibcWasiLocaltimeR(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiLocaltimeR(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun asctimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    MutPtr(rustlangLibcWasiAsctimeR(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiAsctimeR(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun ctimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    MutPtr(rustlangLibcWasiCtimeR(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiCtimeR(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun nanosleep(a: ConstPtr, b: MutPtr): CInt =
-    rustlangLibcWasiNanosleep(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
+    libcWasiNanosleep(a.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun clockGetres(a: ClockidT, b: MutPtr): CInt =
     0
@@ -567,787 +567,787 @@ public actual fun clockNanosleep(a: ClockidT, a2: CInt, b: ConstPtr, c: MutPtr):
     0
 
 public actual fun isalnum(c: CInt): CInt =
-    rustlangLibcWasiIsalnum(c)
+    libcWasiIsalnum(c)
 
 public actual fun isalpha(c: CInt): CInt =
-    rustlangLibcWasiIsalpha(c)
+    libcWasiIsalpha(c)
 
 public actual fun iscntrl(c: CInt): CInt =
-    rustlangLibcWasiIscntrl(c)
+    libcWasiIscntrl(c)
 
 public actual fun isdigit(c: CInt): CInt =
-    rustlangLibcWasiIsdigit(c)
+    libcWasiIsdigit(c)
 
 public actual fun isgraph(c: CInt): CInt =
-    rustlangLibcWasiIsgraph(c)
+    libcWasiIsgraph(c)
 
 public actual fun islower(c: CInt): CInt =
-    rustlangLibcWasiIslower(c)
+    libcWasiIslower(c)
 
 public actual fun isprint(c: CInt): CInt =
-    rustlangLibcWasiIsprint(c)
+    libcWasiIsprint(c)
 
 public actual fun ispunct(c: CInt): CInt =
-    rustlangLibcWasiIspunct(c)
+    libcWasiIspunct(c)
 
 public actual fun isspace(c: CInt): CInt =
-    rustlangLibcWasiIsspace(c)
+    libcWasiIsspace(c)
 
 public actual fun isupper(c: CInt): CInt =
-    rustlangLibcWasiIsupper(c)
+    libcWasiIsupper(c)
 
 public actual fun isxdigit(c: CInt): CInt =
-    rustlangLibcWasiIsxdigit(c)
+    libcWasiIsxdigit(c)
 
 public actual fun isblank(c: CInt): CInt =
-    rustlangLibcWasiIsblank(c)
+    libcWasiIsblank(c)
 
 public actual fun tolower(c: CInt): CInt =
-    rustlangLibcWasiTolower(c)
+    libcWasiTolower(c)
 
 public actual fun toupper(c: CInt): CInt =
-    rustlangLibcWasiToupper(c)
+    libcWasiToupper(c)
 
 public actual fun setvbuf(stream: MutPtr, buffer: MutPtr, mode: CInt, size: SizeT): CInt =
-    rustlangLibcWasiSetvbuf(stream.rawAddress.toCPointer<ByteVar>(), buffer.rawAddress.toCPointer<ByteVar>(), mode, size)
+    libcWasiSetvbuf(stream.rawAddress.toCPointer<ByteVar>(), buffer.rawAddress.toCPointer<ByteVar>(), mode, size)
 
 public actual fun setbuf(stream: MutPtr, buf: MutPtr) {
-    rustlangLibcWasiSetbuf(stream.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
+    libcWasiSetbuf(stream.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun fgets(buf: MutPtr, n: CInt, stream: MutPtr): MutPtr =
-    MutPtr(rustlangLibcWasiFgets(buf.rawAddress.toCPointer<ByteVar>(), n, stream.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiFgets(buf.rawAddress.toCPointer<ByteVar>(), n, stream.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun atof(s: ConstPtr): CDouble =
-    rustlangLibcWasiAtof(s.rawAddress.toCPointer<ByteVar>())
+    libcWasiAtof(s.rawAddress.toCPointer<ByteVar>())
 
 public actual fun atoi(s: ConstPtr): CInt =
-    rustlangLibcWasiAtoi(s.rawAddress.toCPointer<ByteVar>())
+    libcWasiAtoi(s.rawAddress.toCPointer<ByteVar>())
 
 public actual fun atol(s: ConstPtr): CLong =
-    rustlangLibcWasiAtol(s.rawAddress.toCPointer<ByteVar>())
+    libcWasiAtol(s.rawAddress.toCPointer<ByteVar>())
 
 public actual fun atoll(s: ConstPtr): CLonglong =
-    rustlangLibcWasiAtoll(s.rawAddress.toCPointer<ByteVar>())
+    libcWasiAtoll(s.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strtod(s: ConstPtr, endp: MutPtr): CDouble =
-    rustlangLibcWasiStrtod(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>())
+    libcWasiStrtod(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strtof(s: ConstPtr, endp: MutPtr): CFloat =
-    rustlangLibcWasiStrtof(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>())
+    libcWasiStrtof(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strtol(s: ConstPtr, endp: MutPtr, base: CInt): CLong =
-    rustlangLibcWasiStrtol(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
+    libcWasiStrtol(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
 
 public actual fun strtoll(s: ConstPtr, endp: MutPtr, base: CInt): CLonglong =
-    rustlangLibcWasiStrtoll(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
+    libcWasiStrtoll(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
 
 public actual fun strtoul(s: ConstPtr, endp: MutPtr, base: CInt): CUlong =
-    rustlangLibcWasiStrtoul(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
+    libcWasiStrtoul(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
 
 public actual fun strtoull(s: ConstPtr, endp: MutPtr, base: CInt): CUlonglong =
-    rustlangLibcWasiStrtoull(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
+    libcWasiStrtoull(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
 
 public actual fun strcpy(dst: MutPtr, src: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiStrcpy(dst.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiStrcpy(dst.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiStrncpy(dst.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
+    MutPtr(libcWasiStrncpy(dst.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
 
 public actual fun strcat(s: MutPtr, ct: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiStrcat(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiStrcat(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strncat(s: MutPtr, ct: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiStrncat(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
+    MutPtr(libcWasiStrncat(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
 
 public actual fun strcmp(cs: ConstPtr, ct: ConstPtr): CInt =
-    rustlangLibcWasiStrcmp(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
+    libcWasiStrcmp(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strncmp(cs: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    rustlangLibcWasiStrncmp(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
+    libcWasiStrncmp(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
 
 public actual fun strcoll(cs: ConstPtr, ct: ConstPtr): CInt =
-    rustlangLibcWasiStrcoll(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
+    libcWasiStrcoll(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strchr(cs: ConstPtr, c: CInt): MutPtr =
-    MutPtr(rustlangLibcWasiStrchr(cs.rawAddress.toCPointer<ByteVar>(), c)?.toLong() ?: 0L)
+    MutPtr(libcWasiStrchr(cs.rawAddress.toCPointer<ByteVar>(), c)?.toLong() ?: 0L)
 
 public actual fun strrchr(cs: ConstPtr, c: CInt): MutPtr =
-    MutPtr(rustlangLibcWasiStrrchr(cs.rawAddress.toCPointer<ByteVar>(), c)?.toLong() ?: 0L)
+    MutPtr(libcWasiStrrchr(cs.rawAddress.toCPointer<ByteVar>(), c)?.toLong() ?: 0L)
 
 public actual fun strspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    rustlangLibcWasiStrspn(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
+    libcWasiStrspn(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strcspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    rustlangLibcWasiStrcspn(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
+    libcWasiStrcspn(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strdup(cs: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiStrdup(cs.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiStrdup(cs.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strndup(cs: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiStrndup(cs.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
+    MutPtr(libcWasiStrndup(cs.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
 
 public actual fun strpbrk(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiStrpbrk(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiStrpbrk(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strstr(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiStrstr(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiStrstr(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strcasecmp(s1: ConstPtr, s2: ConstPtr): CInt =
-    rustlangLibcWasiStrcasecmp(s1.rawAddress.toCPointer<ByteVar>(), s2.rawAddress.toCPointer<ByteVar>())
+    libcWasiStrcasecmp(s1.rawAddress.toCPointer<ByteVar>(), s2.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strncasecmp(s1: ConstPtr, s2: ConstPtr, n: SizeT): CInt =
-    rustlangLibcWasiStrncasecmp(s1.rawAddress.toCPointer<ByteVar>(), s2.rawAddress.toCPointer<ByteVar>(), n)
+    libcWasiStrncasecmp(s1.rawAddress.toCPointer<ByteVar>(), s2.rawAddress.toCPointer<ByteVar>(), n)
 
 public actual fun strlen(cs: ConstPtr): SizeT =
-    rustlangLibcWasiStrlen(cs.rawAddress.toCPointer<ByteVar>())
+    libcWasiStrlen(cs.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strnlen(cs: ConstPtr, maxlen: SizeT): SizeT =
-    rustlangLibcWasiStrnlen(cs.rawAddress.toCPointer<ByteVar>(), maxlen)
+    libcWasiStrnlen(cs.rawAddress.toCPointer<ByteVar>(), maxlen)
 
 public actual fun strerror(n: CInt): MutPtr =
-    MutPtr(rustlangLibcWasiStrerror(n)?.toLong() ?: 0L)
+    MutPtr(libcWasiStrerror(n)?.toLong() ?: 0L)
 
 public actual fun strtok(s: MutPtr, t: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiStrtok(s.rawAddress.toCPointer<ByteVar>(), t.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiStrtok(s.rawAddress.toCPointer<ByteVar>(), t.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strxfrm(s: MutPtr, ct: ConstPtr, n: SizeT): SizeT =
-    rustlangLibcWasiStrxfrm(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
+    libcWasiStrxfrm(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
 
 public actual fun memchr(cx: ConstPtr, c: CInt, n: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiMemchr(cx.rawAddress.toCPointer<ByteVar>(), c, n)?.toLong() ?: 0L)
+    MutPtr(libcWasiMemchr(cx.rawAddress.toCPointer<ByteVar>(), c, n)?.toLong() ?: 0L)
 
 public actual fun memcmp(cx: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    rustlangLibcWasiMemcmp(cx.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
+    libcWasiMemcmp(cx.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
 
 public actual fun memcpy(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiMemcpy(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
+    MutPtr(libcWasiMemcpy(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
 
 public actual fun memmove(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiMemmove(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
+    MutPtr(libcWasiMemmove(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
 
 public actual fun memset(dest: MutPtr, c: CInt, n: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiMemset(dest.rawAddress.toCPointer<ByteVar>(), c, n)?.toLong() ?: 0L)
+    MutPtr(libcWasiMemset(dest.rawAddress.toCPointer<ByteVar>(), c, n)?.toLong() ?: 0L)
 
 public actual fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    rustlangLibcWasiFprintf(stream.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    libcWasiFprintf(stream.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun printf(format: ConstPtr, vararg variadicArgs: Long): CInt =
-    rustlangLibcWasiPrintf(format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    libcWasiPrintf(format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun snprintf(s: MutPtr, n: SizeT, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    rustlangLibcWasiSnprintf(s.rawAddress.toCPointer<ByteVar>(), n, format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    libcWasiSnprintf(s.rawAddress.toCPointer<ByteVar>(), n, format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun sprintf(s: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    rustlangLibcWasiSprintf(s.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    libcWasiSprintf(s.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun fscanf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    rustlangLibcWasiFscanf(stream.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    libcWasiFscanf(stream.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun scanf(format: ConstPtr, vararg variadicArgs: Long): CInt =
-    rustlangLibcWasiScanf(format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    libcWasiScanf(format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun sscanf(s: ConstPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    rustlangLibcWasiSscanf(s.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    libcWasiSscanf(s.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun getcharUnlocked(): CInt =
-    rustlangLibcWasiGetcharUnlocked()
+    libcWasiGetcharUnlocked()
 
 public actual fun putcharUnlocked(c: CInt): CInt =
-    rustlangLibcWasiPutcharUnlocked(c)
+    libcWasiPutcharUnlocked(c)
 
 public actual fun shutdown(socket: CInt, how: CInt): CInt =
-    rustlangLibcWasiShutdown(socket, how)
+    libcWasiShutdown(socket, how)
 
 public actual fun fstat(fildes: CInt, buf: MutPtr): CInt =
-    rustlangLibcWasiFstat(fildes, buf.rawAddress.toCPointer<ByteVar>())
+    libcWasiFstat(fildes, buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun mkdir(path: ConstPtr, mode: ModeT): CInt =
-    rustlangLibcWasiMkdir(path.rawAddress.toCPointer<ByteVar>(), mode)
+    libcWasiMkdir(path.rawAddress.toCPointer<ByteVar>(), mode)
 
 public actual fun stat(path: ConstPtr, buf: MutPtr): CInt =
-    rustlangLibcWasiStat(path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
+    libcWasiStat(path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fdopen(fd: CInt, mode: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiFdopen(fd, mode.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiFdopen(fd, mode.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun fileno(stream: MutPtr): CInt =
-    rustlangLibcWasiFileno(stream.rawAddress.toCPointer<ByteVar>())
+    libcWasiFileno(stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun open(path: ConstPtr, oflag: CInt, vararg variadicArgs: Long): CInt =
-    rustlangLibcWasiOpen(path.rawAddress.toCPointer<ByteVar>(), oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    libcWasiOpen(path.rawAddress.toCPointer<ByteVar>(), oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun creat(path: ConstPtr, mode: ModeT): CInt =
-    rustlangLibcWasiCreat(path.rawAddress.toCPointer<ByteVar>(), mode)
+    libcWasiCreat(path.rawAddress.toCPointer<ByteVar>(), mode)
 
 public actual fun fcntl(fd: CInt, cmd: CInt, vararg variadicArgs: Long): CInt =
-    rustlangLibcWasiFcntl(fd, cmd, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    libcWasiFcntl(fd, cmd, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun opendir(dirname: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiOpendir(dirname.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiOpendir(dirname.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun fdopendir(fd: CInt): MutPtr =
-    MutPtr(rustlangLibcWasiFdopendir(fd)?.toLong() ?: 0L)
+    MutPtr(libcWasiFdopendir(fd)?.toLong() ?: 0L)
 
 public actual fun readdir(dirp: MutPtr): MutPtr =
-    MutPtr(rustlangLibcWasiReaddir(dirp.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiReaddir(dirp.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun closedir(dirp: MutPtr): CInt =
-    rustlangLibcWasiClosedir(dirp.rawAddress.toCPointer<ByteVar>())
+    libcWasiClosedir(dirp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun rewinddir(dirp: MutPtr) {
-    rustlangLibcWasiRewinddir(dirp.rawAddress.toCPointer<ByteVar>())
+    libcWasiRewinddir(dirp.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun dirfd(dirp: MutPtr): CInt =
-    rustlangLibcWasiDirfd(dirp.rawAddress.toCPointer<ByteVar>())
+    libcWasiDirfd(dirp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun seekdir(dirp: MutPtr, loc: CLong) {
-    rustlangLibcWasiSeekdir(dirp.rawAddress.toCPointer<ByteVar>(), loc)
+    libcWasiSeekdir(dirp.rawAddress.toCPointer<ByteVar>(), loc)
 }
 
 public actual fun telldir(dirp: MutPtr): CLong =
-    rustlangLibcWasiTelldir(dirp.rawAddress.toCPointer<ByteVar>())
+    libcWasiTelldir(dirp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun openat(dirfd: CInt, pathname: ConstPtr, flags: CInt, vararg variadicArgs: Long): CInt =
-    rustlangLibcWasiOpenat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), flags, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    libcWasiOpenat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), flags, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun fstatat(dirfd: CInt, pathname: ConstPtr, buf: MutPtr, flags: CInt): CInt =
-    rustlangLibcWasiFstatat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiFstatat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun linkat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CInt): CInt =
-    rustlangLibcWasiLinkat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiLinkat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun mkdirat(dirfd: CInt, pathname: ConstPtr, mode: ModeT): CInt =
-    rustlangLibcWasiMkdirat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), mode)
+    libcWasiMkdirat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), mode)
 
 public actual fun readlinkat(dirfd: CInt, pathname: ConstPtr, buf: MutPtr, bufsiz: SizeT): SsizeT =
-    rustlangLibcWasiReadlinkat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), bufsiz)
+    libcWasiReadlinkat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), bufsiz)
 
 public actual fun renameat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr): CInt =
-    rustlangLibcWasiRenameat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>())
+    libcWasiRenameat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>())
 
 public actual fun symlinkat(target: ConstPtr, newdirfd: CInt, linkpath: ConstPtr): CInt =
-    rustlangLibcWasiSymlinkat(target.rawAddress.toCPointer<ByteVar>(), newdirfd, linkpath.rawAddress.toCPointer<ByteVar>())
+    libcWasiSymlinkat(target.rawAddress.toCPointer<ByteVar>(), newdirfd, linkpath.rawAddress.toCPointer<ByteVar>())
 
 public actual fun unlinkat(dirfd: CInt, pathname: ConstPtr, flags: CInt): CInt =
-    rustlangLibcWasiUnlinkat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiUnlinkat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun access(path: ConstPtr, amode: CInt): CInt =
-    rustlangLibcWasiAccess(path.rawAddress.toCPointer<ByteVar>(), amode)
+    libcWasiAccess(path.rawAddress.toCPointer<ByteVar>(), amode)
 
 public actual fun close(fd: CInt): CInt =
-    rustlangLibcWasiClose(fd)
+    libcWasiClose(fd)
 
 public actual fun fpathconf(filedes: CInt, name: CInt): CLong =
-    rustlangLibcWasiFpathconf(filedes, name)
+    libcWasiFpathconf(filedes, name)
 
 public actual fun getopt(argc: CInt, argv: ConstPtr, optstr: ConstPtr): CInt =
-    rustlangLibcWasiGetopt(argc, argv.rawAddress.toCPointer<ByteVar>(), optstr.rawAddress.toCPointer<ByteVar>())
+    libcWasiGetopt(argc, argv.rawAddress.toCPointer<ByteVar>(), optstr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun isatty(fd: CInt): CInt =
-    rustlangLibcWasiIsatty(fd)
+    libcWasiIsatty(fd)
 
 public actual fun link(src: ConstPtr, dst: ConstPtr): CInt =
-    rustlangLibcWasiLink(src.rawAddress.toCPointer<ByteVar>(), dst.rawAddress.toCPointer<ByteVar>())
+    libcWasiLink(src.rawAddress.toCPointer<ByteVar>(), dst.rawAddress.toCPointer<ByteVar>())
 
 public actual fun lseek(fd: CInt, offset: OffT, whence: CInt): OffT =
-    rustlangLibcWasiLseek(fd, offset, whence)
+    libcWasiLseek(fd, offset, whence)
 
 public actual fun pathconf(path: ConstPtr, name: CInt): CLong =
-    rustlangLibcWasiPathconf(path.rawAddress.toCPointer<ByteVar>(), name)
+    libcWasiPathconf(path.rawAddress.toCPointer<ByteVar>(), name)
 
 public actual fun rmdir(path: ConstPtr): CInt =
-    rustlangLibcWasiRmdir(path.rawAddress.toCPointer<ByteVar>())
+    libcWasiRmdir(path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun sleep(secs: CUint): CUint =
-    rustlangLibcWasiSleep(secs)
+    libcWasiSleep(secs)
 
 public actual fun unlink(c: ConstPtr): CInt =
-    rustlangLibcWasiUnlink(c.rawAddress.toCPointer<ByteVar>())
+    libcWasiUnlink(c.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pread(fd: CInt, buf: MutPtr, count: SizeT, offset: OffT): SsizeT =
-    rustlangLibcWasiPread(fd, buf.rawAddress.toCPointer<ByteVar>(), count, offset)
+    libcWasiPread(fd, buf.rawAddress.toCPointer<ByteVar>(), count, offset)
 
 public actual fun pwrite(fd: CInt, buf: ConstPtr, count: SizeT, offset: OffT): SsizeT =
-    rustlangLibcWasiPwrite(fd, buf.rawAddress.toCPointer<ByteVar>(), count, offset)
+    libcWasiPwrite(fd, buf.rawAddress.toCPointer<ByteVar>(), count, offset)
 
 public actual fun lstat(path: ConstPtr, buf: MutPtr): CInt =
-    rustlangLibcWasiLstat(path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
+    libcWasiLstat(path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fsync(fd: CInt): CInt =
-    rustlangLibcWasiFsync(fd)
+    libcWasiFsync(fd)
 
 public actual fun fdatasync(fd: CInt): CInt =
-    rustlangLibcWasiFdatasync(fd)
+    libcWasiFdatasync(fd)
 
 public actual fun symlink(path1: ConstPtr, path2: ConstPtr): CInt =
-    rustlangLibcWasiSymlink(path1.rawAddress.toCPointer<ByteVar>(), path2.rawAddress.toCPointer<ByteVar>())
+    libcWasiSymlink(path1.rawAddress.toCPointer<ByteVar>(), path2.rawAddress.toCPointer<ByteVar>())
 
 public actual fun truncate(path: ConstPtr, length: OffT): CInt =
-    rustlangLibcWasiTruncate(path.rawAddress.toCPointer<ByteVar>(), length)
+    libcWasiTruncate(path.rawAddress.toCPointer<ByteVar>(), length)
 
 public actual fun ftruncate(fd: CInt, length: OffT): CInt =
-    rustlangLibcWasiFtruncate(fd, length)
+    libcWasiFtruncate(fd, length)
 
 public actual fun getrusage(resource: CInt, usage: MutPtr): CInt =
-    rustlangLibcWasiGetrusage(resource, usage.rawAddress.toCPointer<ByteVar>())
+    libcWasiGetrusage(resource, usage.rawAddress.toCPointer<ByteVar>())
 
 public actual fun gettimeofday(tp: MutPtr, tz: MutPtr): CInt =
-    rustlangLibcWasiGettimeofday(tp.rawAddress.toCPointer<ByteVar>(), tz.rawAddress.toCPointer<ByteVar>())
+    libcWasiGettimeofday(tp.rawAddress.toCPointer<ByteVar>(), tz.rawAddress.toCPointer<ByteVar>())
 
-public actual fun times(buf: MutPtr): io.github.kotlinmania.rustlang.wasi.ClockT =
-    rustlangLibcWasiTimes(buf.rawAddress.toCPointer<ByteVar>())
+public actual fun times(buf: MutPtr): ClockT =
+    libcWasiTimes(buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strerrorR(errnum: CInt, buf: MutPtr, buflen: SizeT): CInt =
-    rustlangLibcWasiStrerrorR(errnum, buf.rawAddress.toCPointer<ByteVar>(), buflen)
+    libcWasiStrerrorR(errnum, buf.rawAddress.toCPointer<ByteVar>(), buflen)
 
 public actual fun usleep(secs: CUint): CInt =
-    rustlangLibcWasiUsleep(secs)
+    libcWasiUsleep(secs)
 
 public actual fun send(socket: CInt, buf: ConstPtr, len: SizeT, flags: CInt): SsizeT =
-    rustlangLibcWasiSend(socket, buf.rawAddress.toCPointer<ByteVar>(), len, flags)
+    libcWasiSend(socket, buf.rawAddress.toCPointer<ByteVar>(), len, flags)
 
 public actual fun recv(socket: CInt, buf: MutPtr, len: SizeT, flags: CInt): SsizeT =
-    rustlangLibcWasiRecv(socket, buf.rawAddress.toCPointer<ByteVar>(), len, flags)
+    libcWasiRecv(socket, buf.rawAddress.toCPointer<ByteVar>(), len, flags)
 
 public actual fun poll(fds: MutPtr, nfds: NfdsT, timeout: CInt): CInt =
-    rustlangLibcWasiPoll(fds.rawAddress.toCPointer<ByteVar>(), nfds, timeout)
+    libcWasiPoll(fds.rawAddress.toCPointer<ByteVar>(), nfds, timeout)
 
 public actual fun setlocale(category: CInt, locale: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiSetlocale(category, locale.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiSetlocale(category, locale.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun localeconv(): MutPtr =
-    MutPtr(rustlangLibcWasiLocaleconv()?.toLong() ?: 0L)
+    MutPtr(libcWasiLocaleconv()?.toLong() ?: 0L)
 
 public actual fun readlink(path: ConstPtr, buf: MutPtr, bufsz: SizeT): SsizeT =
-    rustlangLibcWasiReadlink(path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), bufsz)
+    libcWasiReadlink(path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), bufsz)
 
 public actual fun timegm(tm: MutPtr): TimeT =
-    rustlangLibcWasiTimegm(tm.rawAddress.toCPointer<ByteVar>())
+    libcWasiTimegm(tm.rawAddress.toCPointer<ByteVar>())
 
 public actual fun sysconf(name: CInt): CLong =
-    rustlangLibcWasiSysconf(name)
+    libcWasiSysconf(name)
 
 public actual fun ioctl(fd: CInt, request: CInt, vararg variadicArgs: Long): CInt =
-    rustlangLibcWasiIoctl(fd, request, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    libcWasiIoctl(fd, request, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun fseeko(stream: MutPtr, offset: OffT, whence: CInt): CInt =
-    rustlangLibcWasiFseeko(stream.rawAddress.toCPointer<ByteVar>(), offset, whence)
+    libcWasiFseeko(stream.rawAddress.toCPointer<ByteVar>(), offset, whence)
 
 public actual fun ftello(stream: MutPtr): OffT =
-    rustlangLibcWasiFtello(stream.rawAddress.toCPointer<ByteVar>())
+    libcWasiFtello(stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun posixFallocate(fd: CInt, offset: OffT, len: OffT): CInt =
-    rustlangLibcWasiPosixFallocate(fd, offset, len)
+    libcWasiPosixFallocate(fd, offset, len)
 
 public actual fun strcasestr(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiStrcasestr(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiStrcasestr(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun getline(lineptr: MutPtr, n: MutPtr, stream: MutPtr): SsizeT =
-    rustlangLibcWasiGetline(lineptr.rawAddress.toCPointer<ByteVar>(), n.rawAddress.toCPointer<ByteVar>(), stream.rawAddress.toCPointer<ByteVar>())
+    libcWasiGetline(lineptr.rawAddress.toCPointer<ByteVar>(), n.rawAddress.toCPointer<ByteVar>(), stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun faccessat(dirfd: CInt, pathname: ConstPtr, mode: CInt, flags: CInt): CInt =
-    rustlangLibcWasiFaccessat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), mode, flags)
+    libcWasiFaccessat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), mode, flags)
 
 public actual fun writev(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
-    rustlangLibcWasiWritev(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt)
+    libcWasiWritev(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt)
 
 public actual fun readv(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
-    rustlangLibcWasiReadv(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt)
+    libcWasiReadv(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt)
 
 public actual fun pwritev(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT): SsizeT =
-    rustlangLibcWasiPwritev(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset)
+    libcWasiPwritev(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset)
 
 public actual fun preadv(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT): SsizeT =
-    rustlangLibcWasiPreadv(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset)
+    libcWasiPreadv(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset)
 
 public actual fun posixFadvise(fd: CInt, offset: OffT, len: OffT, advise: CInt): CInt =
-    rustlangLibcWasiPosixFadvise(fd, offset, len, advise)
+    libcWasiPosixFadvise(fd, offset, len, advise)
 
 public actual fun futimens(fd: CInt, times: ConstPtr): CInt =
-    rustlangLibcWasiFutimens(fd, times.rawAddress.toCPointer<ByteVar>())
+    libcWasiFutimens(fd, times.rawAddress.toCPointer<ByteVar>())
 
 public actual fun utimensat(dirfd: CInt, path: ConstPtr, times: ConstPtr, flag: CInt): CInt =
-    rustlangLibcWasiUtimensat(dirfd, path.rawAddress.toCPointer<ByteVar>(), times.rawAddress.toCPointer<ByteVar>(), flag)
+    libcWasiUtimensat(dirfd, path.rawAddress.toCPointer<ByteVar>(), times.rawAddress.toCPointer<ByteVar>(), flag)
 
 public actual fun getentropy(buf: MutPtr, buflen: SizeT): CInt =
-    rustlangLibcWasiGetentropy(buf.rawAddress.toCPointer<ByteVar>(), buflen)
+    libcWasiGetentropy(buf.rawAddress.toCPointer<ByteVar>(), buflen)
 
 public actual fun memrchr(cx: ConstPtr, c: CInt, n: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiMemrchr(cx.rawAddress.toCPointer<ByteVar>(), c, n)?.toLong() ?: 0L)
+    MutPtr(libcWasiMemrchr(cx.rawAddress.toCPointer<ByteVar>(), c, n)?.toLong() ?: 0L)
 
 public actual fun abs(i: CInt): CInt =
-    rustlangLibcWasiAbs(i)
+    libcWasiAbs(i)
 
 public actual fun labs(i: CLong): CLong =
-    rustlangLibcWasiLabs(i)
+    libcWasiLabs(i)
 
-public actual fun duplocale(base: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT =
-    MutPtr(rustlangLibcWasiDuplocale(base.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+public actual fun duplocale(base: LocaleT): LocaleT =
+    MutPtr(libcWasiDuplocale(base.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
-public actual fun freelocale(loc: io.github.kotlinmania.rustlang.wasi.LocaleT) {
-    rustlangLibcWasiFreelocale(loc.rawAddress.toCPointer<ByteVar>())
+public actual fun freelocale(loc: LocaleT) {
+    libcWasiFreelocale(loc.rawAddress.toCPointer<ByteVar>())
 }
 
-public actual fun newlocale(mask: CInt, locale: ConstPtr, base: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT =
-    MutPtr(rustlangLibcWasiNewlocale(mask, locale.rawAddress.toCPointer<ByteVar>(), base.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+public actual fun newlocale(mask: CInt, locale: ConstPtr, base: LocaleT): LocaleT =
+    MutPtr(libcWasiNewlocale(mask, locale.rawAddress.toCPointer<ByteVar>(), base.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
-public actual fun uselocale(loc: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT =
-    MutPtr(rustlangLibcWasiUselocale(loc.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+public actual fun uselocale(loc: LocaleT): LocaleT =
+    MutPtr(libcWasiUselocale(loc.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun schedYield(): CInt =
-    rustlangLibcWasiSchedYield()
+    libcWasiSchedYield()
 
 public actual fun getcwd(buf: MutPtr, size: SizeT): MutPtr =
-    MutPtr(rustlangLibcWasiGetcwd(buf.rawAddress.toCPointer<ByteVar>(), size)?.toLong() ?: 0L)
+    MutPtr(libcWasiGetcwd(buf.rawAddress.toCPointer<ByteVar>(), size)?.toLong() ?: 0L)
 
 public actual fun chdir(dir: ConstPtr): CInt =
-    rustlangLibcWasiChdir(dir.rawAddress.toCPointer<ByteVar>())
+    libcWasiChdir(dir.rawAddress.toCPointer<ByteVar>())
 
-public actual fun nlLanginfo(item: io.github.kotlinmania.rustlang.wasi.NlItem): MutPtr =
-    MutPtr(rustlangLibcWasiNlLanginfo(item)?.toLong() ?: 0L)
+public actual fun nlLanginfo(item: NlItem): MutPtr =
+    MutPtr(libcWasiNlLanginfo(item)?.toLong() ?: 0L)
 
-public actual fun nlLanginfoL(item: io.github.kotlinmania.rustlang.wasi.NlItem, loc: io.github.kotlinmania.rustlang.wasi.LocaleT): MutPtr =
-    MutPtr(rustlangLibcWasiNlLanginfoL(item, loc.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+public actual fun nlLanginfoL(item: NlItem, loc: LocaleT): MutPtr =
+    MutPtr(libcWasiNlLanginfoL(item, loc.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun select(nfds: CInt, readfds: MutPtr, writefds: MutPtr, errorfds: MutPtr, timeout: ConstPtr): CInt =
-    rustlangLibcWasiSelect(nfds, readfds.rawAddress.toCPointer<ByteVar>(), writefds.rawAddress.toCPointer<ByteVar>(), errorfds.rawAddress.toCPointer<ByteVar>(), timeout.rawAddress.toCPointer<ByteVar>())
+    libcWasiSelect(nfds, readfds.rawAddress.toCPointer<ByteVar>(), writefds.rawAddress.toCPointer<ByteVar>(), errorfds.rawAddress.toCPointer<ByteVar>(), timeout.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wasilibcRegisterPreopenedFd(fd: CInt, path: ConstPtr): CInt =
-    rustlangLibcWasiWasilibcRegisterPreopenedFd(fd, path.rawAddress.toCPointer<ByteVar>())
+    libcWasiWasilibcRegisterPreopenedFd(fd, path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wasilibcFdRenumber(fd: CInt, newfd: CInt): CInt =
-    rustlangLibcWasiWasilibcFdRenumber(fd, newfd)
+    libcWasiWasilibcFdRenumber(fd, newfd)
 
 public actual fun wasilibcUnlinkat(fd: CInt, path: ConstPtr): CInt =
-    rustlangLibcWasiWasilibcUnlinkat(fd, path.rawAddress.toCPointer<ByteVar>())
+    libcWasiWasilibcUnlinkat(fd, path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wasilibcRmdirat(fd: CInt, path: ConstPtr): CInt =
-    rustlangLibcWasiWasilibcRmdirat(fd, path.rawAddress.toCPointer<ByteVar>())
+    libcWasiWasilibcRmdirat(fd, path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wasilibcFindRelpath(path: ConstPtr, absPrefix: MutPtr, relativePath: MutPtr, relativePathLen: ULong): CInt =
-    rustlangLibcWasiWasilibcFindRelpath(path.rawAddress.toCPointer<ByteVar>(), absPrefix.rawAddress.toCPointer<ByteVar>(), relativePath.rawAddress.toCPointer<ByteVar>(), relativePathLen)
+    libcWasiWasilibcFindRelpath(path.rawAddress.toCPointer<ByteVar>(), absPrefix.rawAddress.toCPointer<ByteVar>(), relativePath.rawAddress.toCPointer<ByteVar>(), relativePathLen)
 
 public actual fun wasilibcTell(fd: CInt): OffT =
-    rustlangLibcWasiWasilibcTell(fd)
+    libcWasiWasilibcTell(fd)
 
 public actual fun wasilibcNocwdWasilibcUnlinkat(dirfd: CInt, path: ConstPtr): CInt =
-    rustlangLibcWasiWasilibcNocwdWasilibcUnlinkat(dirfd, path.rawAddress.toCPointer<ByteVar>())
+    libcWasiWasilibcNocwdWasilibcUnlinkat(dirfd, path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wasilibcNocwdWasilibcRmdirat(dirfd: CInt, path: ConstPtr): CInt =
-    rustlangLibcWasiWasilibcNocwdWasilibcRmdirat(dirfd, path.rawAddress.toCPointer<ByteVar>())
+    libcWasiWasilibcNocwdWasilibcRmdirat(dirfd, path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wasilibcNocwdLinkat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CInt): CInt =
-    rustlangLibcWasiWasilibcNocwdLinkat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiWasilibcNocwdLinkat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun wasilibcNocwdSymlinkat(target: ConstPtr, dirfd: CInt, path: ConstPtr): CInt =
-    rustlangLibcWasiWasilibcNocwdSymlinkat(target.rawAddress.toCPointer<ByteVar>(), dirfd, path.rawAddress.toCPointer<ByteVar>())
+    libcWasiWasilibcNocwdSymlinkat(target.rawAddress.toCPointer<ByteVar>(), dirfd, path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wasilibcNocwdReadlinkat(dirfd: CInt, path: ConstPtr, buf: MutPtr, bufsize: ULong): Long =
-    rustlangLibcWasiWasilibcNocwdReadlinkat(dirfd, path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), bufsize)
+    libcWasiWasilibcNocwdReadlinkat(dirfd, path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), bufsize)
 
 public actual fun wasilibcNocwdFaccessat(dirfd: CInt, path: ConstPtr, mode: CInt, flags: CInt): CInt =
-    rustlangLibcWasiWasilibcNocwdFaccessat(dirfd, path.rawAddress.toCPointer<ByteVar>(), mode, flags)
+    libcWasiWasilibcNocwdFaccessat(dirfd, path.rawAddress.toCPointer<ByteVar>(), mode, flags)
 
 public actual fun wasilibcNocwdRenameat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr): CInt =
-    rustlangLibcWasiWasilibcNocwdRenameat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>())
+    libcWasiWasilibcNocwdRenameat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wasilibcNocwdOpenatNomode(dirfd: CInt, path: ConstPtr, flags: CInt): CInt =
-    rustlangLibcWasiWasilibcNocwdOpenatNomode(dirfd, path.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiWasilibcNocwdOpenatNomode(dirfd, path.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun wasilibcNocwdFstatat(dirfd: CInt, path: ConstPtr, buf: MutPtr, flags: CInt): CInt =
-    rustlangLibcWasiWasilibcNocwdFstatat(dirfd, path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiWasilibcNocwdFstatat(dirfd, path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun wasilibcNocwdMkdiratNomode(dirfd: CInt, path: ConstPtr): CInt =
-    rustlangLibcWasiWasilibcNocwdMkdiratNomode(dirfd, path.rawAddress.toCPointer<ByteVar>())
+    libcWasiWasilibcNocwdMkdiratNomode(dirfd, path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wasilibcNocwdUtimensat(dirfd: CInt, path: ConstPtr, times: ConstPtr, flags: CInt): CInt =
-    rustlangLibcWasiWasilibcNocwdUtimensat(dirfd, path.rawAddress.toCPointer<ByteVar>(), times.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiWasilibcNocwdUtimensat(dirfd, path.rawAddress.toCPointer<ByteVar>(), times.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun wasilibcNocwdOpendirat(dirfd: CInt, path: ConstPtr): MutPtr =
-    MutPtr(rustlangLibcWasiWasilibcNocwdOpendirat(dirfd, path.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiWasilibcNocwdOpendirat(dirfd, path.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun wasilibcAccess(pathname: ConstPtr, mode: CInt, flags: CInt): CInt =
-    rustlangLibcWasiWasilibcAccess(pathname.rawAddress.toCPointer<ByteVar>(), mode, flags)
+    libcWasiWasilibcAccess(pathname.rawAddress.toCPointer<ByteVar>(), mode, flags)
 
 public actual fun wasilibcStat(pathname: ConstPtr, buf: MutPtr, flags: CInt): CInt =
-    rustlangLibcWasiWasilibcStat(pathname.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiWasilibcStat(pathname.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun wasilibcUtimens(pathname: ConstPtr, times: ConstPtr, flags: CInt): CInt =
-    rustlangLibcWasiWasilibcUtimens(pathname.rawAddress.toCPointer<ByteVar>(), times.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiWasilibcUtimens(pathname.rawAddress.toCPointer<ByteVar>(), times.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun wasilibcLink(oldpath: ConstPtr, newpath: ConstPtr, flags: CInt): CInt =
-    rustlangLibcWasiWasilibcLink(oldpath.rawAddress.toCPointer<ByteVar>(), newpath.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiWasilibcLink(oldpath.rawAddress.toCPointer<ByteVar>(), newpath.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun wasilibcLinkOldat(olddirfd: CInt, oldpath: ConstPtr, newpath: ConstPtr, flags: CInt): CInt =
-    rustlangLibcWasiWasilibcLinkOldat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newpath.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiWasilibcLinkOldat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newpath.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun wasilibcLinkNewat(oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CInt): CInt =
-    rustlangLibcWasiWasilibcLinkNewat(oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>(), flags)
+    libcWasiWasilibcLinkNewat(oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun wasilibcRenameOldat(olddirfd: CInt, oldpath: ConstPtr, newpath: ConstPtr): CInt =
-    rustlangLibcWasiWasilibcRenameOldat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newpath.rawAddress.toCPointer<ByteVar>())
+    libcWasiWasilibcRenameOldat(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newpath.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wasilibcRenameNewat(oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr): CInt =
-    rustlangLibcWasiWasilibcRenameNewat(oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>())
+    libcWasiWasilibcRenameNewat(oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>())
 
 public actual fun arc4random(): UInt =
-    rustlangLibcWasiArc4random()
+    libcWasiArc4random()
 
 public actual fun arc4randomBuf(a: MutPtr, b: SizeT) {
-    rustlangLibcWasiArc4randomBuf(a.rawAddress.toCPointer<ByteVar>(), b)
+    libcWasiArc4randomBuf(a.rawAddress.toCPointer<ByteVar>(), b)
 }
 
 public actual fun arc4randomUniform(a: UInt): UInt =
-    rustlangLibcWasiArc4randomUniform(a)
+    libcWasiArc4randomUniform(a)
 
 public actual fun errnoLocation(): MutPtr =
-    MutPtr(rustlangLibcWasiErrnoLocation()?.toLong() ?: 0L)
+    MutPtr(libcWasiErrnoLocation()?.toLong() ?: 0L)
 
 public actual fun chmod(path: ConstPtr, mode: ModeT): CInt =
-    rustlangLibcWasiChmod(path.rawAddress.toCPointer<ByteVar>(), mode)
+    libcWasiChmod(path.rawAddress.toCPointer<ByteVar>(), mode)
 
 public actual fun fchmod(fd: CInt, mode: ModeT): CInt =
-    rustlangLibcWasiFchmod(fd, mode)
+    libcWasiFchmod(fd, mode)
 
 public actual fun realpath(pathname: ConstPtr, resolved: MutPtr): MutPtr =
-    MutPtr(rustlangLibcWasiRealpath(pathname.rawAddress.toCPointer<ByteVar>(), resolved.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(libcWasiRealpath(pathname.rawAddress.toCPointer<ByteVar>(), resolved.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun pthreadSelf(): PthreadT =
-    MutPtr(rustlangLibcWasiPthreadSelf()?.toLong() ?: 0L)
+    MutPtr(libcWasiPthreadSelf()?.toLong() ?: 0L)
 
 public actual fun pthreadCreate(native: MutPtr, attr: ConstPtr, f: PthreadCreateFCallback, value: MutPtr): CInt =
-    rustlangLibcWasiPthreadCreate(native.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>(), value.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadCreate(native.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>(), value.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadEqual(t1: PthreadT, t2: PthreadT): CInt =
-    rustlangLibcWasiPthreadEqual(t1.rawAddress.toCPointer<ByteVar>(), t2.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadEqual(t1.rawAddress.toCPointer<ByteVar>(), t2.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadJoin(native: PthreadT, value: MutPtr): CInt =
-    rustlangLibcWasiPthreadJoin(native.rawAddress.toCPointer<ByteVar>(), value.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadJoin(native.rawAddress.toCPointer<ByteVar>(), value.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadAttrInit(attr: MutPtr): CInt =
-    rustlangLibcWasiPthreadAttrInit(attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadAttrInit(attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadAttrDestroy(attr: MutPtr): CInt =
-    rustlangLibcWasiPthreadAttrDestroy(attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadAttrDestroy(attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadAttrGetstacksize(attr: ConstPtr, stacksize: MutPtr): CInt =
-    rustlangLibcWasiPthreadAttrGetstacksize(attr.rawAddress.toCPointer<ByteVar>(), stacksize.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadAttrGetstacksize(attr.rawAddress.toCPointer<ByteVar>(), stacksize.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadAttrSetstacksize(attr: MutPtr, stackSize: SizeT): CInt =
-    rustlangLibcWasiPthreadAttrSetstacksize(attr.rawAddress.toCPointer<ByteVar>(), stackSize)
+    libcWasiPthreadAttrSetstacksize(attr.rawAddress.toCPointer<ByteVar>(), stackSize)
 
 public actual fun pthreadAttrGetdetachstate(attr: ConstPtr, state: MutPtr): CInt =
-    rustlangLibcWasiPthreadAttrGetdetachstate(attr.rawAddress.toCPointer<ByteVar>(), state.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadAttrGetdetachstate(attr.rawAddress.toCPointer<ByteVar>(), state.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadAttrSetdetachstate(attr: MutPtr, state: CInt): CInt =
-    rustlangLibcWasiPthreadAttrSetdetachstate(attr.rawAddress.toCPointer<ByteVar>(), state)
+    libcWasiPthreadAttrSetdetachstate(attr.rawAddress.toCPointer<ByteVar>(), state)
 
 public actual fun pthreadAttrGetguardsize(attr: ConstPtr, b: MutPtr): CInt =
-    rustlangLibcWasiPthreadAttrGetguardsize(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadAttrGetguardsize(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadAttrSetguardsize(attr: MutPtr, b: SizeT): CInt =
-    rustlangLibcWasiPthreadAttrSetguardsize(attr.rawAddress.toCPointer<ByteVar>(), b)
+    libcWasiPthreadAttrSetguardsize(attr.rawAddress.toCPointer<ByteVar>(), b)
 
 public actual fun pthreadAttrGetstack(attr: ConstPtr, b: MutPtr, c: MutPtr): CInt =
-    rustlangLibcWasiPthreadAttrGetstack(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>(), c.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadAttrGetstack(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>(), c.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadAttrSetstack(attr: MutPtr, b: MutPtr, c: SizeT): CInt =
-    rustlangLibcWasiPthreadAttrSetstack(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>(), c)
+    libcWasiPthreadAttrSetstack(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>(), c)
 
 public actual fun pthreadDetach(thread: PthreadT): CInt =
-    rustlangLibcWasiPthreadDetach(thread.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadDetach(thread.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadSetcancelstate(a: CInt, b: MutPtr): CInt =
-    rustlangLibcWasiPthreadSetcancelstate(a, b.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadSetcancelstate(a, b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadSetcanceltype(a: CInt, b: MutPtr): CInt =
-    rustlangLibcWasiPthreadSetcanceltype(a, b.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadSetcanceltype(a, b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadTestcancel() {
-    rustlangLibcWasiPthreadTestcancel()
+    libcWasiPthreadTestcancel()
 }
 
 public actual fun pthreadOnce(a: MutPtr, b: AtexitACallback): CInt =
-    rustlangLibcWasiPthreadOnce(a.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>())
+    libcWasiPthreadOnce(a.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>())
 
 public actual fun pthreadKeyCreate(key: MutPtr, dtor: PthreadKeyCreateDtorCallback?): CInt =
-    rustlangLibcWasiPthreadKeyCreate(key.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>())
+    libcWasiPthreadKeyCreate(key.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>())
 
 public actual fun pthreadKeyDelete(key: PthreadKeyT): CInt =
-    rustlangLibcWasiPthreadKeyDelete(key)
+    libcWasiPthreadKeyDelete(key)
 
 public actual fun pthreadGetspecific(key: PthreadKeyT): MutPtr =
-    MutPtr(rustlangLibcWasiPthreadGetspecific(key)?.toLong() ?: 0L)
+    MutPtr(libcWasiPthreadGetspecific(key)?.toLong() ?: 0L)
 
 public actual fun pthreadSetspecific(key: PthreadKeyT, value: ConstPtr): CInt =
-    rustlangLibcWasiPthreadSetspecific(key, value.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadSetspecific(key, value.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexInit(lock: MutPtr, attr: ConstPtr): CInt =
-    rustlangLibcWasiPthreadMutexInit(lock.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexInit(lock.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexDestroy(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexDestroy(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexDestroy(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexLock(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexLock(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexLock(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexTrylock(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexTrylock(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexTrylock(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexUnlock(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexUnlock(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexUnlock(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexTimedlock(lock: MutPtr, ts: ConstPtr): CInt =
-    rustlangLibcWasiPthreadMutexTimedlock(lock.rawAddress.toCPointer<ByteVar>(), ts.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexTimedlock(lock.rawAddress.toCPointer<ByteVar>(), ts.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexConsistent(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexConsistent(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexConsistent(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexGetprioceiling(lock: MutPtr, b: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexGetprioceiling(lock.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexGetprioceiling(lock.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexattrInit(attr: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexattrInit(attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexattrInit(attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexattrDestroy(attr: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexattrDestroy(attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexattrDestroy(attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexattrSettype(attr: MutPtr, type: CInt): CInt =
-    rustlangLibcWasiPthreadMutexattrSettype(attr.rawAddress.toCPointer<ByteVar>(), type)
+    libcWasiPthreadMutexattrSettype(attr.rawAddress.toCPointer<ByteVar>(), type)
 
 public actual fun pthreadMutexattrGetprotocol(attr: ConstPtr, b: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexattrGetprotocol(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexattrGetprotocol(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexattrGetpshared(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexattrGetpshared(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexattrGetrobust(attr: ConstPtr, b: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexattrGetrobust(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexattrGetrobust(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexattrGettype(attr: ConstPtr, b: MutPtr): CInt =
-    rustlangLibcWasiPthreadMutexattrGettype(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadMutexattrGettype(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadMutexattrSetprotocol(attr: ConstPtr, b: CInt): CInt =
-    rustlangLibcWasiPthreadMutexattrSetprotocol(attr.rawAddress.toCPointer<ByteVar>(), b)
+    libcWasiPthreadMutexattrSetprotocol(attr.rawAddress.toCPointer<ByteVar>(), b)
 
 public actual fun pthreadMutexattrSetpshared(attr: ConstPtr, b: CInt): CInt =
-    rustlangLibcWasiPthreadMutexattrSetpshared(attr.rawAddress.toCPointer<ByteVar>(), b)
+    libcWasiPthreadMutexattrSetpshared(attr.rawAddress.toCPointer<ByteVar>(), b)
 
 public actual fun pthreadMutexattrSetrobust(attr: ConstPtr, b: CInt): CInt =
-    rustlangLibcWasiPthreadMutexattrSetrobust(attr.rawAddress.toCPointer<ByteVar>(), b)
+    libcWasiPthreadMutexattrSetrobust(attr.rawAddress.toCPointer<ByteVar>(), b)
 
 public actual fun pthreadCondInit(cond: MutPtr, attr: ConstPtr): CInt =
-    rustlangLibcWasiPthreadCondInit(cond.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadCondInit(cond.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadCondWait(cond: MutPtr, lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadCondWait(cond.rawAddress.toCPointer<ByteVar>(), lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadCondWait(cond.rawAddress.toCPointer<ByteVar>(), lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadCondTimedwait(cond: MutPtr, lock: MutPtr, abstime: ConstPtr): CInt =
-    rustlangLibcWasiPthreadCondTimedwait(cond.rawAddress.toCPointer<ByteVar>(), lock.rawAddress.toCPointer<ByteVar>(), abstime.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadCondTimedwait(cond.rawAddress.toCPointer<ByteVar>(), lock.rawAddress.toCPointer<ByteVar>(), abstime.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadCondSignal(cond: MutPtr): CInt =
-    rustlangLibcWasiPthreadCondSignal(cond.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadCondSignal(cond.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadCondBroadcast(cond: MutPtr): CInt =
-    rustlangLibcWasiPthreadCondBroadcast(cond.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadCondBroadcast(cond.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadCondDestroy(cond: MutPtr): CInt =
-    rustlangLibcWasiPthreadCondDestroy(cond.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadCondDestroy(cond.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadCondattrInit(attr: MutPtr): CInt =
-    rustlangLibcWasiPthreadCondattrInit(attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadCondattrInit(attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadCondattrDestroy(attr: MutPtr): CInt =
-    rustlangLibcWasiPthreadCondattrDestroy(attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadCondattrDestroy(attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadCondattrSetclock(attr: MutPtr, clockId: ClockidT): CInt =
     0
 
 public actual fun pthreadCondattrGetclock(attr: ConstPtr, clockId: MutPtr): CInt =
-    rustlangLibcWasiPthreadCondattrGetclock(attr.rawAddress.toCPointer<ByteVar>(), clockId.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadCondattrGetclock(attr.rawAddress.toCPointer<ByteVar>(), clockId.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadCondattrSetpshared(attr: MutPtr, b: CInt): CInt =
-    rustlangLibcWasiPthreadCondattrSetpshared(attr.rawAddress.toCPointer<ByteVar>(), b)
+    libcWasiPthreadCondattrSetpshared(attr.rawAddress.toCPointer<ByteVar>(), b)
 
 public actual fun pthreadCondattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    rustlangLibcWasiPthreadCondattrGetpshared(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadCondattrGetpshared(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockInit(lock: MutPtr, attr: ConstPtr): CInt =
-    rustlangLibcWasiPthreadRwlockInit(lock.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockInit(lock.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockDestroy(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadRwlockDestroy(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockDestroy(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockRdlock(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadRwlockRdlock(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockRdlock(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockTryrdlock(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadRwlockTryrdlock(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockTryrdlock(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockWrlock(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadRwlockWrlock(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockWrlock(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockTrywrlock(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadRwlockTrywrlock(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockTrywrlock(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockUnlock(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadRwlockUnlock(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockUnlock(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockTimedrdlock(lock: MutPtr, at: ConstPtr): CInt =
-    rustlangLibcWasiPthreadRwlockTimedrdlock(lock.rawAddress.toCPointer<ByteVar>(), at.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockTimedrdlock(lock.rawAddress.toCPointer<ByteVar>(), at.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockTimedwrlock(lock: MutPtr, at: ConstPtr): CInt =
-    rustlangLibcWasiPthreadRwlockTimedwrlock(lock.rawAddress.toCPointer<ByteVar>(), at.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockTimedwrlock(lock.rawAddress.toCPointer<ByteVar>(), at.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockattrInit(attr: MutPtr): CInt =
-    rustlangLibcWasiPthreadRwlockattrInit(attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockattrInit(attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockattrDestroy(attr: MutPtr): CInt =
-    rustlangLibcWasiPthreadRwlockattrDestroy(attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockattrDestroy(attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockattrSetpshared(attr: MutPtr, b: CInt): CInt =
-    rustlangLibcWasiPthreadRwlockattrSetpshared(attr.rawAddress.toCPointer<ByteVar>(), b)
+    libcWasiPthreadRwlockattrSetpshared(attr.rawAddress.toCPointer<ByteVar>(), b)
 
 public actual fun pthreadRwlockattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    rustlangLibcWasiPthreadRwlockattrGetpshared(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadRwlockattrGetpshared(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadSpinInit(lock: MutPtr, b: CInt): CInt =
-    rustlangLibcWasiPthreadSpinInit(lock.rawAddress.toCPointer<ByteVar>(), b)
+    libcWasiPthreadSpinInit(lock.rawAddress.toCPointer<ByteVar>(), b)
 
 public actual fun pthreadSpinDestroy(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadSpinDestroy(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadSpinDestroy(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadSpinLock(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadSpinLock(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadSpinLock(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadSpinTrylock(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadSpinTrylock(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadSpinTrylock(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadSpinUnlock(lock: MutPtr): CInt =
-    rustlangLibcWasiPthreadSpinUnlock(lock.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadSpinUnlock(lock.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadBarrierInit(barrier: MutPtr, attr: ConstPtr, count: CUint): CInt =
-    rustlangLibcWasiPthreadBarrierInit(barrier.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>(), count)
+    libcWasiPthreadBarrierInit(barrier.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>(), count)
 
 public actual fun pthreadBarrierDestroy(barrier: MutPtr): CInt =
-    rustlangLibcWasiPthreadBarrierDestroy(barrier.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadBarrierDestroy(barrier.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadBarrierWait(barrier: MutPtr): CInt =
-    rustlangLibcWasiPthreadBarrierWait(barrier.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadBarrierWait(barrier.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadBarrierattrInit(attr: MutPtr): CInt =
-    rustlangLibcWasiPthreadBarrierattrInit(attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadBarrierattrInit(attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadBarrierattrDestroy(attr: MutPtr): CInt =
-    rustlangLibcWasiPthreadBarrierattrDestroy(attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadBarrierattrDestroy(attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadBarrierattrSetpshared(attr: MutPtr, b: CInt): CInt =
-    rustlangLibcWasiPthreadBarrierattrSetpshared(attr.rawAddress.toCPointer<ByteVar>(), b)
+    libcWasiPthreadBarrierattrSetpshared(attr.rawAddress.toCPointer<ByteVar>(), b)
 
 public actual fun pthreadBarrierattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    rustlangLibcWasiPthreadBarrierattrGetpshared(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadBarrierattrGetpshared(attr.rawAddress.toCPointer<ByteVar>(), b.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadGetattrNp(thread: PthreadT, attr: MutPtr): CInt =
-    rustlangLibcWasiPthreadGetattrNp(thread.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>())
+    libcWasiPthreadGetattrNp(thread.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>())

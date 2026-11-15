@@ -1,7 +1,7 @@
 // port-lint: source ops/assign.rs
 package io.github.kotlinmania.rustlang.coresimd.ops.assign
 
-import io.github.kotlinmania.rustlang.Simd
+import io.github.kotlinmania.rustlang.coresimd.Simd
 
 // Assignment operators
 

@@ -1,15 +1,16 @@
 // port-lint: source formatters/junit.rs
 package io.github.kotlinmania.rustlang.test.formatters.junit
 
-import io.github.kotlinmania.rustlang.TestDesc
-import io.github.kotlinmania.rustlang.TestType
-import io.github.kotlinmania.rustlang.console.ConsoleTestDiscoveryState
-import io.github.kotlinmania.rustlang.console.ConsoleTestState
-import io.github.kotlinmania.rustlang.console.OutputLocation
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.formatters.OutputFormatter
-import io.github.kotlinmania.rustlang.testresult.TestResult
-import io.github.kotlinmania.rustlang.time.TestExecTime
+import io.github.kotlinmania.rustlang.test.TestDesc
+import io.github.kotlinmania.rustlang.test.TestType
+import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
+import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
+import io.github.kotlinmania.rustlang.test.console.OutputLocation
+import io.github.kotlinmania.rustlang.test.formatters.OutputFormatter
+import io.github.kotlinmania.rustlang.test.testresult.TestResult
+import io.github.kotlinmania.rustlang.test.time.TestExecTime
 
 public open class JunitFormatter<T>(
     public var out: OutputLocation<T>,

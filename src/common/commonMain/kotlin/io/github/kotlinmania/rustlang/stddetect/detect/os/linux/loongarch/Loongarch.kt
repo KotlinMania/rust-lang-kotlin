@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.loongarch
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.detect.arch.Feature
-import io.github.kotlinmania.rustlang.detect.bit.test
-import io.github.kotlinmania.rustlang.detect.cache.Cache
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 
 // Run-time feature detection for LoongArch on Linux.
 
@@ -39,7 +39,7 @@ public fun detectFeatures(): Initializer {
     // The values are part of the platform-specific [asm/hwcap.h][hwcap]
     //
     // [hwcap]: https://github.com/torvalds/linux/blob/master/arch/loongarch/include/uapi/asm/hwcap.h
-    when (val matchVal = auxvec.auxv()) {
+    when (val matchVal = auxv()) {
         is Ok -> {
             val auxv = matchVal.value
             enableFeature(value, Feature::f, test(cpucfg2, 1u) && test(auxv.hwcap, 3u))

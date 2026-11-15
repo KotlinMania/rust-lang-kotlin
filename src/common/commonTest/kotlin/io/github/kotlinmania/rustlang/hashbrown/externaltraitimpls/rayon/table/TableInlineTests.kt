@@ -1,11 +1,11 @@
 // port-lint: tests external_trait_impls/rayon/table.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.table
 
-import io.github.kotlinmania.rustlang.HashTable
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.hasher.DefaultHashBuilder
-import io.github.kotlinmania.rustlang.makeHash
+import io.github.kotlinmania.rustlang.hashbrown.HashTable
+import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
+import io.github.kotlinmania.rustlang.hashbrown.makeHash
 
 // Rayon extensions for `HashTable`.
 

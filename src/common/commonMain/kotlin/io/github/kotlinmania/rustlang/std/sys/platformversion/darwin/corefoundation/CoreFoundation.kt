@@ -15,8 +15,8 @@ import io.github.kotlinmania.rustlang.libc.dlopen
 import io.github.kotlinmania.rustlang.libc.dlsym
 import io.github.kotlinmania.rustlang.libc.unix.bsd.RTLD_LAZY
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.RTLD_LOCAL
-import io.github.kotlinmania.rustlang.sys.helpers.smallcstring.runPathWithCstr
-import io.github.kotlinmania.rustlang.sys.platformversion.darwin.rootRelative
+import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runPathWithCstr
+import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.rootRelative
 
 // Minimal utilities for interfacing with a dynamically loaded CoreFoundation.
 

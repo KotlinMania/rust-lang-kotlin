@@ -1,7 +1,7 @@
 // port-lint: source math/generic/ilogb.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.ilogb
 
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 
 public val FP_ILOGBNAN: Int = Int.MIN_VALUE
 

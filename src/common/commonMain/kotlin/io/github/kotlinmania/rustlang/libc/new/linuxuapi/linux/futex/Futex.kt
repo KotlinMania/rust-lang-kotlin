@@ -1,13 +1,13 @@
 // port-lint: source new/linux_uapi/linux/futex.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.futex
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U64
-import io.github.kotlinmania.rustlang.types.u32CastInt
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
+import io.github.kotlinmania.rustlang.libc.types.u32CastInt
 
 // Header: `linux / futex.h`
 
@@ -67,12 +67,14 @@ public val FUTEX_32: CInt = FUTEX2_SIZE_U32
 
 public val FUTEX_WAITV_MAX: CInt = 128
 
-public data class FutexWaitv(
-    public var value: U64 = 0uL,
-    public var uaddr: U64 = 0uL,
-    public var flags: U32 = 0u,
-    public var reserved: U32 = 0u,
+public open class FutexWaitv(
+    public var value: U64,
+    public var uaddr: U64,
+    public var flags: U32,
+    public var reserved: U32,
 ) {
+    public open fun clone(): FutexWaitv = FutexWaitv(value, uaddr, flags, reserved)
+
     public companion object {
         public fun typeLayout(): TypeLayout<FutexWaitv> =
             object : TypeLayout<FutexWaitv> {

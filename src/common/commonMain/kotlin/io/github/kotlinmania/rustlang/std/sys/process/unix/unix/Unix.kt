@@ -7,17 +7,19 @@ import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -26,7 +28,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.SysPidfdOpen
 import io.github.kotlinmania.rustlang.libc.WCOREDUMP
@@ -113,25 +114,26 @@ import io.github.kotlinmania.rustlang.libc.windows.SIGILL
 import io.github.kotlinmania.rustlang.libc.windows.SIGINT
 import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
 import io.github.kotlinmania.rustlang.libc.windows.SIGTERM
-import io.github.kotlinmania.rustlang.panic.alwaysAbort
-import io.github.kotlinmania.rustlang.process.Child
-import io.github.kotlinmania.rustlang.process.StdioPipes
-import io.github.kotlinmania.rustlang.process.abort
-import io.github.kotlinmania.rustlang.sync.lazylock.LazyLock
-import io.github.kotlinmania.rustlang.sys.env.unix.envReadLock
-import io.github.kotlinmania.rustlang.sys.env.unix.environ
-import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.sys.net.connection.wasip1.Socket
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvtR
-import io.github.kotlinmania.rustlang.sys.pal.unix.onBrokenPipeUsed
-import io.github.kotlinmania.rustlang.sys.pipe.unix.pipe
-import io.github.kotlinmania.rustlang.sys.process.unix.common.ChildPipes
-import io.github.kotlinmania.rustlang.sys.process.unix.common.Command
-import io.github.kotlinmania.rustlang.sys.process.unix.common.Stdio
-import io.github.kotlinmania.rustlang.sys.process.unix.common.cstringarray.CStringArray
-import io.github.kotlinmania.rustlang.sys.process.unix.pidfd.PidFd
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.std.panic.alwaysAbort
+import io.github.kotlinmania.rustlang.std.process.Child
+import io.github.kotlinmania.rustlang.std.process.StdioPipes
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
+import io.github.kotlinmania.rustlang.std.sys.env.unix.envReadLock
+import io.github.kotlinmania.rustlang.std.sys.env.unix.environ
+import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.onBrokenPipeUsed
+import io.github.kotlinmania.rustlang.std.sys.pipe.unix.pipe
+import io.github.kotlinmania.rustlang.std.sys.process.unix.common.ChildPipes
+import io.github.kotlinmania.rustlang.std.sys.process.unix.common.Command
+import io.github.kotlinmania.rustlang.std.sys.process.unix.common.Stdio
+import io.github.kotlinmania.rustlang.std.sys.process.unix.common.cstringarray.CStringArray
+import io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd.PidFd
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: MutPtr, arg1: ConstPtr): io.github.kotlinmania.rustlang.libc.CInt
@@ -219,7 +221,7 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
     val pid = when (val tryResult = this.doFork()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     if (pid == 0) {
         alwaysAbort()
-        mem.forget(envLock)
+        forget(envLock)
         // avoid non-async-signal-safe unlocking
         (input1).let { }
         if (this.getCreatePidfd()) {
@@ -235,7 +237,7 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
                     null -> {}
                     else -> {
                         val out = matchVal1
-                        io.Write.writeFmt(out, "fatal runtime error: " + ("assertion failed: output . write (& bytes) . is_ok ()").toString() + ", aborting\n")
+                        Write.writeFmt(out, "fatal runtime error: " + ("assertion failed: output . write (& bytes) . is_ok ()").toString() + ", aborting\n")
                     }
                 }
                 run {
@@ -297,9 +299,9 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
 // way to avoid that all-together.
 public val ERR_APPLE_TV_WATCH_NO_FORK_EXEC: Error = constError(ErrorKind.Unsupported, "`fork`+`exec`-based process spawning is not supported on this target")
 
-public fun Command.doFork(): Result<PidT, io.github.kotlinmania.rustlang.io.Error> = Result.Err(Command.ERR_APPLE_TV_WATCH_NO_FORK_EXEC)
+public fun Command.doFork(): Result<PidT, io.github.kotlinmania.rustlang.std.io.Error> = Result.Err(Command.ERR_APPLE_TV_WATCH_NO_FORK_EXEC)
 
-public fun Command.exec(default: Stdio): io.github.kotlinmania.rustlang.io.Error {
+public fun Command.exec(default: Stdio): io.github.kotlinmania.rustlang.std.io.Error {
     val envp = this.captureEnv()
     if (this.sawNul()) {
         return constError(ErrorKind.InvalidInput, "nul byte found in provided data")
@@ -353,7 +355,7 @@ public fun Command.exec(default: Stdio): io.github.kotlinmania.rustlang.io.Error
 // allocation). Instead we just close it manually. This will never
 // have the drop glue anyway because this code never returns (the
 // child will either exec() or invoke libc.exit)
-public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<Nothing, io.github.kotlinmania.rustlang.io.Error> {
+public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<Nothing, io.github.kotlinmania.rustlang.std.io.Error> {
     when (val matchVal = stdio.stdin.fd()) {
         null -> {}
         else -> {
@@ -480,7 +482,7 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
         (PrimitiveLayouts.constPtrLayout(64L)).writeNative((environ()).rawAddress, envp.asPtr())
     }
     execvp(this.getProgramCstr().asPtr(), this.getArgv().asPtr())
-    return Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
+    return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
 }
 
 public fun Command.posixSpawn(arg0: ChildPipes, arg1: CStringArray?): Result<Process?, Error> = Result.Ok(null)
@@ -496,16 +498,16 @@ public fun Command.sendPidfd(sock: Socket) {
         // pidfdOpen sets CLOEXEC by default
         val pidfd = syscall(SysPidfdOpen, childPid.toLong(), 0L)
         val localStorageL862C12 = AddressableArrayLocal.fromIntArray(intArrayOf(pidfd.toInt()))
-        val cmsg: Cmsg  = MaybeUninit.zeroed(ObjectSlotLayout<Cmsg>()).assumeInit()
+        val cmsg: Cmsg  = MaybeUninit.zeroed(UnresolvedTypeLayout<Cmsg>()).assumeInit()
         // 0-length message to send through the socket so we can pass along the fd
-        val localStorageL875C12 = AddressableLocal(listOf(IoSlice.new("".encodeToByteArray())), ObjectSlotLayout<Any?>())
-        val localStorageL876C12 = AddressableLocal(Msghdr(), ObjectSlotLayout<Msghdr>())
+        val localStorageL875C12 = AddressableLocal(listOf(IoSlice.new("".encodeToByteArray())), UnresolvedTypeLayout<Any?>())
+        val localStorageL876C12 = AddressableLocal(Msghdr(), UnresolvedTypeLayout<Msghdr>())
         val msg by localStorageL876C12
         msg.msgIov = (localStorageL875C12.asMutPtr())
         msg.msgIovlen = 1
         // only attach cmsg if we successfully acquired the pidfd
         if (pidfd >= 0) {
-            msg.msgControllen = ((sizeOfVal(cmsg.buf) as Any?) as Unit)
+            msg.msgControllen = ((sizeOfVal(cmsg.buf, typeLayoutT = PrimitiveArrayLayouts.uByteArray((cmsgSpace(SCM_MSG_LEN.toUInt()).toInt()).toInt())) as Any?) as Unit)
             msg.msgControl = (addrOfMut(cmsg.buf))
             val hdr = cmsgFirsthdr((localStorageL876C12.asMutPtr()))
             hdr.cmsgLevel = SOL_SOCKET
@@ -526,7 +528,7 @@ public fun Command.sendPidfd(sock: Socket) {
                         null -> {}
                         else -> {
                             val out = matchVal1
-                            io.Write.writeFmt(out, "fatal runtime error: " + ("failed to communicate with parent process. $other").toString() + ", aborting\n")
+                            Write.writeFmt(out, "fatal runtime error: " + ("failed to communicate with parent process. $other").toString() + ", aborting\n")
                         }
                     }
                     run {
@@ -546,14 +548,14 @@ public fun Command.recvPidfd(sock: Socket): PidT {
             public var buf: UByteArray? = null,
             public var align: Cmsghdr? = null,
         )
-        val localStorageL922C12 = AddressableLocal(MaybeUninit.zeroed(ObjectSlotLayout<Cmsg>()).assumeInit(), ObjectSlotLayout<Cmsg>())
+        val localStorageL922C12 = AddressableLocal(MaybeUninit.zeroed(UnresolvedTypeLayout<Cmsg>()).assumeInit(), UnresolvedTypeLayout<Cmsg>())
         // 0-length read to get the fd
-        val localStorageL924C12 = AddressableLocal(listOf(IoSliceMut.new(listOf())), ObjectSlotLayout<Any?>())
-        val localStorageL926C12 = AddressableLocal(Msghdr(), ObjectSlotLayout<Msghdr>())
+        val localStorageL924C12 = AddressableLocal(listOf(IoSliceMut.new(listOf())), UnresolvedTypeLayout<Any?>())
+        val localStorageL926C12 = AddressableLocal(Msghdr(), UnresolvedTypeLayout<Msghdr>())
         val msg by localStorageL926C12
         msg.msgIov = (localStorageL924C12.asMutPtr())
         msg.msgIovlen = 1
-        msg.msgControllen = sizeOf<Cmsg>(typeLayoutT = ObjectSlotLayout<Cmsg>())
+        msg.msgControllen = sizeOf<Cmsg>(typeLayoutT = UnresolvedTypeLayout<Cmsg>())
         msg.msgControl = (localStorageL922C12.asMutPtr())
         if (cvtR({ recvmsg(sock.asRaw(), RustMutableReference(localStorageL926C12.asMutPtr(), localStorageL926C12.layout), MSG_CMSG_CLOEXEC) }).isErr()) {
             return -1
@@ -565,7 +567,7 @@ public fun Command.recvPidfd(sock: Socket): PidT {
         val data = cmsgData(hdr)
         val localStorageL947C12 = AddressableArrayLocal.fromIntArray(intArrayOf(-1))
         val fds by localStorageL947C12
-        copyNonoverlapping(constPtrFromRustCast(data), MutPtr((localStorageL947C12.elementMutPtr(0)).rawAddress), SCM_MSG_LEN, typeLayoutT = ObjectSlotLayout<Any?>())
+        copyNonoverlapping(constPtrFromRustCast(data), MutPtr((localStorageL947C12.elementMutPtr(0)).rawAddress), SCM_MSG_LEN, typeLayoutT = UnresolvedTypeLayout<Any?>())
         fds[0]
     }
 }
@@ -742,7 +744,7 @@ public open class ExitStatus(
     public open fun intoRaw(): CInt = this.value
 
     public open fun fmt(f: StringBuilder) {
-        f.append("unix_wait_status(${this.value}, \"$this\")")
+        f.append("unix_wait_status(${this.value}, \"${this}\")")
     }
 
     public open fun fmtDisplay(f: StringBuilder) {
@@ -916,6 +918,6 @@ public open class ExitStatusError internal constructor(
     }
 }
 
-public fun Child.pidfd(): Result<io.github.kotlinmania.rustlang.os.linux.process.PidFd, Error> = (this.handle.pidfd?.let({ fd -> transmute(fd) })?.let { Result.Ok(it) } ?: Result.Err(constError(ErrorKind.Uncategorized, "no pidfd was created.")))
+public fun Child.pidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Error> = (this.handle.pidfd?.let({ fd -> transmute(fd) })?.let { Result.Ok(it) } ?: Result.Err(constError(ErrorKind.Uncategorized, "no pidfd was created.")))
 
-public fun Child.intoPidfd(): Result<io.github.kotlinmania.rustlang.os.linux.process.PidFd, Child> = ((this.handle.pidfd.also { this.handle.pidfd = null })?.let(io.github.kotlinmania.rustlang.os.linux.process.PidFd.fromInner)?.let { Result.Ok(it) } ?: Result.Err(this))
+public fun Child.intoPidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Child> = ((this.handle.pidfd.also { this.handle.pidfd = null })?.let(io.github.kotlinmania.rustlang.std.os.linux.process.PidFd.fromInner)?.let { Result.Ok(it) } ?: Result.Err(this))

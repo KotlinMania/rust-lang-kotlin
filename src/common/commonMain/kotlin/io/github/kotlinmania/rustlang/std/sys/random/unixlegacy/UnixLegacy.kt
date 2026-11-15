@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.std.sys.random.unixlegacy
 
 import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.fs.File
-import io.github.kotlinmania.rustlang.sync.oncelock.OnceLock
+import io.github.kotlinmania.rustlang.std.fs.File
+import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
 
 // Random data from `/ dev / urandom`
 //

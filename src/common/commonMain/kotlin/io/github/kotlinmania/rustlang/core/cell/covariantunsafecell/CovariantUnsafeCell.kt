@@ -1,14 +1,14 @@
 // port-lint: source cell/covariant_unsafe_cell.rs
 package io.github.kotlinmania.rustlang.core.cell.covariantunsafecell
 
-import io.github.kotlinmania.rustlang.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -60,7 +60,9 @@ public open class CovariantUnsafeCell<T> internal constructor(
 
     public var value: UnsafeCell<T>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -176,13 +178,13 @@ public open class CovariantUnsafeCell<T> internal constructor(
          * calling `get` would require creating a reference to uninitialized data:
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+         * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
          * import std.cell.CovariantUnsafeCell
          * import std.mem.MaybeUninit
          *
          * @feature(covariantUnsafeCell)
          * public fun doctestEntry() {
-         *     val m = MaybeUninit.uninit(ObjectSlotLayout<CovariantUnsafeCell<Int>>())
+         *     val m = MaybeUninit.uninit(UnresolvedTypeLayout<CovariantUnsafeCell<Int>>())
          *     run {
          *         CovariantUnsafeCell.rawGet(m.asPtr()).write(5)
          *     }

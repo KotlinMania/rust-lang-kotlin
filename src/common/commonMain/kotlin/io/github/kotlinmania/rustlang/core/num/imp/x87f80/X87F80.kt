@@ -1,9 +1,9 @@
 // port-lint: source num/imp/x87_f80.rs
 package io.github.kotlinmania.rustlang.core.num.imp.x87f80
 
+import io.github.kotlinmania.rustlang.core.fmt.Formatter
+import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.fmt.Formatter
-import io.github.kotlinmania.rustlang.fmt.Result
 
 public class DebugTuple(
     private val out: StringBuilder,

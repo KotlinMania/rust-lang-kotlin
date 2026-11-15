@@ -1,70 +1,34 @@
 // port-lint: source new/glibc/sysdeps/unix/linux/bits/statvfs.rs
 package io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.statvfs
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.FsblkcntT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.FsfilcntT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.FsblkcntT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.FsfilcntT
 
 // Header: `sysdeps / unix / sysv / linux / bits / statvfs.h`
 
-public data class Statvfs(
-    public var fBsize: CUlong = 0uL,
-    public var fFrsize: CUlong = 0uL,
-    public var fBlocks: FsblkcntT = 0uL,
-    public var fBfree: FsblkcntT = 0uL,
-    public var fBavail: FsblkcntT = 0uL,
-    public var fFiles: FsfilcntT = 0uL,
-    public var fFfree: FsfilcntT = 0uL,
-    public var fFavail: FsfilcntT = 0uL,
-    public var fFsid: CUlong = 0uL,
-    public var fFlag: CUlong = 0uL,
-    public var fNamemax: CUlong = 0uL,
-    public var fType: CUint = 0u,
-    public var fSpare: IntArray = IntArray(5),
-    public var nonExhaustive: Unit = Unit,
+public open class Statvfs(
+    public var fBsize: CUlong,
+    public var fFrsize: CUlong,
+    public var fBlocks: FsblkcntT,
+    public var fBfree: FsblkcntT,
+    public var fBavail: FsblkcntT,
+    public var fFiles: FsfilcntT,
+    public var fFfree: FsfilcntT,
+    public var fFavail: FsfilcntT,
+    public var fFsid: CUlong,
+    public var fFlag: CUlong,
+    public var fNamemax: CUlong,
+    public var fType: CUint,
+    public var fSpare: IntArray,
+    public var nonExhaustive: Unit,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Statvfs) return false
-        if (this.fBsize != other.fBsize) return false
-        if (this.fFrsize != other.fFrsize) return false
-        if (this.fBlocks != other.fBlocks) return false
-        if (this.fBfree != other.fBfree) return false
-        if (this.fBavail != other.fBavail) return false
-        if (this.fFiles != other.fFiles) return false
-        if (this.fFfree != other.fFfree) return false
-        if (this.fFavail != other.fFavail) return false
-        if (this.fFsid != other.fFsid) return false
-        if (this.fFlag != other.fFlag) return false
-        if (this.fNamemax != other.fNamemax) return false
-        if (this.fType != other.fType) return false
-        if (!this.fSpare.contentEquals(other.fSpare)) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.fBsize.hashCode()
-        result = 31 * result + this.fFrsize.hashCode()
-        result = 31 * result + this.fBlocks.hashCode()
-        result = 31 * result + this.fBfree.hashCode()
-        result = 31 * result + this.fBavail.hashCode()
-        result = 31 * result + this.fFiles.hashCode()
-        result = 31 * result + this.fFfree.hashCode()
-        result = 31 * result + this.fFavail.hashCode()
-        result = 31 * result + this.fFsid.hashCode()
-        result = 31 * result + this.fFlag.hashCode()
-        result = 31 * result + this.fNamemax.hashCode()
-        result = 31 * result + this.fType.hashCode()
-        result = 31 * result + this.fSpare.contentHashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
-    }
+    public open fun clone(): Statvfs = Statvfs(fBsize, fFrsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFavail, fFsid, fFlag, fNamemax, fType, fSpare, nonExhaustive)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Statvfs> =
@@ -138,62 +102,28 @@ public data class Statvfs(
                     (PrimitiveLayouts.UNIT).writeBytes(buf, offset + 112, value.nonExhaustive)
                 }
             }
+
+        public fun default(): Statvfs = Statvfs(fBsize = Default.default(), fFrsize = Default.default(), fBlocks = Default.default(), fBfree = Default.default(), fBavail = Default.default(), fFiles = Default.default(), fFfree = Default.default(), fFavail = Default.default(), fFsid = Default.default(), fUnused = Default.default(), fFlag = Default.default(), fNamemax = Default.default(), fType = Default.default(), fSpare = Default.default(), nonExhaustive = Unit)
     }
 }
 
-public data class Statvfs64(
-    public var fBsize: CUlong = 0uL,
-    public var fFrsize: CUlong = 0uL,
-    public var fBlocks: ULong = 0uL,
-    public var fBfree: ULong = 0uL,
-    public var fBavail: ULong = 0uL,
-    public var fFiles: ULong = 0uL,
-    public var fFfree: ULong = 0uL,
-    public var fFavail: ULong = 0uL,
-    public var fFsid: CUlong = 0uL,
-    public var fFlag: CUlong = 0uL,
-    public var fNamemax: CUlong = 0uL,
-    public var fType: CUint = 0u,
-    public var fSpare: IntArray = IntArray(5),
-    public var nonExhaustive: Unit = Unit,
+public open class Statvfs64(
+    public var fBsize: CUlong,
+    public var fFrsize: CUlong,
+    public var fBlocks: ULong,
+    public var fBfree: ULong,
+    public var fBavail: ULong,
+    public var fFiles: ULong,
+    public var fFfree: ULong,
+    public var fFavail: ULong,
+    public var fFsid: CUlong,
+    public var fFlag: CUlong,
+    public var fNamemax: CUlong,
+    public var fType: CUint,
+    public var fSpare: IntArray,
+    public var nonExhaustive: Unit,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Statvfs64) return false
-        if (this.fBsize != other.fBsize) return false
-        if (this.fFrsize != other.fFrsize) return false
-        if (this.fBlocks != other.fBlocks) return false
-        if (this.fBfree != other.fBfree) return false
-        if (this.fBavail != other.fBavail) return false
-        if (this.fFiles != other.fFiles) return false
-        if (this.fFfree != other.fFfree) return false
-        if (this.fFavail != other.fFavail) return false
-        if (this.fFsid != other.fFsid) return false
-        if (this.fFlag != other.fFlag) return false
-        if (this.fNamemax != other.fNamemax) return false
-        if (this.fType != other.fType) return false
-        if (!this.fSpare.contentEquals(other.fSpare)) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.fBsize.hashCode()
-        result = 31 * result + this.fFrsize.hashCode()
-        result = 31 * result + this.fBlocks.hashCode()
-        result = 31 * result + this.fBfree.hashCode()
-        result = 31 * result + this.fBavail.hashCode()
-        result = 31 * result + this.fFiles.hashCode()
-        result = 31 * result + this.fFfree.hashCode()
-        result = 31 * result + this.fFavail.hashCode()
-        result = 31 * result + this.fFsid.hashCode()
-        result = 31 * result + this.fFlag.hashCode()
-        result = 31 * result + this.fNamemax.hashCode()
-        result = 31 * result + this.fType.hashCode()
-        result = 31 * result + this.fSpare.contentHashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
-    }
+    public open fun clone(): Statvfs64 = Statvfs64(fBsize, fFrsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFavail, fFsid, fFlag, fNamemax, fType, fSpare, nonExhaustive)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Statvfs64> =
@@ -267,5 +197,7 @@ public data class Statvfs64(
                     (PrimitiveLayouts.UNIT).writeBytes(buf, offset + 112, value.nonExhaustive)
                 }
             }
+
+        public fun default(): Statvfs64 = Statvfs64(fBsize = Default.default(), fFrsize = Default.default(), fBlocks = Default.default(), fBfree = Default.default(), fBavail = Default.default(), fFiles = Default.default(), fFfree = Default.default(), fFavail = Default.default(), fFsid = Default.default(), fUnused = Default.default(), fFlag = Default.default(), fNamemax = Default.default(), fType = Default.default(), fSpare = Default.default(), nonExhaustive = Unit)
     }
 }

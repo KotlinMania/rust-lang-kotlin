@@ -1,10 +1,11 @@
 // port-lint: source vec/splice.rs
 package io.github.kotlinmania.rustlang.alloc.vec.splice
 
+import io.github.kotlinmania.rustlang.alloc.vec.drain.Drain
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.mem.copy
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.vec.drain.Drain
 
 /**
  * A splicing iterator for `List`.
@@ -27,14 +28,15 @@ public open class Splice<I, A : Allocator> internal constructor(
     public var drain: Drain<Item, A> = drainCtorArg
         internal set
 
-    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
-        override fun computeNext() {
-            when (val v = this@Splice.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Item> =
+        object : AbstractIterator<Item>() {
+            override fun computeNext() {
+                when (val v = this@Splice.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun next(): Item? = this.drain.next()
 
@@ -54,7 +56,9 @@ public open class Splice<I, A : Allocator> internal constructor(
         // ignore-tidy-undocumented-unchecked
         run {
             if (this.drain.tailLen == 0) {
-                this.drain.vec.asMut().extend(this.replaceWith.byRef())
+                this.drain.vec
+                    .asMut()
+                    .extend(this.replaceWith.byRef())
                 return
             }
             // First fill the range left by drain().
@@ -72,7 +76,11 @@ public open class Splice<I, A : Allocator> internal constructor(
             }
             // Collect any remaining elements.
             // This is a zero-length vector which does not allocate if `lowerBound` was exact.
-            val collected = this.replaceWith.byRef().toMutableList().intoIter()
+            val collected =
+                this.replaceWith
+                    .byRef()
+                    .toMutableList()
+                    .intoIter()
             // Now we have an exact count.
             if (collected.len() > 0) {
                 this.drain.moveTail(collected.len())
@@ -88,16 +96,18 @@ public open class Splice<I, A : Allocator> internal constructor(
         public operator fun <I, A : Allocator> invoke(
             drain: Drain<Item, A>,
             replaceWith: I,
-        ): Splice<I, A> = Splice<I, A>(
-            drainCtorArg = drain,
-            replaceWith = replaceWith,
-        )
+        ): Splice<I, A> =
+            Splice<I, A>(
+                drainCtorArg = drain,
+                replaceWith = replaceWith,
+            )
     }
 }
 
 /**
  * Private helper methods for `Splice.drop`
  */
+
 /**
  * The range from `self.vec.len` to `self.tailStart` contains elements
  * that have been moved out.
@@ -132,7 +142,7 @@ public fun <T, A : Allocator> Drain<T, A>.moveTail(additional: Int) {
     run {
         val src = vec.asPtr().add(this.tailStart)
         val dst = vec.asMutPtr().add(newTailStart)
-        ptr.copy(src, dst, this.tailLen)
+        copy(src, dst, this.tailLen)
     }
     this.tailStart = newTailStart
 }

@@ -1,7 +1,7 @@
 // port-lint: source collections/btree/append.rs
 package io.github.kotlinmania.rustlang.alloc.collections.btree.append
 
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.CAPACITY
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -18,7 +18,7 @@ public fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: Ru
     // Iterate through all key-value pairs, pushing them into nodes at the right level.
     for ((key, value) in iter) {
         // Try to push key-value pair into the current leaf node.
-        if (curNode.len() < node.CAPACITY) {
+        if (curNode.len() < CAPACITY) {
             curNode.push(key, value)
         } else {
             // No space left, go up and push there.
@@ -27,22 +27,25 @@ public fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: Ru
             while (true) {
                 run {
                     val matchVal = testNode.ascend()
-                    when (matchVal) { is Result.Ok<*, *> -> {
-                        val parent = matchVal.value
-                        val parent1 = parent.intoNode()
-                        if (parent1.len() < node.CAPACITY) {
-                            // Found a node with space left, push here.
-                            openNode = parent1
-                            break
-                        } else {
-                            // Go up again.
-                            testNode = parent1.forgetType()
+                    when (matchVal) {
+                        is Result.Ok<*, *> -> {
+                            val parent = matchVal.value
+                            val parent1 = parent.intoNode()
+                            if (parent1.len() < CAPACITY) {
+                                // Found a node with space left, push here.
+                                openNode = parent1
+                                break
+                            } else {
+                                // Go up again.
+                                testNode = parent1.forgetType()
+                            }
                         }
-                    }; is Result.Err<*, *> -> {
-                        // We are at the top, create a new root node and push there.
-                        openNode = this.pushInternalLevel(alloc.clone())
-                        break
-                    } }
+                        is Result.Err<*, *> -> {
+                            // We are at the top, create a new root node and push there.
+                            openNode = this.pushInternalLevel(alloc.clone())
+                            break
+                        }
+                    }
                 }
             }
             // Push key-value pair and new right subtree.
@@ -57,7 +60,11 @@ public fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: Ru
         }
         // Increment length every iteration, to make sure the map drops
         // the appended elements even if advancing the iterator panicks.
-        (length1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (1); targetPlace.write(currentValue) }
+        (length1).let { targetPlace ->
+            var currentValue = targetPlace.read()
+            currentValue += (1)
+            targetPlace.write(currentValue)
+        }
     }
     this.fixRightBorderOfPlentiful()
 }

@@ -3,153 +3,153 @@
 
 package io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed
 
-import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.s390x.vector.PackedTuple
-import io.github.kotlinmania.rustlang.s390x.vector.VectorBoolChar
-import io.github.kotlinmania.rustlang.s390x.vector.VectorBoolInt
-import io.github.kotlinmania.rustlang.s390x.vector.VectorBoolLongLong
-import io.github.kotlinmania.rustlang.s390x.vector.VectorBoolShort
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSignedChar
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSignedInt
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSignedLongLong
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSignedShort
-import io.github.kotlinmania.rustlang.s390x.vector.VectorUnsignedChar
-import io.github.kotlinmania.rustlang.s390x.vector.VectorUnsignedInt
-import io.github.kotlinmania.rustlang.s390x.vector.VectorUnsignedLongLong
-import io.github.kotlinmania.rustlang.s390x.vector.VectorUnsignedShort
-import io.github.kotlinmania.rustlang.s390x.vector.validateBlockBoundary
-import io.github.kotlinmania.rustlang.s390x.vector.vecMax
-import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmab
-import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmaf
-import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmah
-import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmb
-import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmf
-import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVistrbs
-import io.github.kotlinmania.rustlang.s390x.vector.vecVistrfs
-import io.github.kotlinmania.rustlang.s390x.vector.vecVistrhs
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmaeb
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmaef
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmaeh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmahb
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmahf
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmahh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalIb
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalIf
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalIh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalUb
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalUf
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalUh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmaleb
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalef
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmaleh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalhb
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalhf
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalhh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalob
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmalof
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmaloh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmaob
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmaof
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmaoh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmhb
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmhf
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmhh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmlhb
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmlhf
-import io.github.kotlinmania.rustlang.s390x.vector.vecVmlhh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVsumb
-import io.github.kotlinmania.rustlang.s390x.vector.vecVsumgf
-import io.github.kotlinmania.rustlang.s390x.vector.vecVsumgh
-import io.github.kotlinmania.rustlang.s390x.vector.vecVsumh
-import io.github.kotlinmania.rustlang.s390x.vector.verimb
-import io.github.kotlinmania.rustlang.s390x.vector.verimf
-import io.github.kotlinmania.rustlang.s390x.vector.verimg
-import io.github.kotlinmania.rustlang.s390x.vector.verimh
-import io.github.kotlinmania.rustlang.s390x.vector.vfeeb
-import io.github.kotlinmania.rustlang.s390x.vector.vfeebs
-import io.github.kotlinmania.rustlang.s390x.vector.vfeef
-import io.github.kotlinmania.rustlang.s390x.vector.vfeefs
-import io.github.kotlinmania.rustlang.s390x.vector.vfeeh
-import io.github.kotlinmania.rustlang.s390x.vector.vfeehs
-import io.github.kotlinmania.rustlang.s390x.vector.vfeezb
-import io.github.kotlinmania.rustlang.s390x.vector.vfeezbs
-import io.github.kotlinmania.rustlang.s390x.vector.vfeezf
-import io.github.kotlinmania.rustlang.s390x.vector.vfeezfs
-import io.github.kotlinmania.rustlang.s390x.vector.vfeezh
-import io.github.kotlinmania.rustlang.s390x.vector.vfeezhs
-import io.github.kotlinmania.rustlang.s390x.vector.vfeneb
-import io.github.kotlinmania.rustlang.s390x.vector.vfenebs
-import io.github.kotlinmania.rustlang.s390x.vector.vfenef
-import io.github.kotlinmania.rustlang.s390x.vector.vfenefs
-import io.github.kotlinmania.rustlang.s390x.vector.vfeneh
-import io.github.kotlinmania.rustlang.s390x.vector.vfenehs
-import io.github.kotlinmania.rustlang.s390x.vector.vfenezb
-import io.github.kotlinmania.rustlang.s390x.vector.vfenezbs
-import io.github.kotlinmania.rustlang.s390x.vector.vfenezf
-import io.github.kotlinmania.rustlang.s390x.vector.vfenezfs
-import io.github.kotlinmania.rustlang.s390x.vector.vfenezh
-import io.github.kotlinmania.rustlang.s390x.vector.vfenezhs
-import io.github.kotlinmania.rustlang.s390x.vector.vfmadb
-import io.github.kotlinmania.rustlang.s390x.vector.vfmasb
-import io.github.kotlinmania.rustlang.s390x.vector.vfmsdb
-import io.github.kotlinmania.rustlang.s390x.vector.vfmssb
-import io.github.kotlinmania.rustlang.s390x.vector.vftcidb
-import io.github.kotlinmania.rustlang.s390x.vector.vftcisb
-import io.github.kotlinmania.rustlang.s390x.vector.vlbb
-import io.github.kotlinmania.rustlang.s390x.vector.vll
-import io.github.kotlinmania.rustlang.s390x.vector.vperm
-import io.github.kotlinmania.rustlang.s390x.vector.vpklsf
-import io.github.kotlinmania.rustlang.s390x.vector.vpklsg
-import io.github.kotlinmania.rustlang.s390x.vector.vpklsh
-import io.github.kotlinmania.rustlang.s390x.vector.vstl
-import io.github.kotlinmania.rustlang.s390x.vector.vstrcb
-import io.github.kotlinmania.rustlang.s390x.vector.vstrcbs
-import io.github.kotlinmania.rustlang.s390x.vector.vstrcf
-import io.github.kotlinmania.rustlang.s390x.vector.vstrcfs
-import io.github.kotlinmania.rustlang.s390x.vector.vstrch
-import io.github.kotlinmania.rustlang.s390x.vector.vstrchs
-import io.github.kotlinmania.rustlang.s390x.vector.vstrczb
-import io.github.kotlinmania.rustlang.s390x.vector.vstrczbs
-import io.github.kotlinmania.rustlang.s390x.vector.vstrczf
-import io.github.kotlinmania.rustlang.s390x.vector.vstrczfs
-import io.github.kotlinmania.rustlang.s390x.vector.vstrczh
-import io.github.kotlinmania.rustlang.s390x.vector.vstrczhs
-import io.github.kotlinmania.rustlang.s390x.vector.vstrsb
-import io.github.kotlinmania.rustlang.s390x.vector.vstrsf
-import io.github.kotlinmania.rustlang.s390x.vector.vstrsh
-import io.github.kotlinmania.rustlang.s390x.vector.vstrszb
-import io.github.kotlinmania.rustlang.s390x.vector.vstrszf
-import io.github.kotlinmania.rustlang.s390x.vector.vstrszh
-import io.github.kotlinmania.rustlang.s390x.vector.vsumqf
-import io.github.kotlinmania.rustlang.s390x.vector.vsumqg
-import io.github.kotlinmania.rustlang.s390x.vector.vtm
-import io.github.kotlinmania.rustlang.simd.I16x2
-import io.github.kotlinmania.rustlang.simd.I16x4
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x2
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.I8x2
-import io.github.kotlinmania.rustlang.simd.I8x8
-import io.github.kotlinmania.rustlang.simd.U16x4
-import io.github.kotlinmania.rustlang.simd.U32x2
-import io.github.kotlinmania.rustlang.simd.U8x16
-import io.github.kotlinmania.rustlang.simd.U8x8
+import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.PackedTuple
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorBoolChar
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorBoolInt
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorBoolLongLong
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorBoolShort
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedChar
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedInt
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedLongLong
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedShort
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedChar
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedInt
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedLongLong
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedShort
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.validateBlockBoundary
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecMax
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmab
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmaf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmah
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVistrbs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVistrfs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVistrhs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaeb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaef
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaeh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmahb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmahf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmahh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalIb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalIf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalIh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalUb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalUf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalUh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaleb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalef
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaleh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalhb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalhf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalhh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalob
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalof
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaloh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaob
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaof
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaoh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmhb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmhf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmhh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmlhb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmlhf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmlhh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVsumb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVsumgf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVsumgh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVsumh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.verimb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.verimf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.verimg
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.verimh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeeb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeebs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeef
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeefs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeeh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeehs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezbs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezfs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezhs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeneb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenebs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenef
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenefs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeneh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenehs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezbs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezfs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezhs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfmadb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfmasb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfmsdb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfmssb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vftcidb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vftcisb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vlbb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vll
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vperm
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsg
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstl
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrcb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrcbs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrcf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrcfs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrch
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrchs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczbs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczfs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczhs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrsb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrsf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrsh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrszb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrszf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrszh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsumqf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsumqg
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vtm
+import io.github.kotlinmania.rustlang.corearch.simd.I16x2
+import io.github.kotlinmania.rustlang.corearch.simd.I16x4
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x2
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.I8x2
+import io.github.kotlinmania.rustlang.corearch.simd.I8x8
+import io.github.kotlinmania.rustlang.corearch.simd.U16x4
+import io.github.kotlinmania.rustlang.corearch.simd.U32x2
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U8x8
 
 public interface VectorNeg<T> {
     public fun vecNeg(): T
@@ -1180,17 +1180,17 @@ public interface VectorSqrt<T> {
     public fun vecSqrt(): T
 }
 
-public fun vfaeb(a: VectorSignedChar, b: VectorSignedChar, imm: Int): VectorSignedChar = io.github.kotlinmania.rustlang.s390x.vector.vfaeb(a, b, imm)
+public fun vfaeb(a: VectorSignedChar, b: VectorSignedChar, imm: Int): VectorSignedChar = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaeb(a, b, imm)
 
-public fun vfaeh(a: VectorSignedShort, b: VectorSignedShort, imm: Int): VectorSignedShort = io.github.kotlinmania.rustlang.s390x.vector.vfaeh(a, b, imm)
+public fun vfaeh(a: VectorSignedShort, b: VectorSignedShort, imm: Int): VectorSignedShort = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaeh(a, b, imm)
 
-public fun vfaef(a: VectorSignedInt, b: VectorSignedInt, imm: Int): VectorSignedInt = io.github.kotlinmania.rustlang.s390x.vector.vfaef(a, b, imm)
+public fun vfaef(a: VectorSignedInt, b: VectorSignedInt, imm: Int): VectorSignedInt = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaef(a, b, imm)
 
-public fun vfaezb(a: VectorSignedChar, b: VectorSignedChar, imm: Int): VectorSignedChar = io.github.kotlinmania.rustlang.s390x.vector.vfaezb(a, b, imm)
+public fun vfaezb(a: VectorSignedChar, b: VectorSignedChar, imm: Int): VectorSignedChar = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezb(a, b, imm)
 
-public fun vfaezh(a: VectorSignedShort, b: VectorSignedShort, imm: Int): VectorSignedShort = io.github.kotlinmania.rustlang.s390x.vector.vfaezh(a, b, imm)
+public fun vfaezh(a: VectorSignedShort, b: VectorSignedShort, imm: Int): VectorSignedShort = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezh(a, b, imm)
 
-public fun vfaezf(a: VectorSignedInt, b: VectorSignedInt, imm: Int): VectorSignedInt = io.github.kotlinmania.rustlang.s390x.vector.vfaezf(a, b, imm)
+public fun vfaezf(a: VectorSignedInt, b: VectorSignedInt, imm: Int): VectorSignedInt = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezf(a, b, imm)
 
 public interface VectorFindAnyEq<Other, out Result> {
     public fun vecFindAnyEq(other: Other): Result
@@ -1324,17 +1324,17 @@ public fun VectorUnsignedInt.vecFindAnyNeIdx(b: VectorUnsignedInt): VectorUnsign
 
 public fun VectorBoolInt.vecFindAnyNeIdx(b: VectorBoolInt): VectorUnsignedInt = transmute(vfaef(transmute(this), transmute(b), FindImm.NeIdx.value.toInt()))
 
-public fun vfaebs(a: VectorSignedChar, b: VectorSignedChar, imm: Int): PackedTuple<VectorSignedChar, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaebs(a, b, imm)
+public fun vfaebs(a: VectorSignedChar, b: VectorSignedChar, imm: Int): PackedTuple<VectorSignedChar, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaebs(a, b, imm)
 
-public fun vfaehs(a: VectorSignedShort, b: VectorSignedShort, imm: Int): PackedTuple<VectorSignedShort, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaehs(a, b, imm)
+public fun vfaehs(a: VectorSignedShort, b: VectorSignedShort, imm: Int): PackedTuple<VectorSignedShort, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaehs(a, b, imm)
 
-public fun vfaefs(a: VectorSignedInt, b: VectorSignedInt, imm: Int): PackedTuple<VectorSignedInt, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaefs(a, b, imm)
+public fun vfaefs(a: VectorSignedInt, b: VectorSignedInt, imm: Int): PackedTuple<VectorSignedInt, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaefs(a, b, imm)
 
-public fun vfaezbs(a: VectorSignedChar, b: VectorSignedChar, imm: Int): PackedTuple<VectorSignedChar, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaezbs(a, b, imm)
+public fun vfaezbs(a: VectorSignedChar, b: VectorSignedChar, imm: Int): PackedTuple<VectorSignedChar, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezbs(a, b, imm)
 
-public fun vfaezhs(a: VectorSignedShort, b: VectorSignedShort, imm: Int): PackedTuple<VectorSignedShort, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaezhs(a, b, imm)
+public fun vfaezhs(a: VectorSignedShort, b: VectorSignedShort, imm: Int): PackedTuple<VectorSignedShort, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezhs(a, b, imm)
 
-public fun vfaezfs(a: VectorSignedInt, b: VectorSignedInt, imm: Int): PackedTuple<VectorSignedInt, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaezfs(a, b, imm)
+public fun vfaezfs(a: VectorSignedInt, b: VectorSignedInt, imm: Int): PackedTuple<VectorSignedInt, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezfs(a, b, imm)
 
 public interface VectorFindAnyEqCC<Other, out Result> {
     public fun vecFindAnyEqCc(other: Other): Pair<Result, Int>
@@ -1738,14 +1738,14 @@ public fun VectorBoolInt.vecFindAnyNeOr0IdxCc(b: VectorBoolInt): Pair<VectorUnsi
     return Pair(transmute(x), y)
 }
 
-public fun testVectorLoad(offset: Int, ptr: ConstPtr): VectorSignedInt = (ObjectSlotLayout<VectorSignedInt>()).readNative((ConstPtr((ConstPtr((ptr).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress)
+public fun testVectorLoad(offset: Int, ptr: ConstPtr): VectorSignedInt = (UnresolvedTypeLayout<VectorSignedInt>()).readNative((ConstPtr((ConstPtr((ptr).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress)
 
 public fun testVectorStore(vector: VectorSignedInt, offset: Int, ptr: MutPtr) {
-    (ObjectSlotLayout<VectorSignedInt>()).writeNative((MutPtr((MutPtr((ptr).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress, vector)
+    (UnresolvedTypeLayout<VectorSignedInt>()).writeNative((MutPtr((MutPtr((ptr).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress, vector)
 }
 
 public interface VectorLoad<T, ElementType> {
-    public fun vecXl(offset: Int, ptr: ConstPtr): T = (ObjectSlotLayout<T>()).readNative((ConstPtr((ConstPtr((ptr).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress)
+    public fun vecXl(offset: Int, ptr: ConstPtr): T = (UnresolvedTypeLayout<T>()).readNative((ConstPtr((ConstPtr((ptr).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress)
 
     public fun vecLoadLen(ptr: ConstPtr, byteCount: UInt): T
 
@@ -1754,7 +1754,7 @@ public interface VectorLoad<T, ElementType> {
 
 public interface VectorStore<ElementType> {
     public fun vecXst(offset: Int, ptr: MutPtr) {
-        (ObjectSlotLayout<VectorStore>()).writeNative((MutPtr((MutPtr((ptr).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress, this)
+        (UnresolvedTypeLayout<VectorStore>()).writeNative((MutPtr((MutPtr((ptr).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress, this)
     }
 
     public fun vecStoreLen(ptr: MutPtr, byteCount: UInt)
@@ -1827,7 +1827,7 @@ public interface VectorPacksCC<T, out Result> {
 }
 
 public fun vpkshs(a: VectorSignedShort, b: VectorSignedShort): Pair<VectorSignedChar, Int> {
-    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpkshs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpkshs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -1836,7 +1836,7 @@ public fun vpkshs(a: VectorSignedShort, b: VectorSignedShort): Pair<VectorSigned
 public fun VectorSignedShort.vecPacksCc(b: VectorSignedShort): Pair<VectorSignedChar, Int> = vpkshs(this, b)
 
 public fun vpklshs(a: VectorUnsignedShort, b: VectorUnsignedShort): Pair<VectorUnsignedChar, Int> {
-    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpklshs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklshs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -1845,7 +1845,7 @@ public fun vpklshs(a: VectorUnsignedShort, b: VectorUnsignedShort): Pair<VectorU
 public fun VectorUnsignedShort.vecPacksCc(b: VectorUnsignedShort): Pair<VectorUnsignedChar, Int> = vpklshs(this, b)
 
 public fun vpksfs(a: VectorSignedInt, b: VectorSignedInt): Pair<VectorSignedShort, Int> {
-    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpksfs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpksfs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -1854,7 +1854,7 @@ public fun vpksfs(a: VectorSignedInt, b: VectorSignedInt): Pair<VectorSignedShor
 public fun VectorSignedInt.vecPacksCc(b: VectorSignedInt): Pair<VectorSignedShort, Int> = vpksfs(this, b)
 
 public fun vpklsfs(a: VectorUnsignedInt, b: VectorUnsignedInt): Pair<VectorUnsignedShort, Int> {
-    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpklsfs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsfs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -1863,7 +1863,7 @@ public fun vpklsfs(a: VectorUnsignedInt, b: VectorUnsignedInt): Pair<VectorUnsig
 public fun VectorUnsignedInt.vecPacksCc(b: VectorUnsignedInt): Pair<VectorUnsignedShort, Int> = vpklsfs(this, b)
 
 public fun vpksgs(a: VectorSignedLongLong, b: VectorSignedLongLong): Pair<VectorSignedInt, Int> {
-    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpksgs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpksgs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -1872,7 +1872,7 @@ public fun vpksgs(a: VectorSignedLongLong, b: VectorSignedLongLong): Pair<Vector
 public fun VectorSignedLongLong.vecPacksCc(b: VectorSignedLongLong): Pair<VectorSignedInt, Int> = vpksgs(this, b)
 
 public fun vpklsgs(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): Pair<VectorUnsignedInt, Int> {
-    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpklsgs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsgs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -1910,33 +1910,33 @@ public interface VectorUnpackh<out Result> {
     public fun vecUnpackh(): Result
 }
 
-public fun vuphb(a: VectorSignedChar): VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); val res = (ObjectSlotLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); res } }; _simdArg0 }
+public fun vuphb(a: VectorSignedChar): VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vuphh(a: VectorSignedShort): VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); val res = (ObjectSlotLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); res } }; _simdArg0 }
+public fun vuphh(a: VectorSignedShort): VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vuphf(a: VectorSignedInt): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); val res = (ObjectSlotLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); res } }; _simdArg0 }
+public fun vuphf(a: VectorSignedInt): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vuplhb(a: VectorUnsignedChar): VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); val res = (ObjectSlotLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); res } }; _simdArg0 }
+public fun vuplhb(a: VectorUnsignedChar): VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vuplhh(a: VectorUnsignedShort): VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); val res = (ObjectSlotLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); res } }; _simdArg0 }
+public fun vuplhh(a: VectorUnsignedShort): VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vuplhf(a: VectorUnsignedInt): VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); val res = (ObjectSlotLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); res } }; _simdArg0 }
+public fun vuplhf(a: VectorUnsignedInt): VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); res } }; _simdArg0 }
 
 public interface VectorUnpackl<out Result> {
     public fun vecUnpackl(): Result
 }
 
-public fun vuplb(a: VectorSignedChar): VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); val res = (ObjectSlotLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); res } }; _simdArg0 }
+public fun vuplb(a: VectorSignedChar): VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vuplhw(a: VectorSignedShort): VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); val res = (ObjectSlotLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); res } }; _simdArg0 }
+public fun vuplhw(a: VectorSignedShort): VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vuplf(a: VectorSignedInt): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); val res = (ObjectSlotLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); res } }; _simdArg0 }
+public fun vuplf(a: VectorSignedInt): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vupllb(a: VectorUnsignedChar): VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); val res = (ObjectSlotLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); res } }; _simdArg0 }
+public fun vupllb(a: VectorUnsignedChar): VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vupllh(a: VectorUnsignedShort): VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); val res = (ObjectSlotLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); res } }; _simdArg0 }
+public fun vupllh(a: VectorUnsignedShort): VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vupllf(a: VectorUnsignedInt): VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); val res = (ObjectSlotLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); res } }; _simdArg0 }
+public fun vupllf(a: VectorUnsignedInt): VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); res } }; _simdArg0 }
 
 public interface VectorAvg<Other, out Result> {
     public fun vecAvg(b: Other): Result
@@ -1947,38 +1947,38 @@ public interface VectorMule<Result, T> {
 }
 
 public fun vmeb(a: VectorSignedChar, b: VectorSignedChar): VectorSignedShort {
-    val elemsA: VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); val res = (ObjectSlotLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); res } }; VectorSignedShort() }
-    val elemsB: VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); val res = (ObjectSlotLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); res } }; VectorSignedShort() }
+    val elemsA: VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); res } }; VectorSignedShort() }
+    val elemsB: VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); res } }; VectorSignedShort() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
 public fun vmeh(a: VectorSignedShort, b: VectorSignedShort): VectorSignedInt {
-    val elemsA: VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); val res = (ObjectSlotLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); res } }; VectorSignedInt() }
-    val elemsB: VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); val res = (ObjectSlotLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); res } }; VectorSignedInt() }
+    val elemsA: VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); res } }; VectorSignedInt() }
+    val elemsB: VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); res } }; VectorSignedInt() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
 public fun vmef(a: VectorSignedInt, b: VectorSignedInt): VectorSignedLongLong {
-    val elemsA: VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); val res = (ObjectSlotLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); res } }; VectorSignedLongLong() }
-    val elemsB: VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); val res = (ObjectSlotLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); res } }; VectorSignedLongLong() }
+    val elemsA: VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); res } }; VectorSignedLongLong() }
+    val elemsB: VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); res } }; VectorSignedLongLong() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
 public fun vmleb(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedShort {
-    val elemsA: VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); val res = (ObjectSlotLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); res } }; VectorUnsignedShort() }
-    val elemsB: VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); val res = (ObjectSlotLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); res } }; VectorUnsignedShort() }
+    val elemsA: VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); res } }; VectorUnsignedShort() }
+    val elemsB: VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); res } }; VectorUnsignedShort() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
 public fun vmleh(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedInt {
-    val elemsA: VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); val res = (ObjectSlotLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); res } }; VectorUnsignedInt() }
-    val elemsB: VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); val res = (ObjectSlotLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); res } }; VectorUnsignedInt() }
+    val elemsA: VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); res } }; VectorUnsignedInt() }
+    val elemsB: VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); res } }; VectorUnsignedInt() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
 public fun vmlef(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedLongLong {
-    val elemsA: VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); val res = (ObjectSlotLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); res } }; VectorUnsignedLongLong() }
-    val elemsB: VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); val res = (ObjectSlotLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); res } }; VectorUnsignedLongLong() }
+    val elemsA: VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); res } }; VectorUnsignedLongLong() }
+    val elemsB: VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.even(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); res } }; VectorUnsignedLongLong() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
@@ -1999,38 +1999,38 @@ public interface VectorMulo<Result, T> {
 }
 
 public fun vmob(a: VectorSignedChar, b: VectorSignedChar): VectorSignedShort {
-    val elemsA: VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); val res = (ObjectSlotLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); res } }; VectorSignedShort() }
-    val elemsB: VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); val res = (ObjectSlotLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x8>()).alignBytes)); res } }; VectorSignedShort() }
+    val elemsA: VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); res } }; VectorSignedShort() }
+    val elemsB: VectorSignedShort = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x8>()).alignBytes)); res } }; VectorSignedShort() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
 public fun vmoh(a: VectorSignedShort, b: VectorSignedShort): VectorSignedInt {
-    val elemsA: VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); val res = (ObjectSlotLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); res } }; VectorSignedInt() }
-    val elemsB: VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); val res = (ObjectSlotLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x4>()).alignBytes)); res } }; VectorSignedInt() }
+    val elemsA: VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); res } }; VectorSignedInt() }
+    val elemsB: VectorSignedInt = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x4>()).alignBytes)); res } }; VectorSignedInt() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
 public fun vmof(a: VectorSignedInt, b: VectorSignedInt): VectorSignedLongLong {
-    val elemsA: VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); val res = (ObjectSlotLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); res } }; VectorSignedLongLong() }
-    val elemsB: VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); val res = (ObjectSlotLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); res } }; VectorSignedLongLong() }
+    val elemsA: VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); res } }; VectorSignedLongLong() }
+    val elemsB: VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); res } }; VectorSignedLongLong() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
 public fun vmlob(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedShort {
-    val elemsA: VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); val res = (ObjectSlotLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); res } }; VectorUnsignedShort() }
-    val elemsB: VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); val res = (ObjectSlotLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U8x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x8>()).alignBytes)); res } }; VectorUnsignedShort() }
+    val elemsA: VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); res } }; VectorUnsignedShort() }
+    val elemsB: VectorUnsignedShort = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); val res = (UnresolvedTypeLayout<U8x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U8x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x8>()).alignBytes)); res } }; VectorUnsignedShort() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
 public fun vmloh(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedInt {
-    val elemsA: VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); val res = (ObjectSlotLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); res } }; VectorUnsignedInt() }
-    val elemsB: VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); val res = (ObjectSlotLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U16x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U16x4>()).alignBytes)); res } }; VectorUnsignedInt() }
+    val elemsA: VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); res } }; VectorUnsignedInt() }
+    val elemsB: VectorUnsignedInt = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); val res = (UnresolvedTypeLayout<U16x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U16x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U16x4>()).alignBytes)); res } }; VectorUnsignedInt() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
 public fun vmlof(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedLongLong {
-    val elemsA: VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); val res = (ObjectSlotLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); res } }; VectorUnsignedLongLong() }
-    val elemsB: VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); val res = (ObjectSlotLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); res } }; VectorUnsignedLongLong() }
+    val elemsA: VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); res } }; VectorUnsignedLongLong() }
+    val elemsB: VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = b; val _simdArg1 = b; val _simdArg2 = ShuffleMask.odd(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); res } }; VectorUnsignedLongLong() }
     return run { val _simdArg0 = elemsA; val _simdArg1 = elemsB; _simdArg0 }
 }
 
@@ -2388,85 +2388,85 @@ public interface VectorCompare<T> {
     public fun vecAllGe(other: T): Int
 }
 
-public fun VectorSignedChar.vecAllLt(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedChar.vecAllLt(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedChar.vecAllLe(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedChar.vecAllLe(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedChar.vecAllGt(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedChar.vecAllGt(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedChar.vecAllGe(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedChar.vecAllGe(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedChar.vecAllLt(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedChar.vecAllLt(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedChar.vecAllLe(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedChar.vecAllLe(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedChar.vecAllGt(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedChar.vecAllGt(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedChar.vecAllGe(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedChar.vecAllGe(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedShort.vecAllLt(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedShort.vecAllLt(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedShort.vecAllLe(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedShort.vecAllLe(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedShort.vecAllGt(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedShort.vecAllGt(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedShort.vecAllGe(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedShort.vecAllGe(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedShort.vecAllLt(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedShort.vecAllLt(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedShort.vecAllLe(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedShort.vecAllLe(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedShort.vecAllGt(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedShort.vecAllGt(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedShort.vecAllGe(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedShort.vecAllGe(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedInt.vecAllLt(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedInt.vecAllLt(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedInt.vecAllLe(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedInt.vecAllLe(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedInt.vecAllGt(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedInt.vecAllGt(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedInt.vecAllGe(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedInt.vecAllGe(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedInt.vecAllLt(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedInt.vecAllLt(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedInt.vecAllLe(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedInt.vecAllLe(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedInt.vecAllGt(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedInt.vecAllGt(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedInt.vecAllGe(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedInt.vecAllGe(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorFloat.vecAllLt(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorFloat.vecAllLt(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorFloat.vecAllLe(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorFloat.vecAllLe(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorFloat.vecAllGt(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorFloat.vecAllGt(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorFloat.vecAllGe(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorFloat.vecAllGe(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedLongLong.vecAllLt(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedLongLong.vecAllLt(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedLongLong.vecAllLe(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedLongLong.vecAllLe(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedLongLong.vecAllGt(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedLongLong.vecAllGt(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorSignedLongLong.vecAllGe(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedLongLong.vecAllGe(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedLongLong.vecAllLt(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllLt(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedLongLong.vecAllLe(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllLe(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedLongLong.vecAllGt(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllGt(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorUnsignedLongLong.vecAllGe(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllGe(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorDouble.vecAllLt(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorDouble.vecAllLt(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorDouble.vecAllLe(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorDouble.vecAllLe(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorDouble.vecAllGt(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorDouble.vecAllGt(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
-public fun VectorDouble.vecAllGe(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); val res = (ObjectSlotLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<TB>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorDouble.vecAllGe(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
 
 public interface VectorTestMask<Mask> {
     public fun vecTestMask(other: Mask): Int
@@ -2642,11 +2642,11 @@ public interface VectorExtendSigned64 {
     public fun vecExtendS64(): VectorSignedLongLong
 }
 
-public fun vsegb(a: VectorSignedChar): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x2.fromArray(listOf(7, 15)); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I8x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x2>()).alignBytes)); val res = (ObjectSlotLayout<I8x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I8x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x2>()).alignBytes)); res } }; _simdArg0 }
+public fun vsegb(a: VectorSignedChar): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x2.fromArray(listOf(7, 15)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x2>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vsegh(a: VectorSignedShort): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x2.fromArray(listOf(3, 7)); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I16x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x2>()).alignBytes)); val res = (ObjectSlotLayout<I16x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I16x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x2>()).alignBytes)); res } }; _simdArg0 }
+public fun vsegh(a: VectorSignedShort): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x2.fromArray(listOf(3, 7)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x2>()).alignBytes)); res } }; _simdArg0 }
 
-public fun vsegf(a: VectorSignedInt): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x2.fromArray(listOf(1, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); val res = (ObjectSlotLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); res } }; _simdArg0 }
+public fun vsegf(a: VectorSignedInt): VectorSignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x2.fromArray(listOf(1, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x2>()).alignBytes)); res } }; _simdArg0 }
 
 public fun VectorSignedChar.vecExtendS64(): VectorSignedLongLong = vsegb(this)
 
@@ -3651,8 +3651,8 @@ public fun vectorInsertVecInsertVectorSignedChar(a: LTT, b: VectorSignedChar, c:
 public fun vectorInsertAndZeroVecInsertAndZeroVectorSignedChar(a: ConstPtr): VectorSignedChar = transmute(vllezb(a))
 
 public fun vectorPromoteVecPromoteVectorSignedChar(a: LTT, c: Int): MaybeUninit<VectorSignedChar> {
-    val b = MaybeUninit.zeroed(ObjectSlotLayout<VectorSignedChar>())
-    return MaybeUninit.new(transmute(vlvgb(transmute(a), transmute(b), c)), ObjectSlotLayout<VectorSignedChar>())
+    val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorSignedChar>())
+    return MaybeUninit.new(transmute(vlvgb(transmute(a), transmute(b), c)), UnresolvedTypeLayout<VectorSignedChar>())
 }
 
 public fun vectorExtractVecExtractVectorUnsignedChar(a: VectorUnsignedChar, b: Int): LTT = transmute(vlgvb(transmute(a), b))
@@ -3662,8 +3662,8 @@ public fun vectorInsertVecInsertVectorUnsignedChar(a: LTT, b: VectorUnsignedChar
 public fun vectorInsertAndZeroVecInsertAndZeroVectorUnsignedChar(a: ConstPtr): VectorUnsignedChar = transmute(vllezb(a))
 
 public fun vectorPromoteVecPromoteVectorUnsignedChar(a: LTT, c: Int): MaybeUninit<VectorUnsignedChar> {
-    val b = MaybeUninit.zeroed(ObjectSlotLayout<VectorUnsignedChar>())
-    return MaybeUninit.new(transmute(vlvgb(transmute(a), transmute(b), c)), ObjectSlotLayout<VectorUnsignedChar>())
+    val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorUnsignedChar>())
+    return MaybeUninit.new(transmute(vlvgb(transmute(a), transmute(b), c)), UnresolvedTypeLayout<VectorUnsignedChar>())
 }
 
 public fun vectorExtractVecExtractVectorSignedShort(a: VectorSignedShort, b: Int): LTT = transmute(vlgvh(transmute(a), b))
@@ -3673,8 +3673,8 @@ public fun vectorInsertVecInsertVectorSignedShort(a: LTT, b: VectorSignedShort, 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorSignedShort(a: ConstPtr): VectorSignedShort = transmute(vllezh(a))
 
 public fun vectorPromoteVecPromoteVectorSignedShort(a: LTT, c: Int): MaybeUninit<VectorSignedShort> {
-    val b = MaybeUninit.zeroed(ObjectSlotLayout<VectorSignedShort>())
-    return MaybeUninit.new(transmute(vlvgh(transmute(a), transmute(b), c)), ObjectSlotLayout<VectorSignedShort>())
+    val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorSignedShort>())
+    return MaybeUninit.new(transmute(vlvgh(transmute(a), transmute(b), c)), UnresolvedTypeLayout<VectorSignedShort>())
 }
 
 public fun vectorExtractVecExtractVectorUnsignedShort(a: VectorUnsignedShort, b: Int): LTT = transmute(vlgvh(transmute(a), b))
@@ -3684,8 +3684,8 @@ public fun vectorInsertVecInsertVectorUnsignedShort(a: LTT, b: VectorUnsignedSho
 public fun vectorInsertAndZeroVecInsertAndZeroVectorUnsignedShort(a: ConstPtr): VectorUnsignedShort = transmute(vllezh(a))
 
 public fun vectorPromoteVecPromoteVectorUnsignedShort(a: LTT, c: Int): MaybeUninit<VectorUnsignedShort> {
-    val b = MaybeUninit.zeroed(ObjectSlotLayout<VectorUnsignedShort>())
-    return MaybeUninit.new(transmute(vlvgh(transmute(a), transmute(b), c)), ObjectSlotLayout<VectorUnsignedShort>())
+    val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorUnsignedShort>())
+    return MaybeUninit.new(transmute(vlvgh(transmute(a), transmute(b), c)), UnresolvedTypeLayout<VectorUnsignedShort>())
 }
 
 public fun vectorExtractVecExtractVectorSignedInt(a: VectorSignedInt, b: Int): LTT = transmute(vlgvf(transmute(a), b))
@@ -3695,8 +3695,8 @@ public fun vectorInsertVecInsertVectorSignedInt(a: LTT, b: VectorSignedInt, c: I
 public fun vectorInsertAndZeroVecInsertAndZeroVectorSignedInt(a: ConstPtr): VectorSignedInt = transmute(vllezf(a))
 
 public fun vectorPromoteVecPromoteVectorSignedInt(a: LTT, c: Int): MaybeUninit<VectorSignedInt> {
-    val b = MaybeUninit.zeroed(ObjectSlotLayout<VectorSignedInt>())
-    return MaybeUninit.new(transmute(vlvgf(transmute(a), transmute(b), c)), ObjectSlotLayout<VectorSignedInt>())
+    val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorSignedInt>())
+    return MaybeUninit.new(transmute(vlvgf(transmute(a), transmute(b), c)), UnresolvedTypeLayout<VectorSignedInt>())
 }
 
 public fun vectorExtractVecExtractVectorUnsignedInt(a: VectorUnsignedInt, b: Int): LTT = transmute(vlgvf(transmute(a), b))
@@ -3706,8 +3706,8 @@ public fun vectorInsertVecInsertVectorUnsignedInt(a: LTT, b: VectorUnsignedInt, 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorUnsignedInt(a: ConstPtr): VectorUnsignedInt = transmute(vllezf(a))
 
 public fun vectorPromoteVecPromoteVectorUnsignedInt(a: LTT, c: Int): MaybeUninit<VectorUnsignedInt> {
-    val b = MaybeUninit.zeroed(ObjectSlotLayout<VectorUnsignedInt>())
-    return MaybeUninit.new(transmute(vlvgf(transmute(a), transmute(b), c)), ObjectSlotLayout<VectorUnsignedInt>())
+    val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorUnsignedInt>())
+    return MaybeUninit.new(transmute(vlvgf(transmute(a), transmute(b), c)), UnresolvedTypeLayout<VectorUnsignedInt>())
 }
 
 public fun vectorExtractVecExtractVectorSignedLongLong(a: VectorSignedLongLong, b: Int): LTT = transmute(vlgvg(transmute(a), b))
@@ -3717,8 +3717,8 @@ public fun vectorInsertVecInsertVectorSignedLongLong(a: LTT, b: VectorSignedLong
 public fun vectorInsertAndZeroVecInsertAndZeroVectorSignedLongLong(a: ConstPtr): VectorSignedLongLong = transmute(vllezg(a))
 
 public fun vectorPromoteVecPromoteVectorSignedLongLong(a: LTT, c: Int): MaybeUninit<VectorSignedLongLong> {
-    val b = MaybeUninit.zeroed(ObjectSlotLayout<VectorSignedLongLong>())
-    return MaybeUninit.new(transmute(vlvgg(transmute(a), transmute(b), c)), ObjectSlotLayout<VectorSignedLongLong>())
+    val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorSignedLongLong>())
+    return MaybeUninit.new(transmute(vlvgg(transmute(a), transmute(b), c)), UnresolvedTypeLayout<VectorSignedLongLong>())
 }
 
 public fun vectorExtractVecExtractVectorUnsignedLongLong(a: VectorUnsignedLongLong, b: Int): LTT = transmute(vlgvg(transmute(a), b))
@@ -3728,8 +3728,8 @@ public fun vectorInsertVecInsertVectorUnsignedLongLong(a: LTT, b: VectorUnsigned
 public fun vectorInsertAndZeroVecInsertAndZeroVectorUnsignedLongLong(a: ConstPtr): VectorUnsignedLongLong = transmute(vllezg(a))
 
 public fun vectorPromoteVecPromoteVectorUnsignedLongLong(a: LTT, c: Int): MaybeUninit<VectorUnsignedLongLong> {
-    val b = MaybeUninit.zeroed(ObjectSlotLayout<VectorUnsignedLongLong>())
-    return MaybeUninit.new(transmute(vlvgg(transmute(a), transmute(b), c)), ObjectSlotLayout<VectorUnsignedLongLong>())
+    val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorUnsignedLongLong>())
+    return MaybeUninit.new(transmute(vlvgg(transmute(a), transmute(b), c)), UnresolvedTypeLayout<VectorUnsignedLongLong>())
 }
 
 public fun vectorExtractVecExtractVectorFloat(a: VectorFloat, b: Int): LTT = transmute(vlgvf(transmute(a), b))
@@ -3739,8 +3739,8 @@ public fun vectorInsertVecInsertVectorFloat(a: LTT, b: VectorFloat, c: Int): Vec
 public fun vectorInsertAndZeroVecInsertAndZeroVectorFloat(a: ConstPtr): VectorFloat = transmute(vllezf(a))
 
 public fun vectorPromoteVecPromoteVectorFloat(a: LTT, c: Int): MaybeUninit<VectorFloat> {
-    val b = MaybeUninit.zeroed(ObjectSlotLayout<VectorFloat>())
-    return MaybeUninit.new(transmute(vlvgf(transmute(a), transmute(b), c)), ObjectSlotLayout<VectorFloat>())
+    val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorFloat>())
+    return MaybeUninit.new(transmute(vlvgf(transmute(a), transmute(b), c)), UnresolvedTypeLayout<VectorFloat>())
 }
 
 public fun vectorExtractVecExtractVectorDouble(a: VectorDouble, b: Int): LTT = transmute(vlgvg(transmute(a), b))
@@ -3750,6 +3750,6 @@ public fun vectorInsertVecInsertVectorDouble(a: LTT, b: VectorDouble, c: Int): V
 public fun vectorInsertAndZeroVecInsertAndZeroVectorDouble(a: ConstPtr): VectorDouble = transmute(vllezg(a))
 
 public fun vectorPromoteVecPromoteVectorDouble(a: LTT, c: Int): MaybeUninit<VectorDouble> {
-    val b = MaybeUninit.zeroed(ObjectSlotLayout<VectorDouble>())
-    return MaybeUninit.new(transmute(vlvgg(transmute(a), transmute(b), c)), ObjectSlotLayout<VectorDouble>())
+    val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorDouble>())
+    return MaybeUninit.new(transmute(vlvgg(transmute(a), transmute(b), c)), UnresolvedTypeLayout<VectorDouble>())
 }

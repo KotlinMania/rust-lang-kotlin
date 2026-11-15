@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.std.os.net.linuxext.addr
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.os.unix.net.SocketAddr
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
 
 // Linux and Android-specific extensions to socket addresses.
 

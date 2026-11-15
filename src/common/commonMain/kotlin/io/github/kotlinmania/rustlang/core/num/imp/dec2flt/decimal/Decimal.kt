@@ -5,8 +5,8 @@ package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimal
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.num.imp.dec2flt.Lemire
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.Lemire
 
 // Representation of a float as the significant digits and exponent.
 
@@ -62,7 +62,7 @@ public open class Decimal(
             } else {
                 // disguised fast path
                 val shift = this.exponent - F.MAX_EXPONENT_FAST_PATH
-                val mantissa = (rustCheckedMul(this.mantissa, INT_POW10[shift.toInt()]) ?: return null)
+                val mantissa = (this.mantissa.checkedMul(INT_POW10[shift.toInt()]) ?: return null)
                 if (mantissa > F.MAX_MANTISSA_FAST_PATH) {
                     return null
                 }

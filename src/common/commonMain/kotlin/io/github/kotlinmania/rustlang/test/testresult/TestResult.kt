@@ -4,11 +4,12 @@ package io.github.kotlinmania.rustlang.test.testresult
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.libc.windows.SIGABRT
+import io.github.kotlinmania.rustlang.libc.SIGABRT
 import io.github.kotlinmania.rustlang.std.process.ExitStatus
 import io.github.kotlinmania.rustlang.test.bench.BenchSamples
 import io.github.kotlinmania.rustlang.test.options.ShouldPanic
-import io.github.kotlinmania.rustlang.test.time
+import io.github.kotlinmania.rustlang.test.time.TestExecTime
+import io.github.kotlinmania.rustlang.test.time.TestTimeOptions
 import io.github.kotlinmania.rustlang.test.types.TestDesc
 
 // Return code for secondary process.

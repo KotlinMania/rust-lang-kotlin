@@ -4,10 +4,10 @@ package io.github.kotlinmania.rustlang.std.io.error
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.OsFunctions
 import io.github.kotlinmania.rustlang.core.io.error.RawOsError
-import io.github.kotlinmania.rustlang.sys.io.Errno
-import io.github.kotlinmania.rustlang.sys.io.error.generic.decodeErrorKind
-import io.github.kotlinmania.rustlang.sys.io.error.generic.formatError
-import io.github.kotlinmania.rustlang.sys.io.error.generic.isInterrupted
+import io.github.kotlinmania.rustlang.std.sys.io.Errno
+import io.github.kotlinmania.rustlang.std.sys.io.error.generic.decodeErrorKind
+import io.github.kotlinmania.rustlang.std.sys.io.error.generic.formatError
+import io.github.kotlinmania.rustlang.std.sys.io.error.generic.isInterrupted
 
 // Because std is linked in during testing, these incoherent implementations would
 // be duplicated if this was unconditionally included.

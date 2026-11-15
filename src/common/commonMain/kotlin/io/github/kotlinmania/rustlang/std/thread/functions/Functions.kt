@@ -1,18 +1,19 @@
 // port-lint: source thread/functions.rs
 package io.github.kotlinmania.rustlang.std.thread.functions
 
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.process.abort
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.thread.builder.Builder
 import io.github.kotlinmania.rustlang.std.thread.current.current
 import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.time.Instant
+import io.github.kotlinmania.rustlang.std.time.Instant
 
 // Free functions.
 
@@ -155,7 +156,7 @@ public fun <T> spawn(f: () -> T): JoinHandle<T> = Builder.new().spawn(f).expect(
  * [join]: JoinHandle.join
  */
 public fun yieldNow() {
-    io.github.kotlinmania.rustlang.sys.thread.unix.yieldNow()
+    io.github.kotlinmania.rustlang.std.sys.thread.unix.yieldNow()
 }
 
 /**
@@ -271,7 +272,7 @@ public fun sleepMs(ms: UInt) {
  * ```
  */
 public fun sleep(dur: Duration) {
-    io.github.kotlinmania.rustlang.sys.thread.unix.sleep(dur)
+    io.github.kotlinmania.rustlang.std.sys.thread.unix.sleep(dur)
 }
 
 /**
@@ -360,7 +361,7 @@ public fun sleep(dur: Duration) {
  * ```
  */
 public fun sleepUntil(deadline: Instant) {
-    io.github.kotlinmania.rustlang.sys.thread.sleepUntil(deadline)
+    io.github.kotlinmania.rustlang.std.sys.thread.sleepUntil(deadline)
 }
 
 /**
@@ -374,7 +375,7 @@ public open class PanicGuard {
                 null -> {}
                 else -> {
                     val out = matchVal
-                    io.Write.writeFmt(out, "fatal runtime error: " + ("an irrecoverable error occurred while synchronizing threads").toString() + ", aborting\n")
+                    Write.writeFmt(out, "fatal runtime error: " + ("an irrecoverable error occurred while synchronizing threads").toString() + ", aborting\n")
                 }
             }
             run {
@@ -693,4 +694,4 @@ public fun parkTimeout(dur: Duration) {
  * }
  * ```
  */
-public fun availableParallelism(): Result<NonZero<Int>, Error> = io.github.kotlinmania.rustlang.sys.thread.unix.availableParallelism()
+public fun availableParallelism(): Result<NonZero<Int>, Error> = io.github.kotlinmania.rustlang.std.sys.thread.unix.availableParallelism()

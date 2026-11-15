@@ -1,9 +1,9 @@
 // port-lint: source io/write.rs
 package io.github.kotlinmania.rustlang.core.io.write
 
-import io.github.kotlinmania.rustlang.io.error.Error
-import io.github.kotlinmania.rustlang.io.error.Result
-import io.github.kotlinmania.rustlang.io.ioslice.IoSlice
+import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.Result
+import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 
 /**
  * A trait for objects which are byte-oriented sinks.
@@ -337,7 +337,7 @@ public interface Write<T> {
      * }
      * ```
      */
-    public fun writeFmt(args: Arguments): Result<Unit> =
+    public fun writeFmt(args: fmt.Arguments): Result<Unit> =
         when (val matchVal = args.asStaticallyKnownStr()) {
             null -> {
                 defaultWriteFmt(this, args)
@@ -381,7 +381,7 @@ public fun defaultWriteVectored(write: (List<UByte>) -> Result<Int>, bufs: List<
     return write(buf)
 }
 
-public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: Arguments): Result<Unit> {
+public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: fmt.Arguments): Result<Unit> {
     // Create a shim which translates a `Write` to a `fmt.Write` and saves off
     // I/O errors, instead of discarding them.
     open class Adapter<T>(
@@ -391,30 +391,36 @@ public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: Arguments): Result<U
         public open fun writeStr(s: String) {
             run {
                 val matchVal = this.inner.writeAll(s.encodeToByteArray().map { it.toUByte() })
-                when (matchVal) { is Result.Ok<*, *> -> {
-                    Unit
-                }; is Result.Err<*, *> -> {
-                    val e = matchVal.error
-                    this.error = Result.Err(e)
-                    Result.Err(Error)
-                } }
+                when (matchVal) {
+                    is Result.Ok<*, *> -> {
+                        Unit
+                    }
+                    is Result.Err<*, *> -> {
+                        val e = matchVal.error
+                        this.error = Result.Err(e)
+                        Result.Err(fmt.Error)
+                    }
+                }
             }
         }
     }
     val output = Adapter(inner = thisRef, error = Result.Ok(Unit))
     return run {
-        val matchVal = Write(output, args)
-        when (matchVal) { is Result.Ok<*, *> -> {
-            Result.Ok(Unit)
-        }; is Result.Err<*, *> -> {
-            // Check whether the error came from the underlying `Write`.
-            if (output.error.isErr()) {
-                output.error
-            } else {
-                // This shouldn't happen: the underlying stream did not error,
-                // but somehow the formatter still errored?
-                error("a formatting trait implementation returned an error when the underlying stream did not")
+        val matchVal = fmt.Write(output, args)
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                Result.Ok(Unit)
             }
-        } }
+            is Result.Err<*, *> -> {
+                // Check whether the error came from the underlying `Write`.
+                if (output.error.isErr()) {
+                    output.error
+                } else {
+                    // This shouldn't happen: the underlying stream did not error,
+                    // but somehow the formatter still errored?
+                    error("a formatting trait implementation returned an error when the underlying stream did not")
+                }
+            }
+        }
     }
 }

@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key.keybased
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.rt.threadCleanup
-import io.github.kotlinmania.rustlang.sys.threadlocal.key.racy.LazyKey
-import io.github.kotlinmania.rustlang.sys.threadlocal.key.unix.get
-import io.github.kotlinmania.rustlang.sys.threadlocal.key.unix.set
+import io.github.kotlinmania.rustlang.std.rt.threadCleanup
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.get
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
 
 /**
  * The OS may free the values of the keys without a destructor **before**

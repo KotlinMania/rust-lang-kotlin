@@ -8,10 +8,11 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -19,8 +20,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.Poll
 import io.github.kotlinmania.rustlang.libc.Send
@@ -63,28 +62,30 @@ import io.github.kotlinmania.rustlang.libc.wasi.POLLOUT
 import io.github.kotlinmania.rustlang.libc.wasi.SOCK_CLOEXEC
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
 import io.github.kotlinmania.rustlang.libc.wasi.TimeT
-import io.github.kotlinmania.rustlang.net.Shutdown
-import io.github.kotlinmania.rustlang.os.fd.AsFd
-import io.github.kotlinmania.rustlang.os.fd.AsRawFd
-import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.os.fd.FromRawFd
-import io.github.kotlinmania.rustlang.os.fd.IntoRawFd
-import io.github.kotlinmania.rustlang.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.AsInner
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.IntoInner
-import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.sys.io.Errno
-import io.github.kotlinmania.rustlang.sys.net.connection.socket.MAX_SEND_LEN
-import io.github.kotlinmania.rustlang.sys.net.connection.socket.getsockopt
-import io.github.kotlinmania.rustlang.sys.net.connection.socket.setsockopt
-import io.github.kotlinmania.rustlang.sys.net.connection.socket.socketAddrFromC
-import io.github.kotlinmania.rustlang.sys.net.connection.socket.socketAddrToC
-import io.github.kotlinmania.rustlang.sys.pal.Conf
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvtR
-import io.github.kotlinmania.rustlang.time.Instant
+import io.github.kotlinmania.rustlang.std.net.Shutdown
+import io.github.kotlinmania.rustlang.std.os.fd.AsFd
+import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.sys.AsInner
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.io.Errno
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.MAX_SEND_LEN
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.getsockopt
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.setsockopt
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.socketAddrFromC
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.socketAddrToC
+import io.github.kotlinmania.rustlang.std.sys.pal.Conf
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
+import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_LINGER_SEC as SO_LINGER
 
 public typealias WrlenT = SizeT
@@ -101,13 +102,13 @@ public open class Socket(
     public open fun connect(addr: SocketAddr): Result<Unit, Error> {
         val (addr1, len) = socketAddrToC(addr)
         while (true) {
-            val result = io.github.kotlinmania.rustlang.libc.connect(this.asRawFd().toULong(), addr1.asPtr(), len)
+            val result = io.github.kotlinmania.rustlang.libc.connect(this.asRawFd(), addr1.asPtr(), len)
             if (result.isMinusOne()) {
                 val err = Errno()
                 when (err) {
                     EINTR -> { continue }
                     EISCONN -> { return Result.Ok(Unit) }
-                    else -> { return Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(err)) }
+                    else -> { return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(err)) }
                 }
             }
             return Result.Ok(Unit)
@@ -116,12 +117,12 @@ public open class Socket(
 
     public open fun pollConnected(timeout: Duration): Result<Unit, Error> {
         val timeout1 = timeout
-        val localStorageL175C8 = AddressableLocal(Pollfd(), ObjectSlotLayout<Pollfd>())
+        val localStorageL175C8 = AddressableLocal(Pollfd(), UnresolvedTypeLayout<Pollfd>())
         val pollfd by localStorageL175C8
         pollfd.fd = this.asRawFd()
         pollfd.events = POLLOUT
         if (timeout1.asSecs() == 0 && timeout1.subsecNanos() == 0) {
-            return Result.Err(io.github.kotlinmania.rustlang.io.Error.ZERO_TIMEOUT)
+            return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.ZERO_TIMEOUT)
         }
         val start = Instant.now()
         while (true) {
@@ -137,7 +138,7 @@ public open class Socket(
             val timeout4 = minOf(timeout3, Int.MAX_VALUE.toULong()).toInt()
             when (Poll(RustMutableReference(localStorageL175C8.asMutPtr(), localStorageL175C8.layout), 1, timeout4)) {
                 -1 -> {
-                    val err = io.github.kotlinmania.rustlang.io.Error.lastOsError()
+                    val err = io.github.kotlinmania.rustlang.std.io.Error.lastOsError()
                     if (!err.isInterrupted()) {
                         return Result.Err(err)
                     }
@@ -185,7 +186,7 @@ public open class Socket(
     }
 
     public open fun recvWithFlags(buf: BorrowedCursor<UByte>, flags: CInt): Result<Unit, Error> {
-        val ret = when (val tryResult = cvt(recv(this.asRawFd().toULong(), mutPtrFromRustCast(buf.asMut().asMutPtr()), buf.capacity(), flags))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val ret = when (val tryResult = cvt(recv(this.asRawFd(), mutPtrFromRustCast(buf.asMut().asMutPtr()), buf.capacity(), flags))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         run {
             buf.advance(ret.toInt())
         }
@@ -214,11 +215,11 @@ public open class Socket(
         // The `recvfrom` function will fill in the storage with the address,
         // so we don't need to zero it here.
         // reference: https://linux.die.net/man/2/recvfrom
-        val localStorageL330C8 = AddressableLocal(MaybeUninit.uninit(ObjectSlotLayout<SockaddrStorage>()), ObjectSlotLayout<MaybeUninit<SockaddrStorage>>())
+        val localStorageL330C8 = AddressableLocal(MaybeUninit.uninit(UnresolvedTypeLayout<SockaddrStorage>()), UnresolvedTypeLayout<MaybeUninit<SockaddrStorage>>())
         val storage by localStorageL330C8
-        val localStorageL331C8 = AddressableLocal(sizeOfVal(storage).toInt(), ObjectSlotLayout<io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT>())
+        val localStorageL331C8 = AddressableLocal(sizeOfVal(storage, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<SockaddrStorage>>()).toInt(), UnresolvedTypeLayout<io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT>())
         val addrlen by localStorageL331C8
-        val n = when (val tryResult = cvt(recvfrom(this.asRawFd().toULong(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, buf.size, flags, (localStorageL330C8.asMutPtr()), RustMutableReference(localStorageL331C8.asMutPtr(), localStorageL331C8.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val n = when (val tryResult = cvt(recvfrom(this.asRawFd(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, buf.size, flags, (localStorageL330C8.asMutPtr()), RustMutableReference(localStorageL331C8.asMutPtr(), localStorageL331C8.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Pair(n.toInt(), when (val tryResult = socketAddrFromC(storage.asPtr(), addrlen)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
     }
 
@@ -249,7 +250,7 @@ public open class Socket(
                 else -> {
                     val dur1 = dur
                     if (dur1.asSecs() == 0 && dur1.subsecNanos() == 0) {
-                        return Result.Err(io.github.kotlinmania.rustlang.io.Error.ZERO_TIMEOUT)
+                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.ZERO_TIMEOUT)
                     }
                     val secs =
                         if (dur1.asSecs() > TimeT.MAX_VALUE.toULong()) {
@@ -339,7 +340,7 @@ public open class Socket(
     }
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> {
-        val localStorageL586C8 = AddressableLocal(nonblocking.toInt(), ObjectSlotLayout<io.github.kotlinmania.rustlang.libc.CInt>())
+        val localStorageL586C8 = AddressableLocal(nonblocking.toInt(), UnresolvedTypeLayout<io.github.kotlinmania.rustlang.libc.CInt>())
         return cvt(Ioctl(this.asRawFd(), FIONBIO, RustMutableReference(localStorageL586C8.asMutPtr(), localStorageL586C8.layout))).map({ Unit })
     }
 
@@ -348,12 +349,12 @@ public open class Socket(
         return setsockopt(this, SOL_SOCKET, option, mark.toInt())
     }
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.io.Error?, Error> {
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_ERROR)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return if (raw == 0) {
             Result.Ok(null)
         } else {
-            Result.Ok(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(raw))
+            Result.Ok(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(raw))
         }
     }
 
@@ -404,10 +405,10 @@ public fun cvtGai(err: CInt): Result<Unit, Error> {
     // We may need to trigger a glibc workaround. See onResolverFailure() for details.
     onResolverFailure()
     if (err == EAI_SYSTEM) {
-        return Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
+        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     }
     val detail = CStr.fromPtr(gaiStrerror(err)).toStringLossy()
-    return Result.Err(io.github.kotlinmania.rustlang.io.Error.new(ErrorKind.Uncategorized, "failed to lookup address information: $detail"))
+    return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.Uncategorized, "failed to lookup address information: $detail"))
 }
 
 // In versions of glibc prior to 2.26, there's a bug where the DNS resolver

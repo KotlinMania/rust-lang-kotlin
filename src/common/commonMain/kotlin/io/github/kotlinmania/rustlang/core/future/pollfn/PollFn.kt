@@ -1,12 +1,12 @@
 // port-lint: source future/poll_fn.rs
 package io.github.kotlinmania.rustlang.core.future.pollfn
 
+import io.github.kotlinmania.rustlang.core.future.future.Future
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.future.future.Future
-import io.github.kotlinmania.rustlang.task.poll.Poll
-import io.github.kotlinmania.rustlang.task.wake.Context
+import io.github.kotlinmania.rustlang.core.task.poll.Poll
+import io.github.kotlinmania.rustlang.core.task.wake.Context
 
 public class DebugStruct(
     private val out: StringBuilder,

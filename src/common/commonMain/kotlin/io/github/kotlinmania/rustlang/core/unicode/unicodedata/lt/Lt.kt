@@ -4,8 +4,8 @@
 package io.github.kotlinmania.rustlang.core.unicode.unicodedata.lt
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.unicode.unicodedata.ShortOffsetRunHeader
-import io.github.kotlinmania.rustlang.unicode.unicodedata.skipSearch
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.ShortOffsetRunHeader
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.skipSearch
 
 public var SHORT_OFFSET_RUNS: List<ShortOffsetRunHeader> = listOf(ShortOffsetRunHeader.new(0, 453), ShortOffsetRunHeader.new(1, 8072), ShortOffsetRunHeader.new(9, 1122301))
 

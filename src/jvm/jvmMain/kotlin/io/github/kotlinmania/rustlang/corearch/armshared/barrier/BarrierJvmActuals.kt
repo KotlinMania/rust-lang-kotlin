@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.armshared.barrier
 
-private object CorearchArmsharedBarrierJniBridge {
+private object ArmsharedBarrierJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,11 +38,14 @@ private object CorearchArmsharedBarrierJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchArmsharedBarrierJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = ArmsharedBarrierJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,23 +59,23 @@ private object CorearchArmsharedBarrierJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchArmsharedBarrierDmb(arg0: Int)
+    external fun corearchArmsharedBarrierDmb(arg0: Int)
 
     @JvmStatic
-    external fun rustlangCorearchArmsharedBarrierDsb(arg0: Int)
+    external fun corearchArmsharedBarrierDsb(arg0: Int)
 
     @JvmStatic
-    external fun rustlangCorearchArmsharedBarrierIsb(arg0: Int)
+    external fun corearchArmsharedBarrierIsb(arg0: Int)
 }
 
 public actual fun dmb(arg0: Int) {
-    CorearchArmsharedBarrierJniBridge.rustlangCorearchArmsharedBarrierDmb(arg0)
+    ArmsharedBarrierJniBridge.corearchArmsharedBarrierDmb(arg0)
 }
 
 public actual fun dsb(arg0: Int) {
-    CorearchArmsharedBarrierJniBridge.rustlangCorearchArmsharedBarrierDsb(arg0)
+    ArmsharedBarrierJniBridge.corearchArmsharedBarrierDsb(arg0)
 }
 
 public actual fun isb(arg0: Int) {
-    CorearchArmsharedBarrierJniBridge.rustlangCorearchArmsharedBarrierIsb(arg0)
+    ArmsharedBarrierJniBridge.corearchArmsharedBarrierIsb(arg0)
 }

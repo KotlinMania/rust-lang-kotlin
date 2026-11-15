@@ -1,33 +1,33 @@
 // port-lint: source wtf8.rs
 package io.github.kotlinmania.rustlang.core.wtf8
 
-import io.github.kotlinmania.rustlang.char.methods.EscapeDebugExtArgs
-import io.github.kotlinmania.rustlang.char.methods.encodeUtf16Raw
-import io.github.kotlinmania.rustlang.clone.CloneToUninit
-import io.github.kotlinmania.rustlang.convert.AsRef
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
+import io.github.kotlinmania.rustlang.core.char.methods.encodeUtf16Raw
+import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
+import io.github.kotlinmania.rustlang.core.convert.AsRef
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
+import io.github.kotlinmania.rustlang.core.num.nichetypes.CodePointInner
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.ops.range.Range
+import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
+import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
+import io.github.kotlinmania.rustlang.core.ops.range.RangeTo
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.num.nichetypes.CodePointInner
-import io.github.kotlinmania.rustlang.ops.range.Range
-import io.github.kotlinmania.rustlang.ops.range.RangeFrom
-import io.github.kotlinmania.rustlang.ops.range.RangeFull
-import io.github.kotlinmania.rustlang.ops.range.RangeTo
-import io.github.kotlinmania.rustlang.str.validations.nextCodePoint
+import io.github.kotlinmania.rustlang.core.str.chars
+import io.github.kotlinmania.rustlang.core.str.validations.nextCodePoint
 
 // Implementation of [the WTF-8 encoding](https://wtf-8.codeberg.page/).
 //
@@ -189,10 +189,13 @@ public open class CodePoint(
 public open class Wtf8 internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<List<UByte>>,
-) : AsRef<List<UByte>>, CloneToUninit {
+) : AsRef<List<UByte>>,
+    CloneToUninit {
     public var bytes: List<UByte>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(bytes: List<UByte>, fieldLayout: TypeLayout<List<UByte>>) : this(allocateNativeCell(bytes, fieldLayout), fieldLayout)
 
@@ -207,7 +210,7 @@ public open class Wtf8 internal constructor(
      */
     public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> {
         fun writeStrEscaped(f: StringBuilder, s: String) {
-            for (c in s.rustStrChars().flatMap({ c ->
+            for (c in s.chars().flatMap({ c ->
                 c.escapeDebugExt(EscapeDebugExtArgs(escapeSingleQuote = false, escapeDoubleQuote = true))
             })) {
                 f.append(c)
@@ -222,12 +225,18 @@ public open class Wtf8 internal constructor(
             val surrogate = matchVal.second
             // SAFETY: nextSurrogate provides an index for a range of valid UTF-8 bytes.
             writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).subList(pos, surrogatePos))))
-            when (val tryResult = formatter.writeFmt("\\u{$surrogate}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            when (val tryResult = formatter.writeFmt("\\u{$surrogate}")) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
             pos = surrogatePos + 3
         }
         // SAFETY: after nextSurrogate returns None, the remainder is valid UTF-8.
         writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).subList(pos, (this.bytes).size))))
-        return run { formatter.append('"'); Result.Ok(Unit) }
+        return run {
+            formatter.append('"')
+            Result.Ok(Unit)
+        }
     }
 
     /**
@@ -245,7 +254,10 @@ public open class Wtf8 internal constructor(
                     if (pos == 0) {
                         return s.fmt(formatter)
                     } else {
-                        return run { formatter.append(s); Result.Ok(Unit) }
+                        return run {
+                            formatter.append(s)
+                            Result.Ok(Unit)
+                        }
                     }
                 }
                 else -> {
@@ -300,7 +312,7 @@ public open class Wtf8 internal constructor(
      *
      * This does not copy the data.
      */
-    public open fun asStr(): Result<String, str.Utf8Error> = String.fromUtf8(this.bytes)
+    public open fun asStr(): Result<String, Utf8Error> = String.fromUtf8(this.bytes)
 
     /**
      * Converts the WTF-8 string to potentially ill-formed UTF-16
@@ -486,9 +498,15 @@ public open class Wtf8 internal constructor(
                     val b = matchVal
                     return Result.Ok(Unit)
                 }
-                matchVal != null -> { return Result.Err(Utf8BoundaryError.NotABoundary) }
-                matchVal == null && index == this.len() -> { return Result.Ok(Unit) }
-                else -> { return Result.Err(Utf8BoundaryError.OutOfBounds) }
+                matchVal != null -> {
+                    return Result.Err(Utf8BoundaryError.NotABoundary)
+                }
+                matchVal == null && index == this.len() -> {
+                    return Result.Ok(Unit)
+                }
+                else -> {
+                    return Result.Err(Utf8BoundaryError.OutOfBounds)
+                }
             }
         }
         if (this.bytes[index + 1] >= 0xA0u.toUByte()) {
@@ -534,7 +552,7 @@ public open class Wtf8 internal constructor(
          */
         public fun fromBytesUnchecked(value: List<UByte>): Wtf8 {
             // SAFETY: start with &[u8], end with fancy &[u8]
-            return (ObjectSlotLayout<Wtf8>()).readNative((((constPtrFromRustCast(value)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+            return (UnresolvedTypeLayout<Wtf8>()).readNative((((constPtrFromRustCast(value)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
         }
 
         /**
@@ -546,7 +564,7 @@ public open class Wtf8 internal constructor(
          */
         public fun fromMutBytesUnchecked(value: MutableList<UByte>): RustMutableReference<Wtf8> {
             // SAFETY: start with [u8], end with fancy [u8]
-            return RustMutableReference(MutPtr((((mutPtrFromRustCast(value)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<Wtf8>())
+            return RustMutableReference(MutPtr((((mutPtrFromRustCast(value)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<Wtf8>())
         }
     }
 }
@@ -572,7 +590,7 @@ public fun sliceUnchecked(s: Wtf8, begin: Int, end: Int): Wtf8 {
     return run {
         val len = end - begin
         val start = ConstPtr((s.asBytes().asPtr()).rawAddress + ((begin).toLong() * (PrimitiveLayouts.U8).strideBytes))
-        Wtf8.fromBytesUnchecked(rawSliceList(start, len.toInt(), PrimitiveLayouts.U8))
+        Wtf8.fromBytesUnchecked(linearSliceView(start, len.toInt(), PrimitiveLayouts.U8))
     }
 }
 
@@ -601,14 +619,15 @@ public fun sliceErrorFail(s: Wtf8, begin: Int, end: Int): Nothing {
 public open class Wtf8CodePoints(
     public var bytes: ArrayDeque<UByte>,
 ) : Iterable<CodePoint> {
-    override fun iterator(): Iterator<CodePoint> = object : AbstractIterator<CodePoint>() {
-        override fun computeNext() {
-            when (val v = this@Wtf8CodePoints.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<CodePoint> =
+        object : AbstractIterator<CodePoint>() {
+            override fun computeNext() {
+                when (val v = this@Wtf8CodePoints.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Wtf8CodePoints = Wtf8CodePoints(bytes)
 
@@ -619,7 +638,7 @@ public open class Wtf8CodePoints(
 
     public open fun sizeHint(): Pair<Int, Int?> {
         val len = this.bytes.size
-        return Pair(rustSaturatingAdd(len, 3) / 4, len)
+        return Pair(len.saturatingAdd(3) / 4, len)
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "Wtf8CodePoints").field(Wtf8.fromBytesUnchecked(this.bytes.toList())).finish()
@@ -632,14 +651,15 @@ public open class EncodeWide(
     public var codePoints: Wtf8CodePoints,
     public var extra: UShort,
 ) : Iterable<UShort> {
-    override fun iterator(): Iterator<UShort> = object : AbstractIterator<UShort>() {
-        override fun computeNext() {
-            when (val v = this@EncodeWide.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<UShort> =
+        object : AbstractIterator<UShort>() {
+            override fun computeNext() {
+                when (val v = this@EncodeWide.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): EncodeWide = EncodeWide(codePoints, extra)
 
@@ -696,9 +716,28 @@ public open class EncodeWide(
                 }
             }
         }
-        when (val tryResult = f.writeFmt("EncodeWide(")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        when (val tryResult = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone().map({ CodeUnit(it) })).finish()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("EncodeWide(")) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
+        when (
+            val tryResult =
+                object {
+                    val entries = mutableListOf<Any?>()
+                    fun entry(v: Any?) = apply { entries.add(v) }
+                    fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }
+                    fun finish() {
+                        f.append(entries.joinToString(", ", "[", "]"))
+                    }
+                }.entries(this.clone().map({ CodeUnit(it) })).finish()
+        ) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
+        when (val tryResult = f.writeFmt(")")) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
         return Result.Ok(Unit)
     }
 }

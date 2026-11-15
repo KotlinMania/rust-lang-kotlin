@@ -3,13 +3,13 @@
 
 package io.github.kotlinmania.rustlang.std.os.darwin.fs
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.fs.FileTimes
-import io.github.kotlinmania.rustlang.fs.Metadata
-import io.github.kotlinmania.rustlang.os.darwin.raw.Stat
-import io.github.kotlinmania.rustlang.time.SystemTime
+import io.github.kotlinmania.rustlang.std.fs.FileTimes
+import io.github.kotlinmania.rustlang.std.fs.Metadata
+import io.github.kotlinmania.rustlang.std.os.darwin.raw.Stat
+import io.github.kotlinmania.rustlang.std.time.SystemTime
 
 // Darwin-specific extension traits to [fs].
 
@@ -72,7 +72,7 @@ public interface MetadataExt {
     public fun stQspare(): ULongArray
 }
 
-public fun Metadata.asRawStat(): Stat = (ObjectSlotLayout<Stat>()).readNative((((constPtrFromRustCast(this.asInner().asInner())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+public fun Metadata.asRawStat(): Stat = (UnresolvedTypeLayout<Stat>()).readNative((((constPtrFromRustCast(this.asInner().asInner())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
 public fun Metadata.stDev(): ULong = (this.asInner().asInner().stDev).toULong()
 

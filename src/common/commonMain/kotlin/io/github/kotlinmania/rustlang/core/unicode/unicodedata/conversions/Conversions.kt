@@ -3,19 +3,19 @@
 
 package io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions
 
-import io.github.kotlinmania.rustlang.cmp.Eq
-import io.github.kotlinmania.rustlang.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
+import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
+import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.ops.range.RangeInclusive
-import io.github.kotlinmania.rustlang.option.Option
-import io.github.kotlinmania.rustlang.panicking.assertFailed
 
 public open class L1Lut(
     public var l2Luts: List<L2Lut>,
@@ -194,104 +194,106 @@ public fun toCasefold(c: Char): List<Char> {
     if (c < '\u00b5') {
         return listOf(c.toAsciiLowercase(), '\u0000', '\u0000')
     }
-    return (lookup(c, CASEFOLD_LUT) ?: {
-        // Fall back to lowercase of uppercase
-        val uppercase = (lookup(c, UPPERCASE_LUT) ?: listOf(c, '\u0000', '\u0000'))
-        // We need to take the lowercase of each character in `uppercase`,
-        // and then concatenate them together.
-        // Lowercase the first uppercased char
-        var finalResult = toLower(uppercase[0])
-        if (uppercase[1] != '\u0000') {
-            // There's a 2nd uppercase char, lowercase it as well
-            val lowercase1 = toLower(uppercase[1])
-            if (false) {
-                when (val matchVal = Pair(lowercase1[2], '\u0000')) {
-                    else -> {
-                        val leftVal = matchVal.first
-                        val rightVal = matchVal.second
-                        if (!(leftVal == rightVal)) {
-                            val kind = Eq
-                            assertFailed(kind, leftVal, rightVal, Option.None)
+    return (
+        lookup(c, CASEFOLD_LUT) ?: {
+            // Fall back to lowercase of uppercase
+            val uppercase = (lookup(c, UPPERCASE_LUT) ?: listOf(c, '\u0000', '\u0000'))
+            // We need to take the lowercase of each character in `uppercase`,
+            // and then concatenate them together.
+            // Lowercase the first uppercased char
+            var finalResult = toLower(uppercase[0])
+            if (uppercase[1] != '\u0000') {
+                // There's a 2nd uppercase char, lowercase it as well
+                val lowercase1 = toLower(uppercase[1])
+                if (false) {
+                    when (val matchVal = Pair(lowercase1[2], '\u0000')) {
+                        else -> {
+                            val leftVal = matchVal.first
+                            val rightVal = matchVal.second
+                            if (!(leftVal == rightVal)) {
+                                val kind = Eq
+                                assertFailed(kind, leftVal, rightVal, Option.None)
+                            }
                         }
                     }
                 }
+                if (false) {
+                    when (val matchVal1 = Pair(finalResult[1], '\u0000')) {
+                        else -> {
+                            val leftVal1 = matchVal1.first
+                            val rightVal1 = matchVal1.second
+                            if (!(leftVal1 == rightVal1)) {
+                                val kind1 = Eq
+                                assertFailed(kind1, leftVal1, rightVal1, Option.None)
+                            }
+                        }
+                    }
+                }
+                // if finalResult[1] == '\0' {
+                finalResult[1] = lowercase1[0]
+                if (uppercase[2] != '\u0000') {
+                    if (false) {
+                        when (val matchVal2 = Pair(lowercase1[1], '\u0000')) {
+                            else -> {
+                                val leftVal2 = matchVal2.first
+                                val rightVal2 = matchVal2.second
+                                if (!(leftVal2 == rightVal2)) {
+                                    val kind2 = Eq
+                                    assertFailed(kind2, leftVal2, rightVal2, Option.None)
+                                }
+                            }
+                        }
+                    }
+                    val lowercase2 = toLower(uppercase[2])
+                    if (false) {
+                        when (val matchVal3 = Pair(lowercase2[1], '\u0000')) {
+                            else -> {
+                                val leftVal3 = matchVal3.first
+                                val rightVal3 = matchVal3.second
+                                if (!(leftVal3 == rightVal3)) {
+                                    val kind3 = Eq
+                                    assertFailed(kind3, leftVal3, rightVal3, Option.None)
+                                }
+                            }
+                        }
+                    }
+                    if (false) {
+                        when (val matchVal4 = Pair(lowercase2[2], '\u0000')) {
+                            else -> {
+                                val leftVal4 = matchVal4.first
+                                val rightVal4 = matchVal4.second
+                                if (!(leftVal4 == rightVal4)) {
+                                    val kind4 = Eq
+                                    assertFailed(kind4, leftVal4, rightVal4, Option.None)
+                                }
+                            }
+                        }
+                    }
+                    finalResult[2] = lowercase2[0]
+                } else {
+                    if (false) {
+                        when (val matchVal5 = Pair(lowercase1[1], '\u0000')) {
+                            else -> {
+                                val leftVal5 = matchVal5.first
+                                val rightVal5 = matchVal5.second
+                                if (!(leftVal5 == rightVal5)) {
+                                    val kind5 = Eq
+                                    assertFailed(kind5, leftVal5, rightVal5, Option.None)
+                                }
+                            }
+                        }
+                    }
+                    // finalResult[2] = lowercase1[1];
+                }
+                // } else {
+                // finalResult[2] = lowercase1[0];
+                // debugAssertEq(lowercase1[1], '\0');
+                // debugAssertEq(uppercase[2], '\0')
+                // }
             }
-            if (false) {
-                when (val matchVal1 = Pair(finalResult[1], '\u0000')) {
-                    else -> {
-                        val leftVal1 = matchVal1.first
-                        val rightVal1 = matchVal1.second
-                        if (!(leftVal1 == rightVal1)) {
-                            val kind1 = Eq
-                            assertFailed(kind1, leftVal1, rightVal1, Option.None)
-                        }
-                    }
-                }
-            }
-            // if finalResult[1] == '\0' {
-            finalResult[1] = lowercase1[0]
-            if (uppercase[2] != '\u0000') {
-                if (false) {
-                    when (val matchVal2 = Pair(lowercase1[1], '\u0000')) {
-                        else -> {
-                            val leftVal2 = matchVal2.first
-                            val rightVal2 = matchVal2.second
-                            if (!(leftVal2 == rightVal2)) {
-                                val kind2 = Eq
-                                assertFailed(kind2, leftVal2, rightVal2, Option.None)
-                            }
-                        }
-                    }
-                }
-                val lowercase2 = toLower(uppercase[2])
-                if (false) {
-                    when (val matchVal3 = Pair(lowercase2[1], '\u0000')) {
-                        else -> {
-                            val leftVal3 = matchVal3.first
-                            val rightVal3 = matchVal3.second
-                            if (!(leftVal3 == rightVal3)) {
-                                val kind3 = Eq
-                                assertFailed(kind3, leftVal3, rightVal3, Option.None)
-                            }
-                        }
-                    }
-                }
-                if (false) {
-                    when (val matchVal4 = Pair(lowercase2[2], '\u0000')) {
-                        else -> {
-                            val leftVal4 = matchVal4.first
-                            val rightVal4 = matchVal4.second
-                            if (!(leftVal4 == rightVal4)) {
-                                val kind4 = Eq
-                                assertFailed(kind4, leftVal4, rightVal4, Option.None)
-                            }
-                        }
-                    }
-                }
-                finalResult[2] = lowercase2[0]
-            } else {
-                if (false) {
-                    when (val matchVal5 = Pair(lowercase1[1], '\u0000')) {
-                        else -> {
-                            val leftVal5 = matchVal5.first
-                            val rightVal5 = matchVal5.second
-                            if (!(leftVal5 == rightVal5)) {
-                                val kind5 = Eq
-                                assertFailed(kind5, leftVal5, rightVal5, Option.None)
-                            }
-                        }
-                    }
-                }
-                // finalResult[2] = lowercase1[1];
-            }
-            // } else {
-            // finalResult[2] = lowercase1[0];
-            // debugAssertEq(lowercase1[1], '\0');
-            // debugAssertEq(uppercase[2], '\0')
-            // }
-        }
-        finalResult
-    }())
+            finalResult
+        }()
+    )
 }
 
 public var LOWERCASE_LUT: L1Lut = L1Lut(l2Luts = listOf(L2Lut(singles = listOf(Pair(Range.stepBy1(0x00c0..0x00d6), 32), Pair(Range.stepBy1(0x00d8..0x00de), 32), Pair(Range.stepBy2(0x0100..0x012e), 1), Pair(Range.stepBy2(0x0132..0x0136), 1), Pair(Range.stepBy2(0x0139..0x0147), 1), Pair(Range.stepBy2(0x014a..0x0176), 1), Pair(Range.singleton(0x0178u), -121), Pair(Range.stepBy2(0x0179..0x017d), 1), Pair(Range.singleton(0x0181u), 210), Pair(Range.stepBy2(0x0182..0x0184), 1), Pair(Range.singleton(0x0186u), 206), Pair(Range.singleton(0x0187u), 1), Pair(Range.stepBy1(0x0189..0x018a), 205), Pair(Range.singleton(0x018bu), 1), Pair(Range.singleton(0x018eu), 79), Pair(Range.singleton(0x018fu), 202), Pair(Range.singleton(0x0190u), 203), Pair(Range.singleton(0x0191u), 1), Pair(Range.singleton(0x0193u), 205), Pair(Range.singleton(0x0194u), 207), Pair(Range.singleton(0x0196u), 211), Pair(Range.singleton(0x0197u), 209), Pair(Range.singleton(0x0198u), 1), Pair(Range.singleton(0x019cu), 211), Pair(Range.singleton(0x019du), 213), Pair(Range.singleton(0x019fu), 214), Pair(Range.stepBy2(0x01a0..0x01a4), 1), Pair(Range.singleton(0x01a6u), 218), Pair(Range.singleton(0x01a7u), 1), Pair(Range.singleton(0x01a9u), 218), Pair(Range.singleton(0x01acu), 1), Pair(Range.singleton(0x01aeu), 218), Pair(Range.singleton(0x01afu), 1), Pair(Range.stepBy1(0x01b1..0x01b2), 217), Pair(Range.stepBy2(0x01b3..0x01b5), 1), Pair(Range.singleton(0x01b7u), 219), Pair(Range.singleton(0x01b8u), 1), Pair(Range.singleton(0x01bcu), 1), Pair(Range.singleton(0x01c4u), 2), Pair(Range.singleton(0x01c5u), 1), Pair(Range.singleton(0x01c7u), 2), Pair(Range.singleton(0x01c8u), 1), Pair(Range.singleton(0x01cau), 2), Pair(Range.stepBy2(0x01cb..0x01db), 1), Pair(Range.stepBy2(0x01de..0x01ee), 1), Pair(Range.singleton(0x01f1u), 2), Pair(Range.stepBy2(0x01f2..0x01f4), 1), Pair(Range.singleton(0x01f6u), -97), Pair(Range.singleton(0x01f7u), -56), Pair(Range.stepBy2(0x01f8..0x021e), 1), Pair(Range.singleton(0x0220u), -130), Pair(Range.stepBy2(0x0222..0x0232), 1), Pair(Range.singleton(0x023au), 10795), Pair(Range.singleton(0x023bu), 1), Pair(Range.singleton(0x023du), -163), Pair(Range.singleton(0x023eu), 10792), Pair(Range.singleton(0x0241u), 1), Pair(Range.singleton(0x0243u), -195), Pair(Range.singleton(0x0244u), 69), Pair(Range.singleton(0x0245u), 71), Pair(Range.stepBy2(0x0246..0x024e), 1), Pair(Range.stepBy2(0x0370..0x0372), 1), Pair(Range.singleton(0x0376u), 1), Pair(Range.singleton(0x037fu), 116), Pair(Range.singleton(0x0386u), 38), Pair(Range.stepBy1(0x0388..0x038a), 37), Pair(Range.singleton(0x038cu), 64), Pair(Range.stepBy1(0x038e..0x038f), 63), Pair(Range.stepBy1(0x0391..0x03a1), 32), Pair(Range.stepBy1(0x03a3..0x03ab), 32), Pair(Range.singleton(0x03cfu), 8), Pair(Range.stepBy2(0x03d8..0x03ee), 1), Pair(Range.singleton(0x03f4u), -60), Pair(Range.singleton(0x03f7u), 1), Pair(Range.singleton(0x03f9u), -7), Pair(Range.singleton(0x03fau), 1), Pair(Range.stepBy1(0x03fd..0x03ff), -130), Pair(Range.stepBy1(0x0400..0x040f), 80), Pair(Range.stepBy1(0x0410..0x042f), 32), Pair(Range.stepBy2(0x0460..0x0480), 1), Pair(Range.stepBy2(0x048a..0x04be), 1), Pair(Range.singleton(0x04c0u), 15), Pair(Range.stepBy2(0x04c1..0x04cd), 1), Pair(Range.stepBy2(0x04d0..0x052e), 1), Pair(Range.stepBy1(0x0531..0x0556), 48), Pair(Range.stepBy1(0x10a0..0x10c5), 7264), Pair(Range.singleton(0x10c7u), 7264), Pair(Range.singleton(0x10cdu), 7264), Pair(Range.stepBy1(0x13a0..0x13ef), -26672), Pair(Range.stepBy1(0x13f0..0x13f5), 8), Pair(Range.singleton(0x1c89u), 1), Pair(Range.stepBy1(0x1c90..0x1cba), -3008), Pair(Range.stepBy1(0x1cbd..0x1cbf), -3008), Pair(Range.stepBy2(0x1e00..0x1e94), 1), Pair(Range.singleton(0x1e9eu), -7615), Pair(Range.stepBy2(0x1ea0..0x1efe), 1), Pair(Range.stepBy1(0x1f08..0x1f0f), -8), Pair(Range.stepBy1(0x1f18..0x1f1d), -8), Pair(Range.stepBy1(0x1f28..0x1f2f), -8), Pair(Range.stepBy1(0x1f38..0x1f3f), -8), Pair(Range.stepBy1(0x1f48..0x1f4d), -8), Pair(Range.stepBy2(0x1f59..0x1f5f), -8), Pair(Range.stepBy1(0x1f68..0x1f6f), -8), Pair(Range.stepBy1(0x1f88..0x1f8f), -8), Pair(Range.stepBy1(0x1f98..0x1f9f), -8), Pair(Range.stepBy1(0x1fa8..0x1faf), -8), Pair(Range.stepBy1(0x1fb8..0x1fb9), -8), Pair(Range.stepBy1(0x1fba..0x1fbb), -74), Pair(Range.singleton(0x1fbcu), -9), Pair(Range.stepBy1(0x1fc8..0x1fcb), -86), Pair(Range.singleton(0x1fccu), -9), Pair(Range.stepBy1(0x1fd8..0x1fd9), -8), Pair(Range.stepBy1(0x1fda..0x1fdb), -100), Pair(Range.stepBy1(0x1fe8..0x1fe9), -8), Pair(Range.stepBy1(0x1fea..0x1feb), -112), Pair(Range.singleton(0x1fecu), -7), Pair(Range.stepBy1(0x1ff8..0x1ff9), -128), Pair(Range.stepBy1(0x1ffa..0x1ffb), -126), Pair(Range.singleton(0x1ffcu), -9), Pair(Range.singleton(0x2126u), -7517), Pair(Range.singleton(0x212au), -8383), Pair(Range.singleton(0x212bu), -8262), Pair(Range.singleton(0x2132u), 28), Pair(Range.stepBy1(0x2160..0x216f), 16), Pair(Range.singleton(0x2183u), 1), Pair(Range.stepBy1(0x24b6..0x24cf), 26), Pair(Range.stepBy1(0x2c00..0x2c2f), 48), Pair(Range.singleton(0x2c60u), 1), Pair(Range.singleton(0x2c62u), -10743), Pair(Range.singleton(0x2c63u), -3814), Pair(Range.singleton(0x2c64u), -10727), Pair(Range.stepBy2(0x2c67..0x2c6b), 1), Pair(Range.singleton(0x2c6du), -10780), Pair(Range.singleton(0x2c6eu), -10749), Pair(Range.singleton(0x2c6fu), -10783), Pair(Range.singleton(0x2c70u), -10782), Pair(Range.singleton(0x2c72u), 1), Pair(Range.singleton(0x2c75u), 1), Pair(Range.stepBy1(0x2c7e..0x2c7f), -10815), Pair(Range.stepBy2(0x2c80..0x2ce2), 1), Pair(Range.stepBy2(0x2ceb..0x2ced), 1), Pair(Range.singleton(0x2cf2u), 1), Pair(Range.stepBy2(0xa640..0xa66c), 1), Pair(Range.stepBy2(0xa680..0xa69a), 1), Pair(Range.stepBy2(0xa722..0xa72e), 1), Pair(Range.stepBy2(0xa732..0xa76e), 1), Pair(Range.stepBy2(0xa779..0xa77b), 1), Pair(Range.singleton(0xa77du), 30204), Pair(Range.stepBy2(0xa77e..0xa786), 1), Pair(Range.singleton(0xa78bu), 1), Pair(Range.singleton(0xa78du), 23256), Pair(Range.stepBy2(0xa790..0xa792), 1), Pair(Range.stepBy2(0xa796..0xa7a8), 1), Pair(Range.singleton(0xa7aau), 23228), Pair(Range.singleton(0xa7abu), 23217), Pair(Range.singleton(0xa7acu), 23221), Pair(Range.singleton(0xa7adu), 23231), Pair(Range.singleton(0xa7aeu), 23228), Pair(Range.singleton(0xa7b0u), 23278), Pair(Range.singleton(0xa7b1u), 23254), Pair(Range.singleton(0xa7b2u), 23275), Pair(Range.singleton(0xa7b3u), 928), Pair(Range.stepBy2(0xa7b4..0xa7c2), 1), Pair(Range.singleton(0xa7c4u), -48), Pair(Range.singleton(0xa7c5u), 23229), Pair(Range.singleton(0xa7c6u), 30152), Pair(Range.stepBy2(0xa7c7..0xa7c9), 1), Pair(Range.singleton(0xa7cbu), 23193), Pair(Range.stepBy2(0xa7cc..0xa7da), 1), Pair(Range.singleton(0xa7dcu), 22975), Pair(Range.singleton(0xa7ddu), 23194), Pair(Range.singleton(0xa7e2u), 23194), Pair(Range.singleton(0xa7f5u), 1), Pair(Range.stepBy1(0xab6c..0xab6d), -33), Pair(Range.stepBy1(0xff21..0xff3a), 32)), multis = listOf(Pair(0x0130, listOf(0x0069, 0x0307, 0x0000))), exceptions = listOf()), L2Lut(singles = listOf(Pair(Range.stepBy1(0x0400..0x0427), 40), Pair(Range.stepBy1(0x04b0..0x04d3), 40), Pair(Range.stepBy1(0x0570..0x057a), 39), Pair(Range.stepBy1(0x057c..0x058a), 39), Pair(Range.stepBy1(0x058c..0x0592), 39), Pair(Range.stepBy1(0x0594..0x0595), 39), Pair(Range.stepBy1(0x0c80..0x0cb2), 64), Pair(Range.stepBy1(0x0d50..0x0d65), 32), Pair(Range.stepBy1(0x18a0..0x18bf), 32), Pair(Range.stepBy1(0x6e40..0x6e5f), 32), Pair(Range.stepBy1(0x6ea0..0x6eb8), 27), Pair(Range.singleton(0xdf40u), 1), Pair(Range.stepBy2(0xdf48..0xdf4a), 1), Pair(Range.singleton(0xdf4du), 1), Pair(Range.singleton(0xdf51u), 1), Pair(Range.stepBy2(0xdf68..0xdf6e), 1), Pair(Range.stepBy2(0xdf72..0xdf7e), 1), Pair(Range.stepBy1(0xe900..0xe921), 34)), multis = listOf(), exceptions = listOf())))

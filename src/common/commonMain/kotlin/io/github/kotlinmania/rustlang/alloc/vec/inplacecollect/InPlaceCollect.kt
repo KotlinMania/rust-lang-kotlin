@@ -1,16 +1,23 @@
 // port-lint: source vec/in_place_collect.rs
 package io.github.kotlinmania.rustlang.alloc.vec.inplacecollect
 
-import io.github.kotlinmania.rustlang.alloc.Global
-import io.github.kotlinmania.rustlang.alloc.handleAllocError
+import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
+import io.github.kotlinmania.rustlang.alloc.vec.Vec
+import io.github.kotlinmania.rustlang.alloc.vec.inplacedrop.InPlaceDrop
+import io.github.kotlinmania.rustlang.alloc.vec.inplacedrop.InPlaceDstDataSrcBufDrop
+import io.github.kotlinmania.rustlang.alloc.vec.intoiter.IntoIter
+import io.github.kotlinmania.rustlang.alloc.vec.specfromiternested.SpecFromIterNested
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
@@ -18,11 +25,6 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.vec.Vec
-import io.github.kotlinmania.rustlang.vec.inplacedrop.InPlaceDrop
-import io.github.kotlinmania.rustlang.vec.inplacedrop.InPlaceDstDataSrcBufDrop
-import io.github.kotlinmania.rustlang.vec.intoiter.IntoIter
-import io.github.kotlinmania.rustlang.vec.specfromiternested.SpecFromIterNested
 
 // Inplace iterate-and-collect specialization for `List`
 //
@@ -209,10 +211,11 @@ public fun <Src, Dest> needsRealloc(srcCap: Int, dstCap: Int, typeLayoutSrc: Typ
     // the caller will have calculated a `dstCap` that is an integer multiple of
     // `srcCap` without remainder.
     if (run {
-        val srcSz = sizeOf<Src>(typeLayoutT = typeLayoutSrc)
-        val destSz = sizeOf<Dest>(typeLayoutT = typeLayoutDest)
-        destSz != 0 && srcSz % destSz == 0
-    }) {
+            val srcSz = sizeOf<Src>(typeLayoutT = typeLayoutSrc)
+            val destSz = sizeOf<Dest>(typeLayoutT = typeLayoutDest)
+            destSz != 0 && srcSz % destSz == 0
+        }
+    ) {
         return false
     }
     // type layouts don't guarantee a fit, so do a runtime check to see if
@@ -223,12 +226,14 @@ public fun <Src, Dest> needsRealloc(srcCap: Int, dstCap: Int, typeLayoutSrc: Typ
 /**
  * This provides a shorthand for the source type since local type aliases aren't a thing.
  */
-public interface InPlaceCollect<out Src> : SourceIter, InPlaceIterable
+public interface InPlaceCollect<out Src> :
+    SourceIter,
+    InPlaceIterable
 
 public fun <Src, Item, T, I> specFromIterFromIterVecT(iterator: I, typeLayoutT: TypeLayout<T>): List<T> where I : Iterator<T>, I : InPlaceCollect<Any?> {
     // Select the implementation in const eval to avoid codegen of the dead branch to improve compile times.
     val fn: (I) -> List<T> =
-        if (inPlaceCollectible<T, Src>(I.MERGE_BY, I.EXPAND_BY, typeLayoutSrc = ObjectSlotLayout<Src>(), typeLayoutDest = typeLayoutT)) {
+        if (inPlaceCollectible<T, Src>(I.MERGE_BY, I.EXPAND_BY, typeLayoutSrc = UnresolvedTypeLayout<Src>(), typeLayoutDest = typeLayoutT)) {
             ::fromIterInPlace
         } else {
             // fallback
@@ -242,7 +247,7 @@ public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayou
     var (srcBuf, srcPtr, srcCap, dstBuf, dstEnd, dstCap) =
         run {
             val inner = iterator.asInner().asIntoIter()
-            listOf(inner.buf, inner.ptr, inner.cap, inner.buf.cast(), constPtrFromRustCast(inner.end), inner.cap.uncheckedMul(sizeOf<Src>(typeLayoutT = ObjectSlotLayout<Src>())) / sizeOf<T>(typeLayoutT = typeLayoutT))
+            listOf(inner.buf, inner.ptr, inner.cap, inner.buf.cast(), constPtrFromRustCast(inner.end), inner.cap.uncheckedMul(sizeOf<Src>(typeLayoutT = UnresolvedTypeLayout<Src>())) / sizeOf<T>(typeLayoutT = typeLayoutT))
         }
     // SAFETY: `dstBuf` and `dstEnd` are the start and end of the buffer.
     val len = iterator.collectInPlace(mutPtrFromRustCast(dstBuf.asPtr()), dstEnd)
@@ -274,15 +279,15 @@ public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayou
     // of the destination type size.
     // Since the discrepancy should generally be small this should only result in some
     // bookkeeping updates and no memmove.
-    if (needsRealloc<Src, T>(srcCap, dstCap, typeLayoutSrc = ObjectSlotLayout<Src>(), typeLayoutDest = typeLayoutT)) {
+    if (needsRealloc<Src, T>(srcCap, dstCap, typeLayoutSrc = UnresolvedTypeLayout<Src>(), typeLayoutDest = typeLayoutT)) {
         val alloc = Global
         check(srcCap != 0)
         check(dstCap != 0)
         // ignore-tidy-undocumented-unchecked
         run {
             // The old allocation exists, therefore it must have a valid layout.
-            val srcAlign = alignOf<Src>(typeLayoutT = ObjectSlotLayout<Src>())
-            val srcSize = sizeOf<Src>(typeLayoutT = ObjectSlotLayout<Src>()).uncheckedMul(srcCap)
+            val srcAlign = alignOf<Src>(typeLayoutT = UnresolvedTypeLayout<Src>())
+            val srcSize = sizeOf<Src>(typeLayoutT = UnresolvedTypeLayout<Src>()).uncheckedMul(srcCap)
             val oldLayout = Layout.fromSizeAlignUnchecked(srcSize, srcAlign)
             // The allocation must be equal or smaller for in-place iteration to be possible
             // therefore the new layout must be ≤ the old one and therefore valid.
@@ -294,7 +299,7 @@ public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayou
             dstBuf = reallocated.cast()
         }
     } else {
-        check(srcCap * sizeOf<Src>(typeLayoutT = ObjectSlotLayout<Src>()) == dstCap * sizeOf<T>(typeLayoutT = typeLayoutT))
+        check(srcCap * sizeOf<Src>(typeLayoutT = UnresolvedTypeLayout<Src>()) == dstCap * sizeOf<T>(typeLayoutT = typeLayoutT))
     }
     forget(dstGuard)
     // ignore-tidy-undocumented-unchecked
@@ -309,7 +314,7 @@ public fun <T> writeInPlaceWithDrop(srcEnd: ConstPtr): (InPlaceDrop<T>, T) -> Re
         check(((constPtrFromRustCast(sink.dst)).rawAddress.toULong() <= (srcEnd).rawAddress.toULong())) { "InPlaceIterable contract violation" }
         // ignore-tidy-undocumented-unchecked
         run {
-            ptr.write(sink.dst, item)
+            write(sink.dst, item)
             // Since this executes user code which can panic we have to bump the pointer
             // after each step.
             sink.dst = sink.dst.add(1)
@@ -357,7 +362,7 @@ public fun <T, I> I.collectInPlace(dstBuf: MutPtr, end: ConstPtr, typeLayoutT: T
         run {
             val dst = MutPtr((dstBuf).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes))
             check(((ConstPtr(dst.rawAddress, dst.rawMeta)).rawAddress.toULong() <= (end).rawAddress.toULong())) { "InPlaceIterable contract violation" }
-            ptr.write(dst, this.iteratorGetUnchecked(i), typeLayoutT = typeLayoutT)
+            write(dst, this.iteratorGetUnchecked(i), typeLayoutT = typeLayoutT)
             // Since this executes user code which can panic we have to bump the pointer
             // after each step.
             dropGuard.dst = MutPtr((dst).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))

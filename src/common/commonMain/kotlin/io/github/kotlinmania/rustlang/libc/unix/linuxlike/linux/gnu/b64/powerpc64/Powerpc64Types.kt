@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.powerpc64
 
-import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.libc.*
 
 public typealias WcharT = Int
 

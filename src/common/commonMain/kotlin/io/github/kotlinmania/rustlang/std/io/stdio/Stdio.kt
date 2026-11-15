@@ -15,18 +15,18 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.fs.File
-import io.github.kotlinmania.rustlang.io.Write
+import io.github.kotlinmania.rustlang.std.fs.File
+import io.github.kotlinmania.rustlang.std.io.Write
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sync.nonpoison.mutex.Mutex
-import io.github.kotlinmania.rustlang.sync.nonpoison.mutex.MutexGuard
-import io.github.kotlinmania.rustlang.sync.oncelock.OnceLock
-import io.github.kotlinmania.rustlang.sync.reentrantlock.ReentrantLock
-import io.github.kotlinmania.rustlang.sync.reentrantlock.ReentrantLockGuard
-import io.github.kotlinmania.rustlang.sys.process.unsupported.Stdio
-import io.github.kotlinmania.rustlang.thread.AccessError
-import io.github.kotlinmania.rustlang.thread.LocalKey
-import io.github.kotlinmania.rustlang.thread.localimpl.threadLocalInner
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
+import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
+import io.github.kotlinmania.rustlang.std.sync.reentrantlock.ReentrantLock
+import io.github.kotlinmania.rustlang.std.sync.reentrantlock.ReentrantLockGuard
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio
+import io.github.kotlinmania.rustlang.std.thread.AccessError
+import io.github.kotlinmania.rustlang.std.thread.LocalKey
+import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
 
 public fun interface FnCallback {
     public operator fun invoke(): T
@@ -107,14 +107,14 @@ public open class StdinRaw(
         if (buf.isEmpty()) {
             return Result.Ok(Unit)
         }
-        return handleEbadf(this.value.readExact(buf), { Result.Err(io.github.kotlinmania.rustlang.io.Error.READ_EXACT_EOF) })
+        return handleEbadf(this.value.readExact(buf), { Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF) })
     }
 
     public open fun readBufExact(buf: BorrowedCursor<UByte>): Result<Unit, Error> {
         if (buf.capacity() == 0) {
             return Result.Ok(Unit)
         }
-        return handleEbadf(this.value.readBufExact(buf), { Result.Err(io.github.kotlinmania.rustlang.io.Error.READ_EXACT_EOF) })
+        return handleEbadf(this.value.readBufExact(buf), { Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF) })
     }
 
     public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.readToEnd(buf), { Result.Ok(0) })
@@ -152,7 +152,7 @@ public open class StdoutRaw(
 
     public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
 
-    public open fun writeFmt(fmt: fmt.Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
+    public open fun writeFmt(fmt: Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
 }
 
 /**
@@ -185,7 +185,7 @@ public open class StderrRaw(
 
     public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
 
-    public open fun writeFmt(fmt: fmt.Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
+    public open fun writeFmt(fmt: Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
 }
 
 /**
@@ -388,7 +388,7 @@ public open class Stdin internal constructor(
 
     public open fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit, Error> = this.lock().readBufExact(cursor)
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.sys.io.isterminal.isatty.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -479,7 +479,7 @@ public open class StdinLock internal constructor(
         DebugStruct(f, "StdinLock").finishNonExhaustive()
     }
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.sys.io.isterminal.isatty.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -624,9 +624,9 @@ public open class Stdout internal constructor(
 
     public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = (this).writeAllVectored(bufs)
 
-    public open fun writeFmt(args: fmt.Arguments): Result<Unit, Error> = (this).writeFmt(args)
+    public open fun writeFmt(args: Arguments): Result<Unit, Error> = (this).writeFmt(args)
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.sys.io.isterminal.isatty.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -683,7 +683,7 @@ public open class StdoutLock internal constructor(
         DebugStruct(f, "StdoutLock").finishNonExhaustive()
     }
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.sys.io.isterminal.isatty.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -857,9 +857,9 @@ public open class Stderr internal constructor(
 
     public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = (this).writeAllVectored(bufs)
 
-    public open fun writeFmt(args: fmt.Arguments): Result<Unit, Error> = (this).writeFmt(args)
+    public open fun writeFmt(args: Arguments): Result<Unit, Error> = (this).writeFmt(args)
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.sys.io.isterminal.isatty.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -909,7 +909,7 @@ public open class StderrLock internal constructor(
         DebugStruct(f, "StderrLock").finishNonExhaustive()
     }
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.sys.io.isterminal.isatty.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -1004,7 +1004,7 @@ public fun trySetOutputCapture(sink: LocalStream?): Result<LocalStream?, AccessE
  * Writing to non-blocking stdout/stderr can cause an error, which will lead
  * this function to panic.
  */
-public fun <T> printTo(args: fmt.Arguments, globalS: () -> T, label: String) where T : Write {
+public fun <T> printTo(args: Arguments, globalS: () -> T, label: String) where T : Write {
     if (printToBufferIfCaptureUsed(args)) {
         // Successfully wrote to capture buffer.
         return
@@ -1018,7 +1018,7 @@ public fun <T> printTo(args: fmt.Arguments, globalS: () -> T, label: String) whe
     }
 }
 
-public fun printToBufferIfCaptureUsed(args: fmt.Arguments): Boolean =
+public fun printToBufferIfCaptureUsed(args: Arguments): Boolean =
     (OUTPUT_CAPTURE_USED.load(Ordering.Relaxed) &&
         (OUTPUT_CAPTURE.tryWith({ s ->
             // Note that we completely remove a local sink to write to in case
@@ -1035,7 +1035,7 @@ public fun printToBufferIfCaptureUsed(args: fmt.Arguments): Boolean =
  * has returned. Should avoid panicking, although we can't help it if one of
  * the Display impls inside args decides to.
  */
-public fun attemptPrintToStderr(args: fmt.Arguments) {
+public fun attemptPrintToStderr(args: Arguments) {
     if (printToBufferIfCaptureUsed(args)) {
         return
     }
@@ -1096,12 +1096,12 @@ public interface IsTerminal {
     public fun isTerminal(): Boolean
 }
 
-public fun File.isTerminal(): Boolean = io.github.kotlinmania.rustlang.sys.io.isterminal.isatty.isTerminal(this)
+public fun File.isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
-public fun print(args: fmt.Arguments) {
+public fun print(args: Arguments) {
     printTo(args, ::stdout, "stdout")
 }
 
-public fun eprint(args: fmt.Arguments) {
+public fun eprint(args: Arguments) {
     printTo(args, ::stderr, "stderr")
 }

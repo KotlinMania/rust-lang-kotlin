@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.corearch.x8664.cinterop
-headers = corearch_x8664_bmi_wrapper.h
-headerFilter = corearch_x8664_bmi_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = corearch_x8664_bmi_wrapper.a

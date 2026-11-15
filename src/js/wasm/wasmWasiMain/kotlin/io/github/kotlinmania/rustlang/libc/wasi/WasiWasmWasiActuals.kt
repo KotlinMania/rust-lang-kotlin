@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.libc.wasi
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
@@ -13,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.*
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual var ENVIRON: MutPtr
@@ -21,1160 +21,1142 @@ public actual var ENVIRON: MutPtr
         throw UnsupportedOperationException("WasmWasi foreign static environ requires a host memory/aggregate ABI adapter")
     }
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiGetCLOCKMONOTONIC1")
-private external fun wasiRustlangLibcWasiGetCLOCKMONOTONIC1(): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiGetCLOCKMONOTONIC1")
+private external fun wasiLibcWasiGetCLOCKMONOTONIC1(): Int
 
 public actual val CLOCK_MONOTONIC1: UByte
-    get() = wasiRustlangLibcWasiGetCLOCKMONOTONIC1().toUByte()
+    get() = wasiLibcWasiGetCLOCKMONOTONIC1().toUByte()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiGetCLOCKREALTIME1")
-private external fun wasiRustlangLibcWasiGetCLOCKREALTIME1(): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiGetCLOCKREALTIME1")
+private external fun wasiLibcWasiGetCLOCKREALTIME1(): Int
 
 public actual val CLOCK_REALTIME1: UByte
-    get() = wasiRustlangLibcWasiGetCLOCKREALTIME1().toUByte()
+    get() = wasiLibcWasiGetCLOCKREALTIME1().toUByte()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiExit")
-private external fun wasiRustlangLibcWasiExit(code: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "libcWasiExit")
+private external fun wasiLibcWasiExit(code: Int): Unit
 
 public actual fun exit(code: CInt): Nothing {
-    wasiRustlangLibcWasiExit(code)
-    error("C noreturn function rustlangLibcWasiExit returned")
+    wasiLibcWasiExit(code)
+    error("C noreturn function libcWasiExit returned")
 }
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiAbort")
-private external fun wasiRustlangLibcWasiAbort(): Unit
+@kotlin.wasm.WasmImport("kmcore", "libcWasiAbort")
+private external fun wasiLibcWasiAbort(): Unit
 
 public actual fun abort(): Nothing {
-    wasiRustlangLibcWasiAbort()
-    error("C noreturn function rustlangLibcWasiAbort returned")
+    wasiLibcWasiAbort()
+    error("C noreturn function libcWasiAbort returned")
 }
 
 public actual fun alignedAlloc(a: SizeT, b: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiAlignedAlloc")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiAlignedAlloc")
 
 public actual fun calloc(amt: SizeT, amt2: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiCalloc")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiCalloc")
 
-public actual fun free(ptr: MutPtr) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFree")
-}
+public actual fun free(ptr: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFree")
 
 public actual fun getenv(s: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiGetenv")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiGetenv")
 
 public actual fun malloc(amt: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiMalloc")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiMalloc")
 
 public actual fun mallocUsableSize(ptr: MutPtr): SizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiMallocUsableSize")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiMallocUsableSize")
 
 public actual fun sbrk(increment: IntptrT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSbrk")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSbrk")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiRand")
-private external fun wasiRustlangLibcWasiRand(): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiRand")
+private external fun wasiLibcWasiRand(): Int
 
 public actual fun rand(): CInt =
-    wasiRustlangLibcWasiRand().toInt()
+    wasiLibcWasiRand().toInt()
 
 public actual fun read(fd: CInt, ptr: MutPtr, size: SizeT): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiRead")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiRead")
 
 public actual fun realloc(ptr: MutPtr, amt: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiRealloc")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiRealloc")
 
 public actual fun setenv(k: ConstPtr, v: ConstPtr, a: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSetenv")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSetenv")
 
 public actual fun unsetenv(k: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiUnsetenv")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiUnsetenv")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiClearenv")
-private external fun wasiRustlangLibcWasiClearenv(): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiClearenv")
+private external fun wasiLibcWasiClearenv(): Int
 
 public actual fun clearenv(): CInt =
-    wasiRustlangLibcWasiClearenv().toInt()
+    wasiLibcWasiClearenv().toInt()
 
 public actual fun write(fd: CInt, ptr: ConstPtr, size: SizeT): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWrite")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWrite")
 
 public actual fun fopen(a: ConstPtr, b: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFopen")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFopen")
 
 public actual fun freopen(a: ConstPtr, b: ConstPtr, f: MutPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFreopen")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFreopen")
 
 public actual fun fclose(f: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFclose")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFclose")
 
 public actual fun remove(a: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiRemove")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiRemove")
 
 public actual fun rename(a: ConstPtr, b: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiRename")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiRename")
 
 public actual fun feof(f: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFeof")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFeof")
 
 public actual fun ferror(f: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFerror")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFerror")
 
 public actual fun fflush(f: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFflush")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFflush")
 
-public actual fun clearerr(f: MutPtr) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiClearerr")
-}
+public actual fun clearerr(f: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiClearerr")
 
 public actual fun fseek(f: MutPtr, b: CLong, c: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFseek")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFseek")
 
 public actual fun ftell(f: MutPtr): CLong =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFtell")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFtell")
 
-public actual fun rewind(f: MutPtr) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiRewind")
-}
+public actual fun rewind(f: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiRewind")
 
 public actual fun fgetpos(f: MutPtr, pos: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFgetpos")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFgetpos")
 
 public actual fun fsetpos(f: MutPtr, pos: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFsetpos")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFsetpos")
 
 public actual fun fread(buf: MutPtr, a: SizeT, b: SizeT, f: MutPtr): SizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFread")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFread")
 
 public actual fun fwrite(buf: ConstPtr, a: SizeT, b: SizeT, f: MutPtr): SizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFwrite")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFwrite")
 
 public actual fun fgetc(f: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFgetc")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFgetc")
 
 public actual fun getc(f: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiGetc")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiGetc")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiGetchar")
-private external fun wasiRustlangLibcWasiGetchar(): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiGetchar")
+private external fun wasiLibcWasiGetchar(): Int
 
 public actual fun getchar(): CInt =
-    wasiRustlangLibcWasiGetchar().toInt()
+    wasiLibcWasiGetchar().toInt()
 
 public actual fun ungetc(a: CInt, f: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiUngetc")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiUngetc")
 
 public actual fun fputc(a: CInt, f: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFputc")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFputc")
 
 public actual fun putc(a: CInt, f: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPutc")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPutc")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiPutchar")
-private external fun wasiRustlangLibcWasiPutchar(a: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiPutchar")
+private external fun wasiLibcWasiPutchar(a: Int): Int
 
 public actual fun putchar(a: CInt): CInt =
-    wasiRustlangLibcWasiPutchar(a).toInt()
+    wasiLibcWasiPutchar(a).toInt()
 
 public actual fun fputs(a: ConstPtr, f: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFputs")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFputs")
 
 public actual fun puts(a: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPuts")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPuts")
 
-public actual fun perror(a: ConstPtr) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPerror")
-}
+public actual fun perror(a: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPerror")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiSrand")
-private external fun wasiRustlangLibcWasiSrand(a: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "libcWasiSrand")
+private external fun wasiLibcWasiSrand(a: Int): Unit
 
 public actual fun srand(a: CUint): Unit =
-    wasiRustlangLibcWasiSrand(a.toInt())
+    wasiLibcWasiSrand(a.toInt())
 
 public actual fun atexit(a: AtexitACallback): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiAtexit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiAtexit")
 
 public actual fun atQuickExit(a: AtexitACallback): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiAtQuickExit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiAtQuickExit")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiQuickExit")
-private external fun wasiRustlangLibcWasiQuickExit(a: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "libcWasiQuickExit")
+private external fun wasiLibcWasiQuickExit(a: Int): Unit
 
 public actual fun quickExit(a: CInt): Nothing {
-    wasiRustlangLibcWasiQuickExit(a)
-    error("C noreturn function rustlangLibcWasiQuickExit returned")
+    wasiLibcWasiQuickExit(a)
+    error("C noreturn function libcWasiQuickExit returned")
 }
 
 public actual fun posixMemalign(a: MutPtr, b: SizeT, c: SizeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPosixMemalign")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPosixMemalign")
 
 public actual fun randR(a: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiRandR")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiRandR")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiRandom")
-private external fun wasiRustlangLibcWasiRandom(): Long
+@kotlin.wasm.WasmImport("kmcore", "libcWasiRandom")
+private external fun wasiLibcWasiRandom(): Long
 
 public actual fun random(): CLong =
-    wasiRustlangLibcWasiRandom().toLong()
+    wasiLibcWasiRandom().toLong()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiSrandom")
-private external fun wasiRustlangLibcWasiSrandom(a: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "libcWasiSrandom")
+private external fun wasiLibcWasiSrandom(a: Int): Unit
 
 public actual fun srandom(a: CUint): Unit =
-    wasiRustlangLibcWasiSrandom(a.toInt())
+    wasiLibcWasiSrandom(a.toInt())
 
 public actual fun putenv(a: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPutenv")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPutenv")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiClock")
-private external fun wasiRustlangLibcWasiClock(): Long
+@kotlin.wasm.WasmImport("kmcore", "libcWasiClock")
+private external fun wasiLibcWasiClock(): Long
 
 public actual fun clock(): ClockT =
-    wasiRustlangLibcWasiClock().toLong()
+    wasiLibcWasiClock().toLong()
 
 public actual fun time(a: MutPtr): TimeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiTime")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiTime")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiDifftime")
-private external fun wasiRustlangLibcWasiDifftime(a: Long, b: Long): Double
+@kotlin.wasm.WasmImport("kmcore", "libcWasiDifftime")
+private external fun wasiLibcWasiDifftime(a: Long, b: Long): Double
 
 public actual fun difftime(a: TimeT, b: TimeT): CDouble =
-    wasiRustlangLibcWasiDifftime(a, b).toDouble()
+    wasiLibcWasiDifftime(a, b).toDouble()
 
 public actual fun mktime(a: MutPtr): TimeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiMktime")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiMktime")
 
 public actual fun strftime(a: MutPtr, b: SizeT, c: ConstPtr, d: ConstPtr): SizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrftime")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrftime")
 
 public actual fun gmtime(a: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiGmtime")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiGmtime")
 
 public actual fun gmtimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiGmtimeR")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiGmtimeR")
 
 public actual fun localtime(a: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiLocaltime")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiLocaltime")
 
 public actual fun localtimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiLocaltimeR")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiLocaltimeR")
 
 public actual fun asctimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiAsctimeR")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiAsctimeR")
 
 public actual fun ctimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiCtimeR")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiCtimeR")
 
 public actual fun nanosleep(a: ConstPtr, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiNanosleep")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiNanosleep")
 
 public actual fun clockGetres(a: ClockidT, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiClockGetres")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiClockGetres")
 
 public actual fun clockGettime(a: ClockidT, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiClockGettime")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiClockGettime")
 
 public actual fun clockNanosleep(a: ClockidT, a2: CInt, b: ConstPtr, c: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiClockNanosleep")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiClockNanosleep")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIsalnum")
-private external fun wasiRustlangLibcWasiIsalnum(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIsalnum")
+private external fun wasiLibcWasiIsalnum(c: Int): Int
 
 public actual fun isalnum(c: CInt): CInt =
-    wasiRustlangLibcWasiIsalnum(c).toInt()
+    wasiLibcWasiIsalnum(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIsalpha")
-private external fun wasiRustlangLibcWasiIsalpha(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIsalpha")
+private external fun wasiLibcWasiIsalpha(c: Int): Int
 
 public actual fun isalpha(c: CInt): CInt =
-    wasiRustlangLibcWasiIsalpha(c).toInt()
+    wasiLibcWasiIsalpha(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIscntrl")
-private external fun wasiRustlangLibcWasiIscntrl(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIscntrl")
+private external fun wasiLibcWasiIscntrl(c: Int): Int
 
 public actual fun iscntrl(c: CInt): CInt =
-    wasiRustlangLibcWasiIscntrl(c).toInt()
+    wasiLibcWasiIscntrl(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIsdigit")
-private external fun wasiRustlangLibcWasiIsdigit(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIsdigit")
+private external fun wasiLibcWasiIsdigit(c: Int): Int
 
 public actual fun isdigit(c: CInt): CInt =
-    wasiRustlangLibcWasiIsdigit(c).toInt()
+    wasiLibcWasiIsdigit(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIsgraph")
-private external fun wasiRustlangLibcWasiIsgraph(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIsgraph")
+private external fun wasiLibcWasiIsgraph(c: Int): Int
 
 public actual fun isgraph(c: CInt): CInt =
-    wasiRustlangLibcWasiIsgraph(c).toInt()
+    wasiLibcWasiIsgraph(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIslower")
-private external fun wasiRustlangLibcWasiIslower(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIslower")
+private external fun wasiLibcWasiIslower(c: Int): Int
 
 public actual fun islower(c: CInt): CInt =
-    wasiRustlangLibcWasiIslower(c).toInt()
+    wasiLibcWasiIslower(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIsprint")
-private external fun wasiRustlangLibcWasiIsprint(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIsprint")
+private external fun wasiLibcWasiIsprint(c: Int): Int
 
 public actual fun isprint(c: CInt): CInt =
-    wasiRustlangLibcWasiIsprint(c).toInt()
+    wasiLibcWasiIsprint(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIspunct")
-private external fun wasiRustlangLibcWasiIspunct(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIspunct")
+private external fun wasiLibcWasiIspunct(c: Int): Int
 
 public actual fun ispunct(c: CInt): CInt =
-    wasiRustlangLibcWasiIspunct(c).toInt()
+    wasiLibcWasiIspunct(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIsspace")
-private external fun wasiRustlangLibcWasiIsspace(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIsspace")
+private external fun wasiLibcWasiIsspace(c: Int): Int
 
 public actual fun isspace(c: CInt): CInt =
-    wasiRustlangLibcWasiIsspace(c).toInt()
+    wasiLibcWasiIsspace(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIsupper")
-private external fun wasiRustlangLibcWasiIsupper(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIsupper")
+private external fun wasiLibcWasiIsupper(c: Int): Int
 
 public actual fun isupper(c: CInt): CInt =
-    wasiRustlangLibcWasiIsupper(c).toInt()
+    wasiLibcWasiIsupper(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIsxdigit")
-private external fun wasiRustlangLibcWasiIsxdigit(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIsxdigit")
+private external fun wasiLibcWasiIsxdigit(c: Int): Int
 
 public actual fun isxdigit(c: CInt): CInt =
-    wasiRustlangLibcWasiIsxdigit(c).toInt()
+    wasiLibcWasiIsxdigit(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIsblank")
-private external fun wasiRustlangLibcWasiIsblank(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIsblank")
+private external fun wasiLibcWasiIsblank(c: Int): Int
 
 public actual fun isblank(c: CInt): CInt =
-    wasiRustlangLibcWasiIsblank(c).toInt()
+    wasiLibcWasiIsblank(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiTolower")
-private external fun wasiRustlangLibcWasiTolower(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiTolower")
+private external fun wasiLibcWasiTolower(c: Int): Int
 
 public actual fun tolower(c: CInt): CInt =
-    wasiRustlangLibcWasiTolower(c).toInt()
+    wasiLibcWasiTolower(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiToupper")
-private external fun wasiRustlangLibcWasiToupper(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiToupper")
+private external fun wasiLibcWasiToupper(c: Int): Int
 
 public actual fun toupper(c: CInt): CInt =
-    wasiRustlangLibcWasiToupper(c).toInt()
+    wasiLibcWasiToupper(c).toInt()
 
 public actual fun setvbuf(stream: MutPtr, buffer: MutPtr, mode: CInt, size: SizeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSetvbuf")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSetvbuf")
 
-public actual fun setbuf(stream: MutPtr, buf: MutPtr) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSetbuf")
-}
+public actual fun setbuf(stream: MutPtr, buf: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSetbuf")
 
 public actual fun fgets(buf: MutPtr, n: CInt, stream: MutPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFgets")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFgets")
 
 public actual fun atof(s: ConstPtr): CDouble =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiAtof")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiAtof")
 
 public actual fun atoi(s: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiAtoi")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiAtoi")
 
 public actual fun atol(s: ConstPtr): CLong =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiAtol")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiAtol")
 
 public actual fun atoll(s: ConstPtr): CLonglong =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiAtoll")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiAtoll")
 
 public actual fun strtod(s: ConstPtr, endp: MutPtr): CDouble =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrtod")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrtod")
 
 public actual fun strtof(s: ConstPtr, endp: MutPtr): CFloat =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrtof")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrtof")
 
 public actual fun strtol(s: ConstPtr, endp: MutPtr, base: CInt): CLong =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrtol")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrtol")
 
 public actual fun strtoll(s: ConstPtr, endp: MutPtr, base: CInt): CLonglong =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrtoll")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrtoll")
 
 public actual fun strtoul(s: ConstPtr, endp: MutPtr, base: CInt): CUlong =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrtoul")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrtoul")
 
 public actual fun strtoull(s: ConstPtr, endp: MutPtr, base: CInt): CUlonglong =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrtoull")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrtoull")
 
 public actual fun strcpy(dst: MutPtr, src: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrcpy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrcpy")
 
 public actual fun strncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrncpy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrncpy")
 
 public actual fun strcat(s: MutPtr, ct: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrcat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrcat")
 
 public actual fun strncat(s: MutPtr, ct: ConstPtr, n: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrncat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrncat")
 
 public actual fun strcmp(cs: ConstPtr, ct: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrcmp")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrcmp")
 
 public actual fun strncmp(cs: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrncmp")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrncmp")
 
 public actual fun strcoll(cs: ConstPtr, ct: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrcoll")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrcoll")
 
 public actual fun strchr(cs: ConstPtr, c: CInt): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrchr")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrchr")
 
 public actual fun strrchr(cs: ConstPtr, c: CInt): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrrchr")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrrchr")
 
 public actual fun strspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrspn")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrspn")
 
 public actual fun strcspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrcspn")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrcspn")
 
 public actual fun strdup(cs: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrdup")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrdup")
 
 public actual fun strndup(cs: ConstPtr, n: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrndup")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrndup")
 
 public actual fun strpbrk(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrpbrk")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrpbrk")
 
 public actual fun strstr(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrstr")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrstr")
 
 public actual fun strcasecmp(s1: ConstPtr, s2: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrcasecmp")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrcasecmp")
 
 public actual fun strncasecmp(s1: ConstPtr, s2: ConstPtr, n: SizeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrncasecmp")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrncasecmp")
 
 public actual fun strlen(cs: ConstPtr): SizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrlen")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrlen")
 
 public actual fun strnlen(cs: ConstPtr, maxlen: SizeT): SizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrnlen")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrnlen")
 
 public actual fun strerror(n: CInt): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrerror")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrerror")
 
 public actual fun strtok(s: MutPtr, t: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrtok")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrtok")
 
 public actual fun strxfrm(s: MutPtr, ct: ConstPtr, n: SizeT): SizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrxfrm")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrxfrm")
 
 public actual fun memchr(cx: ConstPtr, c: CInt, n: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiMemchr")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiMemchr")
 
 public actual fun memcmp(cx: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiMemcmp")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiMemcmp")
 
 public actual fun memcpy(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiMemcpy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiMemcpy")
 
 public actual fun memmove(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiMemmove")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiMemmove")
 
 public actual fun memset(dest: MutPtr, c: CInt, n: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiMemset")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiMemset")
 
 public actual fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFprintf")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFprintf")
 
 public actual fun printf(format: ConstPtr, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPrintf")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPrintf")
 
 public actual fun snprintf(s: MutPtr, n: SizeT, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSnprintf")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSnprintf")
 
 public actual fun sprintf(s: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSprintf")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSprintf")
 
 public actual fun fscanf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFscanf")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFscanf")
 
 public actual fun scanf(format: ConstPtr, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiScanf")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiScanf")
 
 public actual fun sscanf(s: ConstPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSscanf")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSscanf")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiGetcharUnlocked")
-private external fun wasiRustlangLibcWasiGetcharUnlocked(): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiGetcharUnlocked")
+private external fun wasiLibcWasiGetcharUnlocked(): Int
 
 public actual fun getcharUnlocked(): CInt =
-    wasiRustlangLibcWasiGetcharUnlocked().toInt()
+    wasiLibcWasiGetcharUnlocked().toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiPutcharUnlocked")
-private external fun wasiRustlangLibcWasiPutcharUnlocked(c: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiPutcharUnlocked")
+private external fun wasiLibcWasiPutcharUnlocked(c: Int): Int
 
 public actual fun putcharUnlocked(c: CInt): CInt =
-    wasiRustlangLibcWasiPutcharUnlocked(c).toInt()
+    wasiLibcWasiPutcharUnlocked(c).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiShutdown")
-private external fun wasiRustlangLibcWasiShutdown(socket: Int, how: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiShutdown")
+private external fun wasiLibcWasiShutdown(socket: Int, how: Int): Int
 
 public actual fun shutdown(socket: CInt, how: CInt): CInt =
-    wasiRustlangLibcWasiShutdown(socket, how).toInt()
+    wasiLibcWasiShutdown(socket, how).toInt()
 
 public actual fun fstat(fildes: CInt, buf: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFstat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFstat")
 
 public actual fun mkdir(path: ConstPtr, mode: ModeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiMkdir")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiMkdir")
 
 public actual fun stat(path: ConstPtr, buf: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStat")
 
 public actual fun fdopen(fd: CInt, mode: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFdopen")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFdopen")
 
 public actual fun fileno(stream: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFileno")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFileno")
 
 public actual fun open(path: ConstPtr, oflag: CInt, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiOpen")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiOpen")
 
 public actual fun creat(path: ConstPtr, mode: ModeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiCreat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiCreat")
 
 public actual fun fcntl(fd: CInt, cmd: CInt, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFcntl")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFcntl")
 
 public actual fun opendir(dirname: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiOpendir")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiOpendir")
 
 public actual fun fdopendir(fd: CInt): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFdopendir")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFdopendir")
 
 public actual fun readdir(dirp: MutPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiReaddir")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiReaddir")
 
 public actual fun closedir(dirp: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiClosedir")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiClosedir")
 
-public actual fun rewinddir(dirp: MutPtr) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiRewinddir")
-}
+public actual fun rewinddir(dirp: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiRewinddir")
 
 public actual fun dirfd(dirp: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiDirfd")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiDirfd")
 
-public actual fun seekdir(dirp: MutPtr, loc: CLong) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSeekdir")
-}
+public actual fun seekdir(dirp: MutPtr, loc: CLong): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSeekdir")
 
 public actual fun telldir(dirp: MutPtr): CLong =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiTelldir")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiTelldir")
 
 public actual fun openat(dirfd: CInt, pathname: ConstPtr, flags: CInt, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiOpenat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiOpenat")
 
 public actual fun fstatat(dirfd: CInt, pathname: ConstPtr, buf: MutPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFstatat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFstatat")
 
 public actual fun linkat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiLinkat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiLinkat")
 
 public actual fun mkdirat(dirfd: CInt, pathname: ConstPtr, mode: ModeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiMkdirat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiMkdirat")
 
 public actual fun readlinkat(dirfd: CInt, pathname: ConstPtr, buf: MutPtr, bufsiz: SizeT): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiReadlinkat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiReadlinkat")
 
 public actual fun renameat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiRenameat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiRenameat")
 
 public actual fun symlinkat(target: ConstPtr, newdirfd: CInt, linkpath: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSymlinkat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSymlinkat")
 
 public actual fun unlinkat(dirfd: CInt, pathname: ConstPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiUnlinkat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiUnlinkat")
 
 public actual fun access(path: ConstPtr, amode: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiAccess")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiAccess")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiClose")
-private external fun wasiRustlangLibcWasiClose(fd: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiClose")
+private external fun wasiLibcWasiClose(fd: Int): Int
 
 public actual fun close(fd: CInt): CInt =
-    wasiRustlangLibcWasiClose(fd).toInt()
+    wasiLibcWasiClose(fd).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiFpathconf")
-private external fun wasiRustlangLibcWasiFpathconf(filedes: Int, name: Int): Long
+@kotlin.wasm.WasmImport("kmcore", "libcWasiFpathconf")
+private external fun wasiLibcWasiFpathconf(filedes: Int, name: Int): Long
 
 public actual fun fpathconf(filedes: CInt, name: CInt): CLong =
-    wasiRustlangLibcWasiFpathconf(filedes, name).toLong()
+    wasiLibcWasiFpathconf(filedes, name).toLong()
 
 public actual fun getopt(argc: CInt, argv: ConstPtr, optstr: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiGetopt")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiGetopt")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiIsatty")
-private external fun wasiRustlangLibcWasiIsatty(fd: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiIsatty")
+private external fun wasiLibcWasiIsatty(fd: Int): Int
 
 public actual fun isatty(fd: CInt): CInt =
-    wasiRustlangLibcWasiIsatty(fd).toInt()
+    wasiLibcWasiIsatty(fd).toInt()
 
 public actual fun link(src: ConstPtr, dst: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiLink")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiLink")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiLseek")
-private external fun wasiRustlangLibcWasiLseek(fd: Int, offset: Long, whence: Int): Long
+@kotlin.wasm.WasmImport("kmcore", "libcWasiLseek")
+private external fun wasiLibcWasiLseek(fd: Int, offset: Long, whence: Int): Long
 
 public actual fun lseek(fd: CInt, offset: OffT, whence: CInt): OffT =
-    wasiRustlangLibcWasiLseek(fd, offset, whence).toLong()
+    wasiLibcWasiLseek(fd, offset, whence).toLong()
 
 public actual fun pathconf(path: ConstPtr, name: CInt): CLong =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPathconf")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPathconf")
 
 public actual fun rmdir(path: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiRmdir")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiRmdir")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiSleep")
-private external fun wasiRustlangLibcWasiSleep(secs: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiSleep")
+private external fun wasiLibcWasiSleep(secs: Int): Int
 
 public actual fun sleep(secs: CUint): CUint =
-    wasiRustlangLibcWasiSleep(secs.toInt()).toUInt()
+    wasiLibcWasiSleep(secs.toInt()).toUInt()
 
 public actual fun unlink(c: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiUnlink")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiUnlink")
 
 public actual fun pread(fd: CInt, buf: MutPtr, count: SizeT, offset: OffT): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPread")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPread")
 
 public actual fun pwrite(fd: CInt, buf: ConstPtr, count: SizeT, offset: OffT): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPwrite")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPwrite")
 
 public actual fun lstat(path: ConstPtr, buf: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiLstat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiLstat")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiFsync")
-private external fun wasiRustlangLibcWasiFsync(fd: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiFsync")
+private external fun wasiLibcWasiFsync(fd: Int): Int
 
 public actual fun fsync(fd: CInt): CInt =
-    wasiRustlangLibcWasiFsync(fd).toInt()
+    wasiLibcWasiFsync(fd).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiFdatasync")
-private external fun wasiRustlangLibcWasiFdatasync(fd: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiFdatasync")
+private external fun wasiLibcWasiFdatasync(fd: Int): Int
 
 public actual fun fdatasync(fd: CInt): CInt =
-    wasiRustlangLibcWasiFdatasync(fd).toInt()
+    wasiLibcWasiFdatasync(fd).toInt()
 
 public actual fun symlink(path1: ConstPtr, path2: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSymlink")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSymlink")
 
 public actual fun truncate(path: ConstPtr, length: OffT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiTruncate")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiTruncate")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiFtruncate")
-private external fun wasiRustlangLibcWasiFtruncate(fd: Int, length: Long): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiFtruncate")
+private external fun wasiLibcWasiFtruncate(fd: Int, length: Long): Int
 
 public actual fun ftruncate(fd: CInt, length: OffT): CInt =
-    wasiRustlangLibcWasiFtruncate(fd, length).toInt()
+    wasiLibcWasiFtruncate(fd, length).toInt()
 
 public actual fun getrusage(resource: CInt, usage: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiGetrusage")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiGetrusage")
 
 public actual fun gettimeofday(tp: MutPtr, tz: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiGettimeofday")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiGettimeofday")
 
-public actual fun times(buf: MutPtr): io.github.kotlinmania.rustlang.wasi.ClockT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiTimes")
+public actual fun times(buf: MutPtr): ClockT =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiTimes")
 
 public actual fun strerrorR(errnum: CInt, buf: MutPtr, buflen: SizeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrerrorR")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrerrorR")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiUsleep")
-private external fun wasiRustlangLibcWasiUsleep(secs: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiUsleep")
+private external fun wasiLibcWasiUsleep(secs: Int): Int
 
 public actual fun usleep(secs: CUint): CInt =
-    wasiRustlangLibcWasiUsleep(secs.toInt()).toInt()
+    wasiLibcWasiUsleep(secs.toInt()).toInt()
 
 public actual fun send(socket: CInt, buf: ConstPtr, len: SizeT, flags: CInt): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSend")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSend")
 
 public actual fun recv(socket: CInt, buf: MutPtr, len: SizeT, flags: CInt): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiRecv")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiRecv")
 
 public actual fun poll(fds: MutPtr, nfds: NfdsT, timeout: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPoll")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPoll")
 
 public actual fun setlocale(category: CInt, locale: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSetlocale")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSetlocale")
 
 public actual fun localeconv(): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiLocaleconv")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiLocaleconv")
 
 public actual fun readlink(path: ConstPtr, buf: MutPtr, bufsz: SizeT): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiReadlink")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiReadlink")
 
 public actual fun timegm(tm: MutPtr): TimeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiTimegm")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiTimegm")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiSysconf")
-private external fun wasiRustlangLibcWasiSysconf(name: Int): Long
+@kotlin.wasm.WasmImport("kmcore", "libcWasiSysconf")
+private external fun wasiLibcWasiSysconf(name: Int): Long
 
 public actual fun sysconf(name: CInt): CLong =
-    wasiRustlangLibcWasiSysconf(name).toLong()
+    wasiLibcWasiSysconf(name).toLong()
 
 public actual fun ioctl(fd: CInt, request: CInt, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiIoctl")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiIoctl")
 
 public actual fun fseeko(stream: MutPtr, offset: OffT, whence: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFseeko")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFseeko")
 
 public actual fun ftello(stream: MutPtr): OffT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFtello")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFtello")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiPosixFallocate")
-private external fun wasiRustlangLibcWasiPosixFallocate(fd: Int, offset: Long, len: Long): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiPosixFallocate")
+private external fun wasiLibcWasiPosixFallocate(fd: Int, offset: Long, len: Long): Int
 
 public actual fun posixFallocate(fd: CInt, offset: OffT, len: OffT): CInt =
-    wasiRustlangLibcWasiPosixFallocate(fd, offset, len).toInt()
+    wasiLibcWasiPosixFallocate(fd, offset, len).toInt()
 
 public actual fun strcasestr(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiStrcasestr")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiStrcasestr")
 
 public actual fun getline(lineptr: MutPtr, n: MutPtr, stream: MutPtr): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiGetline")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiGetline")
 
 public actual fun faccessat(dirfd: CInt, pathname: ConstPtr, mode: CInt, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFaccessat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFaccessat")
 
 public actual fun writev(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWritev")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWritev")
 
 public actual fun readv(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiReadv")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiReadv")
 
 public actual fun pwritev(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPwritev")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPwritev")
 
 public actual fun preadv(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT): SsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPreadv")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPreadv")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiPosixFadvise")
-private external fun wasiRustlangLibcWasiPosixFadvise(fd: Int, offset: Long, len: Long, advise: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiPosixFadvise")
+private external fun wasiLibcWasiPosixFadvise(fd: Int, offset: Long, len: Long, advise: Int): Int
 
 public actual fun posixFadvise(fd: CInt, offset: OffT, len: OffT, advise: CInt): CInt =
-    wasiRustlangLibcWasiPosixFadvise(fd, offset, len, advise).toInt()
+    wasiLibcWasiPosixFadvise(fd, offset, len, advise).toInt()
 
 public actual fun futimens(fd: CInt, times: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFutimens")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFutimens")
 
 public actual fun utimensat(dirfd: CInt, path: ConstPtr, times: ConstPtr, flag: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiUtimensat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiUtimensat")
 
 public actual fun getentropy(buf: MutPtr, buflen: SizeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiGetentropy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiGetentropy")
 
 public actual fun memrchr(cx: ConstPtr, c: CInt, n: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiMemrchr")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiMemrchr")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiAbs")
-private external fun wasiRustlangLibcWasiAbs(i: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiAbs")
+private external fun wasiLibcWasiAbs(i: Int): Int
 
 public actual fun abs(i: CInt): CInt =
-    wasiRustlangLibcWasiAbs(i).toInt()
+    wasiLibcWasiAbs(i).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiLabs")
-private external fun wasiRustlangLibcWasiLabs(i: Long): Long
+@kotlin.wasm.WasmImport("kmcore", "libcWasiLabs")
+private external fun wasiLibcWasiLabs(i: Long): Long
 
 public actual fun labs(i: CLong): CLong =
-    wasiRustlangLibcWasiLabs(i).toLong()
+    wasiLibcWasiLabs(i).toLong()
 
-public actual fun duplocale(base: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiDuplocale")
+public actual fun duplocale(base: LocaleT): LocaleT =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiDuplocale")
 
-public actual fun freelocale(loc: io.github.kotlinmania.rustlang.wasi.LocaleT) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiFreelocale")
-}
+public actual fun freelocale(loc: LocaleT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiFreelocale")
 
-public actual fun newlocale(mask: CInt, locale: ConstPtr, base: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiNewlocale")
+public actual fun newlocale(mask: CInt, locale: ConstPtr, base: LocaleT): LocaleT =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiNewlocale")
 
-public actual fun uselocale(loc: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiUselocale")
+public actual fun uselocale(loc: LocaleT): LocaleT =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiUselocale")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiSchedYield")
-private external fun wasiRustlangLibcWasiSchedYield(): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiSchedYield")
+private external fun wasiLibcWasiSchedYield(): Int
 
 public actual fun schedYield(): CInt =
-    wasiRustlangLibcWasiSchedYield().toInt()
+    wasiLibcWasiSchedYield().toInt()
 
 public actual fun getcwd(buf: MutPtr, size: SizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiGetcwd")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiGetcwd")
 
 public actual fun chdir(dir: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiChdir")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiChdir")
 
-public actual fun nlLanginfo(item: io.github.kotlinmania.rustlang.wasi.NlItem): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiNlLanginfo")
+public actual fun nlLanginfo(item: NlItem): MutPtr =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiNlLanginfo")
 
-public actual fun nlLanginfoL(item: io.github.kotlinmania.rustlang.wasi.NlItem, loc: io.github.kotlinmania.rustlang.wasi.LocaleT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiNlLanginfoL")
+public actual fun nlLanginfoL(item: NlItem, loc: LocaleT): MutPtr =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiNlLanginfoL")
 
 public actual fun select(nfds: CInt, readfds: MutPtr, writefds: MutPtr, errorfds: MutPtr, timeout: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiSelect")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiSelect")
 
 public actual fun wasilibcRegisterPreopenedFd(fd: CInt, path: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcRegisterPreopenedFd")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcRegisterPreopenedFd")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiWasilibcFdRenumber")
-private external fun wasiRustlangLibcWasiWasilibcFdRenumber(fd: Int, newfd: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiWasilibcFdRenumber")
+private external fun wasiLibcWasiWasilibcFdRenumber(fd: Int, newfd: Int): Int
 
 public actual fun wasilibcFdRenumber(fd: CInt, newfd: CInt): CInt =
-    wasiRustlangLibcWasiWasilibcFdRenumber(fd, newfd).toInt()
+    wasiLibcWasiWasilibcFdRenumber(fd, newfd).toInt()
 
 public actual fun wasilibcUnlinkat(fd: CInt, path: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcUnlinkat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcUnlinkat")
 
 public actual fun wasilibcRmdirat(fd: CInt, path: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcRmdirat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcRmdirat")
 
 public actual fun wasilibcFindRelpath(path: ConstPtr, absPrefix: MutPtr, relativePath: MutPtr, relativePathLen: ULong): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcFindRelpath")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcFindRelpath")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiWasilibcTell")
-private external fun wasiRustlangLibcWasiWasilibcTell(fd: Int): Long
+@kotlin.wasm.WasmImport("kmcore", "libcWasiWasilibcTell")
+private external fun wasiLibcWasiWasilibcTell(fd: Int): Long
 
 public actual fun wasilibcTell(fd: CInt): OffT =
-    wasiRustlangLibcWasiWasilibcTell(fd).toLong()
+    wasiLibcWasiWasilibcTell(fd).toLong()
 
 public actual fun wasilibcNocwdWasilibcUnlinkat(dirfd: CInt, path: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdWasilibcUnlinkat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdWasilibcUnlinkat")
 
 public actual fun wasilibcNocwdWasilibcRmdirat(dirfd: CInt, path: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdWasilibcRmdirat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdWasilibcRmdirat")
 
 public actual fun wasilibcNocwdLinkat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdLinkat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdLinkat")
 
 public actual fun wasilibcNocwdSymlinkat(target: ConstPtr, dirfd: CInt, path: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdSymlinkat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdSymlinkat")
 
 public actual fun wasilibcNocwdReadlinkat(dirfd: CInt, path: ConstPtr, buf: MutPtr, bufsize: ULong): Long =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdReadlinkat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdReadlinkat")
 
 public actual fun wasilibcNocwdFaccessat(dirfd: CInt, path: ConstPtr, mode: CInt, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdFaccessat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdFaccessat")
 
 public actual fun wasilibcNocwdRenameat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdRenameat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdRenameat")
 
 public actual fun wasilibcNocwdOpenatNomode(dirfd: CInt, path: ConstPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdOpenatNomode")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdOpenatNomode")
 
 public actual fun wasilibcNocwdFstatat(dirfd: CInt, path: ConstPtr, buf: MutPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdFstatat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdFstatat")
 
 public actual fun wasilibcNocwdMkdiratNomode(dirfd: CInt, path: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdMkdiratNomode")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdMkdiratNomode")
 
 public actual fun wasilibcNocwdUtimensat(dirfd: CInt, path: ConstPtr, times: ConstPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdUtimensat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdUtimensat")
 
 public actual fun wasilibcNocwdOpendirat(dirfd: CInt, path: ConstPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcNocwdOpendirat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcNocwdOpendirat")
 
 public actual fun wasilibcAccess(pathname: ConstPtr, mode: CInt, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcAccess")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcAccess")
 
 public actual fun wasilibcStat(pathname: ConstPtr, buf: MutPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcStat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcStat")
 
 public actual fun wasilibcUtimens(pathname: ConstPtr, times: ConstPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcUtimens")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcUtimens")
 
 public actual fun wasilibcLink(oldpath: ConstPtr, newpath: ConstPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcLink")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcLink")
 
 public actual fun wasilibcLinkOldat(olddirfd: CInt, oldpath: ConstPtr, newpath: ConstPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcLinkOldat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcLinkOldat")
 
 public actual fun wasilibcLinkNewat(oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcLinkNewat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcLinkNewat")
 
 public actual fun wasilibcRenameOldat(olddirfd: CInt, oldpath: ConstPtr, newpath: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcRenameOldat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcRenameOldat")
 
 public actual fun wasilibcRenameNewat(oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiWasilibcRenameNewat")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiWasilibcRenameNewat")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiArc4random")
-private external fun wasiRustlangLibcWasiArc4random(): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiArc4random")
+private external fun wasiLibcWasiArc4random(): Int
 
 public actual fun arc4random(): UInt =
-    wasiRustlangLibcWasiArc4random().toUInt()
+    wasiLibcWasiArc4random().toUInt()
 
-public actual fun arc4randomBuf(a: MutPtr, b: SizeT) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiArc4randomBuf")
-}
+public actual fun arc4randomBuf(a: MutPtr, b: SizeT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiArc4randomBuf")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiArc4randomUniform")
-private external fun wasiRustlangLibcWasiArc4randomUniform(a: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiArc4randomUniform")
+private external fun wasiLibcWasiArc4randomUniform(a: Int): Int
 
 public actual fun arc4randomUniform(a: UInt): UInt =
-    wasiRustlangLibcWasiArc4randomUniform(a.toInt()).toUInt()
+    wasiLibcWasiArc4randomUniform(a.toInt()).toUInt()
 
 public actual fun errnoLocation(): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiErrnoLocation")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiErrnoLocation")
 
 public actual fun chmod(path: ConstPtr, mode: ModeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiChmod")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiChmod")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiFchmod")
-private external fun wasiRustlangLibcWasiFchmod(fd: Int, mode: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiFchmod")
+private external fun wasiLibcWasiFchmod(fd: Int, mode: Int): Int
 
 public actual fun fchmod(fd: CInt, mode: ModeT): CInt =
-    wasiRustlangLibcWasiFchmod(fd, mode.toInt()).toInt()
+    wasiLibcWasiFchmod(fd, mode.toInt()).toInt()
 
 public actual fun realpath(pathname: ConstPtr, resolved: MutPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiRealpath")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiRealpath")
 
 public actual fun pthreadSelf(): PthreadT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadSelf")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadSelf")
 
 public actual fun pthreadCreate(native: MutPtr, attr: ConstPtr, f: PthreadCreateFCallback, value: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCreate")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCreate")
 
 public actual fun pthreadEqual(t1: PthreadT, t2: PthreadT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadEqual")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadEqual")
 
 public actual fun pthreadJoin(native: PthreadT, value: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadJoin")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadJoin")
 
 public actual fun pthreadAttrInit(attr: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadAttrInit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadAttrInit")
 
 public actual fun pthreadAttrDestroy(attr: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadAttrDestroy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadAttrDestroy")
 
 public actual fun pthreadAttrGetstacksize(attr: ConstPtr, stacksize: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadAttrGetstacksize")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadAttrGetstacksize")
 
 public actual fun pthreadAttrSetstacksize(attr: MutPtr, stackSize: SizeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadAttrSetstacksize")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadAttrSetstacksize")
 
 public actual fun pthreadAttrGetdetachstate(attr: ConstPtr, state: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadAttrGetdetachstate")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadAttrGetdetachstate")
 
 public actual fun pthreadAttrSetdetachstate(attr: MutPtr, state: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadAttrSetdetachstate")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadAttrSetdetachstate")
 
 public actual fun pthreadAttrGetguardsize(attr: ConstPtr, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadAttrGetguardsize")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadAttrGetguardsize")
 
 public actual fun pthreadAttrSetguardsize(attr: MutPtr, b: SizeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadAttrSetguardsize")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadAttrSetguardsize")
 
 public actual fun pthreadAttrGetstack(attr: ConstPtr, b: MutPtr, c: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadAttrGetstack")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadAttrGetstack")
 
 public actual fun pthreadAttrSetstack(attr: MutPtr, b: MutPtr, c: SizeT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadAttrSetstack")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadAttrSetstack")
 
 public actual fun pthreadDetach(thread: PthreadT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadDetach")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadDetach")
 
 public actual fun pthreadSetcancelstate(a: CInt, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadSetcancelstate")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadSetcancelstate")
 
 public actual fun pthreadSetcanceltype(a: CInt, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadSetcanceltype")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadSetcanceltype")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiPthreadTestcancel")
-private external fun wasiRustlangLibcWasiPthreadTestcancel(): Unit
+@kotlin.wasm.WasmImport("kmcore", "libcWasiPthreadTestcancel")
+private external fun wasiLibcWasiPthreadTestcancel(): Unit
 
 public actual fun pthreadTestcancel(): Unit =
-    wasiRustlangLibcWasiPthreadTestcancel()
+    wasiLibcWasiPthreadTestcancel()
 
 public actual fun pthreadOnce(a: MutPtr, b: AtexitACallback): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadOnce")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadOnce")
 
 public actual fun pthreadKeyCreate(key: MutPtr, dtor: PthreadKeyCreateDtorCallback?): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadKeyCreate")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadKeyCreate")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangLibcWasiPthreadKeyDelete")
-private external fun wasiRustlangLibcWasiPthreadKeyDelete(key: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "libcWasiPthreadKeyDelete")
+private external fun wasiLibcWasiPthreadKeyDelete(key: Int): Int
 
 public actual fun pthreadKeyDelete(key: PthreadKeyT): CInt =
-    wasiRustlangLibcWasiPthreadKeyDelete(key.toInt()).toInt()
+    wasiLibcWasiPthreadKeyDelete(key.toInt()).toInt()
 
 public actual fun pthreadGetspecific(key: PthreadKeyT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadGetspecific")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadGetspecific")
 
 public actual fun pthreadSetspecific(key: PthreadKeyT, value: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadSetspecific")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadSetspecific")
 
 public actual fun pthreadMutexInit(lock: MutPtr, attr: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexInit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexInit")
 
 public actual fun pthreadMutexDestroy(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexDestroy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexDestroy")
 
 public actual fun pthreadMutexLock(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexLock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexLock")
 
 public actual fun pthreadMutexTrylock(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexTrylock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexTrylock")
 
 public actual fun pthreadMutexUnlock(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexUnlock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexUnlock")
 
 public actual fun pthreadMutexTimedlock(lock: MutPtr, ts: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexTimedlock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexTimedlock")
 
 public actual fun pthreadMutexConsistent(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexConsistent")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexConsistent")
 
 public actual fun pthreadMutexGetprioceiling(lock: MutPtr, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexGetprioceiling")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexGetprioceiling")
 
 public actual fun pthreadMutexattrInit(attr: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexattrInit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexattrInit")
 
 public actual fun pthreadMutexattrDestroy(attr: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexattrDestroy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexattrDestroy")
 
 public actual fun pthreadMutexattrSettype(attr: MutPtr, type: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexattrSettype")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexattrSettype")
 
 public actual fun pthreadMutexattrGetprotocol(attr: ConstPtr, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexattrGetprotocol")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexattrGetprotocol")
 
 public actual fun pthreadMutexattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexattrGetpshared")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexattrGetpshared")
 
 public actual fun pthreadMutexattrGetrobust(attr: ConstPtr, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexattrGetrobust")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexattrGetrobust")
 
 public actual fun pthreadMutexattrGettype(attr: ConstPtr, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexattrGettype")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexattrGettype")
 
 public actual fun pthreadMutexattrSetprotocol(attr: ConstPtr, b: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexattrSetprotocol")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexattrSetprotocol")
 
 public actual fun pthreadMutexattrSetpshared(attr: ConstPtr, b: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexattrSetpshared")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexattrSetpshared")
 
 public actual fun pthreadMutexattrSetrobust(attr: ConstPtr, b: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadMutexattrSetrobust")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadMutexattrSetrobust")
 
 public actual fun pthreadCondInit(cond: MutPtr, attr: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondInit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondInit")
 
 public actual fun pthreadCondWait(cond: MutPtr, lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondWait")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondWait")
 
 public actual fun pthreadCondTimedwait(cond: MutPtr, lock: MutPtr, abstime: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondTimedwait")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondTimedwait")
 
 public actual fun pthreadCondSignal(cond: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondSignal")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondSignal")
 
 public actual fun pthreadCondBroadcast(cond: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondBroadcast")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondBroadcast")
 
 public actual fun pthreadCondDestroy(cond: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondDestroy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondDestroy")
 
 public actual fun pthreadCondattrInit(attr: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondattrInit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondattrInit")
 
 public actual fun pthreadCondattrDestroy(attr: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondattrDestroy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondattrDestroy")
 
 public actual fun pthreadCondattrSetclock(attr: MutPtr, clockId: ClockidT): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondattrSetclock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondattrSetclock")
 
 public actual fun pthreadCondattrGetclock(attr: ConstPtr, clockId: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondattrGetclock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondattrGetclock")
 
 public actual fun pthreadCondattrSetpshared(attr: MutPtr, b: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondattrSetpshared")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondattrSetpshared")
 
 public actual fun pthreadCondattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadCondattrGetpshared")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadCondattrGetpshared")
 
 public actual fun pthreadRwlockInit(lock: MutPtr, attr: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockInit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockInit")
 
 public actual fun pthreadRwlockDestroy(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockDestroy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockDestroy")
 
 public actual fun pthreadRwlockRdlock(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockRdlock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockRdlock")
 
 public actual fun pthreadRwlockTryrdlock(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockTryrdlock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockTryrdlock")
 
 public actual fun pthreadRwlockWrlock(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockWrlock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockWrlock")
 
 public actual fun pthreadRwlockTrywrlock(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockTrywrlock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockTrywrlock")
 
 public actual fun pthreadRwlockUnlock(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockUnlock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockUnlock")
 
 public actual fun pthreadRwlockTimedrdlock(lock: MutPtr, at: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockTimedrdlock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockTimedrdlock")
 
 public actual fun pthreadRwlockTimedwrlock(lock: MutPtr, at: ConstPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockTimedwrlock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockTimedwrlock")
 
 public actual fun pthreadRwlockattrInit(attr: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockattrInit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockattrInit")
 
 public actual fun pthreadRwlockattrDestroy(attr: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockattrDestroy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockattrDestroy")
 
 public actual fun pthreadRwlockattrSetpshared(attr: MutPtr, b: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockattrSetpshared")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockattrSetpshared")
 
 public actual fun pthreadRwlockattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadRwlockattrGetpshared")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadRwlockattrGetpshared")
 
 public actual fun pthreadSpinInit(lock: MutPtr, b: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadSpinInit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadSpinInit")
 
 public actual fun pthreadSpinDestroy(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadSpinDestroy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadSpinDestroy")
 
 public actual fun pthreadSpinLock(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadSpinLock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadSpinLock")
 
 public actual fun pthreadSpinTrylock(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadSpinTrylock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadSpinTrylock")
 
 public actual fun pthreadSpinUnlock(lock: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadSpinUnlock")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadSpinUnlock")
 
 public actual fun pthreadBarrierInit(barrier: MutPtr, attr: ConstPtr, count: CUint): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadBarrierInit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadBarrierInit")
 
 public actual fun pthreadBarrierDestroy(barrier: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadBarrierDestroy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadBarrierDestroy")
 
 public actual fun pthreadBarrierWait(barrier: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadBarrierWait")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadBarrierWait")
 
 public actual fun pthreadBarrierattrInit(attr: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadBarrierattrInit")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadBarrierattrInit")
 
 public actual fun pthreadBarrierattrDestroy(attr: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadBarrierattrDestroy")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadBarrierattrDestroy")
 
 public actual fun pthreadBarrierattrSetpshared(attr: MutPtr, b: CInt): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadBarrierattrSetpshared")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadBarrierattrSetpshared")
 
 public actual fun pthreadBarrierattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadBarrierattrGetpshared")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadBarrierattrGetpshared")
 
 public actual fun pthreadGetattrNp(thread: PthreadT, attr: MutPtr): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibcWasiPthreadGetattrNp")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWasiPthreadGetattrNp")

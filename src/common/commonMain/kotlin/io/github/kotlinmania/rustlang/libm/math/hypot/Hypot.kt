@@ -2,14 +2,16 @@
 package io.github.kotlinmania.rustlang.libm.math.hypot
 
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMaxnumf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMinnumf64
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrt
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath
-import io.github.kotlinmania.rustlang.math.arch.aarch64.sqrt.sqrt
-import io.github.kotlinmania.rustlang.math.support.hexfloat.hf64
-import kotlin.math.abs
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
 
 // Euclidian distance via the pythagorean theorem (`√(x2 + y2)`).
 //
@@ -33,8 +35,8 @@ public fun crHypot(x: Double, y: Double): Double {
     var ex: ULong = xi and emsk
     var ey: ULong = yi and emsk
     // emsk corresponds to the upper bits of NaN and Inf (apart the sign bit)
-    x1 = abs(x1)
-    y1 = abs(y1)
+    x1 = kmFabsf64(x1)
+    y1 = kmFabsf64(y1)
     if (ex == emsk || ey == emsk) {
         coldPath()
         // Either x or y is NaN or Inf
@@ -53,8 +55,8 @@ public fun crHypot(x: Double, y: Double): Double {
         return x1 + y1
         // inf, sNaN
     }
-    val u: Double = run { val lhsMax0 = (x1); val rhsMax0 = (y1); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
-    val v: Double = run { val lhsMin0 = (x1); val rhsMin0 = (y1); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+    val u: Double = kmMaxnumf64(x1, y1)
+    val v: Double = kmMinnumf64(x1, y1)
     var xd: ULong = u.toRawBits().toULong()
     var yd: ULong = v.toRawBits().toULong()
     ey = yd
@@ -71,7 +73,7 @@ public fun crHypot(x: Double, y: Double): Double {
             }
             return asHypotDenorm(ex, ey)
         }
-        val nz: UInt = rustLeadingZeros(ey)
+        val nz: UInt = ey.leadingZeros()
         ey = ey shl ((nz - 11u).toInt())
         ey = ey and (ULong.MAX_VALUE shr 12)
         ey = (ey - (((nz.toLong() - 12L) shl 52).toULong()))
@@ -106,7 +108,7 @@ public fun crHypot(x: Double, y: Double): Double {
     val tl by localStorageL115C4
     th = fasttwosum(th, tl, RustMutableReference(localStorageL115C4.asMutPtr(), localStorageL115C4.layout))
     var thd: ULong = th.toRawBits().toULong()
-    val tld = abs(tl).toRawBits().toULong()
+    val tld = kmFabsf64(tl).toRawBits().toULong()
     ex = thd
     ey = tld
     ex = ex and (0x7ffuL shl 52)

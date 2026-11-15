@@ -1,13 +1,13 @@
 // port-lint: source backtrace/libunwind.rs
 package io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.CInt
-import io.github.kotlinmania.rustlang.libc.unix.UintptrT
+import io.github.kotlinmania.rustlang.libc.UintptrT
 
 // Backtrace support using libunwind/gccS/etc APIs.
 //
@@ -27,7 +27,9 @@ import io.github.kotlinmania.rustlang.libc.unix.UintptrT
 // This is the default unwinding API for all non-Windows platforms currently.
 
 public sealed class Frame {
-    public class Raw internal constructor(valueCtorArg: MutPtr) : Frame() {
+    public class Raw internal constructor(
+        valueCtorArg: MutPtr,
+    ) : Frame() {
         public var value: MutPtr = valueCtorArg
             internal set
 
@@ -47,12 +49,17 @@ public sealed class Frame {
         public companion object {
             public operator fun invoke(
                 value: MutPtr,
-            ): Raw = Raw(
-                valueCtorArg = value,
-            )
+            ): Raw =
+                Raw(
+                    valueCtorArg = value,
+                )
         }
     }
-    public class Cloned internal constructor(ipCtorArg: MutPtr, spCtorArg: MutPtr, symbolAddressCtorArg: MutPtr) : Frame() {
+    public class Cloned internal constructor(
+        ipCtorArg: MutPtr,
+        spCtorArg: MutPtr,
+        symbolAddressCtorArg: MutPtr,
+    ) : Frame() {
         public var ip: MutPtr = ipCtorArg
             internal set
         public var sp: MutPtr = spCtorArg
@@ -89,11 +96,12 @@ public sealed class Frame {
                 ip: MutPtr,
                 sp: MutPtr,
                 symbolAddress: MutPtr,
-            ): Cloned = Cloned(
-                ipCtorArg = ip,
-                spCtorArg = sp,
-                symbolAddressCtorArg = symbolAddress,
-            )
+            ): Cloned =
+                Cloned(
+                    ipCtorArg = ip,
+                    spCtorArg = sp,
+                    symbolAddressCtorArg = symbolAddress,
+                )
         }
     }
 
@@ -193,10 +201,12 @@ public open class Bomb(
     }
 }
 
-public fun trace(cb: (io.github.kotlinmania.rustlang.backtrace.Frame) -> Boolean) {
+public fun trace(cb: (io.github.kotlinmania.rustlang.backtrace.backtrace.Frame) -> Boolean) {
     fun traceFn(ctx: MutPtr, arg: MutPtr): UnwindReasonCode {
-        val cb1 = RustMutableReference(MutPtr((MutPtr((arg).rawAddress)).rawAddress), ObjectSlotLayout<(io.github.kotlinmania.rustlang.backtrace.Frame) -> Boolean>())
-        val cx = io.github.kotlinmania.rustlang.backtrace.Frame(inner = Frame.Raw(ctx))
+        val cb1 = RustMutableReference(MutPtr((MutPtr((arg).rawAddress)).rawAddress), UnresolvedTypeLayout<(io.github.kotlinmania.rustlang.backtrace.backtrace.Frame) -> Boolean>())
+        val cx =
+            io.github.kotlinmania.rustlang.backtrace.backtrace
+                .Frame(inner = Frame.Raw(ctx))
         val bomb = Bomb(enabled = true)
         val keepGoing = cb1(cx)
         bomb.enabled = false

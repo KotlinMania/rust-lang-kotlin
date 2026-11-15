@@ -1,12 +1,12 @@
 // port-lint: source cell/lazy.rs
 package io.github.kotlinmania.rustlang.core.cell.lazy
 
-import io.github.kotlinmania.rustlang.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.mem.replace
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -31,9 +31,13 @@ public class DebugTuple(
 }
 
 public sealed class State<T, F> {
-    public data class Uninit<T, F>(public var value: F) : State<T, F>()
-    public data class Init<T, F>(public var value: T) : State<T, F>()
-    public class Poisoned<T, F>() : State<T, F>()
+    public data class Uninit<T, F>(
+        public var value: F,
+    ) : State<T, F>()
+    public data class Init<T, F>(
+        public var value: T,
+    ) : State<T, F>()
+    public class Poisoned<T, F> : State<T, F>()
 }
 
 /**
@@ -123,9 +127,10 @@ public open class LazyCell<T, F> internal constructor(
     public companion object {
         public operator fun <T, F> invoke(
             state: UnsafeCell<State<T, F>>,
-        ): LazyCell<T, F> = LazyCell<T, F>(
-            stateCtorArg = state,
-        )
+        ): LazyCell<T, F> =
+            LazyCell<T, F>(
+                stateCtorArg = state,
+            )
 
         /**
          * Creates a new lazy value with the given initializing function.
@@ -265,17 +270,18 @@ public open class LazyCell<T, F> internal constructor(
                     public open fun drop() {
                         // SAFETY: Invariant states it is valid, and we don't drop the old value.
                         run {
-                            (ObjectSlotLayout<State<T, () -> T>>()).writeNative((this.value).rawAddress, State.Poisoned)
+                            (UnresolvedTypeLayout<State<T, () -> T>>()).writeNative((this.value).rawAddress, State.Poisoned)
                         }
                     }
                 }
-                val f = state ?: // `unreachable()` here won't optimize out because the function is cold.
+                val f =
+                    state ?: // `unreachable()` here won't optimize out because the function is cold.
 // SAFETY: Precondition.
-unreachableUnchecked()
+                        unreachableUnchecked()
                 // SAFETY: We never drop the state after we read `f`, and we write a valid value back
                 // in any case, panic or success. `f` can't access the `LazyCell` because it is mutably
                 // borrowed.
-                val f1 = read(f, typeLayoutT = ObjectSlotLayout<State<T, () -> T>>())
+                val f1 = read(f, typeLayoutT = UnresolvedTypeLayout<State<T, () -> T>>())
                 // INVARIANT: Initiated from mutable reference, don't drop because we read it.
                 val guard = PoisonOnPanic(state)
                 val data = f1()
@@ -283,7 +289,7 @@ unreachableUnchecked()
                 run {
                     write(guard.first, State.Init(data))
                 }
-                mem.forget(guard)
+                forget(guard)
                 val data1 = state ?: error("unreachable")
                 return data1
             }

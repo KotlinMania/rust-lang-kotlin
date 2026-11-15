@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.arch
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.detect.checkFor
+import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
 
 // This module implements minimal run-time feature detection for x86.
 //
@@ -515,466 +515,466 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun aes(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.aes)
+public fun aes(): Boolean = checkFor(::aes)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun pclmulqdq(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.pclmulqdq)
+public fun pclmulqdq(): Boolean = checkFor(::pclmulqdq)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rdrand(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rdrand)
+public fun rdrand(): Boolean = checkFor(::rdrand)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rdseed(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rdseed)
+public fun rdseed(): Boolean = checkFor(::rdseed)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun tsc(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.tsc)
+public fun tsc(): Boolean = checkFor(::tsc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun mmx(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.mmx)
+public fun mmx(): Boolean = checkFor(::mmx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sse)
+public fun sse(): Boolean = checkFor(::sse)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sse2)
+public fun sse2(): Boolean = checkFor(::sse2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse3(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sse3)
+public fun sse3(): Boolean = checkFor(::sse3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ssse3(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.ssse3)
+public fun ssse3(): Boolean = checkFor(::ssse3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse41(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sse41)
+public fun sse41(): Boolean = checkFor(::sse41)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse42(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sse42)
+public fun sse42(): Boolean = checkFor(::sse42)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse4a(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sse4a)
+public fun sse4a(): Boolean = checkFor(::sse4a)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sha(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sha)
+public fun sha(): Boolean = checkFor(::sha)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx)
+public fun avx(): Boolean = checkFor(::avx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx2)
+public fun avx2(): Boolean = checkFor(::avx2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sha512(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sha512)
+public fun sha512(): Boolean = checkFor(::sha512)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sm3(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sm3)
+public fun sm3(): Boolean = checkFor(::sm3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sm4(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sm4)
+public fun sm4(): Boolean = checkFor(::sm4)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512f(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512f)
+public fun avx512f(): Boolean = checkFor(::avx512f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512cd(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512cd)
+public fun avx512cd(): Boolean = checkFor(::avx512cd)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512er(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512er)
+public fun avx512er(): Boolean = checkFor(::avx512er)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512pf(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512pf)
+public fun avx512pf(): Boolean = checkFor(::avx512pf)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512bw(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512bw)
+public fun avx512bw(): Boolean = checkFor(::avx512bw)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512dq(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512dq)
+public fun avx512dq(): Boolean = checkFor(::avx512dq)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vl(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512vl)
+public fun avx512vl(): Boolean = checkFor(::avx512vl)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512ifma(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512ifma)
+public fun avx512ifma(): Boolean = checkFor(::avx512ifma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vbmi(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512vbmi)
+public fun avx512vbmi(): Boolean = checkFor(::avx512vbmi)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vpopcntdq(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512vpopcntdq)
+public fun avx512vpopcntdq(): Boolean = checkFor(::avx512vpopcntdq)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vbmi2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512vbmi2)
+public fun avx512vbmi2(): Boolean = checkFor(::avx512vbmi2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun gfni(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.gfni)
+public fun gfni(): Boolean = checkFor(::gfni)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vaes(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.vaes)
+public fun vaes(): Boolean = checkFor(::vaes)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vpclmulqdq(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.vpclmulqdq)
+public fun vpclmulqdq(): Boolean = checkFor(::vpclmulqdq)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vnni(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512vnni)
+public fun avx512vnni(): Boolean = checkFor(::avx512vnni)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512bitalg(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512bitalg)
+public fun avx512bitalg(): Boolean = checkFor(::avx512bitalg)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512bf16(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512bf16)
+public fun avx512bf16(): Boolean = checkFor(::avx512bf16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vp2intersect(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512vp2intersect)
+public fun avx512vp2intersect(): Boolean = checkFor(::avx512vp2intersect)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512fp16(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx512fp16)
+public fun avx512fp16(): Boolean = checkFor(::avx512fp16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avxifma(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avxifma)
+public fun avxifma(): Boolean = checkFor(::avxifma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avxneconvert(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avxneconvert)
+public fun avxneconvert(): Boolean = checkFor(::avxneconvert)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avxvnni(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avxvnni)
+public fun avxvnni(): Boolean = checkFor(::avxvnni)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avxvnniint16(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avxvnniint16)
+public fun avxvnniint16(): Boolean = checkFor(::avxvnniint16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avxvnniint8(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avxvnniint8)
+public fun avxvnniint8(): Boolean = checkFor(::avxvnniint8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxTile(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.amxTile)
+public fun amxTile(): Boolean = checkFor(::amxTile)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxInt8(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.amxInt8)
+public fun amxInt8(): Boolean = checkFor(::amxInt8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxBf16(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.amxBf16)
+public fun amxBf16(): Boolean = checkFor(::amxBf16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxFp16(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.amxFp16)
+public fun amxFp16(): Boolean = checkFor(::amxFp16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxComplex(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.amxComplex)
+public fun amxComplex(): Boolean = checkFor(::amxComplex)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxAvx512(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.amxAvx512)
+public fun amxAvx512(): Boolean = checkFor(::amxAvx512)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxFp8(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.amxFp8)
+public fun amxFp8(): Boolean = checkFor(::amxFp8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxMovrs(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.amxMovrs)
+public fun amxMovrs(): Boolean = checkFor(::amxMovrs)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun apxf(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.apxf)
+public fun apxf(): Boolean = checkFor(::apxf)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx101(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx101)
+public fun avx101(): Boolean = checkFor(::avx101)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx102(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.avx102)
+public fun avx102(): Boolean = checkFor(::avx102)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun f16c(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.f16c)
+public fun f16c(): Boolean = checkFor(::f16c)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fma(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.fma)
+public fun fma(): Boolean = checkFor(::fma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun bmi1(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.bmi1)
+public fun bmi1(): Boolean = checkFor(::bmi1)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun bmi2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.bmi2)
+public fun bmi2(): Boolean = checkFor(::bmi2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lzcnt(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.lzcnt)
+public fun lzcnt(): Boolean = checkFor(::lzcnt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun tbm(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.tbm)
+public fun tbm(): Boolean = checkFor(::tbm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun popcnt(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.popcnt)
+public fun popcnt(): Boolean = checkFor(::popcnt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fxsr(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.fxsr)
+public fun fxsr(): Boolean = checkFor(::fxsr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun xsave(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.xsave)
+public fun xsave(): Boolean = checkFor(::xsave)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun xsaveopt(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.xsaveopt)
+public fun xsaveopt(): Boolean = checkFor(::xsaveopt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun xsaves(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.xsaves)
+public fun xsaves(): Boolean = checkFor(::xsaves)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun xsavec(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.xsavec)
+public fun xsavec(): Boolean = checkFor(::xsavec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun cmpxchg16b(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.cmpxchg16b)
+public fun cmpxchg16b(): Boolean = checkFor(::cmpxchg16b)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun clflushopt(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.clflushopt)
+public fun clflushopt(): Boolean = checkFor(::clflushopt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun kl(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.kl)
+public fun kl(): Boolean = checkFor(::kl)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun widekl(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.widekl)
+public fun widekl(): Boolean = checkFor(::widekl)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun adx(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.adx)
+public fun adx(): Boolean = checkFor(::adx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rtm(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rtm)
+public fun rtm(): Boolean = checkFor(::rtm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun movbe(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.movbe)
+public fun movbe(): Boolean = checkFor(::movbe)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun movdir64b(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.movdir64b)
+public fun movdir64b(): Boolean = checkFor(::movdir64b)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun movdiri(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.movdiri)
+public fun movdiri(): Boolean = checkFor(::movdiri)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun movrs(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.movrs)
+public fun movrs(): Boolean = checkFor(::movrs)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ermsb(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.ermsb)
+public fun ermsb(): Boolean = checkFor(::ermsb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun xop(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.xop)
+public fun xop(): Boolean = checkFor(::xop)

@@ -9,21 +9,21 @@ import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.net.Shutdown
-import io.github.kotlinmania.rustlang.net.socketaddr.ToSocketAddrs
-import io.github.kotlinmania.rustlang.os.fd.AsFd
-import io.github.kotlinmania.rustlang.os.fd.AsRawFd
-import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.os.fd.FromRawFd
-import io.github.kotlinmania.rustlang.os.fd.IntoRawFd
-import io.github.kotlinmania.rustlang.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.AsInner
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.IntoInner
-import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.sys.pal.unsupported.unsupported
-import io.github.kotlinmania.rustlang.sys.pal.wasi.err2io
+import io.github.kotlinmania.rustlang.std.net.Shutdown
+import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
+import io.github.kotlinmania.rustlang.std.os.fd.AsFd
+import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.sys.AsInner
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.pal.unsupported.unsupported
+import io.github.kotlinmania.rustlang.std.sys.pal.wasi.err2io
 import io.github.kotlinmania.rustlang.wasip1.FDFLAGS_NONBLOCK
 import io.github.kotlinmania.rustlang.wasip1.Fd
 import io.github.kotlinmania.rustlang.wasip1.SDFLAGS_RD
@@ -147,7 +147,7 @@ public open class TcpStream(
 
     public open fun hopLimitV6(): Result<UByte, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.io.Error?, Error> = unsupported()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = unsupported()
 
     public open fun setNonblocking(state: Boolean): Result<Unit, Error> {
         val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
@@ -201,7 +201,7 @@ public open class TcpListener(
 
     public open fun onlyV6(): Result<Boolean, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.io.Error?, Error> = unsupported()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = unsupported()
 
     public open fun setNonblocking(state: Boolean): Result<Unit, Error> {
         val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
@@ -292,7 +292,7 @@ public open class UdpSocket(
 
     public open fun multicastHopLimitV6(): Result<UByte, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.io.Error?, Error> = unsupported()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = unsupported()
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = unsupported()
 

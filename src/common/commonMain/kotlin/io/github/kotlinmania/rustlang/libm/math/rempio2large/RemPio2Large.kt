@@ -1,8 +1,8 @@
 // port-lint: source math/rem_pio2_large.rs
 package io.github.kotlinmania.rustlang.libm.math.rempio2large
 
-import io.github.kotlinmania.rustlang.math.floor.floor
-import io.github.kotlinmania.rustlang.math.scalbn.scalbn
+import io.github.kotlinmania.rustlang.libm.math.floor.floor
+import io.github.kotlinmania.rustlang.libm.math.scalbn.scalbn
 
 // initial value for jk
 public val INIT_JK: IntArray = intArrayOf(3, 4, 4, 6)

@@ -7,4 +7,6 @@ import io.github.kotlinmania.rustlang.core.F128
 // Conversions from signed integers to floats.
 // Conversions from floats to unsigned integers.
 // Conversions from floats to signed integers.
-public fun fixtfdi(f: F128): Long = io.github.kotlinmania.rustlang.float.conv.fixtfdi(f)
+public fun fixtfdi(f: F128): Long =
+    io.github.kotlinmania.rustlang.compilerbuiltins.float.conv
+        .fixtfdi(f)

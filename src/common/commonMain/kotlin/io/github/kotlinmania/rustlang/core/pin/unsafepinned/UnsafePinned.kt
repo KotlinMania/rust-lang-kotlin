@@ -1,7 +1,7 @@
 // port-lint: source pin/unsafe_pinned.rs
 package io.github.kotlinmania.rustlang.core.pin.unsafepinned
 
-import io.github.kotlinmania.rustlang.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
@@ -59,7 +59,9 @@ public open class UnsafePinned<T> internal constructor(
 ) {
     public var value: UnsafeCell<T>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 

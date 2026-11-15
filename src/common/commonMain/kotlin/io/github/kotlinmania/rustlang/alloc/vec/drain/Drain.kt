@@ -3,8 +3,11 @@ package io.github.kotlinmania.rustlang.alloc.vec.drain
 
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.take
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -58,18 +61,21 @@ public open class Drain<T, A : Allocator> internal constructor(
      */
     public var iter: ArrayDeque<T>,
     vecCtorArg: NonNull,
-) : AsRef<List<T>>, TrustedLen, Iterable<T> {
+) : AsRef<List<T>>,
+    TrustedLen,
+    Iterable<T> {
     public var vec: NonNull = vecCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Drain.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@Drain.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder) {
         DebugTuple(f, "Drain").field(this.iter.toList()).finish()
@@ -163,14 +169,18 @@ public open class Drain<T, A : Allocator> internal constructor(
 
     public open fun next(): T? {
         // ignore-tidy-undocumented-unchecked
-        return this.iter.removeFirstOrNull()?.let({ elt -> read(constPtrFromRustCast(elt), typeLayoutT = ObjectSlotLayout<Any?>()) })
+        return this.iter.removeFirstOrNull()?.let({ elt -> read(constPtrFromRustCast(elt), typeLayoutT = UnresolvedTypeLayout<Any?>()) })
     }
 
-    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
+    public open fun sizeHint(): Pair<Int, Int?> =
+        run {
+            val n = this.iter.size
+            Pair(n, n)
+        }
 
     public open fun nextBack(): T? {
         // ignore-tidy-undocumented-unchecked
-        return this.iter.removeLastOrNull()?.let({ elt -> read(constPtrFromRustCast(elt), typeLayoutT = ObjectSlotLayout<Any?>()) })
+        return this.iter.removeLastOrNull()?.let({ elt -> read(constPtrFromRustCast(elt), typeLayoutT = UnresolvedTypeLayout<Any?>()) })
     }
 
     public open fun drop() {
@@ -249,11 +259,12 @@ public open class Drain<T, A : Allocator> internal constructor(
             tailLen: Int,
             iter: ArrayDeque<T>,
             vec: NonNull,
-        ): Drain<T, A> = Drain<T, A>(
-            tailStart = tailStart,
-            tailLen = tailLen,
-            iter = iter,
-            vecCtorArg = vec,
-        )
+        ): Drain<T, A> =
+            Drain<T, A>(
+                tailStart = tailStart,
+                tailLen = tailLen,
+                iter = iter,
+                vecCtorArg = vec,
+            )
     }
 }

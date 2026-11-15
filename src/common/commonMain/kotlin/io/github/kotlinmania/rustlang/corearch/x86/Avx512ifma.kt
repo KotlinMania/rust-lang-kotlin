@@ -1,14 +1,6 @@
 // port-lint: source x86/avx512ifma.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.x86.M128i
-import io.github.kotlinmania.rustlang.x86.M256i
-import io.github.kotlinmania.rustlang.x86.M512i
-import io.github.kotlinmania.rustlang.x86.Mmask8
-import io.github.kotlinmania.rustlang.x86.mm256SetzeroSi256
-import io.github.kotlinmania.rustlang.x86.mm512SetzeroSi512
-import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
-
 /**
  * Multiply packed unsigned 52-bit integers in each 64-bit element of
  * `b` and `c` to form a 104-bit intermediate result. Add the high 52-bit

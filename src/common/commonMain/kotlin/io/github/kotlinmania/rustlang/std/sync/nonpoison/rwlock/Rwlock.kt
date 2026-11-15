@@ -6,8 +6,8 @@ import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.sync.nonpoison.TryLockResult
-import io.github.kotlinmania.rustlang.sync.nonpoison.WouldBlock
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.TryLockResult
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.WouldBlock
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -70,7 +70,7 @@ public open class RwLock<T>(
     /**
      * The inner [sys.RwLock] that synchronizes thread access to the protected data.
      */
-    public var inner: io.github.kotlinmania.rustlang.sys.sync.rwlock.futex.RwLock,
+    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
     /**
      * The lock-protected data.
      */
@@ -120,7 +120,7 @@ public open class RwLock<T>(
      * ```
      */
     public open fun set(value: T) {
-        if (mem.needsDrop<T>()) {
+        if (needsDrop<T>()) {
             // If the contained value has a non-trivial destructor, we
             // call that destructor after the lock has been released.
             (this.replace(value)).let { }
@@ -150,7 +150,7 @@ public open class RwLock<T>(
      */
     public open fun replace(value: T): T {
         val guard = this.write()
-        return mem.replace(guard, value)
+        return replace(guard, value)
     }
 
     /**
@@ -455,7 +455,7 @@ public open class RwLock<T>(
          * }
          * ```
          */
-        public fun <T> new(t: T): RwLock<T> = RwLock(inner = io.github.kotlinmania.rustlang.sys.sync.rwlock.new(), data = UnsafeCell.new(t))
+        public fun <T> new(t: T): RwLock<T> = RwLock(inner = io.github.kotlinmania.rustlang.std.sys.sync.rwlock.new(), data = UnsafeCell.new(t))
 
         /**
          * Creates a new `RwLock<T>`, with the `Default` value for T.
@@ -496,7 +496,7 @@ public open class RwLockReadGuard<T>(
     /**
      * A reference to the internal [sys.RwLock] that we have read-locked.
      */
-    public var innerLock: io.github.kotlinmania.rustlang.sys.sync.rwlock.futex.RwLock,
+    public var innerLock: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
 ) {
     public open fun drop() {
         // SAFETY: the conditions of `RwLockReadGuard.new` were satisfied when created.
@@ -798,7 +798,7 @@ public open class MappedRwLockReadGuard<T>(
     /**
      * A reference to the internal [sys.RwLock] that we have read-locked.
      */
-    public var innerLock: io.github.kotlinmania.rustlang.sys.sync.rwlock.futex.RwLock,
+    public var innerLock: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
 ) {
     // @unstable(feature = "nonpoisonRwlock", issue = "134645")
 
@@ -922,7 +922,7 @@ public open class MappedRwLockWriteGuard<T>(
     /**
      * A reference to the internal [sys.RwLock] that we have write-locked.
      */
-    public var innerLock: io.github.kotlinmania.rustlang.sys.sync.rwlock.futex.RwLock,
+    public var innerLock: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
 ) {
     // @unstable(feature = "nonpoisonRwlock", issue = "134645")
 

@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.rustcdemangle.legacy
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.tryDemangle
+import io.github.kotlinmania.rustlang.rustcdemangle.tryDemangle
 
 public fun ok(sym: String, expected: String): Boolean =
     run {

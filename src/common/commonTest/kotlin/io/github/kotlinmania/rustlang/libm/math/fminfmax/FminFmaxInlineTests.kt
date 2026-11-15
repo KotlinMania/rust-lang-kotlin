@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.libm.math.fminfmax
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
-import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 
 public fun <Int, SignedInt, F : Float<F, Any?, Any?>> fminSpecTest(f: (F, F) -> F) {
     // Note that (YaN, sNaN) and (sNaN, YaN) results differ from 754-2008. This is intentional,

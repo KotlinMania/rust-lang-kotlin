@@ -1,14 +1,16 @@
 // port-lint: source int/addsub.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.int.addsub
 
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.DInt
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.support.DInt
-import io.github.kotlinmania.rustlang.support.Int
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 
-public interface UAddSub<T> : DInt, Int {
+public interface UAddSub<T> :
+    DInt,
+    Int {
     public fun uadd(other: T): T
 
     public fun uaddOne(): T
@@ -28,14 +30,14 @@ public interface AddSub<T> : Int {
 public interface Addo<T> : AddSub<T> {
     public fun addo(other: T): Pair<T, Boolean> {
         val sum = this.add(other)
-        return Pair(sum, ((compareNaturalOrder(other, T.ZERO) < 0)) != ((compareNaturalOrder(sum, this) < 0)))
+        return Pair(sum, ((kmCompareValues(other, T.ZERO) < 0)) != ((kmCompareValues(sum, this) < 0)))
     }
 }
 
 public interface Subo<T> : AddSub<T> {
     public fun subo(other: T): Pair<T, Boolean> {
         val sum = this.sub(other)
-        return Pair(sum, ((compareNaturalOrder(other, T.ZERO) < 0)) != ((compareNaturalOrder(this, sum) < 0)))
+        return Pair(sum, ((kmCompareValues(other, T.ZERO) < 0)) != ((kmCompareValues(this, sum) < 0)))
     }
 }
 

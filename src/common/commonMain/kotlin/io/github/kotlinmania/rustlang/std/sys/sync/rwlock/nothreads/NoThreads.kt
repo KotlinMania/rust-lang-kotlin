@@ -2,8 +2,9 @@
 package io.github.kotlinmania.rustlang.std.sys.sync.rwlock.nothreads
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
-import io.github.kotlinmania.rustlang.process.abort
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.core.io.write.Write
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 public open class RwLock internal constructor(
     modeCtorArg: Cell<Int>,

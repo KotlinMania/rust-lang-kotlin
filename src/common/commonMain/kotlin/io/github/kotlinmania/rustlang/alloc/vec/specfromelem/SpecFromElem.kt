@@ -1,10 +1,11 @@
 // port-lint: source vec/spec_from_elem.rs
 package io.github.kotlinmania.rustlang.alloc.vec.specfromelem
 
+import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
+import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.rawvec.RawVec
-import io.github.kotlinmania.rustlang.vec.Vec
 
 // Specialization trait used for Vec.fromElem
 public interface SpecFromElem<T> {
@@ -24,7 +25,7 @@ public fun <A : Allocator> specFromElemFromElemByte(elem: Byte, n: Int, alloc: A
     val v = Vec.withCapacityIn(n, alloc)
     // ignore-tidy-undocumented-unchecked
     run {
-        ptr.writeBytes(v.asMutPtr(), elem.toUByte(), n)
+        writeBytes(v.asMutPtr(), elem.toUByte(), n)
         v.setLen(n)
     }
     return v
@@ -37,7 +38,7 @@ public fun <A : Allocator> specFromElemFromElemUByte(elem: UByte, n: Int, alloc:
     val v = Vec.withCapacityIn(n, alloc)
     // ignore-tidy-undocumented-unchecked
     run {
-        ptr.writeBytes(v.asMutPtr(), elem, n)
+        writeBytes(v.asMutPtr(), elem, n)
         v.setLen(n)
     }
     return v

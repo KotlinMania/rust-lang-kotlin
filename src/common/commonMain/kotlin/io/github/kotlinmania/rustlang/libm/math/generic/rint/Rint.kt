@@ -1,9 +1,9 @@
 // port-lint: source math/generic/rint.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.rint
 
-import io.github.kotlinmania.rustlang.math.support.env.FpResult
-import io.github.kotlinmania.rustlang.math.support.env.Status
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
+import io.github.kotlinmania.rustlang.libm.math.support.env.Status
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 
 /**
  * IEEE 754-2019 `roundToIntegralExact`, which respects rounding mode and raises inexact if

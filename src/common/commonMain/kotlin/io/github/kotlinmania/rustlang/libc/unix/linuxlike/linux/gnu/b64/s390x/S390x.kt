@@ -3,7 +3,6 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.s390x
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
@@ -11,33 +10,37 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
+import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.GidT
-import io.github.kotlinmania.rustlang.unix.PidT
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.UidT
-import io.github.kotlinmania.rustlang.unix.bsd.FsidT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.KeyT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.Off64T
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Blkcnt64T
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.DevT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Ino64T
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.BlkcntT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.FsblkcntT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.FsfilcntT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.InoT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.ShmattT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.SigsetT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.FsidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.KeyT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TcflagT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Blkcnt64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.DevT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Ino64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.ModeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.BlkcntT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.FsblkcntT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.FsfilcntT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.InoT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.ShmattT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.SigsetT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
 
 // s390x
 
@@ -55,62 +58,32 @@ public typealias WcharT = Int
 
 public typealias GregT = ULong
 
-public data class Statfs(
-    public var fType: CUint = 0u,
-    public var fBsize: CUint = 0u,
-    public var fBlocks: FsblkcntT = 0uL,
-    public var fBfree: FsblkcntT = 0uL,
-    public var fBavail: FsblkcntT = 0uL,
-    public var fFiles: FsfilcntT = 0uL,
-    public var fFfree: FsfilcntT = 0uL,
-    public var fFsid: FsidT = FsidT(),
-    public var fNamelen: CUint = 0u,
-    public var fFrsize: CUint = 0u,
-    public var fFlags: CUint = 0u,
-    public var fSpare: UIntArray = UIntArray(4),
+public open class Statfs(
+    public var fType: CUint,
+    public var fBsize: CUint,
+    public var fBlocks: FsblkcntT,
+    public var fBfree: FsblkcntT,
+    public var fBavail: FsblkcntT,
+    public var fFiles: FsfilcntT,
+    public var fFfree: FsfilcntT,
+    public var fFsid: FsidT,
+    public var fNamelen: CUint,
+    public var fFrsize: CUint,
+    public var fFlags: CUint,
+    public var fSpare: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Statfs) return false
-        if (this.fType != other.fType) return false
-        if (this.fBsize != other.fBsize) return false
-        if (this.fBlocks != other.fBlocks) return false
-        if (this.fBfree != other.fBfree) return false
-        if (this.fBavail != other.fBavail) return false
-        if (this.fFiles != other.fFiles) return false
-        if (this.fFfree != other.fFfree) return false
-        if (this.fFsid != other.fFsid) return false
-        if (this.fNamelen != other.fNamelen) return false
-        if (this.fFrsize != other.fFrsize) return false
-        if (this.fFlags != other.fFlags) return false
-        if (!this.fSpare.contentEquals(other.fSpare)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.fType.hashCode()
-        result = 31 * result + this.fBsize.hashCode()
-        result = 31 * result + this.fBlocks.hashCode()
-        result = 31 * result + this.fBfree.hashCode()
-        result = 31 * result + this.fBavail.hashCode()
-        result = 31 * result + this.fFiles.hashCode()
-        result = 31 * result + this.fFfree.hashCode()
-        result = 31 * result + this.fFsid.hashCode()
-        result = 31 * result + this.fNamelen.hashCode()
-        result = 31 * result + this.fFrsize.hashCode()
-        result = 31 * result + this.fFlags.hashCode()
-        result = 31 * result + this.fSpare.contentHashCode()
-        return result
-    }
+    public open fun clone(): Statfs = Statfs(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fFlags, fSpare)
 }
 
-public data class Flock(
-    public var lType: CShort = 0,
-    public var lWhence: CShort = 0,
-    public var lStart: OffT = 0L,
-    public var lLen: OffT = 0L,
-    public var lPid: PidT = 0,
+public open class Flock(
+    public var lType: CShort,
+    public var lWhence: CShort,
+    public var lStart: OffT,
+    public var lLen: OffT,
+    public var lPid: PidT,
 ) {
+    public open fun clone(): Flock = Flock(lType, lWhence, lStart, lLen, lPid)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Flock> =
             object : TypeLayout<Flock> {
@@ -150,13 +123,15 @@ public data class Flock(
     }
 }
 
-public data class Flock64(
-    public var lType: CShort = 0,
-    public var lWhence: CShort = 0,
-    public var lStart: Off64T = 0L,
-    public var lLen: Off64T = 0L,
-    public var lPid: PidT = 0,
+public open class Flock64(
+    public var lType: CShort,
+    public var lWhence: CShort,
+    public var lStart: Off64T,
+    public var lLen: Off64T,
+    public var lPid: PidT,
 ) {
+    public open fun clone(): Flock64 = Flock64(lType, lWhence, lStart, lLen, lPid)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Flock64> =
             object : TypeLayout<Flock64> {
@@ -196,7 +171,7 @@ public data class Flock64(
     }
 }
 
-public class StackT internal constructor(
+public open class StackT internal constructor(
     ssSpCtorArg: MutPtr,
     public var ssFlags: CInt,
     public var ssSize: SizeT,
@@ -204,37 +179,7 @@ public class StackT internal constructor(
     public var ssSp: MutPtr = ssSpCtorArg
         internal set
 
-    public constructor() : this(
-        ssSpCtorArg = MutPtr(0L),
-        ssFlags = 0,
-        ssSize = 0uL,
-    )
-
-    public operator fun component1(): MutPtr = this.ssSp
-
-    public operator fun component2(): CInt = this.ssFlags
-
-    public operator fun component3(): SizeT = this.ssSize
-
-    public fun copy(ssSp: MutPtr = this.ssSp, ssFlags: CInt = this.ssFlags, ssSize: SizeT = this.ssSize): StackT = StackT(ssSpCtorArg = ssSp, ssFlags = ssFlags, ssSize = ssSize)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is StackT) return false
-        if (this.ssSp != other.ssSp) return false
-        if (this.ssFlags != other.ssFlags) return false
-        if (this.ssSize != other.ssSize) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ssSp.hashCode()
-        result = 31 * result + this.ssFlags.hashCode()
-        result = 31 * result + this.ssSize.hashCode()
-        return result
-    }
-
-    public fun clone(): StackT = StackT(ssSp, ssFlags, ssSize)
+    public open fun clone(): StackT = StackT(ssSp, ssFlags, ssSize)
 
     public companion object {
         public fun typeLayout(): TypeLayout<StackT> =
@@ -266,9 +211,9 @@ public class StackT internal constructor(
             }
 
         public operator fun invoke(
-            ssSp: MutPtr = MutPtr(0L),
-            ssFlags: CInt = 0,
-            ssSize: SizeT = 0uL,
+            ssSp: MutPtr,
+            ssFlags: CInt,
+            ssSize: SizeT,
         ): StackT = StackT(
             ssSpCtorArg = ssSp,
             ssFlags = ssFlags,
@@ -277,27 +222,27 @@ public class StackT internal constructor(
     }
 }
 
-public class Stat(
-    public var stDev: DevT = 0uL,
-    public var stIno: InoT = 0uL,
-    public var stNlink: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.NlinkT = 0uL,
-    public var stMode: ModeT = 0u,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var stPad0: CInt = 0,
-    public var stRdev: DevT = 0uL,
-    public var stSize: OffT = 0L,
-    public var stAtime: TimeT = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: TimeT = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: TimeT = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var stBlksize: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.BlksizeT = 0L,
-    public var stBlocks: BlkcntT = 0L,
-    public var glibcReserved: LongArray = LongArray(3),
+public open class Stat(
+    public var stDev: DevT,
+    public var stIno: InoT,
+    public var stNlink: NlinkT,
+    public var stMode: ModeT,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var stPad0: CInt,
+    public var stRdev: DevT,
+    public var stSize: OffT,
+    public var stAtime: TimeT,
+    public var stAtimeNsec: CLong,
+    public var stMtime: TimeT,
+    public var stMtimeNsec: CLong,
+    public var stCtime: TimeT,
+    public var stCtimeNsec: CLong,
+    public var stBlksize: BlksizeT,
+    public var stBlocks: BlkcntT,
+    public var glibcReserved: LongArray,
 ) {
-    public fun clone(): Stat = Stat(stDev, stIno, stNlink, stMode, stUid, stGid, stPad0, stRdev, stSize, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, stBlksize, stBlocks, glibcReserved)
+    public open fun clone(): Stat = Stat(stDev, stIno, stNlink, stMode, stUid, stGid, stPad0, stRdev, stSize, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, stBlksize, stBlocks, glibcReserved)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat> =
@@ -390,27 +335,27 @@ public class Stat(
     }
 }
 
-public class Stat64(
-    public var stDev: DevT = 0uL,
-    public var stIno: Ino64T = 0uL,
-    public var stNlink: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.NlinkT = 0uL,
-    public var stMode: ModeT = 0u,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var stPad0: CInt = 0,
-    public var stRdev: DevT = 0uL,
-    public var stSize: OffT = 0L,
-    public var stAtime: TimeT = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: TimeT = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: TimeT = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var stBlksize: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.BlksizeT = 0L,
-    public var stBlocks: Blkcnt64T = 0L,
-    public var glibcReserved: LongArray = LongArray(3),
+public open class Stat64(
+    public var stDev: DevT,
+    public var stIno: Ino64T,
+    public var stNlink: NlinkT,
+    public var stMode: ModeT,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var stPad0: CInt,
+    public var stRdev: DevT,
+    public var stSize: OffT,
+    public var stAtime: TimeT,
+    public var stAtimeNsec: CLong,
+    public var stMtime: TimeT,
+    public var stMtimeNsec: CLong,
+    public var stCtime: TimeT,
+    public var stCtimeNsec: CLong,
+    public var stBlksize: BlksizeT,
+    public var stBlocks: Blkcnt64T,
+    public var glibcReserved: LongArray,
 ) {
-    public fun clone(): Stat64 = Stat64(stDev, stIno, stNlink, stMode, stUid, stGid, stPad0, stRdev, stSize, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, stBlksize, stBlocks, glibcReserved)
+    public open fun clone(): Stat64 = Stat64(stDev, stIno, stNlink, stMode, stUid, stGid, stPad0, stRdev, stSize, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, stBlksize, stBlocks, glibcReserved)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat64> =
@@ -503,17 +448,10 @@ public class Stat64(
     }
 }
 
-public data class PthreadAttrT(
-    public var size: ULongArray = ULongArray(7),
+public open class PthreadAttrT(
+    public var size: ULongArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadAttrT) return false
-        if (!this.size.contentEquals(other.size)) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.size.contentHashCode()
+    public open fun clone(): PthreadAttrT = PthreadAttrT(size)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadAttrT> =
@@ -538,18 +476,20 @@ public data class PthreadAttrT(
     }
 }
 
-public data class IpcPerm(
-    public var key: KeyT = 0,
-    public var uid: UidT = 0,
-    public var gid: GidT = 0,
-    public var cuid: UidT = 0,
-    public var cgid: GidT = 0,
-    public var mode: ModeT = 0u,
-    public var seq: CUshort = 0u,
-    public var pad1: CUshort = 0u,
-    public var unused1: CUlong = 0uL,
-    public var unused2: CUlong = 0uL,
+public open class IpcPerm(
+    public var key: KeyT,
+    public var uid: UidT,
+    public var gid: GidT,
+    public var cuid: UidT,
+    public var cgid: GidT,
+    public var mode: ModeT,
+    public var seq: CUshort,
+    public var pad1: CUshort,
+    public var unused1: CUlong,
+    public var unused2: CUlong,
 ) {
+    public open fun clone(): IpcPerm = IpcPerm(key, uid, gid, cuid, cgid, mode, seq, pad1, unused1, unused2)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IpcPerm> =
             object : TypeLayout<IpcPerm> {
@@ -609,18 +549,20 @@ public data class IpcPerm(
     }
 }
 
-public data class ShmidDs(
-    public var shmPerm: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.IpcPerm = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.IpcPerm(),
-    public var shmSegsz: SizeT = 0uL,
-    public var shmAtime: TimeT = 0L,
-    public var shmDtime: TimeT = 0L,
-    public var shmCtime: TimeT = 0L,
-    public var shmCpid: PidT = 0,
-    public var shmLpid: PidT = 0,
-    public var shmNattch: ShmattT = 0uL,
-    public var unused4: CUlong = 0uL,
-    public var unused5: CUlong = 0uL,
+public open class ShmidDs(
+    public var shmPerm: IpcPerm,
+    public var shmSegsz: SizeT,
+    public var shmAtime: TimeT,
+    public var shmDtime: TimeT,
+    public var shmCtime: TimeT,
+    public var shmCpid: PidT,
+    public var shmLpid: PidT,
+    public var shmNattch: ShmattT,
+    public var unused4: CUlong,
+    public var unused5: CUlong,
 ) {
+    public open fun clone(): ShmidDs = ShmidDs(shmPerm, shmSegsz, shmAtime, shmDtime, shmCtime, shmCpid, shmLpid, shmNattch, unused4, unused5)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ShmidDs> =
             object : TypeLayout<ShmidDs> {
@@ -680,10 +622,12 @@ public data class ShmidDs(
     }
 }
 
-public data class PswT(
-    public var mask: ULong = 0uL,
-    public var addr: ULong = 0uL,
+public open class PswT(
+    public var mask: ULong,
+    public var addr: ULong,
 ) {
+    public open fun clone(): PswT = PswT(mask, addr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<PswT> =
             object : TypeLayout<PswT> {
@@ -711,11 +655,13 @@ public data class PswT(
     }
 }
 
-public data class FpregsetT(
-    public var fpc: UInt = 0u,
-    public var pad: UInt = 0u,
-    public var fprs: List<FpregT> = List(16) { FpregT() },
+public open class FpregsetT(
+    public var fpc: UInt,
+    public var pad: UInt,
+    public var fprs: List<FpregT>,
 ) {
+    public open fun clone(): FpregsetT = FpregsetT(fpc, pad, fprs)
+
     public companion object {
         public fun typeLayout(): TypeLayout<FpregsetT> =
             object : TypeLayout<FpregsetT> {
@@ -747,29 +693,13 @@ public data class FpregsetT(
     }
 }
 
-public data class McontextT(
-    public var psw: PswT = PswT(),
-    public var gregs: ULongArray = ULongArray(16),
-    public var aregs: UIntArray = UIntArray(16),
-    public var fpregs: FpregsetT = ULongArray(0),
+public open class McontextT(
+    public var psw: PswT,
+    public var gregs: ULongArray,
+    public var aregs: UIntArray,
+    public var fpregs: FpregsetT,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is McontextT) return false
-        if (this.psw != other.psw) return false
-        if (!this.gregs.contentEquals(other.gregs)) return false
-        if (!this.aregs.contentEquals(other.aregs)) return false
-        if (this.fpregs != other.fpregs) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.psw.hashCode()
-        result = 31 * result + this.gregs.contentHashCode()
-        result = 31 * result + this.aregs.contentHashCode()
-        result = 31 * result + this.fpregs.hashCode()
-        return result
-    }
+    public open fun clone(): McontextT = McontextT(psw, gregs, aregs, fpregs)
 
     public companion object {
         public fun typeLayout(): TypeLayout<McontextT> =
@@ -806,10 +736,10 @@ public data class McontextT(
     }
 }
 
-public class UcontextT internal constructor(
+public open class UcontextT internal constructor(
     public var ucFlags: CUlong,
     ucLinkCtorArg: MutPtr,
-    public var ucStack: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT,
+    public var ucStack: StackT,
     ucMcontextCtorArg: McontextT,
     public var ucSigmask: SigsetT,
 ) {
@@ -819,55 +749,15 @@ public class UcontextT internal constructor(
     public var ucMcontext: McontextT = ucMcontextCtorArg
         internal set
 
-    public constructor() : this(
-        ucFlags = 0uL,
-        ucLinkCtorArg = MutPtr(0L),
-        ucStack = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT(),
-        ucMcontextCtorArg = MutPtr(0L),
-        ucSigmask = SigsetT(),
-    )
-
-    public operator fun component1(): CUlong = this.ucFlags
-
-    public operator fun component2(): MutPtr = this.ucLink
-
-    public operator fun component3(): io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT = this.ucStack
-
-    public operator fun component4(): McontextT = this.ucMcontext
-
-    public operator fun component5(): SigsetT = this.ucSigmask
-
-    public fun copy(ucFlags: CUlong = this.ucFlags, ucLink: MutPtr = this.ucLink, ucStack: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT = this.ucStack, ucMcontext: McontextT = this.ucMcontext, ucSigmask: SigsetT = this.ucSigmask): UcontextT = UcontextT(ucFlags = ucFlags, ucLinkCtorArg = ucLink, ucStack = ucStack, ucMcontextCtorArg = ucMcontext, ucSigmask = ucSigmask)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is UcontextT) return false
-        if (this.ucFlags != other.ucFlags) return false
-        if (this.ucLink != other.ucLink) return false
-        if (this.ucStack != other.ucStack) return false
-        if (this.ucMcontext != other.ucMcontext) return false
-        if (this.ucSigmask != other.ucSigmask) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ucFlags.hashCode()
-        result = 31 * result + this.ucLink.hashCode()
-        result = 31 * result + this.ucStack.hashCode()
-        result = 31 * result + this.ucMcontext.hashCode()
-        result = 31 * result + this.ucSigmask.hashCode()
-        return result
-    }
-
-    public fun clone(): UcontextT = UcontextT(ucFlags, ucLink, ucStack, ucMcontext, ucSigmask)
+    public open fun clone(): UcontextT = UcontextT(ucFlags, ucLink, ucStack, ucMcontext, ucSigmask)
 
     public companion object {
         public operator fun invoke(
-            ucFlags: CUlong = 0uL,
-            ucLink: MutPtr = MutPtr(0L),
-            ucStack: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT(),
-            ucMcontext: McontextT = MutPtr(0L),
-            ucSigmask: SigsetT = SigsetT(),
+            ucFlags: CUlong,
+            ucLink: MutPtr,
+            ucStack: StackT,
+            ucMcontext: McontextT,
+            ucSigmask: SigsetT,
         ): UcontextT = UcontextT(
             ucFlags = ucFlags,
             ucLinkCtorArg = ucLink,
@@ -878,60 +768,30 @@ public class UcontextT internal constructor(
     }
 }
 
-public data class Statfs64(
-    public var fType: CUint = 0u,
-    public var fBsize: CUint = 0u,
-    public var fBlocks: ULong = 0uL,
-    public var fBfree: ULong = 0uL,
-    public var fBavail: ULong = 0uL,
-    public var fFiles: ULong = 0uL,
-    public var fFfree: ULong = 0uL,
-    public var fFsid: FsidT = FsidT(),
-    public var fNamelen: CUint = 0u,
-    public var fFrsize: CUint = 0u,
-    public var fFlags: CUint = 0u,
-    public var fSpare: UIntArray = UIntArray(4),
+public open class Statfs64(
+    public var fType: CUint,
+    public var fBsize: CUint,
+    public var fBlocks: ULong,
+    public var fBfree: ULong,
+    public var fBavail: ULong,
+    public var fFiles: ULong,
+    public var fFfree: ULong,
+    public var fFsid: FsidT,
+    public var fNamelen: CUint,
+    public var fFrsize: CUint,
+    public var fFlags: CUint,
+    public var fSpare: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Statfs64) return false
-        if (this.fType != other.fType) return false
-        if (this.fBsize != other.fBsize) return false
-        if (this.fBlocks != other.fBlocks) return false
-        if (this.fBfree != other.fBfree) return false
-        if (this.fBavail != other.fBavail) return false
-        if (this.fFiles != other.fFiles) return false
-        if (this.fFfree != other.fFfree) return false
-        if (this.fFsid != other.fFsid) return false
-        if (this.fNamelen != other.fNamelen) return false
-        if (this.fFrsize != other.fFrsize) return false
-        if (this.fFlags != other.fFlags) return false
-        if (!this.fSpare.contentEquals(other.fSpare)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.fType.hashCode()
-        result = 31 * result + this.fBsize.hashCode()
-        result = 31 * result + this.fBlocks.hashCode()
-        result = 31 * result + this.fBfree.hashCode()
-        result = 31 * result + this.fBavail.hashCode()
-        result = 31 * result + this.fFiles.hashCode()
-        result = 31 * result + this.fFfree.hashCode()
-        result = 31 * result + this.fFsid.hashCode()
-        result = 31 * result + this.fNamelen.hashCode()
-        result = 31 * result + this.fFrsize.hashCode()
-        result = 31 * result + this.fFlags.hashCode()
-        result = 31 * result + this.fSpare.contentHashCode()
-        return result
-    }
+    public open fun clone(): Statfs64 = Statfs64(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fFlags, fSpare)
 }
 
 // Note(union): This is actually a union.
-public data class FpregT(
-    public var d: CDouble = 0.0,
+public open class FpregT(
+    public var d: CDouble,
 ) {
-    public fun eq(other: FpregT): Boolean = this.d == other.d
+    public open fun clone(): FpregT = FpregT(d)
+
+    public open fun eq(other: FpregT): Boolean = this.d == other.d
 
     public override fun hashCode(): Int {
         var state = 0
@@ -963,38 +823,24 @@ public data class FpregT(
     }
 }
 
-public data class MaxAlignT(
-    public var priv: LongArray = LongArray(3),
+public open class MaxAlignT internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<LongArray>,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is MaxAlignT) return false
-        if (!this.priv.contentEquals(other.priv)) return false
-        return true
-    }
+    public var priv: LongArray
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    override fun hashCode(): Int = this.priv.contentHashCode()
+    internal constructor(priv: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(priv, AlignedTypeLayout(fieldLayout, 8L)), AlignedTypeLayout(fieldLayout, 8L))
+
+    public fun pointerLayout(): TypeLayout<MaxAlignT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MaxAlignT(ptr, layout) }, { it.priv })
+
+    public open fun clone(): MaxAlignT = MaxAlignT(priv, fieldLayout)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<MaxAlignT> =
-            object : TypeLayout<MaxAlignT> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 24L
-                override fun readNative(addr: Long): MaxAlignT =
-                    MaxAlignT(
-                        (PrimitiveArrayLayouts.longArray(3)).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: MaxAlignT) {
-                    (PrimitiveArrayLayouts.longArray(3)).writeNative(addr, value.priv)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): MaxAlignT =
-                    MaxAlignT(
-                        (PrimitiveArrayLayouts.longArray(3)).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: MaxAlignT) {
-                    (PrimitiveArrayLayouts.longArray(3)).writeBytes(buf, offset, value.priv)
-                }
-            }
+        public operator fun invoke(priv: LongArray, fieldLayout: TypeLayout<LongArray>): MaxAlignT = MaxAlignT(priv, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<LongArray>): MaxAlignT = MaxAlignT(fieldStorage, fieldLayout)
     }
 }
 
@@ -1300,13 +1146,13 @@ public val VEOL2: Int = 16
 
 public val VMIN: Int = 6
 
-public val IEXTEN: TcflagT = 0x00008000uL
+public val IEXTEN: TcflagT = 0x00008000u
 
-public val TOSTOP: TcflagT = 0x00000100uL
+public val TOSTOP: TcflagT = 0x00000100u
 
-public val FLUSHO: TcflagT = 0x00001000uL
+public val FLUSHO: TcflagT = 0x00001000u
 
-public val EXTPROC: TcflagT = 0x00010000uL
+public val EXTPROC: TcflagT = 0x00010000u
 
 public val PTRACE_DETACH: CUint = 17u
 
@@ -1364,161 +1210,161 @@ public val VDISCARD: Int = 13
 
 public val VWERASE: Int = 14
 
-public val OLCUC: TcflagT = 2uL
+public val OLCUC: TcflagT = 2u
 
-public val ONLCR: TcflagT = 4uL
+public val ONLCR: TcflagT = 4u
 
-public val NLDLY: TcflagT = 256uL
+public val NLDLY: TcflagT = 256u
 
-public val CRDLY: TcflagT = 1536uL
+public val CRDLY: TcflagT = 1536u
 
-public val CR1: TcflagT = 0x00000200uL
+public val CR1: TcflagT = 0x00000200u
 
-public val CR2: TcflagT = 0x00000400uL
+public val CR2: TcflagT = 0x00000400u
 
-public val CR3: TcflagT = 0x00000600uL
+public val CR3: TcflagT = 0x00000600u
 
-public val TABDLY: TcflagT = 6144uL
+public val TABDLY: TcflagT = 6144u
 
-public val TAB1: TcflagT = 0x00000800uL
+public val TAB1: TcflagT = 0x00000800u
 
-public val TAB2: TcflagT = 0x00001000uL
+public val TAB2: TcflagT = 0x00001000u
 
-public val TAB3: TcflagT = 0x00001800uL
+public val TAB3: TcflagT = 0x00001800u
 
-public val BSDLY: TcflagT = 8192uL
+public val BSDLY: TcflagT = 8192u
 
-public val BS1: TcflagT = 0x00002000uL
+public val BS1: TcflagT = 0x00002000u
 
-public val FFDLY: TcflagT = 32768uL
+public val FFDLY: TcflagT = 32768u
 
-public val FF1: TcflagT = 0x00008000uL
+public val FF1: TcflagT = 0x00008000u
 
-public val VTDLY: TcflagT = 16384uL
+public val VTDLY: TcflagT = 16384u
 
-public val VT1: TcflagT = 0x00004000uL
+public val VT1: TcflagT = 0x00004000u
 
-public val XTABS: TcflagT = 6144uL
+public val XTABS: TcflagT = 6144u
 
-public val CBAUD: SpeedT = 4111uL
+public val CBAUD: SpeedT = 4111u
 
-public val B0: SpeedT = 0uL
+public val B0: SpeedT = 0u
 
-public val B50: SpeedT = 1uL
+public val B50: SpeedT = 1u
 
-public val B75: SpeedT = 2uL
+public val B75: SpeedT = 2u
 
-public val B110: SpeedT = 3uL
+public val B110: SpeedT = 3u
 
-public val B134: SpeedT = 4uL
+public val B134: SpeedT = 4u
 
-public val B150: SpeedT = 5uL
+public val B150: SpeedT = 5u
 
-public val B200: SpeedT = 6uL
+public val B200: SpeedT = 6u
 
-public val B300: SpeedT = 7uL
+public val B300: SpeedT = 7u
 
-public val B600: SpeedT = 8uL
+public val B600: SpeedT = 8u
 
-public val B1200: SpeedT = 9uL
+public val B1200: SpeedT = 9u
 
-public val B1800: SpeedT = 10uL
+public val B1800: SpeedT = 10u
 
-public val B2400: SpeedT = 11uL
+public val B2400: SpeedT = 11u
 
-public val B4800: SpeedT = 12uL
+public val B4800: SpeedT = 12u
 
-public val B9600: SpeedT = 13uL
+public val B9600: SpeedT = 13u
 
-public val B19200: SpeedT = 14uL
+public val B19200: SpeedT = 14u
 
-public val B38400: SpeedT = 15uL
+public val B38400: SpeedT = 15u
 
 public val EXTA: SpeedT = B19200
 
 public val EXTB: SpeedT = B38400
 
-public val CSIZE: TcflagT = 48uL
+public val CSIZE: TcflagT = 48u
 
-public val CS6: TcflagT = 16uL
+public val CS6: TcflagT = 16u
 
-public val CS7: TcflagT = 32uL
+public val CS7: TcflagT = 32u
 
-public val CS8: TcflagT = 48uL
+public val CS8: TcflagT = 48u
 
-public val CSTOPB: TcflagT = 64uL
+public val CSTOPB: TcflagT = 64u
 
-public val CREAD: TcflagT = 128uL
+public val CREAD: TcflagT = 128u
 
-public val PARENB: TcflagT = 256uL
+public val PARENB: TcflagT = 256u
 
-public val PARODD: TcflagT = 512uL
+public val PARODD: TcflagT = 512u
 
-public val HUPCL: TcflagT = 1024uL
+public val HUPCL: TcflagT = 1024u
 
-public val CLOCAL: TcflagT = 2048uL
+public val CLOCAL: TcflagT = 2048u
 
-public val CBAUDEX: TcflagT = 4096uL
+public val CBAUDEX: TcflagT = 4096u
 
-public val B57600: SpeedT = 4097uL
+public val B57600: SpeedT = 4097u
 
-public val B115200: SpeedT = 4098uL
+public val B115200: SpeedT = 4098u
 
-public val B230400: SpeedT = 4099uL
+public val B230400: SpeedT = 4099u
 
-public val B460800: SpeedT = 4100uL
+public val B460800: SpeedT = 4100u
 
-public val B500000: SpeedT = 4101uL
+public val B500000: SpeedT = 4101u
 
-public val B576000: SpeedT = 4102uL
+public val B576000: SpeedT = 4102u
 
-public val B921600: SpeedT = 4103uL
+public val B921600: SpeedT = 4103u
 
-public val B1000000: SpeedT = 4104uL
+public val B1000000: SpeedT = 4104u
 
-public val B1152000: SpeedT = 4105uL
+public val B1152000: SpeedT = 4105u
 
-public val B1500000: SpeedT = 4106uL
+public val B1500000: SpeedT = 4106u
 
-public val B2000000: SpeedT = 4107uL
+public val B2000000: SpeedT = 4107u
 
-public val B2500000: SpeedT = 4108uL
+public val B2500000: SpeedT = 4108u
 
-public val B3000000: SpeedT = 4109uL
+public val B3000000: SpeedT = 4109u
 
-public val B3500000: SpeedT = 4110uL
+public val B3500000: SpeedT = 4110u
 
-public val B4000000: SpeedT = 4111uL
+public val B4000000: SpeedT = 4111u
 
-public val CIBAUD: TcflagT = 269418496uL
+public val CIBAUD: TcflagT = 269418496u
 
-public val ISIG: TcflagT = 1uL
+public val ISIG: TcflagT = 1u
 
-public val ICANON: TcflagT = 2uL
+public val ICANON: TcflagT = 2u
 
-public val ECHOE: TcflagT = 16uL
+public val ECHOE: TcflagT = 16u
 
-public val ECHOK: TcflagT = 32uL
+public val ECHOK: TcflagT = 32u
 
-public val ECHONL: TcflagT = 64uL
+public val ECHONL: TcflagT = 64u
 
-public val NOFLSH: TcflagT = 128uL
+public val NOFLSH: TcflagT = 128u
 
-public val ECHOCTL: TcflagT = 512uL
+public val ECHOCTL: TcflagT = 512u
 
-public val ECHOPRT: TcflagT = 1024uL
+public val ECHOPRT: TcflagT = 1024u
 
-public val ECHOKE: TcflagT = 2048uL
+public val ECHOKE: TcflagT = 2048u
 
-public val PENDIN: TcflagT = 16384uL
+public val PENDIN: TcflagT = 16384u
 
 public val POLLWRNORM: CShort = 0x100
 
 public val POLLWRBAND: CShort = 0x200
 
-public val IXON: TcflagT = 1024uL
+public val IXON: TcflagT = 1024u
 
-public val IXOFF: TcflagT = 4096uL
+public val IXOFF: TcflagT = 4096u
 
 public val SYS_EXIT: CLong = 1L
 

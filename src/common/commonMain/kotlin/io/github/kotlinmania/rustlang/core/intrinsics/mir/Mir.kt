@@ -281,6 +281,7 @@ public sealed class BasicBlock {
      * A non-cleanup basic block.
      */
     public data object Normal : BasicBlock()
+
     /**
      * A basic block that lies on an unwind path.
      */
@@ -295,6 +296,7 @@ public sealed class UnwindTerminateReason {
      * Unwinding is just not possible given the ABI of this function.
      */
     public data object Abi : UnwindTerminateReason()
+
     /**
      * We were already cleaning up for an ongoing unwind, and a *second*, *nested* unwind was
      * triggered by the drop glue.
@@ -586,9 +588,13 @@ public sealed class Safety {
 }
 
 public sealed class PointerCoercion {
-    public data class ReifyFnPointer(public var value: Safety) : PointerCoercion()
+    public data class ReifyFnPointer(
+        public var value: Safety,
+    ) : PointerCoercion()
     public data object UnsafeFnPointer : PointerCoercion()
-    public data class ClosureFnPointer(public var value: Safety) : PointerCoercion()
+    public data class ClosureFnPointer(
+        public var value: Safety,
+    ) : PointerCoercion()
     public data object MutToConstPointer : PointerCoercion()
     public data object ArrayToPointer : PointerCoercion()
     public data object UnsizePointee : PointerCoercion()
@@ -606,7 +612,9 @@ public sealed class CastKind {
     public data object Transmute : CastKind()
     public data object BoxDerefTransmute : CastKind()
     public data object Subtype : CastKind()
-    public data class PointerCoercion(public var value: PointerCoercion) : CastKind()
+    public data class PointerCoercion(
+        public var value: PointerCoercion,
+    ) : CastKind()
 }
 
 /**

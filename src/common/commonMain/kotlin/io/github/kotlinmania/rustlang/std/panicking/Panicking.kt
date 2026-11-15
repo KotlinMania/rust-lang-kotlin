@@ -3,10 +3,11 @@
 
 package io.github.kotlinmania.rustlang.std.panicking
 
-import io.github.kotlinmania.rustlang.Io
 import io.github.kotlinmania.rustlang.alloc.panicking.PanicPayload
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.any.Any
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -15,24 +16,24 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.io.stdio.trySetOutputCapture
-import io.github.kotlinmania.rustlang.panic.BacktraceStyle
-import io.github.kotlinmania.rustlang.panic.PanicHookInfo
-import io.github.kotlinmania.rustlang.panic.getBacktraceStyle
-import io.github.kotlinmania.rustlang.panicking.MustAbort
-import io.github.kotlinmania.rustlang.panicking.countIsZero
-import io.github.kotlinmania.rustlang.panicking.finishedPanicHook
-import io.github.kotlinmania.rustlang.panicking.getCount
-import io.github.kotlinmania.rustlang.panicking.increase
-import io.github.kotlinmania.rustlang.process.abort
-import io.github.kotlinmania.rustlang.sync.mpmc.counter.new
-import io.github.kotlinmania.rustlang.sync.nonpoison.rwlock.RwLock
-import io.github.kotlinmania.rustlang.sys.backtrace.PrintFmt
-import io.github.kotlinmania.rustlang.sys.backtrace.lock
-import io.github.kotlinmania.rustlang.sys.backtrace.rustEndShortBacktrace
-import io.github.kotlinmania.rustlang.sys.process.unix.unix.Process
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.sys.thread.unix.Thread
+import io.github.kotlinmania.rustlang.std.io.stdio.trySetOutputCapture
+import io.github.kotlinmania.rustlang.std.panic.BacktraceStyle
+import io.github.kotlinmania.rustlang.std.panic.PanicHookInfo
+import io.github.kotlinmania.rustlang.std.panic.getBacktraceStyle
+import io.github.kotlinmania.rustlang.std.panicking.paniccount.MustAbort
+import io.github.kotlinmania.rustlang.std.panicking.paniccount.countIsZero
+import io.github.kotlinmania.rustlang.std.panicking.paniccount.finishedPanicHook
+import io.github.kotlinmania.rustlang.std.panicking.paniccount.getCount
+import io.github.kotlinmania.rustlang.std.panicking.paniccount.increase
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sync.mpmc.counter.new
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.rwlock.RwLock
+import io.github.kotlinmania.rustlang.std.sys.backtrace.PrintFmt
+import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
+import io.github.kotlinmania.rustlang.std.sys.backtrace.rustEndShortBacktrace
+import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.Process
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread
 
 // Implementation of various bits and pieces of the `panic` macro and
 // associated runtime pieces.
@@ -251,7 +252,7 @@ public fun updateHook(hookFn: ((PanicHookInfo) -> Unit, PanicHookInfo) -> Unit) 
         error("cannot modify the panic hook from a panicking thread")
     }
     var hook = HOOK.write()
-    val prev = mem.take(hook).intoBox()
+    val prev = take(hook).intoBox()
     hook = Hook.Custom({ info -> hookFn(prev, info) })
 }
 
@@ -273,7 +274,7 @@ public fun defaultHook(info: PanicHookInfo) {
     val location = info.location().unwrap()
     val msg = payloadAsStr(info.payload())
     val write =
-        { err: Io.Write ->
+        { err: Write ->
             // Use a lock to prevent mixed output in multithreading context.
             // Some platforms also require it when printing a backtrace, like `SymFromAddr` on Windows.
             var lock = lock()
@@ -285,7 +286,7 @@ public fun defaultHook(info: PanicHookInfo) {
                 var buffer = UByteArray(512) { 0u.toUByte() }
                 var cursor = new(buffer)
                 val writeMsg =
-                    { dst: Io.Write ->
+                    { dst: Write ->
                         // We add a newline to ensure the panic message appears at the start of a line.
                         dst.appendLine("\nthread '$name' ($tid) panicked at $location:\n$msg")
                     }
@@ -357,7 +358,7 @@ public fun panicHandler(info: PanicInfo): Nothing {
             // Lazily, the first time this gets called, run the actual string formatting.
             return this.string.getOrInsertWith({
                 var s = ""
-                var fmt = fmt.Formatter.new(s, fmt.FormattingOptions.new())
+                var fmt = Formatter.new(s, FormattingOptions.new())
                 val err = fmt.append((inner).toString())
                 s
             })
@@ -367,7 +368,7 @@ public fun panicHandler(info: PanicInfo): Nothing {
             // We do two allocations here, unfortunately. But (a) they're required with the current
             // scheme, and (b) we don't handle panic + OOM properly anyway (see comment in
             // beginPanic below).
-            val contents = mem.take(this.fill())
+            val contents = take(this.fill())
             return contents
         }
 
@@ -469,7 +470,7 @@ public fun <M> beginPanic(msg: M): Nothing {
         }
     }
     if (false) {
-        intrinsics.abortImmediate()
+        kmAbort()
     }
     val loc = Location.caller()
     return rustEndShortBacktrace({
@@ -579,7 +580,7 @@ public fun resumeUnwind(payload: RustAny): Nothing {
                 value = v
             }
 
-        public open fun takeBox(): RustAny = mem.replace(this.value, Box.new())
+        public open fun takeBox(): RustAny = replace(this.value, Box.new())
 
         public open fun get(): RustAny = this.value
 

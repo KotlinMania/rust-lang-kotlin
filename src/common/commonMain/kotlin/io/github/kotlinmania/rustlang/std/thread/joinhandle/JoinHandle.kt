@@ -1,11 +1,11 @@
 // port-lint: source thread/join_handle.rs
 package io.github.kotlinmania.rustlang.std.thread.joinhandle
 
+import io.github.kotlinmania.rustlang.std.sys.AsInner
+import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.thread.Result
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.JoinInner
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
-import io.github.kotlinmania.rustlang.sys.AsInner
-import io.github.kotlinmania.rustlang.sys.IntoInner
-import io.github.kotlinmania.rustlang.thread.Result
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -108,7 +108,7 @@ public open class JoinHandle<T>(
      * println("thread id: ${thread.id()}")
      * ```
      */
-    public open fun thread(): io.github.kotlinmania.rustlang.thread.thread.Thread = this.value.thread()
+    public open fun thread(): io.github.kotlinmania.rustlang.std.thread.thread.Thread = this.value.thread()
 
     /**
      * Waits for the associated thread to finish.

@@ -1,9 +1,9 @@
 // port-lint: source async_iter/async_iter.rs
 package io.github.kotlinmania.rustlang.core.asynciter.asynciter
 
-import io.github.kotlinmania.rustlang.pin.Pin
-import io.github.kotlinmania.rustlang.task.poll.Poll
-import io.github.kotlinmania.rustlang.task.wake.Context
+import io.github.kotlinmania.rustlang.core.pin.Pin
+import io.github.kotlinmania.rustlang.core.task.poll.Poll
+import io.github.kotlinmania.rustlang.core.task.wake.Context
 
 /**
  * A trait for dealing with asynchronous iterators.

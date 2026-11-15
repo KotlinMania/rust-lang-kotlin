@@ -6,4 +6,6 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 /**
  * Returns `n / d` and sets `* rem = n % d`
  */
-public fun udivmoddi4(n: ULong, d: ULong, rem: RustMutableReference<ULong>?): ULong = io.github.kotlinmania.rustlang.int.udiv.udivmoddi4(n, d, rem)
+public fun udivmoddi4(n: ULong, d: ULong, rem: RustMutableReference<ULong>?): ULong =
+    io.github.kotlinmania.rustlang.compilerbuiltins.int.udiv
+        .udivmoddi4(n, d, rem)

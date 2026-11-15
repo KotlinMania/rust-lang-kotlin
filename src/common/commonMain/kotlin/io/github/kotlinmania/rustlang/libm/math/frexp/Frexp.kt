@@ -11,25 +11,25 @@ import io.github.kotlinmania.rustlang.core.F16
  *
  * That is, `x * 2 ^ p` will represent the input value.
  */
-public fun frexpf16(x: F16): Pair<F16, Int> = io.github.kotlinmania.rustlang.math.frexp.frexp(x.toDouble())
+public fun frexpf16(x: F16): Pair<F16, Int> = io.github.kotlinmania.rustlang.libm.math.generic.frexp(x.toDouble())
 
 /**
  * Decompose a float into a normalized value within the range `[0.5, 1)`, and a power of 2.
  *
  * That is, `x * 2 ^ p` will represent the input value.
  */
-public fun frexpf(x: kotlin.Float): Pair<kotlin.Float, Int> = io.github.kotlinmania.rustlang.math.frexp.frexp(x.toDouble())
+public fun frexpf(x: kotlin.Float): Pair<kotlin.Float, Int> = io.github.kotlinmania.rustlang.libm.math.generic.frexp(x.toDouble())
 
 /**
  * Decompose a float into a normalized value within the range `[0.5, 1)`, and a power of 2.
  *
  * That is, `x * 2 ^ p` will represent the input value.
  */
-public fun frexp(x: Double): Pair<Double, Int> = io.github.kotlinmania.rustlang.math.frexp.frexp(x)
+public fun frexp(x: Double): Pair<Double, Int> = io.github.kotlinmania.rustlang.libm.math.generic.frexp(x)
 
 /**
  * Decompose a float into a normalized value within the range `[0.5, 1)`, and a power of 2.
  *
  * That is, `x * 2 ^ p` will represent the input value.
  */
-public fun frexpf128(x: F128): Pair<F128, Int> = io.github.kotlinmania.rustlang.math.frexp.frexp(x.toDouble())
+public fun frexpf128(x: F128): Pair<F128, Int> = io.github.kotlinmania.rustlang.libm.math.generic.frexp(x.toDouble())

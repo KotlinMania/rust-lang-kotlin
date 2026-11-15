@@ -1,10 +1,10 @@
 // port-lint: source fs/dirs.rs
 package io.github.kotlinmania.rustlang.std.fs.dirs
 
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.path.PathBuf
-import io.github.kotlinmania.rustlang.sys.fs.common.ExtraHomeDirs
-import io.github.kotlinmania.rustlang.sys.fs.common.ExtraMediaDirs
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.fs.common.ExtraHomeDirs
+import io.github.kotlinmania.rustlang.std.sys.fs.common.ExtraMediaDirs
 
 /**
  * Common user directory paths used for user-specific application files.

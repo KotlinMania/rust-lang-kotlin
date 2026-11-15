@@ -1,11 +1,11 @@
 // port-lint: source math/lgamma_r.rs
 package io.github.kotlinmania.rustlang.libm.math.lgammar
 
-import io.github.kotlinmania.rustlang.math.floor.floor
-import io.github.kotlinmania.rustlang.math.kcos.kCos
-import io.github.kotlinmania.rustlang.math.ksin.kSin
-import io.github.kotlinmania.rustlang.math.log.log
-import io.github.kotlinmania.rustlang.math.support.uncheckedDivI32
+import io.github.kotlinmania.rustlang.libm.math.floor.floor
+import io.github.kotlinmania.rustlang.libm.math.kcos.kCos
+import io.github.kotlinmania.rustlang.libm.math.ksin.kSin
+import io.github.kotlinmania.rustlang.libm.math.log.log
+import io.github.kotlinmania.rustlang.libm.math.support.uncheckedDivI32
 
 public val PI: Double = 3.14159265358979311600e00
 

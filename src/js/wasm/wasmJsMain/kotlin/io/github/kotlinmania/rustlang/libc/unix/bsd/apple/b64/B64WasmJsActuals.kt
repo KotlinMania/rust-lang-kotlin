@@ -2,18 +2,18 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.libc.*
 
 @JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
-private external fun initLibcUnixBsdAppleB64NapiAddon(): Boolean
+private external fun initUnixBsdAppleB64NapiAddon(): Boolean
 
-private val libcUnixBsdAppleB64NapiAvailable: Boolean = initLibcUnixBsdAppleB64NapiAddon()
+private val unixBsdAppleB64NapiAvailable: Boolean = initUnixBsdAppleB64NapiAddon()
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixBsdAppleB64Exchangedata(p0, p1, p2)")
-private external fun wasmRustlangLibcUnixBsdAppleB64Exchangedata(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixBsdAppleB64Exchangedata(p0, p1, p2)")
+private external fun wasmLibcUnixBsdAppleB64Exchangedata(p0: String, p1: String, p2: Int): Int
 
 public actual fun exchangedata(path1: ConstPtr, path2: ConstPtr, options: CUint): CInt =
-    if (libcUnixBsdAppleB64NapiAvailable) wasmRustlangLibcUnixBsdAppleB64Exchangedata(path1.rawAddress.toString(), path2.rawAddress.toString(), options.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixBsdAppleB64NapiAvailable) wasmLibcUnixBsdAppleB64Exchangedata(path1.rawAddress.toString(), path2.rawAddress.toString(), options.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")

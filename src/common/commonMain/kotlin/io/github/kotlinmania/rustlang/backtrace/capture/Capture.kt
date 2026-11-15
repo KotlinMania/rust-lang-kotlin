@@ -1,19 +1,21 @@
 // port-lint: source capture.rs
 package io.github.kotlinmania.rustlang.backtrace.capture
 
-import io.github.kotlinmania.rustlang.backtrace.trace
+import io.github.kotlinmania.rustlang.backtrace.backtrace.trace
+import io.github.kotlinmania.rustlang.backtrace.print.BacktraceFmt
+import io.github.kotlinmania.rustlang.backtrace.print.PrintFmt
+import io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol
+import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
+import io.github.kotlinmania.rustlang.backtrace.symbolize.resolve
+import io.github.kotlinmania.rustlang.backtrace.symbolize.resolveFrame
+import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.print.BacktraceFmt
-import io.github.kotlinmania.rustlang.print.PrintFmt
-import io.github.kotlinmania.rustlang.symbolize.Symbol
-import io.github.kotlinmania.rustlang.symbolize.SymbolName
-import io.github.kotlinmania.rustlang.symbolize.resolve
-import io.github.kotlinmania.rustlang.symbolize.resolveFrame
-import io.github.kotlinmania.rustlang.types.BytesOrWideString
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -224,7 +226,8 @@ public open class Backtrace(
 
 public open class TracePtr internal constructor(
     valueCtorArg: MutPtr,
-) : Deserialize, Serialize {
+) : Deserialize,
+    Serialize {
     public var value: MutPtr = valueCtorArg
         internal set
 
@@ -271,9 +274,10 @@ public open class TracePtr internal constructor(
 
         public operator fun invoke(
             value: MutPtr,
-        ): TracePtr = TracePtr(
-            valueCtorArg = value,
-        )
+        ): TracePtr =
+            TracePtr(
+                valueCtorArg = value,
+            )
 
         public fun fromAddr(addr: Int): TracePtr = TracePtr(MutPtr(addr.toLong()))
 
@@ -397,13 +401,19 @@ public open class BacktraceFrame(
     }
 
     public companion object {
-        public fun from(frame: io.github.kotlinmania.rustlang.backtrace.Frame): BacktraceFrame = BacktraceFrame(frame = Frame.Raw(frame), symbols = null)
+        public fun from(frame: Frame): BacktraceFrame = BacktraceFrame(frame = Frame.Raw(frame), symbols = null)
     }
 }
 
 public sealed class Frame {
-    public data class Raw(public var value: io.github.kotlinmania.rustlang.backtrace.Frame) : Frame()
-    public data class Deserialized(public var ip: TracePtr, public var symbolAddress: TracePtr, public var moduleBaseAddress: TracePtr?) : Frame()
+    public data class Raw(
+        public var value: Frame,
+    ) : Frame()
+    public data class Deserialized(
+        public var ip: TracePtr,
+        public var symbolAddress: TracePtr,
+        public var moduleBaseAddress: TracePtr?,
+    ) : Frame()
 
     public open fun ip(): MutPtr =
         when (this) {
@@ -535,7 +545,13 @@ public open class BacktraceSymbol(
     public open fun colno(): UInt? = this.colno
 
     public open fun fmt(fmt: StringBuilder) {
-        DebugStruct(fmt, "BacktraceSymbol").field("name", this.name()).field("addr", this.addr()).field("filename", this.filename()).field("lineno", this.lineno()).field("colno", this.colno()).finish()
+        DebugStruct(fmt, "BacktraceSymbol")
+            .field("name", this.name())
+            .field("addr", this.addr())
+            .field("filename", this.filename())
+            .field("lineno", this.lineno())
+            .field("colno", this.colno())
+            .finish()
     }
 }
 
@@ -553,6 +569,10 @@ public fun <S> BacktraceFrame.serialize(s: S): Result<Ok, Error> where S : Seria
 }
 
 public fun <D> deserializeBacktraceFrame(d: D): Result<BacktraceFrame, Error> where D : Deserializer {
-    val frame: SerializedFrame = when (val tryResult = SerializedFrame.deserialize(d)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val frame: SerializedFrame =
+        when (val tryResult = SerializedFrame.deserialize(d)) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
     return Result.Ok(BacktraceFrame(frame = Frame.Deserialized(ip = TracePtr.fromAddr(frame.ip), symbolAddress = TracePtr.fromAddr(frame.symbolAddress), moduleBaseAddress = frame.moduleBaseAddress?.let(TracePtr::fromAddr)), symbols = frame.symbols))
 }

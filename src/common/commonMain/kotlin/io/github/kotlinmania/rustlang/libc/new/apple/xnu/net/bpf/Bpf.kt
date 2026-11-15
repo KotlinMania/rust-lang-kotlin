@@ -1,7 +1,6 @@
 // port-lint: source new/apple/xnu/net/bpf.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.net.bpf
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
@@ -10,21 +9,24 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.ior
-import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.iow
-import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.iowr
-import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.ior
+import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.iow
+import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.iowr
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
 
 // Header: `net / bpf.h`
 //
 // <https://github.com/apple-oss-distributions/xnu/blob/main/bsd/net/bpf.h>
 
-public data class BpfInsn(
-    public var code: CUshort = 0u,
-    public var jt: CUchar = 0u,
-    public var jf: CUchar = 0u,
-    public var k: UInt = 0u,
+public open class BpfInsn(
+    public var code: CUshort,
+    public var jt: CUchar,
+    public var jf: CUchar,
+    public var k: UInt,
 ) {
+    public open fun clone(): BpfInsn = BpfInsn(code, jt, jf, k)
+
     public companion object {
         public fun typeLayout(): TypeLayout<BpfInsn> =
             object : TypeLayout<BpfInsn> {
@@ -60,39 +62,14 @@ public data class BpfInsn(
     }
 }
 
-public class BpfProgram internal constructor(
+public open class BpfProgram internal constructor(
     public var bfLen: CUint,
     bfInsnsCtorArg: MutPtr,
 ) {
     public var bfInsns: MutPtr = bfInsnsCtorArg
         internal set
 
-    public constructor() : this(
-        bfLen = 0u,
-        bfInsnsCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): CUint = this.bfLen
-
-    public operator fun component2(): MutPtr = this.bfInsns
-
-    public fun copy(bfLen: CUint = this.bfLen, bfInsns: MutPtr = this.bfInsns): BpfProgram = BpfProgram(bfLen = bfLen, bfInsnsCtorArg = bfInsns)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is BpfProgram) return false
-        if (this.bfLen != other.bfLen) return false
-        if (this.bfInsns != other.bfInsns) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.bfLen.hashCode()
-        result = 31 * result + this.bfInsns.hashCode()
-        return result
-    }
-
-    public fun clone(): BpfProgram = BpfProgram(bfLen, bfInsns)
+    public open fun clone(): BpfProgram = BpfProgram(bfLen, bfInsns)
 
     public companion object {
         public fun typeLayout(): TypeLayout<BpfProgram> =
@@ -120,8 +97,8 @@ public class BpfProgram internal constructor(
             }
 
         public operator fun invoke(
-            bfLen: CUint = 0u,
-            bfInsns: MutPtr = MutPtr(0L),
+            bfLen: CUint,
+            bfInsns: MutPtr,
         ): BpfProgram = BpfProgram(
             bfLen = bfLen,
             bfInsnsCtorArg = bfInsns,
@@ -129,47 +106,29 @@ public class BpfProgram internal constructor(
     }
 }
 
-public data class BpfDltlist(
-    public var bflLen: UInt = 0u,
-    public var bflU: CAnonymousBflU = CAnonymousBflU(),
-)
+public open class BpfDltlist(
+    public var bflLen: UInt,
+    public var bflU: CAnonymousBflU,
+) {
+    public open fun clone(): BpfDltlist = BpfDltlist(bflLen, bflU)
+}
 
 public class CAnonymousBflU internal constructor(
-    bfluListCtorArg: MutPtr,
-    public var bfluPad: ULong,
+    bfluListCtorArg: MutPtr?,
+    public var bfluPad: ULong?,
 ) {
-    public var bfluList: MutPtr = bfluListCtorArg
+    public var bfluList: MutPtr? = bfluListCtorArg
         internal set
 
     public constructor() : this(
-        bfluListCtorArg = MutPtr(0L),
-        bfluPad = 0uL,
+        bfluListCtorArg = null,
+        bfluPad = null,
     )
-
-    public operator fun component1(): MutPtr = this.bfluList
-
-    public operator fun component2(): ULong = this.bfluPad
-
-    public fun copy(bfluList: MutPtr = this.bfluList, bfluPad: ULong = this.bfluPad): CAnonymousBflU = CAnonymousBflU(bfluListCtorArg = bfluList, bfluPad = bfluPad)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousBflU) return false
-        if (this.bfluList != other.bfluList) return false
-        if (this.bfluPad != other.bfluPad) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.bfluList.hashCode()
-        result = 31 * result + this.bfluPad.hashCode()
-        return result
-    }
 
     public companion object {
         public operator fun invoke(
-            bfluList: MutPtr = MutPtr(0L),
-            bfluPad: ULong = 0uL,
+            bfluList: MutPtr? = null,
+            bfluPad: ULong? = null,
         ): CAnonymousBflU = CAnonymousBflU(
             bfluListCtorArg = bfluList,
             bfluPad = bfluPad,

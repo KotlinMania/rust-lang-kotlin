@@ -1,7 +1,7 @@
 package io.github.kotlinmania.rustlang.libc.windows
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.libc.*
 
 public typealias IntmaxT = Long
 
@@ -36,4 +36,4 @@ public typealias InoT = UShort
 
 public typealias Time64T = Long
 
-public typealias Socket = io.github.kotlinmania.rustlang.windows.UintptrT
+public typealias Socket = UintptrT

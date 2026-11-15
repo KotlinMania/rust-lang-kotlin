@@ -1,11 +1,11 @@
 // port-lint: source str/count.rs
 package io.github.kotlinmania.rustlang.core.str.count
 
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.core.intrinsics.unlikely
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.slice.chunks
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.intrinsics.unlikely
-import io.github.kotlinmania.rustlang.str.validations.utf8IsContByte
+import io.github.kotlinmania.rustlang.core.str.validations.utf8IsContByte
 
 // Code for efficiently counting the number of `char`s in a UTF-8 encoded
 // string.

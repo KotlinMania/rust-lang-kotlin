@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd
 
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.CInt
@@ -24,18 +24,18 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.Ioctl
 import io.github.kotlinmania.rustlang.libc.wasi.ECHILD
 import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
 import io.github.kotlinmania.rustlang.libc.wasi.ENOTTY
-import io.github.kotlinmania.rustlang.os.fd.FromRawFd
-import io.github.kotlinmania.rustlang.os.fd.IntoRawFd
-import io.github.kotlinmania.rustlang.os.fd.RawFd
-import io.github.kotlinmania.rustlang.process.id
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.AsInner
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.IntoInner
-import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvtR
-import io.github.kotlinmania.rustlang.sys.process.unix.unix.ExitStatus
+import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.process.id
+import io.github.kotlinmania.rustlang.std.sys.AsInner
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
+import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.ExitStatus
 
 public open class PidFd(
     public var value: FileDesc,
@@ -52,7 +52,7 @@ public open class PidFd(
     public open fun pid(): Result<UInt, Error> {
         // since kernel 6.13
         // https://lore.kernel.org/all/20241010155401.2268522-1-luca.boccassi@gmail.com/
-        val localStorageL31C8 = AddressableLocal(PidfdInfo(), ObjectSlotLayout<PidfdInfo>())
+        val localStorageL31C8 = AddressableLocal(PidfdInfo(), UnresolvedTypeLayout<PidfdInfo>())
         val pidfdInfo by localStorageL31C8
         pidfdInfo.mask = PIDFD_INFO_PID.toULong()
         run {
@@ -88,7 +88,7 @@ public open class PidFd(
     public open fun exitForReapedChild(): Result<ExitStatus, Error> {
         // since kernel 6.15
         // https://lore.kernel.org/linux-fsdevel/20250305-work-pidfs-killOnLastClose-v3-0-c8c3d8361705@kernel.org/T/
-        val localStorageL56C8 = AddressableLocal(PidfdInfo(), ObjectSlotLayout<PidfdInfo>())
+        val localStorageL56C8 = AddressableLocal(PidfdInfo(), UnresolvedTypeLayout<PidfdInfo>())
         val pidfdInfo by localStorageL56C8
         pidfdInfo.mask = PIDFD_INFO_EXIT.toULong()
         when (val tryResult = cvt(Ioctl(this.value.asRawFd(), PIDFD_GET_INFO, RustMutableReference(localStorageL56C8.asMutPtr(), localStorageL56C8.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
@@ -96,7 +96,7 @@ public open class PidFd(
     }
 
     public open fun waitid(options: CInt): Result<ExitStatus?, Error> {
-        val localStorageL63C8 = AddressableLocal(SiginfoT(), ObjectSlotLayout<SiginfoT>())
+        val localStorageL63C8 = AddressableLocal(SiginfoT(), UnresolvedTypeLayout<SiginfoT>())
         val siginfo by localStorageL63C8
         val r = cvtR({ io.github.kotlinmania.rustlang.libc.waitid(P_PIDFD, this.value.asRawFd().toUInt(), RustMutableReference(localStorageL63C8.asMutPtr(), localStorageL63C8.layout), options) })
         when {

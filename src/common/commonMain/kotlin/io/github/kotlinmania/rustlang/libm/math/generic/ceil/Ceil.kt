@@ -1,11 +1,11 @@
 // port-lint: source math/generic/ceil.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.ceil
 
-import io.github.kotlinmania.rustlang.math.support.env.FpResult
-import io.github.kotlinmania.rustlang.math.support.env.Status
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.math.support.floattraits.IntTy
-import io.github.kotlinmania.rustlang.math.support.inttraits.Int
+import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
+import io.github.kotlinmania.rustlang.libm.math.support.env.Status
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.IntTy
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 // Generic `ceil` algorithm.
 //

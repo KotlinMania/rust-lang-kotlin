@@ -3,24 +3,21 @@
 
 package io.github.kotlinmania.rustlang.core.bytestr.traits
 
-import io.github.kotlinmania.rustlang.bytestr.ByteStr
-import io.github.kotlinmania.rustlang.bytestr.traits.implPartialEq
-import io.github.kotlinmania.rustlang.bytestr.traits.implPartialEqN
-import io.github.kotlinmania.rustlang.bytestr.traits.implPartialEqOrd
-import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
+import io.github.kotlinmania.rustlang.core.ops.range.Bound
+import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
+import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
+import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
+import io.github.kotlinmania.rustlang.core.ops.range.RangeTo
+import io.github.kotlinmania.rustlang.core.ops.range.RangeToInclusive
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.ops.indexrange.IndexRange
-import io.github.kotlinmania.rustlang.ops.range.Bound
-import io.github.kotlinmania.rustlang.ops.range.RangeFrom
-import io.github.kotlinmania.rustlang.ops.range.RangeFull
-import io.github.kotlinmania.rustlang.ops.range.RangeInclusive
-import io.github.kotlinmania.rustlang.ops.range.RangeTo
-import io.github.kotlinmania.rustlang.ops.range.RangeToInclusive
-import io.github.kotlinmania.rustlang.range.Range
-import io.github.kotlinmania.rustlang.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.range.Range
+import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 
 // Trait implementations for `ByteStr`.
 

@@ -2,12 +2,10 @@
 
 package io.github.kotlinmania.rustlang.core.num
 
-import io.github.kotlinmania.rustlang.ascii.EscapeDefault
-import io.github.kotlinmania.rustlang.ascii.escapeDefault
-import io.github.kotlinmania.rustlang.convert.num.BoundedCastFromInt
-import io.github.kotlinmania.rustlang.convert.num.CheckedCastFromInt
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.ascii.EscapeDefault
+import io.github.kotlinmania.rustlang.core.ascii.escapeDefault
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphanumeric
@@ -19,13 +17,109 @@ import io.github.kotlinmania.rustlang.core.char.isAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.isAsciiPunctuation
 import io.github.kotlinmania.rustlang.core.char.isAsciiUppercase
 import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
+import io.github.kotlinmania.rustlang.core.char.methods.toDigit
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.convert.num.BoundedCastFromInt
+import io.github.kotlinmania.rustlang.core.convert.num.CheckedCastFromInt
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBitreverseU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBitreverseU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBitreverseU32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmBitreverseU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBitreverseU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBswapU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBswapU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBswapU32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmBswapU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmI128Shr
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowI128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowI16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowI32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowI64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowI8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateLeftU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateLeftU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateLeftU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateLeftU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateLeftU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateRightU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateRightU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateRightU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateRightU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateRightU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddI128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddI16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddI32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddI64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddI8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubI128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubI16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubI32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubI64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubI8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowI128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowI16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowI32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowI64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowI8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Add
+import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Mul
+import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Shl
+import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Shr
+import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Sub
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.core.io.util.Empty
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -33,37 +127,22 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.IntErrorKind.*
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
+import io.github.kotlinmania.rustlang.core.num.imp.intbits.depositImpl
+import io.github.kotlinmania.rustlang.core.num.imp.intbits.extractImpl
+import io.github.kotlinmania.rustlang.core.num.imp.intlog10.panicForNonpositiveArgument
+import io.github.kotlinmania.rustlang.core.num.imp.intsqrt.panicForNegativeArgument
+import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.add
+import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.castInteger
+import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.mul
+import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.neg
+import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.pow
+import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.rem
+import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.shl
+import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.shr
+import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.sub
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.str.rustToDigit
-import io.github.kotlinmania.rustlang.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.intrinsics.addWithOverflow
-import io.github.kotlinmania.rustlang.intrinsics.disjointBitor
-import io.github.kotlinmania.rustlang.intrinsics.exactDiv
-import io.github.kotlinmania.rustlang.intrinsics.mulWithOverflow
-import io.github.kotlinmania.rustlang.intrinsics.saturatingSub
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.intrinsics.subWithOverflow
-import io.github.kotlinmania.rustlang.intrinsics.threeWayCompare
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedDiv
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedRem
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedSub
-import io.github.kotlinmania.rustlang.io.util.Empty
-import io.github.kotlinmania.rustlang.num.imp.intbits.depositImpl
-import io.github.kotlinmania.rustlang.num.imp.intbits.extractImpl
-import io.github.kotlinmania.rustlang.num.imp.intlog10.panicForNonpositiveArgument
-import io.github.kotlinmania.rustlang.num.imp.intsqrt.panicForNegativeArgument
-import io.github.kotlinmania.rustlang.num.imp.overflowpanic.add
-import io.github.kotlinmania.rustlang.num.imp.overflowpanic.castInteger
-import io.github.kotlinmania.rustlang.num.imp.overflowpanic.mul
-import io.github.kotlinmania.rustlang.num.imp.overflowpanic.neg
-import io.github.kotlinmania.rustlang.num.imp.overflowpanic.pow
-import io.github.kotlinmania.rustlang.num.imp.overflowpanic.rem
-import io.github.kotlinmania.rustlang.num.imp.overflowpanic.shl
-import io.github.kotlinmania.rustlang.num.imp.overflowpanic.shr
-import io.github.kotlinmania.rustlang.num.imp.overflowpanic.sub
-import io.github.kotlinmania.rustlang.panic.constPanic
 import io.github.kotlinmania.rustlang.core.num.ParseIntError as Pie
 
 /**
@@ -182,7 +261,7 @@ public fun Byte.setBit(index: UInt, value: Boolean): Byte = this.castUnsigned().
  * check(n.countOnes() == 1)
  * ```
  */
-public fun Byte.countOnes(): UInt = rustCountOnes((this.toUByte()))
+public fun Byte.countOnes(): UInt = (this.toUByte()).countOnes()
 
 /**
  * Returns the number of zeros in the binary representation of `self`.
@@ -206,7 +285,7 @@ public fun Byte.countZeros(): UInt = (!this).countOnes()
  * check(n.leadingZeros() == 0)
  * ```
  */
-public fun Byte.leadingZeros(): UInt = rustLeadingZeros((this.toUByte()))
+public fun Byte.leadingZeros(): UInt = (this.toUByte()).leadingZeros()
 
 /**
  * Returns the number of trailing zeros in the binary representation of `self`.
@@ -217,7 +296,7 @@ public fun Byte.leadingZeros(): UInt = rustLeadingZeros((this.toUByte()))
  * check(n.trailingZeros() == 2)
  * ```
  */
-public fun Byte.trailingZeros(): UInt = rustTrailingZeros((this.toUByte()))
+public fun Byte.trailingZeros(): UInt = (this.toUByte()).trailingZeros()
 
 /**
  * Returns the number of leading ones in the binary representation of `self`.
@@ -227,7 +306,7 @@ public fun Byte.trailingZeros(): UInt = rustTrailingZeros((this.toUByte()))
  * ```kotlin
  * ```
  */
-public fun Byte.leadingOnes(): UInt = rustLeadingOnes((this.toUByte()))
+public fun Byte.leadingOnes(): UInt = (this.toUByte()).leadingOnes()
 
 /**
  * Returns the number of trailing ones in the binary representation of `self`.
@@ -238,7 +317,7 @@ public fun Byte.leadingOnes(): UInt = rustLeadingOnes((this.toUByte()))
  * check(n.trailingOnes() == 2)
  * ```
  */
-public fun Byte.trailingOnes(): UInt = rustTrailingOnes((this.toUByte()))
+public fun Byte.trailingOnes(): UInt = (this.toUByte()).trailingOnes()
 
 /**
  * Returns `self` with only the most significant bit set, or `0` if
@@ -250,7 +329,7 @@ public fun Byte.trailingOnes(): UInt = rustTrailingOnes((this.toUByte()))
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun Byte.isolateHighestOne(): Byte = (this.toInt() and (rustWrappingShr(((1.toByte()) shl (8u - 1u).toInt()), rustLeadingZeros(this))).toInt()).toByte()
+public fun Byte.isolateHighestOne(): Byte = (this.toInt() and (((1.toByte()) shl (8u - 1u).toInt()).wrappingShr(this.leadingZeros())).toInt()).toByte()
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -262,7 +341,7 @@ public fun Byte.isolateHighestOne(): Byte = (this.toInt() and (rustWrappingShr((
  * check(n.isolateLowestOne() == 0x4)
  * ```
  */
-public fun Byte.isolateLowestOne(): Byte = (this.toInt() and rustWrappingNeg(this).toInt()).toByte()
+public fun Byte.isolateLowestOne(): Byte = (this.toInt() and this.wrappingNeg().toInt()).toByte()
 
 /**
  * Returns the index of the highest bit set to one in `self`, or `None`
@@ -389,7 +468,7 @@ public fun Byte.strictCastUnsigned(): UByte =
  * ```kotlin
  * ```
  */
-public fun Byte.rotateLeft(n: UInt): Byte = rustRotateLeft((this.toUByte()), n).toByte()
+public fun Byte.rotateLeft(n: UInt): Byte = (this.toUByte()).rotateLeft(n).toByte()
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -407,7 +486,7 @@ public fun Byte.rotateLeft(n: UInt): Byte = rustRotateLeft((this.toUByte()), n).
  * ```kotlin
  * ```
  */
-public fun Byte.rotateRight(n: UInt): Byte = rustRotateRight((this.toUByte()), n).toByte()
+public fun Byte.rotateRight(n: UInt): Byte = (this.toUByte()).rotateRight(n).toByte()
 
 /**
  * Reverses the byte order of the integer.
@@ -430,7 +509,7 @@ public fun Byte.swapBytes(): Byte = (this.toUByte()).toByte()
  * val m = n.reverseBits()
  * ```
  */
-public fun Byte.reverseBits(): Byte = rustReverseBits((this.toUByte())).toByte()
+public fun Byte.reverseBits(): Byte = (this.toUByte()).reverseBits().toByte()
 
 /**
  * Converts an integer from big endian to the target's endianness.
@@ -516,7 +595,7 @@ public fun Byte.toLe(): Byte = this
  * ```
  */
 public fun Byte.checkedAdd(rhs: Byte): Byte? {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         null
     } else {
@@ -545,7 +624,7 @@ public fun Byte.checkedAdd(rhs: Byte): Byte? {
  * ```
  */
 public fun Byte.strictAdd(rhs: Byte): Byte {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         add()
     } else {
@@ -572,7 +651,7 @@ public fun Byte.strictAdd(rhs: Byte): Byte {
  */
 public fun Byte.uncheckedAdd(rhs: Byte): Byte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
+    return (((this) + (rhs))).toByte()
 }
 
 /**
@@ -632,7 +711,7 @@ public fun Byte.strictAddUnsigned(rhs: UByte): Byte {
  * ```
  */
 public fun Byte.checkedSub(rhs: Byte): Byte? {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         null
     } else {
@@ -661,7 +740,7 @@ public fun Byte.checkedSub(rhs: Byte): Byte? {
  * ```
  */
 public fun Byte.strictSub(rhs: Byte): Byte {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         sub()
     } else {
@@ -688,7 +767,7 @@ public fun Byte.strictSub(rhs: Byte): Byte {
  */
 public fun Byte.uncheckedSub(rhs: Byte): Byte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
+    return (((this) - (rhs))).toByte()
 }
 
 /**
@@ -748,7 +827,7 @@ public fun Byte.strictSubUnsigned(rhs: UByte): Byte {
  * ```
  */
 public fun Byte.checkedMul(rhs: Byte): Byte? {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         null
     } else {
@@ -777,7 +856,7 @@ public fun Byte.checkedMul(rhs: Byte): Byte? {
  * ```
  */
 public fun Byte.strictMul(rhs: Byte): Byte {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         mul()
     } else {
@@ -804,7 +883,7 @@ public fun Byte.strictMul(rhs: Byte): Byte {
  */
 public fun Byte.uncheckedMul(rhs: Byte): Byte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
+    return (((this) * (rhs))).toByte()
 }
 
 /**
@@ -820,7 +899,7 @@ public fun Byte.checkedDiv(rhs: Byte): Byte? =
     if (rhs == 0.toByte() || ((this == Byte.MIN_VALUE) && (rhs == (-1).toByte()))) {
         null
     } else {
-        uncheckedDiv(this, rhs)
+        (((this) / (rhs))).toByte()
     }
 
 /**
@@ -872,7 +951,7 @@ public fun Byte.checkedDivEuclid(rhs: Byte): Byte? =
     if (rhs == 0.toByte() || ((this == Byte.MIN_VALUE) and (rhs == (-1).toByte()))) {
         null
     } else {
-        rustDivEuclid(this, rhs)
+        this.divEuclid(rhs)
     }
 
 /**
@@ -909,7 +988,7 @@ public fun Byte.checkedDivEuclid(rhs: Byte): Byte? =
  * ```kotlin
  * ```
  */
-public fun Byte.strictDivEuclid(rhs: Byte): Byte = rustDivEuclid(this, rhs)
+public fun Byte.strictDivEuclid(rhs: Byte): Byte = this.divEuclid(rhs)
 
 /**
  * Checked integer division without remainder. Computes `self / rhs`,
@@ -927,10 +1006,10 @@ public fun Byte.checkedDivExact(rhs: Byte): Byte? =
     if (rhs == 0.toByte() || ((this == Byte.MIN_VALUE) && (rhs == (-1).toByte()))) {
         null
     } else {
-        if (uncheckedRem(this, rhs) != 0) {
+        if ((((this) % (rhs))).toByte() != 0.toByte()) {
             null
         } else {
-            exactDiv(this, rhs)
+            (((this) / (rhs))).toByte()
         }
     }
 
@@ -978,7 +1057,7 @@ public fun Byte.divExact(rhs: Byte): Byte? =
  */
 public fun Byte.uncheckedDivExact(rhs: Byte): Byte {
     Unit
-    return exactDiv(this, rhs)
+    return (((this) / (rhs))).toByte()
 }
 
 /**
@@ -994,7 +1073,7 @@ public fun Byte.checkedRem(rhs: Byte): Byte? =
     if (rhs == 0.toByte() || ((this == Byte.MIN_VALUE) && (rhs == (-1).toByte()))) {
         null
     } else {
-        uncheckedRem(this, rhs)
+        (((this) % (rhs))).toByte()
     }
 
 /**
@@ -1049,7 +1128,7 @@ public fun Byte.checkedRemEuclid(rhs: Byte): Byte? =
     if (rhs == 0.toByte() || ((this == Byte.MIN_VALUE) and (rhs == (-1).toByte()))) {
         null
     } else {
-        rustRemEuclid(this, rhs)
+        this.remEuclid(rhs)
     }
 
 /**
@@ -1116,7 +1195,7 @@ public fun Byte.strictRemEuclid(rhs: Byte): Byte {
  */
 public fun Byte.uncheckedDisjointBitor(rhs: Byte): Byte {
     Unit
-    return disjointBitor(this, rhs)
+    return ((this) or (rhs))
 }
 
 /**
@@ -1128,7 +1207,7 @@ public fun Byte.uncheckedDisjointBitor(rhs: Byte): Byte {
  * ```
  */
 public fun Byte.checkedNeg(): Byte? {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         null
     } else {
@@ -1146,7 +1225,7 @@ public fun Byte.checkedNeg(): Byte? {
  */
 public fun Byte.uncheckedNeg(): Byte {
     Unit
-    return uncheckedSub(0, this)
+    return (((0) - (this))).toByte()
 }
 
 /**
@@ -1169,7 +1248,7 @@ public fun Byte.uncheckedNeg(): Byte {
  * ```
  */
 public fun Byte.strictNeg(): Byte {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         neg()
     } else {
@@ -1214,7 +1293,7 @@ public fun Byte.checkedShl(rhs: UInt): Byte? =
  * ```
  */
 public fun Byte.strictShl(rhs: UInt): Byte {
-    val (a, b) = rustOverflowingShl(this, rhs)
+    val (a, b) = this.overflowingShl(rhs)
     return if (b) {
         shl()
     } else {
@@ -1234,7 +1313,7 @@ public fun Byte.strictShl(rhs: UInt): Byte {
  */
 public fun Byte.uncheckedShl(rhs: UInt): Byte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
+    return (((this).toInt() shl (rhs).toInt()).toByte())
 }
 
 /**
@@ -1270,7 +1349,7 @@ public fun Byte.unboundedShl(rhs: UInt): Byte =
  * ```
  */
 public fun Byte.shlExact(rhs: UInt): Byte? =
-    if (rhs < rustLeadingZeros(this) || rhs < rustLeadingOnes(this)) {
+    if (rhs < this.leadingZeros() || rhs < this.leadingOnes()) {
         this.uncheckedShl(rhs)
     } else {
         null
@@ -1328,7 +1407,7 @@ public fun Byte.checkedShr(rhs: UInt): Byte? =
  * ```
  */
 public fun Byte.strictShr(rhs: UInt): Byte {
-    val (a, b) = rustOverflowingShr(this, rhs)
+    val (a, b) = this.overflowingShr(rhs)
     return if (b) {
         shr()
     } else {
@@ -1348,7 +1427,7 @@ public fun Byte.strictShr(rhs: UInt): Byte {
  */
 public fun Byte.uncheckedShr(rhs: UInt): Byte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
+    return (((this).toInt() shr (rhs).toInt()).toByte())
 }
 
 /**
@@ -1384,7 +1463,7 @@ public fun Byte.unboundedShr(rhs: UInt): Byte =
  * ```
  */
 public fun Byte.shrExact(rhs: UInt): Byte? =
-    if (rhs <= rustTrailingZeros(this) && rhs < 8u) {
+    if (rhs <= this.trailingZeros() && rhs < 8u) {
         this.uncheckedShr(rhs)
     } else {
         null
@@ -1416,7 +1495,7 @@ public fun Byte.uncheckedShrExact(rhs: UInt): Byte {
  */
 public fun Byte.checkedAbs(): Byte? =
     if (this.isNegative()) {
-        rustCheckedNeg(this)
+        this.checkedNeg()
     } else {
         this
     }
@@ -1464,8 +1543,10 @@ public fun Byte.checkedPow(exp: UInt): Byte? {
     if (false && base.unsignedAbs().isPowerOfTwo()) {
         val k = base.unsignedAbs().ilog2()
         val shift =
-            when (val matchVal = rustCheckedMul(k, exp1)) {
-                null -> { return null }
+            when (val matchVal = k.checkedMul(exp1)) {
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
@@ -1483,46 +1564,58 @@ public fun Byte.checkedPow(exp: UInt): Byte? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc = when (val matchVal1 = rustCheckedMul(acc, base)) {
-                    null -> { return null }
-                    else -> {
-                        val x1 = matchVal1
-                        x1
+                acc =
+                    when (val matchVal1 = acc.checkedMul(base)) {
+                        null -> {
+                            return null
+                        }
+                        else -> {
+                            val x1 = matchVal1
+                            x1
+                        }
                     }
-                }
             }
             exp1 /= 2u
-            base = when (val matchVal2 = rustCheckedMul(base, base)) {
-                null -> { return null }
-                else -> {
-                    val x2 = matchVal2
-                    x2
+            base =
+                when (val matchVal2 = base.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x2 = matchVal2
+                        x2
+                    }
                 }
-            }
         }
-        return rustCheckedMul(acc, base)
+        return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc = when (val matchVal3 = rustCheckedMul(acc, base)) {
-                null -> { return null }
-                else -> {
-                    val x3 = matchVal3
-                    x3
+            acc =
+                when (val matchVal3 = acc.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x3 = matchVal3
+                        x3
+                    }
                 }
-            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base = when (val matchVal4 = rustCheckedMul(base, base)) {
-            null -> { return null }
-            else -> {
-                val x4 = matchVal4
-                x4
+        base =
+            when (val matchVal4 = base.checkedMul(base)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x4 = matchVal4
+                    x4
+                }
             }
-        }
     }
 }
 
@@ -1547,7 +1640,7 @@ public fun Byte.checkedPow(exp: UInt): Byte? {
  * ```
  */
 public fun Byte.strictPow(exp: UInt): Byte =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> pow()
         else -> {
             val x = matchVal
@@ -1575,7 +1668,11 @@ public fun Byte.checkedIsqrt(): Byte? =
     } else {
         val result = this.castUnsigned().isqrt().castSigned()
         run {
-            val MAX_RESULT: Byte = Byte.MAX_VALUE.castUnsigned().isqrt().castSigned()
+            val MAX_RESULT: Byte =
+                Byte.MAX_VALUE
+                    .castUnsigned()
+                    .isqrt()
+                    .castSigned()
             assertUnchecked(result <= MAX_RESULT)
         }
         result
@@ -1590,7 +1687,7 @@ public fun Byte.checkedIsqrt(): Byte? =
  * ```kotlin
  * ```
  */
-public fun Byte.saturatingAdd(rhs: Byte): Byte = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
+public fun Byte.saturatingAdd(rhs: Byte): Byte = kmSaturatingAddI8(this, rhs)
 
 /**
  * Saturating addition with an unsigned integer. Computes `self + rhs`,
@@ -1619,7 +1716,7 @@ public fun Byte.saturatingAddUnsigned(rhs: UByte): Byte =
  * ```kotlin
  * ```
  */
-public fun Byte.saturatingSub(rhs: Byte): Byte = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
+public fun Byte.saturatingSub(rhs: Byte): Byte = kmSaturatingSubI8(this, rhs)
 
 /**
  * Saturating subtraction with an unsigned integer. Computes `self - rhs`,
@@ -1648,7 +1745,7 @@ public fun Byte.saturatingSubUnsigned(rhs: UByte): Byte =
  * ```kotlin
  * ```
  */
-public fun Byte.saturatingNeg(): Byte = saturatingSub(0, this)
+public fun Byte.saturatingNeg(): Byte = kmSaturatingSubI8(0, this).toByte()
 
 /**
  * Saturating absolute value. Computes `self.abs()`, returning `MAX` if `self ==
@@ -1661,7 +1758,7 @@ public fun Byte.saturatingNeg(): Byte = saturatingSub(0, this)
  */
 public fun Byte.saturatingAbs(): Byte =
     if (this.isNegative()) {
-        rustSaturatingNeg(this)
+        this.saturatingNeg()
     } else {
         this
     }
@@ -1676,12 +1773,13 @@ public fun Byte.saturatingAbs(): Byte =
  * ```
  */
 public fun Byte.saturatingMul(rhs: Byte): Byte =
-    when (val matchVal = rustCheckedMul(this, rhs)) {
-        null -> if ((this < 0.toByte()) == (rhs < 0.toByte())) {
-            Byte.MAX_VALUE
-        } else {
-            Byte.MIN_VALUE
-        }
+    when (val matchVal = this.checkedMul(rhs)) {
+        null ->
+            if ((this < 0.toByte()) == (rhs < 0.toByte())) {
+                Byte.MAX_VALUE
+            } else {
+                Byte.MIN_VALUE
+            }
         else -> {
             val x = matchVal
             x
@@ -1724,7 +1822,7 @@ public fun Byte.saturatingDiv(rhs: Byte): Byte =
  */
 public fun Byte.saturatingPow(exp: UInt): Byte =
     run {
-        val matchVal = rustCheckedPow(this, exp)
+        val matchVal = this.checkedPow(exp)
         when {
             matchVal != null -> {
                 val x = matchVal
@@ -1744,7 +1842,7 @@ public fun Byte.saturatingPow(exp: UInt): Byte =
  * ```kotlin
  * ```
  */
-public fun Byte.wrappingAdd(rhs: Byte): Byte = (this + rhs)
+public fun Byte.wrappingAdd(rhs: Byte): Byte = (((this) + (rhs))).toByte()
 
 /**
  * Wrapping (modular) addition with an unsigned integer. Computes
@@ -1766,7 +1864,7 @@ public fun Byte.wrappingAddUnsigned(rhs: UByte): Byte = (this + (rhs.toByte())).
  * ```kotlin
  * ```
  */
-public fun Byte.wrappingSub(rhs: Byte): Byte = (this - rhs)
+public fun Byte.wrappingSub(rhs: Byte): Byte = (((this) - (rhs))).toByte()
 
 /**
  * Wrapping (modular) subtraction with an unsigned integer. Computes
@@ -1789,7 +1887,7 @@ public fun Byte.wrappingSubUnsigned(rhs: UByte): Byte = (this - (rhs.toByte())).
  * check((11 * (12.toByte())).toByte() == -124)
  * ```
  */
-public fun Byte.wrappingMul(rhs: Byte): Byte = (this * rhs)
+public fun Byte.wrappingMul(rhs: Byte): Byte = (((this) * (rhs))).toByte()
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`, wrapping around at the
@@ -1948,7 +2046,7 @@ public fun Byte.wrappingShr(rhs: UInt): Byte = this.uncheckedShr(rhs and (8u - 1
  */
 public fun Byte.wrappingAbs(): Byte =
     if (this.isNegative()) {
-        rustWrappingNeg(this)
+        this.wrappingNeg()
     } else {
         this
     }
@@ -1963,7 +2061,7 @@ public fun Byte.wrappingAbs(): Byte =
  * check((-128.toByte()).unsignedAbs() == 128u.toUByte())
  * ```
  */
-public fun Byte.unsignedAbs(): UByte = rustWrappingAbs(this).toUByte()
+public fun Byte.unsignedAbs(): UByte = this.wrappingAbs().toUByte()
 
 /**
  * Wrapping (modular) exponentiation. Computes `self.pow(exp)`,
@@ -1995,7 +2093,7 @@ public fun Byte.wrappingPow(exp: UInt): Byte {
  * ```
  */
 public fun Byte.overflowingAdd(rhs: Byte): Pair<Byte, Boolean> {
-    val (a, b) = addWithOverflow(this, rhs)
+    val (a, b) = kmAddWithOverflowI8(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toByte(), b)
 }
 
@@ -2040,7 +2138,7 @@ public fun Byte.overflowingAdd(rhs: Byte): Pair<Byte, Boolean> {
  * ```
  */
 public fun Byte.carryingAdd(rhs: Byte, carry: Boolean): Pair<Byte, Boolean> {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     val (c, d) = a.overflowingAdd(carry.toByte())
     return Pair(c, b != d)
 }
@@ -2059,7 +2157,7 @@ public fun Byte.carryingAdd(rhs: Byte, carry: Boolean): Pair<Byte, Boolean> {
  */
 public fun Byte.overflowingAddUnsigned(rhs: UByte): Pair<Byte, Boolean> {
     val rhs1 = rhs.toByte()
-    val (res, overflowed) = rustOverflowingAdd(this, rhs1)
+    val (res, overflowed) = this.overflowingAdd(rhs1)
     return Pair(res, overflowed xor (rhs1 < 0.toByte()))
 }
 
@@ -2076,7 +2174,7 @@ public fun Byte.overflowingAddUnsigned(rhs: UByte): Pair<Byte, Boolean> {
  * ```
  */
 public fun Byte.overflowingSub(rhs: Byte): Pair<Byte, Boolean> {
-    val (a, b) = subWithOverflow(this, rhs)
+    val (a, b) = kmSubWithOverflowI8(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toByte(), b)
 }
 
@@ -2121,7 +2219,7 @@ public fun Byte.overflowingSub(rhs: Byte): Pair<Byte, Boolean> {
  * ```
  */
 public fun Byte.borrowingSub(rhs: Byte, borrow: Boolean): Pair<Byte, Boolean> {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     val (c, d) = a.overflowingSub(borrow.toByte())
     return Pair(c, b != d)
 }
@@ -2140,7 +2238,7 @@ public fun Byte.borrowingSub(rhs: Byte, borrow: Boolean): Pair<Byte, Boolean> {
  */
 public fun Byte.overflowingSubUnsigned(rhs: UByte): Pair<Byte, Boolean> {
     val rhs1 = rhs.toByte()
-    val (res, overflowed) = rustOverflowingSub(this, rhs1)
+    val (res, overflowed) = this.overflowingSub(rhs1)
     return Pair(res, overflowed xor (rhs1 < 0.toByte()))
 }
 
@@ -2157,7 +2255,7 @@ public fun Byte.overflowingSubUnsigned(rhs: UByte): Pair<Byte, Boolean> {
  * ```
  */
 public fun Byte.overflowingMul(rhs: Byte): Pair<Byte, Boolean> {
-    val (a, b) = mulWithOverflow(this, rhs)
+    val (a, b) = kmMulWithOverflowI8(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toByte(), b)
 }
 
@@ -2215,7 +2313,9 @@ public fun Byte.carryingMul(rhs: Byte, carry: Byte): Pair<UByte, Byte> = Byte.ca
  * }
  * ```
  */
-public fun Byte.carryingMulAdd(rhs: Byte, carry: Byte, add: Byte): Pair<UByte, Byte> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun Byte.carryingMulAdd(rhs: Byte, carry: Byte, add: Byte): Pair<UByte, Byte> =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -2258,7 +2358,7 @@ public fun Byte.overflowingDivEuclid(rhs: Byte): Pair<Byte, Boolean> =
     if ((this == Byte.MIN_VALUE) and (rhs == (-1).toByte())) {
         Pair(this, true)
     } else {
-        Pair(rustDivEuclid(this, rhs), false)
+        Pair(this.divEuclid(rhs), false)
     }
 
 /**
@@ -2302,7 +2402,7 @@ public fun Byte.overflowingRemEuclid(rhs: Byte): Pair<Byte, Boolean> =
     if (rhs == (-1).toByte()) {
         Pair(0, this == Byte.MIN_VALUE)
     } else {
-        Pair(rustRemEuclid(this, rhs), false)
+        Pair(this.remEuclid(rhs), false)
     }
 
 /**
@@ -2337,7 +2437,7 @@ public fun Byte.overflowingNeg(): Pair<Byte, Boolean> =
  * check(0x1.overflowingShl(36u) == Pair(0x10, true))
  * ```
  */
-public fun Byte.overflowingShl(rhs: UInt): Pair<Byte, Boolean> = Pair(rustWrappingShl(this, rhs), rhs >= 8u)
+public fun Byte.overflowingShl(rhs: UInt): Pair<Byte, Boolean> = Pair(this.wrappingShl(rhs), rhs >= 8u)
 
 /**
  * Shifts self right by `rhs` bits.
@@ -2352,7 +2452,7 @@ public fun Byte.overflowingShl(rhs: UInt): Pair<Byte, Boolean> = Pair(rustWrappi
  * check(0x10.overflowingShr(36u) == Pair(0x1, true))
  * ```
  */
-public fun Byte.overflowingShr(rhs: UInt): Pair<Byte, Boolean> = Pair(rustWrappingShr(this, rhs), rhs >= 8u)
+public fun Byte.overflowingShr(rhs: UInt): Pair<Byte, Boolean> = Pair(this.wrappingShr(rhs), rhs >= 8u)
 
 /**
  * Computes the absolute value of `self`.
@@ -2367,7 +2467,7 @@ public fun Byte.overflowingShr(rhs: UInt): Pair<Byte, Boolean> = Pair(rustWrappi
  * ```kotlin
  * ```
  */
-public fun Byte.overflowingAbs(): Pair<Byte, Boolean> = Pair(rustWrappingAbs(this), this == Byte.MIN_VALUE)
+public fun Byte.overflowingAbs(): Pair<Byte, Boolean> = Pair(this.wrappingAbs(), this == Byte.MIN_VALUE)
 
 /**
  * Raises self to the power of `exp`, using exponentiation by squaring.
@@ -2384,12 +2484,12 @@ public fun Byte.overflowingAbs(): Pair<Byte, Boolean> = Pair(rustWrappingAbs(thi
 public fun Byte.overflowingPow(exp: UInt): Pair<Byte, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: Byte  = 1
+    val acc: Byte = 1
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
         val k = base.unsignedAbs().ilog2()
-        val shift = rustCheckedMul(k, exp1) ?: return Pair(0, true)
+        val shift = k.checkedMul(exp1) ?: return Pair(0, true)
         val base1: Byte =
             if (base < 0.toByte() && (exp1 % 2u) != 0u) {
                 -1
@@ -2404,27 +2504,27 @@ public fun Byte.overflowingPow(exp: UInt): Pair<Byte, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+            Pair(base, tmpOverflow) = base.overflowingMul(base)
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+        Pair(base, tmpOverflow) = base.overflowingMul(base)
         overflow = overflow or tmpOverflow
     }
 }
@@ -2544,7 +2644,7 @@ public fun Byte.divEuclid(rhs: Byte): Byte {
 public fun Byte.remEuclid(rhs: Byte): Byte {
     val r = this % rhs
     return if (r < 0.toByte()) {
-        (r + rustWrappingAbs(rhs).toByte()).toByte()
+        (r + rhs.wrappingAbs().toByte()).toByte()
     } else {
         r
     }
@@ -2673,8 +2773,10 @@ public fun Byte.checkedNextMultipleOf(rhs: Byte): Byte? {
         return this
     }
     val r =
-        when (val matchVal = rustCheckedRem(this, rhs)) {
-            null -> { return null }
+        when (val matchVal = this.checkedRem(rhs)) {
+            null -> {
+                return null
+            }
             else -> {
                 val x = matchVal
                 x
@@ -2689,7 +2791,7 @@ public fun Byte.checkedNextMultipleOf(rhs: Byte): Byte? {
     return if (m == 0) {
         this
     } else {
-        rustCheckedAdd(this, rhs - m)
+        this.checkedAdd(rhs - m)
     }
 }
 
@@ -2809,7 +2911,7 @@ public fun Byte.checkedIlog2(): UInt? =
     if (this <= 0.toByte()) {
         null
     } else {
-        val log = (8u - 1u) - kmCtlzU64((this).toULong())
+        val log = (8u - 1u) - kmCtlzU8((this).toUByte())
         log
     }
 
@@ -2823,7 +2925,9 @@ public fun Byte.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Byte.checkedIlog10(): UInt? = i8(this)
+public fun Byte.checkedIlog10(): UInt? =
+    io.github.kotlinmania.rustlang.core.num.imp.intlog10
+        .Byte(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -2880,7 +2984,18 @@ public fun Byte.absDiff(other: Byte): UByte =
  * ```kotlin
  * ```
  */
-public fun Byte.signum(): Byte = threeWayCompare(this, 0).toByte()
+public fun Byte.signum(): Byte =
+    (
+        run {
+            val lhs = this
+            val rhs = 0
+            when {
+                lhs < rhs -> Ordering.Less
+                lhs > rhs -> Ordering.Greater
+                else -> Ordering.Equal
+            }
+        }
+    ).value
 
 /**
  * Returns `true` if `self` is positive and `false` if the number is zero or
@@ -3344,7 +3459,7 @@ public fun Short.setBit(index: UInt, value: Boolean): Short = this.castUnsigned(
  * check(n.countOnes() == 1)
  * ```
  */
-public fun Short.countOnes(): UInt = rustCountOnes((this.toUShort()))
+public fun Short.countOnes(): UInt = (this.toUShort()).countOnes()
 
 /**
  * Returns the number of zeros in the binary representation of `self`.
@@ -3368,7 +3483,7 @@ public fun Short.countZeros(): UInt = (!this).countOnes()
  * check(n.leadingZeros() == 0)
  * ```
  */
-public fun Short.leadingZeros(): UInt = rustLeadingZeros((this.toUShort()))
+public fun Short.leadingZeros(): UInt = (this.toUShort()).leadingZeros()
 
 /**
  * Returns the number of trailing zeros in the binary representation of `self`.
@@ -3379,7 +3494,7 @@ public fun Short.leadingZeros(): UInt = rustLeadingZeros((this.toUShort()))
  * check(n.trailingZeros() == 2)
  * ```
  */
-public fun Short.trailingZeros(): UInt = rustTrailingZeros((this.toUShort()))
+public fun Short.trailingZeros(): UInt = (this.toUShort()).trailingZeros()
 
 /**
  * Returns the number of leading ones in the binary representation of `self`.
@@ -3389,7 +3504,7 @@ public fun Short.trailingZeros(): UInt = rustTrailingZeros((this.toUShort()))
  * ```kotlin
  * ```
  */
-public fun Short.leadingOnes(): UInt = rustLeadingOnes((this.toUShort()))
+public fun Short.leadingOnes(): UInt = (this.toUShort()).leadingOnes()
 
 /**
  * Returns the number of trailing ones in the binary representation of `self`.
@@ -3400,7 +3515,7 @@ public fun Short.leadingOnes(): UInt = rustLeadingOnes((this.toUShort()))
  * check(n.trailingOnes() == 2)
  * ```
  */
-public fun Short.trailingOnes(): UInt = rustTrailingOnes((this.toUShort()))
+public fun Short.trailingOnes(): UInt = (this.toUShort()).trailingOnes()
 
 /**
  * Returns `self` with only the most significant bit set, or `0` if
@@ -3412,7 +3527,7 @@ public fun Short.trailingOnes(): UInt = rustTrailingOnes((this.toUShort()))
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun Short.isolateHighestOne(): Short = (this.toInt() and (rustWrappingShr(((1.toShort()) shl (16u - 1u).toInt()), rustLeadingZeros(this))).toInt()).toShort()
+public fun Short.isolateHighestOne(): Short = (this.toInt() and (((1.toShort()) shl (16u - 1u).toInt()).wrappingShr(this.leadingZeros())).toInt()).toShort()
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -3424,7 +3539,7 @@ public fun Short.isolateHighestOne(): Short = (this.toInt() and (rustWrappingShr
  * check(n.isolateLowestOne() == 0x4)
  * ```
  */
-public fun Short.isolateLowestOne(): Short = (this.toInt() and rustWrappingNeg(this).toInt()).toShort()
+public fun Short.isolateLowestOne(): Short = (this.toInt() and this.wrappingNeg().toInt()).toShort()
 
 /**
  * Returns the index of the highest bit set to one in `self`, or `None`
@@ -3551,7 +3666,7 @@ public fun Short.strictCastUnsigned(): UShort =
  * ```kotlin
  * ```
  */
-public fun Short.rotateLeft(n: UInt): Short = rustRotateLeft((this.toUShort()), n).toShort()
+public fun Short.rotateLeft(n: UInt): Short = (this.toUShort()).rotateLeft(n).toShort()
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -3569,7 +3684,7 @@ public fun Short.rotateLeft(n: UInt): Short = rustRotateLeft((this.toUShort()), 
  * ```kotlin
  * ```
  */
-public fun Short.rotateRight(n: UInt): Short = rustRotateRight((this.toUShort()), n).toShort()
+public fun Short.rotateRight(n: UInt): Short = (this.toUShort()).rotateRight(n).toShort()
 
 /**
  * Reverses the byte order of the integer.
@@ -3580,7 +3695,13 @@ public fun Short.rotateRight(n: UInt): Short = rustRotateRight((this.toUShort())
  * val m = n.swapBytes()
  * ```
  */
-public fun Short.swapBytes(): Short = (run { val swapVal0 = ((this.toUShort())); (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort()) }).toShort()
+public fun Short.swapBytes(): Short =
+    (
+        run {
+            val swapVal0 = ((this.toUShort()))
+            (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort())
+        }
+    ).toShort()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -3592,7 +3713,7 @@ public fun Short.swapBytes(): Short = (run { val swapVal0 = ((this.toUShort()));
  * val m = n.reverseBits()
  * ```
  */
-public fun Short.reverseBits(): Short = rustReverseBits((this.toUShort())).toShort()
+public fun Short.reverseBits(): Short = (this.toUShort()).reverseBits().toShort()
 
 /**
  * Converts an integer from big endian to the target's endianness.
@@ -3678,7 +3799,7 @@ public fun Short.toLe(): Short = this
  * ```
  */
 public fun Short.checkedAdd(rhs: Short): Short? {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         null
     } else {
@@ -3707,7 +3828,7 @@ public fun Short.checkedAdd(rhs: Short): Short? {
  * ```
  */
 public fun Short.strictAdd(rhs: Short): Short {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         add()
     } else {
@@ -3734,7 +3855,7 @@ public fun Short.strictAdd(rhs: Short): Short {
  */
 public fun Short.uncheckedAdd(rhs: Short): Short {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
+    return (((this) + (rhs))).toShort()
 }
 
 /**
@@ -3794,7 +3915,7 @@ public fun Short.strictAddUnsigned(rhs: UShort): Short {
  * ```
  */
 public fun Short.checkedSub(rhs: Short): Short? {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         null
     } else {
@@ -3823,7 +3944,7 @@ public fun Short.checkedSub(rhs: Short): Short? {
  * ```
  */
 public fun Short.strictSub(rhs: Short): Short {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         sub()
     } else {
@@ -3850,7 +3971,7 @@ public fun Short.strictSub(rhs: Short): Short {
  */
 public fun Short.uncheckedSub(rhs: Short): Short {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
+    return (((this) - (rhs))).toShort()
 }
 
 /**
@@ -3910,7 +4031,7 @@ public fun Short.strictSubUnsigned(rhs: UShort): Short {
  * ```
  */
 public fun Short.checkedMul(rhs: Short): Short? {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         null
     } else {
@@ -3939,7 +4060,7 @@ public fun Short.checkedMul(rhs: Short): Short? {
  * ```
  */
 public fun Short.strictMul(rhs: Short): Short {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         mul()
     } else {
@@ -3966,7 +4087,7 @@ public fun Short.strictMul(rhs: Short): Short {
  */
 public fun Short.uncheckedMul(rhs: Short): Short {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
+    return (((this) * (rhs))).toShort()
 }
 
 /**
@@ -3982,7 +4103,7 @@ public fun Short.checkedDiv(rhs: Short): Short? =
     if (rhs == 0.toShort() || ((this == Short.MIN_VALUE) && (rhs == (-1).toShort()))) {
         null
     } else {
-        uncheckedDiv(this, rhs)
+        (((this) / (rhs))).toShort()
     }
 
 /**
@@ -4034,7 +4155,7 @@ public fun Short.checkedDivEuclid(rhs: Short): Short? =
     if (rhs == 0.toShort() || ((this == Short.MIN_VALUE) and (rhs == (-1).toShort()))) {
         null
     } else {
-        rustDivEuclid(this, rhs)
+        this.divEuclid(rhs)
     }
 
 /**
@@ -4071,7 +4192,7 @@ public fun Short.checkedDivEuclid(rhs: Short): Short? =
  * ```kotlin
  * ```
  */
-public fun Short.strictDivEuclid(rhs: Short): Short = rustDivEuclid(this, rhs)
+public fun Short.strictDivEuclid(rhs: Short): Short = this.divEuclid(rhs)
 
 /**
  * Checked integer division without remainder. Computes `self / rhs`,
@@ -4089,10 +4210,10 @@ public fun Short.checkedDivExact(rhs: Short): Short? =
     if (rhs == 0.toShort() || ((this == Short.MIN_VALUE) && (rhs == (-1).toShort()))) {
         null
     } else {
-        if (uncheckedRem(this, rhs) != 0) {
+        if ((((this) % (rhs))).toShort() != 0.toShort()) {
             null
         } else {
-            exactDiv(this, rhs)
+            (((this) / (rhs))).toShort()
         }
     }
 
@@ -4140,7 +4261,7 @@ public fun Short.divExact(rhs: Short): Short? =
  */
 public fun Short.uncheckedDivExact(rhs: Short): Short {
     Unit
-    return exactDiv(this, rhs)
+    return (((this) / (rhs))).toShort()
 }
 
 /**
@@ -4156,7 +4277,7 @@ public fun Short.checkedRem(rhs: Short): Short? =
     if (rhs == 0.toShort() || ((this == Short.MIN_VALUE) && (rhs == (-1).toShort()))) {
         null
     } else {
-        uncheckedRem(this, rhs)
+        (((this) % (rhs))).toShort()
     }
 
 /**
@@ -4211,7 +4332,7 @@ public fun Short.checkedRemEuclid(rhs: Short): Short? =
     if (rhs == 0.toShort() || ((this == Short.MIN_VALUE) and (rhs == (-1).toShort()))) {
         null
     } else {
-        rustRemEuclid(this, rhs)
+        this.remEuclid(rhs)
     }
 
 /**
@@ -4278,7 +4399,7 @@ public fun Short.strictRemEuclid(rhs: Short): Short {
  */
 public fun Short.uncheckedDisjointBitor(rhs: Short): Short {
     Unit
-    return disjointBitor(this, rhs)
+    return ((this) or (rhs))
 }
 
 /**
@@ -4290,7 +4411,7 @@ public fun Short.uncheckedDisjointBitor(rhs: Short): Short {
  * ```
  */
 public fun Short.checkedNeg(): Short? {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         null
     } else {
@@ -4308,7 +4429,7 @@ public fun Short.checkedNeg(): Short? {
  */
 public fun Short.uncheckedNeg(): Short {
     Unit
-    return uncheckedSub(0, this)
+    return (((0) - (this))).toShort()
 }
 
 /**
@@ -4331,7 +4452,7 @@ public fun Short.uncheckedNeg(): Short {
  * ```
  */
 public fun Short.strictNeg(): Short {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         neg()
     } else {
@@ -4376,7 +4497,7 @@ public fun Short.checkedShl(rhs: UInt): Short? =
  * ```
  */
 public fun Short.strictShl(rhs: UInt): Short {
-    val (a, b) = rustOverflowingShl(this, rhs)
+    val (a, b) = this.overflowingShl(rhs)
     return if (b) {
         shl()
     } else {
@@ -4396,7 +4517,7 @@ public fun Short.strictShl(rhs: UInt): Short {
  */
 public fun Short.uncheckedShl(rhs: UInt): Short {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
+    return (((this).toInt() shl (rhs).toInt()).toShort())
 }
 
 /**
@@ -4432,7 +4553,7 @@ public fun Short.unboundedShl(rhs: UInt): Short =
  * ```
  */
 public fun Short.shlExact(rhs: UInt): Short? =
-    if (rhs < rustLeadingZeros(this) || rhs < rustLeadingOnes(this)) {
+    if (rhs < this.leadingZeros() || rhs < this.leadingOnes()) {
         this.uncheckedShl(rhs)
     } else {
         null
@@ -4490,7 +4611,7 @@ public fun Short.checkedShr(rhs: UInt): Short? =
  * ```
  */
 public fun Short.strictShr(rhs: UInt): Short {
-    val (a, b) = rustOverflowingShr(this, rhs)
+    val (a, b) = this.overflowingShr(rhs)
     return if (b) {
         shr()
     } else {
@@ -4510,7 +4631,7 @@ public fun Short.strictShr(rhs: UInt): Short {
  */
 public fun Short.uncheckedShr(rhs: UInt): Short {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
+    return (((this).toInt() shr (rhs).toInt()).toShort())
 }
 
 /**
@@ -4546,7 +4667,7 @@ public fun Short.unboundedShr(rhs: UInt): Short =
  * ```
  */
 public fun Short.shrExact(rhs: UInt): Short? =
-    if (rhs <= rustTrailingZeros(this) && rhs < 16u) {
+    if (rhs <= this.trailingZeros() && rhs < 16u) {
         this.uncheckedShr(rhs)
     } else {
         null
@@ -4578,7 +4699,7 @@ public fun Short.uncheckedShrExact(rhs: UInt): Short {
  */
 public fun Short.checkedAbs(): Short? =
     if (this.isNegative()) {
-        rustCheckedNeg(this)
+        this.checkedNeg()
     } else {
         this
     }
@@ -4626,8 +4747,10 @@ public fun Short.checkedPow(exp: UInt): Short? {
     if (false && base.unsignedAbs().isPowerOfTwo()) {
         val k = base.unsignedAbs().ilog2()
         val shift =
-            when (val matchVal = rustCheckedMul(k, exp1)) {
-                null -> { return null }
+            when (val matchVal = k.checkedMul(exp1)) {
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
@@ -4645,46 +4768,58 @@ public fun Short.checkedPow(exp: UInt): Short? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc = when (val matchVal1 = rustCheckedMul(acc, base)) {
-                    null -> { return null }
-                    else -> {
-                        val x1 = matchVal1
-                        x1
+                acc =
+                    when (val matchVal1 = acc.checkedMul(base)) {
+                        null -> {
+                            return null
+                        }
+                        else -> {
+                            val x1 = matchVal1
+                            x1
+                        }
                     }
-                }
             }
             exp1 /= 2u
-            base = when (val matchVal2 = rustCheckedMul(base, base)) {
-                null -> { return null }
-                else -> {
-                    val x2 = matchVal2
-                    x2
+            base =
+                when (val matchVal2 = base.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x2 = matchVal2
+                        x2
+                    }
                 }
-            }
         }
-        return rustCheckedMul(acc, base)
+        return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc = when (val matchVal3 = rustCheckedMul(acc, base)) {
-                null -> { return null }
-                else -> {
-                    val x3 = matchVal3
-                    x3
+            acc =
+                when (val matchVal3 = acc.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x3 = matchVal3
+                        x3
+                    }
                 }
-            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base = when (val matchVal4 = rustCheckedMul(base, base)) {
-            null -> { return null }
-            else -> {
-                val x4 = matchVal4
-                x4
+        base =
+            when (val matchVal4 = base.checkedMul(base)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x4 = matchVal4
+                    x4
+                }
             }
-        }
     }
 }
 
@@ -4709,7 +4844,7 @@ public fun Short.checkedPow(exp: UInt): Short? {
  * ```
  */
 public fun Short.strictPow(exp: UInt): Short =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> pow()
         else -> {
             val x = matchVal
@@ -4737,7 +4872,11 @@ public fun Short.checkedIsqrt(): Short? =
     } else {
         val result = this.castUnsigned().isqrt().castSigned()
         run {
-            val MAX_RESULT: Short = Short.MAX_VALUE.castUnsigned().isqrt().castSigned()
+            val MAX_RESULT: Short =
+                Short.MAX_VALUE
+                    .castUnsigned()
+                    .isqrt()
+                    .castSigned()
             assertUnchecked(result <= MAX_RESULT)
         }
         result
@@ -4752,7 +4891,7 @@ public fun Short.checkedIsqrt(): Short? =
  * ```kotlin
  * ```
  */
-public fun Short.saturatingAdd(rhs: Short): Short = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
+public fun Short.saturatingAdd(rhs: Short): Short = kmSaturatingAddI16(this, rhs)
 
 /**
  * Saturating addition with an unsigned integer. Computes `self + rhs`,
@@ -4781,7 +4920,7 @@ public fun Short.saturatingAddUnsigned(rhs: UShort): Short =
  * ```kotlin
  * ```
  */
-public fun Short.saturatingSub(rhs: Short): Short = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
+public fun Short.saturatingSub(rhs: Short): Short = kmSaturatingSubI16(this, rhs)
 
 /**
  * Saturating subtraction with an unsigned integer. Computes `self - rhs`,
@@ -4810,7 +4949,7 @@ public fun Short.saturatingSubUnsigned(rhs: UShort): Short =
  * ```kotlin
  * ```
  */
-public fun Short.saturatingNeg(): Short = saturatingSub(0, this)
+public fun Short.saturatingNeg(): Short = kmSaturatingSubI16(0, this).toShort()
 
 /**
  * Saturating absolute value. Computes `self.abs()`, returning `MAX` if `self ==
@@ -4823,7 +4962,7 @@ public fun Short.saturatingNeg(): Short = saturatingSub(0, this)
  */
 public fun Short.saturatingAbs(): Short =
     if (this.isNegative()) {
-        rustSaturatingNeg(this)
+        this.saturatingNeg()
     } else {
         this
     }
@@ -4838,12 +4977,13 @@ public fun Short.saturatingAbs(): Short =
  * ```
  */
 public fun Short.saturatingMul(rhs: Short): Short =
-    when (val matchVal = rustCheckedMul(this, rhs)) {
-        null -> if ((this < 0.toShort()) == (rhs < 0.toShort())) {
-            Short.MAX_VALUE
-        } else {
-            Short.MIN_VALUE
-        }
+    when (val matchVal = this.checkedMul(rhs)) {
+        null ->
+            if ((this < 0.toShort()) == (rhs < 0.toShort())) {
+                Short.MAX_VALUE
+            } else {
+                Short.MIN_VALUE
+            }
         else -> {
             val x = matchVal
             x
@@ -4886,7 +5026,7 @@ public fun Short.saturatingDiv(rhs: Short): Short =
  */
 public fun Short.saturatingPow(exp: UInt): Short =
     run {
-        val matchVal = rustCheckedPow(this, exp)
+        val matchVal = this.checkedPow(exp)
         when {
             matchVal != null -> {
                 val x = matchVal
@@ -4906,7 +5046,7 @@ public fun Short.saturatingPow(exp: UInt): Short =
  * ```kotlin
  * ```
  */
-public fun Short.wrappingAdd(rhs: Short): Short = (this + rhs)
+public fun Short.wrappingAdd(rhs: Short): Short = (((this) + (rhs))).toShort()
 
 /**
  * Wrapping (modular) addition with an unsigned integer. Computes
@@ -4928,7 +5068,7 @@ public fun Short.wrappingAddUnsigned(rhs: UShort): Short = (this + (rhs.toShort(
  * ```kotlin
  * ```
  */
-public fun Short.wrappingSub(rhs: Short): Short = (this - rhs)
+public fun Short.wrappingSub(rhs: Short): Short = (((this) - (rhs))).toShort()
 
 /**
  * Wrapping (modular) subtraction with an unsigned integer. Computes
@@ -4951,7 +5091,7 @@ public fun Short.wrappingSubUnsigned(rhs: UShort): Short = (this - (rhs.toShort(
  * check((11 * (12.toByte())).toByte() == -124)
  * ```
  */
-public fun Short.wrappingMul(rhs: Short): Short = (this * rhs)
+public fun Short.wrappingMul(rhs: Short): Short = (((this) * (rhs))).toShort()
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`, wrapping around at the
@@ -5110,7 +5250,7 @@ public fun Short.wrappingShr(rhs: UInt): Short = this.uncheckedShr(rhs and (16u 
  */
 public fun Short.wrappingAbs(): Short =
     if (this.isNegative()) {
-        rustWrappingNeg(this)
+        this.wrappingNeg()
     } else {
         this
     }
@@ -5125,7 +5265,7 @@ public fun Short.wrappingAbs(): Short =
  * check((-128.toByte()).unsignedAbs() == 128u.toUByte())
  * ```
  */
-public fun Short.unsignedAbs(): UShort = rustWrappingAbs(this).toUShort()
+public fun Short.unsignedAbs(): UShort = this.wrappingAbs().toUShort()
 
 /**
  * Wrapping (modular) exponentiation. Computes `self.pow(exp)`,
@@ -5157,7 +5297,7 @@ public fun Short.wrappingPow(exp: UInt): Short {
  * ```
  */
 public fun Short.overflowingAdd(rhs: Short): Pair<Short, Boolean> {
-    val (a, b) = addWithOverflow(this, rhs)
+    val (a, b) = kmAddWithOverflowI16(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toShort(), b)
 }
 
@@ -5202,7 +5342,7 @@ public fun Short.overflowingAdd(rhs: Short): Pair<Short, Boolean> {
  * ```
  */
 public fun Short.carryingAdd(rhs: Short, carry: Boolean): Pair<Short, Boolean> {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     val (c, d) = a.overflowingAdd(carry.toShort())
     return Pair(c, b != d)
 }
@@ -5221,7 +5361,7 @@ public fun Short.carryingAdd(rhs: Short, carry: Boolean): Pair<Short, Boolean> {
  */
 public fun Short.overflowingAddUnsigned(rhs: UShort): Pair<Short, Boolean> {
     val rhs1 = rhs.toShort()
-    val (res, overflowed) = rustOverflowingAdd(this, rhs1)
+    val (res, overflowed) = this.overflowingAdd(rhs1)
     return Pair(res, overflowed xor (rhs1 < 0.toShort()))
 }
 
@@ -5238,7 +5378,7 @@ public fun Short.overflowingAddUnsigned(rhs: UShort): Pair<Short, Boolean> {
  * ```
  */
 public fun Short.overflowingSub(rhs: Short): Pair<Short, Boolean> {
-    val (a, b) = subWithOverflow(this, rhs)
+    val (a, b) = kmSubWithOverflowI16(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toShort(), b)
 }
 
@@ -5283,7 +5423,7 @@ public fun Short.overflowingSub(rhs: Short): Pair<Short, Boolean> {
  * ```
  */
 public fun Short.borrowingSub(rhs: Short, borrow: Boolean): Pair<Short, Boolean> {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     val (c, d) = a.overflowingSub(borrow.toShort())
     return Pair(c, b != d)
 }
@@ -5302,7 +5442,7 @@ public fun Short.borrowingSub(rhs: Short, borrow: Boolean): Pair<Short, Boolean>
  */
 public fun Short.overflowingSubUnsigned(rhs: UShort): Pair<Short, Boolean> {
     val rhs1 = rhs.toShort()
-    val (res, overflowed) = rustOverflowingSub(this, rhs1)
+    val (res, overflowed) = this.overflowingSub(rhs1)
     return Pair(res, overflowed xor (rhs1 < 0.toShort()))
 }
 
@@ -5319,7 +5459,7 @@ public fun Short.overflowingSubUnsigned(rhs: UShort): Pair<Short, Boolean> {
  * ```
  */
 public fun Short.overflowingMul(rhs: Short): Pair<Short, Boolean> {
-    val (a, b) = mulWithOverflow(this, rhs)
+    val (a, b) = kmMulWithOverflowI16(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toShort(), b)
 }
 
@@ -5377,7 +5517,9 @@ public fun Short.carryingMul(rhs: Short, carry: Short): Pair<UShort, Short> = Sh
  * }
  * ```
  */
-public fun Short.carryingMulAdd(rhs: Short, carry: Short, add: Short): Pair<UShort, Short> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun Short.carryingMulAdd(rhs: Short, carry: Short, add: Short): Pair<UShort, Short> =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -5420,7 +5562,7 @@ public fun Short.overflowingDivEuclid(rhs: Short): Pair<Short, Boolean> =
     if ((this == Short.MIN_VALUE) and (rhs == (-1).toShort())) {
         Pair(this, true)
     } else {
-        Pair(rustDivEuclid(this, rhs), false)
+        Pair(this.divEuclid(rhs), false)
     }
 
 /**
@@ -5464,7 +5606,7 @@ public fun Short.overflowingRemEuclid(rhs: Short): Pair<Short, Boolean> =
     if (rhs == (-1).toShort()) {
         Pair(0, this == Short.MIN_VALUE)
     } else {
-        Pair(rustRemEuclid(this, rhs), false)
+        Pair(this.remEuclid(rhs), false)
     }
 
 /**
@@ -5499,7 +5641,7 @@ public fun Short.overflowingNeg(): Pair<Short, Boolean> =
  * check(0x1.overflowingShl(36u) == Pair(0x10, true))
  * ```
  */
-public fun Short.overflowingShl(rhs: UInt): Pair<Short, Boolean> = Pair(rustWrappingShl(this, rhs), rhs >= 16u)
+public fun Short.overflowingShl(rhs: UInt): Pair<Short, Boolean> = Pair(this.wrappingShl(rhs), rhs >= 16u)
 
 /**
  * Shifts self right by `rhs` bits.
@@ -5514,7 +5656,7 @@ public fun Short.overflowingShl(rhs: UInt): Pair<Short, Boolean> = Pair(rustWrap
  * check(0x10.overflowingShr(36u) == Pair(0x1, true))
  * ```
  */
-public fun Short.overflowingShr(rhs: UInt): Pair<Short, Boolean> = Pair(rustWrappingShr(this, rhs), rhs >= 16u)
+public fun Short.overflowingShr(rhs: UInt): Pair<Short, Boolean> = Pair(this.wrappingShr(rhs), rhs >= 16u)
 
 /**
  * Computes the absolute value of `self`.
@@ -5529,7 +5671,7 @@ public fun Short.overflowingShr(rhs: UInt): Pair<Short, Boolean> = Pair(rustWrap
  * ```kotlin
  * ```
  */
-public fun Short.overflowingAbs(): Pair<Short, Boolean> = Pair(rustWrappingAbs(this), this == Short.MIN_VALUE)
+public fun Short.overflowingAbs(): Pair<Short, Boolean> = Pair(this.wrappingAbs(), this == Short.MIN_VALUE)
 
 /**
  * Raises self to the power of `exp`, using exponentiation by squaring.
@@ -5546,12 +5688,12 @@ public fun Short.overflowingAbs(): Pair<Short, Boolean> = Pair(rustWrappingAbs(t
 public fun Short.overflowingPow(exp: UInt): Pair<Short, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: Short  = 1
+    val acc: Short = 1
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
         val k = base.unsignedAbs().ilog2()
-        val shift = rustCheckedMul(k, exp1) ?: return Pair(0, true)
+        val shift = k.checkedMul(exp1) ?: return Pair(0, true)
         val base1: Short =
             if (base < 0.toShort() && (exp1 % 2u) != 0u) {
                 -1
@@ -5566,27 +5708,27 @@ public fun Short.overflowingPow(exp: UInt): Pair<Short, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+            Pair(base, tmpOverflow) = base.overflowingMul(base)
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+        Pair(base, tmpOverflow) = base.overflowingMul(base)
         overflow = overflow or tmpOverflow
     }
 }
@@ -5706,7 +5848,7 @@ public fun Short.divEuclid(rhs: Short): Short {
 public fun Short.remEuclid(rhs: Short): Short {
     val r = this % rhs
     return if (r < 0.toShort()) {
-        (r + rustWrappingAbs(rhs).toShort()).toShort()
+        (r + rhs.wrappingAbs().toShort()).toShort()
     } else {
         r
     }
@@ -5835,8 +5977,10 @@ public fun Short.checkedNextMultipleOf(rhs: Short): Short? {
         return this
     }
     val r =
-        when (val matchVal = rustCheckedRem(this, rhs)) {
-            null -> { return null }
+        when (val matchVal = this.checkedRem(rhs)) {
+            null -> {
+                return null
+            }
             else -> {
                 val x = matchVal
                 x
@@ -5851,7 +5995,7 @@ public fun Short.checkedNextMultipleOf(rhs: Short): Short? {
     return if (m == 0) {
         this
     } else {
-        rustCheckedAdd(this, rhs - m)
+        this.checkedAdd(rhs - m)
     }
 }
 
@@ -5971,7 +6115,7 @@ public fun Short.checkedIlog2(): UInt? =
     if (this <= 0.toShort()) {
         null
     } else {
-        val log = (16u - 1u) - kmCtlzU64((this).toULong())
+        val log = (16u - 1u) - kmCtlzU16((this).toUShort())
         log
     }
 
@@ -5985,7 +6129,9 @@ public fun Short.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Short.checkedIlog10(): UInt? = i16(this)
+public fun Short.checkedIlog10(): UInt? =
+    io.github.kotlinmania.rustlang.core.num.imp.intlog10
+        .Short(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -6042,7 +6188,18 @@ public fun Short.absDiff(other: Short): UShort =
  * ```kotlin
  * ```
  */
-public fun Short.signum(): Short = threeWayCompare(this, 0).toShort()
+public fun Short.signum(): Short =
+    (
+        run {
+            val lhs = this
+            val rhs = 0
+            when {
+                lhs < rhs -> Ordering.Less
+                lhs > rhs -> Ordering.Greater
+                else -> Ordering.Equal
+            }
+        }
+    ).value.toShort()
 
 /**
  * Returns `true` if `self` is positive and `false` if the number is zero or
@@ -6075,7 +6232,11 @@ public fun Short.isNegative(): Boolean = this < 0.toShort()
  * ```kotlin
  * ```
  */
-public fun Short.toBeBytes(): UByteArray = run { val rawBits = (((((this).toInt() and 0xFF) shl 8) or (((this).toInt() ushr 8) and 0xFF)).toShort()).toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
+public fun Short.toBeBytes(): UByteArray =
+    run {
+        val rawBits = (((((this).toInt() and 0xFF) shl 8) or (((this).toInt() ushr 8) and 0xFF)).toShort()).toUInt()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -6086,7 +6247,11 @@ public fun Short.toBeBytes(): UByteArray = run { val rawBits = (((((this).toInt(
  * ```kotlin
  * ```
  */
-public fun Short.toLeBytes(): UByteArray = run { val rawBits = this.toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
+public fun Short.toLeBytes(): UByteArray =
+    run {
+        val rawBits = this.toUInt()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -6123,7 +6288,11 @@ public fun Short.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun Short.Companion.fromBeBytes(bytes: UByteArray): Short = run { val swapVal0 = (Short.fromNeBytes(bytes)); (((((swapVal0).toInt() and 0xFF) shl 8) or (((swapVal0).toInt() ushr 8) and 0xFF)).toShort()) }
+public fun Short.Companion.fromBeBytes(bytes: UByteArray): Short =
+    run {
+        val swapVal0 = (Short.fromNeBytes(bytes))
+        (((((swapVal0).toInt() and 0xFF) shl 8) or (((swapVal0).toInt() ushr 8) and 0xFF)).toShort())
+    }
 
 /**
  * Creates an integer value from its representation as a byte array in
@@ -6476,7 +6645,7 @@ public fun Int.setBit(index: UInt, value: Boolean): Int = this.castUnsigned().se
  * check(n.countOnes() == 1)
  * ```
  */
-public fun Int.countOnes(): UInt = rustCountOnes((this.toUInt()))
+public fun Int.countOnes(): UInt = (this.toUInt()).countOnes()
 
 /**
  * Returns the number of zeros in the binary representation of `self`.
@@ -6500,7 +6669,7 @@ public fun Int.countZeros(): UInt = (!this).countOnes()
  * check(n.leadingZeros() == 0)
  * ```
  */
-public fun Int.leadingZeros(): UInt = rustLeadingZeros((this.toUInt()))
+public fun Int.leadingZeros(): UInt = (this.toUInt()).leadingZeros()
 
 /**
  * Returns the number of trailing zeros in the binary representation of `self`.
@@ -6511,7 +6680,7 @@ public fun Int.leadingZeros(): UInt = rustLeadingZeros((this.toUInt()))
  * check(n.trailingZeros() == 2)
  * ```
  */
-public fun Int.trailingZeros(): UInt = rustTrailingZeros((this.toUInt()))
+public fun Int.trailingZeros(): UInt = (this.toUInt()).trailingZeros()
 
 /**
  * Returns the number of leading ones in the binary representation of `self`.
@@ -6521,7 +6690,7 @@ public fun Int.trailingZeros(): UInt = rustTrailingZeros((this.toUInt()))
  * ```kotlin
  * ```
  */
-public fun Int.leadingOnes(): UInt = rustLeadingOnes((this.toUInt()))
+public fun Int.leadingOnes(): UInt = (this.toUInt()).leadingOnes()
 
 /**
  * Returns the number of trailing ones in the binary representation of `self`.
@@ -6532,7 +6701,7 @@ public fun Int.leadingOnes(): UInt = rustLeadingOnes((this.toUInt()))
  * check(n.trailingOnes() == 2)
  * ```
  */
-public fun Int.trailingOnes(): UInt = rustTrailingOnes((this.toUInt()))
+public fun Int.trailingOnes(): UInt = (this.toUInt()).trailingOnes()
 
 /**
  * Returns `self` with only the most significant bit set, or `0` if
@@ -6544,7 +6713,7 @@ public fun Int.trailingOnes(): UInt = rustTrailingOnes((this.toUInt()))
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun Int.isolateHighestOne(): Int = this and (rustWrappingShr(((1) shl (32u - 1u).toInt()), rustLeadingZeros(this)))
+public fun Int.isolateHighestOne(): Int = this and (((1) shl (32u - 1u).toInt()).wrappingShr(this.leadingZeros()))
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -6556,7 +6725,7 @@ public fun Int.isolateHighestOne(): Int = this and (rustWrappingShr(((1) shl (32
  * check(n.isolateLowestOne() == 0x4)
  * ```
  */
-public fun Int.isolateLowestOne(): Int = this and rustWrappingNeg(this)
+public fun Int.isolateLowestOne(): Int = this and this.wrappingNeg()
 
 /**
  * Returns the index of the highest bit set to one in `self`, or `None`
@@ -6683,7 +6852,7 @@ public fun Int.strictCastUnsigned(): UInt =
  * ```kotlin
  * ```
  */
-public fun Int.rotateLeft(n: UInt): Int = rustRotateLeft((this.toUInt()), n).toInt()
+public fun Int.rotateLeft(n: UInt): Int = (this.toUInt()).rotateLeft(n).toInt()
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -6701,7 +6870,7 @@ public fun Int.rotateLeft(n: UInt): Int = rustRotateLeft((this.toUInt()), n).toI
  * ```kotlin
  * ```
  */
-public fun Int.rotateRight(n: UInt): Int = rustRotateRight((this.toUInt()), n).toInt()
+public fun Int.rotateRight(n: UInt): Int = (this.toUInt()).rotateRight(n).toInt()
 
 /**
  * Reverses the byte order of the integer.
@@ -6712,7 +6881,13 @@ public fun Int.rotateRight(n: UInt): Int = rustRotateRight((this.toUInt()), n).t
  * val m = n.swapBytes()
  * ```
  */
-public fun Int.swapBytes(): Int = (run { val swapVal0 = ((this.toUInt())); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00u) shl 8) or (((swapVal0) shr 8) and 0x0000FF00u) or ((swapVal0) shr 24)) }).toInt()
+public fun Int.swapBytes(): Int =
+    (
+        run {
+            val swapVal0 = ((this.toUInt()))
+            ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00u) shl 8) or (((swapVal0) shr 8) and 0x0000FF00u) or ((swapVal0) shr 24))
+        }
+    ).toInt()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -6724,7 +6899,7 @@ public fun Int.swapBytes(): Int = (run { val swapVal0 = ((this.toUInt())); ((((s
  * val m = n.reverseBits()
  * ```
  */
-public fun Int.reverseBits(): Int = rustReverseBits((this.toUInt())).toInt()
+public fun Int.reverseBits(): Int = (this.toUInt()).reverseBits().toInt()
 
 /**
  * Converts an integer from big endian to the target's endianness.
@@ -6810,7 +6985,7 @@ public fun Int.toLe(): Int = this
  * ```
  */
 public fun Int.checkedAdd(rhs: Int): Int? {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         null
     } else {
@@ -6839,7 +7014,7 @@ public fun Int.checkedAdd(rhs: Int): Int? {
  * ```
  */
 public fun Int.strictAdd(rhs: Int): Int {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         add()
     } else {
@@ -6866,7 +7041,7 @@ public fun Int.strictAdd(rhs: Int): Int {
  */
 public fun Int.uncheckedAdd(rhs: Int): Int {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
+    return ((this) + (rhs))
 }
 
 /**
@@ -6926,7 +7101,7 @@ public fun Int.strictAddUnsigned(rhs: UInt): Int {
  * ```
  */
 public fun Int.checkedSub(rhs: Int): Int? {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         null
     } else {
@@ -6955,7 +7130,7 @@ public fun Int.checkedSub(rhs: Int): Int? {
  * ```
  */
 public fun Int.strictSub(rhs: Int): Int {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         sub()
     } else {
@@ -6982,7 +7157,7 @@ public fun Int.strictSub(rhs: Int): Int {
  */
 public fun Int.uncheckedSub(rhs: Int): Int {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
+    return ((this) - (rhs))
 }
 
 /**
@@ -7042,7 +7217,7 @@ public fun Int.strictSubUnsigned(rhs: UInt): Int {
  * ```
  */
 public fun Int.checkedMul(rhs: Int): Int? {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         null
     } else {
@@ -7071,7 +7246,7 @@ public fun Int.checkedMul(rhs: Int): Int? {
  * ```
  */
 public fun Int.strictMul(rhs: Int): Int {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         mul()
     } else {
@@ -7098,7 +7273,7 @@ public fun Int.strictMul(rhs: Int): Int {
  */
 public fun Int.uncheckedMul(rhs: Int): Int {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
+    return ((this) * (rhs))
 }
 
 /**
@@ -7114,7 +7289,7 @@ public fun Int.checkedDiv(rhs: Int): Int? =
     if (rhs == 0 || ((this == Int.MIN_VALUE) && (rhs == -1))) {
         null
     } else {
-        uncheckedDiv(this, rhs)
+        ((this) / (rhs))
     }
 
 /**
@@ -7166,7 +7341,7 @@ public fun Int.checkedDivEuclid(rhs: Int): Int? =
     if (rhs == 0 || ((this == Int.MIN_VALUE) and (rhs == -1))) {
         null
     } else {
-        rustDivEuclid(this, rhs)
+        this.divEuclid(rhs)
     }
 
 /**
@@ -7203,7 +7378,7 @@ public fun Int.checkedDivEuclid(rhs: Int): Int? =
  * ```kotlin
  * ```
  */
-public fun Int.strictDivEuclid(rhs: Int): Int = rustDivEuclid(this, rhs)
+public fun Int.strictDivEuclid(rhs: Int): Int = this.divEuclid(rhs)
 
 /**
  * Checked integer division without remainder. Computes `self / rhs`,
@@ -7221,10 +7396,10 @@ public fun Int.checkedDivExact(rhs: Int): Int? =
     if (rhs == 0 || ((this == Int.MIN_VALUE) && (rhs == -1))) {
         null
     } else {
-        if (uncheckedRem(this, rhs) != 0) {
+        if (((this) % (rhs)) != 0) {
             null
         } else {
-            exactDiv(this, rhs)
+            ((this) / (rhs))
         }
     }
 
@@ -7272,7 +7447,7 @@ public fun Int.divExact(rhs: Int): Int? =
  */
 public fun Int.uncheckedDivExact(rhs: Int): Int {
     Unit
-    return exactDiv(this, rhs)
+    return ((this) / (rhs))
 }
 
 /**
@@ -7288,7 +7463,7 @@ public fun Int.checkedRem(rhs: Int): Int? =
     if (rhs == 0 || ((this == Int.MIN_VALUE) && (rhs == -1))) {
         null
     } else {
-        uncheckedRem(this, rhs)
+        ((this) % (rhs))
     }
 
 /**
@@ -7343,7 +7518,7 @@ public fun Int.checkedRemEuclid(rhs: Int): Int? =
     if (rhs == 0 || ((this == Int.MIN_VALUE) and (rhs == -1))) {
         null
     } else {
-        rustRemEuclid(this, rhs)
+        this.remEuclid(rhs)
     }
 
 /**
@@ -7410,7 +7585,7 @@ public fun Int.strictRemEuclid(rhs: Int): Int {
  */
 public fun Int.uncheckedDisjointBitor(rhs: Int): Int {
     Unit
-    return disjointBitor(this, rhs)
+    return ((this) or (rhs))
 }
 
 /**
@@ -7422,7 +7597,7 @@ public fun Int.uncheckedDisjointBitor(rhs: Int): Int {
  * ```
  */
 public fun Int.checkedNeg(): Int? {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         null
     } else {
@@ -7440,7 +7615,7 @@ public fun Int.checkedNeg(): Int? {
  */
 public fun Int.uncheckedNeg(): Int {
     Unit
-    return uncheckedSub(0, this)
+    return ((0) - (this))
 }
 
 /**
@@ -7463,7 +7638,7 @@ public fun Int.uncheckedNeg(): Int {
  * ```
  */
 public fun Int.strictNeg(): Int {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         neg()
     } else {
@@ -7508,7 +7683,7 @@ public fun Int.checkedShl(rhs: UInt): Int? =
  * ```
  */
 public fun Int.strictShl(rhs: UInt): Int {
-    val (a, b) = rustOverflowingShl(this, rhs)
+    val (a, b) = this.overflowingShl(rhs)
     return if (b) {
         shl()
     } else {
@@ -7528,7 +7703,7 @@ public fun Int.strictShl(rhs: UInt): Int {
  */
 public fun Int.uncheckedShl(rhs: UInt): Int {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
+    return ((this) shl (rhs).toInt())
 }
 
 /**
@@ -7564,7 +7739,7 @@ public fun Int.unboundedShl(rhs: UInt): Int =
  * ```
  */
 public fun Int.shlExact(rhs: UInt): Int? =
-    if (rhs < rustLeadingZeros(this) || rhs < rustLeadingOnes(this)) {
+    if (rhs < this.leadingZeros() || rhs < this.leadingOnes()) {
         this.uncheckedShl(rhs)
     } else {
         null
@@ -7622,7 +7797,7 @@ public fun Int.checkedShr(rhs: UInt): Int? =
  * ```
  */
 public fun Int.strictShr(rhs: UInt): Int {
-    val (a, b) = rustOverflowingShr(this, rhs)
+    val (a, b) = this.overflowingShr(rhs)
     return if (b) {
         shr()
     } else {
@@ -7642,7 +7817,7 @@ public fun Int.strictShr(rhs: UInt): Int {
  */
 public fun Int.uncheckedShr(rhs: UInt): Int {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
+    return ((this) shr (rhs).toInt())
 }
 
 /**
@@ -7678,7 +7853,7 @@ public fun Int.unboundedShr(rhs: UInt): Int =
  * ```
  */
 public fun Int.shrExact(rhs: UInt): Int? =
-    if (rhs <= rustTrailingZeros(this) && rhs < 32u) {
+    if (rhs <= this.trailingZeros() && rhs < 32u) {
         this.uncheckedShr(rhs)
     } else {
         null
@@ -7710,7 +7885,7 @@ public fun Int.uncheckedShrExact(rhs: UInt): Int {
  */
 public fun Int.checkedAbs(): Int? =
     if (this.isNegative()) {
-        rustCheckedNeg(this)
+        this.checkedNeg()
     } else {
         this
     }
@@ -7758,8 +7933,10 @@ public fun Int.checkedPow(exp: UInt): Int? {
     if (false && base.unsignedAbs().isPowerOfTwo()) {
         val k = base.unsignedAbs().ilog2()
         val shift =
-            when (val matchVal = rustCheckedMul(k, exp1)) {
-                null -> { return null }
+            when (val matchVal = k.checkedMul(exp1)) {
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
@@ -7777,46 +7954,58 @@ public fun Int.checkedPow(exp: UInt): Int? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc = when (val matchVal1 = rustCheckedMul(acc, base)) {
-                    null -> { return null }
-                    else -> {
-                        val x1 = matchVal1
-                        x1
+                acc =
+                    when (val matchVal1 = acc.checkedMul(base)) {
+                        null -> {
+                            return null
+                        }
+                        else -> {
+                            val x1 = matchVal1
+                            x1
+                        }
                     }
-                }
             }
             exp1 /= 2u
-            base = when (val matchVal2 = rustCheckedMul(base, base)) {
-                null -> { return null }
-                else -> {
-                    val x2 = matchVal2
-                    x2
+            base =
+                when (val matchVal2 = base.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x2 = matchVal2
+                        x2
+                    }
                 }
-            }
         }
-        return rustCheckedMul(acc, base)
+        return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc = when (val matchVal3 = rustCheckedMul(acc, base)) {
-                null -> { return null }
-                else -> {
-                    val x3 = matchVal3
-                    x3
+            acc =
+                when (val matchVal3 = acc.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x3 = matchVal3
+                        x3
+                    }
                 }
-            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base = when (val matchVal4 = rustCheckedMul(base, base)) {
-            null -> { return null }
-            else -> {
-                val x4 = matchVal4
-                x4
+        base =
+            when (val matchVal4 = base.checkedMul(base)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x4 = matchVal4
+                    x4
+                }
             }
-        }
     }
 }
 
@@ -7841,7 +8030,7 @@ public fun Int.checkedPow(exp: UInt): Int? {
  * ```
  */
 public fun Int.strictPow(exp: UInt): Int =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> pow()
         else -> {
             val x = matchVal
@@ -7869,7 +8058,11 @@ public fun Int.checkedIsqrt(): Int? =
     } else {
         val result = this.castUnsigned().isqrt().castSigned()
         run {
-            val MAX_RESULT: Int = Int.MAX_VALUE.castUnsigned().isqrt().castSigned()
+            val MAX_RESULT: Int =
+                Int.MAX_VALUE
+                    .castUnsigned()
+                    .isqrt()
+                    .castSigned()
             assertUnchecked(result <= MAX_RESULT)
         }
         result
@@ -7884,7 +8077,7 @@ public fun Int.checkedIsqrt(): Int? =
  * ```kotlin
  * ```
  */
-public fun Int.saturatingAdd(rhs: Int): Int = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
+public fun Int.saturatingAdd(rhs: Int): Int = kmSaturatingAddI32(this, rhs)
 
 /**
  * Saturating addition with an unsigned integer. Computes `self + rhs`,
@@ -7913,7 +8106,7 @@ public fun Int.saturatingAddUnsigned(rhs: UInt): Int =
  * ```kotlin
  * ```
  */
-public fun Int.saturatingSub(rhs: Int): Int = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
+public fun Int.saturatingSub(rhs: Int): Int = kmSaturatingSubI32(this, rhs)
 
 /**
  * Saturating subtraction with an unsigned integer. Computes `self - rhs`,
@@ -7942,7 +8135,7 @@ public fun Int.saturatingSubUnsigned(rhs: UInt): Int =
  * ```kotlin
  * ```
  */
-public fun Int.saturatingNeg(): Int = saturatingSub(0, this)
+public fun Int.saturatingNeg(): Int = kmSaturatingSubI32(0, this)
 
 /**
  * Saturating absolute value. Computes `self.abs()`, returning `MAX` if `self ==
@@ -7955,7 +8148,7 @@ public fun Int.saturatingNeg(): Int = saturatingSub(0, this)
  */
 public fun Int.saturatingAbs(): Int =
     if (this.isNegative()) {
-        rustSaturatingNeg(this)
+        this.saturatingNeg()
     } else {
         this
     }
@@ -7970,12 +8163,13 @@ public fun Int.saturatingAbs(): Int =
  * ```
  */
 public fun Int.saturatingMul(rhs: Int): Int =
-    when (val matchVal = rustCheckedMul(this, rhs)) {
-        null -> if ((this < 0) == (rhs < 0)) {
-            Int.MAX_VALUE
-        } else {
-            Int.MIN_VALUE
-        }
+    when (val matchVal = this.checkedMul(rhs)) {
+        null ->
+            if ((this < 0) == (rhs < 0)) {
+                Int.MAX_VALUE
+            } else {
+                Int.MIN_VALUE
+            }
         else -> {
             val x = matchVal
             x
@@ -8018,7 +8212,7 @@ public fun Int.saturatingDiv(rhs: Int): Int =
  */
 public fun Int.saturatingPow(exp: UInt): Int =
     run {
-        val matchVal = rustCheckedPow(this, exp)
+        val matchVal = this.checkedPow(exp)
         when {
             matchVal != null -> {
                 val x = matchVal
@@ -8038,7 +8232,7 @@ public fun Int.saturatingPow(exp: UInt): Int =
  * ```kotlin
  * ```
  */
-public fun Int.wrappingAdd(rhs: Int): Int = (this + rhs)
+public fun Int.wrappingAdd(rhs: Int): Int = ((this) + (rhs))
 
 /**
  * Wrapping (modular) addition with an unsigned integer. Computes
@@ -8060,7 +8254,7 @@ public fun Int.wrappingAddUnsigned(rhs: UInt): Int = (this + (rhs.toInt()))
  * ```kotlin
  * ```
  */
-public fun Int.wrappingSub(rhs: Int): Int = (this - rhs)
+public fun Int.wrappingSub(rhs: Int): Int = ((this) - (rhs))
 
 /**
  * Wrapping (modular) subtraction with an unsigned integer. Computes
@@ -8083,7 +8277,7 @@ public fun Int.wrappingSubUnsigned(rhs: UInt): Int = (this - (rhs.toInt()))
  * check((11 * (12.toByte())).toByte() == -124)
  * ```
  */
-public fun Int.wrappingMul(rhs: Int): Int = (this * rhs)
+public fun Int.wrappingMul(rhs: Int): Int = ((this) * (rhs))
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`, wrapping around at the
@@ -8242,7 +8436,7 @@ public fun Int.wrappingShr(rhs: UInt): Int = this.uncheckedShr(rhs and (32u - 1u
  */
 public fun Int.wrappingAbs(): Int =
     if (this.isNegative()) {
-        rustWrappingNeg(this)
+        this.wrappingNeg()
     } else {
         this
     }
@@ -8257,7 +8451,7 @@ public fun Int.wrappingAbs(): Int =
  * check((-128.toByte()).unsignedAbs() == 128u.toUByte())
  * ```
  */
-public fun Int.unsignedAbs(): UInt = rustWrappingAbs(this).toUInt()
+public fun Int.unsignedAbs(): UInt = this.wrappingAbs().toUInt()
 
 /**
  * Wrapping (modular) exponentiation. Computes `self.pow(exp)`,
@@ -8289,7 +8483,7 @@ public fun Int.wrappingPow(exp: UInt): Int {
  * ```
  */
 public fun Int.overflowingAdd(rhs: Int): Pair<Int, Boolean> {
-    val (a, b) = addWithOverflow(this, rhs)
+    val (a, b) = kmAddWithOverflowI32(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toInt(), b)
 }
 
@@ -8334,7 +8528,7 @@ public fun Int.overflowingAdd(rhs: Int): Pair<Int, Boolean> {
  * ```
  */
 public fun Int.carryingAdd(rhs: Int, carry: Boolean): Pair<Int, Boolean> {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     val (c, d) = a.overflowingAdd(carry.toInt())
     return Pair(c, b != d)
 }
@@ -8353,7 +8547,7 @@ public fun Int.carryingAdd(rhs: Int, carry: Boolean): Pair<Int, Boolean> {
  */
 public fun Int.overflowingAddUnsigned(rhs: UInt): Pair<Int, Boolean> {
     val rhs1 = rhs.toInt()
-    val (res, overflowed) = rustOverflowingAdd(this, rhs1)
+    val (res, overflowed) = this.overflowingAdd(rhs1)
     return Pair(res, overflowed xor (rhs1 < 0))
 }
 
@@ -8370,7 +8564,7 @@ public fun Int.overflowingAddUnsigned(rhs: UInt): Pair<Int, Boolean> {
  * ```
  */
 public fun Int.overflowingSub(rhs: Int): Pair<Int, Boolean> {
-    val (a, b) = subWithOverflow(this, rhs)
+    val (a, b) = kmSubWithOverflowI32(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toInt(), b)
 }
 
@@ -8415,7 +8609,7 @@ public fun Int.overflowingSub(rhs: Int): Pair<Int, Boolean> {
  * ```
  */
 public fun Int.borrowingSub(rhs: Int, borrow: Boolean): Pair<Int, Boolean> {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     val (c, d) = a.overflowingSub(borrow.toInt())
     return Pair(c, b != d)
 }
@@ -8434,7 +8628,7 @@ public fun Int.borrowingSub(rhs: Int, borrow: Boolean): Pair<Int, Boolean> {
  */
 public fun Int.overflowingSubUnsigned(rhs: UInt): Pair<Int, Boolean> {
     val rhs1 = rhs.toInt()
-    val (res, overflowed) = rustOverflowingSub(this, rhs1)
+    val (res, overflowed) = this.overflowingSub(rhs1)
     return Pair(res, overflowed xor (rhs1 < 0))
 }
 
@@ -8451,7 +8645,7 @@ public fun Int.overflowingSubUnsigned(rhs: UInt): Pair<Int, Boolean> {
  * ```
  */
 public fun Int.overflowingMul(rhs: Int): Pair<Int, Boolean> {
-    val (a, b) = mulWithOverflow(this, rhs)
+    val (a, b) = kmMulWithOverflowI32(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toInt(), b)
 }
 
@@ -8509,7 +8703,9 @@ public fun Int.carryingMul(rhs: Int, carry: Int): Pair<UInt, Int> = Int.carrying
  * }
  * ```
  */
-public fun Int.carryingMulAdd(rhs: Int, carry: Int, add: Int): Pair<UInt, Int> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun Int.carryingMulAdd(rhs: Int, carry: Int, add: Int): Pair<UInt, Int> =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -8552,7 +8748,7 @@ public fun Int.overflowingDivEuclid(rhs: Int): Pair<Int, Boolean> =
     if ((this == Int.MIN_VALUE) and (rhs == -1)) {
         Pair(this, true)
     } else {
-        Pair(rustDivEuclid(this, rhs), false)
+        Pair(this.divEuclid(rhs), false)
     }
 
 /**
@@ -8596,7 +8792,7 @@ public fun Int.overflowingRemEuclid(rhs: Int): Pair<Int, Boolean> =
     if (rhs == -1) {
         Pair(0, this == Int.MIN_VALUE)
     } else {
-        Pair(rustRemEuclid(this, rhs), false)
+        Pair(this.remEuclid(rhs), false)
     }
 
 /**
@@ -8631,7 +8827,7 @@ public fun Int.overflowingNeg(): Pair<Int, Boolean> =
  * check(0x1.overflowingShl(36u) == Pair(0x10, true))
  * ```
  */
-public fun Int.overflowingShl(rhs: UInt): Pair<Int, Boolean> = Pair(rustWrappingShl(this, rhs), rhs >= 32u)
+public fun Int.overflowingShl(rhs: UInt): Pair<Int, Boolean> = Pair(this.wrappingShl(rhs), rhs >= 32u)
 
 /**
  * Shifts self right by `rhs` bits.
@@ -8646,7 +8842,7 @@ public fun Int.overflowingShl(rhs: UInt): Pair<Int, Boolean> = Pair(rustWrapping
  * check(0x10.overflowingShr(36u) == Pair(0x1, true))
  * ```
  */
-public fun Int.overflowingShr(rhs: UInt): Pair<Int, Boolean> = Pair(rustWrappingShr(this, rhs), rhs >= 32u)
+public fun Int.overflowingShr(rhs: UInt): Pair<Int, Boolean> = Pair(this.wrappingShr(rhs), rhs >= 32u)
 
 /**
  * Computes the absolute value of `self`.
@@ -8661,7 +8857,7 @@ public fun Int.overflowingShr(rhs: UInt): Pair<Int, Boolean> = Pair(rustWrapping
  * ```kotlin
  * ```
  */
-public fun Int.overflowingAbs(): Pair<Int, Boolean> = Pair(rustWrappingAbs(this), this == Int.MIN_VALUE)
+public fun Int.overflowingAbs(): Pair<Int, Boolean> = Pair(this.wrappingAbs(), this == Int.MIN_VALUE)
 
 /**
  * Raises self to the power of `exp`, using exponentiation by squaring.
@@ -8678,12 +8874,12 @@ public fun Int.overflowingAbs(): Pair<Int, Boolean> = Pair(rustWrappingAbs(this)
 public fun Int.overflowingPow(exp: UInt): Pair<Int, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: Int  = 1
+    val acc: Int = 1
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
         val k = base.unsignedAbs().ilog2()
-        val shift = rustCheckedMul(k, exp1) ?: return Pair(0, true)
+        val shift = k.checkedMul(exp1) ?: return Pair(0, true)
         val base1: Int =
             if (base < 0 && (exp1 % 2u) != 0u) {
                 -1
@@ -8698,27 +8894,27 @@ public fun Int.overflowingPow(exp: UInt): Pair<Int, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+            Pair(base, tmpOverflow) = base.overflowingMul(base)
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+        Pair(base, tmpOverflow) = base.overflowingMul(base)
         overflow = overflow or tmpOverflow
     }
 }
@@ -8838,7 +9034,7 @@ public fun Int.divEuclid(rhs: Int): Int {
 public fun Int.remEuclid(rhs: Int): Int {
     val r = this % rhs
     return if (r < 0) {
-        (r + rustWrappingAbs(rhs).toInt())
+        (r + rhs.wrappingAbs().toInt())
     } else {
         r
     }
@@ -8967,8 +9163,10 @@ public fun Int.checkedNextMultipleOf(rhs: Int): Int? {
         return this
     }
     val r =
-        when (val matchVal = rustCheckedRem(this, rhs)) {
-            null -> { return null }
+        when (val matchVal = this.checkedRem(rhs)) {
+            null -> {
+                return null
+            }
             else -> {
                 val x = matchVal
                 x
@@ -8983,7 +9181,7 @@ public fun Int.checkedNextMultipleOf(rhs: Int): Int? {
     return if (m == 0) {
         this
     } else {
-        rustCheckedAdd(this, rhs - m)
+        this.checkedAdd(rhs - m)
     }
 }
 
@@ -9103,7 +9301,7 @@ public fun Int.checkedIlog2(): UInt? =
     if (this <= 0) {
         null
     } else {
-        val log = (32u - 1u) - kmCtlzU64((this).toULong())
+        val log = (32u - 1u) - kmCtlzU32((this).toUInt())
         log
     }
 
@@ -9117,7 +9315,9 @@ public fun Int.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Int.checkedIlog10(): UInt? = io.github.kotlinmania.rustlang.num.imp.traits.Int(this)
+public fun Int.checkedIlog10(): UInt? =
+    io.github.kotlinmania.rustlang.core.num.imp.intlog10
+        .Int(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -9174,7 +9374,18 @@ public fun Int.absDiff(other: Int): UInt =
  * ```kotlin
  * ```
  */
-public fun Int.signum(): Int = threeWayCompare(this, 0).toInt()
+public fun Int.signum(): Int =
+    (
+        run {
+            val lhs = this
+            val rhs = 0
+            when {
+                lhs < rhs -> Ordering.Less
+                lhs > rhs -> Ordering.Greater
+                else -> Ordering.Equal
+            }
+        }
+    ).value.toInt()
 
 /**
  * Returns `true` if `self` is positive and `false` if the number is zero or
@@ -9207,7 +9418,11 @@ public fun Int.isNegative(): Boolean = this < 0
  * ```kotlin
  * ```
  */
-public fun Int.toBeBytes(): UByteArray = run { val rawBits = ((((this) shl 24)) or (((this) and 0x0000FF00) shl 8) or (((this) ushr 8) and 0x0000FF00) or ((this) ushr 24)).toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
+public fun Int.toBeBytes(): UByteArray =
+    run {
+        val rawBits = ((((this) shl 24)) or (((this) and 0x0000FF00) shl 8) or (((this) ushr 8) and 0x0000FF00) or ((this) ushr 24)).toUInt()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -9218,7 +9433,11 @@ public fun Int.toBeBytes(): UByteArray = run { val rawBits = ((((this) shl 24)) 
  * ```kotlin
  * ```
  */
-public fun Int.toLeBytes(): UByteArray = run { val rawBits = this.toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
+public fun Int.toLeBytes(): UByteArray =
+    run {
+        val rawBits = this.toUInt()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -9255,7 +9474,11 @@ public fun Int.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun Int.Companion.fromBeBytes(bytes: UByteArray): Int = run { val swapVal0 = (Int.fromNeBytes(bytes)); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24)) }
+public fun Int.Companion.fromBeBytes(bytes: UByteArray): Int =
+    run {
+        val swapVal0 = (Int.fromNeBytes(bytes))
+        ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24))
+    }
 
 /**
  * Creates an integer value from its representation as a byte array in
@@ -9608,7 +9831,7 @@ public fun Long.setBit(index: UInt, value: Boolean): Long = this.castUnsigned().
  * check(n.countOnes() == 1)
  * ```
  */
-public fun Long.countOnes(): UInt = rustCountOnes((this.toULong()))
+public fun Long.countOnes(): UInt = (this.toULong()).countOnes()
 
 /**
  * Returns the number of zeros in the binary representation of `self`.
@@ -9632,7 +9855,7 @@ public fun Long.countZeros(): UInt = (!this).countOnes()
  * check(n.leadingZeros() == 0)
  * ```
  */
-public fun Long.leadingZeros(): UInt = rustLeadingZeros((this.toULong()))
+public fun Long.leadingZeros(): UInt = (this.toULong()).leadingZeros()
 
 /**
  * Returns the number of trailing zeros in the binary representation of `self`.
@@ -9643,7 +9866,7 @@ public fun Long.leadingZeros(): UInt = rustLeadingZeros((this.toULong()))
  * check(n.trailingZeros() == 2)
  * ```
  */
-public fun Long.trailingZeros(): UInt = rustTrailingZeros((this.toULong()))
+public fun Long.trailingZeros(): UInt = (this.toULong()).trailingZeros()
 
 /**
  * Returns the number of leading ones in the binary representation of `self`.
@@ -9653,7 +9876,7 @@ public fun Long.trailingZeros(): UInt = rustTrailingZeros((this.toULong()))
  * ```kotlin
  * ```
  */
-public fun Long.leadingOnes(): UInt = rustLeadingOnes((this.toULong()))
+public fun Long.leadingOnes(): UInt = (this.toULong()).leadingOnes()
 
 /**
  * Returns the number of trailing ones in the binary representation of `self`.
@@ -9664,7 +9887,7 @@ public fun Long.leadingOnes(): UInt = rustLeadingOnes((this.toULong()))
  * check(n.trailingOnes() == 2)
  * ```
  */
-public fun Long.trailingOnes(): UInt = rustTrailingOnes((this.toULong()))
+public fun Long.trailingOnes(): UInt = (this.toULong()).trailingOnes()
 
 /**
  * Returns `self` with only the most significant bit set, or `0` if
@@ -9676,7 +9899,7 @@ public fun Long.trailingOnes(): UInt = rustTrailingOnes((this.toULong()))
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun Long.isolateHighestOne(): Long = this and (rustWrappingShr(((1.toLong()) shl (64u - 1u).toInt()), rustLeadingZeros(this)))
+public fun Long.isolateHighestOne(): Long = this and (((1.toLong()) shl (64u - 1u).toInt()).wrappingShr(this.leadingZeros()))
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -9688,7 +9911,7 @@ public fun Long.isolateHighestOne(): Long = this and (rustWrappingShr(((1.toLong
  * check(n.isolateLowestOne() == 0x4)
  * ```
  */
-public fun Long.isolateLowestOne(): Long = this and rustWrappingNeg(this)
+public fun Long.isolateLowestOne(): Long = this and this.wrappingNeg()
 
 /**
  * Returns the index of the highest bit set to one in `self`, or `None`
@@ -9815,7 +10038,7 @@ public fun Long.strictCastUnsigned(): ULong =
  * ```kotlin
  * ```
  */
-public fun Long.rotateLeft(n: UInt): Long = rustRotateLeft((this.toULong()), n).toLong()
+public fun Long.rotateLeft(n: UInt): Long = (this.toULong()).rotateLeft(n).toLong()
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -9833,7 +10056,7 @@ public fun Long.rotateLeft(n: UInt): Long = rustRotateLeft((this.toULong()), n).
  * ```kotlin
  * ```
  */
-public fun Long.rotateRight(n: UInt): Long = rustRotateRight((this.toULong()), n).toLong()
+public fun Long.rotateRight(n: UInt): Long = (this.toULong()).rotateRight(n).toLong()
 
 /**
  * Reverses the byte order of the integer.
@@ -9844,7 +10067,13 @@ public fun Long.rotateRight(n: UInt): Long = rustRotateRight((this.toULong()), n
  * val m = n.swapBytes()
  * ```
  */
-public fun Long.swapBytes(): Long = (run { val swapVal0 = ((this.toULong())); ((((swapVal0) shl 56)) or (((swapVal0) and 0x000000000000FF00uL) shl 40) or (((swapVal0) and 0x0000000000FF0000uL) shl 24) or (((swapVal0) and 0x00000000FF000000uL) shl 8) or ((((swapVal0) shr 8) and 0x00000000FF000000uL)) or ((((swapVal0) shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0) shr 40) and 0x000000000000FF00uL)) or ((swapVal0) shr 56)) }).toLong()
+public fun Long.swapBytes(): Long =
+    (
+        run {
+            val swapVal0 = ((this.toULong()))
+            ((((swapVal0) shl 56)) or (((swapVal0) and 0x000000000000FF00uL) shl 40) or (((swapVal0) and 0x0000000000FF0000uL) shl 24) or (((swapVal0) and 0x00000000FF000000uL) shl 8) or ((((swapVal0) shr 8) and 0x00000000FF000000uL)) or ((((swapVal0) shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0) shr 40) and 0x000000000000FF00uL)) or ((swapVal0) shr 56))
+        }
+    ).toLong()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -9856,7 +10085,7 @@ public fun Long.swapBytes(): Long = (run { val swapVal0 = ((this.toULong())); ((
  * val m = n.reverseBits()
  * ```
  */
-public fun Long.reverseBits(): Long = rustReverseBits((this.toULong())).toLong()
+public fun Long.reverseBits(): Long = (this.toULong()).reverseBits().toLong()
 
 /**
  * Converts an integer from big endian to the target's endianness.
@@ -9942,7 +10171,7 @@ public fun Long.toLe(): Long = this
  * ```
  */
 public fun Long.checkedAdd(rhs: Long): Long? {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         null
     } else {
@@ -9971,7 +10200,7 @@ public fun Long.checkedAdd(rhs: Long): Long? {
  * ```
  */
 public fun Long.strictAdd(rhs: Long): Long {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         add()
     } else {
@@ -9998,7 +10227,7 @@ public fun Long.strictAdd(rhs: Long): Long {
  */
 public fun Long.uncheckedAdd(rhs: Long): Long {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
+    return ((this) + (rhs))
 }
 
 /**
@@ -10058,7 +10287,7 @@ public fun Long.strictAddUnsigned(rhs: ULong): Long {
  * ```
  */
 public fun Long.checkedSub(rhs: Long): Long? {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         null
     } else {
@@ -10087,7 +10316,7 @@ public fun Long.checkedSub(rhs: Long): Long? {
  * ```
  */
 public fun Long.strictSub(rhs: Long): Long {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         sub()
     } else {
@@ -10114,7 +10343,7 @@ public fun Long.strictSub(rhs: Long): Long {
  */
 public fun Long.uncheckedSub(rhs: Long): Long {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
+    return ((this) - (rhs))
 }
 
 /**
@@ -10174,7 +10403,7 @@ public fun Long.strictSubUnsigned(rhs: ULong): Long {
  * ```
  */
 public fun Long.checkedMul(rhs: Long): Long? {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         null
     } else {
@@ -10203,7 +10432,7 @@ public fun Long.checkedMul(rhs: Long): Long? {
  * ```
  */
 public fun Long.strictMul(rhs: Long): Long {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         mul()
     } else {
@@ -10230,7 +10459,7 @@ public fun Long.strictMul(rhs: Long): Long {
  */
 public fun Long.uncheckedMul(rhs: Long): Long {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
+    return ((this) * (rhs))
 }
 
 /**
@@ -10246,7 +10475,7 @@ public fun Long.checkedDiv(rhs: Long): Long? =
     if (rhs == 0L || ((this == Long.MIN_VALUE) && (rhs == -1L))) {
         null
     } else {
-        uncheckedDiv(this, rhs)
+        ((this) / (rhs))
     }
 
 /**
@@ -10298,7 +10527,7 @@ public fun Long.checkedDivEuclid(rhs: Long): Long? =
     if (rhs == 0L || ((this == Long.MIN_VALUE) and (rhs == -1L))) {
         null
     } else {
-        rustDivEuclid(this, rhs)
+        this.divEuclid(rhs)
     }
 
 /**
@@ -10335,7 +10564,7 @@ public fun Long.checkedDivEuclid(rhs: Long): Long? =
  * ```kotlin
  * ```
  */
-public fun Long.strictDivEuclid(rhs: Long): Long = rustDivEuclid(this, rhs)
+public fun Long.strictDivEuclid(rhs: Long): Long = this.divEuclid(rhs)
 
 /**
  * Checked integer division without remainder. Computes `self / rhs`,
@@ -10353,10 +10582,10 @@ public fun Long.checkedDivExact(rhs: Long): Long? =
     if (rhs == 0L || ((this == Long.MIN_VALUE) && (rhs == -1L))) {
         null
     } else {
-        if (uncheckedRem(this, rhs) != 0) {
+        if (((this) % (rhs)) != 0L) {
             null
         } else {
-            exactDiv(this, rhs)
+            ((this) / (rhs))
         }
     }
 
@@ -10404,7 +10633,7 @@ public fun Long.divExact(rhs: Long): Long? =
  */
 public fun Long.uncheckedDivExact(rhs: Long): Long {
     Unit
-    return exactDiv(this, rhs)
+    return ((this) / (rhs))
 }
 
 /**
@@ -10420,7 +10649,7 @@ public fun Long.checkedRem(rhs: Long): Long? =
     if (rhs == 0L || ((this == Long.MIN_VALUE) && (rhs == -1L))) {
         null
     } else {
-        uncheckedRem(this, rhs)
+        ((this) % (rhs))
     }
 
 /**
@@ -10475,7 +10704,7 @@ public fun Long.checkedRemEuclid(rhs: Long): Long? =
     if (rhs == 0L || ((this == Long.MIN_VALUE) and (rhs == -1L))) {
         null
     } else {
-        rustRemEuclid(this, rhs)
+        this.remEuclid(rhs)
     }
 
 /**
@@ -10542,7 +10771,7 @@ public fun Long.strictRemEuclid(rhs: Long): Long {
  */
 public fun Long.uncheckedDisjointBitor(rhs: Long): Long {
     Unit
-    return disjointBitor(this, rhs)
+    return ((this) or (rhs))
 }
 
 /**
@@ -10554,7 +10783,7 @@ public fun Long.uncheckedDisjointBitor(rhs: Long): Long {
  * ```
  */
 public fun Long.checkedNeg(): Long? {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         null
     } else {
@@ -10572,7 +10801,7 @@ public fun Long.checkedNeg(): Long? {
  */
 public fun Long.uncheckedNeg(): Long {
     Unit
-    return uncheckedSub(0, this)
+    return (((0L) - (this))).toLong()
 }
 
 /**
@@ -10595,7 +10824,7 @@ public fun Long.uncheckedNeg(): Long {
  * ```
  */
 public fun Long.strictNeg(): Long {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         neg()
     } else {
@@ -10640,7 +10869,7 @@ public fun Long.checkedShl(rhs: UInt): Long? =
  * ```
  */
 public fun Long.strictShl(rhs: UInt): Long {
-    val (a, b) = rustOverflowingShl(this, rhs)
+    val (a, b) = this.overflowingShl(rhs)
     return if (b) {
         shl()
     } else {
@@ -10660,7 +10889,7 @@ public fun Long.strictShl(rhs: UInt): Long {
  */
 public fun Long.uncheckedShl(rhs: UInt): Long {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
+    return ((this) shl (rhs).toInt())
 }
 
 /**
@@ -10696,7 +10925,7 @@ public fun Long.unboundedShl(rhs: UInt): Long =
  * ```
  */
 public fun Long.shlExact(rhs: UInt): Long? =
-    if (rhs < rustLeadingZeros(this) || rhs < rustLeadingOnes(this)) {
+    if (rhs < this.leadingZeros() || rhs < this.leadingOnes()) {
         this.uncheckedShl(rhs)
     } else {
         null
@@ -10754,7 +10983,7 @@ public fun Long.checkedShr(rhs: UInt): Long? =
  * ```
  */
 public fun Long.strictShr(rhs: UInt): Long {
-    val (a, b) = rustOverflowingShr(this, rhs)
+    val (a, b) = this.overflowingShr(rhs)
     return if (b) {
         shr()
     } else {
@@ -10774,7 +11003,7 @@ public fun Long.strictShr(rhs: UInt): Long {
  */
 public fun Long.uncheckedShr(rhs: UInt): Long {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
+    return ((this) shr (rhs).toInt())
 }
 
 /**
@@ -10810,7 +11039,7 @@ public fun Long.unboundedShr(rhs: UInt): Long =
  * ```
  */
 public fun Long.shrExact(rhs: UInt): Long? =
-    if (rhs <= rustTrailingZeros(this) && rhs < 64u) {
+    if (rhs <= this.trailingZeros() && rhs < 64u) {
         this.uncheckedShr(rhs)
     } else {
         null
@@ -10842,7 +11071,7 @@ public fun Long.uncheckedShrExact(rhs: UInt): Long {
  */
 public fun Long.checkedAbs(): Long? =
     if (this.isNegative()) {
-        rustCheckedNeg(this)
+        this.checkedNeg()
     } else {
         this
     }
@@ -10890,8 +11119,10 @@ public fun Long.checkedPow(exp: UInt): Long? {
     if (false && base.unsignedAbs().isPowerOfTwo()) {
         val k = base.unsignedAbs().ilog2()
         val shift =
-            when (val matchVal = rustCheckedMul(k, exp1)) {
-                null -> { return null }
+            when (val matchVal = k.checkedMul(exp1)) {
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
@@ -10909,46 +11140,58 @@ public fun Long.checkedPow(exp: UInt): Long? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc = when (val matchVal1 = rustCheckedMul(acc, base)) {
-                    null -> { return null }
-                    else -> {
-                        val x1 = matchVal1
-                        x1
+                acc =
+                    when (val matchVal1 = acc.checkedMul(base)) {
+                        null -> {
+                            return null
+                        }
+                        else -> {
+                            val x1 = matchVal1
+                            x1
+                        }
                     }
-                }
             }
             exp1 /= 2u
-            base = when (val matchVal2 = rustCheckedMul(base, base)) {
-                null -> { return null }
-                else -> {
-                    val x2 = matchVal2
-                    x2
+            base =
+                when (val matchVal2 = base.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x2 = matchVal2
+                        x2
+                    }
                 }
-            }
         }
-        return rustCheckedMul(acc, base)
+        return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc = when (val matchVal3 = rustCheckedMul(acc, base)) {
-                null -> { return null }
-                else -> {
-                    val x3 = matchVal3
-                    x3
+            acc =
+                when (val matchVal3 = acc.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x3 = matchVal3
+                        x3
+                    }
                 }
-            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base = when (val matchVal4 = rustCheckedMul(base, base)) {
-            null -> { return null }
-            else -> {
-                val x4 = matchVal4
-                x4
+        base =
+            when (val matchVal4 = base.checkedMul(base)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x4 = matchVal4
+                    x4
+                }
             }
-        }
     }
 }
 
@@ -10973,7 +11216,7 @@ public fun Long.checkedPow(exp: UInt): Long? {
  * ```
  */
 public fun Long.strictPow(exp: UInt): Long =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> pow()
         else -> {
             val x = matchVal
@@ -11001,7 +11244,11 @@ public fun Long.checkedIsqrt(): Long? =
     } else {
         val result = this.castUnsigned().isqrt().castSigned()
         run {
-            val MAX_RESULT: Long = Long.MAX_VALUE.castUnsigned().isqrt().castSigned()
+            val MAX_RESULT: Long =
+                Long.MAX_VALUE
+                    .castUnsigned()
+                    .isqrt()
+                    .castSigned()
             assertUnchecked(result <= MAX_RESULT)
         }
         result
@@ -11016,7 +11263,7 @@ public fun Long.checkedIsqrt(): Long? =
  * ```kotlin
  * ```
  */
-public fun Long.saturatingAdd(rhs: Long): Long = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
+public fun Long.saturatingAdd(rhs: Long): Long = kmSaturatingAddI64(this, rhs)
 
 /**
  * Saturating addition with an unsigned integer. Computes `self + rhs`,
@@ -11045,7 +11292,7 @@ public fun Long.saturatingAddUnsigned(rhs: ULong): Long =
  * ```kotlin
  * ```
  */
-public fun Long.saturatingSub(rhs: Long): Long = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
+public fun Long.saturatingSub(rhs: Long): Long = kmSaturatingSubI64(this, rhs)
 
 /**
  * Saturating subtraction with an unsigned integer. Computes `self - rhs`,
@@ -11074,7 +11321,7 @@ public fun Long.saturatingSubUnsigned(rhs: ULong): Long =
  * ```kotlin
  * ```
  */
-public fun Long.saturatingNeg(): Long = saturatingSub(0, this)
+public fun Long.saturatingNeg(): Long = kmSaturatingSubI64(0L, this).toLong()
 
 /**
  * Saturating absolute value. Computes `self.abs()`, returning `MAX` if `self ==
@@ -11087,7 +11334,7 @@ public fun Long.saturatingNeg(): Long = saturatingSub(0, this)
  */
 public fun Long.saturatingAbs(): Long =
     if (this.isNegative()) {
-        rustSaturatingNeg(this)
+        this.saturatingNeg()
     } else {
         this
     }
@@ -11102,12 +11349,13 @@ public fun Long.saturatingAbs(): Long =
  * ```
  */
 public fun Long.saturatingMul(rhs: Long): Long =
-    when (val matchVal = rustCheckedMul(this, rhs)) {
-        null -> if ((this < 0L) == (rhs < 0L)) {
-            Long.MAX_VALUE
-        } else {
-            Long.MIN_VALUE
-        }
+    when (val matchVal = this.checkedMul(rhs)) {
+        null ->
+            if ((this < 0L) == (rhs < 0L)) {
+                Long.MAX_VALUE
+            } else {
+                Long.MIN_VALUE
+            }
         else -> {
             val x = matchVal
             x
@@ -11150,7 +11398,7 @@ public fun Long.saturatingDiv(rhs: Long): Long =
  */
 public fun Long.saturatingPow(exp: UInt): Long =
     run {
-        val matchVal = rustCheckedPow(this, exp)
+        val matchVal = this.checkedPow(exp)
         when {
             matchVal != null -> {
                 val x = matchVal
@@ -11170,7 +11418,7 @@ public fun Long.saturatingPow(exp: UInt): Long =
  * ```kotlin
  * ```
  */
-public fun Long.wrappingAdd(rhs: Long): Long = (this + rhs)
+public fun Long.wrappingAdd(rhs: Long): Long = ((this) + (rhs))
 
 /**
  * Wrapping (modular) addition with an unsigned integer. Computes
@@ -11192,7 +11440,7 @@ public fun Long.wrappingAddUnsigned(rhs: ULong): Long = (this + (rhs.toLong()))
  * ```kotlin
  * ```
  */
-public fun Long.wrappingSub(rhs: Long): Long = (this - rhs)
+public fun Long.wrappingSub(rhs: Long): Long = ((this) - (rhs))
 
 /**
  * Wrapping (modular) subtraction with an unsigned integer. Computes
@@ -11215,7 +11463,7 @@ public fun Long.wrappingSubUnsigned(rhs: ULong): Long = (this - (rhs.toLong()))
  * check((11 * (12.toByte())).toByte() == -124)
  * ```
  */
-public fun Long.wrappingMul(rhs: Long): Long = (this * rhs)
+public fun Long.wrappingMul(rhs: Long): Long = ((this) * (rhs))
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`, wrapping around at the
@@ -11374,7 +11622,7 @@ public fun Long.wrappingShr(rhs: UInt): Long = this.uncheckedShr(rhs and (64u - 
  */
 public fun Long.wrappingAbs(): Long =
     if (this.isNegative()) {
-        rustWrappingNeg(this)
+        this.wrappingNeg()
     } else {
         this
     }
@@ -11389,7 +11637,7 @@ public fun Long.wrappingAbs(): Long =
  * check((-128.toByte()).unsignedAbs() == 128u.toUByte())
  * ```
  */
-public fun Long.unsignedAbs(): ULong = rustWrappingAbs(this).toULong()
+public fun Long.unsignedAbs(): ULong = this.wrappingAbs().toULong()
 
 /**
  * Wrapping (modular) exponentiation. Computes `self.pow(exp)`,
@@ -11421,7 +11669,7 @@ public fun Long.wrappingPow(exp: UInt): Long {
  * ```
  */
 public fun Long.overflowingAdd(rhs: Long): Pair<Long, Boolean> {
-    val (a, b) = addWithOverflow(this, rhs)
+    val (a, b) = kmAddWithOverflowI64(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toLong(), b)
 }
 
@@ -11466,7 +11714,7 @@ public fun Long.overflowingAdd(rhs: Long): Pair<Long, Boolean> {
  * ```
  */
 public fun Long.carryingAdd(rhs: Long, carry: Boolean): Pair<Long, Boolean> {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     val (c, d) = a.overflowingAdd(carry.toLong())
     return Pair(c, b != d)
 }
@@ -11485,7 +11733,7 @@ public fun Long.carryingAdd(rhs: Long, carry: Boolean): Pair<Long, Boolean> {
  */
 public fun Long.overflowingAddUnsigned(rhs: ULong): Pair<Long, Boolean> {
     val rhs1 = rhs.toLong()
-    val (res, overflowed) = rustOverflowingAdd(this, rhs1)
+    val (res, overflowed) = this.overflowingAdd(rhs1)
     return Pair(res, overflowed xor (rhs1 < 0L))
 }
 
@@ -11502,7 +11750,7 @@ public fun Long.overflowingAddUnsigned(rhs: ULong): Pair<Long, Boolean> {
  * ```
  */
 public fun Long.overflowingSub(rhs: Long): Pair<Long, Boolean> {
-    val (a, b) = subWithOverflow(this, rhs)
+    val (a, b) = kmSubWithOverflowI64(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toLong(), b)
 }
 
@@ -11547,7 +11795,7 @@ public fun Long.overflowingSub(rhs: Long): Pair<Long, Boolean> {
  * ```
  */
 public fun Long.borrowingSub(rhs: Long, borrow: Boolean): Pair<Long, Boolean> {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     val (c, d) = a.overflowingSub(borrow.toLong())
     return Pair(c, b != d)
 }
@@ -11566,7 +11814,7 @@ public fun Long.borrowingSub(rhs: Long, borrow: Boolean): Pair<Long, Boolean> {
  */
 public fun Long.overflowingSubUnsigned(rhs: ULong): Pair<Long, Boolean> {
     val rhs1 = rhs.toLong()
-    val (res, overflowed) = rustOverflowingSub(this, rhs1)
+    val (res, overflowed) = this.overflowingSub(rhs1)
     return Pair(res, overflowed xor (rhs1 < 0L))
 }
 
@@ -11583,7 +11831,7 @@ public fun Long.overflowingSubUnsigned(rhs: ULong): Pair<Long, Boolean> {
  * ```
  */
 public fun Long.overflowingMul(rhs: Long): Pair<Long, Boolean> {
-    val (a, b) = mulWithOverflow(this, rhs)
+    val (a, b) = kmMulWithOverflowI64(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toLong(), b)
 }
 
@@ -11641,7 +11889,9 @@ public fun Long.carryingMul(rhs: Long, carry: Long): Pair<ULong, Long> = Long.ca
  * }
  * ```
  */
-public fun Long.carryingMulAdd(rhs: Long, carry: Long, add: Long): Pair<ULong, Long> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun Long.carryingMulAdd(rhs: Long, carry: Long, add: Long): Pair<ULong, Long> =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -11684,7 +11934,7 @@ public fun Long.overflowingDivEuclid(rhs: Long): Pair<Long, Boolean> =
     if ((this == Long.MIN_VALUE) and (rhs == -1L)) {
         Pair(this, true)
     } else {
-        Pair(rustDivEuclid(this, rhs), false)
+        Pair(this.divEuclid(rhs), false)
     }
 
 /**
@@ -11728,7 +11978,7 @@ public fun Long.overflowingRemEuclid(rhs: Long): Pair<Long, Boolean> =
     if (rhs == -1L) {
         Pair(0, this == Long.MIN_VALUE)
     } else {
-        Pair(rustRemEuclid(this, rhs), false)
+        Pair(this.remEuclid(rhs), false)
     }
 
 /**
@@ -11763,7 +12013,7 @@ public fun Long.overflowingNeg(): Pair<Long, Boolean> =
  * check(0x1.overflowingShl(36u) == Pair(0x10, true))
  * ```
  */
-public fun Long.overflowingShl(rhs: UInt): Pair<Long, Boolean> = Pair(rustWrappingShl(this, rhs), rhs >= 64u)
+public fun Long.overflowingShl(rhs: UInt): Pair<Long, Boolean> = Pair(this.wrappingShl(rhs), rhs >= 64u)
 
 /**
  * Shifts self right by `rhs` bits.
@@ -11778,7 +12028,7 @@ public fun Long.overflowingShl(rhs: UInt): Pair<Long, Boolean> = Pair(rustWrappi
  * check(0x10.overflowingShr(36u) == Pair(0x1, true))
  * ```
  */
-public fun Long.overflowingShr(rhs: UInt): Pair<Long, Boolean> = Pair(rustWrappingShr(this, rhs), rhs >= 64u)
+public fun Long.overflowingShr(rhs: UInt): Pair<Long, Boolean> = Pair(this.wrappingShr(rhs), rhs >= 64u)
 
 /**
  * Computes the absolute value of `self`.
@@ -11793,7 +12043,7 @@ public fun Long.overflowingShr(rhs: UInt): Pair<Long, Boolean> = Pair(rustWrappi
  * ```kotlin
  * ```
  */
-public fun Long.overflowingAbs(): Pair<Long, Boolean> = Pair(rustWrappingAbs(this), this == Long.MIN_VALUE)
+public fun Long.overflowingAbs(): Pair<Long, Boolean> = Pair(this.wrappingAbs(), this == Long.MIN_VALUE)
 
 /**
  * Raises self to the power of `exp`, using exponentiation by squaring.
@@ -11810,12 +12060,12 @@ public fun Long.overflowingAbs(): Pair<Long, Boolean> = Pair(rustWrappingAbs(thi
 public fun Long.overflowingPow(exp: UInt): Pair<Long, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: Long  = 1L
+    val acc: Long = 1L
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
         val k = base.unsignedAbs().ilog2()
-        val shift = rustCheckedMul(k, exp1) ?: return Pair(0, true)
+        val shift = k.checkedMul(exp1) ?: return Pair(0, true)
         val base1: Long =
             if (base < 0L && (exp1 % 2u) != 0u) {
                 -1L
@@ -11830,27 +12080,27 @@ public fun Long.overflowingPow(exp: UInt): Pair<Long, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+            Pair(base, tmpOverflow) = base.overflowingMul(base)
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+        Pair(base, tmpOverflow) = base.overflowingMul(base)
         overflow = overflow or tmpOverflow
     }
 }
@@ -11970,7 +12220,7 @@ public fun Long.divEuclid(rhs: Long): Long {
 public fun Long.remEuclid(rhs: Long): Long {
     val r = this % rhs
     return if (r < 0L) {
-        (r + rustWrappingAbs(rhs).toLong())
+        (r + rhs.wrappingAbs().toLong())
     } else {
         r
     }
@@ -12099,8 +12349,10 @@ public fun Long.checkedNextMultipleOf(rhs: Long): Long? {
         return this
     }
     val r =
-        when (val matchVal = rustCheckedRem(this, rhs)) {
-            null -> { return null }
+        when (val matchVal = this.checkedRem(rhs)) {
+            null -> {
+                return null
+            }
             else -> {
                 val x = matchVal
                 x
@@ -12115,7 +12367,7 @@ public fun Long.checkedNextMultipleOf(rhs: Long): Long? {
     return if (m == 0) {
         this
     } else {
-        rustCheckedAdd(this, rhs - m)
+        this.checkedAdd(rhs - m)
     }
 }
 
@@ -12249,7 +12501,9 @@ public fun Long.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Long.checkedIlog10(): UInt? = i64(this)
+public fun Long.checkedIlog10(): UInt? =
+    io.github.kotlinmania.rustlang.core.num.imp.intlog10
+        .Long(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -12306,7 +12560,18 @@ public fun Long.absDiff(other: Long): ULong =
  * ```kotlin
  * ```
  */
-public fun Long.signum(): Long = threeWayCompare(this, 0).toLong()
+public fun Long.signum(): Long =
+    (
+        run {
+            val lhs = this
+            val rhs = 0
+            when {
+                lhs < rhs -> Ordering.Less
+                lhs > rhs -> Ordering.Greater
+                else -> Ordering.Equal
+            }
+        }
+    ).value.toLong()
 
 /**
  * Returns `true` if `self` is positive and `false` if the number is zero or
@@ -12339,7 +12604,11 @@ public fun Long.isNegative(): Boolean = this < 0L
  * ```kotlin
  * ```
  */
-public fun Long.toBeBytes(): UByteArray = run { val rawBits = (((((this).toULong() shl 56)) or (((this).toULong() and 0x000000000000FF00uL) shl 40) or (((this).toULong() and 0x0000000000FF0000uL) shl 24) or (((this).toULong() and 0x00000000FF000000uL) shl 8) or ((((this).toULong() shr 8) and 0x00000000FF000000uL)) or ((((this).toULong() shr 24) and 0x0000000000FF0000uL)) or ((((this).toULong() shr 40) and 0x000000000000FF00uL)) or ((this).toULong() shr 56)).toLong()).toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
+public fun Long.toBeBytes(): UByteArray =
+    run {
+        val rawBits = (((((this).toULong() shl 56)) or (((this).toULong() and 0x000000000000FF00uL) shl 40) or (((this).toULong() and 0x0000000000FF0000uL) shl 24) or (((this).toULong() and 0x00000000FF000000uL) shl 8) or ((((this).toULong() shr 8) and 0x00000000FF000000uL)) or ((((this).toULong() shr 24) and 0x0000000000FF0000uL)) or ((((this).toULong() shr 40) and 0x000000000000FF00uL)) or ((this).toULong() shr 56)).toLong()).toULong()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -12350,7 +12619,11 @@ public fun Long.toBeBytes(): UByteArray = run { val rawBits = (((((this).toULong
  * ```kotlin
  * ```
  */
-public fun Long.toLeBytes(): UByteArray = run { val rawBits = this.toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
+public fun Long.toLeBytes(): UByteArray =
+    run {
+        val rawBits = this.toULong()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -12387,7 +12660,11 @@ public fun Long.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun Long.Companion.fromBeBytes(bytes: UByteArray): Long = run { val swapVal0 = (Long.fromNeBytes(bytes)); (((((swapVal0).toULong() shl 56)) or (((swapVal0).toULong() and 0x000000000000FF00uL) shl 40) or (((swapVal0).toULong() and 0x0000000000FF0000uL) shl 24) or (((swapVal0).toULong() and 0x00000000FF000000uL) shl 8) or ((((swapVal0).toULong() shr 8) and 0x00000000FF000000uL)) or ((((swapVal0).toULong() shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0).toULong() shr 40) and 0x000000000000FF00uL)) or ((swapVal0).toULong() shr 56)).toLong()) }
+public fun Long.Companion.fromBeBytes(bytes: UByteArray): Long =
+    run {
+        val swapVal0 = (Long.fromNeBytes(bytes))
+        (((((swapVal0).toULong() shl 56)) or (((swapVal0).toULong() and 0x000000000000FF00uL) shl 40) or (((swapVal0).toULong() and 0x0000000000FF0000uL) shl 24) or (((swapVal0).toULong() and 0x00000000FF000000uL) shl 8) or ((((swapVal0).toULong() shr 8) and 0x00000000FF000000uL)) or ((((swapVal0).toULong() shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0).toULong() shr 40) and 0x000000000000FF00uL)) or ((swapVal0).toULong() shr 56)).toLong())
+    }
 
 /**
  * Creates an integer value from its representation as a byte array in
@@ -12625,11 +12902,13 @@ public fun <T : CheckedCastFromInt<Long, T>> Long.uncheckedCast(uncheckedCastFro
 public fun Long.midpoint(rhs: Long): Long {
     val t = ((this xor rhs) shr 1) + (this and rhs)
     return t +
-        (if (t < 0L) {
-            1L
-        } else {
-            0L
-        } and (this xor rhs))
+        (
+            if (t < 0L) {
+                1L
+            } else {
+                0L
+            } and (this xor rhs)
+        )
 }
 
 /**
@@ -12748,7 +13027,7 @@ public fun I128.setBit(index: UInt, value: Boolean): I128 = this.castUnsigned().
  * check(n.countOnes() == 1)
  * ```
  */
-public fun I128.countOnes(): UInt = rustCountOnes((this.toU128()))
+public fun I128.countOnes(): UInt = (this.toU128()).countOnes()
 
 /**
  * Returns the number of zeros in the binary representation of `self`.
@@ -12772,7 +13051,7 @@ public fun I128.countZeros(): UInt = (!this).countOnes()
  * check(n.leadingZeros() == 0)
  * ```
  */
-public fun I128.leadingZeros(): UInt = rustLeadingZeros((this.toU128()))
+public fun I128.leadingZeros(): UInt = (this.toU128()).leadingZeros()
 
 /**
  * Returns the number of trailing zeros in the binary representation of `self`.
@@ -12783,7 +13062,7 @@ public fun I128.leadingZeros(): UInt = rustLeadingZeros((this.toU128()))
  * check(n.trailingZeros() == 2)
  * ```
  */
-public fun I128.trailingZeros(): UInt = rustTrailingZeros((this.toU128()))
+public fun I128.trailingZeros(): UInt = (this.toU128()).trailingZeros()
 
 /**
  * Returns the number of leading ones in the binary representation of `self`.
@@ -12793,7 +13072,7 @@ public fun I128.trailingZeros(): UInt = rustTrailingZeros((this.toU128()))
  * ```kotlin
  * ```
  */
-public fun I128.leadingOnes(): UInt = rustLeadingOnes((this.toU128()))
+public fun I128.leadingOnes(): UInt = (this.toU128()).leadingOnes()
 
 /**
  * Returns the number of trailing ones in the binary representation of `self`.
@@ -12804,7 +13083,7 @@ public fun I128.leadingOnes(): UInt = rustLeadingOnes((this.toU128()))
  * check(n.trailingOnes() == 2)
  * ```
  */
-public fun I128.trailingOnes(): UInt = rustTrailingOnes((this.toU128()))
+public fun I128.trailingOnes(): UInt = (this.toU128()).trailingOnes()
 
 /**
  * Returns `self` with only the most significant bit set, or `0` if
@@ -12816,7 +13095,7 @@ public fun I128.trailingOnes(): UInt = rustTrailingOnes((this.toU128()))
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun I128.isolateHighestOne(): I128 = this and (rustWrappingShr(((I128.fromLong(1.toLong())) shl (128u - 1u).toInt()), rustLeadingZeros(this)))
+public fun I128.isolateHighestOne(): I128 = this and (((I128.fromLong(1.toLong())) shl (128u - 1u).toInt()).wrappingShr(this.leadingZeros()))
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -12828,7 +13107,7 @@ public fun I128.isolateHighestOne(): I128 = this and (rustWrappingShr(((I128.fro
  * check(n.isolateLowestOne() == 0x4)
  * ```
  */
-public fun I128.isolateLowestOne(): I128 = this and rustWrappingNeg(this)
+public fun I128.isolateLowestOne(): I128 = this and this.wrappingNeg()
 
 /**
  * Returns the index of the highest bit set to one in `self`, or `None`
@@ -12955,7 +13234,7 @@ public fun I128.strictCastUnsigned(): U128 =
  * ```kotlin
  * ```
  */
-public fun I128.rotateLeft(n: UInt): I128 = rustRotateLeft((this.toU128()), n).toI128()
+public fun I128.rotateLeft(n: UInt): I128 = (this.toU128()).rotateLeft(n).toI128()
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -12973,7 +13252,7 @@ public fun I128.rotateLeft(n: UInt): I128 = rustRotateLeft((this.toU128()), n).t
  * ```kotlin
  * ```
  */
-public fun I128.rotateRight(n: UInt): I128 = rustRotateRight((this.toU128()), n).toI128()
+public fun I128.rotateRight(n: UInt): I128 = (this.toU128()).rotateRight(n).toI128()
 
 /**
  * Reverses the byte order of the integer.
@@ -12984,7 +13263,7 @@ public fun I128.rotateRight(n: UInt): I128 = rustRotateRight((this.toU128()), n)
  * val m = n.swapBytes()
  * ```
  */
-public fun I128.swapBytes(): I128 = rustSwapBytes((this.toU128())).toI128()
+public fun I128.swapBytes(): I128 = (this.toU128()).swapBytes().toI128()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -12996,7 +13275,7 @@ public fun I128.swapBytes(): I128 = rustSwapBytes((this.toU128())).toI128()
  * val m = n.reverseBits()
  * ```
  */
-public fun I128.reverseBits(): I128 = rustReverseBits((this.toU128())).toI128()
+public fun I128.reverseBits(): I128 = (this.toU128()).reverseBits().toI128()
 
 /**
  * Converts an integer from big endian to the target's endianness.
@@ -13011,7 +13290,7 @@ public fun I128.reverseBits(): I128 = rustReverseBits((this.toU128())).toI128()
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun I128.Companion.fromBe(x: I128): I128 = rustSwapBytes(x)
+public fun I128.Companion.fromBe(x: I128): I128 = x.swapBytes()
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -13048,7 +13327,7 @@ public fun I128.Companion.fromLe(x: I128): I128 = x
  * }
  * ```
  */
-public fun I128.toBe(): I128 = rustSwapBytes(this)
+public fun I128.toBe(): I128 = this.swapBytes()
 
 /**
  * Swaps bytes of `self` on big endian targets.
@@ -13082,7 +13361,7 @@ public fun I128.toLe(): I128 = this
  * ```
  */
 public fun I128.checkedAdd(rhs: I128): I128? {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         null
     } else {
@@ -13111,7 +13390,7 @@ public fun I128.checkedAdd(rhs: I128): I128? {
  * ```
  */
 public fun I128.strictAdd(rhs: I128): I128 {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         add()
     } else {
@@ -13138,7 +13417,11 @@ public fun I128.strictAdd(rhs: I128): I128 {
  */
 public fun I128.uncheckedAdd(rhs: I128): I128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
+    return run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Add(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
+    }
 }
 
 /**
@@ -13198,7 +13481,7 @@ public fun I128.strictAddUnsigned(rhs: U128): I128 {
  * ```
  */
 public fun I128.checkedSub(rhs: I128): I128? {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         null
     } else {
@@ -13227,7 +13510,7 @@ public fun I128.checkedSub(rhs: I128): I128? {
  * ```
  */
 public fun I128.strictSub(rhs: I128): I128 {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         sub()
     } else {
@@ -13254,7 +13537,11 @@ public fun I128.strictSub(rhs: I128): I128 {
  */
 public fun I128.uncheckedSub(rhs: I128): I128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
+    return run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Sub(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
+    }
 }
 
 /**
@@ -13314,7 +13601,7 @@ public fun I128.strictSubUnsigned(rhs: U128): I128 {
  * ```
  */
 public fun I128.checkedMul(rhs: I128): I128? {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         null
     } else {
@@ -13343,7 +13630,7 @@ public fun I128.checkedMul(rhs: I128): I128? {
  * ```
  */
 public fun I128.strictMul(rhs: I128): I128 {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         mul()
     } else {
@@ -13370,7 +13657,11 @@ public fun I128.strictMul(rhs: I128): I128 {
  */
 public fun I128.uncheckedMul(rhs: I128): I128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
+    return run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Mul(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
+    }
 }
 
 /**
@@ -13386,7 +13677,7 @@ public fun I128.checkedDiv(rhs: I128): I128? =
     if (rhs == I128(0x0L, 0x0uL) || ((this == I128.MIN_VALUE) && (rhs == -I128(0x0L, 0x1uL)))) {
         null
     } else {
-        uncheckedDiv(this, rhs)
+        ((this) / (rhs))
     }
 
 /**
@@ -13438,7 +13729,7 @@ public fun I128.checkedDivEuclid(rhs: I128): I128? =
     if (rhs == I128(0x0L, 0x0uL) || ((this == I128.MIN_VALUE) and (rhs == -I128(0x0L, 0x1uL)))) {
         null
     } else {
-        rustDivEuclid(this, rhs)
+        this.divEuclid(rhs)
     }
 
 /**
@@ -13475,7 +13766,7 @@ public fun I128.checkedDivEuclid(rhs: I128): I128? =
  * ```kotlin
  * ```
  */
-public fun I128.strictDivEuclid(rhs: I128): I128 = rustDivEuclid(this, rhs)
+public fun I128.strictDivEuclid(rhs: I128): I128 = this.divEuclid(rhs)
 
 /**
  * Checked integer division without remainder. Computes `self / rhs`,
@@ -13493,10 +13784,10 @@ public fun I128.checkedDivExact(rhs: I128): I128? =
     if (rhs == I128(0x0L, 0x0uL) || ((this == I128.MIN_VALUE) && (rhs == -I128(0x0L, 0x1uL)))) {
         null
     } else {
-        if (uncheckedRem(this, rhs) != 0) {
+        if (((this) % (rhs)) != I128(0x0L, 0x0uL)) {
             null
         } else {
-            exactDiv(this, rhs)
+            ((this) / (rhs))
         }
     }
 
@@ -13544,7 +13835,7 @@ public fun I128.divExact(rhs: I128): I128? =
  */
 public fun I128.uncheckedDivExact(rhs: I128): I128 {
     Unit
-    return exactDiv(this, rhs)
+    return ((this) / (rhs))
 }
 
 /**
@@ -13560,7 +13851,7 @@ public fun I128.checkedRem(rhs: I128): I128? =
     if (rhs == I128(0x0L, 0x0uL) || ((this == I128.MIN_VALUE) && (rhs == -I128(0x0L, 0x1uL)))) {
         null
     } else {
-        uncheckedRem(this, rhs)
+        ((this) % (rhs))
     }
 
 /**
@@ -13615,7 +13906,7 @@ public fun I128.checkedRemEuclid(rhs: I128): I128? =
     if (rhs == I128(0x0L, 0x0uL) || ((this == I128.MIN_VALUE) and (rhs == -I128(0x0L, 0x1uL)))) {
         null
     } else {
-        rustRemEuclid(this, rhs)
+        this.remEuclid(rhs)
     }
 
 /**
@@ -13682,7 +13973,7 @@ public fun I128.strictRemEuclid(rhs: I128): I128 {
  */
 public fun I128.uncheckedDisjointBitor(rhs: I128): I128 {
     Unit
-    return disjointBitor(this, rhs)
+    return ((this) or (rhs))
 }
 
 /**
@@ -13694,7 +13985,7 @@ public fun I128.uncheckedDisjointBitor(rhs: I128): I128 {
  * ```
  */
 public fun I128.checkedNeg(): I128? {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         null
     } else {
@@ -13712,7 +14003,11 @@ public fun I128.checkedNeg(): I128? {
  */
 public fun I128.uncheckedNeg(): I128 {
     Unit
-    return uncheckedSub(0, this)
+    return run {
+        val lhs = I128(0x0L, 0x0uL)
+        val rhs = this
+        kmU128Sub(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
+    }
 }
 
 /**
@@ -13735,7 +14030,7 @@ public fun I128.uncheckedNeg(): I128 {
  * ```
  */
 public fun I128.strictNeg(): I128 {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         neg()
     } else {
@@ -13780,7 +14075,7 @@ public fun I128.checkedShl(rhs: UInt): I128? =
  * ```
  */
 public fun I128.strictShl(rhs: UInt): I128 {
-    val (a, b) = rustOverflowingShl(this, rhs)
+    val (a, b) = this.overflowingShl(rhs)
     return if (b) {
         shl()
     } else {
@@ -13800,7 +14095,7 @@ public fun I128.strictShl(rhs: UInt): I128 {
  */
 public fun I128.uncheckedShl(rhs: UInt): I128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
+    return (this).let { v -> kmU128Shl(v.low, v.high.toULong(), (rhs).toUInt()).let { r -> I128(r.hi.toLong(), r.lo) } }
 }
 
 /**
@@ -13836,7 +14131,7 @@ public fun I128.unboundedShl(rhs: UInt): I128 =
  * ```
  */
 public fun I128.shlExact(rhs: UInt): I128? =
-    if (rhs < rustLeadingZeros(this) || rhs < rustLeadingOnes(this)) {
+    if (rhs < this.leadingZeros() || rhs < this.leadingOnes()) {
         this.uncheckedShl(rhs)
     } else {
         null
@@ -13894,7 +14189,7 @@ public fun I128.checkedShr(rhs: UInt): I128? =
  * ```
  */
 public fun I128.strictShr(rhs: UInt): I128 {
-    val (a, b) = rustOverflowingShr(this, rhs)
+    val (a, b) = this.overflowingShr(rhs)
     return if (b) {
         shr()
     } else {
@@ -13914,7 +14209,7 @@ public fun I128.strictShr(rhs: UInt): I128 {
  */
 public fun I128.uncheckedShr(rhs: UInt): I128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
+    return (this).let { v -> kmI128Shr(v.low, v.high.toULong(), (rhs).toUInt()).let { r -> I128(r.hi.toLong(), r.lo) } }
 }
 
 /**
@@ -13950,7 +14245,7 @@ public fun I128.unboundedShr(rhs: UInt): I128 =
  * ```
  */
 public fun I128.shrExact(rhs: UInt): I128? =
-    if (rhs <= rustTrailingZeros(this) && rhs < 128u) {
+    if (rhs <= this.trailingZeros() && rhs < 128u) {
         this.uncheckedShr(rhs)
     } else {
         null
@@ -13982,7 +14277,7 @@ public fun I128.uncheckedShrExact(rhs: UInt): I128 {
  */
 public fun I128.checkedAbs(): I128? =
     if (this.isNegative()) {
-        rustCheckedNeg(this)
+        this.checkedNeg()
     } else {
         this
     }
@@ -14030,8 +14325,10 @@ public fun I128.checkedPow(exp: UInt): I128? {
     if (false && base.unsignedAbs().isPowerOfTwo()) {
         val k = base.unsignedAbs().ilog2()
         val shift =
-            when (val matchVal = rustCheckedMul(k, exp1)) {
-                null -> { return null }
+            when (val matchVal = k.checkedMul(exp1)) {
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
@@ -14049,46 +14346,58 @@ public fun I128.checkedPow(exp: UInt): I128? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc = when (val matchVal1 = rustCheckedMul(acc, base)) {
-                    null -> { return null }
-                    else -> {
-                        val x1 = matchVal1
-                        x1
+                acc =
+                    when (val matchVal1 = acc.checkedMul(base)) {
+                        null -> {
+                            return null
+                        }
+                        else -> {
+                            val x1 = matchVal1
+                            x1
+                        }
                     }
-                }
             }
             exp1 /= 2u
-            base = when (val matchVal2 = rustCheckedMul(base, base)) {
-                null -> { return null }
-                else -> {
-                    val x2 = matchVal2
-                    x2
+            base =
+                when (val matchVal2 = base.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x2 = matchVal2
+                        x2
+                    }
                 }
-            }
         }
-        return rustCheckedMul(acc, base)
+        return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc = when (val matchVal3 = rustCheckedMul(acc, base)) {
-                null -> { return null }
-                else -> {
-                    val x3 = matchVal3
-                    x3
+            acc =
+                when (val matchVal3 = acc.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x3 = matchVal3
+                        x3
+                    }
                 }
-            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base = when (val matchVal4 = rustCheckedMul(base, base)) {
-            null -> { return null }
-            else -> {
-                val x4 = matchVal4
-                x4
+        base =
+            when (val matchVal4 = base.checkedMul(base)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x4 = matchVal4
+                    x4
+                }
             }
-        }
     }
 }
 
@@ -14113,7 +14422,7 @@ public fun I128.checkedPow(exp: UInt): I128? {
  * ```
  */
 public fun I128.strictPow(exp: UInt): I128 =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> pow()
         else -> {
             val x = matchVal
@@ -14141,7 +14450,11 @@ public fun I128.checkedIsqrt(): I128? =
     } else {
         val result = this.castUnsigned().isqrt().castSigned()
         run {
-            val MAX_RESULT: I128 = I128.MAX_VALUE.castUnsigned().isqrt().castSigned()
+            val MAX_RESULT: I128 =
+                I128.MAX_VALUE
+                    .castUnsigned()
+                    .isqrt()
+                    .castSigned()
             assertUnchecked(result <= MAX_RESULT)
         }
         result
@@ -14156,7 +14469,12 @@ public fun I128.checkedIsqrt(): I128? =
  * ```kotlin
  * ```
  */
-public fun I128.saturatingAdd(rhs: I128): I128 = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
+public fun I128.saturatingAdd(rhs: I128): I128 =
+    run {
+        val lhs = this
+        val rhs = rhs
+        kmSaturatingAddI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
+    }
 
 /**
  * Saturating addition with an unsigned integer. Computes `self + rhs`,
@@ -14185,7 +14503,12 @@ public fun I128.saturatingAddUnsigned(rhs: U128): I128 =
  * ```kotlin
  * ```
  */
-public fun I128.saturatingSub(rhs: I128): I128 = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
+public fun I128.saturatingSub(rhs: I128): I128 =
+    run {
+        val lhs = this
+        val rhs = rhs
+        kmSaturatingSubI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
+    }
 
 /**
  * Saturating subtraction with an unsigned integer. Computes `self - rhs`,
@@ -14214,7 +14537,12 @@ public fun I128.saturatingSubUnsigned(rhs: U128): I128 =
  * ```kotlin
  * ```
  */
-public fun I128.saturatingNeg(): I128 = saturatingSub(0, this)
+public fun I128.saturatingNeg(): I128 =
+    run {
+        val lhs = I128(0x0L, 0x0uL)
+        val rhs = this
+        kmSaturatingSubI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
+    }
 
 /**
  * Saturating absolute value. Computes `self.abs()`, returning `MAX` if `self ==
@@ -14227,7 +14555,7 @@ public fun I128.saturatingNeg(): I128 = saturatingSub(0, this)
  */
 public fun I128.saturatingAbs(): I128 =
     if (this.isNegative()) {
-        rustSaturatingNeg(this)
+        this.saturatingNeg()
     } else {
         this
     }
@@ -14242,12 +14570,13 @@ public fun I128.saturatingAbs(): I128 =
  * ```
  */
 public fun I128.saturatingMul(rhs: I128): I128 =
-    when (val matchVal = rustCheckedMul(this, rhs)) {
-        null -> if ((this < I128(0x0L, 0x0uL)) == (rhs < I128(0x0L, 0x0uL))) {
-            I128.MAX_VALUE
-        } else {
-            I128.MIN_VALUE
-        }
+    when (val matchVal = this.checkedMul(rhs)) {
+        null ->
+            if ((this < I128(0x0L, 0x0uL)) == (rhs < I128(0x0L, 0x0uL))) {
+                I128.MAX_VALUE
+            } else {
+                I128.MIN_VALUE
+            }
         else -> {
             val x = matchVal
             x
@@ -14290,7 +14619,7 @@ public fun I128.saturatingDiv(rhs: I128): I128 =
  */
 public fun I128.saturatingPow(exp: UInt): I128 =
     run {
-        val matchVal = rustCheckedPow(this, exp)
+        val matchVal = this.checkedPow(exp)
         when {
             matchVal != null -> {
                 val x = matchVal
@@ -14310,7 +14639,12 @@ public fun I128.saturatingPow(exp: UInt): I128 =
  * ```kotlin
  * ```
  */
-public fun I128.wrappingAdd(rhs: I128): I128 = (this + rhs)
+public fun I128.wrappingAdd(rhs: I128): I128 =
+    run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Add(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
+    }
 
 /**
  * Wrapping (modular) addition with an unsigned integer. Computes
@@ -14321,7 +14655,7 @@ public fun I128.wrappingAdd(rhs: I128): I128 = (this + rhs)
  * ```kotlin
  * ```
  */
-public fun I128.wrappingAddUnsigned(rhs: U128): I128 = rustWrappingAdd(this, rhs.toI128())
+public fun I128.wrappingAddUnsigned(rhs: U128): I128 = this.wrappingAdd(rhs.toI128())
 
 /**
  * Wrapping (modular) subtraction. Computes `self - rhs`, wrapping around at the
@@ -14332,7 +14666,12 @@ public fun I128.wrappingAddUnsigned(rhs: U128): I128 = rustWrappingAdd(this, rhs
  * ```kotlin
  * ```
  */
-public fun I128.wrappingSub(rhs: I128): I128 = (this - rhs)
+public fun I128.wrappingSub(rhs: I128): I128 =
+    run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Sub(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
+    }
 
 /**
  * Wrapping (modular) subtraction with an unsigned integer. Computes
@@ -14343,7 +14682,7 @@ public fun I128.wrappingSub(rhs: I128): I128 = (this - rhs)
  * ```kotlin
  * ```
  */
-public fun I128.wrappingSubUnsigned(rhs: U128): I128 = rustWrappingSub(this, rhs.toI128())
+public fun I128.wrappingSubUnsigned(rhs: U128): I128 = this.wrappingSub(rhs.toI128())
 
 /**
  * Wrapping (modular) multiplication. Computes `self * rhs`, wrapping around at
@@ -14355,7 +14694,12 @@ public fun I128.wrappingSubUnsigned(rhs: U128): I128 = rustWrappingSub(this, rhs
  * check((11 * (12.toByte())).toByte() == -124)
  * ```
  */
-public fun I128.wrappingMul(rhs: I128): I128 = (this * rhs)
+public fun I128.wrappingMul(rhs: I128): I128 =
+    run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Mul(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
+    }
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`, wrapping around at the
@@ -14449,7 +14793,7 @@ public fun I128.wrappingRemEuclid(rhs: I128): I128 = this.overflowingRemEuclid(r
  * ```kotlin
  * ```
  */
-public fun I128.wrappingNeg(): I128 = rustWrappingSub((I128.fromLong(0.toLong())), this)
+public fun I128.wrappingNeg(): I128 = (I128.fromLong(0.toLong())).wrappingSub(this)
 
 /**
  * Panic-free bitwise shift-left; yields `self<<mask(rhs)`, where `mask` removes
@@ -14514,7 +14858,7 @@ public fun I128.wrappingShr(rhs: UInt): I128 = this.uncheckedShr(rhs and (128u -
  */
 public fun I128.wrappingAbs(): I128 =
     if (this.isNegative()) {
-        rustWrappingNeg(this)
+        this.wrappingNeg()
     } else {
         this
     }
@@ -14529,7 +14873,7 @@ public fun I128.wrappingAbs(): I128 =
  * check((-128.toByte()).unsignedAbs() == 128u.toUByte())
  * ```
  */
-public fun I128.unsignedAbs(): U128 = rustWrappingAbs(this).toU128()
+public fun I128.unsignedAbs(): U128 = this.wrappingAbs().toU128()
 
 /**
  * Wrapping (modular) exponentiation. Computes `self.pow(exp)`,
@@ -14561,7 +14905,12 @@ public fun I128.wrappingPow(exp: UInt): I128 {
  * ```
  */
 public fun I128.overflowingAdd(rhs: I128): Pair<I128, Boolean> {
-    val (a, b) = addWithOverflow(this, rhs)
+    val (a, b) =
+        run {
+            val lhs = this
+            val rhs = rhs
+            kmAddWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) }
+        }
     return Pair(I128.fromLong(a.toLong()), b)
 }
 
@@ -14606,7 +14955,7 @@ public fun I128.overflowingAdd(rhs: I128): Pair<I128, Boolean> {
  * ```
  */
 public fun I128.carryingAdd(rhs: I128, carry: Boolean): Pair<I128, Boolean> {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     val (c, d) = a.overflowingAdd(I128.fromLong(carry.toLong()))
     return Pair(c, b != d)
 }
@@ -14625,7 +14974,7 @@ public fun I128.carryingAdd(rhs: I128, carry: Boolean): Pair<I128, Boolean> {
  */
 public fun I128.overflowingAddUnsigned(rhs: U128): Pair<I128, Boolean> {
     val rhs1 = rhs.toI128()
-    val (res, overflowed) = rustOverflowingAdd(this, rhs1)
+    val (res, overflowed) = this.overflowingAdd(rhs1)
     return Pair(res, overflowed xor (rhs1 < I128(0x0L, 0x0uL)))
 }
 
@@ -14642,7 +14991,12 @@ public fun I128.overflowingAddUnsigned(rhs: U128): Pair<I128, Boolean> {
  * ```
  */
 public fun I128.overflowingSub(rhs: I128): Pair<I128, Boolean> {
-    val (a, b) = subWithOverflow(this, rhs)
+    val (a, b) =
+        run {
+            val lhs = this
+            val rhs = rhs
+            kmSubWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) }
+        }
     return Pair(I128.fromLong(a.toLong()), b)
 }
 
@@ -14687,7 +15041,7 @@ public fun I128.overflowingSub(rhs: I128): Pair<I128, Boolean> {
  * ```
  */
 public fun I128.borrowingSub(rhs: I128, borrow: Boolean): Pair<I128, Boolean> {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     val (c, d) = a.overflowingSub(I128.fromLong(borrow.toLong()))
     return Pair(c, b != d)
 }
@@ -14706,7 +15060,7 @@ public fun I128.borrowingSub(rhs: I128, borrow: Boolean): Pair<I128, Boolean> {
  */
 public fun I128.overflowingSubUnsigned(rhs: U128): Pair<I128, Boolean> {
     val rhs1 = rhs.toI128()
-    val (res, overflowed) = rustOverflowingSub(this, rhs1)
+    val (res, overflowed) = this.overflowingSub(rhs1)
     return Pair(res, overflowed xor (rhs1 < I128(0x0L, 0x0uL)))
 }
 
@@ -14723,7 +15077,12 @@ public fun I128.overflowingSubUnsigned(rhs: U128): Pair<I128, Boolean> {
  * ```
  */
 public fun I128.overflowingMul(rhs: I128): Pair<I128, Boolean> {
-    val (a, b) = mulWithOverflow(this, rhs)
+    val (a, b) =
+        run {
+            val lhs = this
+            val rhs = rhs
+            kmMulWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) }
+        }
     return Pair(I128.fromLong(a.toLong()), b)
 }
 
@@ -14781,7 +15140,9 @@ public fun I128.carryingMul(rhs: I128, carry: I128): Pair<U128, I128> = I128.car
  * }
  * ```
  */
-public fun I128.carryingMulAdd(rhs: I128, carry: I128, add: I128): Pair<U128, I128> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun I128.carryingMulAdd(rhs: I128, carry: I128, add: I128): Pair<U128, I128> =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -14824,7 +15185,7 @@ public fun I128.overflowingDivEuclid(rhs: I128): Pair<I128, Boolean> =
     if ((this == I128.MIN_VALUE) and (rhs == -I128(0x0L, 0x1uL))) {
         Pair(this, true)
     } else {
-        Pair(rustDivEuclid(this, rhs), false)
+        Pair(this.divEuclid(rhs), false)
     }
 
 /**
@@ -14868,7 +15229,7 @@ public fun I128.overflowingRemEuclid(rhs: I128): Pair<I128, Boolean> =
     if (rhs == -I128(0x0L, 0x1uL)) {
         Pair(0, this == I128.MIN_VALUE)
     } else {
-        Pair(rustRemEuclid(this, rhs), false)
+        Pair(this.remEuclid(rhs), false)
     }
 
 /**
@@ -14903,7 +15264,7 @@ public fun I128.overflowingNeg(): Pair<I128, Boolean> =
  * check(0x1.overflowingShl(36u) == Pair(0x10, true))
  * ```
  */
-public fun I128.overflowingShl(rhs: UInt): Pair<I128, Boolean> = Pair(rustWrappingShl(this, rhs), rhs >= 128u)
+public fun I128.overflowingShl(rhs: UInt): Pair<I128, Boolean> = Pair(this.wrappingShl(rhs), rhs >= 128u)
 
 /**
  * Shifts self right by `rhs` bits.
@@ -14918,7 +15279,7 @@ public fun I128.overflowingShl(rhs: UInt): Pair<I128, Boolean> = Pair(rustWrappi
  * check(0x10.overflowingShr(36u) == Pair(0x1, true))
  * ```
  */
-public fun I128.overflowingShr(rhs: UInt): Pair<I128, Boolean> = Pair(rustWrappingShr(this, rhs), rhs >= 128u)
+public fun I128.overflowingShr(rhs: UInt): Pair<I128, Boolean> = Pair(this.wrappingShr(rhs), rhs >= 128u)
 
 /**
  * Computes the absolute value of `self`.
@@ -14933,7 +15294,7 @@ public fun I128.overflowingShr(rhs: UInt): Pair<I128, Boolean> = Pair(rustWrappi
  * ```kotlin
  * ```
  */
-public fun I128.overflowingAbs(): Pair<I128, Boolean> = Pair(rustWrappingAbs(this), this == I128.MIN_VALUE)
+public fun I128.overflowingAbs(): Pair<I128, Boolean> = Pair(this.wrappingAbs(), this == I128.MIN_VALUE)
 
 /**
  * Raises self to the power of `exp`, using exponentiation by squaring.
@@ -14950,12 +15311,12 @@ public fun I128.overflowingAbs(): Pair<I128, Boolean> = Pair(rustWrappingAbs(thi
 public fun I128.overflowingPow(exp: UInt): Pair<I128, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: I128  = I128(0x0L, 0x1uL)
+    val acc: I128 = I128(0x0L, 0x1uL)
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
         val k = base.unsignedAbs().ilog2()
-        val shift = rustCheckedMul(k, exp1) ?: return Pair(0, true)
+        val shift = k.checkedMul(exp1) ?: return Pair(0, true)
         val base1: I128 =
             if (base < I128(0x0L, 0x0uL) && (exp1 % 2u) != 0u) {
                 -I128(0x0L, 0x1uL)
@@ -14970,27 +15331,27 @@ public fun I128.overflowingPow(exp: UInt): Pair<I128, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+            Pair(base, tmpOverflow) = base.overflowingMul(base)
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+        Pair(base, tmpOverflow) = base.overflowingMul(base)
         overflow = overflow or tmpOverflow
     }
 }
@@ -15110,7 +15471,7 @@ public fun I128.divEuclid(rhs: I128): I128 {
 public fun I128.remEuclid(rhs: I128): I128 {
     val r = this % rhs
     return if (r < I128(0x0L, 0x0uL)) {
-        rustWrappingAdd(r, rustWrappingAbs(rhs))
+        r.wrappingAdd(rhs.wrappingAbs())
     } else {
         r
     }
@@ -15239,8 +15600,10 @@ public fun I128.checkedNextMultipleOf(rhs: I128): I128? {
         return this
     }
     val r =
-        when (val matchVal = rustCheckedRem(this, rhs)) {
-            null -> { return null }
+        when (val matchVal = this.checkedRem(rhs)) {
+            null -> {
+                return null
+            }
             else -> {
                 val x = matchVal
                 x
@@ -15255,7 +15618,7 @@ public fun I128.checkedNextMultipleOf(rhs: I128): I128? {
     return if (m == 0) {
         this
     } else {
-        rustCheckedAdd(this, rhs - m)
+        this.checkedAdd(rhs - m)
     }
 }
 
@@ -15375,7 +15738,7 @@ public fun I128.checkedIlog2(): UInt? =
     if (this <= I128(0x0L, 0x0uL)) {
         null
     } else {
-        val log = (128u - 1u) - kmCtlzU64((this).toULong())
+        val log = (128u - 1u) - (this).let { v -> kmCtlzU128(v.low, v.high.toULong()) }
         log
     }
 
@@ -15389,7 +15752,9 @@ public fun I128.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun I128.checkedIlog10(): UInt? = i128(this)
+public fun I128.checkedIlog10(): UInt? =
+    io.github.kotlinmania.rustlang.core.num.imp.intlog10
+        .I128(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -15429,9 +15794,9 @@ public fun I128.abs(): I128 =
  */
 public fun I128.absDiff(other: I128): U128 =
     if (this < other) {
-        rustWrappingSub((other.toU128()), this.toU128())
+        (other.toU128()).wrappingSub(this.toU128())
     } else {
-        rustWrappingSub((this.toU128()), other.toU128())
+        (this.toU128()).wrappingSub(other.toU128())
     }
 
 /**
@@ -15446,7 +15811,20 @@ public fun I128.absDiff(other: I128): U128 =
  * ```kotlin
  * ```
  */
-public fun I128.signum(): I128 = I128.fromLong(threeWayCompare(this, 0).toLong())
+public fun I128.signum(): I128 =
+    I128.fromByte(
+        (
+            run {
+                val lhs = this
+                val rhs = 0
+                when {
+                    lhs < rhs -> Ordering.Less
+                    lhs > rhs -> Ordering.Greater
+                    else -> Ordering.Equal
+                }
+            }
+        ).value,
+    )
 
 /**
  * Returns `true` if `self` is positive and `false` if the number is zero or
@@ -15479,7 +15857,7 @@ public fun I128.isNegative(): Boolean = this < I128(0x0L, 0x0uL)
  * ```kotlin
  * ```
  */
-public fun I128.toBeBytes(): UByteArray = rustToBe(this).toLeBytes()
+public fun I128.toBeBytes(): UByteArray = this.toBe().toLeBytes()
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -15490,7 +15868,7 @@ public fun I128.toBeBytes(): UByteArray = rustToBe(this).toLeBytes()
  * ```kotlin
  * ```
  */
-public fun I128.toLeBytes(): UByteArray = rustToLe(this).toLeBytes()
+public fun I128.toLeBytes(): UByteArray = this.toLe().toLeBytes()
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -15765,11 +16143,13 @@ public fun <T : CheckedCastFromInt<I128, T>> I128.uncheckedCast(uncheckedCastFro
 public fun I128.midpoint(rhs: I128): I128 {
     val t = ((this xor rhs) shr 1) + (this and rhs)
     return t +
-        (if (t < I128(0x0L, 0x0uL)) {
-            I128(0x0L, 0x1uL)
-        } else {
-            I128(0x0L, 0x0uL)
-        } and (this xor rhs))
+        (
+            if (t < I128(0x0L, 0x0uL)) {
+                I128(0x0L, 0x1uL)
+            } else {
+                I128(0x0L, 0x0uL)
+            } and (this xor rhs)
+        )
 }
 
 /**
@@ -15968,7 +16348,7 @@ public fun Int.wrappingSubUnsigned(rhs: Int): Int = (this - ((rhs).toInt()))
  */
 public fun Int.overflowingAddUnsigned(rhs: Int): Pair<Int, Boolean> {
     val rhs1 = rhs
-    val (res, overflowed) = rustOverflowingAdd(this, rhs1)
+    val (res, overflowed) = this.overflowingAdd(rhs1)
     return Pair(res, overflowed xor (rhs1 < 0))
 }
 
@@ -15986,7 +16366,7 @@ public fun Int.overflowingAddUnsigned(rhs: Int): Pair<Int, Boolean> {
  */
 public fun Int.overflowingSubUnsigned(rhs: Int): Pair<Int, Boolean> {
     val rhs1 = rhs
-    val (res, overflowed) = rustOverflowingSub(this, rhs1)
+    val (res, overflowed) = this.overflowingSub(rhs1)
     return Pair(res, overflowed xor (rhs1 < 0))
 }
 
@@ -16117,7 +16497,7 @@ public fun UByte.setBit(index: UInt, value: Boolean): UByte {
  * check(zero.countOnes() == 0)
  * ```
  */
-public fun UByte.countOnes(): UInt = kmCtpopU64((this).toULong())
+public fun UByte.countOnes(): UInt = kmCtpopU8(this)
 
 /**
  * Returns the number of zeros in the binary representation of `self`.
@@ -16161,7 +16541,7 @@ public fun UByte.countZeros(): UInt = (!this).countOnes()
  * check(max.leadingZeros() == 0)
  * ```
  */
-public fun UByte.leadingZeros(): UInt = kmCtlzU64((this).toULong())
+public fun UByte.leadingZeros(): UInt = kmCtlzU8(this)
 
 /**
  * Returns the number of trailing zeros in the binary representation
@@ -16173,7 +16553,7 @@ public fun UByte.leadingZeros(): UInt = kmCtlzU64((this).toULong())
  * check(n.trailingZeros() == 3)
  * ```
  */
-public fun UByte.trailingZeros(): UInt = kmCttzU64((this).toULong())
+public fun UByte.trailingZeros(): UInt = kmCttzU8(this)
 
 /**
  * Returns the number of leading ones in the binary representation of `self`.
@@ -16210,7 +16590,7 @@ public fun UByte.trailingOnes(): UInt = (!this).trailingZeros()
  * ```kotlin
  * ```
  */
-public fun UByte.bitWidth(): UInt = 8u - rustLeadingZeros(this)
+public fun UByte.bitWidth(): UInt = 8u - this.leadingZeros()
 
 /**
  * Returns `self` with only the most significant bit set, or `0` if
@@ -16222,7 +16602,7 @@ public fun UByte.bitWidth(): UInt = 8u - rustLeadingZeros(this)
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun UByte.isolateHighestOne(): UByte = this and (rustWrappingShr((((1.toUByte()).toUInt() shl ((8u - 1u).toInt())).toUByte()), rustLeadingZeros(this)))
+public fun UByte.isolateHighestOne(): UByte = this and ((((1.toUByte()).toUInt() shl ((8u - 1u).toInt())).toUByte()).wrappingShr(this.leadingZeros()))
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -16234,7 +16614,7 @@ public fun UByte.isolateHighestOne(): UByte = this and (rustWrappingShr((((1.toU
  * check(n.isolateLowestOne() == 0x4)
  * ```
  */
-public fun UByte.isolateLowestOne(): UByte = this and rustWrappingNeg(this)
+public fun UByte.isolateLowestOne(): UByte = this and this.wrappingNeg()
 
 /**
  * Returns the index of the highest bit set to one in `self`, or `None`
@@ -16377,7 +16757,7 @@ public fun UByte.strictCastSigned(): Byte =
  * ```kotlin
  * ```
  */
-public fun UByte.rotateLeft(n: UInt): UByte = io.github.kotlinmania.rustlang.intrinsics.rotateLeft(this, n)
+public fun UByte.rotateLeft(n: UInt): UByte = kmRotateLeftU8(this, (n).toUInt())
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -16395,7 +16775,7 @@ public fun UByte.rotateLeft(n: UInt): UByte = io.github.kotlinmania.rustlang.int
  * ```kotlin
  * ```
  */
-public fun UByte.rotateRight(n: UInt): UByte = io.github.kotlinmania.rustlang.intrinsics.rotateRight(this, n)
+public fun UByte.rotateRight(n: UInt): UByte = kmRotateRightU8(this, (n).toUInt())
 
 /**
  * Performs a left funnel shift.
@@ -16491,7 +16871,8 @@ public fun UByte.funnelShr(right: UByte, n: UInt): UByte {
  */
 public fun UByte.uncheckedFunnelShl(right: UByte, n: UInt): UByte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -16504,7 +16885,8 @@ public fun UByte.uncheckedFunnelShl(right: UByte, n: UInt): UByte {
  */
 public fun UByte.uncheckedFunnelShr(right: UByte, n: UInt): UByte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -16552,7 +16934,9 @@ public fun UByte.uncheckedFunnelShr(right: UByte, n: UInt): UByte {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UByte.carrylessMul(rhs: UByte): UByte = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
+public fun UByte.carrylessMul(rhs: UByte): UByte =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -16563,7 +16947,7 @@ public fun UByte.carrylessMul(rhs: UByte): UByte = io.github.kotlinmania.rustlan
  * val m = n.swapBytes()
  * ```
  */
-public fun UByte.swapBytes(): UByte = kmBswapU64((this).toULong()).toUByte()
+public fun UByte.swapBytes(): UByte = this
 
 /**
  * Returns an integer with the bit locations specified by `mask` packed
@@ -16601,7 +16985,7 @@ public fun UByte.depositBits(mask: UByte): UByte = depositImpl(this, mask).toUBy
  * val m = n.reverseBits()
  * ```
  */
-public fun UByte.reverseBits(): UByte = kmBitreverseU64((this).toULong()).toUByte()
+public fun UByte.reverseBits(): UByte = kmBitreverseU8(this)
 
 /**
  * Converts an integer from big endian to the target's endianness.
@@ -16677,10 +17061,10 @@ public fun UByte.toLe(): UByte = this
  * ```
  */
 public fun UByte.checkedAdd(rhs: UByte): UByte? =
-    if (addWithOverflow(this, rhs).second) {
+    if (kmAddWithOverflowU8(this, rhs).let { Pair(it.value, it.overflowed) }.second) {
         null
     } else {
-        uncheckedAdd(this, rhs)
+        (((this) + (rhs))).toUByte()
     }
 
 /**
@@ -16704,7 +17088,7 @@ public fun UByte.checkedAdd(rhs: UByte): UByte? =
  * ```
  */
 public fun UByte.strictAdd(rhs: UByte): UByte {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         add()
     } else {
@@ -16731,7 +17115,7 @@ public fun UByte.strictAdd(rhs: UByte): UByte {
  */
 public fun UByte.uncheckedAdd(rhs: UByte): UByte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
+    return (((this) + (rhs))).toUByte()
 }
 
 /**
@@ -16797,7 +17181,7 @@ public fun UByte.checkedSub(rhs: UByte): UByte? =
     if (this < rhs) {
         null
     } else {
-        uncheckedSub(this, rhs)
+        (((this) - (rhs))).toUByte()
     }
 
 /**
@@ -16821,7 +17205,7 @@ public fun UByte.checkedSub(rhs: UByte): UByte? =
  * ```
  */
 public fun UByte.strictSub(rhs: UByte): UByte {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         sub()
     } else {
@@ -16873,7 +17257,7 @@ public fun UByte.strictSub(rhs: UByte): UByte {
  */
 public fun UByte.uncheckedSub(rhs: UByte): UByte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
+    return (((this) - (rhs))).toUByte()
 }
 
 /**
@@ -16952,7 +17336,7 @@ public fun UByte.checkedSignedDiff(rhs: UByte): Byte? {
  * ```
  */
 public fun UByte.checkedMul(rhs: UByte): UByte? {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         null
     } else {
@@ -16981,7 +17365,7 @@ public fun UByte.checkedMul(rhs: UByte): UByte? {
  * ```
  */
 public fun UByte.strictMul(rhs: UByte): UByte {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         mul()
     } else {
@@ -17008,7 +17392,7 @@ public fun UByte.strictMul(rhs: UByte): UByte {
  */
 public fun UByte.uncheckedMul(rhs: UByte): UByte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
+    return (((this) * (rhs))).toUByte()
 }
 
 /**
@@ -17024,7 +17408,7 @@ public fun UByte.checkedDiv(rhs: UByte): UByte? =
     if (rhs == 0u.toUByte()) {
         null
     } else {
-        uncheckedDiv(this, rhs)
+        (((this) / (rhs))).toUByte()
     }
 
 /**
@@ -17063,7 +17447,7 @@ public fun UByte.checkedDivEuclid(rhs: UByte): UByte? =
     if (rhs == 0u.toUByte()) {
         null
     } else {
-        rustDivEuclid(this, rhs)
+        this.divEuclid(rhs)
     }
 
 /**
@@ -17105,10 +17489,10 @@ public fun UByte.checkedDivExact(rhs: UByte): UByte? =
     if (rhs == 0u.toUByte()) {
         null
     } else {
-        if (uncheckedRem(this, rhs) != 0) {
+        if ((((this) % (rhs))).toUByte() != 0u.toUByte()) {
             null
         } else {
-            exactDiv(this, rhs)
+            (((this) / (rhs))).toUByte()
         }
     }
 
@@ -17143,7 +17527,7 @@ public fun UByte.divExact(rhs: UByte): UByte? =
  */
 public fun UByte.uncheckedDivExact(rhs: UByte): UByte {
     Unit
-    return exactDiv(this, rhs)
+    return (((this) / (rhs))).toUByte()
 }
 
 /**
@@ -17159,7 +17543,7 @@ public fun UByte.checkedRem(rhs: UByte): UByte? =
     if (rhs == 0u.toUByte()) {
         null
     } else {
-        uncheckedRem(this, rhs)
+        (((this) % (rhs))).toUByte()
     }
 
 /**
@@ -17199,7 +17583,7 @@ public fun UByte.checkedRemEuclid(rhs: UByte): UByte? =
     if (rhs == 0u.toUByte()) {
         null
     } else {
-        rustRemEuclid(this, rhs)
+        this.remEuclid(rhs)
     }
 
 /**
@@ -17251,7 +17635,7 @@ public fun UByte.strictRemEuclid(rhs: UByte): UByte = (this % rhs).toUByte()
  */
 public fun UByte.uncheckedDisjointBitor(rhs: UByte): UByte {
     Unit
-    return disjointBitor(this, rhs)
+    return ((this) or (rhs))
 }
 
 /**
@@ -17350,7 +17734,9 @@ public fun UByte.checkedIlog(base: UByte): UInt? {
         if (base.isPowerOfTwo() && base > 1u.toUByte()) {
             val k = base.ilog2()
             return when (val matchVal = this.checkedIlog2()) {
-                null -> { return null }
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
@@ -17370,7 +17756,7 @@ public fun UByte.checkedIlog(base: UByte): UInt? {
         var r = base
         if (8u == 128) {
             n = this.ilog2() / (base.ilog2() + 1u)
-            r = rustPow(base, n.toUInt())
+            r = base.pow(n.toUInt())
         }
         while (r <= this / base) {
             n += 1
@@ -17432,7 +17818,7 @@ public fun UByte.checkedIlog10(): UInt? =
  * ```
  */
 public fun UByte.checkedNeg(): UByte? {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         null
     } else {
@@ -17463,7 +17849,7 @@ public fun UByte.checkedNeg(): UByte? {
  * ```
  */
 public fun UByte.strictNeg(): UByte {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         neg()
     } else {
@@ -17508,7 +17894,7 @@ public fun UByte.checkedShl(rhs: UInt): UByte? =
  * ```
  */
 public fun UByte.strictShl(rhs: UInt): UByte {
-    val (a, b) = rustOverflowingShl(this, rhs)
+    val (a, b) = this.overflowingShl(rhs)
     return if (b) {
         shl()
     } else {
@@ -17528,7 +17914,7 @@ public fun UByte.strictShl(rhs: UInt): UByte {
  */
 public fun UByte.uncheckedShl(rhs: UInt): UByte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
+    return ((((this).toUInt() and 0xFFu) shl (rhs).toInt()).toUByte())
 }
 
 /**
@@ -17570,7 +17956,7 @@ public fun UByte.unboundedShl(rhs: UInt): UByte =
  * ```
  */
 public fun UByte.shlExact(rhs: UInt): UByte? =
-    if (rhs <= rustLeadingZeros(this) && rhs < 8u) {
+    if (rhs <= this.leadingZeros() && rhs < 8u) {
         this.uncheckedShl(rhs)
     } else {
         null
@@ -17628,7 +18014,7 @@ public fun UByte.checkedShr(rhs: UInt): UByte? =
  * ```
  */
 public fun UByte.strictShr(rhs: UInt): UByte {
-    val (a, b) = rustOverflowingShr(this, rhs)
+    val (a, b) = this.overflowingShr(rhs)
     return if (b) {
         shr()
     } else {
@@ -17648,7 +18034,7 @@ public fun UByte.strictShr(rhs: UInt): UByte {
  */
 public fun UByte.uncheckedShr(rhs: UInt): UByte {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
+    return ((((this).toUInt() and 0xFFu) shr (rhs).toInt()).toUByte())
 }
 
 /**
@@ -17690,7 +18076,7 @@ public fun UByte.unboundedShr(rhs: UInt): UByte =
  * ```
  */
 public fun UByte.shrExact(rhs: UInt): UByte? =
-    if (rhs <= rustTrailingZeros(this) && rhs < 8u) {
+    if (rhs <= this.trailingZeros() && rhs < 8u) {
         this.uncheckedShr(rhs)
     } else {
         null
@@ -17727,14 +18113,16 @@ public fun UByte.checkedPow(exp: UInt): UByte? {
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
         val shift =
-            when (val matchVal = rustCheckedMul(k, exp1)) {
-                null -> { return null }
+            when (val matchVal = k.checkedMul(exp1)) {
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
                 }
             }
-        return rustCheckedShl((1.toUByte()), shift.toUInt())
+        return (1.toUByte()).checkedShl(shift.toUInt())
     }
     if (exp1 == 0u) {
         return 1u
@@ -17742,46 +18130,58 @@ public fun UByte.checkedPow(exp: UInt): UByte? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc = when (val matchVal1 = rustCheckedMul(acc, base)) {
-                    null -> { return null }
-                    else -> {
-                        val x1 = matchVal1
-                        x1
+                acc =
+                    when (val matchVal1 = acc.checkedMul(base)) {
+                        null -> {
+                            return null
+                        }
+                        else -> {
+                            val x1 = matchVal1
+                            x1
+                        }
                     }
-                }
             }
             exp1 /= 2u
-            base = when (val matchVal2 = rustCheckedMul(base, base)) {
-                null -> { return null }
-                else -> {
-                    val x2 = matchVal2
-                    x2
+            base =
+                when (val matchVal2 = base.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x2 = matchVal2
+                        x2
+                    }
                 }
-            }
         }
-        return rustCheckedMul(acc, base)
+        return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc = when (val matchVal3 = rustCheckedMul(acc, base)) {
-                null -> { return null }
-                else -> {
-                    val x3 = matchVal3
-                    x3
+            acc =
+                when (val matchVal3 = acc.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x3 = matchVal3
+                        x3
+                    }
                 }
-            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base = when (val matchVal4 = rustCheckedMul(base, base)) {
-            null -> { return null }
-            else -> {
-                val x4 = matchVal4
-                x4
+        base =
+            when (val matchVal4 = base.checkedMul(base)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x4 = matchVal4
+                    x4
+                }
             }
-        }
     }
 }
 
@@ -17806,7 +18206,7 @@ public fun UByte.checkedPow(exp: UInt): UByte? {
  * ```
  */
 public fun UByte.strictPow(exp: UInt): UByte =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> pow()
         else -> {
             val a = matchVal
@@ -17823,7 +18223,7 @@ public fun UByte.strictPow(exp: UInt): UByte =
  * ```kotlin
  * ```
  */
-public fun UByte.saturatingAdd(rhs: UByte): UByte = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
+public fun UByte.saturatingAdd(rhs: UByte): UByte = kmSaturatingAddU8(this, rhs)
 
 /**
  * Saturating addition with a signed integer. Computes `self + rhs`,
@@ -17835,7 +18235,7 @@ public fun UByte.saturatingAdd(rhs: UByte): UByte = io.github.kotlinmania.rustla
  * ```
  */
 public fun UByte.saturatingAddSigned(rhs: Byte): UByte {
-    val (res, overflow) = rustOverflowingAdd(this, rhs.toUByte())
+    val (res, overflow) = this.overflowingAdd(rhs.toUByte())
     return if (overflow == (rhs < 0.toByte())) {
         res
     } else if (overflow) {
@@ -17854,7 +18254,7 @@ public fun UByte.saturatingAddSigned(rhs: Byte): UByte {
  * ```kotlin
  * ```
  */
-public fun UByte.saturatingSub(rhs: UByte): UByte = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
+public fun UByte.saturatingSub(rhs: UByte): UByte = kmSaturatingSubU8(this, rhs)
 
 /**
  * Saturating integer subtraction. Computes `self` - `rhs`, saturating at
@@ -17886,7 +18286,7 @@ public fun UByte.saturatingSubSigned(rhs: Byte): UByte {
  * ```
  */
 public fun UByte.saturatingMul(rhs: UByte): UByte =
-    when (val matchVal = rustCheckedMul(this, rhs)) {
+    when (val matchVal = this.checkedMul(rhs)) {
         null -> UByte.MAX_VALUE
         else -> {
             val x = matchVal
@@ -17907,7 +18307,7 @@ public fun UByte.saturatingMul(rhs: UByte): UByte =
  * ```kotlin
  * ```
  */
-public fun UByte.saturatingDiv(rhs: UByte): UByte = rustWrappingDiv(this, rhs)
+public fun UByte.saturatingDiv(rhs: UByte): UByte = this.wrappingDiv(rhs)
 
 /**
  * Saturating integer exponentiation. Computes `self.pow(exp)`,
@@ -17919,7 +18319,7 @@ public fun UByte.saturatingDiv(rhs: UByte): UByte = rustWrappingDiv(this, rhs)
  * ```
  */
 public fun UByte.saturatingPow(exp: UInt): UByte =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> UByte.MAX_VALUE
         else -> {
             val x = matchVal
@@ -17936,7 +18336,7 @@ public fun UByte.saturatingPow(exp: UInt): UByte =
  * ```kotlin
  * ```
  */
-public fun UByte.wrappingAdd(rhs: UByte): UByte = (this + rhs)
+public fun UByte.wrappingAdd(rhs: UByte): UByte = (((this) + (rhs))).toUByte()
 
 /**
  * Wrapping (modular) addition with a signed integer. Computes
@@ -17958,7 +18358,7 @@ public fun UByte.wrappingAddSigned(rhs: Byte): UByte = (this + (rhs.toUByte())).
  * ```kotlin
  * ```
  */
-public fun UByte.wrappingSub(rhs: UByte): UByte = (this - rhs)
+public fun UByte.wrappingSub(rhs: UByte): UByte = (((this) - (rhs))).toUByte()
 
 /**
  * Wrapping (modular) subtraction with a signed integer. Computes
@@ -17984,7 +18384,7 @@ public fun UByte.wrappingSubSigned(rhs: Byte): UByte = (this - (rhs.toUByte())).
  * check(((25u.toUByte()) * (12u.toUByte())).toUByte() == 44)
  * ```
  */
-public fun UByte.wrappingMul(rhs: UByte): UByte = (this * rhs)
+public fun UByte.wrappingMul(rhs: UByte): UByte = (((this) * (rhs))).toUByte()
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`.
@@ -18162,7 +18562,7 @@ public fun UByte.wrappingPow(exp: UInt): UByte {
  * ```
  */
 public fun UByte.overflowingAdd(rhs: UByte): Pair<UByte, Boolean> {
-    val (a, b) = addWithOverflow(this, rhs)
+    val (a, b) = kmAddWithOverflowU8(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toUByte(), b)
 }
 
@@ -18194,7 +18594,7 @@ public fun UByte.overflowingAdd(rhs: UByte): Pair<UByte, Boolean> {
  * ```
  */
 public fun UByte.carryingAdd(rhs: UByte, carry: Boolean): Pair<UByte, Boolean> {
-    val (a, c1) = rustOverflowingAdd(this, rhs)
+    val (a, c1) = this.overflowingAdd(rhs)
     val (b, c2) = a.overflowingAdd(carry.toUByte())
     return Pair(b, disjointBitor(c1, c2))
 }
@@ -18212,7 +18612,7 @@ public fun UByte.carryingAdd(rhs: UByte, carry: Boolean): Pair<UByte, Boolean> {
  * ```
  */
 public fun UByte.overflowingAddSigned(rhs: Byte): Pair<UByte, Boolean> {
-    val (res, overflowed) = rustOverflowingAdd(this, rhs.toUByte())
+    val (res, overflowed) = this.overflowingAdd(rhs.toUByte())
     return Pair(res, overflowed xor (rhs < 0.toByte()))
 }
 
@@ -18229,7 +18629,7 @@ public fun UByte.overflowingAddSigned(rhs: Byte): Pair<UByte, Boolean> {
  * ```
  */
 public fun UByte.overflowingSub(rhs: UByte): Pair<UByte, Boolean> {
-    val (a, b) = subWithOverflow(this, rhs)
+    val (a, b) = kmSubWithOverflowU8(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toUByte(), b)
 }
 
@@ -18255,7 +18655,7 @@ public fun UByte.overflowingSub(rhs: UByte): Pair<UByte, Boolean> {
  * ```
  */
 public fun UByte.borrowingSub(rhs: UByte, borrow: Boolean): Pair<UByte, Boolean> {
-    val (a, c1) = rustOverflowingSub(this, rhs)
+    val (a, c1) = this.overflowingSub(rhs)
     val (b, c2) = a.overflowingSub(borrow.toUByte())
     return Pair(b, disjointBitor(c1, c2))
 }
@@ -18273,7 +18673,7 @@ public fun UByte.borrowingSub(rhs: UByte, borrow: Boolean): Pair<UByte, Boolean>
  * ```
  */
 public fun UByte.overflowingSubSigned(rhs: Byte): Pair<UByte, Boolean> {
-    val (res, overflow) = rustOverflowingSub(this, rhs.toUByte())
+    val (res, overflow) = this.overflowingSub(rhs.toUByte())
     return Pair(res, overflow xor (rhs < 0.toByte()))
 }
 
@@ -18316,7 +18716,7 @@ public fun UByte.absDiff(other: UByte): UByte =
  * ```
  */
 public fun UByte.overflowingMul(rhs: UByte): Pair<UByte, Boolean> {
-    val (a, b) = mulWithOverflow(this, rhs)
+    val (a, b) = kmMulWithOverflowU8(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toUByte(), b)
 }
 
@@ -18446,7 +18846,9 @@ public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UBy
  * }
  * ```
  */
-public fun UByte.carryingMulAdd(rhs: UByte, carry: UByte, add: UByte): Pair<UByte, UByte> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun UByte.carryingMulAdd(rhs: UByte, carry: UByte, add: UByte): Pair<UByte, UByte> =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -18559,7 +18961,7 @@ public fun UByte.overflowingNeg(): Pair<UByte, Boolean> = Pair((!this).wrappingA
  * ```kotlin
  * ```
  */
-public fun UByte.overflowingShl(rhs: UInt): Pair<UByte, Boolean> = Pair(rustWrappingShl(this, rhs), rhs >= 8u)
+public fun UByte.overflowingShl(rhs: UInt): Pair<UByte, Boolean> = Pair(this.wrappingShl(rhs), rhs >= 8u)
 
 /**
  * Shifts self right by `rhs` bits.
@@ -18575,7 +18977,7 @@ public fun UByte.overflowingShl(rhs: UInt): Pair<UByte, Boolean> = Pair(rustWrap
  * ```kotlin
  * ```
  */
-public fun UByte.overflowingShr(rhs: UInt): Pair<UByte, Boolean> = Pair(rustWrappingShr(this, rhs), rhs >= 8u)
+public fun UByte.overflowingShr(rhs: UInt): Pair<UByte, Boolean> = Pair(this.wrappingShr(rhs), rhs >= 8u)
 
 /**
  * Raises self to the power of `exp`, using exponentiation by squaring.
@@ -18592,12 +18994,12 @@ public fun UByte.overflowingShr(rhs: UInt): Pair<UByte, Boolean> = Pair(rustWrap
 public fun UByte.overflowingPow(exp: UInt): Pair<UByte, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: UByte  = 1u
+    val acc: UByte = 1u
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
-        val shift = rustCheckedMul(k, exp1) ?: return Pair(0, true)
+        val shift = k.checkedMul(exp1) ?: return Pair(0, true)
         return Pair((1.toUByte()).unboundedShl(shift), shift >= 8u)
     }
     if (exp1 == 0u) {
@@ -18606,27 +19008,27 @@ public fun UByte.overflowingPow(exp: UInt): Pair<UByte, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+            Pair(base, tmpOverflow) = base.overflowingMul(base)
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+        Pair(base, tmpOverflow) = base.overflowingMul(base)
         overflow = overflow or tmpOverflow
     }
 }
@@ -18655,9 +19057,13 @@ public fun UByte.pow(exp: UInt): UByte =
  * ```
  */
 public fun UByte.isqrt(): UByte {
-    val result = u8(this)
+    val result =
+        io.github.kotlinmania.rustlang.core.num.imp.intsqrt
+            .UByte(this)
     run {
-        val MAX_RESULT: UByte = u8(UByte.MAX_VALUE)
+        val MAX_RESULT: UByte =
+            io.github.kotlinmania.rustlang.core.num.imp.intsqrt
+                .UByte(UByte.MAX_VALUE)
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1u.toUByte()) {
@@ -18785,17 +19191,22 @@ public fun UByte.nextMultipleOf(rhs: UByte): UByte =
  * ```
  */
 public fun UByte.checkedNextMultipleOf(rhs: UByte): UByte? {
-    return when (val matchVal1 = when (val matchVal = rustCheckedRem(this, rhs)) {
-        null -> { return null }
-        else -> {
-            val x = matchVal
-            x
-        }
-    }) {
+    return when (
+        val matchVal1 =
+            when (val matchVal = this.checkedRem(rhs)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x = matchVal
+                    x
+                }
+            }
+    ) {
         0 -> this
         else -> {
             val r = matchVal1
-            rustCheckedAdd(this, rhs - r)
+            this.checkedAdd(rhs - r)
         }
     }
 }
@@ -18826,7 +19237,7 @@ public fun UByte.isMultipleOf(rhs: UByte): Boolean =
  * ```kotlin
  * ```
  */
-public fun UByte.isPowerOfTwo(): Boolean = rustCountOnes(this) == 1u
+public fun UByte.isPowerOfTwo(): Boolean = this.countOnes() == 1u
 
 /**
  * Returns the smallest power of two greater than or equal to `self`.
@@ -18862,7 +19273,7 @@ public fun UByte.nextPowerOfTwo(): UByte =
  * ```
  */
 public fun UByte.checkedNextPowerOfTwo(): UByte? {
-    val m1 = rustSaturatingSub(this, 1u.toUByte())
+    val m1 = this.saturatingSub(1u.toUByte())
     return if (m1.castSigned() >= 0.toByte()) {
         val exp = m1.bitWidth()
         (1u shl exp.toInt()).toUByte()
@@ -19254,7 +19665,9 @@ public fun UByte.isAscii(): Boolean = this <= 127u.toUByte()
  * If the value of this byte is within the ASCII range, returns it as an
  * [ASCII character](ascii.Char).  Otherwise, returns `None`.
  */
-public fun UByte.asAscii(): io.github.kotlinmania.rustlang.ascii.Char? = io.github.kotlinmania.rustlang.ascii.Char.fromU8(this)
+public fun UByte.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? =
+    io.github.kotlinmania.rustlang.core.ascii.Char
+        .fromU8(this)
 
 /**
  * Converts this byte to an [ASCII character](ascii.Char), without
@@ -19264,10 +19677,11 @@ public fun UByte.asAscii(): io.github.kotlinmania.rustlang.ascii.Char? = io.gith
  *
  * This byte must be valid ASCII, or else this is UB.
  */
-public fun UByte.asAsciiUnchecked(): io.github.kotlinmania.rustlang.ascii.Char {
+public fun UByte.asAsciiUnchecked(): io.github.kotlinmania.rustlang.core.ascii.Char {
     Unit
     // SAFETY: the caller promised that this byte is ASCII.
-    return io.github.kotlinmania.rustlang.ascii.Char.fromU8Unchecked(this)
+    return io.github.kotlinmania.rustlang.core.ascii.Char
+        .fromU8Unchecked(this)
 }
 
 /**
@@ -19926,7 +20340,7 @@ public fun UShort.setBit(index: UInt, value: Boolean): UShort {
  * check(zero.countOnes() == 0)
  * ```
  */
-public fun UShort.countOnes(): UInt = kmCtpopU64((this).toULong())
+public fun UShort.countOnes(): UInt = kmCtpopU16(this)
 
 /**
  * Returns the number of zeros in the binary representation of `self`.
@@ -19970,7 +20384,7 @@ public fun UShort.countZeros(): UInt = (!this).countOnes()
  * check(max.leadingZeros() == 0)
  * ```
  */
-public fun UShort.leadingZeros(): UInt = kmCtlzU64((this).toULong())
+public fun UShort.leadingZeros(): UInt = kmCtlzU16(this)
 
 /**
  * Returns the number of trailing zeros in the binary representation
@@ -19982,7 +20396,7 @@ public fun UShort.leadingZeros(): UInt = kmCtlzU64((this).toULong())
  * check(n.trailingZeros() == 3)
  * ```
  */
-public fun UShort.trailingZeros(): UInt = kmCttzU64((this).toULong())
+public fun UShort.trailingZeros(): UInt = kmCttzU16(this)
 
 /**
  * Returns the number of leading ones in the binary representation of `self`.
@@ -20019,7 +20433,7 @@ public fun UShort.trailingOnes(): UInt = (!this).trailingZeros()
  * ```kotlin
  * ```
  */
-public fun UShort.bitWidth(): UInt = 16u - rustLeadingZeros(this)
+public fun UShort.bitWidth(): UInt = 16u - this.leadingZeros()
 
 /**
  * Returns `self` with only the most significant bit set, or `0` if
@@ -20031,7 +20445,7 @@ public fun UShort.bitWidth(): UInt = 16u - rustLeadingZeros(this)
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun UShort.isolateHighestOne(): UShort = this and (rustWrappingShr((((1.toUShort()).toUInt() shl ((16u - 1u).toInt())).toUShort()), rustLeadingZeros(this)))
+public fun UShort.isolateHighestOne(): UShort = this and ((((1.toUShort()).toUInt() shl ((16u - 1u).toInt())).toUShort()).wrappingShr(this.leadingZeros()))
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -20043,7 +20457,7 @@ public fun UShort.isolateHighestOne(): UShort = this and (rustWrappingShr((((1.t
  * check(n.isolateLowestOne() == 0x4)
  * ```
  */
-public fun UShort.isolateLowestOne(): UShort = this and rustWrappingNeg(this)
+public fun UShort.isolateLowestOne(): UShort = this and this.wrappingNeg()
 
 /**
  * Returns the index of the highest bit set to one in `self`, or `None`
@@ -20186,7 +20600,7 @@ public fun UShort.strictCastSigned(): Short =
  * ```kotlin
  * ```
  */
-public fun UShort.rotateLeft(n: UInt): UShort = io.github.kotlinmania.rustlang.intrinsics.rotateLeft(this, n)
+public fun UShort.rotateLeft(n: UInt): UShort = kmRotateLeftU16(this, (n).toUInt())
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -20204,7 +20618,7 @@ public fun UShort.rotateLeft(n: UInt): UShort = io.github.kotlinmania.rustlang.i
  * ```kotlin
  * ```
  */
-public fun UShort.rotateRight(n: UInt): UShort = io.github.kotlinmania.rustlang.intrinsics.rotateRight(this, n)
+public fun UShort.rotateRight(n: UInt): UShort = kmRotateRightU16(this, (n).toUInt())
 
 /**
  * Performs a left funnel shift.
@@ -20300,7 +20714,8 @@ public fun UShort.funnelShr(right: UShort, n: UInt): UShort {
  */
 public fun UShort.uncheckedFunnelShl(right: UShort, n: UInt): UShort {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -20313,7 +20728,8 @@ public fun UShort.uncheckedFunnelShl(right: UShort, n: UInt): UShort {
  */
 public fun UShort.uncheckedFunnelShr(right: UShort, n: UInt): UShort {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -20361,7 +20777,9 @@ public fun UShort.uncheckedFunnelShr(right: UShort, n: UInt): UShort {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UShort.carrylessMul(rhs: UShort): UShort = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
+public fun UShort.carrylessMul(rhs: UShort): UShort =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -20372,7 +20790,7 @@ public fun UShort.carrylessMul(rhs: UShort): UShort = io.github.kotlinmania.rust
  * val m = n.swapBytes()
  * ```
  */
-public fun UShort.swapBytes(): UShort = kmBswapU64((this).toULong()).toUShort()
+public fun UShort.swapBytes(): UShort = kmBswapU16(this)
 
 /**
  * Returns an integer with the bit locations specified by `mask` packed
@@ -20410,7 +20828,7 @@ public fun UShort.depositBits(mask: UShort): UShort = depositImpl(this, mask).to
  * val m = n.reverseBits()
  * ```
  */
-public fun UShort.reverseBits(): UShort = kmBitreverseU64((this).toULong()).toUShort()
+public fun UShort.reverseBits(): UShort = kmBitreverseU16(this)
 
 /**
  * Converts an integer from big endian to the target's endianness.
@@ -20486,10 +20904,10 @@ public fun UShort.toLe(): UShort = this
  * ```
  */
 public fun UShort.checkedAdd(rhs: UShort): UShort? =
-    if (addWithOverflow(this, rhs).second) {
+    if (kmAddWithOverflowU16(this, rhs).let { Pair(it.value, it.overflowed) }.second) {
         null
     } else {
-        uncheckedAdd(this, rhs)
+        (((this) + (rhs))).toUShort()
     }
 
 /**
@@ -20513,7 +20931,7 @@ public fun UShort.checkedAdd(rhs: UShort): UShort? =
  * ```
  */
 public fun UShort.strictAdd(rhs: UShort): UShort {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         add()
     } else {
@@ -20540,7 +20958,7 @@ public fun UShort.strictAdd(rhs: UShort): UShort {
  */
 public fun UShort.uncheckedAdd(rhs: UShort): UShort {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
+    return (((this) + (rhs))).toUShort()
 }
 
 /**
@@ -20606,7 +21024,7 @@ public fun UShort.checkedSub(rhs: UShort): UShort? =
     if (this < rhs) {
         null
     } else {
-        uncheckedSub(this, rhs)
+        (((this) - (rhs))).toUShort()
     }
 
 /**
@@ -20630,7 +21048,7 @@ public fun UShort.checkedSub(rhs: UShort): UShort? =
  * ```
  */
 public fun UShort.strictSub(rhs: UShort): UShort {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         sub()
     } else {
@@ -20682,7 +21100,7 @@ public fun UShort.strictSub(rhs: UShort): UShort {
  */
 public fun UShort.uncheckedSub(rhs: UShort): UShort {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
+    return (((this) - (rhs))).toUShort()
 }
 
 /**
@@ -20761,7 +21179,7 @@ public fun UShort.checkedSignedDiff(rhs: UShort): Short? {
  * ```
  */
 public fun UShort.checkedMul(rhs: UShort): UShort? {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         null
     } else {
@@ -20790,7 +21208,7 @@ public fun UShort.checkedMul(rhs: UShort): UShort? {
  * ```
  */
 public fun UShort.strictMul(rhs: UShort): UShort {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         mul()
     } else {
@@ -20817,7 +21235,7 @@ public fun UShort.strictMul(rhs: UShort): UShort {
  */
 public fun UShort.uncheckedMul(rhs: UShort): UShort {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
+    return (((this) * (rhs))).toUShort()
 }
 
 /**
@@ -20833,7 +21251,7 @@ public fun UShort.checkedDiv(rhs: UShort): UShort? =
     if (rhs == 0u.toUShort()) {
         null
     } else {
-        uncheckedDiv(this, rhs)
+        (((this) / (rhs))).toUShort()
     }
 
 /**
@@ -20872,7 +21290,7 @@ public fun UShort.checkedDivEuclid(rhs: UShort): UShort? =
     if (rhs == 0u.toUShort()) {
         null
     } else {
-        rustDivEuclid(this, rhs)
+        this.divEuclid(rhs)
     }
 
 /**
@@ -20914,10 +21332,10 @@ public fun UShort.checkedDivExact(rhs: UShort): UShort? =
     if (rhs == 0u.toUShort()) {
         null
     } else {
-        if (uncheckedRem(this, rhs) != 0) {
+        if ((((this) % (rhs))).toUShort() != 0u.toUShort()) {
             null
         } else {
-            exactDiv(this, rhs)
+            (((this) / (rhs))).toUShort()
         }
     }
 
@@ -20952,7 +21370,7 @@ public fun UShort.divExact(rhs: UShort): UShort? =
  */
 public fun UShort.uncheckedDivExact(rhs: UShort): UShort {
     Unit
-    return exactDiv(this, rhs)
+    return (((this) / (rhs))).toUShort()
 }
 
 /**
@@ -20968,7 +21386,7 @@ public fun UShort.checkedRem(rhs: UShort): UShort? =
     if (rhs == 0u.toUShort()) {
         null
     } else {
-        uncheckedRem(this, rhs)
+        (((this) % (rhs))).toUShort()
     }
 
 /**
@@ -21008,7 +21426,7 @@ public fun UShort.checkedRemEuclid(rhs: UShort): UShort? =
     if (rhs == 0u.toUShort()) {
         null
     } else {
-        rustRemEuclid(this, rhs)
+        this.remEuclid(rhs)
     }
 
 /**
@@ -21060,7 +21478,7 @@ public fun UShort.strictRemEuclid(rhs: UShort): UShort = (this % rhs).toUShort()
  */
 public fun UShort.uncheckedDisjointBitor(rhs: UShort): UShort {
     Unit
-    return disjointBitor(this, rhs)
+    return ((this) or (rhs))
 }
 
 /**
@@ -21159,7 +21577,9 @@ public fun UShort.checkedIlog(base: UShort): UInt? {
         if (base.isPowerOfTwo() && base > 1u.toUShort()) {
             val k = base.ilog2()
             return when (val matchVal = this.checkedIlog2()) {
-                null -> { return null }
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
@@ -21179,7 +21599,7 @@ public fun UShort.checkedIlog(base: UShort): UInt? {
         var r = base
         if (16u == 128) {
             n = this.ilog2() / (base.ilog2() + 1u)
-            r = rustPow(base, n.toUInt())
+            r = base.pow(n.toUInt())
         }
         while (r <= this / base) {
             n += 1
@@ -21241,7 +21661,7 @@ public fun UShort.checkedIlog10(): UInt? =
  * ```
  */
 public fun UShort.checkedNeg(): UShort? {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         null
     } else {
@@ -21272,7 +21692,7 @@ public fun UShort.checkedNeg(): UShort? {
  * ```
  */
 public fun UShort.strictNeg(): UShort {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         neg()
     } else {
@@ -21317,7 +21737,7 @@ public fun UShort.checkedShl(rhs: UInt): UShort? =
  * ```
  */
 public fun UShort.strictShl(rhs: UInt): UShort {
-    val (a, b) = rustOverflowingShl(this, rhs)
+    val (a, b) = this.overflowingShl(rhs)
     return if (b) {
         shl()
     } else {
@@ -21337,7 +21757,7 @@ public fun UShort.strictShl(rhs: UInt): UShort {
  */
 public fun UShort.uncheckedShl(rhs: UInt): UShort {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
+    return ((((this).toUInt() and 0xFFFFu) shl (rhs).toInt()).toUShort())
 }
 
 /**
@@ -21379,7 +21799,7 @@ public fun UShort.unboundedShl(rhs: UInt): UShort =
  * ```
  */
 public fun UShort.shlExact(rhs: UInt): UShort? =
-    if (rhs <= rustLeadingZeros(this) && rhs < 16u) {
+    if (rhs <= this.leadingZeros() && rhs < 16u) {
         this.uncheckedShl(rhs)
     } else {
         null
@@ -21437,7 +21857,7 @@ public fun UShort.checkedShr(rhs: UInt): UShort? =
  * ```
  */
 public fun UShort.strictShr(rhs: UInt): UShort {
-    val (a, b) = rustOverflowingShr(this, rhs)
+    val (a, b) = this.overflowingShr(rhs)
     return if (b) {
         shr()
     } else {
@@ -21457,7 +21877,7 @@ public fun UShort.strictShr(rhs: UInt): UShort {
  */
 public fun UShort.uncheckedShr(rhs: UInt): UShort {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
+    return ((((this).toUInt() and 0xFFFFu) shr (rhs).toInt()).toUShort())
 }
 
 /**
@@ -21499,7 +21919,7 @@ public fun UShort.unboundedShr(rhs: UInt): UShort =
  * ```
  */
 public fun UShort.shrExact(rhs: UInt): UShort? =
-    if (rhs <= rustTrailingZeros(this) && rhs < 16u) {
+    if (rhs <= this.trailingZeros() && rhs < 16u) {
         this.uncheckedShr(rhs)
     } else {
         null
@@ -21536,14 +21956,16 @@ public fun UShort.checkedPow(exp: UInt): UShort? {
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
         val shift =
-            when (val matchVal = rustCheckedMul(k, exp1)) {
-                null -> { return null }
+            when (val matchVal = k.checkedMul(exp1)) {
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
                 }
             }
-        return rustCheckedShl((1.toUShort()), shift.toUInt())
+        return (1.toUShort()).checkedShl(shift.toUInt())
     }
     if (exp1 == 0u) {
         return 1u
@@ -21551,46 +21973,58 @@ public fun UShort.checkedPow(exp: UInt): UShort? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc = when (val matchVal1 = rustCheckedMul(acc, base)) {
-                    null -> { return null }
-                    else -> {
-                        val x1 = matchVal1
-                        x1
+                acc =
+                    when (val matchVal1 = acc.checkedMul(base)) {
+                        null -> {
+                            return null
+                        }
+                        else -> {
+                            val x1 = matchVal1
+                            x1
+                        }
                     }
-                }
             }
             exp1 /= 2u
-            base = when (val matchVal2 = rustCheckedMul(base, base)) {
-                null -> { return null }
-                else -> {
-                    val x2 = matchVal2
-                    x2
+            base =
+                when (val matchVal2 = base.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x2 = matchVal2
+                        x2
+                    }
                 }
-            }
         }
-        return rustCheckedMul(acc, base)
+        return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc = when (val matchVal3 = rustCheckedMul(acc, base)) {
-                null -> { return null }
-                else -> {
-                    val x3 = matchVal3
-                    x3
+            acc =
+                when (val matchVal3 = acc.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x3 = matchVal3
+                        x3
+                    }
                 }
-            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base = when (val matchVal4 = rustCheckedMul(base, base)) {
-            null -> { return null }
-            else -> {
-                val x4 = matchVal4
-                x4
+        base =
+            when (val matchVal4 = base.checkedMul(base)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x4 = matchVal4
+                    x4
+                }
             }
-        }
     }
 }
 
@@ -21615,7 +22049,7 @@ public fun UShort.checkedPow(exp: UInt): UShort? {
  * ```
  */
 public fun UShort.strictPow(exp: UInt): UShort =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> pow()
         else -> {
             val a = matchVal
@@ -21632,7 +22066,7 @@ public fun UShort.strictPow(exp: UInt): UShort =
  * ```kotlin
  * ```
  */
-public fun UShort.saturatingAdd(rhs: UShort): UShort = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
+public fun UShort.saturatingAdd(rhs: UShort): UShort = kmSaturatingAddU16(this, rhs)
 
 /**
  * Saturating addition with a signed integer. Computes `self + rhs`,
@@ -21644,7 +22078,7 @@ public fun UShort.saturatingAdd(rhs: UShort): UShort = io.github.kotlinmania.rus
  * ```
  */
 public fun UShort.saturatingAddSigned(rhs: Short): UShort {
-    val (res, overflow) = rustOverflowingAdd(this, rhs.toUShort())
+    val (res, overflow) = this.overflowingAdd(rhs.toUShort())
     return if (overflow == (rhs < 0.toShort())) {
         res
     } else if (overflow) {
@@ -21663,7 +22097,7 @@ public fun UShort.saturatingAddSigned(rhs: Short): UShort {
  * ```kotlin
  * ```
  */
-public fun UShort.saturatingSub(rhs: UShort): UShort = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
+public fun UShort.saturatingSub(rhs: UShort): UShort = kmSaturatingSubU16(this, rhs)
 
 /**
  * Saturating integer subtraction. Computes `self` - `rhs`, saturating at
@@ -21695,7 +22129,7 @@ public fun UShort.saturatingSubSigned(rhs: Short): UShort {
  * ```
  */
 public fun UShort.saturatingMul(rhs: UShort): UShort =
-    when (val matchVal = rustCheckedMul(this, rhs)) {
+    when (val matchVal = this.checkedMul(rhs)) {
         null -> UShort.MAX_VALUE
         else -> {
             val x = matchVal
@@ -21716,7 +22150,7 @@ public fun UShort.saturatingMul(rhs: UShort): UShort =
  * ```kotlin
  * ```
  */
-public fun UShort.saturatingDiv(rhs: UShort): UShort = rustWrappingDiv(this, rhs)
+public fun UShort.saturatingDiv(rhs: UShort): UShort = this.wrappingDiv(rhs)
 
 /**
  * Saturating integer exponentiation. Computes `self.pow(exp)`,
@@ -21728,7 +22162,7 @@ public fun UShort.saturatingDiv(rhs: UShort): UShort = rustWrappingDiv(this, rhs
  * ```
  */
 public fun UShort.saturatingPow(exp: UInt): UShort =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> UShort.MAX_VALUE
         else -> {
             val x = matchVal
@@ -21745,7 +22179,7 @@ public fun UShort.saturatingPow(exp: UInt): UShort =
  * ```kotlin
  * ```
  */
-public fun UShort.wrappingAdd(rhs: UShort): UShort = (this + rhs)
+public fun UShort.wrappingAdd(rhs: UShort): UShort = (((this) + (rhs))).toUShort()
 
 /**
  * Wrapping (modular) addition with a signed integer. Computes
@@ -21767,7 +22201,7 @@ public fun UShort.wrappingAddSigned(rhs: Short): UShort = (this + (rhs.toUShort(
  * ```kotlin
  * ```
  */
-public fun UShort.wrappingSub(rhs: UShort): UShort = (this - rhs)
+public fun UShort.wrappingSub(rhs: UShort): UShort = (((this) - (rhs))).toUShort()
 
 /**
  * Wrapping (modular) subtraction with a signed integer. Computes
@@ -21793,7 +22227,7 @@ public fun UShort.wrappingSubSigned(rhs: Short): UShort = (this - (rhs.toUShort(
  * check(((25u.toUByte()) * (12u.toUByte())).toUByte() == 44)
  * ```
  */
-public fun UShort.wrappingMul(rhs: UShort): UShort = (this * rhs)
+public fun UShort.wrappingMul(rhs: UShort): UShort = (((this) * (rhs))).toUShort()
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`.
@@ -21971,7 +22405,7 @@ public fun UShort.wrappingPow(exp: UInt): UShort {
  * ```
  */
 public fun UShort.overflowingAdd(rhs: UShort): Pair<UShort, Boolean> {
-    val (a, b) = addWithOverflow(this, rhs)
+    val (a, b) = kmAddWithOverflowU16(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toUShort(), b)
 }
 
@@ -22003,7 +22437,7 @@ public fun UShort.overflowingAdd(rhs: UShort): Pair<UShort, Boolean> {
  * ```
  */
 public fun UShort.carryingAdd(rhs: UShort, carry: Boolean): Pair<UShort, Boolean> {
-    val (a, c1) = rustOverflowingAdd(this, rhs)
+    val (a, c1) = this.overflowingAdd(rhs)
     val (b, c2) = a.overflowingAdd(carry.toUShort())
     return Pair(b, disjointBitor(c1, c2))
 }
@@ -22021,7 +22455,7 @@ public fun UShort.carryingAdd(rhs: UShort, carry: Boolean): Pair<UShort, Boolean
  * ```
  */
 public fun UShort.overflowingAddSigned(rhs: Short): Pair<UShort, Boolean> {
-    val (res, overflowed) = rustOverflowingAdd(this, rhs.toUShort())
+    val (res, overflowed) = this.overflowingAdd(rhs.toUShort())
     return Pair(res, overflowed xor (rhs < 0.toShort()))
 }
 
@@ -22038,7 +22472,7 @@ public fun UShort.overflowingAddSigned(rhs: Short): Pair<UShort, Boolean> {
  * ```
  */
 public fun UShort.overflowingSub(rhs: UShort): Pair<UShort, Boolean> {
-    val (a, b) = subWithOverflow(this, rhs)
+    val (a, b) = kmSubWithOverflowU16(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toUShort(), b)
 }
 
@@ -22064,7 +22498,7 @@ public fun UShort.overflowingSub(rhs: UShort): Pair<UShort, Boolean> {
  * ```
  */
 public fun UShort.borrowingSub(rhs: UShort, borrow: Boolean): Pair<UShort, Boolean> {
-    val (a, c1) = rustOverflowingSub(this, rhs)
+    val (a, c1) = this.overflowingSub(rhs)
     val (b, c2) = a.overflowingSub(borrow.toUShort())
     return Pair(b, disjointBitor(c1, c2))
 }
@@ -22082,7 +22516,7 @@ public fun UShort.borrowingSub(rhs: UShort, borrow: Boolean): Pair<UShort, Boole
  * ```
  */
 public fun UShort.overflowingSubSigned(rhs: Short): Pair<UShort, Boolean> {
-    val (res, overflow) = rustOverflowingSub(this, rhs.toUShort())
+    val (res, overflow) = this.overflowingSub(rhs.toUShort())
     return Pair(res, overflow xor (rhs < 0.toShort()))
 }
 
@@ -22125,7 +22559,7 @@ public fun UShort.absDiff(other: UShort): UShort =
  * ```
  */
 public fun UShort.overflowingMul(rhs: UShort): Pair<UShort, Boolean> {
-    val (a, b) = mulWithOverflow(this, rhs)
+    val (a, b) = kmMulWithOverflowU16(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toUShort(), b)
 }
 
@@ -22255,7 +22689,9 @@ public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> 
  * }
  * ```
  */
-public fun UShort.carryingMulAdd(rhs: UShort, carry: UShort, add: UShort): Pair<UShort, UShort> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun UShort.carryingMulAdd(rhs: UShort, carry: UShort, add: UShort): Pair<UShort, UShort> =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -22368,7 +22804,7 @@ public fun UShort.overflowingNeg(): Pair<UShort, Boolean> = Pair((!this).wrappin
  * ```kotlin
  * ```
  */
-public fun UShort.overflowingShl(rhs: UInt): Pair<UShort, Boolean> = Pair(rustWrappingShl(this, rhs), rhs >= 16u)
+public fun UShort.overflowingShl(rhs: UInt): Pair<UShort, Boolean> = Pair(this.wrappingShl(rhs), rhs >= 16u)
 
 /**
  * Shifts self right by `rhs` bits.
@@ -22384,7 +22820,7 @@ public fun UShort.overflowingShl(rhs: UInt): Pair<UShort, Boolean> = Pair(rustWr
  * ```kotlin
  * ```
  */
-public fun UShort.overflowingShr(rhs: UInt): Pair<UShort, Boolean> = Pair(rustWrappingShr(this, rhs), rhs >= 16u)
+public fun UShort.overflowingShr(rhs: UInt): Pair<UShort, Boolean> = Pair(this.wrappingShr(rhs), rhs >= 16u)
 
 /**
  * Raises self to the power of `exp`, using exponentiation by squaring.
@@ -22401,12 +22837,12 @@ public fun UShort.overflowingShr(rhs: UInt): Pair<UShort, Boolean> = Pair(rustWr
 public fun UShort.overflowingPow(exp: UInt): Pair<UShort, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: UShort  = 1u
+    val acc: UShort = 1u
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
-        val shift = rustCheckedMul(k, exp1) ?: return Pair(0, true)
+        val shift = k.checkedMul(exp1) ?: return Pair(0, true)
         return Pair((1.toUShort()).unboundedShl(shift), shift >= 16u)
     }
     if (exp1 == 0u) {
@@ -22415,27 +22851,27 @@ public fun UShort.overflowingPow(exp: UInt): Pair<UShort, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+            Pair(base, tmpOverflow) = base.overflowingMul(base)
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+        Pair(base, tmpOverflow) = base.overflowingMul(base)
         overflow = overflow or tmpOverflow
     }
 }
@@ -22464,9 +22900,15 @@ public fun UShort.pow(exp: UInt): UShort =
  * ```
  */
 public fun UShort.isqrt(): UShort {
-    val result = u16(this).toUShort()
+    val result =
+        io.github.kotlinmania.rustlang.core.num.imp.intsqrt
+            .UShort(this)
+            .toUShort()
     run {
-        val MAX_RESULT: UShort = u16(UShort.MAX_VALUE).toUShort()
+        val MAX_RESULT: UShort =
+            io.github.kotlinmania.rustlang.core.num.imp.intsqrt
+                .UShort(UShort.MAX_VALUE)
+                .toUShort()
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1u.toUShort()) {
@@ -22594,17 +23036,22 @@ public fun UShort.nextMultipleOf(rhs: UShort): UShort =
  * ```
  */
 public fun UShort.checkedNextMultipleOf(rhs: UShort): UShort? {
-    return when (val matchVal1 = when (val matchVal = rustCheckedRem(this, rhs)) {
-        null -> { return null }
-        else -> {
-            val x = matchVal
-            x
-        }
-    }) {
+    return when (
+        val matchVal1 =
+            when (val matchVal = this.checkedRem(rhs)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x = matchVal
+                    x
+                }
+            }
+    ) {
         0 -> this
         else -> {
             val r = matchVal1
-            rustCheckedAdd(this, rhs - r)
+            this.checkedAdd(rhs - r)
         }
     }
 }
@@ -22635,7 +23082,7 @@ public fun UShort.isMultipleOf(rhs: UShort): Boolean =
  * ```kotlin
  * ```
  */
-public fun UShort.isPowerOfTwo(): Boolean = rustCountOnes(this) == 1u
+public fun UShort.isPowerOfTwo(): Boolean = this.countOnes() == 1u
 
 /**
  * Returns the smallest power of two greater than or equal to `self`.
@@ -22671,7 +23118,7 @@ public fun UShort.nextPowerOfTwo(): UShort =
  * ```
  */
 public fun UShort.checkedNextPowerOfTwo(): UShort? {
-    val m1 = rustSaturatingSub(this, 1u.toUShort())
+    val m1 = this.saturatingSub(1u.toUShort())
     return if (m1.castSigned() >= 0.toShort()) {
         val exp = m1.bitWidth()
         (1u shl exp.toInt()).toUShort()
@@ -22703,7 +23150,11 @@ public fun UShort.wrappingNextPowerOfTwo(): UShort = (this.checkedNextPowerOfTwo
  * ```kotlin
  * ```
  */
-public fun UShort.toBeBytes(): UByteArray = run { val rawBits = (((((this).toUInt() and 0xFFu) shl 8) or (((this).toUInt() shr 8) and 0xFFu)).toUShort()).toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
+public fun UShort.toBeBytes(): UByteArray =
+    run {
+        val rawBits = (((((this).toUInt() and 0xFFu) shl 8) or (((this).toUInt() shr 8) and 0xFFu)).toUShort()).toUInt()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -22714,7 +23165,11 @@ public fun UShort.toBeBytes(): UByteArray = run { val rawBits = (((((this).toUIn
  * ```kotlin
  * ```
  */
-public fun UShort.toLeBytes(): UByteArray = run { val rawBits = this.toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
+public fun UShort.toLeBytes(): UByteArray =
+    run {
+        val rawBits = this.toUInt()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -22751,7 +23206,11 @@ public fun UShort.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun UShort.Companion.fromBeBytes(bytes: UByteArray): UShort = run { val swapVal0 = (UShort.fromNeBytes(bytes)); (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort()) }
+public fun UShort.Companion.fromBeBytes(bytes: UByteArray): UShort =
+    run {
+        val swapVal0 = (UShort.fromNeBytes(bytes))
+        (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort())
+    }
 
 /**
  * Creates a native endian integer value from its representation
@@ -23145,7 +23604,7 @@ public fun UInt.setBit(index: UInt, value: Boolean): UInt {
  * check(zero.countOnes() == 0)
  * ```
  */
-public fun UInt.countOnes(): UInt = kmCtpopU64((this).toULong())
+public fun UInt.countOnes(): UInt = kmCtpopU32(this)
 
 /**
  * Returns the number of zeros in the binary representation of `self`.
@@ -23189,7 +23648,7 @@ public fun UInt.countZeros(): UInt = (!this).countOnes()
  * check(max.leadingZeros() == 0)
  * ```
  */
-public fun UInt.leadingZeros(): UInt = kmCtlzU64((this).toULong())
+public fun UInt.leadingZeros(): UInt = kmCtlzU32(this)
 
 /**
  * Returns the number of trailing zeros in the binary representation
@@ -23201,7 +23660,7 @@ public fun UInt.leadingZeros(): UInt = kmCtlzU64((this).toULong())
  * check(n.trailingZeros() == 3)
  * ```
  */
-public fun UInt.trailingZeros(): UInt = kmCttzU64((this).toULong())
+public fun UInt.trailingZeros(): UInt = kmCttzU32(this)
 
 /**
  * Returns the number of leading ones in the binary representation of `self`.
@@ -23238,7 +23697,7 @@ public fun UInt.trailingOnes(): UInt = (!this).trailingZeros()
  * ```kotlin
  * ```
  */
-public fun UInt.bitWidth(): UInt = 32u - rustLeadingZeros(this)
+public fun UInt.bitWidth(): UInt = 32u - this.leadingZeros()
 
 /**
  * Returns `self` with only the most significant bit set, or `0` if
@@ -23250,7 +23709,7 @@ public fun UInt.bitWidth(): UInt = 32u - rustLeadingZeros(this)
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun UInt.isolateHighestOne(): UInt = this and (rustWrappingShr(((1.toUInt()) shl (32u - 1u).toInt()), rustLeadingZeros(this)))
+public fun UInt.isolateHighestOne(): UInt = this and (((1.toUInt()) shl (32u - 1u).toInt()).wrappingShr(this.leadingZeros()))
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -23262,7 +23721,7 @@ public fun UInt.isolateHighestOne(): UInt = this and (rustWrappingShr(((1.toUInt
  * check(n.isolateLowestOne() == 0x4)
  * ```
  */
-public fun UInt.isolateLowestOne(): UInt = this and rustWrappingNeg(this)
+public fun UInt.isolateLowestOne(): UInt = this and this.wrappingNeg()
 
 /**
  * Returns the index of the highest bit set to one in `self`, or `None`
@@ -23405,7 +23864,7 @@ public fun UInt.strictCastSigned(): Int =
  * ```kotlin
  * ```
  */
-public fun UInt.rotateLeft(n: UInt): UInt = io.github.kotlinmania.rustlang.intrinsics.rotateLeft(this, n)
+public fun UInt.rotateLeft(n: UInt): UInt = kmRotateLeftU32(this, (n).toUInt())
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -23423,7 +23882,7 @@ public fun UInt.rotateLeft(n: UInt): UInt = io.github.kotlinmania.rustlang.intri
  * ```kotlin
  * ```
  */
-public fun UInt.rotateRight(n: UInt): UInt = io.github.kotlinmania.rustlang.intrinsics.rotateRight(this, n)
+public fun UInt.rotateRight(n: UInt): UInt = kmRotateRightU32(this, (n).toUInt())
 
 /**
  * Performs a left funnel shift.
@@ -23519,7 +23978,8 @@ public fun UInt.funnelShr(right: UInt, n: UInt): UInt {
  */
 public fun UInt.uncheckedFunnelShl(right: UInt, n: UInt): UInt {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -23532,7 +23992,8 @@ public fun UInt.uncheckedFunnelShl(right: UInt, n: UInt): UInt {
  */
 public fun UInt.uncheckedFunnelShr(right: UInt, n: UInt): UInt {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -23580,7 +24041,9 @@ public fun UInt.uncheckedFunnelShr(right: UInt, n: UInt): UInt {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UInt.carrylessMul(rhs: UInt): UInt = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
+public fun UInt.carrylessMul(rhs: UInt): UInt =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -23591,7 +24054,7 @@ public fun UInt.carrylessMul(rhs: UInt): UInt = io.github.kotlinmania.rustlang.i
  * val m = n.swapBytes()
  * ```
  */
-public fun UInt.swapBytes(): UInt = kmBswapU64((this).toULong()).toUInt()
+public fun UInt.swapBytes(): UInt = kmBswapU32(this)
 
 /**
  * Returns an integer with the bit locations specified by `mask` packed
@@ -23629,7 +24092,7 @@ public fun UInt.depositBits(mask: UInt): UInt = depositImpl(this, mask).toUInt()
  * val m = n.reverseBits()
  * ```
  */
-public fun UInt.reverseBits(): UInt = kmBitreverseU64((this).toULong()).toUInt()
+public fun UInt.reverseBits(): UInt = kmBitreverseU32(this)
 
 /**
  * Converts an integer from big endian to the target's endianness.
@@ -23705,10 +24168,10 @@ public fun UInt.toLe(): UInt = this
  * ```
  */
 public fun UInt.checkedAdd(rhs: UInt): UInt? =
-    if (addWithOverflow(this, rhs).second) {
+    if (kmAddWithOverflowU32(this, rhs).let { Pair(it.value, it.overflowed) }.second) {
         null
     } else {
-        uncheckedAdd(this, rhs)
+        ((this) + (rhs))
     }
 
 /**
@@ -23732,7 +24195,7 @@ public fun UInt.checkedAdd(rhs: UInt): UInt? =
  * ```
  */
 public fun UInt.strictAdd(rhs: UInt): UInt {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         add()
     } else {
@@ -23759,7 +24222,7 @@ public fun UInt.strictAdd(rhs: UInt): UInt {
  */
 public fun UInt.uncheckedAdd(rhs: UInt): UInt {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
+    return ((this) + (rhs))
 }
 
 /**
@@ -23825,7 +24288,7 @@ public fun UInt.checkedSub(rhs: UInt): UInt? =
     if (this < rhs) {
         null
     } else {
-        uncheckedSub(this, rhs)
+        ((this) - (rhs))
     }
 
 /**
@@ -23849,7 +24312,7 @@ public fun UInt.checkedSub(rhs: UInt): UInt? =
  * ```
  */
 public fun UInt.strictSub(rhs: UInt): UInt {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         sub()
     } else {
@@ -23901,7 +24364,7 @@ public fun UInt.strictSub(rhs: UInt): UInt {
  */
 public fun UInt.uncheckedSub(rhs: UInt): UInt {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
+    return ((this) - (rhs))
 }
 
 /**
@@ -23980,7 +24443,7 @@ public fun UInt.checkedSignedDiff(rhs: UInt): Int? {
  * ```
  */
 public fun UInt.checkedMul(rhs: UInt): UInt? {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         null
     } else {
@@ -24009,7 +24472,7 @@ public fun UInt.checkedMul(rhs: UInt): UInt? {
  * ```
  */
 public fun UInt.strictMul(rhs: UInt): UInt {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         mul()
     } else {
@@ -24036,7 +24499,7 @@ public fun UInt.strictMul(rhs: UInt): UInt {
  */
 public fun UInt.uncheckedMul(rhs: UInt): UInt {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
+    return ((this) * (rhs))
 }
 
 /**
@@ -24052,7 +24515,7 @@ public fun UInt.checkedDiv(rhs: UInt): UInt? =
     if (rhs == 0u) {
         null
     } else {
-        uncheckedDiv(this, rhs)
+        ((this) / (rhs))
     }
 
 /**
@@ -24091,7 +24554,7 @@ public fun UInt.checkedDivEuclid(rhs: UInt): UInt? =
     if (rhs == 0u) {
         null
     } else {
-        rustDivEuclid(this, rhs)
+        this.divEuclid(rhs)
     }
 
 /**
@@ -24133,10 +24596,10 @@ public fun UInt.checkedDivExact(rhs: UInt): UInt? =
     if (rhs == 0u) {
         null
     } else {
-        if (uncheckedRem(this, rhs) != 0) {
+        if (((this) % (rhs)) != 0u) {
             null
         } else {
-            exactDiv(this, rhs)
+            ((this) / (rhs))
         }
     }
 
@@ -24171,7 +24634,7 @@ public fun UInt.divExact(rhs: UInt): UInt? =
  */
 public fun UInt.uncheckedDivExact(rhs: UInt): UInt {
     Unit
-    return exactDiv(this, rhs)
+    return ((this) / (rhs))
 }
 
 /**
@@ -24187,7 +24650,7 @@ public fun UInt.checkedRem(rhs: UInt): UInt? =
     if (rhs == 0u) {
         null
     } else {
-        uncheckedRem(this, rhs)
+        ((this) % (rhs))
     }
 
 /**
@@ -24227,7 +24690,7 @@ public fun UInt.checkedRemEuclid(rhs: UInt): UInt? =
     if (rhs == 0u) {
         null
     } else {
-        rustRemEuclid(this, rhs)
+        this.remEuclid(rhs)
     }
 
 /**
@@ -24279,7 +24742,7 @@ public fun UInt.strictRemEuclid(rhs: UInt): UInt = this % rhs
  */
 public fun UInt.uncheckedDisjointBitor(rhs: UInt): UInt {
     Unit
-    return disjointBitor(this, rhs)
+    return ((this) or (rhs))
 }
 
 /**
@@ -24378,7 +24841,9 @@ public fun UInt.checkedIlog(base: UInt): UInt? {
         if (base.isPowerOfTwo() && base > 1u) {
             val k = base.ilog2()
             return when (val matchVal = this.checkedIlog2()) {
-                null -> { return null }
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
@@ -24398,7 +24863,7 @@ public fun UInt.checkedIlog(base: UInt): UInt? {
         var r = base
         if (32u == 128) {
             n = this.ilog2() / (base.ilog2() + 1u)
-            r = rustPow(base, n.toUInt())
+            r = base.pow(n.toUInt())
         }
         while (r <= this / base) {
             n += 1
@@ -24460,7 +24925,7 @@ public fun UInt.checkedIlog10(): UInt? =
  * ```
  */
 public fun UInt.checkedNeg(): UInt? {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         null
     } else {
@@ -24491,7 +24956,7 @@ public fun UInt.checkedNeg(): UInt? {
  * ```
  */
 public fun UInt.strictNeg(): UInt {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         neg()
     } else {
@@ -24536,7 +25001,7 @@ public fun UInt.checkedShl(rhs: UInt): UInt? =
  * ```
  */
 public fun UInt.strictShl(rhs: UInt): UInt {
-    val (a, b) = rustOverflowingShl(this, rhs)
+    val (a, b) = this.overflowingShl(rhs)
     return if (b) {
         shl()
     } else {
@@ -24556,7 +25021,7 @@ public fun UInt.strictShl(rhs: UInt): UInt {
  */
 public fun UInt.uncheckedShl(rhs: UInt): UInt {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
+    return ((this) shl (rhs).toInt())
 }
 
 /**
@@ -24598,7 +25063,7 @@ public fun UInt.unboundedShl(rhs: UInt): UInt =
  * ```
  */
 public fun UInt.shlExact(rhs: UInt): UInt? =
-    if (rhs <= rustLeadingZeros(this) && rhs < 32u) {
+    if (rhs <= this.leadingZeros() && rhs < 32u) {
         this.uncheckedShl(rhs)
     } else {
         null
@@ -24656,7 +25121,7 @@ public fun UInt.checkedShr(rhs: UInt): UInt? =
  * ```
  */
 public fun UInt.strictShr(rhs: UInt): UInt {
-    val (a, b) = rustOverflowingShr(this, rhs)
+    val (a, b) = this.overflowingShr(rhs)
     return if (b) {
         shr()
     } else {
@@ -24676,7 +25141,7 @@ public fun UInt.strictShr(rhs: UInt): UInt {
  */
 public fun UInt.uncheckedShr(rhs: UInt): UInt {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
+    return ((this) shr (rhs).toInt())
 }
 
 /**
@@ -24718,7 +25183,7 @@ public fun UInt.unboundedShr(rhs: UInt): UInt =
  * ```
  */
 public fun UInt.shrExact(rhs: UInt): UInt? =
-    if (rhs <= rustTrailingZeros(this) && rhs < 32u) {
+    if (rhs <= this.trailingZeros() && rhs < 32u) {
         this.uncheckedShr(rhs)
     } else {
         null
@@ -24755,14 +25220,16 @@ public fun UInt.checkedPow(exp: UInt): UInt? {
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
         val shift =
-            when (val matchVal = rustCheckedMul(k, exp1)) {
-                null -> { return null }
+            when (val matchVal = k.checkedMul(exp1)) {
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
                 }
             }
-        return rustCheckedShl((1.toUInt()), shift.toUInt())
+        return (1.toUInt()).checkedShl(shift.toUInt())
     }
     if (exp1 == 0u) {
         return 1u
@@ -24770,46 +25237,58 @@ public fun UInt.checkedPow(exp: UInt): UInt? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc = when (val matchVal1 = rustCheckedMul(acc, base)) {
-                    null -> { return null }
-                    else -> {
-                        val x1 = matchVal1
-                        x1
+                acc =
+                    when (val matchVal1 = acc.checkedMul(base)) {
+                        null -> {
+                            return null
+                        }
+                        else -> {
+                            val x1 = matchVal1
+                            x1
+                        }
                     }
-                }
             }
             exp1 /= 2u
-            base = when (val matchVal2 = rustCheckedMul(base, base)) {
-                null -> { return null }
-                else -> {
-                    val x2 = matchVal2
-                    x2
+            base =
+                when (val matchVal2 = base.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x2 = matchVal2
+                        x2
+                    }
                 }
-            }
         }
-        return rustCheckedMul(acc, base)
+        return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc = when (val matchVal3 = rustCheckedMul(acc, base)) {
-                null -> { return null }
-                else -> {
-                    val x3 = matchVal3
-                    x3
+            acc =
+                when (val matchVal3 = acc.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x3 = matchVal3
+                        x3
+                    }
                 }
-            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base = when (val matchVal4 = rustCheckedMul(base, base)) {
-            null -> { return null }
-            else -> {
-                val x4 = matchVal4
-                x4
+        base =
+            when (val matchVal4 = base.checkedMul(base)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x4 = matchVal4
+                    x4
+                }
             }
-        }
     }
 }
 
@@ -24834,7 +25313,7 @@ public fun UInt.checkedPow(exp: UInt): UInt? {
  * ```
  */
 public fun UInt.strictPow(exp: UInt): UInt =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> pow()
         else -> {
             val a = matchVal
@@ -24851,7 +25330,7 @@ public fun UInt.strictPow(exp: UInt): UInt =
  * ```kotlin
  * ```
  */
-public fun UInt.saturatingAdd(rhs: UInt): UInt = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
+public fun UInt.saturatingAdd(rhs: UInt): UInt = kmSaturatingAddU32(this, rhs)
 
 /**
  * Saturating addition with a signed integer. Computes `self + rhs`,
@@ -24863,7 +25342,7 @@ public fun UInt.saturatingAdd(rhs: UInt): UInt = io.github.kotlinmania.rustlang.
  * ```
  */
 public fun UInt.saturatingAddSigned(rhs: Int): UInt {
-    val (res, overflow) = rustOverflowingAdd(this, rhs.toUInt())
+    val (res, overflow) = this.overflowingAdd(rhs.toUInt())
     return if (overflow == (rhs < 0)) {
         res
     } else if (overflow) {
@@ -24882,7 +25361,7 @@ public fun UInt.saturatingAddSigned(rhs: Int): UInt {
  * ```kotlin
  * ```
  */
-public fun UInt.saturatingSub(rhs: UInt): UInt = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
+public fun UInt.saturatingSub(rhs: UInt): UInt = kmSaturatingSubU32(this, rhs)
 
 /**
  * Saturating integer subtraction. Computes `self` - `rhs`, saturating at
@@ -24914,7 +25393,7 @@ public fun UInt.saturatingSubSigned(rhs: Int): UInt {
  * ```
  */
 public fun UInt.saturatingMul(rhs: UInt): UInt =
-    when (val matchVal = rustCheckedMul(this, rhs)) {
+    when (val matchVal = this.checkedMul(rhs)) {
         null -> UInt.MAX_VALUE
         else -> {
             val x = matchVal
@@ -24935,7 +25414,7 @@ public fun UInt.saturatingMul(rhs: UInt): UInt =
  * ```kotlin
  * ```
  */
-public fun UInt.saturatingDiv(rhs: UInt): UInt = rustWrappingDiv(this, rhs)
+public fun UInt.saturatingDiv(rhs: UInt): UInt = this.wrappingDiv(rhs)
 
 /**
  * Saturating integer exponentiation. Computes `self.pow(exp)`,
@@ -24947,7 +25426,7 @@ public fun UInt.saturatingDiv(rhs: UInt): UInt = rustWrappingDiv(this, rhs)
  * ```
  */
 public fun UInt.saturatingPow(exp: UInt): UInt =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> UInt.MAX_VALUE
         else -> {
             val x = matchVal
@@ -24964,7 +25443,7 @@ public fun UInt.saturatingPow(exp: UInt): UInt =
  * ```kotlin
  * ```
  */
-public fun UInt.wrappingAdd(rhs: UInt): UInt = (this + rhs)
+public fun UInt.wrappingAdd(rhs: UInt): UInt = ((this) + (rhs))
 
 /**
  * Wrapping (modular) addition with a signed integer. Computes
@@ -24986,7 +25465,7 @@ public fun UInt.wrappingAddSigned(rhs: Int): UInt = (this + (rhs.toUInt()))
  * ```kotlin
  * ```
  */
-public fun UInt.wrappingSub(rhs: UInt): UInt = (this - rhs)
+public fun UInt.wrappingSub(rhs: UInt): UInt = ((this) - (rhs))
 
 /**
  * Wrapping (modular) subtraction with a signed integer. Computes
@@ -25012,7 +25491,7 @@ public fun UInt.wrappingSubSigned(rhs: Int): UInt = (this - (rhs.toUInt()))
  * check(((25u.toUByte()) * (12u.toUByte())).toUByte() == 44)
  * ```
  */
-public fun UInt.wrappingMul(rhs: UInt): UInt = (this * rhs)
+public fun UInt.wrappingMul(rhs: UInt): UInt = ((this) * (rhs))
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`.
@@ -25190,7 +25669,7 @@ public fun UInt.wrappingPow(exp: UInt): UInt {
  * ```
  */
 public fun UInt.overflowingAdd(rhs: UInt): Pair<UInt, Boolean> {
-    val (a, b) = addWithOverflow(this, rhs)
+    val (a, b) = kmAddWithOverflowU32(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toUInt(), b)
 }
 
@@ -25222,7 +25701,7 @@ public fun UInt.overflowingAdd(rhs: UInt): Pair<UInt, Boolean> {
  * ```
  */
 public fun UInt.carryingAdd(rhs: UInt, carry: Boolean): Pair<UInt, Boolean> {
-    val (a, c1) = rustOverflowingAdd(this, rhs)
+    val (a, c1) = this.overflowingAdd(rhs)
     val (b, c2) = a.overflowingAdd(carry.toUInt())
     return Pair(b, disjointBitor(c1, c2))
 }
@@ -25240,7 +25719,7 @@ public fun UInt.carryingAdd(rhs: UInt, carry: Boolean): Pair<UInt, Boolean> {
  * ```
  */
 public fun UInt.overflowingAddSigned(rhs: Int): Pair<UInt, Boolean> {
-    val (res, overflowed) = rustOverflowingAdd(this, rhs.toUInt())
+    val (res, overflowed) = this.overflowingAdd(rhs.toUInt())
     return Pair(res, overflowed xor (rhs < 0))
 }
 
@@ -25257,7 +25736,7 @@ public fun UInt.overflowingAddSigned(rhs: Int): Pair<UInt, Boolean> {
  * ```
  */
 public fun UInt.overflowingSub(rhs: UInt): Pair<UInt, Boolean> {
-    val (a, b) = subWithOverflow(this, rhs)
+    val (a, b) = kmSubWithOverflowU32(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toUInt(), b)
 }
 
@@ -25283,7 +25762,7 @@ public fun UInt.overflowingSub(rhs: UInt): Pair<UInt, Boolean> {
  * ```
  */
 public fun UInt.borrowingSub(rhs: UInt, borrow: Boolean): Pair<UInt, Boolean> {
-    val (a, c1) = rustOverflowingSub(this, rhs)
+    val (a, c1) = this.overflowingSub(rhs)
     val (b, c2) = a.overflowingSub(borrow.toUInt())
     return Pair(b, disjointBitor(c1, c2))
 }
@@ -25301,7 +25780,7 @@ public fun UInt.borrowingSub(rhs: UInt, borrow: Boolean): Pair<UInt, Boolean> {
  * ```
  */
 public fun UInt.overflowingSubSigned(rhs: Int): Pair<UInt, Boolean> {
-    val (res, overflow) = rustOverflowingSub(this, rhs.toUInt())
+    val (res, overflow) = this.overflowingSub(rhs.toUInt())
     return Pair(res, overflow xor (rhs < 0))
 }
 
@@ -25344,7 +25823,7 @@ public fun UInt.absDiff(other: UInt): UInt =
  * ```
  */
 public fun UInt.overflowingMul(rhs: UInt): Pair<UInt, Boolean> {
-    val (a, b) = mulWithOverflow(this, rhs)
+    val (a, b) = kmMulWithOverflowU32(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toUInt(), b)
 }
 
@@ -25474,7 +25953,9 @@ public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.car
  * }
  * ```
  */
-public fun UInt.carryingMulAdd(rhs: UInt, carry: UInt, add: UInt): Pair<UInt, UInt> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun UInt.carryingMulAdd(rhs: UInt, carry: UInt, add: UInt): Pair<UInt, UInt> =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -25587,7 +26068,7 @@ public fun UInt.overflowingNeg(): Pair<UInt, Boolean> = Pair((!this).wrappingAdd
  * ```kotlin
  * ```
  */
-public fun UInt.overflowingShl(rhs: UInt): Pair<UInt, Boolean> = Pair(rustWrappingShl(this, rhs), rhs >= 32u)
+public fun UInt.overflowingShl(rhs: UInt): Pair<UInt, Boolean> = Pair(this.wrappingShl(rhs), rhs >= 32u)
 
 /**
  * Shifts self right by `rhs` bits.
@@ -25603,7 +26084,7 @@ public fun UInt.overflowingShl(rhs: UInt): Pair<UInt, Boolean> = Pair(rustWrappi
  * ```kotlin
  * ```
  */
-public fun UInt.overflowingShr(rhs: UInt): Pair<UInt, Boolean> = Pair(rustWrappingShr(this, rhs), rhs >= 32u)
+public fun UInt.overflowingShr(rhs: UInt): Pair<UInt, Boolean> = Pair(this.wrappingShr(rhs), rhs >= 32u)
 
 /**
  * Raises self to the power of `exp`, using exponentiation by squaring.
@@ -25620,12 +26101,12 @@ public fun UInt.overflowingShr(rhs: UInt): Pair<UInt, Boolean> = Pair(rustWrappi
 public fun UInt.overflowingPow(exp: UInt): Pair<UInt, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: UInt  = 1u
+    val acc: UInt = 1u
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
-        val shift = rustCheckedMul(k, exp1) ?: return Pair(0, true)
+        val shift = k.checkedMul(exp1) ?: return Pair(0, true)
         return Pair((1.toUInt()).unboundedShl(shift), shift >= 32u)
     }
     if (exp1 == 0u) {
@@ -25634,27 +26115,27 @@ public fun UInt.overflowingPow(exp: UInt): Pair<UInt, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+            Pair(base, tmpOverflow) = base.overflowingMul(base)
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+        Pair(base, tmpOverflow) = base.overflowingMul(base)
         overflow = overflow or tmpOverflow
     }
 }
@@ -25683,9 +26164,15 @@ public fun UInt.pow(exp: UInt): UInt =
  * ```
  */
 public fun UInt.isqrt(): UInt {
-    val result = u32(this).toUInt()
+    val result =
+        io.github.kotlinmania.rustlang.core.num.imp.intsqrt
+            .UInt(this)
+            .toUInt()
     run {
-        val MAX_RESULT: UInt = u32(UInt.MAX_VALUE).toUInt()
+        val MAX_RESULT: UInt =
+            io.github.kotlinmania.rustlang.core.num.imp.intsqrt
+                .UInt(UInt.MAX_VALUE)
+                .toUInt()
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1u) {
@@ -25813,17 +26300,22 @@ public fun UInt.nextMultipleOf(rhs: UInt): UInt =
  * ```
  */
 public fun UInt.checkedNextMultipleOf(rhs: UInt): UInt? {
-    return when (val matchVal1 = when (val matchVal = rustCheckedRem(this, rhs)) {
-        null -> { return null }
-        else -> {
-            val x = matchVal
-            x
-        }
-    }) {
+    return when (
+        val matchVal1 =
+            when (val matchVal = this.checkedRem(rhs)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x = matchVal
+                    x
+                }
+            }
+    ) {
         0 -> this
         else -> {
             val r = matchVal1
-            rustCheckedAdd(this, rhs - r)
+            this.checkedAdd(rhs - r)
         }
     }
 }
@@ -25854,7 +26346,7 @@ public fun UInt.isMultipleOf(rhs: UInt): Boolean =
  * ```kotlin
  * ```
  */
-public fun UInt.isPowerOfTwo(): Boolean = rustCountOnes(this) == 1u
+public fun UInt.isPowerOfTwo(): Boolean = this.countOnes() == 1u
 
 /**
  * Returns the smallest power of two greater than or equal to `self`.
@@ -25890,7 +26382,7 @@ public fun UInt.nextPowerOfTwo(): UInt =
  * ```
  */
 public fun UInt.checkedNextPowerOfTwo(): UInt? {
-    val m1 = rustSaturatingSub(this, 1u)
+    val m1 = this.saturatingSub(1u)
     return if (m1.castSigned() >= 0) {
         val exp = m1.bitWidth()
         1u shl exp.toInt()
@@ -25922,7 +26414,11 @@ public fun UInt.wrappingNextPowerOfTwo(): UInt = (this.checkedNextPowerOfTwo() ?
  * ```kotlin
  * ```
  */
-public fun UInt.toBeBytes(): UByteArray = run { val rawBits = ((((this) shl 24)) or (((this) and 0x0000FF00u) shl 8) or (((this) shr 8) and 0x0000FF00u) or ((this) shr 24)); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
+public fun UInt.toBeBytes(): UByteArray =
+    run {
+        val rawBits = ((((this) shl 24)) or (((this) and 0x0000FF00u) shl 8) or (((this) shr 8) and 0x0000FF00u) or ((this) shr 24))
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -25933,7 +26429,11 @@ public fun UInt.toBeBytes(): UByteArray = run { val rawBits = ((((this) shl 24))
  * ```kotlin
  * ```
  */
-public fun UInt.toLeBytes(): UByteArray = run { val rawBits = this; ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
+public fun UInt.toLeBytes(): UByteArray =
+    run {
+        val rawBits = this
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -25970,7 +26470,11 @@ public fun UInt.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun UInt.Companion.fromBeBytes(bytes: UByteArray): UInt = run { val swapVal0 = (UInt.fromNeBytes(bytes)); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00u) shl 8) or (((swapVal0) shr 8) and 0x0000FF00u) or ((swapVal0) shr 24)) }
+public fun UInt.Companion.fromBeBytes(bytes: UByteArray): UInt =
+    run {
+        val swapVal0 = (UInt.fromNeBytes(bytes))
+        ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00u) shl 8) or (((swapVal0) shr 8) and 0x0000FF00u) or ((swapVal0) shr 24))
+    }
 
 /**
  * Creates a native endian integer value from its representation
@@ -26339,7 +26843,7 @@ public fun ULong.setBit(index: UInt, value: Boolean): ULong {
  * check(zero.countOnes() == 0)
  * ```
  */
-public fun ULong.countOnes(): UInt = kmCtpopU64((this).toULong())
+public fun ULong.countOnes(): UInt = kmCtpopU64(this)
 
 /**
  * Returns the number of zeros in the binary representation of `self`.
@@ -26383,7 +26887,7 @@ public fun ULong.countZeros(): UInt = (!this).countOnes()
  * check(max.leadingZeros() == 0)
  * ```
  */
-public fun ULong.leadingZeros(): UInt = kmCtlzU64((this).toULong())
+public fun ULong.leadingZeros(): UInt = kmCtlzU64(this)
 
 /**
  * Returns the number of trailing zeros in the binary representation
@@ -26395,7 +26899,7 @@ public fun ULong.leadingZeros(): UInt = kmCtlzU64((this).toULong())
  * check(n.trailingZeros() == 3)
  * ```
  */
-public fun ULong.trailingZeros(): UInt = kmCttzU64((this).toULong())
+public fun ULong.trailingZeros(): UInt = kmCttzU64(this)
 
 /**
  * Returns the number of leading ones in the binary representation of `self`.
@@ -26432,7 +26936,7 @@ public fun ULong.trailingOnes(): UInt = (!this).trailingZeros()
  * ```kotlin
  * ```
  */
-public fun ULong.bitWidth(): UInt = 64u - rustLeadingZeros(this)
+public fun ULong.bitWidth(): UInt = 64u - this.leadingZeros()
 
 /**
  * Returns `self` with only the most significant bit set, or `0` if
@@ -26444,7 +26948,7 @@ public fun ULong.bitWidth(): UInt = 64u - rustLeadingZeros(this)
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun ULong.isolateHighestOne(): ULong = this and (rustWrappingShr(((1.toULong()) shl (64u - 1u).toInt()), rustLeadingZeros(this)))
+public fun ULong.isolateHighestOne(): ULong = this and (((1.toULong()) shl (64u - 1u).toInt()).wrappingShr(this.leadingZeros()))
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -26456,7 +26960,7 @@ public fun ULong.isolateHighestOne(): ULong = this and (rustWrappingShr(((1.toUL
  * check(n.isolateLowestOne() == 0x4)
  * ```
  */
-public fun ULong.isolateLowestOne(): ULong = this and rustWrappingNeg(this)
+public fun ULong.isolateLowestOne(): ULong = this and this.wrappingNeg()
 
 /**
  * Returns the index of the highest bit set to one in `self`, or `None`
@@ -26599,7 +27103,7 @@ public fun ULong.strictCastSigned(): Long =
  * ```kotlin
  * ```
  */
-public fun ULong.rotateLeft(n: UInt): ULong = io.github.kotlinmania.rustlang.intrinsics.rotateLeft(this, n)
+public fun ULong.rotateLeft(n: UInt): ULong = kmRotateLeftU64(this, (n).toUInt())
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -26617,7 +27121,7 @@ public fun ULong.rotateLeft(n: UInt): ULong = io.github.kotlinmania.rustlang.int
  * ```kotlin
  * ```
  */
-public fun ULong.rotateRight(n: UInt): ULong = io.github.kotlinmania.rustlang.intrinsics.rotateRight(this, n)
+public fun ULong.rotateRight(n: UInt): ULong = kmRotateRightU64(this, (n).toUInt())
 
 /**
  * Performs a left funnel shift.
@@ -26713,7 +27217,8 @@ public fun ULong.funnelShr(right: ULong, n: UInt): ULong {
  */
 public fun ULong.uncheckedFunnelShl(right: ULong, n: UInt): ULong {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -26726,7 +27231,8 @@ public fun ULong.uncheckedFunnelShl(right: ULong, n: UInt): ULong {
  */
 public fun ULong.uncheckedFunnelShr(right: ULong, n: UInt): ULong {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -26774,7 +27280,9 @@ public fun ULong.uncheckedFunnelShr(right: ULong, n: UInt): ULong {
  * public fun doctestEntry() {}
  * ```
  */
-public fun ULong.carrylessMul(rhs: ULong): ULong = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
+public fun ULong.carrylessMul(rhs: ULong): ULong =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -26785,7 +27293,7 @@ public fun ULong.carrylessMul(rhs: ULong): ULong = io.github.kotlinmania.rustlan
  * val m = n.swapBytes()
  * ```
  */
-public fun ULong.swapBytes(): ULong = kmBswapU64((this).toULong()).toULong()
+public fun ULong.swapBytes(): ULong = kmBswapU64(this)
 
 /**
  * Returns an integer with the bit locations specified by `mask` packed
@@ -26823,7 +27331,7 @@ public fun ULong.depositBits(mask: ULong): ULong = depositImpl(this, mask).toULo
  * val m = n.reverseBits()
  * ```
  */
-public fun ULong.reverseBits(): ULong = kmBitreverseU64((this).toULong()).toULong()
+public fun ULong.reverseBits(): ULong = kmBitreverseU64(this)
 
 /**
  * Converts an integer from big endian to the target's endianness.
@@ -26899,10 +27407,10 @@ public fun ULong.toLe(): ULong = this
  * ```
  */
 public fun ULong.checkedAdd(rhs: ULong): ULong? =
-    if (addWithOverflow(this, rhs).second) {
+    if (kmAddWithOverflowU64(this, rhs).let { Pair(it.value, it.overflowed) }.second) {
         null
     } else {
-        uncheckedAdd(this, rhs)
+        ((this) + (rhs))
     }
 
 /**
@@ -26926,7 +27434,7 @@ public fun ULong.checkedAdd(rhs: ULong): ULong? =
  * ```
  */
 public fun ULong.strictAdd(rhs: ULong): ULong {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         add()
     } else {
@@ -26953,7 +27461,7 @@ public fun ULong.strictAdd(rhs: ULong): ULong {
  */
 public fun ULong.uncheckedAdd(rhs: ULong): ULong {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
+    return ((this) + (rhs))
 }
 
 /**
@@ -27019,7 +27527,7 @@ public fun ULong.checkedSub(rhs: ULong): ULong? =
     if (this < rhs) {
         null
     } else {
-        uncheckedSub(this, rhs)
+        ((this) - (rhs))
     }
 
 /**
@@ -27043,7 +27551,7 @@ public fun ULong.checkedSub(rhs: ULong): ULong? =
  * ```
  */
 public fun ULong.strictSub(rhs: ULong): ULong {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         sub()
     } else {
@@ -27095,7 +27603,7 @@ public fun ULong.strictSub(rhs: ULong): ULong {
  */
 public fun ULong.uncheckedSub(rhs: ULong): ULong {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
+    return ((this) - (rhs))
 }
 
 /**
@@ -27174,7 +27682,7 @@ public fun ULong.checkedSignedDiff(rhs: ULong): Long? {
  * ```
  */
 public fun ULong.checkedMul(rhs: ULong): ULong? {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         null
     } else {
@@ -27203,7 +27711,7 @@ public fun ULong.checkedMul(rhs: ULong): ULong? {
  * ```
  */
 public fun ULong.strictMul(rhs: ULong): ULong {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         mul()
     } else {
@@ -27230,7 +27738,7 @@ public fun ULong.strictMul(rhs: ULong): ULong {
  */
 public fun ULong.uncheckedMul(rhs: ULong): ULong {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
+    return ((this) * (rhs))
 }
 
 /**
@@ -27246,7 +27754,7 @@ public fun ULong.checkedDiv(rhs: ULong): ULong? =
     if (rhs == 0uL) {
         null
     } else {
-        uncheckedDiv(this, rhs)
+        ((this) / (rhs))
     }
 
 /**
@@ -27285,7 +27793,7 @@ public fun ULong.checkedDivEuclid(rhs: ULong): ULong? =
     if (rhs == 0uL) {
         null
     } else {
-        rustDivEuclid(this, rhs)
+        this.divEuclid(rhs)
     }
 
 /**
@@ -27327,10 +27835,10 @@ public fun ULong.checkedDivExact(rhs: ULong): ULong? =
     if (rhs == 0uL) {
         null
     } else {
-        if (uncheckedRem(this, rhs) != 0) {
+        if (((this) % (rhs)) != 0uL) {
             null
         } else {
-            exactDiv(this, rhs)
+            ((this) / (rhs))
         }
     }
 
@@ -27365,7 +27873,7 @@ public fun ULong.divExact(rhs: ULong): ULong? =
  */
 public fun ULong.uncheckedDivExact(rhs: ULong): ULong {
     Unit
-    return exactDiv(this, rhs)
+    return ((this) / (rhs))
 }
 
 /**
@@ -27381,7 +27889,7 @@ public fun ULong.checkedRem(rhs: ULong): ULong? =
     if (rhs == 0uL) {
         null
     } else {
-        uncheckedRem(this, rhs)
+        ((this) % (rhs))
     }
 
 /**
@@ -27421,7 +27929,7 @@ public fun ULong.checkedRemEuclid(rhs: ULong): ULong? =
     if (rhs == 0uL) {
         null
     } else {
-        rustRemEuclid(this, rhs)
+        this.remEuclid(rhs)
     }
 
 /**
@@ -27473,7 +27981,7 @@ public fun ULong.strictRemEuclid(rhs: ULong): ULong = this % rhs
  */
 public fun ULong.uncheckedDisjointBitor(rhs: ULong): ULong {
     Unit
-    return disjointBitor(this, rhs)
+    return ((this) or (rhs))
 }
 
 /**
@@ -27572,7 +28080,9 @@ public fun ULong.checkedIlog(base: ULong): UInt? {
         if (base.isPowerOfTwo() && base > 1uL) {
             val k = base.ilog2()
             return when (val matchVal = this.checkedIlog2()) {
-                null -> { return null }
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
@@ -27592,7 +28102,7 @@ public fun ULong.checkedIlog(base: ULong): UInt? {
         var r = base
         if (64u == 128) {
             n = this.ilog2() / (base.ilog2() + 1u)
-            r = rustPow(base, n.toUInt())
+            r = base.pow(n.toUInt())
         }
         while (r <= this / base) {
             n += 1
@@ -27654,7 +28164,7 @@ public fun ULong.checkedIlog10(): UInt? =
  * ```
  */
 public fun ULong.checkedNeg(): ULong? {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         null
     } else {
@@ -27685,7 +28195,7 @@ public fun ULong.checkedNeg(): ULong? {
  * ```
  */
 public fun ULong.strictNeg(): ULong {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         neg()
     } else {
@@ -27730,7 +28240,7 @@ public fun ULong.checkedShl(rhs: UInt): ULong? =
  * ```
  */
 public fun ULong.strictShl(rhs: UInt): ULong {
-    val (a, b) = rustOverflowingShl(this, rhs)
+    val (a, b) = this.overflowingShl(rhs)
     return if (b) {
         shl()
     } else {
@@ -27750,7 +28260,7 @@ public fun ULong.strictShl(rhs: UInt): ULong {
  */
 public fun ULong.uncheckedShl(rhs: UInt): ULong {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
+    return ((this) shl (rhs).toInt())
 }
 
 /**
@@ -27792,7 +28302,7 @@ public fun ULong.unboundedShl(rhs: UInt): ULong =
  * ```
  */
 public fun ULong.shlExact(rhs: UInt): ULong? =
-    if (rhs <= rustLeadingZeros(this) && rhs < 64u) {
+    if (rhs <= this.leadingZeros() && rhs < 64u) {
         this.uncheckedShl(rhs)
     } else {
         null
@@ -27850,7 +28360,7 @@ public fun ULong.checkedShr(rhs: UInt): ULong? =
  * ```
  */
 public fun ULong.strictShr(rhs: UInt): ULong {
-    val (a, b) = rustOverflowingShr(this, rhs)
+    val (a, b) = this.overflowingShr(rhs)
     return if (b) {
         shr()
     } else {
@@ -27870,7 +28380,7 @@ public fun ULong.strictShr(rhs: UInt): ULong {
  */
 public fun ULong.uncheckedShr(rhs: UInt): ULong {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
+    return ((this) shr (rhs).toInt())
 }
 
 /**
@@ -27912,7 +28422,7 @@ public fun ULong.unboundedShr(rhs: UInt): ULong =
  * ```
  */
 public fun ULong.shrExact(rhs: UInt): ULong? =
-    if (rhs <= rustTrailingZeros(this) && rhs < 64u) {
+    if (rhs <= this.trailingZeros() && rhs < 64u) {
         this.uncheckedShr(rhs)
     } else {
         null
@@ -27949,14 +28459,16 @@ public fun ULong.checkedPow(exp: UInt): ULong? {
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
         val shift =
-            when (val matchVal = rustCheckedMul(k, exp1)) {
-                null -> { return null }
+            when (val matchVal = k.checkedMul(exp1)) {
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
                 }
             }
-        return rustCheckedShl((1.toULong()), shift.toUInt())
+        return (1.toULong()).checkedShl(shift.toUInt())
     }
     if (exp1 == 0u) {
         return 1uL
@@ -27964,46 +28476,58 @@ public fun ULong.checkedPow(exp: UInt): ULong? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc = when (val matchVal1 = rustCheckedMul(acc, base)) {
-                    null -> { return null }
-                    else -> {
-                        val x1 = matchVal1
-                        x1
+                acc =
+                    when (val matchVal1 = acc.checkedMul(base)) {
+                        null -> {
+                            return null
+                        }
+                        else -> {
+                            val x1 = matchVal1
+                            x1
+                        }
                     }
-                }
             }
             exp1 /= 2u
-            base = when (val matchVal2 = rustCheckedMul(base, base)) {
-                null -> { return null }
-                else -> {
-                    val x2 = matchVal2
-                    x2
+            base =
+                when (val matchVal2 = base.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x2 = matchVal2
+                        x2
+                    }
                 }
-            }
         }
-        return rustCheckedMul(acc, base)
+        return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc = when (val matchVal3 = rustCheckedMul(acc, base)) {
-                null -> { return null }
-                else -> {
-                    val x3 = matchVal3
-                    x3
+            acc =
+                when (val matchVal3 = acc.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x3 = matchVal3
+                        x3
+                    }
                 }
-            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base = when (val matchVal4 = rustCheckedMul(base, base)) {
-            null -> { return null }
-            else -> {
-                val x4 = matchVal4
-                x4
+        base =
+            when (val matchVal4 = base.checkedMul(base)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x4 = matchVal4
+                    x4
+                }
             }
-        }
     }
 }
 
@@ -28028,7 +28552,7 @@ public fun ULong.checkedPow(exp: UInt): ULong? {
  * ```
  */
 public fun ULong.strictPow(exp: UInt): ULong =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> pow()
         else -> {
             val a = matchVal
@@ -28045,7 +28569,7 @@ public fun ULong.strictPow(exp: UInt): ULong =
  * ```kotlin
  * ```
  */
-public fun ULong.saturatingAdd(rhs: ULong): ULong = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
+public fun ULong.saturatingAdd(rhs: ULong): ULong = kmSaturatingAddU64(this, rhs)
 
 /**
  * Saturating addition with a signed integer. Computes `self + rhs`,
@@ -28057,7 +28581,7 @@ public fun ULong.saturatingAdd(rhs: ULong): ULong = io.github.kotlinmania.rustla
  * ```
  */
 public fun ULong.saturatingAddSigned(rhs: Long): ULong {
-    val (res, overflow) = rustOverflowingAdd(this, rhs.toULong())
+    val (res, overflow) = this.overflowingAdd(rhs.toULong())
     return if (overflow == (rhs < 0L)) {
         res
     } else if (overflow) {
@@ -28076,7 +28600,7 @@ public fun ULong.saturatingAddSigned(rhs: Long): ULong {
  * ```kotlin
  * ```
  */
-public fun ULong.saturatingSub(rhs: ULong): ULong = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
+public fun ULong.saturatingSub(rhs: ULong): ULong = kmSaturatingSubU64(this, rhs)
 
 /**
  * Saturating integer subtraction. Computes `self` - `rhs`, saturating at
@@ -28108,7 +28632,7 @@ public fun ULong.saturatingSubSigned(rhs: Long): ULong {
  * ```
  */
 public fun ULong.saturatingMul(rhs: ULong): ULong =
-    when (val matchVal = rustCheckedMul(this, rhs)) {
+    when (val matchVal = this.checkedMul(rhs)) {
         null -> ULong.MAX_VALUE
         else -> {
             val x = matchVal
@@ -28129,7 +28653,7 @@ public fun ULong.saturatingMul(rhs: ULong): ULong =
  * ```kotlin
  * ```
  */
-public fun ULong.saturatingDiv(rhs: ULong): ULong = rustWrappingDiv(this, rhs)
+public fun ULong.saturatingDiv(rhs: ULong): ULong = this.wrappingDiv(rhs)
 
 /**
  * Saturating integer exponentiation. Computes `self.pow(exp)`,
@@ -28141,7 +28665,7 @@ public fun ULong.saturatingDiv(rhs: ULong): ULong = rustWrappingDiv(this, rhs)
  * ```
  */
 public fun ULong.saturatingPow(exp: UInt): ULong =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> ULong.MAX_VALUE
         else -> {
             val x = matchVal
@@ -28158,7 +28682,7 @@ public fun ULong.saturatingPow(exp: UInt): ULong =
  * ```kotlin
  * ```
  */
-public fun ULong.wrappingAdd(rhs: ULong): ULong = (this + rhs)
+public fun ULong.wrappingAdd(rhs: ULong): ULong = ((this) + (rhs))
 
 /**
  * Wrapping (modular) addition with a signed integer. Computes
@@ -28180,7 +28704,7 @@ public fun ULong.wrappingAddSigned(rhs: Long): ULong = (this + (rhs.toULong()))
  * ```kotlin
  * ```
  */
-public fun ULong.wrappingSub(rhs: ULong): ULong = (this - rhs)
+public fun ULong.wrappingSub(rhs: ULong): ULong = ((this) - (rhs))
 
 /**
  * Wrapping (modular) subtraction with a signed integer. Computes
@@ -28206,7 +28730,7 @@ public fun ULong.wrappingSubSigned(rhs: Long): ULong = (this - (rhs.toULong()))
  * check(((25u.toUByte()) * (12u.toUByte())).toUByte() == 44)
  * ```
  */
-public fun ULong.wrappingMul(rhs: ULong): ULong = (this * rhs)
+public fun ULong.wrappingMul(rhs: ULong): ULong = ((this) * (rhs))
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`.
@@ -28384,7 +28908,7 @@ public fun ULong.wrappingPow(exp: UInt): ULong {
  * ```
  */
 public fun ULong.overflowingAdd(rhs: ULong): Pair<ULong, Boolean> {
-    val (a, b) = addWithOverflow(this, rhs)
+    val (a, b) = kmAddWithOverflowU64(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toULong(), b)
 }
 
@@ -28416,7 +28940,7 @@ public fun ULong.overflowingAdd(rhs: ULong): Pair<ULong, Boolean> {
  * ```
  */
 public fun ULong.carryingAdd(rhs: ULong, carry: Boolean): Pair<ULong, Boolean> {
-    val (a, c1) = rustOverflowingAdd(this, rhs)
+    val (a, c1) = this.overflowingAdd(rhs)
     val (b, c2) = a.overflowingAdd(carry.toULong())
     return Pair(b, disjointBitor(c1, c2))
 }
@@ -28434,7 +28958,7 @@ public fun ULong.carryingAdd(rhs: ULong, carry: Boolean): Pair<ULong, Boolean> {
  * ```
  */
 public fun ULong.overflowingAddSigned(rhs: Long): Pair<ULong, Boolean> {
-    val (res, overflowed) = rustOverflowingAdd(this, rhs.toULong())
+    val (res, overflowed) = this.overflowingAdd(rhs.toULong())
     return Pair(res, overflowed xor (rhs < 0L))
 }
 
@@ -28451,7 +28975,7 @@ public fun ULong.overflowingAddSigned(rhs: Long): Pair<ULong, Boolean> {
  * ```
  */
 public fun ULong.overflowingSub(rhs: ULong): Pair<ULong, Boolean> {
-    val (a, b) = subWithOverflow(this, rhs)
+    val (a, b) = kmSubWithOverflowU64(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toULong(), b)
 }
 
@@ -28477,7 +29001,7 @@ public fun ULong.overflowingSub(rhs: ULong): Pair<ULong, Boolean> {
  * ```
  */
 public fun ULong.borrowingSub(rhs: ULong, borrow: Boolean): Pair<ULong, Boolean> {
-    val (a, c1) = rustOverflowingSub(this, rhs)
+    val (a, c1) = this.overflowingSub(rhs)
     val (b, c2) = a.overflowingSub(borrow.toULong())
     return Pair(b, disjointBitor(c1, c2))
 }
@@ -28495,7 +29019,7 @@ public fun ULong.borrowingSub(rhs: ULong, borrow: Boolean): Pair<ULong, Boolean>
  * ```
  */
 public fun ULong.overflowingSubSigned(rhs: Long): Pair<ULong, Boolean> {
-    val (res, overflow) = rustOverflowingSub(this, rhs.toULong())
+    val (res, overflow) = this.overflowingSub(rhs.toULong())
     return Pair(res, overflow xor (rhs < 0L))
 }
 
@@ -28538,7 +29062,7 @@ public fun ULong.absDiff(other: ULong): ULong =
  * ```
  */
 public fun ULong.overflowingMul(rhs: ULong): Pair<ULong, Boolean> {
-    val (a, b) = mulWithOverflow(this, rhs)
+    val (a, b) = kmMulWithOverflowU64(this, rhs).let { Pair(it.value, it.overflowed) }
     return Pair(a.toULong(), b)
 }
 
@@ -28668,7 +29192,9 @@ public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULo
  * }
  * ```
  */
-public fun ULong.carryingMulAdd(rhs: ULong, carry: ULong, add: ULong): Pair<ULong, ULong> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun ULong.carryingMulAdd(rhs: ULong, carry: ULong, add: ULong): Pair<ULong, ULong> =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -28781,7 +29307,7 @@ public fun ULong.overflowingNeg(): Pair<ULong, Boolean> = Pair((!this).wrappingA
  * ```kotlin
  * ```
  */
-public fun ULong.overflowingShl(rhs: UInt): Pair<ULong, Boolean> = Pair(rustWrappingShl(this, rhs), rhs >= 64u)
+public fun ULong.overflowingShl(rhs: UInt): Pair<ULong, Boolean> = Pair(this.wrappingShl(rhs), rhs >= 64u)
 
 /**
  * Shifts self right by `rhs` bits.
@@ -28797,7 +29323,7 @@ public fun ULong.overflowingShl(rhs: UInt): Pair<ULong, Boolean> = Pair(rustWrap
  * ```kotlin
  * ```
  */
-public fun ULong.overflowingShr(rhs: UInt): Pair<ULong, Boolean> = Pair(rustWrappingShr(this, rhs), rhs >= 64u)
+public fun ULong.overflowingShr(rhs: UInt): Pair<ULong, Boolean> = Pair(this.wrappingShr(rhs), rhs >= 64u)
 
 /**
  * Raises self to the power of `exp`, using exponentiation by squaring.
@@ -28814,12 +29340,12 @@ public fun ULong.overflowingShr(rhs: UInt): Pair<ULong, Boolean> = Pair(rustWrap
 public fun ULong.overflowingPow(exp: UInt): Pair<ULong, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: ULong  = 1uL
+    val acc: ULong = 1uL
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
-        val shift = rustCheckedMul(k, exp1) ?: return Pair(0, true)
+        val shift = k.checkedMul(exp1) ?: return Pair(0, true)
         return Pair((1.toULong()).unboundedShl(shift), shift >= 64u)
     }
     if (exp1 == 0u) {
@@ -28828,27 +29354,27 @@ public fun ULong.overflowingPow(exp: UInt): Pair<ULong, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+            Pair(base, tmpOverflow) = base.overflowingMul(base)
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+        Pair(base, tmpOverflow) = base.overflowingMul(base)
         overflow = overflow or tmpOverflow
     }
 }
@@ -28877,9 +29403,15 @@ public fun ULong.pow(exp: UInt): ULong =
  * ```
  */
 public fun ULong.isqrt(): ULong {
-    val result = u64(this).toULong()
+    val result =
+        io.github.kotlinmania.rustlang.core.num.imp.intsqrt
+            .ULong(this)
+            .toULong()
     run {
-        val MAX_RESULT: ULong = u64(ULong.MAX_VALUE).toULong()
+        val MAX_RESULT: ULong =
+            io.github.kotlinmania.rustlang.core.num.imp.intsqrt
+                .ULong(ULong.MAX_VALUE)
+                .toULong()
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1uL) {
@@ -29007,17 +29539,22 @@ public fun ULong.nextMultipleOf(rhs: ULong): ULong =
  * ```
  */
 public fun ULong.checkedNextMultipleOf(rhs: ULong): ULong? {
-    return when (val matchVal1 = when (val matchVal = rustCheckedRem(this, rhs)) {
-        null -> { return null }
-        else -> {
-            val x = matchVal
-            x
-        }
-    }) {
+    return when (
+        val matchVal1 =
+            when (val matchVal = this.checkedRem(rhs)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x = matchVal
+                    x
+                }
+            }
+    ) {
         0 -> this
         else -> {
             val r = matchVal1
-            rustCheckedAdd(this, rhs - r)
+            this.checkedAdd(rhs - r)
         }
     }
 }
@@ -29048,7 +29585,7 @@ public fun ULong.isMultipleOf(rhs: ULong): Boolean =
  * ```kotlin
  * ```
  */
-public fun ULong.isPowerOfTwo(): Boolean = rustCountOnes(this) == 1u
+public fun ULong.isPowerOfTwo(): Boolean = this.countOnes() == 1u
 
 /**
  * Returns the smallest power of two greater than or equal to `self`.
@@ -29084,7 +29621,7 @@ public fun ULong.nextPowerOfTwo(): ULong =
  * ```
  */
 public fun ULong.checkedNextPowerOfTwo(): ULong? {
-    val m1 = rustSaturatingSub(this, 1uL)
+    val m1 = this.saturatingSub(1uL)
     return if (m1.castSigned() >= 0L) {
         val exp = m1.bitWidth()
         1uL shl exp.toInt()
@@ -29116,7 +29653,11 @@ public fun ULong.wrappingNextPowerOfTwo(): ULong = (this.checkedNextPowerOfTwo()
  * ```kotlin
  * ```
  */
-public fun ULong.toBeBytes(): UByteArray = run { val rawBits = ((((this) shl 56)) or (((this) and 0x000000000000FF00uL) shl 40) or (((this) and 0x0000000000FF0000uL) shl 24) or (((this) and 0x00000000FF000000uL) shl 8) or ((((this) shr 8) and 0x00000000FF000000uL)) or ((((this) shr 24) and 0x0000000000FF0000uL)) or ((((this) shr 40) and 0x000000000000FF00uL)) or ((this) shr 56)); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
+public fun ULong.toBeBytes(): UByteArray =
+    run {
+        val rawBits = ((((this) shl 56)) or (((this) and 0x000000000000FF00uL) shl 40) or (((this) and 0x0000000000FF0000uL) shl 24) or (((this) and 0x00000000FF000000uL) shl 8) or ((((this) shr 8) and 0x00000000FF000000uL)) or ((((this) shr 24) and 0x0000000000FF0000uL)) or ((((this) shr 40) and 0x000000000000FF00uL)) or ((this) shr 56))
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -29127,7 +29668,11 @@ public fun ULong.toBeBytes(): UByteArray = run { val rawBits = ((((this) shl 56)
  * ```kotlin
  * ```
  */
-public fun ULong.toLeBytes(): UByteArray = run { val rawBits = this; ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
+public fun ULong.toLeBytes(): UByteArray =
+    run {
+        val rawBits = this
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
+    }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -29164,7 +29709,11 @@ public fun ULong.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun ULong.Companion.fromBeBytes(bytes: UByteArray): ULong = run { val swapVal0 = (ULong.fromNeBytes(bytes)); ((((swapVal0) shl 56)) or (((swapVal0) and 0x000000000000FF00uL) shl 40) or (((swapVal0) and 0x0000000000FF0000uL) shl 24) or (((swapVal0) and 0x00000000FF000000uL) shl 8) or ((((swapVal0) shr 8) and 0x00000000FF000000uL)) or ((((swapVal0) shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0) shr 40) and 0x000000000000FF00uL)) or ((swapVal0) shr 56)) }
+public fun ULong.Companion.fromBeBytes(bytes: UByteArray): ULong =
+    run {
+        val swapVal0 = (ULong.fromNeBytes(bytes))
+        ((((swapVal0) shl 56)) or (((swapVal0) and 0x000000000000FF00uL) shl 40) or (((swapVal0) and 0x0000000000FF0000uL) shl 24) or (((swapVal0) and 0x00000000FF000000uL) shl 8) or ((((swapVal0) shr 8) and 0x00000000FF000000uL)) or ((((swapVal0) shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0) shr 40) and 0x000000000000FF00uL)) or ((swapVal0) shr 56))
+    }
 
 /**
  * Creates a native endian integer value from its representation
@@ -29533,7 +30082,7 @@ public fun U128.setBit(index: UInt, value: Boolean): U128 {
  * check(zero.countOnes() == 0)
  * ```
  */
-public fun U128.countOnes(): UInt = kmCtpopU64((this).toULong())
+public fun U128.countOnes(): UInt = (this).let { v -> kmCtpopU128(v.low, v.high) }
 
 /**
  * Returns the number of zeros in the binary representation of `self`.
@@ -29577,7 +30126,7 @@ public fun U128.countZeros(): UInt = (!this).countOnes()
  * check(max.leadingZeros() == 0)
  * ```
  */
-public fun U128.leadingZeros(): UInt = kmCtlzU64((this).toULong())
+public fun U128.leadingZeros(): UInt = (this).let { v -> kmCtlzU128(v.low, v.high) }
 
 /**
  * Returns the number of trailing zeros in the binary representation
@@ -29589,7 +30138,7 @@ public fun U128.leadingZeros(): UInt = kmCtlzU64((this).toULong())
  * check(n.trailingZeros() == 3)
  * ```
  */
-public fun U128.trailingZeros(): UInt = kmCttzU64((this).toULong())
+public fun U128.trailingZeros(): UInt = (this).let { v -> kmCttzU128(v.low, v.high) }
 
 /**
  * Returns the number of leading ones in the binary representation of `self`.
@@ -29626,7 +30175,7 @@ public fun U128.trailingOnes(): UInt = (!this).trailingZeros()
  * ```kotlin
  * ```
  */
-public fun U128.bitWidth(): UInt = 128u - rustLeadingZeros(this)
+public fun U128.bitWidth(): UInt = 128u - this.leadingZeros()
 
 /**
  * Returns `self` with only the most significant bit set, or `0` if
@@ -29638,7 +30187,7 @@ public fun U128.bitWidth(): UInt = 128u - rustLeadingZeros(this)
  * check(n.isolateHighestOne() == 0x40)
  * ```
  */
-public fun U128.isolateHighestOne(): U128 = this and (rustWrappingShr(((U128.fromLong(1.toLong())) shl (128u - 1u).toInt()), rustLeadingZeros(this)))
+public fun U128.isolateHighestOne(): U128 = this and (((U128.fromLong(1.toLong())) shl (128u - 1u).toInt()).wrappingShr(this.leadingZeros()))
 
 /**
  * Returns `self` with only the least significant bit set, or `0` if
@@ -29650,7 +30199,7 @@ public fun U128.isolateHighestOne(): U128 = this and (rustWrappingShr(((U128.fro
  * check(n.isolateLowestOne() == 0x4)
  * ```
  */
-public fun U128.isolateLowestOne(): U128 = this and rustWrappingNeg(this)
+public fun U128.isolateLowestOne(): U128 = this and this.wrappingNeg()
 
 /**
  * Returns the index of the highest bit set to one in `self`, or `None`
@@ -29793,7 +30342,7 @@ public fun U128.strictCastSigned(): I128 =
  * ```kotlin
  * ```
  */
-public fun U128.rotateLeft(n: UInt): U128 = io.github.kotlinmania.rustlang.intrinsics.rotateLeft(this, n)
+public fun U128.rotateLeft(n: UInt): U128 = (this).let { v -> kmRotateLeftU128(v.low, v.high, (n).toUInt()).let { r -> U128(r.hi, r.lo) } }
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -29811,7 +30360,7 @@ public fun U128.rotateLeft(n: UInt): U128 = io.github.kotlinmania.rustlang.intri
  * ```kotlin
  * ```
  */
-public fun U128.rotateRight(n: UInt): U128 = io.github.kotlinmania.rustlang.intrinsics.rotateRight(this, n)
+public fun U128.rotateRight(n: UInt): U128 = (this).let { v -> kmRotateRightU128(v.low, v.high, (n).toUInt()).let { r -> U128(r.hi, r.lo) } }
 
 /**
  * Performs a left funnel shift.
@@ -29907,7 +30456,8 @@ public fun U128.funnelShr(right: U128, n: UInt): U128 {
  */
 public fun U128.uncheckedFunnelShl(right: U128, n: UInt): U128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -29920,7 +30470,8 @@ public fun U128.uncheckedFunnelShl(right: U128, n: UInt): U128 {
  */
 public fun U128.uncheckedFunnelShr(right: U128, n: UInt): U128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -29968,7 +30519,9 @@ public fun U128.uncheckedFunnelShr(right: U128, n: UInt): U128 {
  * public fun doctestEntry() {}
  * ```
  */
-public fun U128.carrylessMul(rhs: U128): U128 = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
+public fun U128.carrylessMul(rhs: U128): U128 =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -29979,7 +30532,7 @@ public fun U128.carrylessMul(rhs: U128): U128 = io.github.kotlinmania.rustlang.i
  * val m = n.swapBytes()
  * ```
  */
-public fun U128.swapBytes(): U128 = U128.fromLong(kmBswapU64((this).toULong()).toLong())
+public fun U128.swapBytes(): U128 = (this).let { v -> kmBswapU128(v.low, v.high).let { r -> U128(r.hi, r.lo) } }
 
 /**
  * Returns an integer with the bit locations specified by `mask` packed
@@ -30017,7 +30570,7 @@ public fun U128.depositBits(mask: U128): U128 = U128.fromLong(depositImpl(this, 
  * val m = n.reverseBits()
  * ```
  */
-public fun U128.reverseBits(): U128 = U128.fromLong(kmBitreverseU64((this).toULong()).toLong())
+public fun U128.reverseBits(): U128 = (this).let { v -> kmBitreverseU128(v.low, v.high).let { r -> U128(r.hi, r.lo) } }
 
 /**
  * Converts an integer from big endian to the target's endianness.
@@ -30031,7 +30584,7 @@ public fun U128.reverseBits(): U128 = U128.fromLong(kmBitreverseU64((this).toULo
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun U128.Companion.fromBe(x: U128): U128 = rustSwapBytes(x)
+public fun U128.Companion.fromBe(x: U128): U128 = x.swapBytes()
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -30063,7 +30616,7 @@ public fun U128.Companion.fromLe(x: U128): U128 = x
  * }
  * ```
  */
-public fun U128.toBe(): U128 = rustSwapBytes(this)
+public fun U128.toBe(): U128 = this.swapBytes()
 
 /**
  * Converts `self` to little endian from the target's endianness.
@@ -30093,10 +30646,19 @@ public fun U128.toLe(): U128 = this
  * ```
  */
 public fun U128.checkedAdd(rhs: U128): U128? =
-    if (addWithOverflow(this, rhs).second) {
+    if (run {
+            val lhs = this
+            val rhs = rhs
+            kmAddWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) }
+        }.second
+    ) {
         null
     } else {
-        uncheckedAdd(this, rhs)
+        run {
+            val lhs = this
+            val rhs = rhs
+            kmU128Add(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
+        }
     }
 
 /**
@@ -30120,7 +30682,7 @@ public fun U128.checkedAdd(rhs: U128): U128? =
  * ```
  */
 public fun U128.strictAdd(rhs: U128): U128 {
-    val (a, b) = rustOverflowingAdd(this, rhs)
+    val (a, b) = this.overflowingAdd(rhs)
     return if (b) {
         add()
     } else {
@@ -30147,7 +30709,11 @@ public fun U128.strictAdd(rhs: U128): U128 {
  */
 public fun U128.uncheckedAdd(rhs: U128): U128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
+    return run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Add(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
+    }
 }
 
 /**
@@ -30213,7 +30779,11 @@ public fun U128.checkedSub(rhs: U128): U128? =
     if (this < rhs) {
         null
     } else {
-        uncheckedSub(this, rhs)
+        run {
+            val lhs = this
+            val rhs = rhs
+            kmU128Sub(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
+        }
     }
 
 /**
@@ -30237,7 +30807,7 @@ public fun U128.checkedSub(rhs: U128): U128? =
  * ```
  */
 public fun U128.strictSub(rhs: U128): U128 {
-    val (a, b) = rustOverflowingSub(this, rhs)
+    val (a, b) = this.overflowingSub(rhs)
     return if (b) {
         sub()
     } else {
@@ -30289,7 +30859,11 @@ public fun U128.strictSub(rhs: U128): U128 {
  */
 public fun U128.uncheckedSub(rhs: U128): U128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
+    return run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Sub(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
+    }
 }
 
 /**
@@ -30349,7 +30923,7 @@ public fun U128.strictSubSigned(rhs: I128): U128 {
  * ```
  */
 public fun U128.checkedSignedDiff(rhs: U128): I128? {
-    val res = rustWrappingSub(this, rhs).toI128()
+    val res = this.wrappingSub(rhs).toI128()
     val overflow = (this >= rhs) == (res < I128(0x0L, 0x0uL))
     return if (!overflow) {
         res
@@ -30368,7 +30942,7 @@ public fun U128.checkedSignedDiff(rhs: U128): I128? {
  * ```
  */
 public fun U128.checkedMul(rhs: U128): U128? {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         null
     } else {
@@ -30397,7 +30971,7 @@ public fun U128.checkedMul(rhs: U128): U128? {
  * ```
  */
 public fun U128.strictMul(rhs: U128): U128 {
-    val (a, b) = rustOverflowingMul(this, rhs)
+    val (a, b) = this.overflowingMul(rhs)
     return if (b) {
         mul()
     } else {
@@ -30424,7 +30998,11 @@ public fun U128.strictMul(rhs: U128): U128 {
  */
 public fun U128.uncheckedMul(rhs: U128): U128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
+    return run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Mul(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
+    }
 }
 
 /**
@@ -30440,7 +31018,7 @@ public fun U128.checkedDiv(rhs: U128): U128? =
     if (rhs == U128(0x0uL, 0x0uL)) {
         null
     } else {
-        uncheckedDiv(this, rhs)
+        ((this) / (rhs))
     }
 
 /**
@@ -30479,7 +31057,7 @@ public fun U128.checkedDivEuclid(rhs: U128): U128? =
     if (rhs == U128(0x0uL, 0x0uL)) {
         null
     } else {
-        rustDivEuclid(this, rhs)
+        this.divEuclid(rhs)
     }
 
 /**
@@ -30521,10 +31099,10 @@ public fun U128.checkedDivExact(rhs: U128): U128? =
     if (rhs == U128(0x0uL, 0x0uL)) {
         null
     } else {
-        if (uncheckedRem(this, rhs) != 0) {
+        if (((this) % (rhs)) != U128(0x0uL, 0x0uL)) {
             null
         } else {
-            exactDiv(this, rhs)
+            ((this) / (rhs))
         }
     }
 
@@ -30559,7 +31137,7 @@ public fun U128.divExact(rhs: U128): U128? =
  */
 public fun U128.uncheckedDivExact(rhs: U128): U128 {
     Unit
-    return exactDiv(this, rhs)
+    return ((this) / (rhs))
 }
 
 /**
@@ -30575,7 +31153,7 @@ public fun U128.checkedRem(rhs: U128): U128? =
     if (rhs == U128(0x0uL, 0x0uL)) {
         null
     } else {
-        uncheckedRem(this, rhs)
+        ((this) % (rhs))
     }
 
 /**
@@ -30615,7 +31193,7 @@ public fun U128.checkedRemEuclid(rhs: U128): U128? =
     if (rhs == U128(0x0uL, 0x0uL)) {
         null
     } else {
-        rustRemEuclid(this, rhs)
+        this.remEuclid(rhs)
     }
 
 /**
@@ -30667,7 +31245,7 @@ public fun U128.strictRemEuclid(rhs: U128): U128 = this % rhs
  */
 public fun U128.uncheckedDisjointBitor(rhs: U128): U128 {
     Unit
-    return disjointBitor(this, rhs)
+    return ((this) or (rhs))
 }
 
 /**
@@ -30766,7 +31344,9 @@ public fun U128.checkedIlog(base: U128): UInt? {
         if (base.isPowerOfTwo() && base > U128(0x0uL, 0x1uL)) {
             val k = base.ilog2()
             return when (val matchVal = this.checkedIlog2()) {
-                null -> { return null }
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
@@ -30786,7 +31366,7 @@ public fun U128.checkedIlog(base: U128): UInt? {
         var r = base
         if (128u == 128) {
             n = this.ilog2() / (base.ilog2() + 1u)
-            r = rustPow(base, n.toUInt())
+            r = base.pow(n.toUInt())
         }
         while (r <= this / base) {
             n += 1
@@ -30848,7 +31428,7 @@ public fun U128.checkedIlog10(): UInt? =
  * ```
  */
 public fun U128.checkedNeg(): U128? {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         null
     } else {
@@ -30879,7 +31459,7 @@ public fun U128.checkedNeg(): U128? {
  * ```
  */
 public fun U128.strictNeg(): U128 {
-    val (a, b) = rustOverflowingNeg(this)
+    val (a, b) = this.overflowingNeg()
     return if (b) {
         neg()
     } else {
@@ -30924,7 +31504,7 @@ public fun U128.checkedShl(rhs: UInt): U128? =
  * ```
  */
 public fun U128.strictShl(rhs: UInt): U128 {
-    val (a, b) = rustOverflowingShl(this, rhs)
+    val (a, b) = this.overflowingShl(rhs)
     return if (b) {
         shl()
     } else {
@@ -30944,7 +31524,7 @@ public fun U128.strictShl(rhs: UInt): U128 {
  */
 public fun U128.uncheckedShl(rhs: UInt): U128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
+    return (this).let { v -> kmU128Shl(v.low, v.high, (rhs).toUInt()).let { r -> U128(r.hi, r.lo) } }
 }
 
 /**
@@ -30986,7 +31566,7 @@ public fun U128.unboundedShl(rhs: UInt): U128 =
  * ```
  */
 public fun U128.shlExact(rhs: UInt): U128? =
-    if (rhs <= rustLeadingZeros(this) && rhs < 128u) {
+    if (rhs <= this.leadingZeros() && rhs < 128u) {
         this.uncheckedShl(rhs)
     } else {
         null
@@ -31044,7 +31624,7 @@ public fun U128.checkedShr(rhs: UInt): U128? =
  * ```
  */
 public fun U128.strictShr(rhs: UInt): U128 {
-    val (a, b) = rustOverflowingShr(this, rhs)
+    val (a, b) = this.overflowingShr(rhs)
     return if (b) {
         shr()
     } else {
@@ -31064,7 +31644,7 @@ public fun U128.strictShr(rhs: UInt): U128 {
  */
 public fun U128.uncheckedShr(rhs: UInt): U128 {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
+    return (this).let { v -> kmU128Shr(v.low, v.high, (rhs).toUInt()).let { r -> U128(r.hi, r.lo) } }
 }
 
 /**
@@ -31106,7 +31686,7 @@ public fun U128.unboundedShr(rhs: UInt): U128 =
  * ```
  */
 public fun U128.shrExact(rhs: UInt): U128? =
-    if (rhs <= rustTrailingZeros(this) && rhs < 128u) {
+    if (rhs <= this.trailingZeros() && rhs < 128u) {
         this.uncheckedShr(rhs)
     } else {
         null
@@ -31143,14 +31723,16 @@ public fun U128.checkedPow(exp: UInt): U128? {
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
         val shift =
-            when (val matchVal = rustCheckedMul(k, exp1)) {
-                null -> { return null }
+            when (val matchVal = k.checkedMul(exp1)) {
+                null -> {
+                    return null
+                }
                 else -> {
                     val x = matchVal
                     x
                 }
             }
-        return rustCheckedShl((U128.fromLong(1.toLong())), shift.toUInt())
+        return (U128.fromLong(1.toLong())).checkedShl(shift.toUInt())
     }
     if (exp1 == 0u) {
         return U128(0x0uL, 0x1uL)
@@ -31158,46 +31740,58 @@ public fun U128.checkedPow(exp: UInt): U128? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc = when (val matchVal1 = rustCheckedMul(acc, base)) {
-                    null -> { return null }
-                    else -> {
-                        val x1 = matchVal1
-                        x1
+                acc =
+                    when (val matchVal1 = acc.checkedMul(base)) {
+                        null -> {
+                            return null
+                        }
+                        else -> {
+                            val x1 = matchVal1
+                            x1
+                        }
                     }
-                }
             }
             exp1 /= 2u
-            base = when (val matchVal2 = rustCheckedMul(base, base)) {
-                null -> { return null }
-                else -> {
-                    val x2 = matchVal2
-                    x2
+            base =
+                when (val matchVal2 = base.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x2 = matchVal2
+                        x2
+                    }
                 }
-            }
         }
-        return rustCheckedMul(acc, base)
+        return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc = when (val matchVal3 = rustCheckedMul(acc, base)) {
-                null -> { return null }
-                else -> {
-                    val x3 = matchVal3
-                    x3
+            acc =
+                when (val matchVal3 = acc.checkedMul(base)) {
+                    null -> {
+                        return null
+                    }
+                    else -> {
+                        val x3 = matchVal3
+                        x3
+                    }
                 }
-            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base = when (val matchVal4 = rustCheckedMul(base, base)) {
-            null -> { return null }
-            else -> {
-                val x4 = matchVal4
-                x4
+        base =
+            when (val matchVal4 = base.checkedMul(base)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x4 = matchVal4
+                    x4
+                }
             }
-        }
     }
 }
 
@@ -31222,7 +31816,7 @@ public fun U128.checkedPow(exp: UInt): U128? {
  * ```
  */
 public fun U128.strictPow(exp: UInt): U128 =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> pow()
         else -> {
             val a = matchVal
@@ -31239,7 +31833,12 @@ public fun U128.strictPow(exp: UInt): U128 =
  * ```kotlin
  * ```
  */
-public fun U128.saturatingAdd(rhs: U128): U128 = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
+public fun U128.saturatingAdd(rhs: U128): U128 =
+    run {
+        val lhs = this
+        val rhs = rhs
+        kmSaturatingAddU128(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
+    }
 
 /**
  * Saturating addition with a signed integer. Computes `self + rhs`,
@@ -31251,7 +31850,7 @@ public fun U128.saturatingAdd(rhs: U128): U128 = io.github.kotlinmania.rustlang.
  * ```
  */
 public fun U128.saturatingAddSigned(rhs: I128): U128 {
-    val (res, overflow) = rustOverflowingAdd(this, rhs.toU128())
+    val (res, overflow) = this.overflowingAdd(rhs.toU128())
     return if (overflow == (rhs < I128(0x0L, 0x0uL))) {
         res
     } else if (overflow) {
@@ -31270,7 +31869,12 @@ public fun U128.saturatingAddSigned(rhs: I128): U128 {
  * ```kotlin
  * ```
  */
-public fun U128.saturatingSub(rhs: U128): U128 = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
+public fun U128.saturatingSub(rhs: U128): U128 =
+    run {
+        val lhs = this
+        val rhs = rhs
+        kmSaturatingSubU128(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
+    }
 
 /**
  * Saturating integer subtraction. Computes `self` - `rhs`, saturating at
@@ -31302,7 +31906,7 @@ public fun U128.saturatingSubSigned(rhs: I128): U128 {
  * ```
  */
 public fun U128.saturatingMul(rhs: U128): U128 =
-    when (val matchVal = rustCheckedMul(this, rhs)) {
+    when (val matchVal = this.checkedMul(rhs)) {
         null -> U128.MAX_VALUE
         else -> {
             val x = matchVal
@@ -31323,7 +31927,7 @@ public fun U128.saturatingMul(rhs: U128): U128 =
  * ```kotlin
  * ```
  */
-public fun U128.saturatingDiv(rhs: U128): U128 = rustWrappingDiv(this, rhs)
+public fun U128.saturatingDiv(rhs: U128): U128 = this.wrappingDiv(rhs)
 
 /**
  * Saturating integer exponentiation. Computes `self.pow(exp)`,
@@ -31335,7 +31939,7 @@ public fun U128.saturatingDiv(rhs: U128): U128 = rustWrappingDiv(this, rhs)
  * ```
  */
 public fun U128.saturatingPow(exp: UInt): U128 =
-    when (val matchVal = rustCheckedPow(this, exp)) {
+    when (val matchVal = this.checkedPow(exp)) {
         null -> U128.MAX_VALUE
         else -> {
             val x = matchVal
@@ -31352,7 +31956,12 @@ public fun U128.saturatingPow(exp: UInt): U128 =
  * ```kotlin
  * ```
  */
-public fun U128.wrappingAdd(rhs: U128): U128 = (this + rhs)
+public fun U128.wrappingAdd(rhs: U128): U128 =
+    run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Add(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
+    }
 
 /**
  * Wrapping (modular) addition with a signed integer. Computes
@@ -31363,7 +31972,7 @@ public fun U128.wrappingAdd(rhs: U128): U128 = (this + rhs)
  * ```kotlin
  * ```
  */
-public fun U128.wrappingAddSigned(rhs: I128): U128 = rustWrappingAdd(this, rhs.toU128())
+public fun U128.wrappingAddSigned(rhs: I128): U128 = this.wrappingAdd(rhs.toU128())
 
 /**
  * Wrapping (modular) subtraction. Computes `self - rhs`,
@@ -31374,7 +31983,12 @@ public fun U128.wrappingAddSigned(rhs: I128): U128 = rustWrappingAdd(this, rhs.t
  * ```kotlin
  * ```
  */
-public fun U128.wrappingSub(rhs: U128): U128 = (this - rhs)
+public fun U128.wrappingSub(rhs: U128): U128 =
+    run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Sub(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
+    }
 
 /**
  * Wrapping (modular) subtraction with a signed integer. Computes
@@ -31385,7 +31999,7 @@ public fun U128.wrappingSub(rhs: U128): U128 = (this - rhs)
  * ```kotlin
  * ```
  */
-public fun U128.wrappingSubSigned(rhs: I128): U128 = rustWrappingSub(this, rhs.toU128())
+public fun U128.wrappingSubSigned(rhs: I128): U128 = this.wrappingSub(rhs.toU128())
 
 /**
  * Wrapping (modular) multiplication. Computes `self *
@@ -31400,7 +32014,12 @@ public fun U128.wrappingSubSigned(rhs: I128): U128 = rustWrappingSub(this, rhs.t
  * check(((25u.toUByte()) * (12u.toUByte())).toUByte() == 44)
  * ```
  */
-public fun U128.wrappingMul(rhs: U128): U128 = (this * rhs)
+public fun U128.wrappingMul(rhs: U128): U128 =
+    run {
+        val lhs = this
+        val rhs = rhs
+        kmU128Mul(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
+    }
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`.
@@ -31496,7 +32115,7 @@ public fun U128.wrappingRemEuclid(rhs: U128): U128 = this % rhs
  * ```kotlin
  * ```
  */
-public fun U128.wrappingNeg(): U128 = rustWrappingSub((U128.fromLong(0.toLong())), this)
+public fun U128.wrappingNeg(): U128 = (U128.fromLong(0.toLong())).wrappingSub(this)
 
 /**
  * Panic-free bitwise shift-left; yields `self<<mask(rhs)`,
@@ -31578,7 +32197,12 @@ public fun U128.wrappingPow(exp: UInt): U128 {
  * ```
  */
 public fun U128.overflowingAdd(rhs: U128): Pair<U128, Boolean> {
-    val (a, b) = addWithOverflow(this, rhs)
+    val (a, b) =
+        run {
+            val lhs = this
+            val rhs = rhs
+            kmAddWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) }
+        }
     return Pair(U128.fromLong(a.toLong()), b)
 }
 
@@ -31610,7 +32234,7 @@ public fun U128.overflowingAdd(rhs: U128): Pair<U128, Boolean> {
  * ```
  */
 public fun U128.carryingAdd(rhs: U128, carry: Boolean): Pair<U128, Boolean> {
-    val (a, c1) = rustOverflowingAdd(this, rhs)
+    val (a, c1) = this.overflowingAdd(rhs)
     val (b, c2) = a.overflowingAdd(U128.fromLong(carry.toLong()))
     return Pair(b, disjointBitor(c1, c2))
 }
@@ -31628,7 +32252,7 @@ public fun U128.carryingAdd(rhs: U128, carry: Boolean): Pair<U128, Boolean> {
  * ```
  */
 public fun U128.overflowingAddSigned(rhs: I128): Pair<U128, Boolean> {
-    val (res, overflowed) = rustOverflowingAdd(this, rhs.toU128())
+    val (res, overflowed) = this.overflowingAdd(rhs.toU128())
     return Pair(res, overflowed xor (rhs < I128(0x0L, 0x0uL)))
 }
 
@@ -31645,7 +32269,12 @@ public fun U128.overflowingAddSigned(rhs: I128): Pair<U128, Boolean> {
  * ```
  */
 public fun U128.overflowingSub(rhs: U128): Pair<U128, Boolean> {
-    val (a, b) = subWithOverflow(this, rhs)
+    val (a, b) =
+        run {
+            val lhs = this
+            val rhs = rhs
+            kmSubWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) }
+        }
     return Pair(U128.fromLong(a.toLong()), b)
 }
 
@@ -31671,7 +32300,7 @@ public fun U128.overflowingSub(rhs: U128): Pair<U128, Boolean> {
  * ```
  */
 public fun U128.borrowingSub(rhs: U128, borrow: Boolean): Pair<U128, Boolean> {
-    val (a, c1) = rustOverflowingSub(this, rhs)
+    val (a, c1) = this.overflowingSub(rhs)
     val (b, c2) = a.overflowingSub(U128.fromLong(borrow.toLong()))
     return Pair(b, disjointBitor(c1, c2))
 }
@@ -31689,7 +32318,7 @@ public fun U128.borrowingSub(rhs: U128, borrow: Boolean): Pair<U128, Boolean> {
  * ```
  */
 public fun U128.overflowingSubSigned(rhs: I128): Pair<U128, Boolean> {
-    val (res, overflow) = rustOverflowingSub(this, rhs.toU128())
+    val (res, overflow) = this.overflowingSub(rhs.toU128())
     return Pair(res, overflow xor (rhs < I128(0x0L, 0x0uL)))
 }
 
@@ -31732,7 +32361,12 @@ public fun U128.absDiff(other: U128): U128 =
  * ```
  */
 public fun U128.overflowingMul(rhs: U128): Pair<U128, Boolean> {
-    val (a, b) = mulWithOverflow(this, rhs)
+    val (a, b) =
+        run {
+            val lhs = this
+            val rhs = rhs
+            kmMulWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) }
+        }
     return Pair(U128.fromLong(a.toLong()), b)
 }
 
@@ -31862,7 +32496,9 @@ public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.car
  * }
  * ```
  */
-public fun U128.carryingMulAdd(rhs: U128, carry: U128, add: U128): Pair<U128, U128> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun U128.carryingMulAdd(rhs: U128, carry: U128, add: U128): Pair<U128, U128> =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -31975,7 +32611,7 @@ public fun U128.overflowingNeg(): Pair<U128, Boolean> = Pair((!this).wrappingAdd
  * ```kotlin
  * ```
  */
-public fun U128.overflowingShl(rhs: UInt): Pair<U128, Boolean> = Pair(rustWrappingShl(this, rhs), rhs >= 128u)
+public fun U128.overflowingShl(rhs: UInt): Pair<U128, Boolean> = Pair(this.wrappingShl(rhs), rhs >= 128u)
 
 /**
  * Shifts self right by `rhs` bits.
@@ -31991,7 +32627,7 @@ public fun U128.overflowingShl(rhs: UInt): Pair<U128, Boolean> = Pair(rustWrappi
  * ```kotlin
  * ```
  */
-public fun U128.overflowingShr(rhs: UInt): Pair<U128, Boolean> = Pair(rustWrappingShr(this, rhs), rhs >= 128u)
+public fun U128.overflowingShr(rhs: UInt): Pair<U128, Boolean> = Pair(this.wrappingShr(rhs), rhs >= 128u)
 
 /**
  * Raises self to the power of `exp`, using exponentiation by squaring.
@@ -32008,12 +32644,12 @@ public fun U128.overflowingShr(rhs: UInt): Pair<U128, Boolean> = Pair(rustWrappi
 public fun U128.overflowingPow(exp: UInt): Pair<U128, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: U128  = U128(0x0uL, 0x1uL)
+    val acc: U128 = U128(0x0uL, 0x1uL)
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
-        val shift = rustCheckedMul(k, exp1) ?: return Pair(0, true)
+        val shift = k.checkedMul(exp1) ?: return Pair(0, true)
         return Pair((U128.fromLong(1.toLong())).unboundedShl(shift), shift >= 128u)
     }
     if (exp1 == 0u) {
@@ -32022,27 +32658,27 @@ public fun U128.overflowingPow(exp: UInt): Pair<U128, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+            Pair(base, tmpOverflow) = base.overflowingMul(base)
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = rustOverflowingMul(acc, base)
+            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = rustOverflowingMul(base, base)
+        Pair(base, tmpOverflow) = base.overflowingMul(base)
         overflow = overflow or tmpOverflow
     }
 }
@@ -32071,9 +32707,19 @@ public fun U128.pow(exp: UInt): U128 =
  * ```
  */
 public fun U128.isqrt(): U128 {
-    val result = U128.fromLong(u128(this).toLong())
+    val result =
+        U128.fromLong(
+            io.github.kotlinmania.rustlang.core.num.imp.intsqrt
+                .U128(this)
+                .toLong(),
+        )
     run {
-        val MAX_RESULT: U128 = U128.fromLong(u128(U128.MAX_VALUE).toLong())
+        val MAX_RESULT: U128 =
+            U128.fromLong(
+                io.github.kotlinmania.rustlang.core.num.imp.intsqrt
+                    .U128(U128.MAX_VALUE)
+                    .toLong(),
+            )
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= U128(0x0uL, 0x1uL)) {
@@ -32201,17 +32847,22 @@ public fun U128.nextMultipleOf(rhs: U128): U128 =
  * ```
  */
 public fun U128.checkedNextMultipleOf(rhs: U128): U128? {
-    return when (val matchVal1 = when (val matchVal = rustCheckedRem(this, rhs)) {
-        null -> { return null }
-        else -> {
-            val x = matchVal
-            x
-        }
-    }) {
+    return when (
+        val matchVal1 =
+            when (val matchVal = this.checkedRem(rhs)) {
+                null -> {
+                    return null
+                }
+                else -> {
+                    val x = matchVal
+                    x
+                }
+            }
+    ) {
         0 -> this
         else -> {
             val r = matchVal1
-            rustCheckedAdd(this, rhs - r)
+            this.checkedAdd(rhs - r)
         }
     }
 }
@@ -32242,7 +32893,7 @@ public fun U128.isMultipleOf(rhs: U128): Boolean =
  * ```kotlin
  * ```
  */
-public fun U128.isPowerOfTwo(): Boolean = rustCountOnes(this) == 1u
+public fun U128.isPowerOfTwo(): Boolean = this.countOnes() == 1u
 
 /**
  * Returns the smallest power of two greater than or equal to `self`.
@@ -32278,7 +32929,7 @@ public fun U128.nextPowerOfTwo(): U128 =
  * ```
  */
 public fun U128.checkedNextPowerOfTwo(): U128? {
-    val m1 = rustSaturatingSub(this, U128(0x0uL, 0x1uL))
+    val m1 = this.saturatingSub(U128(0x0uL, 0x1uL))
     return if (m1.castSigned() >= I128(0x0L, 0x0uL)) {
         val exp = m1.bitWidth()
         U128(0x0uL, 0x1uL) shl exp.toInt()
@@ -32310,7 +32961,7 @@ public fun U128.wrappingNextPowerOfTwo(): U128 = (this.checkedNextPowerOfTwo() ?
  * ```kotlin
  * ```
  */
-public fun U128.toBeBytes(): UByteArray = rustToBe(this).toLeBytes()
+public fun U128.toBeBytes(): UByteArray = this.toBe().toLeBytes()
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -32321,7 +32972,7 @@ public fun U128.toBeBytes(): UByteArray = rustToBe(this).toLeBytes()
  * ```kotlin
  * ```
  */
-public fun U128.toLeBytes(): UByteArray = rustToLe(this).toLeBytes()
+public fun U128.toLeBytes(): UByteArray = this.toLe().toLeBytes()
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -32639,7 +33290,7 @@ public val BITS11: UInt = Int.MAX_VALUE.countOnes()
  * ```kotlin
  * ```
  */
-public fun Int.bitWidth(): UInt = 32u - rustLeadingZeros(this)
+public fun Int.bitWidth(): UInt = 32u - this.leadingZeros()
 
 /**
  * Returns the bit pattern of `self` reinterpreted as a signed integer of the same size.
@@ -32823,7 +33474,8 @@ public fun Int.funnelShr(right: Int, n: UInt): Int {
  */
 public fun Int.uncheckedFunnelShl(right: Int, n: UInt): Int {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -32836,7 +33488,8 @@ public fun Int.uncheckedFunnelShl(right: Int, n: UInt): Int {
  */
 public fun Int.uncheckedFunnelShr(right: Int, n: UInt): Int {
     Unit
-    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics
+        .uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -32884,7 +33537,9 @@ public fun Int.uncheckedFunnelShr(right: Int, n: UInt): Int {
  * public fun doctestEntry() {}
  * ```
  */
-public fun Int.carrylessMul(rhs: Int): Int = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
+public fun Int.carrylessMul(rhs: Int): Int =
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .carrylessMul(this, rhs)
 
 /**
  * Returns an integer with the bit locations specified by `mask` packed
@@ -33038,7 +33693,7 @@ public fun Int.checkedSignedDiff(rhs: Int): Int? {
  * ```
  */
 public fun Int.saturatingAddSigned(rhs: Int): Int {
-    val (res, overflow) = rustOverflowingAdd(this, rhs)
+    val (res, overflow) = this.overflowingAdd(rhs)
     return if (overflow == (rhs < 0)) {
         res
     } else if (overflow) {
@@ -33103,7 +33758,7 @@ public fun Int.wrappingSubSigned(rhs: Int): Int = (this - ((rhs).toInt()))
  * ```
  */
 public fun Int.overflowingAddSigned(rhs: Int): Pair<Int, Boolean> {
-    val (res, overflowed) = rustOverflowingAdd(this, rhs)
+    val (res, overflowed) = this.overflowingAdd(rhs)
     return Pair(res, overflowed xor (rhs < 0))
 }
 
@@ -33120,7 +33775,7 @@ public fun Int.overflowingAddSigned(rhs: Int): Pair<Int, Boolean> {
  * ```
  */
 public fun Int.overflowingSubSigned(rhs: Int): Pair<Int, Boolean> {
-    val (res, overflow) = rustOverflowingSub(this, rhs)
+    val (res, overflow) = this.overflowingSub(rhs)
     return Pair(res, overflow xor (rhs < 0))
 }
 
@@ -33150,7 +33805,7 @@ public fun Int.isMultipleOf(rhs: Int): Boolean =
  * ```kotlin
  * ```
  */
-public fun Int.isPowerOfTwo(): Boolean = rustCountOnes(this) == 1u
+public fun Int.isPowerOfTwo(): Boolean = this.countOnes() == 1u
 
 /**
  * Returns the smallest power of two greater than or equal to `self`.
@@ -33186,7 +33841,7 @@ public fun Int.nextPowerOfTwo(): Int =
  * ```
  */
 public fun Int.checkedNextPowerOfTwo(): Int? {
-    val m1 = rustSaturatingSub(this, 1)
+    val m1 = this.saturatingSub(1)
     return if (m1.castSigned() >= 0) {
         val exp = m1.bitWidth()
         1 shl exp.toInt()
@@ -33237,7 +33892,11 @@ public fun Int.carryingCarrylessMul(rhs: Int, carry: Int): Pair<Int, Int> {
 /**
  * Returns an `Int` where every byte is equal to `x`.
  */
-public fun Int.Companion.repeatU8(x: UByte): Int = run { val bytesTmp0 = UByteArray((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)).toInt()) { x }; ((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()) }
+public fun Int.Companion.repeatU8(x: UByte): Int =
+    run {
+        val bytesTmp0 = UByteArray((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)).toInt()) { x }
+        ((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt())
+    }
 
 /**
  * Returns an `Int` where every byte pair is equal to `x`.
@@ -33247,7 +33906,7 @@ public fun Int.Companion.repeatU16(x: UShort): Int {
     var i = 0
     while (i < sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)) {
         // Use `wrappingShl` to make it work on targets with 16-bit `Int`
-        r = rustWrappingShl(r, 16u) or (x.toInt())
+        r = r.wrappingShl(16u) or (x.toInt())
         i += 2
     }
     return r
@@ -33275,7 +33934,7 @@ public fun Int.Companion.repeatU16(x: UShort): Int {
  * ```kotlin
  * ```
  */
-public fun fromStrInt(src: String): Result<Int, ParseIntError> = rustFromStrRadixInt(src, 10u)
+public fun fromStrInt(src: String): Result<Int, ParseIntError> = Int.fromStrRadix(src, 10u)
 
 /**
  * Parses an integer from a string slice with digits in a given base.
@@ -33392,10 +34051,12 @@ public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt):
             while (digits != null) {
                 val c = digits[0]
                 val rest2 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toInt())
+                result = result.wrappingMul(radix.toInt())
                 val x =
-                    when (val matchVal = (c.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value = matchVal
                             value
@@ -33408,10 +34069,12 @@ public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt):
             while (digits != null) {
                 val c1 = digits[0]
                 val rest3 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toInt())
+                result = result.wrappingMul(radix.toInt())
                 val x1 =
-                    when (val matchVal1 = (c1.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -33428,27 +34091,37 @@ public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt):
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toInt())
                 val x2 =
-                    (when (val matchVal2 = (c2.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value2 = matchVal2
-                            value2
+                    (
+                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value2 = matchVal2
+                                value2
+                            }
                         }
-                    }).toInt()
-                result = when (mul) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value3 = mul
-                        value3
+                    ).toInt()
+                result =
+                    when (mul) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value3 = mul
+                            value3
+                        }
                     }
-                }
-                result = when (val matchVal3 = rustCheckedAdd(result, x2)) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value4 = matchVal3
-                        value4
+                result =
+                    when (val matchVal3 = result.checkedAdd(x2)) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value4 = matchVal3
+                            value4
+                        }
                     }
-                }
                 digits = rest4
             }
         } else {
@@ -33457,27 +34130,37 @@ public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt):
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toInt())
                 val x3 =
-                    (when (val matchVal4 = (c3.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value5 = matchVal4
-                            value5
+                    (
+                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value5 = matchVal4
+                                value5
+                            }
                         }
-                    }).toInt()
-                result = when (mul1) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value6 = mul1
-                        value6
+                    ).toInt()
+                result =
+                    when (mul1) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value6 = mul1
+                            value6
+                        }
                     }
-                }
-                result = when (val matchVal5 = rustCheckedSub(result, x3)) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value7 = matchVal5
-                        value7
+                result =
+                    when (val matchVal5 = result.checkedSub(x3)) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value7 = matchVal5
+                            value7
+                        }
                     }
-                }
                 digits = rest5
             }
         }
@@ -33507,7 +34190,7 @@ public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt):
  * ```kotlin
  * ```
  */
-public fun fromStrByte(src: String): Result<Byte, ParseIntError> = rustFromStrRadixByte(src, 10u)
+public fun fromStrByte(src: String): Result<Byte, ParseIntError> = Byte.fromStrRadix(src, 10u)
 
 /**
  * Parses an integer from a string slice with digits in a given base.
@@ -33624,10 +34307,12 @@ public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
             while (digits != null) {
                 val c = digits[0]
                 val rest2 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toByte())
+                result = result.wrappingMul(radix.toByte())
                 val x =
-                    when (val matchVal = (c.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value = matchVal
                             value
@@ -33640,10 +34325,12 @@ public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
             while (digits != null) {
                 val c1 = digits[0]
                 val rest3 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toByte())
+                result = result.wrappingMul(radix.toByte())
                 val x1 =
-                    when (val matchVal1 = (c1.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -33660,27 +34347,37 @@ public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toByte())
                 val x2 =
-                    (when (val matchVal2 = (c2.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value2 = matchVal2
-                            value2
+                    (
+                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value2 = matchVal2
+                                value2
+                            }
                         }
-                    }).toByte()
-                result = when (mul) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value3 = mul
-                        value3
+                    ).toByte()
+                result =
+                    when (mul) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value3 = mul
+                            value3
+                        }
                     }
-                }
-                result = when (val matchVal3 = rustCheckedAdd(result, x2)) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value4 = matchVal3
-                        value4
+                result =
+                    when (val matchVal3 = result.checkedAdd(x2)) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value4 = matchVal3
+                            value4
+                        }
                     }
-                }
                 digits = rest4
             }
         } else {
@@ -33689,27 +34386,37 @@ public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toByte())
                 val x3 =
-                    (when (val matchVal4 = (c3.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value5 = matchVal4
-                            value5
+                    (
+                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value5 = matchVal4
+                                value5
+                            }
                         }
-                    }).toByte()
-                result = when (mul1) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value6 = mul1
-                        value6
+                    ).toByte()
+                result =
+                    when (mul1) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value6 = mul1
+                            value6
+                        }
                     }
-                }
-                result = when (val matchVal5 = rustCheckedSub(result, x3)) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value7 = matchVal5
-                        value7
+                result =
+                    when (val matchVal5 = result.checkedSub(x3)) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value7 = matchVal5
+                            value7
+                        }
                     }
-                }
                 digits = rest5
             }
         }
@@ -33739,7 +34446,7 @@ public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
  * ```kotlin
  * ```
  */
-public fun fromStrShort(src: String): Result<Short, ParseIntError> = rustFromStrRadixShort(src, 10u)
+public fun fromStrShort(src: String): Result<Short, ParseIntError> = Short.fromStrRadix(src, 10u)
 
 /**
  * Parses an integer from a string slice with digits in a given base.
@@ -33856,10 +34563,12 @@ public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
             while (digits != null) {
                 val c = digits[0]
                 val rest2 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toShort())
+                result = result.wrappingMul(radix.toShort())
                 val x =
-                    when (val matchVal = (c.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value = matchVal
                             value
@@ -33872,10 +34581,12 @@ public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
             while (digits != null) {
                 val c1 = digits[0]
                 val rest3 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toShort())
+                result = result.wrappingMul(radix.toShort())
                 val x1 =
-                    when (val matchVal1 = (c1.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -33892,27 +34603,37 @@ public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toShort())
                 val x2 =
-                    (when (val matchVal2 = (c2.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value2 = matchVal2
-                            value2
+                    (
+                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value2 = matchVal2
+                                value2
+                            }
                         }
-                    }).toShort()
-                result = when (mul) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value3 = mul
-                        value3
+                    ).toShort()
+                result =
+                    when (mul) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value3 = mul
+                            value3
+                        }
                     }
-                }
-                result = when (val matchVal3 = rustCheckedAdd(result, x2)) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value4 = matchVal3
-                        value4
+                result =
+                    when (val matchVal3 = result.checkedAdd(x2)) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value4 = matchVal3
+                            value4
+                        }
                     }
-                }
                 digits = rest4
             }
         } else {
@@ -33921,27 +34642,37 @@ public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toShort())
                 val x3 =
-                    (when (val matchVal4 = (c3.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value5 = matchVal4
-                            value5
+                    (
+                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value5 = matchVal4
+                                value5
+                            }
                         }
-                    }).toShort()
-                result = when (mul1) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value6 = mul1
-                        value6
+                    ).toShort()
+                result =
+                    when (mul1) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value6 = mul1
+                            value6
+                        }
                     }
-                }
-                result = when (val matchVal5 = rustCheckedSub(result, x3)) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value7 = matchVal5
-                        value7
+                result =
+                    when (val matchVal5 = result.checkedSub(x3)) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value7 = matchVal5
+                            value7
+                        }
                     }
-                }
                 digits = rest5
             }
         }
@@ -33971,7 +34702,7 @@ public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
  * ```kotlin
  * ```
  */
-public fun fromStrLong(src: String): Result<Long, ParseIntError> = rustFromStrRadixLong(src, 10u)
+public fun fromStrLong(src: String): Result<Long, ParseIntError> = Long.fromStrRadix(src, 10u)
 
 /**
  * Parses an integer from a string slice with digits in a given base.
@@ -34088,10 +34819,12 @@ public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
             while (digits != null) {
                 val c = digits[0]
                 val rest2 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toLong())
+                result = result.wrappingMul(radix.toLong())
                 val x =
-                    when (val matchVal = (c.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value = matchVal
                             value
@@ -34104,10 +34837,12 @@ public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
             while (digits != null) {
                 val c1 = digits[0]
                 val rest3 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toLong())
+                result = result.wrappingMul(radix.toLong())
                 val x1 =
-                    when (val matchVal1 = (c1.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -34124,27 +34859,37 @@ public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toLong())
                 val x2 =
-                    (when (val matchVal2 = (c2.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value2 = matchVal2
-                            value2
+                    (
+                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value2 = matchVal2
+                                value2
+                            }
                         }
-                    }).toLong()
-                result = when (mul) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value3 = mul
-                        value3
+                    ).toLong()
+                result =
+                    when (mul) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value3 = mul
+                            value3
+                        }
                     }
-                }
-                result = when (val matchVal3 = rustCheckedAdd(result, x2)) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value4 = matchVal3
-                        value4
+                result =
+                    when (val matchVal3 = result.checkedAdd(x2)) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value4 = matchVal3
+                            value4
+                        }
                     }
-                }
                 digits = rest4
             }
         } else {
@@ -34153,27 +34898,37 @@ public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toLong())
                 val x3 =
-                    (when (val matchVal4 = (c3.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value5 = matchVal4
-                            value5
+                    (
+                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value5 = matchVal4
+                                value5
+                            }
                         }
-                    }).toLong()
-                result = when (mul1) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value6 = mul1
-                        value6
+                    ).toLong()
+                result =
+                    when (mul1) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value6 = mul1
+                            value6
+                        }
                     }
-                }
-                result = when (val matchVal5 = rustCheckedSub(result, x3)) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value7 = matchVal5
-                        value7
+                result =
+                    when (val matchVal5 = result.checkedSub(x3)) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value7 = matchVal5
+                            value7
+                        }
                     }
-                }
                 digits = rest5
             }
         }
@@ -34203,7 +34958,7 @@ public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
  * ```kotlin
  * ```
  */
-public fun fromStrI128(src: String): Result<I128, ParseIntError> = rustFromStrRadixI128(src, 10u)
+public fun fromStrI128(src: String): Result<I128, ParseIntError> = I128.fromStrRadix(src, 10u)
 
 /**
  * Parses an integer from a string slice with digits in a given base.
@@ -34320,10 +35075,12 @@ public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
             while (digits != null) {
                 val c = digits[0]
                 val rest2 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, I128.fromUInt(radix))
+                result = result.wrappingMul(I128.fromUInt(radix))
                 val x =
-                    when (val matchVal = (c.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value = matchVal
                             value
@@ -34336,10 +35093,12 @@ public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
             while (digits != null) {
                 val c1 = digits[0]
                 val rest3 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, I128.fromUInt(radix))
+                result = result.wrappingMul(I128.fromUInt(radix))
                 val x1 =
-                    when (val matchVal1 = (c1.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -34356,27 +35115,39 @@ public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(I128.fromUInt(radix))
                 val x2 =
-                    I128.fromLong((when (val matchVal2 = (c2.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value2 = matchVal2
-                            value2
+                    I128.fromLong(
+                        (
+                            when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                                null -> {
+                                    return Result.Err(Pie(kind = InvalidDigit))
+                                }
+                                else -> {
+                                    val value2 = matchVal2
+                                    value2
+                                }
+                            }
+                        ).toLong(),
+                    )
+                result =
+                    when (mul) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
                         }
-                    }).toLong())
-                result = when (mul) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value3 = mul
-                        value3
+                        else -> {
+                            val value3 = mul
+                            value3
+                        }
                     }
-                }
-                result = when (val matchVal3 = rustCheckedAdd(result, x2)) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value4 = matchVal3
-                        value4
+                result =
+                    when (val matchVal3 = result.checkedAdd(x2)) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value4 = matchVal3
+                            value4
+                        }
                     }
-                }
                 digits = rest4
             }
         } else {
@@ -34385,27 +35156,39 @@ public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(I128.fromUInt(radix))
                 val x3 =
-                    I128.fromLong((when (val matchVal4 = (c3.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value5 = matchVal4
-                            value5
+                    I128.fromLong(
+                        (
+                            when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                                null -> {
+                                    return Result.Err(Pie(kind = InvalidDigit))
+                                }
+                                else -> {
+                                    val value5 = matchVal4
+                                    value5
+                                }
+                            }
+                        ).toLong(),
+                    )
+                result =
+                    when (mul1) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
                         }
-                    }).toLong())
-                result = when (mul1) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value6 = mul1
-                        value6
+                        else -> {
+                            val value6 = mul1
+                            value6
+                        }
                     }
-                }
-                result = when (val matchVal5 = rustCheckedSub(result, x3)) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value7 = matchVal5
-                        value7
+                result =
+                    when (val matchVal5 = result.checkedSub(x3)) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value7 = matchVal5
+                            value7
+                        }
                     }
-                }
                 digits = rest5
             }
         }
@@ -34435,7 +35218,7 @@ public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
  * ```kotlin
  * ```
  */
-public fun fromStrUByte(src: String): Result<UByte, ParseIntError> = rustFromStrRadixUByte(src, 10u)
+public fun fromStrUByte(src: String): Result<UByte, ParseIntError> = UByte.fromStrRadix(src, 10u)
 
 /**
  * Parses an integer from a string slice with digits in a given base.
@@ -34552,10 +35335,12 @@ public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
             while (digits != null) {
                 val c = digits[0]
                 val rest2 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toUByte())
+                result = result.wrappingMul(radix.toUByte())
                 val x =
-                    when (val matchVal = (c.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value = matchVal
                             value
@@ -34568,10 +35353,12 @@ public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
             while (digits != null) {
                 val c1 = digits[0]
                 val rest3 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toUByte())
+                result = result.wrappingMul(radix.toUByte())
                 val x1 =
-                    when (val matchVal1 = (c1.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -34588,27 +35375,37 @@ public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toUByte())
                 val x2 =
-                    (when (val matchVal2 = (c2.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value2 = matchVal2
-                            value2
+                    (
+                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value2 = matchVal2
+                                value2
+                            }
                         }
-                    }).toUByte()
-                result = when (mul) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value3 = mul
-                        value3
+                    ).toUByte()
+                result =
+                    when (mul) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value3 = mul
+                            value3
+                        }
                     }
-                }
-                result = when (val matchVal3 = rustCheckedAdd(result, x2)) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value4 = matchVal3
-                        value4
+                result =
+                    when (val matchVal3 = result.checkedAdd(x2)) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value4 = matchVal3
+                            value4
+                        }
                     }
-                }
                 digits = rest4
             }
         } else {
@@ -34617,27 +35414,37 @@ public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toUByte())
                 val x3 =
-                    (when (val matchVal4 = (c3.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value5 = matchVal4
-                            value5
+                    (
+                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value5 = matchVal4
+                                value5
+                            }
                         }
-                    }).toUByte()
-                result = when (mul1) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value6 = mul1
-                        value6
+                    ).toUByte()
+                result =
+                    when (mul1) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value6 = mul1
+                            value6
+                        }
                     }
-                }
-                result = when (val matchVal5 = rustCheckedSub(result, x3)) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value7 = matchVal5
-                        value7
+                result =
+                    when (val matchVal5 = result.checkedSub(x3)) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value7 = matchVal5
+                            value7
+                        }
                     }
-                }
                 digits = rest5
             }
         }
@@ -34667,7 +35474,7 @@ public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
  * ```kotlin
  * ```
  */
-public fun fromStrUShort(src: String): Result<UShort, ParseIntError> = rustFromStrRadixUShort(src, 10u)
+public fun fromStrUShort(src: String): Result<UShort, ParseIntError> = UShort.fromStrRadix(src, 10u)
 
 /**
  * Parses an integer from a string slice with digits in a given base.
@@ -34784,10 +35591,12 @@ public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UIn
             while (digits != null) {
                 val c = digits[0]
                 val rest2 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toUShort())
+                result = result.wrappingMul(radix.toUShort())
                 val x =
-                    when (val matchVal = (c.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value = matchVal
                             value
@@ -34800,10 +35609,12 @@ public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UIn
             while (digits != null) {
                 val c1 = digits[0]
                 val rest3 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toUShort())
+                result = result.wrappingMul(radix.toUShort())
                 val x1 =
-                    when (val matchVal1 = (c1.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -34820,27 +35631,37 @@ public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UIn
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toUShort())
                 val x2 =
-                    (when (val matchVal2 = (c2.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value2 = matchVal2
-                            value2
+                    (
+                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value2 = matchVal2
+                                value2
+                            }
                         }
-                    }).toUShort()
-                result = when (mul) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value3 = mul
-                        value3
+                    ).toUShort()
+                result =
+                    when (mul) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value3 = mul
+                            value3
+                        }
                     }
-                }
-                result = when (val matchVal3 = rustCheckedAdd(result, x2)) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value4 = matchVal3
-                        value4
+                result =
+                    when (val matchVal3 = result.checkedAdd(x2)) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value4 = matchVal3
+                            value4
+                        }
                     }
-                }
                 digits = rest4
             }
         } else {
@@ -34849,27 +35670,37 @@ public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UIn
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toUShort())
                 val x3 =
-                    (when (val matchVal4 = (c3.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value5 = matchVal4
-                            value5
+                    (
+                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value5 = matchVal4
+                                value5
+                            }
                         }
-                    }).toUShort()
-                result = when (mul1) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value6 = mul1
-                        value6
+                    ).toUShort()
+                result =
+                    when (mul1) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value6 = mul1
+                            value6
+                        }
                     }
-                }
-                result = when (val matchVal5 = rustCheckedSub(result, x3)) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value7 = matchVal5
-                        value7
+                result =
+                    when (val matchVal5 = result.checkedSub(x3)) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value7 = matchVal5
+                            value7
+                        }
                     }
-                }
                 digits = rest5
             }
         }
@@ -34899,7 +35730,7 @@ public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UIn
  * ```kotlin
  * ```
  */
-public fun fromStrUInt(src: String): Result<UInt, ParseIntError> = rustFromStrRadixUInt(src, 10u)
+public fun fromStrUInt(src: String): Result<UInt, ParseIntError> = UInt.fromStrRadix(src, 10u)
 
 /**
  * Parses an integer from a string slice with digits in a given base.
@@ -35016,10 +35847,12 @@ public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
             while (digits != null) {
                 val c = digits[0]
                 val rest2 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, (radix).toUInt())
+                result = result.wrappingMul((radix).toUInt())
                 val x =
-                    when (val matchVal = (c.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value = matchVal
                             value
@@ -35032,10 +35865,12 @@ public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
             while (digits != null) {
                 val c1 = digits[0]
                 val rest3 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, (radix).toUInt())
+                result = result.wrappingMul((radix).toUInt())
                 val x1 =
-                    when (val matchVal1 = (c1.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -35052,27 +35887,37 @@ public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix)
                 val x2 =
-                    (when (val matchVal2 = (c2.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value2 = matchVal2
-                            value2
+                    (
+                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value2 = matchVal2
+                                value2
+                            }
                         }
-                    }).toUInt()
-                result = when (mul) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value3 = mul
-                        value3
+                    ).toUInt()
+                result =
+                    when (mul) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value3 = mul
+                            value3
+                        }
                     }
-                }
-                result = when (val matchVal3 = rustCheckedAdd(result, x2)) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value4 = matchVal3
-                        value4
+                result =
+                    when (val matchVal3 = result.checkedAdd(x2)) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value4 = matchVal3
+                            value4
+                        }
                     }
-                }
                 digits = rest4
             }
         } else {
@@ -35081,27 +35926,37 @@ public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix)
                 val x3 =
-                    (when (val matchVal4 = (c3.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value5 = matchVal4
-                            value5
+                    (
+                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value5 = matchVal4
+                                value5
+                            }
                         }
-                    }).toUInt()
-                result = when (mul1) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value6 = mul1
-                        value6
+                    ).toUInt()
+                result =
+                    when (mul1) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value6 = mul1
+                            value6
+                        }
                     }
-                }
-                result = when (val matchVal5 = rustCheckedSub(result, x3)) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value7 = matchVal5
-                        value7
+                result =
+                    when (val matchVal5 = result.checkedSub(x3)) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value7 = matchVal5
+                            value7
+                        }
                     }
-                }
                 digits = rest5
             }
         }
@@ -35131,7 +35986,7 @@ public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
  * ```kotlin
  * ```
  */
-public fun fromStrULong(src: String): Result<ULong, ParseIntError> = rustFromStrRadixULong(src, 10u)
+public fun fromStrULong(src: String): Result<ULong, ParseIntError> = ULong.fromStrRadix(src, 10u)
 
 /**
  * Parses an integer from a string slice with digits in a given base.
@@ -35248,10 +36103,12 @@ public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
             while (digits != null) {
                 val c = digits[0]
                 val rest2 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toULong())
+                result = result.wrappingMul(radix.toULong())
                 val x =
-                    when (val matchVal = (c.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value = matchVal
                             value
@@ -35264,10 +36121,12 @@ public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
             while (digits != null) {
                 val c1 = digits[0]
                 val rest3 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, radix.toULong())
+                result = result.wrappingMul(radix.toULong())
                 val x1 =
-                    when (val matchVal1 = (c1.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -35284,27 +36143,37 @@ public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toULong())
                 val x2 =
-                    (when (val matchVal2 = (c2.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value2 = matchVal2
-                            value2
+                    (
+                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value2 = matchVal2
+                                value2
+                            }
                         }
-                    }).toULong()
-                result = when (mul) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value3 = mul
-                        value3
+                    ).toULong()
+                result =
+                    when (mul) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value3 = mul
+                            value3
+                        }
                     }
-                }
-                result = when (val matchVal3 = rustCheckedAdd(result, x2)) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value4 = matchVal3
-                        value4
+                result =
+                    when (val matchVal3 = result.checkedAdd(x2)) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value4 = matchVal3
+                            value4
+                        }
                     }
-                }
                 digits = rest4
             }
         } else {
@@ -35313,27 +36182,37 @@ public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toULong())
                 val x3 =
-                    (when (val matchVal4 = (c3.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value5 = matchVal4
-                            value5
+                    (
+                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                            null -> {
+                                return Result.Err(Pie(kind = InvalidDigit))
+                            }
+                            else -> {
+                                val value5 = matchVal4
+                                value5
+                            }
                         }
-                    }).toULong()
-                result = when (mul1) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value6 = mul1
-                        value6
+                    ).toULong()
+                result =
+                    when (mul1) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value6 = mul1
+                            value6
+                        }
                     }
-                }
-                result = when (val matchVal5 = rustCheckedSub(result, x3)) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value7 = matchVal5
-                        value7
+                result =
+                    when (val matchVal5 = result.checkedSub(x3)) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value7 = matchVal5
+                            value7
+                        }
                     }
-                }
                 digits = rest5
             }
         }
@@ -35363,7 +36242,7 @@ public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
  * ```kotlin
  * ```
  */
-public fun fromStrU128(src: String): Result<U128, ParseIntError> = rustFromStrRadixU128(src, 10u)
+public fun fromStrU128(src: String): Result<U128, ParseIntError> = U128.fromStrRadix(src, 10u)
 
 /**
  * Parses an integer from a string slice with digits in a given base.
@@ -35480,10 +36359,12 @@ public fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
             while (digits != null) {
                 val c = digits[0]
                 val rest2 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, U128.fromUInt(radix))
+                result = result.wrappingMul(U128.fromUInt(radix))
                 val x =
-                    when (val matchVal = (c.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value = matchVal
                             value
@@ -35496,10 +36377,12 @@ public fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
             while (digits != null) {
                 val c1 = digits[0]
                 val rest3 = digits.subList(1, digits.size)
-                result = rustWrappingMul(result, U128.fromUInt(radix))
+                result = result.wrappingMul(U128.fromUInt(radix))
                 val x1 =
-                    when (val matchVal1 = (c1.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
+                    when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
+                        null -> {
+                            return Result.Err(Pie(kind = InvalidDigit))
+                        }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -35516,27 +36399,39 @@ public fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(U128.fromUInt(radix))
                 val x2 =
-                    U128.fromLong((when (val matchVal2 = (c2.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value2 = matchVal2
-                            value2
+                    U128.fromLong(
+                        (
+                            when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                                null -> {
+                                    return Result.Err(Pie(kind = InvalidDigit))
+                                }
+                                else -> {
+                                    val value2 = matchVal2
+                                    value2
+                                }
+                            }
+                        ).toLong(),
+                    )
+                result =
+                    when (mul) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
                         }
-                    }).toLong())
-                result = when (mul) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value3 = mul
-                        value3
+                        else -> {
+                            val value3 = mul
+                            value3
+                        }
                     }
-                }
-                result = when (val matchVal3 = rustCheckedAdd(result, x2)) {
-                    null -> { return Result.Err(Pie(kind = PosOverflow)) }
-                    else -> {
-                        val value4 = matchVal3
-                        value4
+                result =
+                    when (val matchVal3 = result.checkedAdd(x2)) {
+                        null -> {
+                            return Result.Err(Pie(kind = PosOverflow))
+                        }
+                        else -> {
+                            val value4 = matchVal3
+                            value4
+                        }
                     }
-                }
                 digits = rest4
             }
         } else {
@@ -35545,27 +36440,39 @@ public fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(U128.fromUInt(radix))
                 val x3 =
-                    U128.fromLong((when (val matchVal4 = (c3.toInt().toChar()).rustToDigit(radix)) {
-                        null -> { return Result.Err(Pie(kind = InvalidDigit)) }
-                        else -> {
-                            val value5 = matchVal4
-                            value5
+                    U128.fromLong(
+                        (
+                            when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                                null -> {
+                                    return Result.Err(Pie(kind = InvalidDigit))
+                                }
+                                else -> {
+                                    val value5 = matchVal4
+                                    value5
+                                }
+                            }
+                        ).toLong(),
+                    )
+                result =
+                    when (mul1) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
                         }
-                    }).toLong())
-                result = when (mul1) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value6 = mul1
-                        value6
+                        else -> {
+                            val value6 = mul1
+                            value6
+                        }
                     }
-                }
-                result = when (val matchVal5 = rustCheckedSub(result, x3)) {
-                    null -> { return Result.Err(Pie(kind = NegOverflow)) }
-                    else -> {
-                        val value7 = matchVal5
-                        value7
+                result =
+                    when (val matchVal5 = result.checkedSub(x3)) {
+                        null -> {
+                            return Result.Err(Pie(kind = NegOverflow))
+                        }
+                        else -> {
+                            val value7 = matchVal5
+                            value7
+                        }
                     }
-                }
                 digits = rest5
             }
         }

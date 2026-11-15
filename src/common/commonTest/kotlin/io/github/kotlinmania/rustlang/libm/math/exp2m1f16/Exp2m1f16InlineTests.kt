@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.libm.math.exp2m1f16
 
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
-import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 
 public class Exp2m1f16InlineTests {
     @kotlin.test.Test

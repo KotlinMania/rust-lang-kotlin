@@ -1,6 +1,11 @@
 // port-lint: source ffi/va_list.rs
 package io.github.kotlinmania.rustlang.core.ffi.valist
 
+import io.github.kotlinmania.rustlang.core.error.Type
+import io.github.kotlinmania.rustlang.core.intrinsics.vaArg
+import io.github.kotlinmania.rustlang.core.intrinsics.vaCopy
+import io.github.kotlinmania.rustlang.core.intrinsics.vaEnd
+import io.github.kotlinmania.rustlang.core.marker.variance.PhantomCovariantLifetime
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -8,11 +13,6 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.error.Type
-import io.github.kotlinmania.rustlang.intrinsics.vaArg
-import io.github.kotlinmania.rustlang.intrinsics.vaCopy
-import io.github.kotlinmania.rustlang.intrinsics.vaEnd
-import io.github.kotlinmania.rustlang.marker.variance.PhantomCovariantLifetime
 
 // C's "variable arguments"
 //
@@ -142,13 +142,14 @@ public open class VaListInner internal constructor(
             vrTop: ConstPtr,
             grOffs: Int,
             vrOffs: Int,
-        ): VaListInner = VaListInner(
-            stackCtorArg = stack,
-            grTopCtorArg = grTop,
-            vrTopCtorArg = vrTop,
-            grOffs = grOffs,
-            vrOffs = vrOffs,
-        )
+        ): VaListInner =
+            VaListInner(
+                stackCtorArg = stack,
+                grTopCtorArg = grTop,
+                vrTopCtorArg = vrTop,
+                grOffs = grOffs,
+                vrOffs = vrOffs,
+            )
     }
 }
 
@@ -324,7 +325,9 @@ public open class S internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 

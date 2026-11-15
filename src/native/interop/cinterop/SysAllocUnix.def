@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.std.sys.alloc.unix.cinterop
+headers = sys_alloc_unix_wrapper.h
+headerFilter = sys_alloc_unix_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = sys_alloc_unix_wrapper.a

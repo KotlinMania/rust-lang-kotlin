@@ -2,19 +2,12 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.simd.I16x16
-import io.github.kotlinmania.rustlang.simd.I16x32
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.I8x32
-import io.github.kotlinmania.rustlang.simd.I8x64
-import io.github.kotlinmania.rustlang.wasm32.i16x8
-import io.github.kotlinmania.rustlang.x86.M128i
-import io.github.kotlinmania.rustlang.x86.M256i
-import io.github.kotlinmania.rustlang.x86.M512i
-import io.github.kotlinmania.rustlang.x86.Mmask16
-import io.github.kotlinmania.rustlang.x86.Mmask32
-import io.github.kotlinmania.rustlang.x86.Mmask64
-import io.github.kotlinmania.rustlang.x86.Mmask8
+import io.github.kotlinmania.rustlang.corearch.simd.I16x16
+import io.github.kotlinmania.rustlang.corearch.simd.I16x32
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.I8x32
+import io.github.kotlinmania.rustlang.corearch.simd.I8x64
+import io.github.kotlinmania.rustlang.corearch.wasm32.i16x8
 
 // Bit-oriented Algorithms (BITALG)
 //

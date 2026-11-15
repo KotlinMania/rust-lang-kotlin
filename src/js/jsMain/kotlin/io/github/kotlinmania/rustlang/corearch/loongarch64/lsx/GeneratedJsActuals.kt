@@ -4,16 +4,6 @@ package io.github.kotlinmania.rustlang.corearch.loongarch64.lsx
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V16i8
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V16u8
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V2f64
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V2i64
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V2u64
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V4f32
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V4i32
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V4u32
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V8i16
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V8u16
 
 public actual fun lsxVsrarB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
@@ -612,21 +602,13 @@ public actual fun lsxVfrintrneS(a: V4f32): V4f32 =
 public actual fun lsxVfrintrneD(a: V2f64): V2f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun lsxVstelmB(a: V16i8, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun lsxVstelmB(a: V16i8, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun lsxVstelmH(a: V8i16, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun lsxVstelmH(a: V8i16, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun lsxVstelmW(a: V4i32, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun lsxVstelmW(a: V4i32, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun lsxVstelmD(a: V2i64, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun lsxVstelmD(a: V2i64, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lsxVaddwevDW(a: V4i32, b: V4i32): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")

@@ -7,14 +7,15 @@ import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.fromBytes
-import io.github.kotlinmania.rustlang.os.windows.ffi.fromWide
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.path.PathBuf
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sync.nonpoison.mutex.Mutex
-import io.github.kotlinmania.rustlang.sync.nonpoison.mutex.MutexGuard
-import io.github.kotlinmania.rustlang.sys.pal.unix.stackoverflow.threadinfo.LOCK
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
+import io.github.kotlinmania.rustlang.std.os.windows.ffi.fromWide
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
+import io.github.kotlinmania.rustlang.std.sys.env.common.Env
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.LOCK
 
 // Common code for printing backtraces.
 
@@ -83,7 +84,7 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
     // this allows Miri to display backtraces in isolation mode
     val cwd =
         if (!false) {
-            env.currentDir().ok()
+            Env.currentDir().ok()
         } else {
             null
         }
@@ -102,7 +103,7 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
     var print = printFmt != PrintFmt.Short
     setImageBase()
     // SAFETY: we roll our own locking in this town
-    backtracers.traceUnsynchronized(closure@{ frame ->
+    traceUnsynchronized(closure@{ frame ->
         if (printFmt == PrintFmt.Short && idx > MAX_NB_FRAMES) {
             return@closure false
         }
@@ -111,7 +112,7 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
             res = btFmt.formatter().appendLine("$idx: $frameIp")
         } else {
             var hit = false
-            backtracers.resolveFrameUnsynchronized(frame, closure1@{ symbol ->
+            resolveFrameUnsynchronized(frame, closure1@{ symbol ->
                 hit = true
                 // `__rust_end_short_backtrace` means we are done hiding symbols
                 // for now. Print until we see `__rust_begin_short_backtrace`.

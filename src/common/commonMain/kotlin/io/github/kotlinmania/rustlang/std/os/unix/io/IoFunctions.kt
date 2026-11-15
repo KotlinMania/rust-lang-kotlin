@@ -2,11 +2,11 @@ package io.github.kotlinmania.rustlang.std.os.unix.io
 
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.wasilibcFdRenumber
-import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sync.mpmc.counter.new
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
+import io.github.kotlinmania.rustlang.std.sync.mpmc.counter.new
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public fun nullFd(): Result<OwnedFd, Error> {
     val nullDev = when (val tryResult = new().read(true).write(true).open("/dev/null")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }

@@ -1,18 +1,18 @@
 // port-lint: source sys/sync/thread_parking/pthread.rs
 package io.github.kotlinmania.rustlang.std.sys.sync.threadparking.pthread
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.sys.sync.condvar.pthread.Condvar
-import io.github.kotlinmania.rustlang.sys.sync.mutex.pthread.Mutex
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sys.sync.condvar.pthread.Condvar
+import io.github.kotlinmania.rustlang.std.sys.sync.mutex.pthread.Mutex
 
 // Thread parking without `futex` using the `pthread` synchronization primitives.
 
@@ -182,8 +182,8 @@ public open class Parker internal constructor(
          * The constructed parker must never be moved.
          */
         public fun newInPlace(parker: MutPtr) {
-            (ObjectSlotLayout<Parker>()).writeNative((parker).rawAddress, Parker(state = AtomicUsize.new(EMPTY), lock = Mutex.new(), cvar = Condvar.new()))
-            Pin.newUnchecked((ObjectSlotLayout<Parker>()).readNative((parker).rawAddress).cvar).init()
+            (UnresolvedTypeLayout<Parker>()).writeNative((parker).rawAddress, Parker(state = AtomicUsize.new(EMPTY), lock = Mutex.new(), cvar = Condvar.new()))
+            Pin.newUnchecked((UnresolvedTypeLayout<Parker>()).readNative((parker).rawAddress).cvar).init()
         }
     }
 }

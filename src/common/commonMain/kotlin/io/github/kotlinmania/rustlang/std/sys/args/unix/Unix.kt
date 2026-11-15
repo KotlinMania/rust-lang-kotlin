@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.std.sys.args.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.OsStringExt
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.OsStringExt
 import io.github.kotlinmania.rustlang.std.sys.args.common.Args
-import io.github.kotlinmania.rustlang.sys.args.unix.argcArgv
+import io.github.kotlinmania.rustlang.std.sys.args.unix.imp.argcArgv
 
 // Global initialization and retrieval of command line arguments.
 //
@@ -16,7 +16,7 @@ import io.github.kotlinmania.rustlang.sys.args.unix.argcArgv
  * One-time global initialization.
  */
 public fun init(argc: Int, argv: ConstPtr) {
-    io.github.kotlinmania.rustlang.sys.args.unix.init(argc, argv)
+    io.github.kotlinmania.rustlang.std.sys.args.unix.imp.init(argc, argv)
 }
 
 /**

@@ -8,10 +8,12 @@ public sealed class Alignment {
      * Indication that contents should be left-aligned.
      */
     public data object Left : Alignment()
+
     /**
      * Indication that contents should be right-aligned.
      */
     public data object Right : Alignment()
+
     /**
      * Indication that contents should be center-aligned.
      */
@@ -161,6 +163,7 @@ public sealed class Sign {
      * Represents the `+` flag.
      */
     public data object Plus : Sign()
+
     /**
      * Represents the `-` flag.
      */
@@ -178,6 +181,7 @@ public sealed class DebugAsHex {
      * Use lower-case hexadecimal integers for the `Debug` trait (like [the `x` type](../../std/fmt/index.html#formatting-traits)).
      */
     public data object Lower : DebugAsHex()
+
     /**
      * Use upper-case hexadecimal integers for the `Debug` trait (like [the `X` type](../../std/fmt/index.html#formatting-traits)).
      */
@@ -662,7 +666,7 @@ public interface UpperHex {
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
- * import io.github.kotlinmania.rustlang.core.slice.get
+ * import io.github.kotlinmania.rustlang.core.mem.get
  * import std.fmt
  *
  * open class Length(public var value: Int) : fmt.Pointer {

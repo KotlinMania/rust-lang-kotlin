@@ -1,12 +1,12 @@
 // port-lint: source str/lossy.rs
 package io.github.kotlinmania.rustlang.core.str.lossy
 
+import io.github.kotlinmania.rustlang.core.fmt.Formatter
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.get
 import io.github.kotlinmania.rustlang.core.str.char.EscapeDebugExtArgs
+import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.validations.utf8CharWidth
-import io.github.kotlinmania.rustlang.fmt.Formatter
-import io.github.kotlinmania.rustlang.str.converts.fromUtf8Unchecked
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -134,10 +134,16 @@ public open class Debug(
             }
             // Broken parts of string as hex escape.
             for (b in chunk.invalid()) {
-                when (val tryResult = f.writeFmt("\\x$b")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                when (val tryResult = f.writeFmt("\\x$b")) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                }
             }
         }
-        return run { f.append('"'); Result.Ok(Unit) }
+        return run {
+            f.append('"')
+            Result.Ok(Unit)
+        }
     }
 }
 
@@ -175,14 +181,15 @@ public open class Debug(
 public open class Utf8Chunks(
     public var source: List<UByte>,
 ) : Iterable<Utf8Chunk> {
-    override fun iterator(): Iterator<Utf8Chunk> = object : AbstractIterator<Utf8Chunk>() {
-        override fun computeNext() {
-            when (val v = this@Utf8Chunks.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Utf8Chunk> =
+        object : AbstractIterator<Utf8Chunk>() {
+            override fun computeNext() {
+                when (val v = this@Utf8Chunks.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Utf8Chunks = Utf8Chunks(source)
 
@@ -222,7 +229,9 @@ public open class Utf8Chunks(
                                 matchVal1.first in 0xE1..0xEC && matchVal1.second in 0x80..0xBF -> Unit
                                 matchVal1.first == 0xED && matchVal1.second in 0x80..0x9F -> Unit
                                 matchVal1.first in 0xEE..0xEF && matchVal1.second in 0x80..0xBF -> Unit
-                                else -> { break }
+                                else -> {
+                                    break
+                                }
                             }
                         }
                         i += 1
@@ -238,7 +247,9 @@ public open class Utf8Chunks(
                                 matchVal2.first == 0xF0 && matchVal2.second in 0x90..0xBF -> Unit
                                 matchVal2.first in 0xF1..0xF3 && matchVal2.second in 0x80..0xBF -> Unit
                                 matchVal2.first == 0xF4 && matchVal2.second in 0x80..0x8F -> Unit
-                                else -> { break }
+                                else -> {
+                                    break
+                                }
                             }
                         }
                         i += 1
@@ -251,7 +262,9 @@ public open class Utf8Chunks(
                         }
                         i += 1
                     }
-                    else -> { break }
+                    else -> {
+                        break
+                    }
                 }
             }
             validUpTo = i

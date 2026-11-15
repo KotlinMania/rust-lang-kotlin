@@ -1,16 +1,17 @@
 package io.github.kotlinmania.rustlang.test.term.terminfo
 
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.term.Terminal
-import io.github.kotlinmania.rustlang.term.color.Color
-import io.github.kotlinmania.rustlang.term.terminfo.parser.compiled.msysTerminfo
+import io.github.kotlinmania.rustlang.test.term.Terminal
+import io.github.kotlinmania.rustlang.test.term.color.Color
 import io.github.kotlinmania.rustlang.test.term.terminfo.Error.*
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.Param
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.Variables
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.expand
+import io.github.kotlinmania.rustlang.test.term.terminfo.parser.compiled.msysTerminfo
 import io.github.kotlinmania.rustlang.test.term.terminfo.searcher.getDbpathForTerm
 
 /**
@@ -119,7 +120,7 @@ public open class TerminfoTerminal<T>(
                             cmd
                         }; is Result.Err<*, *> -> {
                             val e = matchVal1.error
-                            return Result.Err(Error.new(ErrorKind.InvalidData, e))
+                            return Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
                         } }
                     }
                 }
@@ -146,7 +147,7 @@ public open class TerminfoTerminal<T>(
                         this.out.writeAll(s).and(Result.Ok(true))
                     }; is Result.Err<*, *> -> {
                         val e = matchVal1.error
-                        Result.Err(Error.new(ErrorKind.InvalidData, e))
+                        Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
                     } }
                 }
             }

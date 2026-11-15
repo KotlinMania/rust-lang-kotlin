@@ -8,10 +8,10 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.asMutPtr
+import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 // Streaming SIMD Extensions (SSE)
 
@@ -996,7 +996,9 @@ public fun testMmStoreuPs() {
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+            set(value) {
+                fieldLayout.writeNative(fieldStorage.rawAddress, value)
+            }
 
         public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
@@ -1051,7 +1053,9 @@ public open class Memory internal constructor(
 ) {
     public var data: FloatArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 

@@ -1,8 +1,6 @@
 // port-lint: source cast.rs
 package io.github.kotlinmania.rustlang.coresimd
 
-import io.github.kotlinmania.rustlang.SimdElement
-
 /**
  * Supporting trait for `Simd.cast`.  Typically doesn't need to be used directly.
  *

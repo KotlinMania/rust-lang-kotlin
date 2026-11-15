@@ -1,5 +1,17 @@
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundTiesEvenf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundTiesEvenf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf64
+
 /**
  * Generates the [unreachable] instruction, which causes an unconditional [trap].
  *
@@ -8,7 +20,7 @@ package io.github.kotlinmania.rustlang.corearch.wasm32
  * [unreachable]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-control
  * [trap]: https://webassembly.github.io/spec/core/intro/overview.html#trap
  */
-public fun unreachable(): Nothing = abortImmediate()
+public fun unreachable(): Nothing = kmAbort()
 
 /**
  * Generates the [f32.ceil] instruction, returning the smallest integer greater than or equal to `a`.
@@ -18,7 +30,7 @@ public fun unreachable(): Nothing = abortImmediate()
  * [std.f32.ceil]: https://doc.rust-lang.org/std/primitive.f32.html#method.ceil
  * [f32.ceil]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-numeric
  */
-public fun f32Ceil(a: Float): Float = ceil(a)
+public fun f32Ceil(a: Float): Float = kmCeilf32(a)
 
 /**
  * Generates the [f32.floor] instruction, returning the largest integer less than or equal to `a`.
@@ -28,7 +40,7 @@ public fun f32Ceil(a: Float): Float = ceil(a)
  * [std.f32.floor]: https://doc.rust-lang.org/std/primitive.f32.html#method.floor
  * [f32.floor]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-numeric
  */
-public fun f32Floor(a: Float): Float = floor(a)
+public fun f32Floor(a: Float): Float = kmFloorf32(a)
 
 /**
  * Generates the [f32.trunc] instruction, roundinging to the nearest integer towards zero.
@@ -38,7 +50,7 @@ public fun f32Floor(a: Float): Float = floor(a)
  * [std.f32.trunc]: https://doc.rust-lang.org/std/primitive.f32.html#method.trunc
  * [f32.trunc]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-numeric
  */
-public fun f32Trunc(a: Float): Float = trunc(a)
+public fun f32Trunc(a: Float): Float = kmTruncf32(a)
 
 /**
  * Generates the [f32.nearest] instruction, roundinging to the nearest integer. Rounds half-way
@@ -49,7 +61,7 @@ public fun f32Trunc(a: Float): Float = trunc(a)
  * [std.f32.roundTiesEven]: https://doc.rust-lang.org/std/primitive.f32.html#method.roundTiesEven
  * [f32.nearest]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-numeric
  */
-public fun f32Nearest(a: Float): Float = roundTiesEven(a)
+public fun f32Nearest(a: Float): Float = kmRoundTiesEvenf32(a)
 
 /**
  * Generates the [f32.sqrt] instruction, returning the square root of the number `a`.
@@ -59,7 +71,7 @@ public fun f32Nearest(a: Float): Float = roundTiesEven(a)
  * [std.f32.sqrt]: https://doc.rust-lang.org/std/primitive.f32.html#method.sqrt
  * [f32.sqrt]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-numeric
  */
-public fun f32Sqrt(a: Float): Float = sqrt(a)
+public fun f32Sqrt(a: Float): Float = kmSqrtf32(a)
 
 /**
  * Generates the [f64.ceil] instruction, returning the smallest integer greater than or equal to `a`.
@@ -69,7 +81,7 @@ public fun f32Sqrt(a: Float): Float = sqrt(a)
  * [std.f64.ceil]: https://doc.rust-lang.org/std/primitive.f64.html#method.ceil
  * [f64.ceil]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-numeric
  */
-public fun f64Ceil(a: Double): Double = ceil(a)
+public fun f64Ceil(a: Double): Double = kmCeilf64(a)
 
 /**
  * Generates the [f64.floor] instruction, returning the largest integer less than or equal to `a`.
@@ -79,7 +91,7 @@ public fun f64Ceil(a: Double): Double = ceil(a)
  * [std.f64.floor]: https://doc.rust-lang.org/std/primitive.f64.html#method.floor
  * [f64.floor]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-numeric
  */
-public fun f64Floor(a: Double): Double = floor(a)
+public fun f64Floor(a: Double): Double = kmFloorf64(a)
 
 /**
  * Generates the [f64.trunc] instruction, roundinging to the nearest integer towards zero.
@@ -89,7 +101,7 @@ public fun f64Floor(a: Double): Double = floor(a)
  * [std.f64.trunc]: https://doc.rust-lang.org/std/primitive.f64.html#method.trunc
  * [f64.trunc]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-numeric
  */
-public fun f64Trunc(a: Double): Double = trunc(a)
+public fun f64Trunc(a: Double): Double = kmTruncf64(a)
 
 /**
  * Generates the [f64.nearest] instruction, roundinging to the nearest integer. Rounds half-way
@@ -100,7 +112,7 @@ public fun f64Trunc(a: Double): Double = trunc(a)
  * [std.f64.roundTiesEven]: https://doc.rust-lang.org/std/primitive.f64.html#method.roundTiesEven
  * [f64.nearest]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-numeric
  */
-public fun f64Nearest(a: Double): Double = roundTiesEven(a)
+public fun f64Nearest(a: Double): Double = kmRoundTiesEvenf64(a)
 
 /**
  * Generates the [f64.sqrt] instruction, returning the square root of the number `a`.
@@ -110,4 +122,4 @@ public fun f64Nearest(a: Double): Double = roundTiesEven(a)
  * [std.f64.sqrt]: https://doc.rust-lang.org/std/primitive.f64.html#method.sqrt
  * [f64.sqrt]: https://webassembly.github.io/spec/core/syntax/instructions.html#syntax-instr-numeric
  */
-public fun f64Sqrt(a: Double): Double = sqrt(a)
+public fun f64Sqrt(a: Double): Double = kmSqrtf64(a)

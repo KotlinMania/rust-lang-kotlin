@@ -1,13 +1,13 @@
 // port-lint: source index.rs
 package io.github.kotlinmania.rustlang.core.index
 
+import io.github.kotlinmania.rustlang.core.intrinsics.sliceGetUnchecked
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.intrinsics.sliceGetUnchecked
-import io.github.kotlinmania.rustlang.range.Range
-import io.github.kotlinmania.rustlang.slice.index.SliceIndex
+import io.github.kotlinmania.rustlang.core.range.Range
+import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 
 // Helper types for indexing slices.
 

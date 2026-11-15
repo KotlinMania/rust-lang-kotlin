@@ -1,20 +1,23 @@
 package io.github.kotlinmania.rustlang.alloc.collections.binaryheap
 
-import io.github.kotlinmania.rustlang.collections.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.swap
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.vec.Vec
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -152,11 +155,21 @@ public open class BinaryHeap<T, A : Allocator>(
      * See [Vec.cloneFrom] for more details.
      */
     public open fun cloneFrom(source: BinaryHeap<T, A>) {
-        run { this.data.clear(); this.data.addAll(source.data) }
+        run {
+            this.data.clear()
+            this.data.addAll(source.data)
+        }
     }
 
     public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+        object {
+            val entries = mutableListOf<Any?>()
+            fun entry(v: Any?) = apply { entries.add(v) }
+            fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }
+            fun finish() {
+                f.append(entries.joinToString(", ", "[", "]"))
+            }
+        }.entries(this.iter()).finish()
     }
 
     /**
@@ -328,7 +341,7 @@ public open class BinaryHeap<T, A : Allocator>(
             // 1 <= end < self.len(), which means self.len() >= 2.
             run {
                 val ptr = this.data.asMutPtr()
-                ptr.swap(ptr, MutPtr((ptr).rawAddress + ((end).toLong() * (ObjectSlotLayout<T>()).strideBytes)))
+                swap(ptr, MutPtr((ptr).rawAddress + ((end).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)))
             }
             // SAFETY: `end` goes from `self.len() - 1` to 1 (both included) so:
             // 0 < 1 <= end <= self.len() - 1 < self.len()
@@ -388,7 +401,7 @@ public open class BinaryHeap<T, A : Allocator>(
         val hole = Hole.new(this.data, pos)
         var child = 2 * hole.pos() + 1
         // Loop invariant: child == 2 * hole.pos() + 1.
-        while (child <= rustSaturatingSub(end, 2)) {
+        while (child <= end.saturatingSub(2)) {
             // compare with the greater of the two children
             // SAFETY: child < end - 1 < self.len() and
             // child + 1 < end <= self.len(), so they're valid indexes.
@@ -448,7 +461,7 @@ public open class BinaryHeap<T, A : Allocator>(
         val hole = Hole.new(this.data, pos1)
         var child = 2 * hole.pos() + 1
         // Loop invariant: child == 2 * hole.pos() + 1.
-        while (child <= rustSaturatingSub(end, 2)) {
+        while (child <= end.saturatingSub(2)) {
             // SAFETY: child < end - 1 < self.len() and
             // child + 1 < end <= self.len(), so they're valid indexes.
             // child == 2 * hole.pos() + 1 != hole.pos() and
@@ -476,7 +489,7 @@ public open class BinaryHeap<T, A : Allocator>(
      * Rebuild assuming data[0..start] is still a proper heap.
      */
     public open fun rebuildTail(start: Int) {
-        fun log2Fast(x: Int): Int = (32u - rustLeadingZeros(x) - 1u).toInt()
+        fun log2Fast(x: Int): Int = (32u - x.leadingZeros() - 1u).toInt()
         if (start == this.len()) {
             return
         }
@@ -1299,10 +1312,11 @@ public open class PeekMut<T, A : Allocator> internal constructor(
         public operator fun <T, A : Allocator> invoke(
             heap: BinaryHeap<T, A>,
             originalLen: NonZero<Int>?,
-        ): PeekMut<T, A> = PeekMut<T, A>(
-            heapCtorArg = heap,
-            originalLenCtorArg = originalLen,
-        )
+        ): PeekMut<T, A> =
+            PeekMut<T, A>(
+                heapCtorArg = heap,
+                originalLenCtorArg = originalLen,
+            )
 
         /**
          * Removes the peeked value from the heap and returns it.
@@ -1342,10 +1356,11 @@ public open class RebuildOnDrop<T, A : Allocator> internal constructor(
         public operator fun <T, A : Allocator> invoke(
             heap: BinaryHeap<T, A>,
             rebuildFrom: Int,
-        ): RebuildOnDrop<T, A> = RebuildOnDrop<T, A>(
-            heapCtorArg = heap,
-            rebuildFrom = rebuildFrom,
-        )
+        ): RebuildOnDrop<T, A> =
+            RebuildOnDrop<T, A>(
+                heapCtorArg = heap,
+                rebuildFrom = rebuildFrom,
+            )
     }
 }
 
@@ -1394,9 +1409,9 @@ public open class Hole<T>(
         val ptr = this.data.asMutPtr()
         // ignore-tidy-undocumented-unchecked
         run {
-            val indexPtr: ConstPtr = MutPtr((ptr).rawAddress + ((index).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-            val holePtr = MutPtr((ptr).rawAddress + ((this.pos).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-            ptr.copyNonoverlapping(indexPtr, holePtr, 1, typeLayoutT = ObjectSlotLayout<Any?>())
+            val indexPtr: ConstPtr = MutPtr((ptr).rawAddress + ((index).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+            val holePtr = MutPtr((ptr).rawAddress + ((this.pos).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+            copyNonoverlapping(indexPtr, holePtr, 1, typeLayoutT = UnresolvedTypeLayout<Any?>())
         }
         this.pos = index
     }
@@ -1406,7 +1421,7 @@ public open class Hole<T>(
         val pos = this.pos
         // ignore-tidy-undocumented-unchecked
         run {
-            ptr.copyNonoverlapping(this.elt, this.data.getUncheckedMut(pos), 1)
+            copyNonoverlapping(this.elt, this.data.getUncheckedMut(pos), 1)
         }
     }
 
@@ -1421,7 +1436,7 @@ public open class Hole<T>(
         public fun <T> new(data: MutableList<T>, pos: Int): Hole<T> {
             check(pos < data.size)
             // SAFETY: Caller ensures pos is inside the slice.
-            val elt = ptr.read(data.getUnchecked(pos))
+            val elt = read(data.getUnchecked(pos))
             return Hole(data = data, elt = elt, pos = pos)
         }
     }
@@ -1438,14 +1453,15 @@ public open class Hole<T>(
 public open class Iter<T>(
     public var iter: ArrayDeque<T>,
 ) : Iterable<T> {
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Iter.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@Iter.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun fmt(f: StringBuilder) {
         DebugTuple(f, "Iter").field(this.iter.toList()).finish()
@@ -1456,7 +1472,11 @@ public open class Iter<T>(
 
     public open fun next(): T? = this.iter.removeFirstOrNull()
 
-    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
+    public open fun sizeHint(): Pair<Int, Int?> =
+        run {
+            val n = this.iter.size
+            Pair(n, n)
+        }
 
     public open fun last(): T? = this.iter.last()
 
@@ -1487,15 +1507,18 @@ public open class Iter<T>(
  */
 public open class IntoIter<T, A : Allocator>(
     public var iter: ArrayDeque<T>,
-) : TrustedFused, SourceIter, Iterable<T> {
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@IntoIter.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedFused,
+    SourceIter,
+    Iterable<T> {
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@IntoIter.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): IntoIter<T, A> = IntoIter(iter)
 
@@ -1510,7 +1533,11 @@ public open class IntoIter<T, A : Allocator>(
 
     public open fun next(): T? = this.iter.removeFirstOrNull()
 
-    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
+    public open fun sizeHint(): Pair<Int, Int?> =
+        run {
+            val n = this.iter.size
+            Pair(n, n)
+        }
 
     public open fun nextBack(): T? = this.iter.removeLastOrNull()
 
@@ -1539,18 +1566,20 @@ public fun <I> IntoIter<I>.asIntoIter(): ArrayDeque<I> = this.iter
 
 public open class IntoIterSorted<T, A : Allocator> internal constructor(
     innerCtorArg: BinaryHeap<T, A>,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen,
+    Iterable<T> {
     public var inner: BinaryHeap<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@IntoIterSorted.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@IntoIterSorted.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): IntoIterSorted<T, A> = IntoIterSorted(inner)
 
@@ -1569,9 +1598,10 @@ public open class IntoIterSorted<T, A : Allocator> internal constructor(
     public companion object {
         public operator fun <T, A : Allocator> invoke(
             inner: BinaryHeap<T, A>,
-        ): IntoIterSorted<T, A> = IntoIterSorted<T, A>(
-            innerCtorArg = inner,
-        )
+        ): IntoIterSorted<T, A> =
+            IntoIterSorted<T, A>(
+                innerCtorArg = inner,
+            )
     }
 }
 
@@ -1589,14 +1619,15 @@ public open class Drain<T, A : Allocator> internal constructor(
     public var iter: vec.Drain<T, A> = iterCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Drain.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@Drain.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     /**
      * Returns a reference to the underlying allocator.
@@ -1614,9 +1645,10 @@ public open class Drain<T, A : Allocator> internal constructor(
     public companion object {
         public operator fun <T, A : Allocator> invoke(
             iter: vec.Drain<T, A>,
-        ): Drain<T, A> = Drain<T, A>(
-            iterCtorArg = iter,
-        )
+        ): Drain<T, A> =
+            Drain<T, A>(
+                iterCtorArg = iter,
+            )
     }
 }
 
@@ -1630,18 +1662,20 @@ public open class Drain<T, A : Allocator> internal constructor(
  */
 public open class DrainSorted<T, A : Allocator> internal constructor(
     innerCtorArg: BinaryHeap<T, A>,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen,
+    Iterable<T> {
     public var inner: BinaryHeap<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@DrainSorted.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@DrainSorted.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     /**
      * Returns a reference to the underlying allocator.
@@ -1685,8 +1719,9 @@ public open class DrainSorted<T, A : Allocator> internal constructor(
     public companion object {
         public operator fun <T, A : Allocator> invoke(
             inner: BinaryHeap<T, A>,
-        ): DrainSorted<T, A> = DrainSorted<T, A>(
-            innerCtorArg = inner,
-        )
+        ): DrainSorted<T, A> =
+            DrainSorted<T, A>(
+                innerCtorArg = inner,
+            )
     }
 }

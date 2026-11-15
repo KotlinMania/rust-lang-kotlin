@@ -1,16 +1,13 @@
 // port-lint: source x86/f16c.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.simd.F16x4
-import io.github.kotlinmania.rustlang.simd.F16x8
-import io.github.kotlinmania.rustlang.simd.F32x4
-import io.github.kotlinmania.rustlang.simd.F32x8
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.x86.M128
-import io.github.kotlinmania.rustlang.x86.M128i
-import io.github.kotlinmania.rustlang.x86.M256
+import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.corearch.simd.F16x4
+import io.github.kotlinmania.rustlang.corearch.simd.F16x8
+import io.github.kotlinmania.rustlang.corearch.simd.F32x4
+import io.github.kotlinmania.rustlang.corearch.simd.F32x8
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
 
 // [F16C intrinsics].
 //

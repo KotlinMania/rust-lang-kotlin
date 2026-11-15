@@ -15,7 +15,7 @@
 #endif
 #endif
 
-void rustlangDummyRustAbort(void) {
+void panicunwindDummyRustAbort(void) {
     typedef void (*km_fn_t)(void);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

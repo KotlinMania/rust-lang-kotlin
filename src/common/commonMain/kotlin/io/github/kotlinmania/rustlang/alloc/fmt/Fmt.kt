@@ -1,7 +1,7 @@
 // port-lint: source fmt.rs
 package io.github.kotlinmania.rustlang.alloc.fmt
 
-import io.github.kotlinmania.rustlang.borrow.ToOwned
+import io.github.kotlinmania.rustlang.alloc.borrow.ToOwned
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
 
 // Utilities for formatting and printing `String`s.

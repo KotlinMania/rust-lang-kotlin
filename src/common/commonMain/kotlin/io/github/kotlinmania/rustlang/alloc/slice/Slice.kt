@@ -1,24 +1,25 @@
 // port-lint: source slice.rs
 package io.github.kotlinmania.rustlang.alloc.slice
 
-import io.github.kotlinmania.rustlang.alloc.Global
-import io.github.kotlinmania.rustlang.boxed.Box
+import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.boxed.Box
+import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.sort
-import io.github.kotlinmania.rustlang.vec.Vec
 
 // Utilities for the slice primitive type.
 //
@@ -260,14 +261,19 @@ public fun <T, K> List<T>.sortByCachedKey(f: (T) -> K, typeLayoutK: TypeLayout<K
     }
     // Avoids binary-size usage in cases where the alignment doesn't work out to make this
     // beneficial or on 32-bit platforms.
-    val isUsingU32AsIdxTypeHelpful = sizeOf<Pair<K, UInt>>(typeLayoutT = ObjectSlotLayout<Pair<K, UInt>>()) < sizeOf<Pair<K, Int>>(typeLayoutT = ObjectSlotLayout<Pair<K, Int>>())
+    val isUsingU32AsIdxTypeHelpful = sizeOf<Pair<K, UInt>>(typeLayoutT = UnresolvedTypeLayout<Pair<K, UInt>>()) < sizeOf<Pair<K, Int>>(typeLayoutT = UnresolvedTypeLayout<Pair<K, Int>>())
     // It's possible to instantiate this for u8 and u16 but, doing so is very wasteful in terms
     // of compile-times and binary-size, the peak saved heap memory for u16 is (u8 + u16) -> 4
     // bytes * u16.Max vs (u8 + u32) -> 8 bytes * u16.Max, the saved heap memory is at peak
     // ~262KB.
     if (isUsingU32AsIdxTypeHelpful && len <= (UInt.MAX_VALUE.toInt())) {
         return run {
-            val indices: Vec  = this.map(f).mapIndexed { index, item -> Pair(index, item) }.map({ (i, k) -> Pair(k, i.toUInt()) }).collect()
+            val indices: Vec =
+                this
+                    .map(f)
+                    .mapIndexed { index, item -> Pair(index, item) }
+                    .map({ (i, k) -> Pair(k, i.toUInt()) })
+                    .collect()
             indices.sortUnstable()
             for (i in 0 until this.size) {
                 var index = indices[i].second
@@ -280,7 +286,12 @@ public fun <T, K> List<T>.sortByCachedKey(f: (T) -> K, typeLayoutK: TypeLayout<K
         }
     }
     run {
-        val indices1: Vec  = this.map(f).mapIndexed { index, item -> Pair(index, item) }.map({ (i1, k) -> Pair(k, i1.toInt()) }).collect()
+        val indices1: Vec =
+            this
+                .map(f)
+                .mapIndexed { index, item -> Pair(index, item) }
+                .map({ (i1, k) -> Pair(k, i1.toInt()) })
+                .collect()
         indices1.sortUnstable()
         for (i1 in 0 until this.size) {
             var index1 = indices1[i1].second
@@ -413,7 +424,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
     // `2 ^ expn` is the number represented by the leftmost '1' bit of `n`,
     // and `rem` is the remaining part of `n`.
     // Using `List` to access `setLen()`.
-    val capacity = (rustCheckedMul(this.size, n) ?: error("capacity overflow"))
+    val capacity = (this.size.checkedMul(n) ?: error("capacity overflow"))
     val buf = ArrayList<T>(capacity)
     // `2 ^ expn` repetition is done by doubling `buf` `expn`-times.
     buf.extend(this)
@@ -430,7 +441,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
             // which is tracked via `m` - when `m == 0`, we've written `mostSignificantBit(n)`
             // elements to the buffer.
             run {
-                ptr.copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
+                copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (UnresolvedTypeLayout<*>()).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
             }
             // `buf` has capacity of `self.len() * n`.
             val bufLen = buf.size
@@ -455,7 +466,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
         // space with copies of the previous `len` elements.
         run {
             // This is non-overlapping since `2 ^ expn> rem`.
-            ptr.copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), remLen, typeLayoutT = typeLayoutT)
+            copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (UnresolvedTypeLayout<*>()).strideBytes)), remLen, typeLayoutT = typeLayoutT)
             // `buf.len() + remLen` equals to `buf.capacity()` (`= self.len() * n`).
             buf.setLen(capacity)
         }
@@ -592,7 +603,9 @@ public fun <T, V : Borrow<List<T>>> joinVSlice(slice: List<V>, sep: T, cloneTFn:
     val iter = slice.iter()
     val first1 =
         when (val matchVal = iter.next()) {
-            null -> { return mutableListOf() }
+            null -> {
+                return mutableListOf()
+            }
             else -> {
                 val first = matchVal
                 first
@@ -612,7 +625,9 @@ public fun <T, V : Borrow<List<T>>> joinVSlice(slice: List<V>, sep: List<T>): Li
     val iter = slice.iter()
     val first1 =
         when (val matchVal = iter.next()) {
-            null -> { return mutableListOf() }
+            null -> {
+                return mutableListOf()
+            }
             else -> {
                 val first = matchVal
                 first
@@ -668,7 +683,7 @@ public fun <T> List<T>.cloneIntoFromTSlice(target: List<T>) {
 // Sorting
 // ///////////////////////////////////////////////////////////////////////////
 public fun <T> stableSort(v: MutableList<T>, isLess: (T, T) -> Boolean) {
-    sort.sort<T, (T, T) -> Boolean, List<T>>(v, isLess)
+    sort<T, (T, T) -> Boolean, List<T>>(v, isLess)
 }
 
 public fun <T> bufGuardWithCapacityVecT(capacity: Int): List<T> = ArrayList(capacity)

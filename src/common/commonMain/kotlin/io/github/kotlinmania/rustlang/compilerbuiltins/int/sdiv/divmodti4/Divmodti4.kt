@@ -10,4 +10,6 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 /**
  * Returns `n / d` and sets `* rem = n % d`
  */
-public fun divmodti4(a: I128, b: I128, rem: RustMutableReference<I128>): I128 = io.github.kotlinmania.rustlang.int.sdiv.divmodti4(a, b, rem)
+public fun divmodti4(a: I128, b: I128, rem: RustMutableReference<I128>): I128 =
+    io.github.kotlinmania.rustlang.compilerbuiltins.int.sdiv
+        .divmodti4(a, b, rem)

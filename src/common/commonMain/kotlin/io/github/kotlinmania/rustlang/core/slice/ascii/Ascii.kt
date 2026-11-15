@@ -3,37 +3,37 @@
 
 package io.github.kotlinmania.rustlang.core.slice.ascii
 
-import io.github.kotlinmania.rustlang.ascii.EscapeDefault
-import io.github.kotlinmania.rustlang.ascii.escapeDefault
+import io.github.kotlinmania.rustlang.core.ascii.EscapeDefault
+import io.github.kotlinmania.rustlang.core.ascii.escapeDefault
 import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mmLoaduSi128
+import io.github.kotlinmania.rustlang.core.mmMovemaskEpi8
+import io.github.kotlinmania.rustlang.core.mmOrSi128
+import io.github.kotlinmania.rustlang.core.ops.function.Fn
+import io.github.kotlinmania.rustlang.core.ops.function.FnMut
+import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.intrinsics.alignOf
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.iter.adapters.filter.Filter
-import io.github.kotlinmania.rustlang.mmLoaduSi128
-import io.github.kotlinmania.rustlang.mmMovemaskEpi8
-import io.github.kotlinmania.rustlang.mmOrSi128
-import io.github.kotlinmania.rustlang.ops.function.Fn
-import io.github.kotlinmania.rustlang.ops.function.FnMut
-import io.github.kotlinmania.rustlang.ops.function.FnOnce
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.slice.iter.Iter
-import io.github.kotlinmania.rustlang.slice.iter.Split
-import io.github.kotlinmania.rustlang.str.BytesIsNotEmpty
-import io.github.kotlinmania.rustlang.str.IsAsciiWhitespace
-import io.github.kotlinmania.rustlang.str.converts.fromUtf8Unchecked
-import io.github.kotlinmania.rustlang.str.count.USIZE_SIZE
-import io.github.kotlinmania.rustlang.str.validations.NONASCII_MASK
-import io.github.kotlinmania.rustlang.vld1qU8
-import io.github.kotlinmania.rustlang.vmaxvqU8
-import io.github.kotlinmania.rustlang.vorrqU8
+import io.github.kotlinmania.rustlang.core.slice.iter.Iter
+import io.github.kotlinmania.rustlang.core.slice.iter.Split
+import io.github.kotlinmania.rustlang.core.str.BytesIsNotEmpty
+import io.github.kotlinmania.rustlang.core.str.IsAsciiWhitespace
+import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
+import io.github.kotlinmania.rustlang.core.str.count.USIZE_SIZE
+import io.github.kotlinmania.rustlang.core.str.validations.NONASCII_MASK
+import io.github.kotlinmania.rustlang.core.vld1qU8
+import io.github.kotlinmania.rustlang.core.vmaxvqU8
+import io.github.kotlinmania.rustlang.core.vorrqU8
 
 // Operations on ASCII `[UByte]`.
 
@@ -73,7 +73,7 @@ public fun List<UByte>.isAscii(): Boolean = isAscii(this)
  * If this slice [`isAscii`](Self.isAscii), returns it as a slice of
  * [ASCII characters](ascii.Char), otherwise returns `None`.
  */
-public fun List<UByte>.asAscii(): List<io.github.kotlinmania.rustlang.ascii.Char>? =
+public fun List<UByte>.asAscii(): List<io.github.kotlinmania.rustlang.core.ascii.Char>? =
     if (this.isAscii()) {
         // SAFETY: Just checked that it's ASCII
         this.asAsciiUnchecked()
@@ -89,11 +89,11 @@ public fun List<UByte>.asAscii(): List<io.github.kotlinmania.rustlang.ascii.Char
  *
  * Every byte in the slice must be in `0 ..= 127`, or else this is UB.
  */
-public fun List<UByte>.asAsciiUnchecked(): List<io.github.kotlinmania.rustlang.ascii.Char> {
+public fun List<UByte>.asAsciiUnchecked(): List<io.github.kotlinmania.rustlang.core.ascii.Char> {
     val bytePtr: ConstPtr = this
     val asciiPtr = ConstPtr(bytePtr.rawAddress, bytePtr.rawMeta)
     // SAFETY: The caller promised all the bytes are ASCII
-    return (ObjectSlotLayout<List<io.github.kotlinmania.rustlang.ascii.Char>>()).readNative((asciiPtr).rawAddress)
+    return (UnresolvedTypeLayout<List<io.github.kotlinmania.rustlang.core.ascii.Char>>()).readNative((asciiPtr).rawAddress)
 }
 
 /**
@@ -411,14 +411,15 @@ public open class SplitAsciiWhitespace internal constructor(
     public var inner: Filter<Split<UByte, IsAsciiWhitespace>, BytesIsNotEmpty> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<List<UByte>> = object : AbstractIterator<List<UByte>>() {
-        override fun computeNext() {
-            when (val v = this@SplitAsciiWhitespace.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<List<UByte>> =
+        object : AbstractIterator<List<UByte>>() {
+            override fun computeNext() {
+                when (val v = this@SplitAsciiWhitespace.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): SplitAsciiWhitespace = SplitAsciiWhitespace(inner)
 
@@ -461,13 +462,17 @@ public open class SplitAsciiWhitespace internal constructor(
     public companion object {
         public operator fun invoke(
             inner: Filter<Split<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>,
-        ): SplitAsciiWhitespace = SplitAsciiWhitespace(
-            innerCtorArg = inner,
-        )
+        ): SplitAsciiWhitespace =
+            SplitAsciiWhitespace(
+                innerCtorArg = inner,
+            )
     }
 }
 
-public open class EscapeByte : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, EscapeDefault> {
+public open class EscapeByte :
+    Fn<UByte>,
+    FnMut<UByte>,
+    FnOnce<UByte, EscapeDefault> {
     public open fun clone(): EscapeByte = EscapeByte()
 
     public override fun call(tupleArg0: UByte): EscapeDefault = escapeDefault(byte)
@@ -505,14 +510,15 @@ public open class EscapeAscii internal constructor(
     public var inner: FlatMap<Iter<UByte>, EscapeDefault, EscapeByte> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
-        override fun computeNext() {
-            when (val v = this@EscapeAscii.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<UByte> =
+        object : AbstractIterator<UByte>() {
+            override fun computeNext() {
+                when (val v = this@EscapeAscii.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): EscapeAscii = EscapeAscii(inner)
 
@@ -571,9 +577,10 @@ public open class EscapeAscii internal constructor(
     public companion object {
         public operator fun invoke(
             inner: FlatMap<Iter<UByte>, EscapeDefault, EscapeByte>,
-        ): EscapeAscii = EscapeAscii(
-            innerCtorArg = inner,
-        )
+        ): EscapeAscii =
+            EscapeAscii(
+                innerCtorArg = inner,
+            )
     }
 }
 

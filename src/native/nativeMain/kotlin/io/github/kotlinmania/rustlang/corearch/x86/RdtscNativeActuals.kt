@@ -2,11 +2,11 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.rustlangCorearchX86RdtscRdtsc
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86RdtscRdtsc
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun rdtsc(): ULong =
-    rustlangCorearchX86RdtscRdtsc()
+    corearchX86RdtscRdtsc()
 
 public actual fun rdtscp(): Pair<ULong, UInt> =
     Pair<ULong, UInt>(0uL, 0u)

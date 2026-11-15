@@ -1,8 +1,8 @@
 // port-lint: source new/linux_uapi/linux/membarrier.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.membarrier
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `uapi / linux / membarrier.h`
 

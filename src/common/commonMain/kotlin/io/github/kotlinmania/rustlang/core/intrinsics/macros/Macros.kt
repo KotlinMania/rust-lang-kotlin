@@ -1,8 +1,6 @@
 // port-lint: source intrinsics/macros.rs
 package io.github.kotlinmania.rustlang.core.intrinsics.macros
 
-import io.github.kotlinmania.rustlang.intrinsics.macros.intrinsicDispatchOnType
-
 // Macros used to declare intrinsics.
 
 private const val INTRINSIC_DISPATCH_ON_TYPE_TEMPLATE: String = "intrinsicDispatchOnType {@ declare[]\$()* \$vis fun \$name< \$generic: \$bound>(\$(\$arg: \$argTy),*)-> \$retTy; \$(\$concrete=> \$body)*}"

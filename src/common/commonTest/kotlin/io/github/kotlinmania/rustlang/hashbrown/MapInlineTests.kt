@@ -1,24 +1,18 @@
 // port-lint: tests map.rs
 package io.github.kotlinmania.rustlang.hashbrown
 
-import io.github.kotlinmania.rustlang.Entry.Occupied
-import io.github.kotlinmania.rustlang.Entry.Vacant
-import io.github.kotlinmania.rustlang.Guard
-import io.github.kotlinmania.rustlang.TryReserveError.CapacityOverflow
-import io.github.kotlinmania.rustlang.alloc.Allocator
-import io.github.kotlinmania.rustlang.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -26,8 +20,13 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.hasher.DefaultHashBuilder
-import io.github.kotlinmania.rustlang.hasher.DefaultHasher
+import io.github.kotlinmania.rustlang.hashbrown.Entry.Occupied
+import io.github.kotlinmania.rustlang.hashbrown.Entry.Vacant
+import io.github.kotlinmania.rustlang.hashbrown.TryReserveError.CapacityOverflow
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
+import io.github.kotlinmania.rustlang.hashbrown.raw.prevPow2
 import io.github.kotlinmania.rustlang.libc.mmap
 import io.github.kotlinmania.rustlang.libc.munmap
 import io.github.kotlinmania.rustlang.libc.sysconf
@@ -37,7 +36,9 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_PRIVATE
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_WRITE
 import io.github.kotlinmania.rustlang.libc.wasi.SC_PAGESIZE
-import io.github.kotlinmania.rustlang.raw.prevPow2
+import io.github.kotlinmania.rustlang.std.hash.random.DefaultHasher
+import io.github.kotlinmania.rustlang.std.thread.lifecycle.scope
+import io.github.kotlinmania.rustlang.std.thread.scoped.ScopedJoinHandle
 
 public typealias HM = HashMap<Int, Int>
 
@@ -212,7 +213,7 @@ public fun <I, T, A> getTestMap(iter: I, fn: (ULong) -> T, alloc: A, cloneIFn: (
                 return Result.Err("key != check_count,\nkey: `$key`,\ncheck_count: `$checkCount`")
             }
             if (value.dropped || value.panicInClone != panicInClone1 || value.panicInDrop != panicInDrop1 || value.data != fn(checkCount)) {
-                return Result.Err("Value is not equal to expected,\nvalue: `$value`,\nexpected: `CheckedCloneDrop { panic_in_clone: $panicInClone1, panic_in_drop: $panicInDrop1, dropped: $false, data: ${fn(checkCount)} }`")
+                return Result.Err("Value is not equal to expected,\nvalue: `$value`,\nexpected: `CheckedCloneDrop { panic_in_clone: $panicInClone1, panic_in_drop: $panicInDrop1, dropped: false, data: ${fn(checkCount)} }`")
             }
             checkCount += 1
         }
@@ -1598,7 +1599,7 @@ public open class MmapAllocator(
             0 -> Result.Ok(n1)
             else -> {
                 val rem = matchVal
-                (rustCheckedAdd(n1, this.pageSize - rem)?.let { Result.Ok(it) } ?: Result.Err(AllocError))
+                (n1.checkedAdd(this.pageSize - rem)?.let { Result.Ok(it) } ?: Result.Err(AllocError))
             }
         }
     }
@@ -1683,7 +1684,7 @@ public class MapTestMapWithMmapAllocationsInlineTests {
         val alloc = MmapAllocator.new().unwrap()
         val map: HashMap<Int, Unit>  = HashMap.withCapacityIn(1, alloc)
         // Size of an element plus its control byte.
-        val roughBucketSize = sizeOf<Pair<Int, Unit>>(typeLayoutT = ObjectSlotLayout<Pair<Int, Unit>>()) + 1
+        val roughBucketSize = sizeOf<Pair<Int, Unit>>(typeLayoutT = UnresolvedTypeLayout<Pair<Int, Unit>>()) + 1
         // Accounting for some misc. padding that's likely in the allocation
         // due to rounding to group width, etc.
         val overhead = 3 * sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)

@@ -3,8 +3,8 @@ package io.github.kotlinmania.rustlang.core.num.imp.intlog10
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 
 // These functions compute the integer logarithm of their type, assuming
 // that someone has already checked that the value is strictly positive.

@@ -1,19 +1,19 @@
 // port-lint: source clone/uninit.rs
 package io.github.kotlinmania.rustlang.core.clone.uninit
 
-import io.github.kotlinmania.rustlang.clone.TrivialClone
-import io.github.kotlinmania.rustlang.cmp.Eq
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.mem.forget
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.option.Option
-import io.github.kotlinmania.rustlang.panicking.assertFailed
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.ptr.write
 
 /**
  * Private specialization trait used by CloneToUninit, as per
@@ -31,7 +31,7 @@ public fun <T> copySpecCloneOneT(src: T, dst: MutPtr, cloneTFn: (T) -> T = { it 
     run {
         // We hope the optimizer will figure out to create the cloned value in-place,
         // skipping ever storing it on the stack and the copy to the destination.
-        write(dst, cloneTFn(src), typeLayoutT = ObjectSlotLayout<T>())
+        write(dst, cloneTFn(src), typeLayoutT = UnresolvedTypeLayout<T>())
     }
 }
 
@@ -53,7 +53,7 @@ public fun <T> copySpecCloneSliceT(src: List<T>, dst: MutPtr, typeLayoutT: TypeL
     // * The caller is obligated to provide a pointer which is valid for writes.
     // * All bytes pointed to are in MaybeUninit, so we don't care about the memory's
     // initialization status.
-    val uninitRef = RustMutableReference(MutPtr(((MutPtr(dst.rawAddress, dst.rawMeta))).rawAddress), ObjectSlotLayout<List<MaybeUninit<T>>>())
+    val uninitRef = RustMutableReference(MutPtr(((MutPtr(dst.rawAddress, dst.rawMeta))).rawAddress), UnresolvedTypeLayout<List<MaybeUninit<T>>>())
     // Copy the elements
     val initializing = InitializingSlice.fromFullyUninit(uninitRef)
     for (elementRef in src) {
@@ -71,7 +71,7 @@ public fun <T : TrivialClone<T>> copySpecCloneOneT(src: T, dst: MutPtr) {
     // SAFETY: The safety conditions of cloneToUninit() are a superset of those of
     // ptr.copyNonoverlapping().
     run {
-        copyNonoverlapping(src, dst, 1, typeLayoutT = ObjectSlotLayout<T>())
+        copyNonoverlapping(src, dst, 1, typeLayoutT = UnresolvedTypeLayout<T>())
     }
 }
 

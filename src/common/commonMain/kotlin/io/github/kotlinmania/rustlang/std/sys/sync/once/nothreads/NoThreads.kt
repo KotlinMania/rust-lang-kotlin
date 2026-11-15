@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.sync.once.nothreads
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
-import io.github.kotlinmania.rustlang.sync.once.OnceExclusiveState
+import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
 
 public open class Once internal constructor(
     stateCtorArg: Cell<State>,
@@ -34,7 +34,7 @@ public open class Once internal constructor(
         error("not implementable on this target")
     }
 
-    public open fun call(ignorePoisoning: Boolean, f: (io.github.kotlinmania.rustlang.sync.once.OnceState) -> Unit) {
+    public open fun call(ignorePoisoning: Boolean, f: (io.github.kotlinmania.rustlang.std.sync.once.OnceState) -> Unit) {
         val state = this.state.get()
         when {
             state == State.Poisoned && !ignorePoisoning -> {
@@ -46,7 +46,7 @@ public open class Once internal constructor(
                 // `guard` will set the new state on drop.
                 val guard = CompletionGuard(state = this.state, setStateOnDropTo = State.Poisoned)
                 // Run the function, letting it know if we're poisoned or not.
-                val fState = io.github.kotlinmania.rustlang.sync.once.OnceState(inner = OnceState(poisoned = (state == State.Poisoned).toUByte(), setStateTo = Cell.new(State.Complete)))
+                val fState = io.github.kotlinmania.rustlang.std.sync.once.OnceState(inner = OnceState(poisoned = (state == State.Poisoned).toUByte(), setStateTo = Cell.new(State.Complete)))
                 f(fState)
                 guard.setStateOnDropTo = fState.inner.setStateTo.get()
             }

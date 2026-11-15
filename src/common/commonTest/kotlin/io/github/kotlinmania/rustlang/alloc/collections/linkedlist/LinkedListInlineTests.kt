@@ -9,4 +9,3 @@ package io.github.kotlinmania.rustlang.alloc.collections.linkedlist
 // NOTE: It is almost always better to use [Vec] or [VecDeque] because
 // array-based containers are generally faster,
 // more memory efficient, and make better use of CPU cache.
-

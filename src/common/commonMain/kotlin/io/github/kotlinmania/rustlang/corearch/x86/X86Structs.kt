@@ -4,12 +4,12 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
@@ -19,41 +19,41 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.simd.F16x16
-import io.github.kotlinmania.rustlang.simd.F16x32
-import io.github.kotlinmania.rustlang.simd.F16x8
-import io.github.kotlinmania.rustlang.simd.F32x16
-import io.github.kotlinmania.rustlang.simd.F32x4
-import io.github.kotlinmania.rustlang.simd.F32x8
-import io.github.kotlinmania.rustlang.simd.F64x2
-import io.github.kotlinmania.rustlang.simd.F64x4
-import io.github.kotlinmania.rustlang.simd.F64x8
-import io.github.kotlinmania.rustlang.simd.I16x16
-import io.github.kotlinmania.rustlang.simd.I16x32
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x16
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I32x8
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I64x4
-import io.github.kotlinmania.rustlang.simd.I64x8
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.I8x32
-import io.github.kotlinmania.rustlang.simd.I8x64
-import io.github.kotlinmania.rustlang.simd.Simd
-import io.github.kotlinmania.rustlang.simd.U16x16
-import io.github.kotlinmania.rustlang.simd.U16x32
-import io.github.kotlinmania.rustlang.simd.U16x8
-import io.github.kotlinmania.rustlang.simd.U32x16
-import io.github.kotlinmania.rustlang.simd.U32x4
-import io.github.kotlinmania.rustlang.simd.U32x8
-import io.github.kotlinmania.rustlang.simd.U64x2
-import io.github.kotlinmania.rustlang.simd.U64x4
-import io.github.kotlinmania.rustlang.simd.U64x8
-import io.github.kotlinmania.rustlang.simd.U8x16
-import io.github.kotlinmania.rustlang.simd.U8x32
-import io.github.kotlinmania.rustlang.simd.U8x64
-import io.github.kotlinmania.rustlang.simd.debugSimdFinish
+import io.github.kotlinmania.rustlang.corearch.simd.F16x16
+import io.github.kotlinmania.rustlang.corearch.simd.F16x32
+import io.github.kotlinmania.rustlang.corearch.simd.F16x8
+import io.github.kotlinmania.rustlang.corearch.simd.F32x16
+import io.github.kotlinmania.rustlang.corearch.simd.F32x4
+import io.github.kotlinmania.rustlang.corearch.simd.F32x8
+import io.github.kotlinmania.rustlang.corearch.simd.F64x2
+import io.github.kotlinmania.rustlang.corearch.simd.F64x4
+import io.github.kotlinmania.rustlang.corearch.simd.F64x8
+import io.github.kotlinmania.rustlang.corearch.simd.I16x16
+import io.github.kotlinmania.rustlang.corearch.simd.I16x32
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x16
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I32x8
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I64x4
+import io.github.kotlinmania.rustlang.corearch.simd.I64x8
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.I8x32
+import io.github.kotlinmania.rustlang.corearch.simd.I8x64
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
+import io.github.kotlinmania.rustlang.corearch.simd.U16x16
+import io.github.kotlinmania.rustlang.corearch.simd.U16x32
+import io.github.kotlinmania.rustlang.corearch.simd.U16x8
+import io.github.kotlinmania.rustlang.corearch.simd.U32x16
+import io.github.kotlinmania.rustlang.corearch.simd.U32x4
+import io.github.kotlinmania.rustlang.corearch.simd.U32x8
+import io.github.kotlinmania.rustlang.corearch.simd.U64x2
+import io.github.kotlinmania.rustlang.corearch.simd.U64x4
+import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U8x32
+import io.github.kotlinmania.rustlang.corearch.simd.U8x64
+import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 
 /**
  * The x87 80-bit extended-precision floating-point type.
@@ -92,7 +92,7 @@ public open class X87F80 internal constructor(
      */
     public open fun toNeBytes(): UByteArray {
         // SAFETY: the first 10 bytes are initialized.
-        return (ObjectSlotLayout<UByteArray>()).readNative((ConstPtr(((addrOf(this))).rawAddress)).rawAddress)
+        return (UnresolvedTypeLayout<UByteArray>()).readNative((ConstPtr(((addrOf(this))).rawAddress)).rawAddress)
     }
 
     public companion object {
@@ -107,7 +107,7 @@ public open class X87F80 internal constructor(
             // SAFETY: we initialize the first 10 bytes, the remaining bytes remain uninitialized.
             // That is exactly the layout of x87F80.
             return run {
-                val thisRef = MaybeUninit.uninit(ObjectSlotLayout<X87F80>())
+                val thisRef = MaybeUninit.uninit(UnresolvedTypeLayout<X87F80>())
                 thisRef.asMutPtr().cast().write(bytes)
                 thisRef.assumeInit()
             }

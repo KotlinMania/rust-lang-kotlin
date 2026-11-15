@@ -54,7 +54,9 @@ public open class Saturating<T>(
 
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -1547,7 +1549,14 @@ public fun Saturating<Int>.reverseBits(): Saturating<Int> = Saturating(this.valu
  * import std.num.Saturating; if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun Saturating.Companion.fromBe(x: Saturating<Int>, fieldLayout: TypeLayout<Int>): Saturating<Int> = Saturating(run { val swapVal0 = (x.value); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24)) }, fieldLayout = fieldLayout)
+public fun Saturating.Companion.fromBe(x: Saturating<Int>, fieldLayout: TypeLayout<Int>): Saturating<Int> =
+    Saturating(
+        run {
+            val swapVal0 = (x.value)
+            ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24))
+        },
+        fieldLayout = fieldLayout,
+    )
 
 /**
  * Converts an integer from little endian to the target's endianness.

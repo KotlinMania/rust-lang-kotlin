@@ -3,19 +3,19 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.simd.I16x16
-import io.github.kotlinmania.rustlang.simd.I16x32
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x16
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.I8x64
-import io.github.kotlinmania.rustlang.simd.U16x16
-import io.github.kotlinmania.rustlang.simd.U16x32
-import io.github.kotlinmania.rustlang.simd.U16x8
-import io.github.kotlinmania.rustlang.simd.U64x8
-import io.github.kotlinmania.rustlang.simd.U8x16
-import io.github.kotlinmania.rustlang.simd.U8x32
-import io.github.kotlinmania.rustlang.simd.U8x64
+import io.github.kotlinmania.rustlang.corearch.simd.I16x16
+import io.github.kotlinmania.rustlang.corearch.simd.I16x32
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x16
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.I8x64
+import io.github.kotlinmania.rustlang.corearch.simd.U16x16
+import io.github.kotlinmania.rustlang.corearch.simd.U16x32
+import io.github.kotlinmania.rustlang.corearch.simd.U16x8
+import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U8x32
+import io.github.kotlinmania.rustlang.corearch.simd.U8x64
 
 public actual fun vpmulhrsw(a: I16x32, b: I16x32): I16x32 =
     throw UnsupportedOperationException("Native FFI addon is not available")
@@ -119,13 +119,9 @@ public actual fun vpmovswb128(a: I16x8, src: I8x16, mask: UByte): I8x16 =
 public actual fun vpmovuswb128(a: U16x8, src: U8x16, mask: UByte): U8x16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovswbmem(memAddr: MutPtr, a: I16x32, mask: UInt) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovswbmem(memAddr: MutPtr, a: I16x32, mask: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovuswbmem(memAddr: MutPtr, a: I16x32, mask: UInt) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vpmovuswbmem(memAddr: MutPtr, a: I16x32, mask: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vpavgb(a: U8x64, b: U8x64): U8x64 =
     throw UnsupportedOperationException("Native FFI addon is not available")

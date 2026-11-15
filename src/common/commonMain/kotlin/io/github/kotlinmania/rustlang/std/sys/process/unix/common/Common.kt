@@ -6,18 +6,14 @@ import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.io.stdio.Stderr
-import io.github.kotlinmania.rustlang.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CUlong
 import io.github.kotlinmania.rustlang.libc.Poll
@@ -32,26 +28,30 @@ import io.github.kotlinmania.rustlang.libc.wasi.POLLIN
 import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.SigsetT
-import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.asBytes
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.fromBytes
-import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.intoVec
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.process.StdioPipes
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
+import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
+import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.asBytes
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.intoVec
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.process.StdioPipes
+import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
+import io.github.kotlinmania.rustlang.std.sys.io.error.unix.setErrno
+import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
+import io.github.kotlinmania.rustlang.std.sys.pipe.unix.Pipe
+import io.github.kotlinmania.rustlang.std.sys.pipe.unix.pipe
+import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnv
+import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnvs
+import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.cstringarray.CStringArray
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.cstringarray.CStringIter
-import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.sys.fs.unix.File
-import io.github.kotlinmania.rustlang.sys.fs.unix.OpenOptions
-import io.github.kotlinmania.rustlang.sys.io.error.unix.setErrno
-import io.github.kotlinmania.rustlang.sys.osstr.bytes.Slice
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvtR
-import io.github.kotlinmania.rustlang.sys.pipe.unix.Pipe
-import io.github.kotlinmania.rustlang.sys.pipe.unix.pipe
-import io.github.kotlinmania.rustlang.sys.process.env.CommandEnv
-import io.github.kotlinmania.rustlang.sys.process.env.CommandEnvs
-import io.github.kotlinmania.rustlang.sys.process.env.CommandResolvedEnvs
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -108,7 +108,7 @@ public val DEV_NULL: CStr = "/dev/null"
 // The following implementations are based on
 // https://github.com/aosp-mirror/platformBionic/blob/ad8dcd6023294b646e5a8288c0ed431b0845da49/libc/include/android/legacySignalInlines.h
 public fun sigemptyset(set: MutPtr): CInt {
-    kmWriteBytes((set).rawAddress, (0u.toUByte()).toUByte(), (1).toLong() * (ObjectSlotLayout<SigsetT>()).sizeBytes)
+    kmWriteBytes((set).rawAddress, (0u.toUByte()).toUByte(), (1).toLong() * (UnresolvedTypeLayout<SigsetT>()).sizeBytes)
     return 0
 }
 
@@ -116,13 +116,13 @@ public fun sigaddset(set: MutPtr, signum: CInt): CInt {
     // The implementations from bionic (android libc) type pun `sigsetT` as an
     // array of `cUlong`. This works, but lets add a smoke check to make sure
     // that doesn't change.
-    val LONG_BIT: Int = sizeOf<CUlong>(typeLayoutT = ObjectSlotLayout<CUlong>()) * 8
+    val LONG_BIT: Int = sizeOf<CUlong>(typeLayoutT = UnresolvedTypeLayout<CUlong>()) * 8
     val bit = (signum - 1)
-    if (((set).rawAddress == 0L) || bit >= (8 * sizeOf<SigsetT>(typeLayoutT = ObjectSlotLayout<SigsetT>()))) {
+    if (((set).rawAddress == 0L) || bit >= (8 * sizeOf<SigsetT>(typeLayoutT = UnresolvedTypeLayout<SigsetT>()))) {
         setErrno(EINVAL)
         return -1
     }
-    val raw = Slice.fromRawPartsMut(MutPtr(set.rawAddress, set.rawMeta), sizeOf<SigsetT>(typeLayoutT = ObjectSlotLayout<SigsetT>()) / sizeOf<CUlong>(typeLayoutT = ObjectSlotLayout<CUlong>()))
+    val raw = Slice.fromRawPartsMut(MutPtr(set.rawAddress, set.rawMeta), sizeOf<SigsetT>(typeLayoutT = UnresolvedTypeLayout<SigsetT>()) / sizeOf<CUlong>(typeLayoutT = UnresolvedTypeLayout<CUlong>()))
     raw[bit / LONG_BIT] = raw[bit / LONG_BIT] or (1uL shl (bit % LONG_BIT))
     return 0
 }
@@ -431,10 +431,10 @@ public open class ChildPipes(
 
 public sealed class ChildStdio {
     public data object Inherit : ChildStdio()
-    public data class Explicit(public var value: io.github.kotlinmania.rustlang.os.raw.CInt) : ChildStdio()
+    public data class Explicit(public var value: io.github.kotlinmania.rustlang.std.os.raw.CInt) : ChildStdio()
     public data class Owned(public var value: FileDesc) : ChildStdio()
 
-    public open fun fd(): io.github.kotlinmania.rustlang.os.raw.CInt? =
+    public open fun fd(): io.github.kotlinmania.rustlang.std.os.raw.CInt? =
         when (this) {
             ChildStdio.Inherit -> null
             is ChildStdio.Explicit -> {
@@ -659,7 +659,7 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
     // reader will return Ok(0), in which case we'll see `Ok` ourselves. In
     // this case we flip the other fd back into blocking mode and read
     // whatever's leftover on that file descriptor.
-    fun read(fd: FileDesc, dst: List<UByte>): Result<Boolean, io.github.kotlinmania.rustlang.io.Error> =
+    fun read(fd: FileDesc, dst: List<UByte>): Result<Boolean, io.github.kotlinmania.rustlang.std.io.Error> =
         run {
             val matchVal = fd.readToEnd(dst)
             when (matchVal) { is Result.Ok<*, *> -> {
@@ -677,7 +677,7 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
     // in the `select` loop below, and we wouldn't want one to block the other!
     when (val tryResult = out.setNonblocking(true)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     when (val tryResult = err.setNonblocking(true)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-    val localStorageL651C4 = AddressableArrayLocal.fromList(emptyList(), ObjectSlotLayout<Pollfd>())
+    val localStorageL651C4 = AddressableArrayLocal.fromList(emptyList(), UnresolvedTypeLayout<Pollfd>())
     val fds by localStorageL651C4
     fds[0].fd = out.asRawFd()
     fds[0].events = POLLIN

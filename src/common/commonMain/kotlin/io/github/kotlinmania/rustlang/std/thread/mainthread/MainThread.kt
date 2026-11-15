@@ -3,8 +3,8 @@ package io.github.kotlinmania.rustlang.std.thread.mainthread
 
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU64
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.thread.id.ThreadId
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
 
 // Store the ID of the main thread.
 //

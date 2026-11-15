@@ -5,9 +5,9 @@ import io.github.kotlinmania.rustlang.core.char.isAsciiDigit
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.num.imp.dec2flt.common.is8digits
-import io.github.kotlinmania.rustlang.num.imp.dec2flt.decimal.Decimal
-import io.github.kotlinmania.rustlang.num.imp.traits.Float
+import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.is8digits
+import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimal.Decimal
+import io.github.kotlinmania.rustlang.core.num.imp.traits.Float
 
 // Functions to parse floating-point numbers.
 
@@ -52,9 +52,10 @@ public fun tryParseDigits(s: List<UByte>, x: ULong): Pair<List<UByte>, ULong> {
             break
         }
     }
-    s1 = s1.parseDigits({ digit ->
-        x1 = ((x1 * 10uL) + (digit.toULong()))
-    })
+    s1 =
+        s1.parseDigits({ digit ->
+            x1 = ((x1 * 10uL) + (digit.toULong()))
+        })
     return Pair(s1, x1)
 }
 
@@ -107,21 +108,23 @@ public fun parseScientific(sRef: List<UByte>): Long? {
         }
     }
     return if (run {
-        val matchVal1 = s.first()
-        when {
-            matchVal1 != null && matchVal1.isAsciiDigit() -> {
-                val x = matchVal1
-                true
+            val matchVal1 = s.first()
+            when {
+                matchVal1 != null && matchVal1.isAsciiDigit() -> {
+                    val x = matchVal1
+                    true
+                }
+                else -> false
             }
-            else -> false
         }
-    }) {
-        sRef1 = s.parseDigits({ digit ->
-            // no overflows here, saturate well before overflow
-            if (exponent < 0x10000L) {
-                exponent = 10L * exponent + digit.toLong()
-            }
-        })
+    ) {
+        sRef1 =
+            s.parseDigits({ digit ->
+                // no overflows here, saturate well before overflow
+                if (exponent < 0x10000L) {
+                    exponent = 10L * exponent + digit.toLong()
+                }
+            })
         if (negative) {
             -exponent
         } else {
@@ -214,15 +217,18 @@ public fun parsePartialNumber(s: List<UByte>): Pair<Decimal, Int>? {
         mantissa = 0uL
         var s2 = start
         tryParse19digits(s2, RustMutableReference(localStorageL108C4.asMutPtr(), localStorageL108C4.layout))
-        exponent = (if (mantissa >= MIN_19DIGIT_INT) {
-            // big int
-            intEnd.offsetFrom(s2)
-        } else {
-            s2 = ((s2).subList(1, (s2).size))
-            val before1 = s2
-            tryParse19digits(s2, RustMutableReference(localStorageL108C4.asMutPtr(), localStorageL108C4.layout))
-            -s2.offsetFrom(before1)
-        }).toLong()
+        exponent =
+            (
+                if (mantissa >= MIN_19DIGIT_INT) {
+                    // big int
+                    intEnd.offsetFrom(s2)
+                } else {
+                    s2 = ((s2).subList(1, (s2).size))
+                    val before1 = s2
+                    tryParse19digits(s2, RustMutableReference(localStorageL108C4.asMutPtr(), localStorageL108C4.layout))
+                    -s2.offsetFrom(before1)
+                }
+            ).toLong()
         // add back the explicit part
         exponent += expNumber
     }
@@ -291,7 +297,9 @@ public fun <Int, F : Float<F, Any?>> parseInfNan(s: List<UByte>, negative: Boole
                 matchVal.first == INF_3 && matchVal.second == 3 -> F.INFINITY
                 matchVal.first == INF_8 && matchVal.second == 8 -> F.INFINITY
                 matchVal.first == NAN && matchVal.second == 3 -> F.NAN
-                else -> { return null }
+                else -> {
+                    return null
+                }
             }
         }
     return if (negative) {

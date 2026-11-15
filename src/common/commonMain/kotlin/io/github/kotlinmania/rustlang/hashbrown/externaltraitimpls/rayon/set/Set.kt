@@ -1,13 +1,14 @@
 // port-lint: source external_trait_impls/rayon/set.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.set
 
-import io.github.kotlinmania.rustlang.HashSet
-import io.github.kotlinmania.rustlang.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
-import io.github.kotlinmania.rustlang.externaltraitimpls.rayon.helpers.collect
-import io.github.kotlinmania.rustlang.rayon.iter.IntoParallelIterator
-import io.github.kotlinmania.rustlang.rayon.iter.ParallelIterator
-import io.github.kotlinmania.rustlang.rayon.iter.plumbing.UnindexedConsumer
+import io.github.kotlinmania.rustlang.hashbrown.HashSet
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.helpers.collect
+import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map.ParKeys
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.IntoParallelIterator
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.ParallelIterator
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.plumbing.UnindexedConsumer
 
 // Rayon extensions for `HashSet`.
 
@@ -22,16 +23,16 @@ import io.github.kotlinmania.rustlang.rayon.iter.plumbing.UnindexedConsumer
  * [IntoParallelIterator]: rayon.iter.IntoParallelIterator
  */
 public open class IntoParIter<T, A : Allocator> internal constructor(
-    innerCtorArg: IntoParIter<T, Unit, A>,
+    innerCtorArg: io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map.IntoParIter<T, Unit, A>,
 ) : ParallelIterator {
-    public var inner: IntoParIter<T, Unit, A> = innerCtorArg
+    public var inner: io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map.IntoParIter<T, Unit, A> = innerCtorArg
         internal set
 
     public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<T> = this.inner.map({ (k, _) -> k }).driveUnindexed(consumer)
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(
-            inner: IntoParIter<T, Unit, A>,
+            inner: io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map.IntoParIter<T, Unit, A>,
         ): IntoParIter<T, A> = IntoParIter<T, A>(
             innerCtorArg = inner,
         )
@@ -47,16 +48,16 @@ public open class IntoParIter<T, A : Allocator> internal constructor(
  * [parDrain]: HashSet.parDrain
  */
 public open class ParDrain<T, A : Allocator> internal constructor(
-    innerCtorArg: ParDrain<T, Unit, A>,
+    innerCtorArg: io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map.ParDrain<T, Unit, A>,
 ) : ParallelIterator {
-    public var inner: ParDrain<T, Unit, A> = innerCtorArg
+    public var inner: io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map.ParDrain<T, Unit, A> = innerCtorArg
         internal set
 
     public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<T> = this.inner.map({ (k, _) -> k }).driveUnindexed(consumer)
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(
-            inner: ParDrain<T, Unit, A>,
+            inner: io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map.ParDrain<T, Unit, A>,
         ): ParDrain<T, A> = ParDrain<T, A>(
             innerCtorArg = inner,
         )

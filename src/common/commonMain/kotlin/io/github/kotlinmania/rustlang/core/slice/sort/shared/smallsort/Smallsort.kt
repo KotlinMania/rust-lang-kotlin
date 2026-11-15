@@ -1,25 +1,25 @@
 // port-lint: source slice/sort/shared/smallsort.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.hint.selectUnpredictable
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.hint.selectUnpredictable
-import io.github.kotlinmania.rustlang.intrinsics.abortImmediate
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.mem.forget
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.ptr.copy
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.ptr.read
-import io.github.kotlinmania.rustlang.slice.sort.shared.FreezeMarker
+import io.github.kotlinmania.rustlang.core.slice.sort.shared.FreezeMarker
 
 // This module contains a variety of sort implementations that are optimized for small lengths.
 
@@ -161,10 +161,10 @@ public fun <T> smallSortFallback(v: MutableList<T>, isLess: (T, T) -> Boolean) {
 }
 
 public fun <T : FreezeMarker> smallSortGeneral(v: MutableList<T>, isLess: (T, T) -> Boolean) {
-    val stackArray = MaybeUninit.uninit(ObjectSlotLayout<List<T>>())
+    val stackArray = MaybeUninit.uninit(UnresolvedTypeLayout<List<T>>())
     // SAFETY: The memory is backed by `stackArray`, and the operation is safe as long as the len
     // is the same.
-    val scratch = rawMutSliceList(mutPtrFromRustCast(stackArray.asMutPtr()), SMALL_SORT_GENERAL_SCRATCH_LEN.toInt(), ObjectSlotLayout<MaybeUninit<T>>())
+    val scratch = linearMutSliceView(mutPtrFromRustCast(stackArray.asMutPtr()), SMALL_SORT_GENERAL_SCRATCH_LEN.toInt(), UnresolvedTypeLayout<MaybeUninit<T>>())
     smallSortGeneralWithScratch(v, scratch, isLess)
 }
 
@@ -174,7 +174,7 @@ public fun <T : FreezeMarker> smallSortGeneralWithScratch(v: MutableList<T>, scr
         return
     }
     if (scratch.size < len + 16) {
-        abortImmediate()
+        kmAbort()
     }
     val vBase = v.asMutPtr()
     val lenDiv2 = len / 2
@@ -220,7 +220,7 @@ public fun <T : FreezeMarker> smallSortGeneralWithScratch(v: MutableList<T>, scr
         // If a panic occurs we ensure the original array is restored to a valid
         // permutation of the input through dropGuard. This technique is similar
         // to ping-pong merging.
-        bidirectionalMerge(rawSliceList(dropGuard.src, dropGuard.len.toInt(), typeLayoutT), dropGuard.dst, isLess)
+        bidirectionalMerge(linearSliceView(dropGuard.src, dropGuard.len.toInt(), typeLayoutT), dropGuard.dst, isLess)
         forget(dropGuard)
     }
 }
@@ -276,9 +276,9 @@ public fun <T> smallSortNetwork(v: MutableList<T>, isLess: (T, T) -> Boolean) wh
         return
     }
     if (len > SMALL_SORT_NETWORK_SCRATCH_LEN) {
-        abortImmediate()
+        kmAbort()
     }
-    val stackArray = MaybeUninit.uninit(ObjectSlotLayout<List<T>>())
+    val stackArray = MaybeUninit.uninit(UnresolvedTypeLayout<List<T>>())
     val lenDiv2 = len / 2
     val noMerge = len < 18
     val vBase = v.asMutPtr()
@@ -289,7 +289,7 @@ public fun <T> smallSortNetwork(v: MutableList<T>, isLess: (T, T) -> Boolean) wh
             lenDiv2
         }
     // SAFETY: Both possible values of `initialRegionLen` are in-bounds.
-    var region = rawMutSliceList(vBase, initialRegionLen.toInt(), ObjectSlotLayout<T>())
+    var region = linearMutSliceView(vBase, initialRegionLen.toInt(), UnresolvedTypeLayout<T>())
     // Avoid compiler unrolling, we *really* don't want that to happen here for binary-size reasons.
     while (true) {
         val presortedLen =
@@ -310,15 +310,15 @@ public fun <T> smallSortNetwork(v: MutableList<T>, isLess: (T, T) -> Boolean) wh
             break
         }
         // SAFETY: The right side of `v` based on `lenDiv2` is guaranteed in-bounds.
-        region = rawMutSliceList(MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (ObjectSlotLayout<T>()).strideBytes)), (len - lenDiv2).toInt(), ObjectSlotLayout<T>())
+        region = linearMutSliceView(MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), (len - lenDiv2).toInt(), UnresolvedTypeLayout<T>())
     }
     // SAFETY: We checked that T is Freeze and thus observation safe.
     // Should isLess panic v was not modified in parityMerge and retains it's original input.
     // scratch and v must not alias and scratch has v.len() space.
     run {
         val scratchBase = mutPtrFromRustCast(stackArray.asMutPtr())
-        bidirectionalMerge(rawMutSliceList(vBase, len.toInt(), ObjectSlotLayout<T>()), scratchBase, isLess, typeLayoutT = ObjectSlotLayout<T>())
-        copyNonoverlapping(scratchBase, vBase, len, typeLayoutT = ObjectSlotLayout<T>())
+        bidirectionalMerge(linearMutSliceView(vBase, len.toInt(), UnresolvedTypeLayout<T>()), scratchBase, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
+        copyNonoverlapping(scratchBase, vBase, len, typeLayoutT = UnresolvedTypeLayout<T>())
     }
 }
 
@@ -367,7 +367,7 @@ public fun <T> swapIfLess(vBase: MutPtr, aPos: Int, bPos: Int, isLess: (T, T) ->
  */
 public fun <T> sort9Optimal(v: MutableList<T>, isLess: (T, T) -> Boolean) {
     if (v.size < 9) {
-        abortImmediate()
+        kmAbort()
     }
     val vBase = v.asMutPtr()
     // Optimal sorting network see:
@@ -412,7 +412,7 @@ public fun <T> sort9Optimal(v: MutableList<T>, isLess: (T, T) -> Boolean) {
  */
 public fun <T> sort13Optimal(v: MutableList<T>, isLess: (T, T) -> Boolean) {
     if (v.size < 13) {
-        abortImmediate()
+        kmAbort()
     }
     val vBase = v.asMutPtr()
     // Optimal sorting network see:
@@ -512,7 +512,7 @@ public fun <T> insertTail(begin: MutPtr, tail: MutPtr, isLess: (T, T) -> Boolean
 public fun <T> insertionSortShiftLeft(v: MutableList<T>, offset: Int, isLess: (T, T) -> Boolean) {
     val len = v.size
     if (offset == 0 || offset > len) {
-        abortImmediate()
+        kmAbort()
     }
     // SAFETY: see individual comments.
     run {
@@ -521,14 +521,14 @@ public fun <T> insertionSortShiftLeft(v: MutableList<T>, offset: Int, isLess: (T
         // SAFETY: vEnd is the one-past-end pointer, and we checked that
         // offset <= len, thus tail is also in-bounds.
         val vBase = v.asMutPtr()
-        val vEnd = MutPtr((vBase).rawAddress + ((len).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-        var tail = MutPtr((vBase).rawAddress + ((offset).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+        val vEnd = MutPtr((vBase).rawAddress + ((len).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+        var tail = MutPtr((vBase).rawAddress + ((offset).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
         while (((tail).rawAddress.toULong() != (vEnd).rawAddress.toULong())) {
             // SAFETY: vBase and tail are both valid pointers to elements, and
             // vBase < tail since we checked offset != 0.
             insertTail(vBase, tail, isLess)
             // SAFETY: we checked that tail is not yet the one-past-end pointer.
-            tail = MutPtr((tail).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+            tail = MutPtr((tail).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
         }
     }
 }
@@ -591,7 +591,7 @@ public fun <T : FreezeMarker> sort8Stable(vBase: MutPtr, dst: MutPtr, scratchBas
     // SAFETY: scratchBase[0..8] is now initialized, allowing us to merge back
     // into dst.
     run {
-        bidirectionalMerge(rawSliceList(scratchBase, 8, typeLayoutT), dst, isLess, typeLayoutT = typeLayoutT)
+        bidirectionalMerge(linearSliceView(scratchBase, 8, typeLayoutT), dst, isLess, typeLayoutT = typeLayoutT)
     }
 }
 

@@ -2,17 +2,16 @@
 package io.github.kotlinmania.rustlang.core.num.imp.traits
 
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.num.rustClassifyDouble
-import io.github.kotlinmania.rustlang.core.num.rustClassifyFloat
-import io.github.kotlinmania.rustlang.num.FpCategory
-import io.github.kotlinmania.rustlang.ops.arith.Add
-import io.github.kotlinmania.rustlang.ops.arith.Div
-import io.github.kotlinmania.rustlang.ops.arith.Mul
-import io.github.kotlinmania.rustlang.ops.arith.Neg
-import io.github.kotlinmania.rustlang.ops.bit.BitAnd
-import io.github.kotlinmania.rustlang.ops.bit.BitOr
-import io.github.kotlinmania.rustlang.ops.bit.Shl
-import io.github.kotlinmania.rustlang.ops.bit.Shr
+import io.github.kotlinmania.rustlang.core.num.FpCategory
+import io.github.kotlinmania.rustlang.core.num.f16.classify
+import io.github.kotlinmania.rustlang.core.ops.arith.Add
+import io.github.kotlinmania.rustlang.core.ops.arith.Div
+import io.github.kotlinmania.rustlang.core.ops.arith.Mul
+import io.github.kotlinmania.rustlang.core.ops.arith.Neg
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
+import io.github.kotlinmania.rustlang.core.ops.bit.Shl
+import io.github.kotlinmania.rustlang.core.ops.bit.Shr
 
 // Numeric traits used for internal implementations.
 
@@ -26,7 +25,12 @@ public interface CastInto<T, SelfType> {
 /**
  * Collection of traits that allow us to be generic over integer size.
  */
-public interface Int<T> : Shr<UInt, T>, Shl<UInt, T>, BitAnd<T, T>, BitOr<T, T>, CastInto<Short, T> {
+public interface Int<T> :
+    Shr<UInt, T>,
+    Shl<UInt, T>,
+    BitAnd<T, T>,
+    BitOr<T, T>,
+    CastInto<Short, T> {
     public val ZERO: T
 
     public val ONE: T
@@ -53,7 +57,11 @@ public val ONE2: ULong = 1uL
 /**
  * A helper trait to avoid duplicating basically all the conversion code for IEEE floats.
  */
-public interface Float<T, out Int> : Div<T, T>, Neg<T>, Mul<T, T>, Add<T, T> {
+public interface Float<T, out Int> :
+    Div<T, T>,
+    Neg<T>,
+    Mul<T, T>,
+    Add<T, T> {
     public val INFINITY: T
 
     public val NEG_INFINITY: T
@@ -146,10 +154,11 @@ public interface Float<T, out Int> : Div<T, T>, Neg<T>, Mul<T, T>, Add<T, T> {
      * pathing anything larger than `10 ^ LARGEST_POWER_OF_TEN`, which will round to infinity.
      */
     public val LARGEST_POWER_OF_TEN: Int
-        get() = run {
-        val largestPow2 = T.EXP_BIAS + 1
-        pow2ToPow10(largestPow2.toLong()).toInt()
-    }
+        get() =
+            run {
+                val largestPow2 = T.EXP_BIAS + 1
+                pow2ToPow10(largestPow2.toLong()).toInt()
+            }
 
     /**
      * Smallest decimal exponent for a non-zero value. This allows for fast pathing anything
@@ -279,7 +288,7 @@ public val SMALLEST_POWER_OF_TEN1: Int = -65
 
 public fun kotlin.Float.toBitsFloat(): UInt = this.toRawBits().toUInt()
 
-public fun kotlin.Float.classifyFloat(): FpCategory = rustClassifyFloat(this)
+public fun kotlin.Float.classifyFloat(): FpCategory = this.classify()
 
 public fun floatExtFromU64BitsFloat(v: ULong): kotlin.Float = kotlin.Float.fromBits(((v and 0xFFFFFFFFuL).toUInt()).toInt())
 
@@ -307,6 +316,6 @@ public val SMALLEST_POWER_OF_TEN2: Int = -342
 
 public fun Double.toBitsFloat(): ULong = this.toRawBits().toULong()
 
-public fun Double.classifyFloat(): FpCategory = rustClassifyDouble(this)
+public fun Double.classifyFloat(): FpCategory = this.classify()
 
 public fun floatExtFromU64BitsDouble(v: ULong): Double = Double.fromBits(v.toLong())

@@ -3,10 +3,10 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.slow
 
-import io.github.kotlinmania.rustlang.num.imp.dec2flt.common.BiasedFp
-import io.github.kotlinmania.rustlang.num.imp.dec2flt.decimalseq.DecimalSeq
-import io.github.kotlinmania.rustlang.num.imp.dec2flt.decimalseq.parseDecimalSeq
-import io.github.kotlinmania.rustlang.num.imp.traits.Float
+import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.BiasedFp
+import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimalseq.DecimalSeq
+import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimalseq.parseDecimalSeq
+import io.github.kotlinmania.rustlang.core.num.imp.traits.Float
 
 // Slow, fallback algorithm for cases the Eisel-Lemire algorithm cannot round.
 

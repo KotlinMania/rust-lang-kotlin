@@ -1,7 +1,7 @@
 // port-lint: source os/linux/raw.rs
 package io.github.kotlinmania.rustlang.std.os.linux.raw
 
-import io.github.kotlinmania.rustlang.os.raw.CUlong
+import io.github.kotlinmania.rustlang.std.os.raw.CUlong
 
 // Linux-specific raw type definitions.
 

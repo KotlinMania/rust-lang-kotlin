@@ -1,7 +1,7 @@
 // port-lint: source math/atanf.rs
 package io.github.kotlinmania.rustlang.libm.math.atanf
 
-import io.github.kotlinmania.rustlang.math.fabs.fabsf
+import io.github.kotlinmania.rustlang.libm.math.fabs.fabsf
 
 public val ATAN_HI: FloatArray = floatArrayOf(4.6364760399e-01f, 7.8539812565e-01f, 9.8279368877e-01f, 1.5707962513e00f)
 

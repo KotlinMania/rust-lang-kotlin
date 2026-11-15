@@ -1,9 +1,9 @@
 // port-lint: source collections/vec_deque/spec_from_iter.rs
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.specfromiter
 
-import io.github.kotlinmania.rustlang.collections.vecdeque.VecDeque
-import io.github.kotlinmania.rustlang.collections.vecdeque.intoiter.IntoIter
-import io.github.kotlinmania.rustlang.vec.specfromiter.fromIter
+import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
+import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.intoiter.IntoIter
+import io.github.kotlinmania.rustlang.alloc.vec.specfromiter.fromIter
 
 /**
  * Specialization trait used for `VecDeque.fromIter`
@@ -22,4 +22,4 @@ public fun <T, I> specFromIterVecDequeT(iterator: I): VecDeque<T> where I : Iter
 
 public fun <T> specFromIterVecDequeT(iterator: IntoIter<T>): VecDeque<T> = iterator.intoVecdeque()
 
-public fun <T> specFromIterVecDequeT(iterator: io.github.kotlinmania.rustlang.collections.vecdeque.intoiter.IntoIter<T>): VecDeque<T> = iterator.intoVecdeque()
+public fun <T> specFromIterVecDequeT(iterator: io.github.kotlinmania.rustlang.alloc.collections.vecdeque.intoiter.IntoIter<T>): VecDeque<T> = iterator.intoVecdeque()

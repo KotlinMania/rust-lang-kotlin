@@ -1,11 +1,11 @@
 package io.github.kotlinmania.rustlang.corearch.armshared.barrier
 
-import io.github.kotlinmania.rustlang.armshared.Dmb
-import io.github.kotlinmania.rustlang.armshared.Dsb
-import io.github.kotlinmania.rustlang.armshared.Isb
-import io.github.kotlinmania.rustlang.dmb as underlyingDmb
-import io.github.kotlinmania.rustlang.dsb as underlyingDsb
-import io.github.kotlinmania.rustlang.isb as underlyingIsb
+import io.github.kotlinmania.rustlang.corearch.armshared.Dmb
+import io.github.kotlinmania.rustlang.corearch.armshared.Dsb
+import io.github.kotlinmania.rustlang.corearch.armshared.Isb
+import io.github.kotlinmania.rustlang.corearch.dmb as underlyingDmb
+import io.github.kotlinmania.rustlang.corearch.dsb as underlyingDsb
+import io.github.kotlinmania.rustlang.corearch.isb as underlyingIsb
 
 /**
  * Generates a DMB (data memory barrier) instruction or equivalent CP15 instruction.

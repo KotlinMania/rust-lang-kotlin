@@ -1,14 +1,14 @@
 // port-lint: source iter/adapters/array_chunks.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.arraychunks
 
-import io.github.kotlinmania.rustlang.array.iter.IntoIter
+import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
+import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -34,10 +34,11 @@ public open class ArrayChunks<I> internal constructor(
         public operator fun <I> invoke(
             iter: I,
             remainder: IntoIter<Item>?,
-        ): ArrayChunks<I> = ArrayChunks<I>(
-            iter = iter,
-            remainderCtorArg = remainder,
-        )
+        ): ArrayChunks<I> =
+            ArrayChunks<I>(
+                iter = iter,
+                remainderCtorArg = remainder,
+            )
     }
 }
 
@@ -83,16 +84,23 @@ public fun <Item, I, B, R> ArrayChunks<I, N>.tryFold(init: B, f: (B, List<I.Item
     while (true) {
         run {
             val matchVal = this.iter.nextChunk()
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val chunk = matchVal.value
-                acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-            }; is Result.Err<*, *> -> {
-                val remainder = matchVal.error
-                // Make sure to not overwrite `self.remainder` with an empty array
-                // when `next` is called after `ArrayChunks` exhaustion.
-                this.remainder.getOrInsert(remainder)
-                break
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val chunk = matchVal.value
+                    acc =
+                        when (val tryResult = f(acc, chunk)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                        }
+                }
+                is Result.Err<*, *> -> {
+                    val remainder = matchVal.error
+                    // Make sure to not overwrite `self.remainder` with an empty array
+                    // when `next` is called after `ArrayChunks` exhaustion.
+                    this.remainder.getOrInsert(remainder)
+                    break
+                }
+            }
         }
     }
 }
@@ -112,7 +120,11 @@ public fun <I, B, R> ArrayChunks<I, N>.tryRfold(init: B, f: (B, Item) -> R, n: I
         val matchVal = this.iter.nextChunkBack()
         if (matchVal !is Result.Ok<*, *>) break
         val chunk = (matchVal as Result.Ok<*, *>).value
-        acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        acc =
+            when (val tryResult = f(acc, chunk)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
     }
     return acc
 }
@@ -132,7 +144,13 @@ public fun <I> ArrayChunks<I, N>.nextBackRemainder(n: Int) {
     // iterator to know how many remaining elements there are.
     val rem = this.iter.len() % n
     // Take the last `rem` elements out of `self.iter`.
-    val remainder = this.iter.byRef().rev().take(rem).nextChunk().unwrapErrUnchecked()
+    val remainder =
+        this.iter
+            .byRef()
+            .rev()
+            .take(rem)
+            .nextChunk()
+            .unwrapErrUnchecked()
     // We used `.rev()` above, so we need to re-reverse the reminder
     remainder.asMutSlice().reverse()
     this.remainder = remainder
@@ -155,14 +173,15 @@ public fun <Source, Item, I> ArrayChunks<I, N>.asInner(n: Int): Source where I :
 
 public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
 
-public val MERGE_BY: NonZero<Int>? = run {
-    val matchVal = Pair(I.MERGE_BY, NonZero.new(N))
-    when {
-        matchVal.first != null && matchVal.second != null -> {
-            val m = matchVal.first
-            val n = matchVal.second
-            m.checkedMul(n)
+public val MERGE_BY: NonZero<Int>? =
+    run {
+        val matchVal = Pair(I.MERGE_BY, NonZero.new(N))
+        when {
+            matchVal.first != null && matchVal.second != null -> {
+                val m = matchVal.first
+                val n = matchVal.second
+                m.checkedMul(n)
+            }
+            else -> null
         }
-        else -> null
     }
-}

@@ -15,7 +15,7 @@
 #endif
 #endif
 
-void rustlangAllocRustAllocErrorHandler(uint64_t size, uint64_t align) {
+void allocRustAllocErrorHandler(uint64_t size, uint64_t align) {
     typedef void (*km_fn_t)(uint64_t, uint64_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

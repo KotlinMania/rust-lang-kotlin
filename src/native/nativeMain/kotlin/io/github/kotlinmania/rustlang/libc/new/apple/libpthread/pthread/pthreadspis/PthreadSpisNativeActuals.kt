@@ -5,10 +5,10 @@ package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.pthread
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.pthreadspis.cinterop.rustlangLibcNewAppleLibpthreadPthreadPthreadspisPthreadSpisPthreadCreateFromMachThread
+import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.pthreadspis.cinterop.libcNewAppleLibpthreadPthreadPthreadspisPthreadSpisPthreadCreateFromMachThread
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 
 public actual fun pthreadCreateFromMachThread(thread: MutPtr, attr: ConstPtr, f: PthreadCreateFromMachThreadFCallback, value: MutPtr): CInt =
-    rustlangLibcNewAppleLibpthreadPthreadPthreadspisPthreadSpisPthreadCreateFromMachThread(thread.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>(), value.rawAddress.toCPointer<ByteVar>())
+    libcNewAppleLibpthreadPthreadPthreadspisPthreadSpisPthreadCreateFromMachThread(thread.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>(), value.rawAddress.toCPointer<ByteVar>())

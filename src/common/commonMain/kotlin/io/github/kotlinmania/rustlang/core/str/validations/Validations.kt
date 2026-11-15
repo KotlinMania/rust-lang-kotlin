@@ -3,13 +3,13 @@
 
 package io.github.kotlinmania.rustlang.core.str.validations
 
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.slice.memchr.USIZE_BYTES
-import io.github.kotlinmania.rustlang.str.error.Utf8Error
+import io.github.kotlinmania.rustlang.core.slice.memchr.USIZE_BYTES
+import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 
 // Operations related to UTF-8 validation.
 
@@ -175,79 +175,105 @@ public fun runUtf8Validation(v: List<UByte>): Result<Unit, Utf8Error> {
             // %xF4 %x80-8F 2( UTF8-tail )
             when (w) {
                 2 -> {
-                    if ((run {
-                        index += 1
-                        if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
-                        }
-                        v[index]
-                    }).toByte() >= (-64).toByte()) {
+                    if ((
+                            run {
+                                index += 1
+                                if (index >= len) {
+                                    return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                                }
+                                v[index]
+                            }
+                        ).toByte() >= (-64).toByte()
+                    ) {
                         return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 1))
                     }
                 }
                 3 -> {
                     run {
-                        val matchVal = Pair(first, run {
-                        index += 1
-                        if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
-                        }
-                        v[index]
-                    })
+                        val matchVal =
+                            Pair(
+                                first,
+                                run {
+                                    index += 1
+                                    if (index >= len) {
+                                        return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                                    }
+                                    v[index]
+                                },
+                            )
                         when {
                             matchVal.first == 0xE0 && matchVal.second in 0xA0..0xBF -> {}
                             matchVal.first in 0xE1..0xEC && matchVal.second in 0x80..0xBF -> {}
                             matchVal.first == 0xED && matchVal.second in 0x80..0x9F -> {}
                             matchVal.first in 0xEE..0xEF && matchVal.second in 0x80..0xBF -> {}
-                            else -> { return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 1)) }
+                            else -> {
+                                return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 1))
+                            }
                         }
                     }
-                    if ((run {
-                        index += 1
-                        if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
-                        }
-                        v[index]
-                    }).toByte() >= (-64).toByte()) {
+                    if ((
+                            run {
+                                index += 1
+                                if (index >= len) {
+                                    return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                                }
+                                v[index]
+                            }
+                        ).toByte() >= (-64).toByte()
+                    ) {
                         return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 2))
                     }
                 }
                 4 -> {
                     run {
-                        val matchVal1 = Pair(first, run {
-                        index += 1
-                        if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
-                        }
-                        v[index]
-                    })
+                        val matchVal1 =
+                            Pair(
+                                first,
+                                run {
+                                    index += 1
+                                    if (index >= len) {
+                                        return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                                    }
+                                    v[index]
+                                },
+                            )
                         when {
                             matchVal1.first == 0xF0 && matchVal1.second in 0x90..0xBF -> {}
                             matchVal1.first in 0xF1..0xF3 && matchVal1.second in 0x80..0xBF -> {}
                             matchVal1.first == 0xF4 && matchVal1.second in 0x80..0x8F -> {}
-                            else -> { return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 1)) }
+                            else -> {
+                                return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 1))
+                            }
                         }
                     }
-                    if ((run {
-                        index += 1
-                        if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
-                        }
-                        v[index]
-                    }).toByte() >= (-64).toByte()) {
+                    if ((
+                            run {
+                                index += 1
+                                if (index >= len) {
+                                    return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                                }
+                                v[index]
+                            }
+                        ).toByte() >= (-64).toByte()
+                    ) {
                         return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 2))
                     }
-                    if ((run {
-                        index += 1
-                        if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
-                        }
-                        v[index]
-                    }).toByte() >= (-64).toByte()) {
+                    if ((
+                            run {
+                                index += 1
+                                if (index >= len) {
+                                    return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                                }
+                                v[index]
+                            }
+                        ).toByte() >= (-64).toByte()
+                    ) {
                         return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 3))
                     }
                 }
-                else -> { return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 1)) }
+                else -> {
+                    return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 1))
+                }
             }
             index += 1
         } else {

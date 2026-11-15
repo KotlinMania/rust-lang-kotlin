@@ -1,7 +1,7 @@
 // port-lint: source math/atanhf.rs
 package io.github.kotlinmania.rustlang.libm.math.atanhf
 
-import io.github.kotlinmania.rustlang.math.log1pf.log1pf
+import io.github.kotlinmania.rustlang.libm.math.log1pf.log1pf
 
 // atanh(x) = log((1+x)/(1-x))/2 = log1p(2x/(1-x))/2 ~= x + x^3/3 + o(x^5)
 

@@ -1,7 +1,7 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.aarch64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.libc.*
 
 public typealias WcharT = UInt
 

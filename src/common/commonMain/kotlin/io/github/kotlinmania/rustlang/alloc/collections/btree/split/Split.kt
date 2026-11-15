@@ -2,12 +2,14 @@
 package io.github.kotlinmania.rustlang.alloc.collections.btree.split
 
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.ForceResult.*
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root
 import io.github.kotlinmania.rustlang.alloc.collections.btree.search.SearchResult.*
-import io.github.kotlinmania.rustlang.collections.btree.node.Internal
-import io.github.kotlinmania.rustlang.collections.btree.node.Leaf
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
+import io.github.kotlinmania.rustlang.core.mem.dropguard.DropGuard
 
 /**
  * Calculates the length of both trees that result from splitting up
@@ -61,7 +63,7 @@ public fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A): 
     // A panic from a later `searchNode` comparison would unwind out of
     // that state and double-free the shared values (#158165), so abort
     // instead of exposing it.
-    val guard = DropGuard.new({ abortImmediate() })
+    val guard = DropGuard.new({ kmAbort() })
     while (true) {
         splitEdge.moveSuffix(rightNode)
         run {
@@ -73,20 +75,23 @@ public fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A): 
                     leftNode = edge1.descend()
                     rightNode = node.firstEdge().descend()
                 }
-                matchVal1.first is Leaf && matchVal1.second is Leaf -> { break }
+                matchVal1.first is Leaf && matchVal1.second is Leaf -> {
+                    break
+                }
                 else -> error("unreachable")
             }
         }
-        splitEdge = when (val matchVal2 = leftNode.searchNode(key)) {
-            is Found -> {
-                val (kv1) = matchVal2
-                kv1.leftEdge()
+        splitEdge =
+            when (val matchVal2 = leftNode.searchNode(key)) {
+                is Found -> {
+                    val (kv1) = matchVal2
+                    kv1.leftEdge()
+                }
+                is GoDown -> {
+                    val (edge2) = matchVal2
+                    edge2
+                }
             }
-            is GoDown -> {
-                val (edge2) = matchVal2
-                edge2
-            }
-        }
     }
     leftRoot.fixRightBorder(alloc.clone())
     rightRoot.fixLeftBorder(alloc)

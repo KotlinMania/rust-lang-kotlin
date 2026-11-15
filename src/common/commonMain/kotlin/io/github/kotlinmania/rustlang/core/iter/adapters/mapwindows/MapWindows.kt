@@ -1,19 +1,19 @@
 // port-lint: source iter/adapters/map_windows.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.mapwindows
 
-import io.github.kotlinmania.rustlang.array.iterNextChunk
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.array.iterNextChunk
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.mem.manuallydrop.ManuallyDrop
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.ptr.dropInPlace
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -57,10 +57,11 @@ public open class MapWindows<I, F> internal constructor(
         public operator fun <I, F> invoke(
             f: F,
             inner: MapWindowsInner<I>,
-        ): MapWindows<I, F> = MapWindows<I, F>(
-            f = f,
-            innerCtorArg = inner,
-        )
+        ): MapWindows<I, F> =
+            MapWindows<I, F>(
+                f = f,
+                innerCtorArg = inner,
+            )
     }
 }
 
@@ -87,10 +88,11 @@ public open class MapWindowsInner<I> internal constructor(
         public operator fun <I> invoke(
             iter: I,
             buffer: Buffer<Item>?,
-        ): MapWindowsInner<I> = MapWindowsInner<I>(
-            iter = iter,
-            bufferCtorArg = buffer,
-        )
+        ): MapWindowsInner<I> =
+            MapWindowsInner<I>(
+                iter = iter,
+                bufferCtorArg = buffer,
+            )
     }
 }
 
@@ -115,7 +117,7 @@ public fun <Item, I, F> MapWindows.Companion.new(iter: I, f: F, n: Int): MapWind
     check(n != 0) { "array in `Iterator::map_windows` must contain more than 0 elements" }
     // Only ZST arrays' length can be so large.
     if (I.Item.IS_ZST) {
-        check(rustCheckedMul(n, 2) != null) { "array size of `Iterator::map_windows` is too large" }
+        check(n.checkedMul(2) != null) { "array size of `Iterator::map_windows` is too large" }
     }
     return MapWindows(inner = MapWindowsInner.new(iter), f = f)
 }
@@ -175,7 +177,7 @@ public fun <T> Buffer<T, N>.asArrayRef(n: Int): List<T> {
         check(this.start + n <= 2 * n)
     }
     // SAFETY: our invariant guarantees these elements are initialized.
-    return ConstPtr((ConstPtr((this.bufferPtr()).rawAddress + ((this.start).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))).rawAddress)
+    return ConstPtr((ConstPtr((this.bufferPtr()).rawAddress + ((this.start).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress)
 }
 
 public fun <T> Buffer<T, N>.asUninitArrayMut(n: Int): MaybeUninit<List<T>> {
@@ -183,7 +185,7 @@ public fun <T> Buffer<T, N>.asUninitArrayMut(n: Int): MaybeUninit<List<T>> {
         check(this.start + n <= 2 * n)
     }
     // SAFETY: our invariant guarantees these elements are in bounds.
-    return MutPtr((MutPtr((this.bufferMutPtr()).rawAddress + ((this.start).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))).rawAddress)
+    return MutPtr((MutPtr((this.bufferMutPtr()).rawAddress + ((this.start).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress)
 }
 
 /**
@@ -217,9 +219,9 @@ public fun <T> Buffer<T, N>.push(next: T, n: Int) {
             // as initialized.
             val toDrop =
                 run {
-                    copyNonoverlapping(MutPtr((bufferMutPtr).rawAddress + ((this.start + 1).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), bufferMutPtr, n - 1, typeLayoutT = ObjectSlotLayout<MaybeUninit<T>>())
-                    (ObjectSlotLayout<MaybeUninit<T>>()).readNative((MutPtr((bufferMutPtr).rawAddress + ((n - 1).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).write(next)
-                    MutPtr((bufferMutPtr).rawAddress + ((this.start).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))
+                    copyNonoverlapping(MutPtr((bufferMutPtr).rawAddress + ((this.start + 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), bufferMutPtr, n - 1, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<T>>())
+                    (UnresolvedTypeLayout<MaybeUninit<T>>()).readNative((MutPtr((bufferMutPtr).rawAddress + ((n - 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).write(next)
+                    MutPtr((bufferMutPtr).rawAddress + ((this.start).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))
                 }
             this.start = 0
             toDrop
@@ -239,8 +241,8 @@ public fun <T> Buffer<T, N>.push(next: T, n: Int) {
             //
             val toDrop1 =
                 run {
-                    (ObjectSlotLayout<MaybeUninit<T>>()).readNative((MutPtr((bufferMutPtr).rawAddress + ((this.start + n).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).write(next)
-                    MutPtr((bufferMutPtr).rawAddress + ((this.start).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))
+                    (UnresolvedTypeLayout<MaybeUninit<T>>()).readNative((MutPtr((bufferMutPtr).rawAddress + ((this.start + n).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).write(next)
+                    MutPtr((bufferMutPtr).rawAddress + ((this.start).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))
                 }
             this.start += 1
             toDrop1
@@ -253,7 +255,7 @@ public fun <T> Buffer<T, N>.push(next: T, n: Int) {
 public fun <T> Buffer<T, N>.clone(n: Int): Buffer<T, N> {
     // Use `ManuallyDrop` until buffer is fully written to avoid dropping uninitialized elements on panic.
     // (See `Buffer` rustdoc for safety invariant)
-    val buffer = Buffer(buffer = listOf(List(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }, List(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }), start = this.start)
+    val buffer = Buffer(buffer = listOf(List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }, List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }), start = this.start)
     // `clone()` could panic; `ManuallyDrop` guards against that.
     buffer.asUninitArrayMut().write(this.asArrayRef().clone())
     // We initialized the buffer above, so we are good now
@@ -266,7 +268,7 @@ public fun <T> Buffer<T, N>.drop(n: Int) {
     // SAFETY: our invariant guarantees that N elements starting from
     // `self.start` are initialized. We drop them here.
     run {
-        val initializedPart: MutPtr = MutPtr((MutPtr((this.bufferMutPtr()).rawAddress + ((this.start).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).castSlice(n)
+        val initializedPart: MutPtr = MutPtr((MutPtr((this.bufferMutPtr()).rawAddress + ((this.start).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).castSlice(n)
         dropInPlace(initializedPart)
     }
 }

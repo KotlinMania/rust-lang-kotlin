@@ -6,11 +6,10 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.libc.MAP_FAILED
+import io.github.kotlinmania.rustlang.libc.MAP_PRIVATE
+import io.github.kotlinmania.rustlang.libc.PROT_READ
 import io.github.kotlinmania.rustlang.libc.munmap
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_FAILED
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_PRIVATE
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
 import io.github.kotlinmania.rustlang.libc.mmap as mmap64
 
 public open class Mmap internal constructor(
@@ -20,7 +19,7 @@ public open class Mmap internal constructor(
     public var ptr: MutPtr = ptrCtorArg
         internal set
 
-    public open fun deref(): List<UByte> = rawSliceList((this.ptr).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.len.toInt(), PrimitiveLayouts.U8)
+    public open fun deref(): List<UByte> = Slice.fromRawParts((this.ptr).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.len)
 
     public open fun drop() {
         run {
@@ -57,10 +56,11 @@ public open class Mmap internal constructor(
         public operator fun invoke(
             ptr: MutPtr,
             len: Int,
-        ): Mmap = Mmap(
-            ptrCtorArg = ptr,
-            len = len,
-        )
+        ): Mmap =
+            Mmap(
+                ptrCtorArg = ptr,
+                len = len,
+            )
 
         public fun map(file: File, len: Int, offset: ULong): Mmap? {
             val ptr = mmap64(MutPtr(0L), len, PROT_READ, MAP_PRIVATE, file.asRawFd(), (offset.tryInto().ok() ?: return null))

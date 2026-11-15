@@ -4,15 +4,15 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
-private object CorearchX86MovrsJniBridge {
+private object X86MovrsJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun rustlangCorearchX86MovrsPrefetchrs(p: Long)
+    external fun corearchX86MovrsPrefetchrs(p: Long)
 }
 
 public actual fun prefetchrs(p: ConstPtr) {
-    CorearchX86MovrsJniBridge.rustlangCorearchX86MovrsPrefetchrs(p.rawAddress)
+    X86MovrsJniBridge.corearchX86MovrsPrefetchrs(p.rawAddress)
 }

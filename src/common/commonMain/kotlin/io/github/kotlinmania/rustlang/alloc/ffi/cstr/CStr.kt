@@ -1,26 +1,29 @@
 // port-lint: source ffi/c_str.rs
 package io.github.kotlinmania.rustlang.alloc.ffi.cstr
 
-import io.github.kotlinmania.rustlang.boxed.Box
+import io.github.kotlinmania.rustlang.alloc.boxed.Box
+import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
+import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
+import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
+import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
-import io.github.kotlinmania.rustlang.rcs.arc.Arc
-import io.github.kotlinmania.rustlang.rcs.rc.Rc
-import io.github.kotlinmania.rustlang.vec.Vec
 
 // [CString] and its related types.
 
@@ -119,7 +122,9 @@ public open class CString(
     // Invariant 2: the slice contains only one zero byte.
     // Improper usage of unchecked function can break Invariant 2, but not Invariant 1.
     public var inner: List<UByte>,
-) : Borrow<CStr>, FromStr<NulError>, AsRef<CStr> {
+) : Borrow<CStr>,
+    FromStr<NulError>,
+    AsRef<CStr> {
     public open fun clone(): CString = CString(inner)
 
     /**
@@ -309,7 +314,7 @@ public open class CString(
         // so we use `ManuallyDrop` to ensure `self` is not dropped.
         // Then we can return the box directly without invalidating it.
         // See https://github.com/rust-lang/rust/issues/62553.
-        return ptr.read(thisRef.inner)
+        return read(thisRef.inner)
     }
 
     // Turns this `CString` into an empty string to prevent
@@ -386,7 +391,7 @@ public open class CString(
             }
             fun List<UByte>.specNewImpl(): Result<CString, NulError> {
                 val bytes: List<UByte> = this.into()
-                return when (val matchVal = memchr.memchr(0, bytes)) {
+                return when (val matchVal = memchr(0, bytes)) {
                     // SAFETY: We ensured there's no null bytes.
                     null -> Result.Ok(CString.fromVecUnchecked(bytes))
                     else -> {
@@ -395,6 +400,7 @@ public open class CString(
                     }
                 }
             }
+
             // Specialization for avoiding reallocation
             // Without that it is not inlined into specializations
             fun specNewImplBytes(bytes: List<UByte>): Result<CString, NulError> {
@@ -402,14 +408,14 @@ public open class CString(
                 // but using `checkedAdd` allows LLVM to assume that capacity never overflows
                 // and generate twice shorter code.
                 // `saturatingAdd` doesn't help for some reason.
-                val capacity = rustCheckedAdd(bytes.size, 1)!!
+                val capacity = bytes.size.checkedAdd(1)!!
                 // Allocate before validation to avoid duplication of allocation code.
                 // We still need to allocate and copy memory even if we get an error.
                 val buffer = ArrayList<UByte>(capacity)
                 buffer.extend(bytes)
                 // Check memory of self instead of new buffer.
                 // This allows better optimizations if lto enabled.
-                return when (val matchVal = memchr.memchr(0, bytes)) {
+                return when (val matchVal = memchr(0, bytes)) {
                     // SAFETY: We ensured there's no null bytes.
                     null -> Result.Ok(CString.fromVecUnchecked(buffer))
                     else -> {
@@ -449,7 +455,7 @@ public open class CString(
          * ```
          */
         public fun fromVecUnchecked(v: List<UByte>): CString {
-            check(memchr.memchr(0, v) == null)
+            check(memchr(0, v) == null)
             // SAFETY: Upheld by caller.
             return CString.fromVecUnchecked(v)
         }
@@ -518,7 +524,7 @@ public open class CString(
                 fun strlen(s: ConstPtr): ULong = 0uL
                 val len = strlen(ptr) + 1
                 // Including the NUL byte
-                val slice = rawMutSliceList(ptr, len.toInt(), ObjectSlotLayout<CChar>())
+                val slice = linearMutSliceView(ptr, len.toInt(), UnresolvedTypeLayout<CChar>())
                 CString(inner = Box.fromRaw((mutPtrFromRustCast(slice)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }))
             }
         }
@@ -541,7 +547,7 @@ public open class CString(
          * ```
          */
         public fun fromVecWithNulUnchecked(v: List<UByte>): CString {
-            check(memchr.memchr(0, v)!! + 1 == v.size)
+            check(memchr(0, v)!! + 1 == v.size)
             // SAFETY: Upheld by caller.
             return CString.fromVecWithNulUnchecked(v)
         }
@@ -581,7 +587,7 @@ public open class CString(
          * ```
          */
         public fun fromVecWithNul(v: List<UByte>): Result<CString, FromVecWithNulError> {
-            val nulPos = memchr.memchr(0, v)
+            val nulPos = memchr(0, v)
             return when {
                 nulPos != null && nulPos + 1 == v.size -> {
                     val nulPos1 = nulPos
@@ -626,13 +632,14 @@ public open class CString(
          */
         public fun from(v: List<NonZero<UByte>>): CString {
             // Transmute `List<NonZero<UByte>>` to `List<UByte>`.
-            val v1: List<UByte> = run {
-                val (ptr: MutPtr, len, cap) = Vec.intoRawParts(v)
-                // SAFETY:
-                // - transmuting between `NonZero<UByte>` and `UByte` is sound;
-                // - `alloc.Layout<NonZero<UByte>> == alloc.Layout<UByte>`.
-                Vec.fromRawParts(MutPtr((ptr).rawAddress), len, cap)
-            }
+            val v1: List<UByte> =
+                run {
+                    val (ptr: MutPtr, len, cap) = Vec.intoRawParts(v)
+                    // SAFETY:
+                    // - transmuting between `NonZero<UByte>` and `UByte` is sound;
+                    // - `alloc.Layout<NonZero<UByte>> == alloc.Layout<UByte>`.
+                    Vec.fromRawParts(MutPtr((ptr).rawAddress), len, cap)
+                }
             // SAFETY: `v` cannot contain nul bytes, given the type-level
             // invariant of `NonZero<UByte>`.
             return CString.fromVecUnchecked(v1)
@@ -715,7 +722,9 @@ public open class NulError(
 }
 
 public sealed class FromBytesWithNulErrorKind {
-    public data class InteriorNul(public var value: Int) : FromBytesWithNulErrorKind()
+    public data class InteriorNul(
+        public var value: Int,
+    ) : FromBytesWithNulErrorKind()
     public data object NotNulTerminated : FromBytesWithNulErrorKind()
 
     public fun rustEquals(other: FromBytesWithNulErrorKind): Boolean = this == other
@@ -924,7 +933,11 @@ public fun CStr.cloneInto(target: CString) {
     val src = this.toBytesWithNul()
     // If the lengths match, we can reuse the existing allocation without any overhead.
     if (target.inner.size == src.len()) {
-        run { val dstTmp0 = target.inner; val srcTmp0 = src; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
+        run {
+            val dstTmp0 = target.inner
+            val srcTmp0 = src
+            for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
+        }
     } else {
         // Reuse the existing allocation's capacity by converting to a Vec.
         // We temporarily replace `target` with a valid dummy to remain panic-safe.

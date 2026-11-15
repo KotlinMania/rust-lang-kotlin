@@ -6,9 +6,9 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hash.random.RandomState
 import io.github.kotlinmania.rustlang.std.collections.hash.map.mapTryReserveError
-import io.github.kotlinmania.rustlang.hashbrown.hashSet as base
+import io.github.kotlinmania.rustlang.std.hash.random.RandomState
+import io.github.kotlinmania.rustlang.hashbrown.HashSet as Base
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -875,7 +875,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
          * val set: MutableSet<Int> = HashSet.withHasherIn(s, Global)
          * ```
          */
-        public fun <T, S, A : Allocator> withHasherIn(hasher: S, alloc: A): HashSet<T, S, A> = HashSet(base = HashSet.withHasherIn(hasher, alloc))
+        public fun <T, S, A : Allocator> withHasherIn(hasher: S, alloc: A): HashSet<T, S, A> = HashSet(base = Base.HashSet.withHasherIn(hasher, alloc))
 
         /**
          * Creates an empty `HashSet` with at least the specified capacity, using
@@ -903,7 +903,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
          * val set: MutableSet<Int> = HashSet.withCapacityAndHasherIn(10, s, Global)
          * ```
          */
-        public fun <T, S, A : Allocator> withCapacityAndHasherIn(capacity: Int, hasher: S, alloc: A): HashSet<T, S, A> = HashSet(base = HashSet.withCapacityAndHasherIn(capacity, hasher, alloc))
+        public fun <T, S, A : Allocator> withCapacityAndHasherIn(capacity: Int, hasher: S, alloc: A): HashSet<T, S, A> = HashSet(base = Base.HashSet.withCapacityAndHasherIn(capacity, hasher, alloc))
     }
 }
 
@@ -993,7 +993,7 @@ public fun <T, A : Allocator> HashSet.Companion.withCapacityIn(capacity: Int, al
  * set.insert(2)
  * ```
  */
-public fun <T, S> HashSet.Companion.withHasher(hasher: S): HashSet<T, S> = HashSet(base = HashSet.withHasher(hasher))
+public fun <T, S> HashSet.Companion.withHasher(hasher: S): HashSet<T, S> = HashSet(base = Base.HashSet.withHasher(hasher))
 
 /**
  * Creates an empty `HashSet` with at least the specified capacity, using
@@ -1021,7 +1021,7 @@ public fun <T, S> HashSet.Companion.withHasher(hasher: S): HashSet<T, S> = HashS
  * set.insert(1)
  * ```
  */
-public fun <T, S> HashSet.Companion.withCapacityAndHasher(capacity: Int, hasher: S): HashSet<T, S> = HashSet(base = HashSet.withCapacityAndHasher(capacity, hasher))
+public fun <T, S> HashSet.Companion.withCapacityAndHasher(capacity: Int, hasher: S): HashSet<T, S> = HashSet(base = Base.HashSet.withCapacityAndHasher(capacity, hasher))
 
 public fun <K, V, A : Allocator> mapEntry(raw: Entry<K, V, A>): Entry<K, V, A> =
     when (raw) {
@@ -1073,7 +1073,7 @@ public fun <T> fromHashSetTRandomState(arr: List<T>, n: Int): HashSet<T, RandomS
 /**
  * Creates an empty `HashSet<T, S>` with the `Default` value for the hasher.
  */
-public fun <T, S> defaultHashSetTS(defaultSFn: () -> S): HashSet<T, S> = HashSet(base = HashSet.withHasher(defaultSFn()))
+public fun <T, S> defaultHashSetTS(defaultSFn: () -> S): HashSet<T, S> = HashSet(base = Base.HashSet.withHasher(defaultSFn()))
 
 /**
  * Returns the union of `self` and `rhs` as a new `HashSet<T, S>`.

@@ -2,11 +2,11 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.*
 
-private object LibcUnixLinuxlikeAndroidB64JniBridge {
+private object UnixLinuxlikeAndroidB64JniBridge {
     init {
         loadNativeLibrary()
     }
@@ -42,11 +42,14 @@ private object LibcUnixLinuxlikeAndroidB64JniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = LibcUnixLinuxlikeAndroidB64JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = UnixLinuxlikeAndroidB64JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -60,8 +63,8 @@ private object LibcUnixLinuxlikeAndroidB64JniBridge {
     }
 
     @JvmStatic
-    external fun rustlangLibcUnixLinuxlikeAndroidB64SystemPropertyWait(pi: Long, oldSerial: Int, newSerialPtr: Long, relativeTimeout: Long): Boolean
+    external fun libcUnixLinuxlikeAndroidB64SystemPropertyWait(pi: Long, oldSerial: Int, newSerialPtr: Long, relativeTimeout: Long): Boolean
 }
 
 public actual fun systemPropertyWait(pi: ConstPtr, oldSerial: UInt, newSerialPtr: MutPtr, relativeTimeout: ConstPtr): Boolean =
-    LibcUnixLinuxlikeAndroidB64JniBridge.rustlangLibcUnixLinuxlikeAndroidB64SystemPropertyWait(pi.rawAddress, oldSerial.toInt(), newSerialPtr.rawAddress, relativeTimeout.rawAddress)
+    UnixLinuxlikeAndroidB64JniBridge.libcUnixLinuxlikeAndroidB64SystemPropertyWait(pi.rawAddress, oldSerial.toInt(), newSerialPtr.rawAddress, relativeTimeout.rawAddress)

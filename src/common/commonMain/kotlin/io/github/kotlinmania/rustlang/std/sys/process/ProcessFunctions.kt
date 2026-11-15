@@ -2,10 +2,10 @@ package io.github.kotlinmania.rustlang.std.sys.process
 
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.process.unix.common.Command
-import io.github.kotlinmania.rustlang.sys.process.unix.common.Stdio
-import io.github.kotlinmania.rustlang.sys.process.unix.common.readOutput
-import io.github.kotlinmania.rustlang.sys.process.unix.unix.ExitStatus
+import io.github.kotlinmania.rustlang.std.sys.process.unix.common.Command
+import io.github.kotlinmania.rustlang.std.sys.process.unix.common.Stdio
+import io.github.kotlinmania.rustlang.std.sys.process.unix.common.readOutput
+import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.ExitStatus
 
 public fun output(cmd: Command): Result<Triple<ExitStatus, List<UByte>, List<UByte>>, Error> {
     var (process, pipes) = when (val tryResult = cmd.spawn(Stdio.MakePipe, false)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }

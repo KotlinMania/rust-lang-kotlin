@@ -2,25 +2,21 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.hint.blackBox
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf64
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.asMutPtr
+import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.f32.sqrt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.x86.M128i
-import io.github.kotlinmania.rustlang.x86.mmSet1Ps
-import io.github.kotlinmania.rustlang.x86.mmSetrPs
-import io.github.kotlinmania.rustlang.x86.mmSfence
 
 // Streaming SIMD Extensions 2 (SSE2)
 
@@ -748,7 +744,7 @@ public fun testMmMaskmoveuSi128() {
 
 public fun testMmStoreSi128() {
     val a = mmSet1Epi8(9)
-    val localStorageL4217C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL4217C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL4217C8
     run {
         mmStoreSi128(RustMutableReference(localStorageL4217C8.asMutPtr(), localStorageL4217C8.layout), a)
@@ -758,7 +754,7 @@ public fun testMmStoreSi128() {
 
 public fun testMmStoreuSi128() {
     val a = mmSet1Epi8(9)
-    val localStorageL4227C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL4227C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL4227C8
     run {
         mmStoreuSi128(RustMutableReference(localStorageL4227C8.asMutPtr(), localStorageL4227C8.layout), a)
@@ -768,7 +764,7 @@ public fun testMmStoreuSi128() {
 
 public fun testMmStorelEpi64() {
     val a = mmSetrEpi64x(2, 9)
-    val localStorageL4237C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL4237C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL4237C8
     run {
         mmStorelEpi64(RustMutableReference(localStorageL4237C8.asMutPtr(), localStorageL4237C8.layout), a)
@@ -1031,12 +1027,12 @@ public fun testMmSqrtSd() {
     val a = mmSetrPd(1.0, 2.0)
     val b = mmSetrPd(5.0, 10.0)
     val r = mmSqrtSd(a, b)
-    assertEqM128d(r, mmSetrPd(sqrt(5.0), 2.0))
+    assertEqM128d(r, mmSetrPd(kmSqrtf64(5.0), 2.0))
 }
 
 public fun testMmSqrtPd() {
     val r = mmSqrtPd(mmSetrPd(1.0, 2.0))
-    assertEqM128d(r, mmSetrPd(sqrt(1.0), sqrt(2.0)))
+    assertEqM128d(r, mmSetrPd(kmSqrtf64(1.0), kmSqrtf64(2.0)))
 }
 
 public fun testMmSubSd() {
@@ -1330,7 +1326,9 @@ public open class Memory internal constructor(
 ) {
     public var data: DoubleArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
@@ -1352,7 +1350,7 @@ public fun testMmLoadPd() {
 }
 
 public fun testMmLoadSd() {
-    val localStorageL4930C8 = AddressableLocal(1.0, ObjectSlotLayout<Any?>())
+    val localStorageL4930C8 = AddressableLocal(1.0, UnresolvedTypeLayout<Any?>())
     val a by localStorageL4930C8
     val expected = mmSetrPd(a, 0.0)
     val r = mmLoadSd(a)
@@ -1382,7 +1380,9 @@ public fun testMmStreamPd() {
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+            set(value) {
+                fieldLayout.writeNative(fieldStorage.rawAddress, value)
+            }
 
         public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 128L)), AlignedTypeLayout(fieldLayout, 128L))
 
@@ -1400,7 +1400,7 @@ public fun testMmStreamPd() {
 }
 
 public fun testMmStoreSd() {
-    val localStorageL4977C8 = AddressableLocal(0.0, ObjectSlotLayout<Any?>())
+    val localStorageL4977C8 = AddressableLocal(0.0, UnresolvedTypeLayout<Any?>())
     var dest by localStorageL4977C8
     val a = mmSetrPd(1.0, 2.0)
     run {
@@ -1501,7 +1501,7 @@ public fun testMmStorerPd() {
 }
 
 public fun testMmStorehPd() {
-    val localStorageL5092C8 = AddressableLocal(0.0, ObjectSlotLayout<Any?>())
+    val localStorageL5092C8 = AddressableLocal(0.0, UnresolvedTypeLayout<Any?>())
     var dest by localStorageL5092C8
     val a = mmSetrPd(1.0, 2.0)
     run {
@@ -1511,7 +1511,7 @@ public fun testMmStorehPd() {
 }
 
 public fun testMmStorelPd() {
-    val localStorageL5102C8 = AddressableLocal(0.0, ObjectSlotLayout<Any?>())
+    val localStorageL5102C8 = AddressableLocal(0.0, UnresolvedTypeLayout<Any?>())
     var dest by localStorageL5102C8
     val a = mmSetrPd(1.0, 2.0)
     run {
@@ -1682,14 +1682,14 @@ public fun testMmSetzeroPd() {
 }
 
 public fun testMmLoad1Pd() {
-    val localStorageL5335C8 = AddressableLocal(-5.0, ObjectSlotLayout<Any?>())
+    val localStorageL5335C8 = AddressableLocal(-5.0, UnresolvedTypeLayout<Any?>())
     val d by localStorageL5335C8
     val r = mmLoad1Pd(d)
     assertEqM128d(r, mmSetrPd(d, d))
 }
 
 public fun testMmLoadPd1() {
-    val localStorageL5342C8 = AddressableLocal(-5.0, ObjectSlotLayout<Any?>())
+    val localStorageL5342C8 = AddressableLocal(-5.0, UnresolvedTypeLayout<Any?>())
     val d by localStorageL5342C8
     val r = mmLoadPd1(d)
     assertEqM128d(r, mmSetrPd(d, d))

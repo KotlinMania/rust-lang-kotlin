@@ -1,7 +1,7 @@
 // port-lint: source future/into_future.rs
 package io.github.kotlinmania.rustlang.core.future.intofuture
 
-import io.github.kotlinmania.rustlang.future.future.Future
+import io.github.kotlinmania.rustlang.core.future.future.Future
 
 public typealias Output<F> = F.Output
 

@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.corearch.mips.msa.cinterop
+headers = mips_msa_wrapper.h
+headerFilter = mips_msa_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = mips_msa_wrapper.a

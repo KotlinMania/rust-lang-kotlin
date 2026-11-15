@@ -7,8 +7,9 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.sys.alloc.MIN_ALIGN
-import io.github.kotlinmania.rustlang.sys.alloc.reallocFallback
+import io.github.kotlinmania.rustlang.std.sys.alloc.MIN_ALIGN
+import io.github.kotlinmania.rustlang.std.sys.alloc.reallocFallback
+import io.github.kotlinmania.rustlang.std.sys.c
 
 // Implements `System` on Windows.
 //
@@ -34,7 +35,7 @@ public val HEAP_ZERO_MEMORY: UInt = 0x00000008u
 // always return the same handle, which remains valid for the entire scope of the process.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-getprocessheap
-public expect fun getProcessHeap(): Handle
+public expect fun getProcessHeap(): c.Handle
 
 // Allocate a block of `dwBytes` bytes of memory from a given heap `hHeap`.
 // The allocated memory may be uninitialized, or zeroed if `dwFlags` is
@@ -50,7 +51,7 @@ public expect fun getProcessHeap(): Handle
 // Note that `dwBytes` is allowed to be zero, contrary to some other allocators.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-heapalloc
-public expect fun heapAlloc(hheap: Handle, dwflags: UInt, dwbytes: ULong): MutPtr
+public expect fun heapAlloc(hheap: c.Handle, dwflags: UInt, dwbytes: ULong): MutPtr
 
 // Reallocate a block of memory behind a given pointer `lpMem` from a given heap `hHeap`,
 // to a block of at least `dwBytes` bytes, either shrinking the block in place,
@@ -71,7 +72,7 @@ public expect fun heapAlloc(hheap: Handle, dwflags: UInt, dwbytes: ULong): MutPt
 // Note that `dwBytes` is allowed to be zero, contrary to some other allocators.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-heaprealloc
-public expect fun heapReAlloc(hheap: Handle, dwflags: UInt, lpmem: ConstPtr, dwbytes: ULong): MutPtr
+public expect fun heapReAlloc(hheap: c.Handle, dwflags: UInt, lpmem: ConstPtr, dwbytes: ULong): MutPtr
 
 // Free a block of memory behind a given pointer `lpMem` from a given heap `hHeap`.
 // Returns a nonzero value if the operation is successful, and zero if the operation fails.
@@ -87,14 +88,14 @@ public expect fun heapReAlloc(hheap: Handle, dwflags: UInt, lpmem: ConstPtr, dwb
 // Note that `lpMem` is allowed to be null, which will not cause the operation to fail.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-heapfree
-public expect fun heapFree(hheap: Handle, dwflags: UInt, lpmem: ConstPtr): Bool
+public expect fun heapFree(hheap: c.Handle, dwflags: UInt, lpmem: ConstPtr): c.Bool
 
 public fun getProcessHeap(): MutPtr {
     // SAFETY: GetProcessHeap simply returns a valid handle or NULL so is always safe to call.
     return GetProcessHeap()
 }
 
-public fun processHeapAlloc(heap: MaybeUninit<Handle>, flags: UInt, bytes: Int): MutPtr {
+public fun processHeapAlloc(heap: MaybeUninit<c.Handle>, flags: UInt, bytes: Int): MutPtr {
     val heap = getProcessHeap()
     if (((heap).rawAddress == 0L)) {
         return MutPtr(0L)

@@ -4,23 +4,23 @@ package io.github.kotlinmania.rustlang.std.os.unix.net.ancillary
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.zeroed
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CMSG_DATA
 import io.github.kotlinmania.rustlang.libc.CMSG_FIRSTHDR
@@ -39,21 +39,21 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_CTRUNC
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_TRUNC
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Ucred
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
-import io.github.kotlinmania.rustlang.os.fd.RawFd
-import io.github.kotlinmania.rustlang.os.unix.net.SockaddrUn
-import io.github.kotlinmania.rustlang.os.unix.net.SocketAddr
-import io.github.kotlinmania.rustlang.path.Path
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.net.connection.wasip1.Socket
+import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn
+import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
 
 public fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error> {
     return run {
-        val localStorageL41C8 = AddressableLocal(SockaddrUn(), ObjectSlotLayout<SockaddrUn>())
+        val localStorageL41C8 = AddressableLocal(SockaddrUn(), UnresolvedTypeLayout<SockaddrUn>())
         val msgName by localStorageL41C8
-        val localStorageL42C8 = AddressableLocal(Msghdr(), ObjectSlotLayout<Msghdr>())
+        val localStorageL42C8 = AddressableLocal(Msghdr(), UnresolvedTypeLayout<Msghdr>())
         val msg by localStorageL42C8
         msg.msgName = (localStorageL41C8.asMutPtr())
-        msg.msgNamelen = sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>())
+        msg.msgNamelen = sizeOf<SockaddrUn>(typeLayoutT = UnresolvedTypeLayout<SockaddrUn>())
         msg.msgIov = bufs.asMutPtr()
         msg.msgIovlen = ((bufs.size as Any?) as Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>)
         msg.msgControllen = ((ancillary.buffer.size as Any?) as Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>)
@@ -75,11 +75,11 @@ public fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<I
         var (msgName, msgNamelen) =
             if (path != null) {
                 val path1 = path
-                when (val tryResult = io.github.kotlinmania.rustlang.os.unix.net.SockaddrUn(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                when (val tryResult = io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             } else {
-                Pair(MaybeUninit.zeroed(ObjectSlotLayout<Result<Int, Error>>()).assumeInit(), 0)
+                Pair(MaybeUninit.zeroed(UnresolvedTypeLayout<Result<Int, Error>>()).assumeInit(), 0)
             }
-        val localStorageL76C8 = AddressableLocal(Msghdr(), ObjectSlotLayout<Msghdr>())
+        val localStorageL76C8 = AddressableLocal(Msghdr(), UnresolvedTypeLayout<Msghdr>())
         val msg by localStorageL76C8
         msg.msgName = mutPtrFromRustCast((addrOfMut(msgName)))
         msg.msgNamelen = msgNamelen
@@ -97,7 +97,7 @@ public fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<I
 
 public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutableReference<Int>, source: List<T>, cmsgLevel: CInt, cmsgType: CInt, typeLayoutT: TypeLayout<T>): Boolean {
     val length1 = length
-    val cmsgSize = rustCheckedMul(source.size, sizeOf<T>(typeLayoutT = typeLayoutT))
+    val cmsgSize = source.size.checkedMul(sizeOf<T>(typeLayoutT = typeLayoutT))
     val sourceLen2 =
         if (cmsgSize != null) {
             val sourceLen = cmsgSize
@@ -116,7 +116,7 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
     run {
         val additionalSpace = CMSG_SPACE(sourceLen2).toInt()
         val newLength1 =
-            when (val matchVal1 = rustCheckedAdd(additionalSpace, (length1).read())) {
+            when (val matchVal1 = additionalSpace.checkedAdd((length1).read())) {
                 null -> {
                     return false
                 }
@@ -377,7 +377,7 @@ public sealed class AncillaryData {
                 val cmsgLenZero = CMSG_LEN(0).toInt()
                 val dataLen = cmsg.cmsgLen.toInt() - cmsgLenZero
                 val data = CMSG_DATA(cmsg).cast()
-                val data1 = rawSliceList(data, dataLen.toInt(), PrimitiveLayouts.U8)
+                val data1 = linearSliceView(data, dataLen.toInt(), PrimitiveLayouts.U8)
                 when (val matchVal = cmsg.cmsgLevel) {
                     SOL_SOCKET -> when (val matchVal1 = cmsg.cmsgType) {
                         io.github.kotlinmania.rustlang.libc.ScmRights -> Result.Ok(AncillaryData.asRights(data1))

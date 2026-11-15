@@ -38,11 +38,14 @@ private object DummyJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val resourcePath = "io/github/kotlinmania/rustlang/panicunwind/native/$hostPlatform-$hostArch/$libFileName"
         val stream = DummyJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,10 +59,10 @@ private object DummyJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangDummyRustAbort()
+    external fun panicunwindDummyRustAbort()
 }
 
 public actual fun rustAbort(): Nothing {
-    DummyJniBridge.rustlangDummyRustAbort()
+    DummyJniBridge.panicunwindDummyRustAbort()
     error("Unreachable noreturn C function rustAbort")
 }

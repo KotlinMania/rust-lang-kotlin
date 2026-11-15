@@ -2,459 +2,379 @@
 
 package io.github.kotlinmania.rustlang.corearch.aarch64.neon
 
-import io.github.kotlinmania.rustlang.aarch64.neon.vcopyLaneF64
-import io.github.kotlinmania.rustlang.aarch64.neon.vcopyLaneP64
-import io.github.kotlinmania.rustlang.aarch64.neon.vcopyLaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vcopyLaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld1F64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld1F64X2
-import io.github.kotlinmania.rustlang.aarch64.neon.vld1F64X3
-import io.github.kotlinmania.rustlang.aarch64.neon.vld1F64X4
-import io.github.kotlinmania.rustlang.aarch64.neon.vld1qF64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld1qF64X2
-import io.github.kotlinmania.rustlang.aarch64.neon.vld1qF64X3
-import io.github.kotlinmania.rustlang.aarch64.neon.vld1qF64X4
-import io.github.kotlinmania.rustlang.aarch64.neon.vld2F64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld2LaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld2LaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld2qF64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld2qLaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld2qLaneS8
-import io.github.kotlinmania.rustlang.aarch64.neon.vld2qLaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld2qLaneU8
-import io.github.kotlinmania.rustlang.aarch64.neon.vld2qS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld2qU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld3F64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld3LaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld3LaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld3qF64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld3qLaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld3qLaneS8
-import io.github.kotlinmania.rustlang.aarch64.neon.vld3qLaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld3qLaneU8
-import io.github.kotlinmania.rustlang.aarch64.neon.vld3qS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld3qU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld4F64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld4LaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld4LaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld4qF64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld4qLaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld4qLaneS8
-import io.github.kotlinmania.rustlang.aarch64.neon.vld4qLaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld4qLaneU8
-import io.github.kotlinmania.rustlang.aarch64.neon.vld4qS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld4qU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst1F64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst1F64X2
-import io.github.kotlinmania.rustlang.aarch64.neon.vst1F64X3
-import io.github.kotlinmania.rustlang.aarch64.neon.vst1F64X4
-import io.github.kotlinmania.rustlang.aarch64.neon.vst1qF64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst1qF64X2
-import io.github.kotlinmania.rustlang.aarch64.neon.vst1qF64X3
-import io.github.kotlinmania.rustlang.aarch64.neon.vst1qF64X4
-import io.github.kotlinmania.rustlang.aarch64.neon.vst2F64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst2LaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst2LaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst2qF64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst2qLaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst2qLaneS8
-import io.github.kotlinmania.rustlang.aarch64.neon.vst2qLaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst2qLaneU8
-import io.github.kotlinmania.rustlang.aarch64.neon.vst2qS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst2qU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst3F64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst3LaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst3LaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst3qF64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst3qLaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst3qLaneS8
-import io.github.kotlinmania.rustlang.aarch64.neon.vst3qLaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst3qLaneU8
-import io.github.kotlinmania.rustlang.aarch64.neon.vst3qS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst3qU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst4F64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst4LaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst4LaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst4qF64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst4qLaneS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst4qLaneS8
-import io.github.kotlinmania.rustlang.aarch64.neon.vst4qLaneU64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst4qLaneU8
-import io.github.kotlinmania.rustlang.aarch64.neon.vst4qS64
-import io.github.kotlinmania.rustlang.aarch64.neon.vst4qU64
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x1x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x1x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x1x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x16x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x16x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x16x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x1x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x1x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x1x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x16x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x16x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x16x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x1x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x1x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x1x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x16x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x16x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x16x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.vld1F16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1F16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1F16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1F32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1F32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1F32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1P16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1P16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1P16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1P64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1P64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1P64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1P8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1P8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1P8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1S8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1U8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qF16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qF16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qF16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qF32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qF32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qF32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qP16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qP16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qP16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qP64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qP64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qP64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qP8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qP8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qP8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qS8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vld1qU8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vld2F16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2F32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2P16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2P8
-import io.github.kotlinmania.rustlang.armshared.neon.vld2S16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2S32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2S64
-import io.github.kotlinmania.rustlang.armshared.neon.vld2S8
-import io.github.kotlinmania.rustlang.armshared.neon.vld2U16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2U32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2U64
-import io.github.kotlinmania.rustlang.armshared.neon.vld2U8
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qP16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qP8
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qU16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qU32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qU8
-import io.github.kotlinmania.rustlang.armshared.neon.vld3F16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3F32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3P16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3P8
-import io.github.kotlinmania.rustlang.armshared.neon.vld3S16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3S32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3S64
-import io.github.kotlinmania.rustlang.armshared.neon.vld3S8
-import io.github.kotlinmania.rustlang.armshared.neon.vld3U16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3U32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3U64
-import io.github.kotlinmania.rustlang.armshared.neon.vld3U8
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qP16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qP8
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qU16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qU32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qU8
-import io.github.kotlinmania.rustlang.armshared.neon.vld4F16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4F32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4P16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4P8
-import io.github.kotlinmania.rustlang.armshared.neon.vld4S16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4S32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4S64
-import io.github.kotlinmania.rustlang.armshared.neon.vld4S8
-import io.github.kotlinmania.rustlang.armshared.neon.vld4U16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4U32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4U64
-import io.github.kotlinmania.rustlang.armshared.neon.vld4U8
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qP16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qP8
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qU16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qU32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qU8
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1P16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1P16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1P16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1P64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1P64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1P64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1P8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1P8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1P8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1U8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qP16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qP16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qP16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qP64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qP64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qP64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qP8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qP8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qP8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qU8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst2F16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2F32
-import io.github.kotlinmania.rustlang.armshared.neon.vst2P16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2P8
-import io.github.kotlinmania.rustlang.armshared.neon.vst2S16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2S32
-import io.github.kotlinmania.rustlang.armshared.neon.vst2S64
-import io.github.kotlinmania.rustlang.armshared.neon.vst2S8
-import io.github.kotlinmania.rustlang.armshared.neon.vst2U16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2U32
-import io.github.kotlinmania.rustlang.armshared.neon.vst2U64
-import io.github.kotlinmania.rustlang.armshared.neon.vst2U8
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qF32
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qP16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qP8
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qS16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qS32
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qS8
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qU16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qU32
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qU8
-import io.github.kotlinmania.rustlang.armshared.neon.vst3F16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3F32
-import io.github.kotlinmania.rustlang.armshared.neon.vst3P16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3P8
-import io.github.kotlinmania.rustlang.armshared.neon.vst3S16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3S32
-import io.github.kotlinmania.rustlang.armshared.neon.vst3S64
-import io.github.kotlinmania.rustlang.armshared.neon.vst3S8
-import io.github.kotlinmania.rustlang.armshared.neon.vst3U16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3U32
-import io.github.kotlinmania.rustlang.armshared.neon.vst3U64
-import io.github.kotlinmania.rustlang.armshared.neon.vst3U8
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qF32
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qP16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qP8
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qS16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qS32
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qS8
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qU16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qU32
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qU8
-import io.github.kotlinmania.rustlang.armshared.neon.vst4F16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4F32
-import io.github.kotlinmania.rustlang.armshared.neon.vst4P16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4P8
-import io.github.kotlinmania.rustlang.armshared.neon.vst4S16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4S32
-import io.github.kotlinmania.rustlang.armshared.neon.vst4S64
-import io.github.kotlinmania.rustlang.armshared.neon.vst4S8
-import io.github.kotlinmania.rustlang.armshared.neon.vst4U16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4U32
-import io.github.kotlinmania.rustlang.armshared.neon.vst4U64
-import io.github.kotlinmania.rustlang.armshared.neon.vst4U8
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qF32
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qP16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qP8
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qS16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qS32
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qS8
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qU16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qU32
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qU8
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float16x4x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float16x4x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float16x4x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float16x8x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float16x8x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float16x8x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float32x2x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float32x2x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float32x2x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float32x4x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float32x4x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float32x4x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int16x4x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int16x4x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int16x4x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int16x8x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int16x8x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int16x8x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int32x2x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int32x2x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int32x2x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int32x4x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int32x4x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int32x4x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int64x1x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int64x1x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int64x1x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int64x2x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int64x2x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int64x2x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int8x16x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int8x16x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int8x16x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int8x8x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int8x8x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int8x8x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly16x4x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly16x4x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly16x4x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly16x8x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly16x8x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly16x8x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly64x1x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly64x1x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly64x1x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly64x2x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly64x2x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly64x2x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly8x16x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly8x16x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly8x16x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly8x8x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly8x8x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly8x8x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint16x4x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint16x4x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint16x4x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint16x8x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint16x8x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint16x8x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint32x2x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint32x2x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint32x2x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint32x4x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint32x4x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint32x4x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint64x1x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint64x1x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint64x1x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint64x2x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint64x2x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint64x2x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint8x16x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint8x16x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint8x16x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint8x8x2T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint8x8x3T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint8x8x4T
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1F16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1F16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1F16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1F32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1F32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1F32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1P16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1P16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1P16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1P64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1P64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1P64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1P8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1P8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1P8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1S8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1U8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qF16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qF16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qF16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qF32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qF32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qF32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qP16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qP16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qP16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qP64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qP64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qP64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qP8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qP8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qP8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qS8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld1qU8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2F16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2F32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2P16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2P8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2S16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2S32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2S64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2S8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2U16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2U32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2U64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2U8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2qF16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2qF32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2qP16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2qP8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2qS16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2qS32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2qS8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2qU16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2qU32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld2qU8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3F16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3F32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3P16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3P8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3S16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3S32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3S64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3S8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3U16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3U32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3U64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3U8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3qF16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3qF32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3qP16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3qP8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3qS16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3qS32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3qS8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3qU16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3qU32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld3qU8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4F16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4F32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4P16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4P8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4S16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4S32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4S64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4S8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4U16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4U32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4U64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4U8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4qF16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4qF32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4qP16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4qP8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4qS16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4qS32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4qS8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4qU16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4qU32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vld4qU8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1F16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1F16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1F16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1F32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1F32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1F32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1P16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1P16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1P16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1P64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1P64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1P64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1P8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1P8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1P8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1S8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1U8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qF16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qF16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qF16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qF32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qF32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qF32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qP16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qP16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qP16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qP64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qP64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qP64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qP8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qP8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qP8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qS8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU16X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU16X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU16X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU32X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU32X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU32X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU64X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU64X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU64X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU8X2
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU8X3
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst1qU8X4
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2F16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2F32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2P16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2P8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2S16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2S32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2S64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2S8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2U16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2U32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2U64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2U8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2qF16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2qF32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2qP16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2qP8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2qS16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2qS32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2qS8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2qU16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2qU32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst2qU8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3F16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3F32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3P16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3P8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3S16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3S32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3S64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3S8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3U16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3U32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3U64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3U8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3qF16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3qF32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3qP16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3qP8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3qS16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3qS32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3qS8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3qU16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3qU32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst3qU8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4F16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4F32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4P16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4P8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4S16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4S32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4S64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4S8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4U16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4U32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4U64
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4U8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qF16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qF32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qP16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qP8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qS16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qS32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qS8
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qU16
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qU32
+import io.github.kotlinmania.rustlang.corearch.armshared.neon.vst4qU8
 
 // ARMv8 ASIMD intrinsics
 
@@ -761,7 +681,7 @@ public fun testVst1qF64() {
 public fun testVld1F16X2() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1F16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x2T = vld1F16X2(tmp1.asPtr().cast())
@@ -772,7 +692,7 @@ public fun testVld1F16X2() {
 public fun testVld1F16X3() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1F16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x3T = vld1F16X3(tmp1.asPtr().cast())
@@ -783,7 +703,7 @@ public fun testVld1F16X3() {
 public fun testVld1F16X4() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1F16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x4T = vld1F16X4(tmp1.asPtr().cast())
@@ -794,7 +714,7 @@ public fun testVld1F16X4() {
 public fun testVld1qF16X2() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1qF16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x2T = vld1qF16X2(tmp1.asPtr().cast())
@@ -805,7 +725,7 @@ public fun testVld1qF16X2() {
 public fun testVld1qF16X3() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1qF16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x3T = vld1qF16X3(tmp1.asPtr().cast())
@@ -816,7 +736,7 @@ public fun testVld1qF16X3() {
 public fun testVld1qF16X4() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst1qF16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x4T = vld1qF16X4(tmp1.asPtr().cast())
@@ -827,7 +747,7 @@ public fun testVld1qF16X4() {
 public fun testVld2F16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst2F16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x2T = vld2F16(tmp1.asPtr().cast())
@@ -838,7 +758,7 @@ public fun testVld2F16() {
 public fun testVld3F16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst3F16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x3T = vld3F16(tmp1.asPtr().cast())
@@ -849,7 +769,7 @@ public fun testVld3F16() {
 public fun testVld4F16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst4F16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x4x4T = vld4F16(tmp1.asPtr().cast())
@@ -860,7 +780,7 @@ public fun testVld4F16() {
 public fun testVld2qF16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst2qF16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x2T = vld2qF16(tmp1.asPtr().cast())
@@ -871,7 +791,7 @@ public fun testVld2qF16() {
 public fun testVld3qF16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst3qF16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x3T = vld3qF16(tmp1.asPtr().cast())
@@ -882,7 +802,7 @@ public fun testVld3qF16() {
 public fun testVld4qF16() {
     val vals: List<F16> = fromFn({ i -> F16.fromDouble(i.toDouble()) })
     val a: Float16x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<List<F16>>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<List<F16>>())
     vst4qF16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float16x8x4T = vld4qF16(tmp1.asPtr().cast())
@@ -893,7 +813,7 @@ public fun testVld4qF16() {
 public fun testVld1P64X2() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Poly64x1x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1P64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x1x2T = vld1P64X2(tmp1.asPtr().cast())
@@ -904,7 +824,7 @@ public fun testVld1P64X2() {
 public fun testVld1P64X3() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Poly64x1x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1P64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x1x3T = vld1P64X3(tmp1.asPtr().cast())
@@ -915,7 +835,7 @@ public fun testVld1P64X3() {
 public fun testVld1P64X4() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Poly64x1x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1P64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x1x4T = vld1P64X4(tmp1.asPtr().cast())
@@ -926,7 +846,7 @@ public fun testVld1P64X4() {
 public fun testVld1qP64X2() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Poly64x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qP64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x2x2T = vld1qP64X2(tmp1.asPtr().cast())
@@ -937,7 +857,7 @@ public fun testVld1qP64X2() {
 public fun testVld1qP64X3() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Poly64x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qP64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x2x3T = vld1qP64X3(tmp1.asPtr().cast())
@@ -948,7 +868,7 @@ public fun testVld1qP64X3() {
 public fun testVld1qP64X4() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Poly64x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qP64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly64x2x4T = vld1qP64X4(tmp1.asPtr().cast())
@@ -959,7 +879,7 @@ public fun testVld1qP64X4() {
 public fun testVld1F32X2() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1F32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x2T = vld1F32X2(tmp1.asPtr().cast())
@@ -970,7 +890,7 @@ public fun testVld1F32X2() {
 public fun testVld1F32X3() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1F32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x3T = vld1F32X3(tmp1.asPtr().cast())
@@ -981,7 +901,7 @@ public fun testVld1F32X3() {
 public fun testVld1F32X4() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1F32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x4T = vld1F32X4(tmp1.asPtr().cast())
@@ -992,7 +912,7 @@ public fun testVld1F32X4() {
 public fun testVld1qF32X2() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1qF32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x2T = vld1qF32X2(tmp1.asPtr().cast())
@@ -1003,7 +923,7 @@ public fun testVld1qF32X2() {
 public fun testVld1qF32X3() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1qF32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x3T = vld1qF32X3(tmp1.asPtr().cast())
@@ -1014,7 +934,7 @@ public fun testVld1qF32X3() {
 public fun testVld1qF32X4() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst1qF32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x4T = vld1qF32X4(tmp1.asPtr().cast())
@@ -1025,7 +945,7 @@ public fun testVld1qF32X4() {
 public fun testVld1F64X2() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x1x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1F64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x2T = vld1F64X2(tmp1.asPtr().cast())
@@ -1036,7 +956,7 @@ public fun testVld1F64X2() {
 public fun testVld1F64X3() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x1x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1F64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x3T = vld1F64X3(tmp1.asPtr().cast())
@@ -1047,7 +967,7 @@ public fun testVld1F64X3() {
 public fun testVld1F64X4() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x1x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1F64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x4T = vld1F64X4(tmp1.asPtr().cast())
@@ -1058,7 +978,7 @@ public fun testVld1F64X4() {
 public fun testVld1qF64X2() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1qF64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x2T = vld1qF64X2(tmp1.asPtr().cast())
@@ -1069,7 +989,7 @@ public fun testVld1qF64X2() {
 public fun testVld1qF64X3() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1qF64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x3T = vld1qF64X3(tmp1.asPtr().cast())
@@ -1080,7 +1000,7 @@ public fun testVld1qF64X3() {
 public fun testVld1qF64X4() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst1qF64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x4T = vld1qF64X4(tmp1.asPtr().cast())
@@ -1091,7 +1011,7 @@ public fun testVld1qF64X4() {
 public fun testVld1S8X2() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1S8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x2T = vld1S8X2(tmp1.asPtr().cast())
@@ -1102,7 +1022,7 @@ public fun testVld1S8X2() {
 public fun testVld1S8X3() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1S8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x3T = vld1S8X3(tmp1.asPtr().cast())
@@ -1113,7 +1033,7 @@ public fun testVld1S8X3() {
 public fun testVld1S8X4() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1S8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x4T = vld1S8X4(tmp1.asPtr().cast())
@@ -1124,7 +1044,7 @@ public fun testVld1S8X4() {
 public fun testVld1qS8X2() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x16x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1qS8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x2T = vld1qS8X2(tmp1.asPtr().cast())
@@ -1135,7 +1055,7 @@ public fun testVld1qS8X2() {
 public fun testVld1qS8X3() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x16x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1qS8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x3T = vld1qS8X3(tmp1.asPtr().cast())
@@ -1146,7 +1066,7 @@ public fun testVld1qS8X3() {
 public fun testVld1qS8X4() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x16x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst1qS8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x4T = vld1qS8X4(tmp1.asPtr().cast())
@@ -1157,7 +1077,7 @@ public fun testVld1qS8X4() {
 public fun testVld1S16X2() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1S16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x2T = vld1S16X2(tmp1.asPtr().cast())
@@ -1168,7 +1088,7 @@ public fun testVld1S16X2() {
 public fun testVld1S16X3() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1S16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x3T = vld1S16X3(tmp1.asPtr().cast())
@@ -1179,7 +1099,7 @@ public fun testVld1S16X3() {
 public fun testVld1S16X4() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1S16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x4T = vld1S16X4(tmp1.asPtr().cast())
@@ -1190,7 +1110,7 @@ public fun testVld1S16X4() {
 public fun testVld1qS16X2() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1qS16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x2T = vld1qS16X2(tmp1.asPtr().cast())
@@ -1201,7 +1121,7 @@ public fun testVld1qS16X2() {
 public fun testVld1qS16X3() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1qS16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x3T = vld1qS16X3(tmp1.asPtr().cast())
@@ -1212,7 +1132,7 @@ public fun testVld1qS16X3() {
 public fun testVld1qS16X4() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst1qS16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x4T = vld1qS16X4(tmp1.asPtr().cast())
@@ -1223,7 +1143,7 @@ public fun testVld1qS16X4() {
 public fun testVld1S32X2() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1S32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x2T = vld1S32X2(tmp1.asPtr().cast())
@@ -1234,7 +1154,7 @@ public fun testVld1S32X2() {
 public fun testVld1S32X3() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1S32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x3T = vld1S32X3(tmp1.asPtr().cast())
@@ -1245,7 +1165,7 @@ public fun testVld1S32X3() {
 public fun testVld1S32X4() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1S32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x4T = vld1S32X4(tmp1.asPtr().cast())
@@ -1256,7 +1176,7 @@ public fun testVld1S32X4() {
 public fun testVld1qS32X2() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1qS32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x2T = vld1qS32X2(tmp1.asPtr().cast())
@@ -1267,7 +1187,7 @@ public fun testVld1qS32X2() {
 public fun testVld1qS32X3() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1qS32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x3T = vld1qS32X3(tmp1.asPtr().cast())
@@ -1278,7 +1198,7 @@ public fun testVld1qS32X3() {
 public fun testVld1qS32X4() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst1qS32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x4T = vld1qS32X4(tmp1.asPtr().cast())
@@ -1289,7 +1209,7 @@ public fun testVld1qS32X4() {
 public fun testVld1S64X2() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x1x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1S64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x2T = vld1S64X2(tmp1.asPtr().cast())
@@ -1300,7 +1220,7 @@ public fun testVld1S64X2() {
 public fun testVld1S64X3() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x1x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1S64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x3T = vld1S64X3(tmp1.asPtr().cast())
@@ -1311,7 +1231,7 @@ public fun testVld1S64X3() {
 public fun testVld1S64X4() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x1x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1S64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x4T = vld1S64X4(tmp1.asPtr().cast())
@@ -1322,7 +1242,7 @@ public fun testVld1S64X4() {
 public fun testVld1qS64X2() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1qS64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x2T = vld1qS64X2(tmp1.asPtr().cast())
@@ -1333,7 +1253,7 @@ public fun testVld1qS64X2() {
 public fun testVld1qS64X3() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1qS64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x3T = vld1qS64X3(tmp1.asPtr().cast())
@@ -1344,7 +1264,7 @@ public fun testVld1qS64X3() {
 public fun testVld1qS64X4() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst1qS64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x4T = vld1qS64X4(tmp1.asPtr().cast())
@@ -1355,7 +1275,7 @@ public fun testVld1qS64X4() {
 public fun testVld1U8X2() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1U8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x2T = vld1U8X2(tmp1.asPtr().cast())
@@ -1366,7 +1286,7 @@ public fun testVld1U8X2() {
 public fun testVld1U8X3() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1U8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x3T = vld1U8X3(tmp1.asPtr().cast())
@@ -1377,7 +1297,7 @@ public fun testVld1U8X3() {
 public fun testVld1U8X4() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1U8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x4T = vld1U8X4(tmp1.asPtr().cast())
@@ -1388,7 +1308,7 @@ public fun testVld1U8X4() {
 public fun testVld1qU8X2() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x16x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qU8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x2T = vld1qU8X2(tmp1.asPtr().cast())
@@ -1399,7 +1319,7 @@ public fun testVld1qU8X2() {
 public fun testVld1qU8X3() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x16x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qU8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x3T = vld1qU8X3(tmp1.asPtr().cast())
@@ -1410,7 +1330,7 @@ public fun testVld1qU8X3() {
 public fun testVld1qU8X4() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x16x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qU8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x4T = vld1qU8X4(tmp1.asPtr().cast())
@@ -1421,7 +1341,7 @@ public fun testVld1qU8X4() {
 public fun testVld1U16X2() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1U16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x2T = vld1U16X2(tmp1.asPtr().cast())
@@ -1432,7 +1352,7 @@ public fun testVld1U16X2() {
 public fun testVld1U16X3() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1U16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x3T = vld1U16X3(tmp1.asPtr().cast())
@@ -1443,7 +1363,7 @@ public fun testVld1U16X3() {
 public fun testVld1U16X4() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1U16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x4T = vld1U16X4(tmp1.asPtr().cast())
@@ -1454,7 +1374,7 @@ public fun testVld1U16X4() {
 public fun testVld1qU16X2() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qU16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x2T = vld1qU16X2(tmp1.asPtr().cast())
@@ -1465,7 +1385,7 @@ public fun testVld1qU16X2() {
 public fun testVld1qU16X3() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qU16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x3T = vld1qU16X3(tmp1.asPtr().cast())
@@ -1476,7 +1396,7 @@ public fun testVld1qU16X3() {
 public fun testVld1qU16X4() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qU16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x4T = vld1qU16X4(tmp1.asPtr().cast())
@@ -1487,7 +1407,7 @@ public fun testVld1qU16X4() {
 public fun testVld1U32X2() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1U32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x2T = vld1U32X2(tmp1.asPtr().cast())
@@ -1498,7 +1418,7 @@ public fun testVld1U32X2() {
 public fun testVld1U32X3() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1U32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x3T = vld1U32X3(tmp1.asPtr().cast())
@@ -1509,7 +1429,7 @@ public fun testVld1U32X3() {
 public fun testVld1U32X4() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1U32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x4T = vld1U32X4(tmp1.asPtr().cast())
@@ -1520,7 +1440,7 @@ public fun testVld1U32X4() {
 public fun testVld1qU32X2() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1qU32X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x2T = vld1qU32X2(tmp1.asPtr().cast())
@@ -1531,7 +1451,7 @@ public fun testVld1qU32X2() {
 public fun testVld1qU32X3() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1qU32X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x3T = vld1qU32X3(tmp1.asPtr().cast())
@@ -1542,7 +1462,7 @@ public fun testVld1qU32X3() {
 public fun testVld1qU32X4() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst1qU32X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x4T = vld1qU32X4(tmp1.asPtr().cast())
@@ -1553,7 +1473,7 @@ public fun testVld1qU32X4() {
 public fun testVld1U64X2() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x1x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1U64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x2T = vld1U64X2(tmp1.asPtr().cast())
@@ -1564,7 +1484,7 @@ public fun testVld1U64X2() {
 public fun testVld1U64X3() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x1x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1U64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x3T = vld1U64X3(tmp1.asPtr().cast())
@@ -1575,7 +1495,7 @@ public fun testVld1U64X3() {
 public fun testVld1U64X4() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x1x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1U64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x4T = vld1U64X4(tmp1.asPtr().cast())
@@ -1586,7 +1506,7 @@ public fun testVld1U64X4() {
 public fun testVld1qU64X2() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qU64X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x2T = vld1qU64X2(tmp1.asPtr().cast())
@@ -1597,7 +1517,7 @@ public fun testVld1qU64X2() {
 public fun testVld1qU64X3() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qU64X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x3T = vld1qU64X3(tmp1.asPtr().cast())
@@ -1608,7 +1528,7 @@ public fun testVld1qU64X3() {
 public fun testVld1qU64X4() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst1qU64X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x4T = vld1qU64X4(tmp1.asPtr().cast())
@@ -1619,7 +1539,7 @@ public fun testVld1qU64X4() {
 public fun testVld1P8X2() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1P8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x2T = vld1P8X2(tmp1.asPtr().cast())
@@ -1630,7 +1550,7 @@ public fun testVld1P8X2() {
 public fun testVld1P8X3() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1P8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x3T = vld1P8X3(tmp1.asPtr().cast())
@@ -1641,7 +1561,7 @@ public fun testVld1P8X3() {
 public fun testVld1P8X4() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1P8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x4T = vld1P8X4(tmp1.asPtr().cast())
@@ -1652,7 +1572,7 @@ public fun testVld1P8X4() {
 public fun testVld1qP8X2() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x16x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qP8X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x2T = vld1qP8X2(tmp1.asPtr().cast())
@@ -1663,7 +1583,7 @@ public fun testVld1qP8X2() {
 public fun testVld1qP8X3() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x16x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qP8X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x3T = vld1qP8X3(tmp1.asPtr().cast())
@@ -1674,7 +1594,7 @@ public fun testVld1qP8X3() {
 public fun testVld1qP8X4() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x16x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst1qP8X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x4T = vld1qP8X4(tmp1.asPtr().cast())
@@ -1685,7 +1605,7 @@ public fun testVld1qP8X4() {
 public fun testVld1P16X2() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1P16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x2T = vld1P16X2(tmp1.asPtr().cast())
@@ -1696,7 +1616,7 @@ public fun testVld1P16X2() {
 public fun testVld1P16X3() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1P16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x3T = vld1P16X3(tmp1.asPtr().cast())
@@ -1707,7 +1627,7 @@ public fun testVld1P16X3() {
 public fun testVld1P16X4() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1P16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x4T = vld1P16X4(tmp1.asPtr().cast())
@@ -1718,7 +1638,7 @@ public fun testVld1P16X4() {
 public fun testVld1qP16X2() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qP16X2(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x2T = vld1qP16X2(tmp1.asPtr().cast())
@@ -1729,7 +1649,7 @@ public fun testVld1qP16X2() {
 public fun testVld1qP16X3() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qP16X3(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x3T = vld1qP16X3(tmp1.asPtr().cast())
@@ -1740,7 +1660,7 @@ public fun testVld1qP16X3() {
 public fun testVld1qP16X4() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst1qP16X4(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x4T = vld1qP16X4(tmp1.asPtr().cast())
@@ -1751,7 +1671,7 @@ public fun testVld1qP16X4() {
 public fun testVld2F32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst2F32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x2T = vld2F32(tmp1.asPtr().cast())
@@ -1762,7 +1682,7 @@ public fun testVld2F32() {
 public fun testVld3F32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst3F32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x3T = vld3F32(tmp1.asPtr().cast())
@@ -1773,7 +1693,7 @@ public fun testVld3F32() {
 public fun testVld4F32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst4F32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x2x4T = vld4F32(tmp1.asPtr().cast())
@@ -1784,7 +1704,7 @@ public fun testVld4F32() {
 public fun testVld2qF32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst2qF32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x2T = vld2qF32(tmp1.asPtr().cast())
@@ -1795,7 +1715,7 @@ public fun testVld2qF32() {
 public fun testVld3qF32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst3qF32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x3T = vld3qF32(tmp1.asPtr().cast())
@@ -1806,7 +1726,7 @@ public fun testVld3qF32() {
 public fun testVld4qF32() {
     val vals: FloatArray = fromFn({ i -> i.toFloat() })
     val a: Float32x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<FloatArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<FloatArray>())
     vst4qF32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float32x4x4T = vld4qF32(tmp1.asPtr().cast())
@@ -1817,7 +1737,7 @@ public fun testVld4qF32() {
 public fun testVld2F64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x1x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst2F64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x2T = vld2F64(tmp1.asPtr().cast())
@@ -1828,7 +1748,7 @@ public fun testVld2F64() {
 public fun testVld3F64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x1x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst3F64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x3T = vld3F64(tmp1.asPtr().cast())
@@ -1839,7 +1759,7 @@ public fun testVld3F64() {
 public fun testVld4F64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x1x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst4F64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x1x4T = vld4F64(tmp1.asPtr().cast())
@@ -1850,7 +1770,7 @@ public fun testVld4F64() {
 public fun testVld2qF64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst2qF64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x2T = vld2qF64(tmp1.asPtr().cast())
@@ -1861,7 +1781,7 @@ public fun testVld2qF64() {
 public fun testVld3qF64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst3qF64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x3T = vld3qF64(tmp1.asPtr().cast())
@@ -1872,7 +1792,7 @@ public fun testVld3qF64() {
 public fun testVld4qF64() {
     val vals: DoubleArray = fromFn({ i -> i.toDouble() })
     val a: Float64x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<DoubleArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<DoubleArray>())
     vst4qF64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Float64x2x4T = vld4qF64(tmp1.asPtr().cast())
@@ -1883,7 +1803,7 @@ public fun testVld4qF64() {
 public fun testVld2S8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst2S8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x2T = vld2S8(tmp1.asPtr().cast())
@@ -1894,7 +1814,7 @@ public fun testVld2S8() {
 public fun testVld3S8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst3S8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x3T = vld3S8(tmp1.asPtr().cast())
@@ -1905,7 +1825,7 @@ public fun testVld3S8() {
 public fun testVld4S8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst4S8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x8x4T = vld4S8(tmp1.asPtr().cast())
@@ -1916,7 +1836,7 @@ public fun testVld4S8() {
 public fun testVld2qS8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x16x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst2qS8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x2T = vld2qS8(tmp1.asPtr().cast())
@@ -1927,7 +1847,7 @@ public fun testVld2qS8() {
 public fun testVld3qS8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x16x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst3qS8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x3T = vld3qS8(tmp1.asPtr().cast())
@@ -1938,7 +1858,7 @@ public fun testVld3qS8() {
 public fun testVld4qS8() {
     val vals: ByteArray = fromFn({ i -> i.toByte() })
     val a: Int8x16x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ByteArray>())
     vst4qS8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int8x16x4T = vld4qS8(tmp1.asPtr().cast())
@@ -1949,7 +1869,7 @@ public fun testVld4qS8() {
 public fun testVld2S16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst2S16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x2T = vld2S16(tmp1.asPtr().cast())
@@ -1960,7 +1880,7 @@ public fun testVld2S16() {
 public fun testVld3S16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst3S16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x3T = vld3S16(tmp1.asPtr().cast())
@@ -1971,7 +1891,7 @@ public fun testVld3S16() {
 public fun testVld4S16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst4S16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x4x4T = vld4S16(tmp1.asPtr().cast())
@@ -1982,7 +1902,7 @@ public fun testVld4S16() {
 public fun testVld2qS16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst2qS16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x2T = vld2qS16(tmp1.asPtr().cast())
@@ -1993,7 +1913,7 @@ public fun testVld2qS16() {
 public fun testVld3qS16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst3qS16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x3T = vld3qS16(tmp1.asPtr().cast())
@@ -2004,7 +1924,7 @@ public fun testVld3qS16() {
 public fun testVld4qS16() {
     val vals: ShortArray = fromFn({ i -> i.toShort() })
     val a: Int16x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ShortArray>())
     vst4qS16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int16x8x4T = vld4qS16(tmp1.asPtr().cast())
@@ -2015,7 +1935,7 @@ public fun testVld4qS16() {
 public fun testVld2S32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst2S32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x2T = vld2S32(tmp1.asPtr().cast())
@@ -2026,7 +1946,7 @@ public fun testVld2S32() {
 public fun testVld3S32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst3S32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x3T = vld3S32(tmp1.asPtr().cast())
@@ -2037,7 +1957,7 @@ public fun testVld3S32() {
 public fun testVld4S32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst4S32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x2x4T = vld4S32(tmp1.asPtr().cast())
@@ -2048,7 +1968,7 @@ public fun testVld4S32() {
 public fun testVld2qS32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst2qS32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x2T = vld2qS32(tmp1.asPtr().cast())
@@ -2059,7 +1979,7 @@ public fun testVld2qS32() {
 public fun testVld3qS32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst3qS32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x3T = vld3qS32(tmp1.asPtr().cast())
@@ -2070,7 +1990,7 @@ public fun testVld3qS32() {
 public fun testVld4qS32() {
     val vals: IntArray = fromFn({ i -> i.toInt() })
     val a: Int32x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<IntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<IntArray>())
     vst4qS32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int32x4x4T = vld4qS32(tmp1.asPtr().cast())
@@ -2081,7 +2001,7 @@ public fun testVld4qS32() {
 public fun testVld2S64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x1x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst2S64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x2T = vld2S64(tmp1.asPtr().cast())
@@ -2092,7 +2012,7 @@ public fun testVld2S64() {
 public fun testVld3S64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x1x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst3S64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x3T = vld3S64(tmp1.asPtr().cast())
@@ -2103,7 +2023,7 @@ public fun testVld3S64() {
 public fun testVld4S64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x1x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst4S64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x1x4T = vld4S64(tmp1.asPtr().cast())
@@ -2114,7 +2034,7 @@ public fun testVld4S64() {
 public fun testVld2qS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst2qS64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x2T = vld2qS64(tmp1.asPtr().cast())
@@ -2125,7 +2045,7 @@ public fun testVld2qS64() {
 public fun testVld3qS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst3qS64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x3T = vld3qS64(tmp1.asPtr().cast())
@@ -2136,7 +2056,7 @@ public fun testVld3qS64() {
 public fun testVld4qS64() {
     val vals: LongArray = fromFn({ i -> i.toLong() })
     val a: Int64x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<LongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<LongArray>())
     vst4qS64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Int64x2x4T = vld4qS64(tmp1.asPtr().cast())
@@ -2147,7 +2067,7 @@ public fun testVld4qS64() {
 public fun testVld2U8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst2U8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x2T = vld2U8(tmp1.asPtr().cast())
@@ -2158,7 +2078,7 @@ public fun testVld2U8() {
 public fun testVld3U8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst3U8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x3T = vld3U8(tmp1.asPtr().cast())
@@ -2169,7 +2089,7 @@ public fun testVld3U8() {
 public fun testVld4U8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst4U8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x8x4T = vld4U8(tmp1.asPtr().cast())
@@ -2180,7 +2100,7 @@ public fun testVld4U8() {
 public fun testVld2qU8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x16x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst2qU8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x2T = vld2qU8(tmp1.asPtr().cast())
@@ -2191,7 +2111,7 @@ public fun testVld2qU8() {
 public fun testVld3qU8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x16x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst3qU8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x3T = vld3qU8(tmp1.asPtr().cast())
@@ -2202,7 +2122,7 @@ public fun testVld3qU8() {
 public fun testVld4qU8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Uint8x16x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst4qU8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint8x16x4T = vld4qU8(tmp1.asPtr().cast())
@@ -2213,7 +2133,7 @@ public fun testVld4qU8() {
 public fun testVld2U16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst2U16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x2T = vld2U16(tmp1.asPtr().cast())
@@ -2224,7 +2144,7 @@ public fun testVld2U16() {
 public fun testVld3U16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst3U16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x3T = vld3U16(tmp1.asPtr().cast())
@@ -2235,7 +2155,7 @@ public fun testVld3U16() {
 public fun testVld4U16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst4U16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x4x4T = vld4U16(tmp1.asPtr().cast())
@@ -2246,7 +2166,7 @@ public fun testVld4U16() {
 public fun testVld2qU16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst2qU16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x2T = vld2qU16(tmp1.asPtr().cast())
@@ -2257,7 +2177,7 @@ public fun testVld2qU16() {
 public fun testVld3qU16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst3qU16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x3T = vld3qU16(tmp1.asPtr().cast())
@@ -2268,7 +2188,7 @@ public fun testVld3qU16() {
 public fun testVld4qU16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Uint16x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst4qU16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint16x8x4T = vld4qU16(tmp1.asPtr().cast())
@@ -2279,7 +2199,7 @@ public fun testVld4qU16() {
 public fun testVld2U32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst2U32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x2T = vld2U32(tmp1.asPtr().cast())
@@ -2290,7 +2210,7 @@ public fun testVld2U32() {
 public fun testVld3U32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst3U32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x3T = vld3U32(tmp1.asPtr().cast())
@@ -2301,7 +2221,7 @@ public fun testVld3U32() {
 public fun testVld4U32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst4U32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x2x4T = vld4U32(tmp1.asPtr().cast())
@@ -2312,7 +2232,7 @@ public fun testVld4U32() {
 public fun testVld2qU32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst2qU32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x2T = vld2qU32(tmp1.asPtr().cast())
@@ -2323,7 +2243,7 @@ public fun testVld2qU32() {
 public fun testVld3qU32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst3qU32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x3T = vld3qU32(tmp1.asPtr().cast())
@@ -2334,7 +2254,7 @@ public fun testVld3qU32() {
 public fun testVld4qU32() {
     val vals: UIntArray = fromFn({ i -> i.toUInt() })
     val a: Uint32x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UIntArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UIntArray>())
     vst4qU32(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint32x4x4T = vld4qU32(tmp1.asPtr().cast())
@@ -2345,7 +2265,7 @@ public fun testVld4qU32() {
 public fun testVld2U64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x1x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst2U64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x2T = vld2U64(tmp1.asPtr().cast())
@@ -2356,7 +2276,7 @@ public fun testVld2U64() {
 public fun testVld3U64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x1x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst3U64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x3T = vld3U64(tmp1.asPtr().cast())
@@ -2367,7 +2287,7 @@ public fun testVld3U64() {
 public fun testVld4U64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x1x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst4U64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x1x4T = vld4U64(tmp1.asPtr().cast())
@@ -2378,7 +2298,7 @@ public fun testVld4U64() {
 public fun testVld2qU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x2x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst2qU64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x2T = vld2qU64(tmp1.asPtr().cast())
@@ -2389,7 +2309,7 @@ public fun testVld2qU64() {
 public fun testVld3qU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x2x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst3qU64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x3T = vld3qU64(tmp1.asPtr().cast())
@@ -2400,7 +2320,7 @@ public fun testVld3qU64() {
 public fun testVld4qU64() {
     val vals: ULongArray = fromFn({ i -> i.toULong() })
     val a: Uint64x2x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<ULongArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<ULongArray>())
     vst4qU64(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Uint64x2x4T = vld4qU64(tmp1.asPtr().cast())
@@ -2411,7 +2331,7 @@ public fun testVld4qU64() {
 public fun testVld2P8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst2P8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x2T = vld2P8(tmp1.asPtr().cast())
@@ -2422,7 +2342,7 @@ public fun testVld2P8() {
 public fun testVld3P8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst3P8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x3T = vld3P8(tmp1.asPtr().cast())
@@ -2433,7 +2353,7 @@ public fun testVld3P8() {
 public fun testVld4P8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst4P8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x8x4T = vld4P8(tmp1.asPtr().cast())
@@ -2444,7 +2364,7 @@ public fun testVld4P8() {
 public fun testVld2qP8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x16x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst2qP8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x2T = vld2qP8(tmp1.asPtr().cast())
@@ -2455,7 +2375,7 @@ public fun testVld2qP8() {
 public fun testVld3qP8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x16x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst3qP8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x3T = vld3qP8(tmp1.asPtr().cast())
@@ -2466,7 +2386,7 @@ public fun testVld3qP8() {
 public fun testVld4qP8() {
     val vals: UByteArray = fromFn({ i -> i.toUByte() })
     val a: Poly8x16x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     vst4qP8(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly8x16x4T = vld4qP8(tmp1.asPtr().cast())
@@ -2477,7 +2397,7 @@ public fun testVld4qP8() {
 public fun testVld2P16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x4x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst2P16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x2T = vld2P16(tmp1.asPtr().cast())
@@ -2488,7 +2408,7 @@ public fun testVld2P16() {
 public fun testVld3P16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x4x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst3P16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x3T = vld3P16(tmp1.asPtr().cast())
@@ -2499,7 +2419,7 @@ public fun testVld3P16() {
 public fun testVld4P16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x4x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst4P16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x4x4T = vld4P16(tmp1.asPtr().cast())
@@ -2510,7 +2430,7 @@ public fun testVld4P16() {
 public fun testVld2qP16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x8x2T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst2qP16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x2T = vld2qP16(tmp1.asPtr().cast())
@@ -2521,7 +2441,7 @@ public fun testVld2qP16() {
 public fun testVld3qP16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x8x3T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst3qP16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x3T = vld3qP16(tmp1.asPtr().cast())
@@ -2532,7 +2452,7 @@ public fun testVld3qP16() {
 public fun testVld4qP16() {
     val vals: UShortArray = fromFn({ i -> i.toUShort() })
     val a: Poly16x8x4T = transmute(vals)
-    val tmp = MaybeUninit.uninit(ObjectSlotLayout<UShortArray>())
+    val tmp = MaybeUninit.uninit(UnresolvedTypeLayout<UShortArray>())
     vst4qP16(tmp.asMutPtr().cast(), a)
     val tmp1 = tmp.assumeInit()
     val r: Poly16x8x4T = vld4qP16(tmp1.asPtr().cast())

@@ -1,18 +1,18 @@
 // port-lint: source io/copy/generic.rs
 package io.github.kotlinmania.rustlang.alloc.io.copy.generic
 
-import io.github.kotlinmania.rustlang.collections.vecdeque.VecDeque
+import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
+import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
+import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
+import io.github.kotlinmania.rustlang.alloc.io.read.DEFAULT_BUF_SIZE
+import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.io.buffered.bufreader.BufReader
-import io.github.kotlinmania.rustlang.io.buffered.bufwriter.BufWriter
-import io.github.kotlinmania.rustlang.io.read.DEFAULT_BUF_SIZE
-import io.github.kotlinmania.rustlang.io.read.Read
 
 /**
  * The userspace read-write-loop implementation of `io.copy` that is used when
@@ -74,7 +74,10 @@ public fun List<UByte>.bufferPriority(): BufferPriority = IN_MEMORY
 
 public fun List<UByte>.copyTo(to: Write): Result<ULong> {
     val len = this.size
-    when (val tryResult = to.writeAll(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = to.writeAll(this)) {
+        is Result.Ok<*, *> -> tryResult.value
+        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+    }
     this = ((this).subList(len, (this).size))
     return Result.Ok(len.toULong())
 }
@@ -85,7 +88,10 @@ public fun <A : Allocator> VecDeque<UByte, A>.copyTo(to: Write): Result<ULong> {
     val len = this.len()
     val (front, back) = this.asSlices()
     val bufs = listOf(IoSlice.new(front), IoSlice.new(back))
-    when (val tryResult = to.writeAllVectored(bufs)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = to.writeAllVectored(bufs)) {
+        is Result.Ok<*, *> -> tryResult.value
+        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+    }
     this.clear()
     return Result.Ok(len.toULong())
 }
@@ -122,7 +128,10 @@ public fun <I> BufReader<I>.copyTo(to: Write): Result<ULong> {
         // buffers to the underlying writer. That code path is @cold
         // but we're still avoiding redundant memcopies when doing
         // a copy between buffered inputs and outputs.
-        when (val tryResult = to.writeAll(buf)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = to.writeAll(buf)) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
         len += buf.len().toULong()
         this.discardBuffer()
     }
@@ -158,7 +167,7 @@ public fun <I : Write, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<ULo
     var init = false
     while (true) {
         val buf = this.bufferMut()
-        val readBuf: BorrowedBuf<UByte>  = buf.spareCapacityMut().into()
+        val readBuf: BorrowedBuf<UByte> = buf.spareCapacityMut().into()
         if (init) {
             // SAFETY: `init` is only true after `reader` initializes
             // `readBuf`. See the comment about `flushBuf` below.
@@ -193,7 +202,10 @@ public fun <I : Write, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<ULo
         } else {
             // SAFETY: `flushBuf` will not de-initialize any elements of
             // the spare capacity so we can remember `init` across this.
-            when (val tryResult = this.flushBuf()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.flushBuf()) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         }
     }
 }
@@ -204,8 +216,8 @@ public fun <R : Read<R>> List<UByte>.copyFrom(reader: R): Result<ULong> = reader
  * Copies from `reader` to `writer` using a stack-allocated buffer (a fixed sized array).
  */
 public fun <R : Read<R>, W : Write> stackBufferCopy(reader: R, writer: W): Result<ULong> {
-    val buf: MutableList<Any?> = MutableList(DEFAULT_BUF_SIZE) { MaybeUninit.uninit(ObjectSlotLayout<Any?>()) }
-    val buf1: BorrowedBuf<UByte>  = buf.into()
+    val buf: MutableList<Any?> = MutableList(DEFAULT_BUF_SIZE) { MaybeUninit.uninit(UnresolvedTypeLayout<Any?>()) }
+    val buf1: BorrowedBuf<UByte> = buf.into()
     var len = 0
     while (true) {
         run {
@@ -226,7 +238,10 @@ public fun <R : Read<R>, W : Write> stackBufferCopy(reader: R, writer: W): Resul
             break
         }
         len += buf1.filled().len().toULong()
-        when (val tryResult = writer.writeAll(buf1.filled())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = writer.writeAll(buf1.filled())) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
         buf1.clear()
     }
     return Result.Ok(len)

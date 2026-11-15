@@ -2,27 +2,27 @@
 package io.github.kotlinmania.rustlang.std.sync.mpmc.zero
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpmc.context.Context
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Token
 import io.github.kotlinmania.rustlang.std.sync.mpmc.utils.Backoff
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.Waker
-import io.github.kotlinmania.rustlang.sync.mpmc.SendTimeoutError
-import io.github.kotlinmania.rustlang.sync.mpsc.RecvTimeoutError
-import io.github.kotlinmania.rustlang.sync.mpsc.TryRecvError
-import io.github.kotlinmania.rustlang.sync.mpsc.TrySendError
-import io.github.kotlinmania.rustlang.sync.nonpoison.mutex.Mutex
-import io.github.kotlinmania.rustlang.time.Instant
+import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvTimeoutError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.TryRecvError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.TrySendError
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
+import io.github.kotlinmania.rustlang.std.time.Instant
 
 // Zero-capacity channel.
 //
@@ -174,7 +174,7 @@ public open class Channel<T> internal constructor(
             return Result.Err(msg)
         }
         run {
-            val packet = (ObjectSlotLayout<Packet<T>>()).readNative((((token.zero.value).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+            val packet = (UnresolvedTypeLayout<Packet<T>>()).readNative((((token.zero.value).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
             packet.msg.get().write(msg)
             packet.ready.store(true, Ordering.Release)
         }
@@ -189,7 +189,7 @@ public open class Channel<T> internal constructor(
         if (((token.zero.value).rawAddress == 0L)) {
             return Result.Err(Unit)
         }
-        val packet = (ObjectSlotLayout<Packet<T>>()).readNative((((token.zero.value).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+        val packet = (UnresolvedTypeLayout<Packet<T>>()).readNative((((token.zero.value).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
         return if (packet.onStack) {
             // The message has been in the packet from the beginning, so there is no need to wait
             // for it. However, after reading the message, we need to set `ready` to `true` in

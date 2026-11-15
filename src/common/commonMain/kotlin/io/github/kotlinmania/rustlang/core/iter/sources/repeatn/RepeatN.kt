@@ -1,11 +1,11 @@
 // port-lint: source iter/sources/repeat_n.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeatn
 
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -93,10 +93,11 @@ public open class RepeatNInner<T> internal constructor(
         public operator fun <T> invoke(
             count: NonZero<Int>,
             element: T,
-        ): RepeatNInner<T> = RepeatNInner<T>(
-            countCtorArg = count,
-            element = element,
-        )
+        ): RepeatNInner<T> =
+            RepeatNInner<T>(
+                countCtorArg = count,
+                element = element,
+            )
 
         public fun <T> new(element: T, count: Int): RepeatNInner<T>? {
             val count1 = (NonZero.new(count) ?: return null)
@@ -113,15 +114,17 @@ public open class RepeatNInner<T> internal constructor(
  */
 public open class RepeatN<A>(
     public var inner: RepeatNInner<A>?,
-) : TrustedLen<RepeatN<A>>, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@RepeatN.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<RepeatN<A>>,
+    Iterable<A> {
+    override fun iterator(): Iterator<A> =
+        object : AbstractIterator<A>() {
+            override fun computeNext() {
+                when (val v = this@RepeatN.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): RepeatN<A> = RepeatN(inner)
 

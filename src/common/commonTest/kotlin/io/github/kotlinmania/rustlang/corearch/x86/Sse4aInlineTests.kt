@@ -6,17 +6,18 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.x86.M128i
-import io.github.kotlinmania.rustlang.x86.mmSetrPd
-import io.github.kotlinmania.rustlang.x86.mmSetrPs
-import io.github.kotlinmania.rustlang.x86.mmSfence
 
 // `i686`s Streaming SIMD Extensions 4a (`SSE4a`)
 
 // Normally this requires SSE2, but for tests it does not matter whether we use the instruction.
-public fun mmCvtsi128Si64(a: M128i): Long = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = 0L; _simdArg0 }
+public fun mmCvtsi128Si64(a: M128i): Long =
+    run {
+        val _simdArg0 = a.asI64x2()
+        val _simdArg1 = 0L
+        _simdArg0
+    }
 
 public fun testMmExtractSi64() {
     val b = 0x600L
@@ -79,7 +80,9 @@ public open class MemoryF64 internal constructor(
 ) {
     public var data: DoubleArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
@@ -115,7 +118,9 @@ public open class MemoryF32 internal constructor(
 ) {
     public var data: FloatArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 

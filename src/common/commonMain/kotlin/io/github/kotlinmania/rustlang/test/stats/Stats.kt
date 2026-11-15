@@ -1,11 +1,12 @@
 // port-lint: source stats.rs
 package io.github.kotlinmania.rustlang.test.stats
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf64
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import kotlin.math.abs
-import kotlin.math.floor
+import io.github.kotlinmania.rustlang.core.mem.swap
 
 public fun localSort(v: MutableList<Double>) {
     v.sortBy({ x: Double, y: Double -> x.totalCmp(y) })
@@ -165,7 +166,7 @@ public fun List<Double>.sum(): Double {
         for (i in 0 until partials.size) {
             val localStorageL149C16 = AddressableLocal(partials[i], PrimitiveLayouts.F64)
             val y by localStorageL149C16
-            if (x1.abs() < abs(y)) {
+            if (x1.abs() < kmFabsf64(y)) {
                 swap(x1, RustMutableReference(localStorageL149C16.asMutPtr(), localStorageL149C16.layout))
             }
             // Rounded `x + y` is stored in `hi` with round-off stored in
@@ -283,7 +284,7 @@ public fun percentileOfSorted(sortedSamples: List<Double>, pct: Double): Double 
     }
     val length = (sortedSamples.size - 1).toDouble()
     val rank = (pct / hundred) * length
-    val lrank = floor(rank)
+    val lrank = kmFloorf64(rank)
     val d = rank - lrank
     val n = lrank.toInt()
     val lo = sortedSamples[n]

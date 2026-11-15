@@ -1,13 +1,13 @@
 // port-lint: source field.rs
 package io.github.kotlinmania.rustlang.core.field
 
-import io.github.kotlinmania.rustlang.any.typeName
-import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.any.typeName
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.intrinsics.fieldOffset
+import io.github.kotlinmania.rustlang.core.mem.typeinfo.Type
+import io.github.kotlinmania.rustlang.core.mem.typeinfo.TypeKind
+import io.github.kotlinmania.rustlang.core.mem.typeinfo.of
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.intrinsics.fieldOffset
-import io.github.kotlinmania.rustlang.mem.typeinfo.Type
-import io.github.kotlinmania.rustlang.mem.typeinfo.TypeKind
-import io.github.kotlinmania.rustlang.mem.typeinfo.of
 
 // Field Reflection
 
@@ -23,18 +23,28 @@ public open class FieldRepresentingType<T>(
 
 public fun <T> FieldRepresentingType<T, Variant, Field>.fmt(f: StringBuilder, variant: UInt, field: UInt): Result<Unit, Unit> {
     sealed class Member {
-        public data class Name(public var value: String) : Member()
-        public data class Index(public var value: UInt) : Member()
+        public data class Name(
+            public var value: String,
+        ) : Member()
+        public data class Index(
+            public var value: UInt,
+        ) : Member()
 
         public open fun fmt(f1: StringBuilder): Result<Unit, Unit> =
             when (this) {
                 is Name -> {
                     val (name) = this
-                    run { f1.append((name).toString()); Result.Ok(Unit) }
+                    run {
+                        f1.append((name).toString())
+                        Result.Ok(Unit)
+                    }
                 }
                 is Index -> {
                     val (idx) = this
-                    run { f1.append((idx).toString()); Result.Ok(Unit) }
+                    run {
+                        f1.append((idx).toString())
+                        Result.Ok(Unit)
+                    }
                 }
             }
     }

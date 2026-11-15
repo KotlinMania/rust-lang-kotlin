@@ -1,13 +1,13 @@
 // port-lint: tests raw_entry.rs
 package io.github.kotlinmania.rustlang.hashbrown.rawentry
 
-import io.github.kotlinmania.rustlang.HashMap
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.hashbrown.HashMap
 import io.github.kotlinmania.rustlang.hashbrown.RawEntryMut.Occupied
 import io.github.kotlinmania.rustlang.hashbrown.RawEntryMut.Vacant
-import io.github.kotlinmania.rustlang.makeHash
+import io.github.kotlinmania.rustlang.hashbrown.makeHash
 
 public class RawEntryTestMapInlineTests {
     @kotlin.test.Test

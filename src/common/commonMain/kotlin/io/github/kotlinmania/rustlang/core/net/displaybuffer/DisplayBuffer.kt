@@ -1,9 +1,9 @@
 // port-lint: source net/display_buffer.rs
 package io.github.kotlinmania.rustlang.core.net.displaybuffer
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
 
 /**
  * Used for slow path in `Display` implementations when alignment is required.
@@ -28,7 +28,7 @@ public open class DisplayBuffer internal constructor(
         val bytes = s.encodeToByteArray().map { it.toUByte() }
         return when (val matchVal = this.buf.getMut(this.len until (this.len + bytes.size))) {
             null -> {
-                Result.Err(Error)
+                Result.Err(fmt.Error)
             }
             else -> {
                 val buf = matchVal
@@ -43,13 +43,14 @@ public open class DisplayBuffer internal constructor(
         public operator fun invoke(
             buf: MutableList<MaybeUninit<UByte>>,
             len: Int,
-        ): DisplayBuffer = DisplayBuffer(
-            bufCtorArg = buf,
-            len = len,
-        )
+        ): DisplayBuffer =
+            DisplayBuffer(
+                bufCtorArg = buf,
+                len = len,
+            )
 
         public fun new(buf: MutableList<MaybeUninit<UByte>>): DisplayBuffer = DisplayBuffer(buf = buf, len = 0)
 
-        public fun buffer(size: Int): List<MaybeUninit<UByte>> = List(size) { MaybeUninit.uninit(ObjectSlotLayout<List<MaybeUninit<UByte>>>()) }
+        public fun buffer(size: Int): List<MaybeUninit<UByte>> = List(size) { MaybeUninit.uninit(UnresolvedTypeLayout<List<MaybeUninit<UByte>>>()) }
     }
 }

@@ -3,104 +3,104 @@
 package io.github.kotlinmania.rustlang.corearch.loongarchshared
 
 // The host must provide the C companion wrapper exports in import module kmcore.
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedDbar")
-private external fun wasiRustlangCorearchLoongarchsharedDbar(a: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedDbar")
+private external fun wasiCorearchLoongarchsharedDbar(a: Int): Unit
 
 public actual fun dbar(a: Int): Unit =
-    wasiRustlangCorearchLoongarchsharedDbar(a)
+    wasiCorearchLoongarchsharedDbar(a)
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedIbar")
-private external fun wasiRustlangCorearchLoongarchsharedIbar(a: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedIbar")
+private external fun wasiCorearchLoongarchsharedIbar(a: Int): Unit
 
 public actual fun ibar(a: Int): Unit =
-    wasiRustlangCorearchLoongarchsharedIbar(a)
+    wasiCorearchLoongarchsharedIbar(a)
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedMovgr2fcsr")
-private external fun wasiRustlangCorearchLoongarchsharedMovgr2fcsr(a: Int, b: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedMovgr2fcsr")
+private external fun wasiCorearchLoongarchsharedMovgr2fcsr(a: Int, b: Int): Unit
 
 public actual fun movgr2fcsr(a: Int, b: Int): Unit =
-    wasiRustlangCorearchLoongarchsharedMovgr2fcsr(a, b)
+    wasiCorearchLoongarchsharedMovgr2fcsr(a, b)
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedMovfcsr2gr")
-private external fun wasiRustlangCorearchLoongarchsharedMovfcsr2gr(a: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedMovfcsr2gr")
+private external fun wasiCorearchLoongarchsharedMovfcsr2gr(a: Int): Int
 
 public actual fun movfcsr2gr(a: Int): Int =
-    wasiRustlangCorearchLoongarchsharedMovfcsr2gr(a).toInt()
+    wasiCorearchLoongarchsharedMovfcsr2gr(a).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedIocsrrdB")
-private external fun wasiRustlangCorearchLoongarchsharedIocsrrdB(a: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedIocsrrdB")
+private external fun wasiCorearchLoongarchsharedIocsrrdB(a: Int): Int
 
 public actual fun iocsrrdB(a: Int): Int =
-    wasiRustlangCorearchLoongarchsharedIocsrrdB(a).toInt()
+    wasiCorearchLoongarchsharedIocsrrdB(a).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedIocsrrdH")
-private external fun wasiRustlangCorearchLoongarchsharedIocsrrdH(a: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedIocsrrdH")
+private external fun wasiCorearchLoongarchsharedIocsrrdH(a: Int): Int
 
 public actual fun iocsrrdH(a: Int): Int =
-    wasiRustlangCorearchLoongarchsharedIocsrrdH(a).toInt()
+    wasiCorearchLoongarchsharedIocsrrdH(a).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedIocsrrdW")
-private external fun wasiRustlangCorearchLoongarchsharedIocsrrdW(a: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedIocsrrdW")
+private external fun wasiCorearchLoongarchsharedIocsrrdW(a: Int): Int
 
 public actual fun iocsrrdW(a: Int): Int =
-    wasiRustlangCorearchLoongarchsharedIocsrrdW(a).toInt()
+    wasiCorearchLoongarchsharedIocsrrdW(a).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedIocsrwrB")
-private external fun wasiRustlangCorearchLoongarchsharedIocsrwrB(a: Int, b: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedIocsrwrB")
+private external fun wasiCorearchLoongarchsharedIocsrwrB(a: Int, b: Int): Unit
 
 public actual fun iocsrwrB(a: Int, b: Int): Unit =
-    wasiRustlangCorearchLoongarchsharedIocsrwrB(a, b)
+    wasiCorearchLoongarchsharedIocsrwrB(a, b)
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedIocsrwrH")
-private external fun wasiRustlangCorearchLoongarchsharedIocsrwrH(a: Int, b: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedIocsrwrH")
+private external fun wasiCorearchLoongarchsharedIocsrwrH(a: Int, b: Int): Unit
 
 public actual fun iocsrwrH(a: Int, b: Int): Unit =
-    wasiRustlangCorearchLoongarchsharedIocsrwrH(a, b)
+    wasiCorearchLoongarchsharedIocsrwrH(a, b)
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedIocsrwrW")
-private external fun wasiRustlangCorearchLoongarchsharedIocsrwrW(a: Int, b: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedIocsrwrW")
+private external fun wasiCorearchLoongarchsharedIocsrwrW(a: Int, b: Int): Unit
 
 public actual fun iocsrwrW(a: Int, b: Int): Unit =
-    wasiRustlangCorearchLoongarchsharedIocsrwrW(a, b)
+    wasiCorearchLoongarchsharedIocsrwrW(a, b)
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedBreakTarget")
-private external fun wasiRustlangCorearchLoongarchsharedBreakTarget(a: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedBreakTarget")
+private external fun wasiCorearchLoongarchsharedBreakTarget(a: Int): Unit
 
 public actual fun breakTarget(a: Int): Unit =
-    wasiRustlangCorearchLoongarchsharedBreakTarget(a)
+    wasiCorearchLoongarchsharedBreakTarget(a)
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedCpucfg")
-private external fun wasiRustlangCorearchLoongarchsharedCpucfg(a: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedCpucfg")
+private external fun wasiCorearchLoongarchsharedCpucfg(a: Int): Int
 
 public actual fun cpucfg(a: Int): Int =
-    wasiRustlangCorearchLoongarchsharedCpucfg(a).toInt()
+    wasiCorearchLoongarchsharedCpucfg(a).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedSyscall")
-private external fun wasiRustlangCorearchLoongarchsharedSyscall(a: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedSyscall")
+private external fun wasiCorearchLoongarchsharedSyscall(a: Int): Unit
 
 public actual fun syscall(a: Int): Unit =
-    wasiRustlangCorearchLoongarchsharedSyscall(a)
+    wasiCorearchLoongarchsharedSyscall(a)
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedFrecipeS")
-private external fun wasiRustlangCorearchLoongarchsharedFrecipeS(a: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedFrecipeS")
+private external fun wasiCorearchLoongarchsharedFrecipeS(a: Float): Float
 
 public actual fun frecipeS(a: Float): Float =
-    wasiRustlangCorearchLoongarchsharedFrecipeS(a).toFloat()
+    wasiCorearchLoongarchsharedFrecipeS(a).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedFrecipeD")
-private external fun wasiRustlangCorearchLoongarchsharedFrecipeD(a: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedFrecipeD")
+private external fun wasiCorearchLoongarchsharedFrecipeD(a: Double): Double
 
 public actual fun frecipeD(a: Double): Double =
-    wasiRustlangCorearchLoongarchsharedFrecipeD(a).toDouble()
+    wasiCorearchLoongarchsharedFrecipeD(a).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedFrsqrteS")
-private external fun wasiRustlangCorearchLoongarchsharedFrsqrteS(a: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedFrsqrteS")
+private external fun wasiCorearchLoongarchsharedFrsqrteS(a: Float): Float
 
 public actual fun frsqrteS(a: Float): Float =
-    wasiRustlangCorearchLoongarchsharedFrsqrteS(a).toFloat()
+    wasiCorearchLoongarchsharedFrsqrteS(a).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCorearchLoongarchsharedFrsqrteD")
-private external fun wasiRustlangCorearchLoongarchsharedFrsqrteD(a: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarchsharedFrsqrteD")
+private external fun wasiCorearchLoongarchsharedFrsqrteD(a: Double): Double
 
 public actual fun frsqrteD(a: Double): Double =
-    wasiRustlangCorearchLoongarchsharedFrsqrteD(a).toDouble()
+    wasiCorearchLoongarchsharedFrsqrteD(a).toDouble()

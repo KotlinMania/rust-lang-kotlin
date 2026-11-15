@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 // SAFETY: This function is safe to call. It is only marked as `unchecked` to
 // avoid having to allow `unusedUnsafe` since other implementations are
 // unchecked.
-public fun trace(cb: (io.github.kotlinmania.rustlang.backtrace.Frame) -> Boolean) {}
+public fun trace(cb: (io.github.kotlinmania.rustlang.backtrace.backtrace.Frame) -> Boolean) {}
 
 public open class Frame {
     public open fun clone(): Frame = Frame()

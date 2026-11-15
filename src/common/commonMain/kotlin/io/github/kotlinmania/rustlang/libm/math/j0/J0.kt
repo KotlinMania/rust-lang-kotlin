@@ -1,13 +1,13 @@
 // port-lint: source math/j0.rs
 package io.github.kotlinmania.rustlang.libm.math.j0
 
-import io.github.kotlinmania.rustlang.math.arch.aarch64.sqrt.sqrt
-import io.github.kotlinmania.rustlang.math.cos.cos
-import io.github.kotlinmania.rustlang.math.fabs.fabs
-import io.github.kotlinmania.rustlang.math.getHighWord
-import io.github.kotlinmania.rustlang.math.getLowWord
-import io.github.kotlinmania.rustlang.math.log.log
-import io.github.kotlinmania.rustlang.math.sin.sin
+import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrt
+import io.github.kotlinmania.rustlang.libm.math.cos.cos
+import io.github.kotlinmania.rustlang.libm.math.fabs.fabs
+import io.github.kotlinmania.rustlang.libm.math.getHighWord
+import io.github.kotlinmania.rustlang.libm.math.getLowWord
+import io.github.kotlinmania.rustlang.libm.math.log.log
+import io.github.kotlinmania.rustlang.libm.math.sin.sin
 
 public val INVSQRTPI: Double = 5.64189583547756279280e-01
 

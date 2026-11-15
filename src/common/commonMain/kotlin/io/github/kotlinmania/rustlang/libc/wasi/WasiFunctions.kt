@@ -1,6 +1,5 @@
 package io.github.kotlinmania.rustlang.libc.wasi
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
@@ -12,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.*
 
 public fun interface AtexitACallback {
     public operator fun invoke()
@@ -31,7 +31,7 @@ public fun fdIsset(fd: CInt, set: ConstPtr): Boolean {
     }
     val set1 = (FdSet.typeLayout()).readNative((set).rawAddress)
     val n = set1.nfds
-    return ((set1.fds).subList(0, n)).any({ p -> p == fd })
+    return set1.fds[0 until n].any({ p -> p == fd })
 }
 
 public fun fdSet(fd: CInt, set: MutPtr) {
@@ -40,7 +40,7 @@ public fun fdSet(fd: CInt, set: MutPtr) {
     }
     val set1 = RustMutableReference(MutPtr((set).rawAddress), FdSet.typeLayout())
     val n = set1.nfds
-    if (!((set1.fds).subList(0, n)).any({ p -> p == fd })) {
+    if (!set1.fds[0 until n].any({ p -> p == fd })) {
         set1.nfds = n + 1
         set1.fds[n] = fd
     }
@@ -407,7 +407,7 @@ public expect fun getrusage(resource: CInt, usage: MutPtr): CInt
 
 public expect fun gettimeofday(tp: MutPtr, tz: MutPtr): CInt
 
-public expect fun times(buf: MutPtr): io.github.kotlinmania.rustlang.wasi.ClockT
+public expect fun times(buf: MutPtr): ClockT
 
 public expect fun strerrorR(errnum: CInt, buf: MutPtr, buflen: SizeT): CInt
 
@@ -465,13 +465,13 @@ public expect fun abs(i: CInt): CInt
 
 public expect fun labs(i: CLong): CLong
 
-public expect fun duplocale(base: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT
+public expect fun duplocale(base: LocaleT): LocaleT
 
-public expect fun freelocale(loc: io.github.kotlinmania.rustlang.wasi.LocaleT)
+public expect fun freelocale(loc: LocaleT)
 
-public expect fun newlocale(mask: CInt, locale: ConstPtr, base: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT
+public expect fun newlocale(mask: CInt, locale: ConstPtr, base: LocaleT): LocaleT
 
-public expect fun uselocale(loc: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT
+public expect fun uselocale(loc: LocaleT): LocaleT
 
 public expect fun schedYield(): CInt
 
@@ -479,9 +479,9 @@ public expect fun getcwd(buf: MutPtr, size: SizeT): MutPtr
 
 public expect fun chdir(dir: ConstPtr): CInt
 
-public expect fun nlLanginfo(item: io.github.kotlinmania.rustlang.wasi.NlItem): MutPtr
+public expect fun nlLanginfo(item: NlItem): MutPtr
 
-public expect fun nlLanginfoL(item: io.github.kotlinmania.rustlang.wasi.NlItem, loc: io.github.kotlinmania.rustlang.wasi.LocaleT): MutPtr
+public expect fun nlLanginfoL(item: NlItem, loc: LocaleT): MutPtr
 
 public expect fun select(nfds: CInt, readfds: MutPtr, writefds: MutPtr, errorfds: MutPtr, timeout: ConstPtr): CInt
 

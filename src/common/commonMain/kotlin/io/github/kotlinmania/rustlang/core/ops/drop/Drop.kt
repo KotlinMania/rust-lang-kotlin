@@ -1,7 +1,7 @@
 // port-lint: source ops/drop.rs
 package io.github.kotlinmania.rustlang.core.ops.drop
 
-import io.github.kotlinmania.rustlang.pin.Pin
+import io.github.kotlinmania.rustlang.core.pin.Pin
 
 /**
  * Custom code within the destructor.

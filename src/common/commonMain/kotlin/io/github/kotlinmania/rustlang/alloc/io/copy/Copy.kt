@@ -2,9 +2,9 @@
 package io.github.kotlinmania.rustlang.alloc.io.copy
 
 import io.github.kotlinmania.rustlang.alloc.io.copy.generic.genericCopy
+import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.io.read.Read
 
 /**
  * Used as a part of [copy specialization](SpecCopy) to communicate how many bytes
@@ -20,8 +20,12 @@ import io.github.kotlinmania.rustlang.io.read.Read
  * copy routine, the specialized function will return `Fallback(0)`.
  */
 public sealed class CopyState {
-    public data class Ended(public var value: ULong) : CopyState()
-    public data class Fallback(public var value: ULong) : CopyState()
+    public data class Ended(
+        public var value: ULong,
+    ) : CopyState()
+    public data class Fallback(
+        public var value: ULong,
+    ) : CopyState()
 }
 
 // Note(#74481): Hard-links required to link from `alloc` to `std`
@@ -73,7 +77,13 @@ public sealed class CopyState {
  * Note that platform-specific behavior may change in the future.
  */
 public fun <R, W> copy(reader: R, writer: W): Result<ULong> where R : Read<R>, W : Write {
-    return when (val matchVal = when (val tryResult = reader.copy(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }) {
+    return when (
+        val matchVal =
+            when (val tryResult = reader.copy(writer)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
+    ) {
         is CopyState.Ended -> {
             val (copied) = matchVal
             Result.Ok(copied)

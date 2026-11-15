@@ -1,19 +1,19 @@
 // port-lint: source task/wake.rs
 package io.github.kotlinmania.rustlang.core.task.wake
 
-import io.github.kotlinmania.rustlang.any.Any
-import io.github.kotlinmania.rustlang.convert.AsRef
 import io.github.kotlinmania.rustlang.core.RustAny
+import io.github.kotlinmania.rustlang.core.any.Any
+import io.github.kotlinmania.rustlang.core.convert.AsRef
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
+import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.mem.transmutability.transmute
-import io.github.kotlinmania.rustlang.panic.unwindsafe.AssertUnwindSafe
-import io.github.kotlinmania.rustlang.ptr.eq
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: ConstPtr): RawWaker
@@ -86,10 +86,11 @@ public open class RawWaker internal constructor(
         public operator fun invoke(
             data: ConstPtr,
             vtable: RawWakerVTable,
-        ): RawWaker = RawWaker(
-            dataCtorArg = data,
-            vtable = vtable,
-        )
+        ): RawWaker =
+            RawWaker(
+                dataCtorArg = data,
+                vtable = vtable,
+            )
 
         /**
          * Creates a new `RawWaker` from the provided `data` pointer and `vtable`.
@@ -112,10 +113,11 @@ public open class RawWaker internal constructor(
          */
         public fun new(data: ConstPtr, vtable: RawWakerVTable): RawWaker = RawWaker(data = data, vtable = vtable)
 
-        public val NOOP: RawWaker = run {
-            val VTABLE: RawWakerVTable = RawWakerVTable.new({ RawWaker.NOOP }, {}, {}, {})
-            RawWaker.new(ConstPtr(0L), VTABLE)
-        }
+        public val NOOP: RawWaker =
+            run {
+                val VTABLE: RawWakerVTable = RawWakerVTable.new({ RawWaker.NOOP }, {}, {}, {})
+                RawWaker.new(ConstPtr(0L), VTABLE)
+            }
     }
 }
 
@@ -252,8 +254,12 @@ public open class RawWakerVTable(
 }
 
 public sealed class ExtData {
-    public data class Some(public var value: RustAny) : ExtData()
-    public data class None(public var value: Unit) : ExtData()
+    public data class Some(
+        public var value: RustAny,
+    ) : ExtData()
+    public data class None(
+        public var value: Unit,
+    ) : ExtData()
 }
 
 /**
@@ -315,13 +321,14 @@ public open class Context internal constructor(
             ext: AssertUnwindSafe<ExtData>,
             marker: Unit,
             marker2: Unit,
-        ): Context = Context(
-            waker = waker,
-            localWaker = localWaker,
-            extCtorArg = ext,
-            marker = marker,
-            marker2 = marker2,
-        )
+        ): Context =
+            Context(
+                waker = waker,
+                localWaker = localWaker,
+                extCtorArg = ext,
+                marker = marker,
+                marker2 = marker2,
+            )
 
         /**
          * Creates a new `Context` from a [`Waker`](Waker).
@@ -452,7 +459,9 @@ public open class Waker internal constructor(
 ) : AsRef<LocalWaker> {
     public var waker: RawWaker
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(waker: RawWaker, fieldLayout: TypeLayout<RawWaker>) : this(allocateNativeCell(waker, fieldLayout), fieldLayout)
 
@@ -672,7 +681,7 @@ public open class Waker internal constructor(
         public fun fromFnPtr(f: FromFnPtrFCallback, fieldLayout: TypeLayout<RawWaker>): Waker {
             // SAFETY: Unsafe is used for transmutes, pointer came from `fun()` so it
             // is sound to reinterpret it back to `fun()`.
-            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute(thisRef)() }, { thisRef -> transmute(thisRef)() }, {})
+            val VTABLE: RawWakerVTable = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute(thisRef)() }, { thisRef -> transmute(thisRef)() }, {})
             val raw = RawWaker.new(constPtrFromRustCast(f), VTABLE)
             // SAFETY: `clone` is just a copy, `drop` is a no-op while `wake` and
             // `wakeByRef` just call the function pointer.
@@ -734,7 +743,9 @@ public open class LocalWaker internal constructor(
 ) {
     public var waker: RawWaker
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(waker: RawWaker, fieldLayout: TypeLayout<RawWaker>) : this(allocateNativeCell(waker, fieldLayout), fieldLayout)
 
@@ -915,7 +926,7 @@ public open class LocalWaker internal constructor(
         public fun fromFnPtr(f: FromFnPtrFCallback, fieldLayout: TypeLayout<RawWaker>): LocalWaker {
             // SAFETY: Unsafe is used for transmutes, pointer came from `fun()` so it
             // is sound to reinterpret it back to `fun()`.
-            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute(thisRef)() }, { thisRef -> transmute(thisRef)() }, {})
+            val VTABLE: RawWakerVTable = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute(thisRef)() }, { thisRef -> transmute(thisRef)() }, {})
             val raw = RawWaker.new(constPtrFromRustCast(f), VTABLE)
             // SAFETY: `clone` is just a copy, `drop` is a no-op while `wake` and
             // `wakeByRef` just call the function pointer.

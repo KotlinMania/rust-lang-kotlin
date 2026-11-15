@@ -1,7 +1,7 @@
 // port-lint: source fmt/builders.rs
 package io.github.kotlinmania.rustlang.core.fmt.builders
 
-import io.github.kotlinmania.rustlang.cell.Cell
+import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -28,7 +28,10 @@ public open class PadAdapter(
             this.buf.append("    ")
         }
         this.state.onNewline = c == '\n'
-        return run { this.buf.append(c); Result.Ok(Unit) }
+        return run {
+            this.buf.append(c)
+            Result.Ok(Unit)
+        }
     }
 
     public companion object {
@@ -138,31 +141,37 @@ public open class DebugStruct(
      * ```
      */
     public open fun field(name: String, value: Any): DebugStruct {
-        this.result = this.result.andThen(closure@{
-            if (this.isPretty()) {
-                if (!this.hasFields) {
-                    this.fmt.append(" {\n")
-                }
-                val slot = null
-                val state = Default.default()
-                val writer = PadAdapter.wrap(this.fmt, slot, state)
-                writer.append(name)
-                writer.append(": ")
-                when (val tryResult = value.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
-                writer.append(",\n")
-            } else {
-                val prefix =
-                    if (this.hasFields) {
-                        ", "
+        this.result =
+            this.result.andThen(
+                closure@{
+                    if (this.isPretty()) {
+                        if (!this.hasFields) {
+                            this.fmt.append(" {\n")
+                        }
+                        val slot = null
+                        val state = Default.default()
+                        val writer = PadAdapter.wrap(this.fmt, slot, state)
+                        writer.append(name)
+                        writer.append(": ")
+                        when (val tryResult = value.fmt(writer)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
+                        }
+                        writer.append(",\n")
                     } else {
-                        " { "
+                        val prefix =
+                            if (this.hasFields) {
+                                ", "
+                            } else {
+                                " { "
+                            }
+                        this.fmt.append(prefix)
+                        this.fmt.append(name)
+                        this.fmt.append(": ")
+                        value.fmt(this.fmt)
                     }
-                this.fmt.append(prefix)
-                this.fmt.append(name)
-                this.fmt.append(": ")
-                value.fmt(this.fmt)
-            }
-        })
+                },
+            )
         this.hasFields = true
         return this
     }
@@ -207,21 +216,24 @@ public open class DebugStruct(
      * ```
      */
     public open fun finishNonExhaustive() {
-        this.result = this.result.andThen(closure1@{
-            if (this.hasFields) {
-                if (this.isPretty()) {
-                    val slot = null
-                    val state = Default.default()
-                    val writer = PadAdapter.wrap(this.fmt, slot, state)
-                    writer.append("..\n")
-                    this.fmt.append("}")
-                } else {
-                    this.fmt.append(", .. }")
-                }
-            } else {
-                this.fmt.append(" { .. }")
-            }
-        })
+        this.result =
+            this.result.andThen(
+                closure1@{
+                    if (this.hasFields) {
+                        if (this.isPretty()) {
+                            val slot = null
+                            val state = Default.default()
+                            val writer = PadAdapter.wrap(this.fmt, slot, state)
+                            writer.append("..\n")
+                            this.fmt.append("}")
+                        } else {
+                            this.fmt.append(", .. }")
+                        }
+                    } else {
+                        this.fmt.append(" { .. }")
+                    }
+                },
+            )
         this.result
     }
 
@@ -245,13 +257,14 @@ public open class DebugStruct(
      */
     public open fun finish() {
         if (this.hasFields) {
-            this.result = this.result.andThen({
-                if (this.isPretty()) {
-                    this.fmt.append("}")
-                } else {
-                    this.fmt.append(" }")
-                }
-            })
+            this.result =
+                this.result.andThen({
+                    if (this.isPretty()) {
+                        this.fmt.append("}")
+                    } else {
+                        this.fmt.append(" }")
+                    }
+                })
         }
         this.result
     }
@@ -357,27 +370,33 @@ public open class DebugTuple(
      * ```
      */
     public open fun field(value: Any): DebugTuple {
-        this.result = this.result.andThen(closure2@{
-            if (this.isPretty()) {
-                if (this.fields == 0) {
-                    this.fmt.append("(\n")
-                }
-                val slot = null
-                val state = Default.default()
-                val writer = PadAdapter.wrap(this.fmt, slot, state)
-                when (val tryResult = value.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error) }
-                writer.append(",\n")
-            } else {
-                val prefix =
-                    if (this.fields == 0) {
-                        "("
+        this.result =
+            this.result.andThen(
+                closure2@{
+                    if (this.isPretty()) {
+                        if (this.fields == 0) {
+                            this.fmt.append("(\n")
+                        }
+                        val slot = null
+                        val state = Default.default()
+                        val writer = PadAdapter.wrap(this.fmt, slot, state)
+                        when (val tryResult = value.fmt(writer)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error)
+                        }
+                        writer.append(",\n")
                     } else {
-                        ", "
+                        val prefix =
+                            if (this.fields == 0) {
+                                "("
+                            } else {
+                                ", "
+                            }
+                        this.fmt.append(prefix)
+                        value.fmt(this.fmt)
                     }
-                this.fmt.append(prefix)
-                value.fmt(this.fmt)
-            }
-        })
+                },
+            )
         this.fields += 1
         return this
     }
@@ -470,21 +489,24 @@ public open class DebugTuple(
      * ```
      */
     public open fun finishNonExhaustive() {
-        this.result = this.result.andThen(closure3@{
-            if (this.fields > 0) {
-                if (this.isPretty()) {
-                    val slot = null
-                    val state = Default.default()
-                    val writer = PadAdapter.wrap(this.fmt, slot, state)
-                    writer.append("..\n")
-                    this.fmt.append(")")
-                } else {
-                    this.fmt.append(", ..)")
-                }
-            } else {
-                this.fmt.append("(..)")
-            }
-        })
+        this.result =
+            this.result.andThen(
+                closure3@{
+                    if (this.fields > 0) {
+                        if (this.isPretty()) {
+                            val slot = null
+                            val state = Default.default()
+                            val writer = PadAdapter.wrap(this.fmt, slot, state)
+                            writer.append("..\n")
+                            this.fmt.append(")")
+                        } else {
+                            this.fmt.append(", ..)")
+                        }
+                    } else {
+                        this.fmt.append("(..)")
+                    }
+                },
+            )
         this.result
     }
 
@@ -532,12 +554,15 @@ public open class DebugTuple(
      */
     public open fun finish() {
         if (this.fields > 0) {
-            this.result = this.result.andThen(closure4@{
-                if (this.fields == 1 && this.emptyName && !this.isPretty()) {
-                    this.fmt.append(",")
-                }
-                this.fmt.append(")")
-            })
+            this.result =
+                this.result.andThen(
+                    closure4@{
+                        if (this.fields == 1 && this.emptyName && !this.isPretty()) {
+                            this.fmt.append(",")
+                        }
+                        this.fmt.append(")")
+                    },
+                )
         }
         this.result
     }
@@ -559,23 +584,29 @@ public open class DebugInner(
     public var hasFields: Boolean,
 ) {
     public open fun entry(entry: Any) {
-        this.result = this.result.andThen(closure5@{
-            if (this.isPretty()) {
-                if (!this.hasFields) {
-                    this.fmt.append("\n")
-                }
-                val slot = null
-                val state = Default.default()
-                val writer = PadAdapter.wrap(this.fmt, slot, state)
-                when (val tryResult = entry.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure5 Result.Err(tryResult.error) }
-                writer.append(",\n")
-            } else {
-                if (this.hasFields) {
-                    this.fmt.append(", ")
-                }
-                entry.fmt(this.fmt)
-            }
-        })
+        this.result =
+            this.result.andThen(
+                closure5@{
+                    if (this.isPretty()) {
+                        if (!this.hasFields) {
+                            this.fmt.append("\n")
+                        }
+                        val slot = null
+                        val state = Default.default()
+                        val writer = PadAdapter.wrap(this.fmt, slot, state)
+                        when (val tryResult = entry.fmt(writer)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure5 Result.Err(tryResult.error)
+                        }
+                        writer.append(",\n")
+                    } else {
+                        if (this.hasFields) {
+                            this.fmt.append(", ")
+                        }
+                        entry.fmt(this.fmt)
+                    }
+                },
+            )
         this.hasFields = true
     }
 
@@ -715,21 +746,24 @@ public open class DebugSet(
      * ```
      */
     public open fun finishNonExhaustive() {
-        this.inner.result = this.inner.result.andThen(closure6@{
-            if (this.inner.hasFields) {
-                if (this.inner.isPretty()) {
-                    val slot = null
-                    val state = Default.default()
-                    val writer = PadAdapter.wrap(this.inner.fmt, slot, state)
-                    writer.append("..\n")
-                    this.inner.fmt.append("}")
-                } else {
-                    this.inner.fmt.append(", ..}")
-                }
-            } else {
-                this.inner.fmt.append("..}")
-            }
-        })
+        this.inner.result =
+            this.inner.result.andThen(
+                closure6@{
+                    if (this.inner.hasFields) {
+                        if (this.inner.isPretty()) {
+                            val slot = null
+                            val state = Default.default()
+                            val writer = PadAdapter.wrap(this.inner.fmt, slot, state)
+                            writer.append("..\n")
+                            this.inner.fmt.append("}")
+                        } else {
+                            this.inner.fmt.append(", ..}")
+                        }
+                    } else {
+                        this.inner.fmt.append("..}")
+                    }
+                },
+            )
         this.inner.result
     }
 
@@ -896,21 +930,23 @@ public open class DebugList(
      * ```
      */
     public open fun finishNonExhaustive() {
-        this.inner.result.andThen(closure7@{
-            if (this.inner.hasFields) {
-                if (this.inner.isPretty()) {
-                    val slot = null
-                    val state = Default.default()
-                    val writer = PadAdapter.wrap(this.inner.fmt, slot, state)
-                    writer.append("..\n")
-                    this.inner.fmt.append("]")
+        this.inner.result.andThen(
+            closure7@{
+                if (this.inner.hasFields) {
+                    if (this.inner.isPretty()) {
+                        val slot = null
+                        val state = Default.default()
+                        val writer = PadAdapter.wrap(this.inner.fmt, slot, state)
+                        writer.append("..\n")
+                        this.inner.fmt.append("]")
+                    } else {
+                        this.inner.fmt.append(", ..]")
+                    }
                 } else {
-                    this.inner.fmt.append(", ..]")
+                    this.inner.fmt.append("..]")
                 }
-            } else {
-                this.inner.fmt.append("..]")
-            }
-        })
+            },
+        )
     }
 
     /**
@@ -1039,27 +1075,36 @@ public open class DebugMap(
      * ```
      */
     public open fun key(key: Any): DebugMap {
-        this.result = this.result.andThen(closure8@{
-            check(!this.hasKey) { "attempted to begin a new map entry without completing the previous one" }
-            if (this.isPretty()) {
-                if (!this.hasFields) {
-                    this.fmt.append("\n")
-                }
-                val slot = null
-                this.state = Default.default()
-                val writer = PadAdapter.wrap(this.fmt, slot, this.state)
-                when (val tryResult = key.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error) }
-                writer.append(": ")
-            } else {
-                if (this.hasFields) {
-                    this.fmt.append(", ")
-                }
-                when (val tryResult = key.fmt(this.fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error) }
-                this.fmt.append(": ")
-            }
-            this.hasKey = true
-            Result.Ok(Unit)
-        })
+        this.result =
+            this.result.andThen(
+                closure8@{
+                    check(!this.hasKey) { "attempted to begin a new map entry without completing the previous one" }
+                    if (this.isPretty()) {
+                        if (!this.hasFields) {
+                            this.fmt.append("\n")
+                        }
+                        val slot = null
+                        this.state = Default.default()
+                        val writer = PadAdapter.wrap(this.fmt, slot, this.state)
+                        when (val tryResult = key.fmt(writer)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error)
+                        }
+                        writer.append(": ")
+                    } else {
+                        if (this.hasFields) {
+                            this.fmt.append(", ")
+                        }
+                        when (val tryResult = key.fmt(this.fmt)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error)
+                        }
+                        this.fmt.append(": ")
+                    }
+                    this.hasKey = true
+                    Result.Ok(Unit)
+                },
+            )
         return this
     }
 
@@ -1136,19 +1181,28 @@ public open class DebugMap(
      * ```
      */
     public open fun value(value: Any): DebugMap {
-        this.result = this.result.andThen(closure9@{
-            check(this.hasKey) { "attempted to format a map value before its key" }
-            if (this.isPretty()) {
-                val slot = null
-                val writer = PadAdapter.wrap(this.fmt, slot, this.state)
-                when (val tryResult = value.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure9 Result.Err(tryResult.error) }
-                writer.append(",\n")
-            } else {
-                when (val tryResult = value.fmt(this.fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure9 Result.Err(tryResult.error) }
-            }
-            this.hasKey = false
-            Result.Ok(Unit)
-        })
+        this.result =
+            this.result.andThen(
+                closure9@{
+                    check(this.hasKey) { "attempted to format a map value before its key" }
+                    if (this.isPretty()) {
+                        val slot = null
+                        val writer = PadAdapter.wrap(this.fmt, slot, this.state)
+                        when (val tryResult = value.fmt(writer)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure9 Result.Err(tryResult.error)
+                        }
+                        writer.append(",\n")
+                    } else {
+                        when (val tryResult = value.fmt(this.fmt)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return@closure9 Result.Err(tryResult.error)
+                        }
+                    }
+                    this.hasKey = false
+                    Result.Ok(Unit)
+                },
+            )
         this.hasFields = true
         return this
     }
@@ -1253,22 +1307,25 @@ public open class DebugMap(
      * ```
      */
     public open fun finishNonExhaustive() {
-        this.result = this.result.andThen(closure10@{
-            check(!this.hasKey) { "attempted to finish a map with a partial entry" }
-            if (this.hasFields) {
-                if (this.isPretty()) {
-                    val slot = null
-                    val state = Default.default()
-                    val writer = PadAdapter.wrap(this.fmt, slot, state)
-                    writer.append("..\n")
-                    this.fmt.append("}")
-                } else {
-                    this.fmt.append(", ..}")
-                }
-            } else {
-                this.fmt.append("..}")
-            }
-        })
+        this.result =
+            this.result.andThen(
+                closure10@{
+                    check(!this.hasKey) { "attempted to finish a map with a partial entry" }
+                    if (this.hasFields) {
+                        if (this.isPretty()) {
+                            val slot = null
+                            val state = Default.default()
+                            val writer = PadAdapter.wrap(this.fmt, slot, state)
+                            writer.append("..\n")
+                            this.fmt.append("}")
+                        } else {
+                            this.fmt.append(", ..}")
+                        }
+                    } else {
+                        this.fmt.append("..}")
+                    }
+                },
+            )
         this.result
     }
 
@@ -1302,10 +1359,11 @@ public open class DebugMap(
      * ```
      */
     public open fun finish() {
-        this.result = this.result.andThen({
-            check(!this.hasKey) { "attempted to finish a map with a partial entry" }
-            this.fmt.append("}")
-        })
+        this.result =
+            this.result.andThen({
+                check(!this.hasKey) { "attempted to finish a map with a partial entry" }
+                this.fmt.append("}")
+            })
         this.result
     }
 

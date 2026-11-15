@@ -1,7 +1,7 @@
 // port-lint: source ops/shift_scalar.rs
 package io.github.kotlinmania.rustlang.coresimd.ops.shiftscalar
 
-import io.github.kotlinmania.rustlang.Simd
+import io.github.kotlinmania.rustlang.coresimd.Simd
 
 // In the past there were inference issues when generically splatting arguments.
 // Enumerate them instead.

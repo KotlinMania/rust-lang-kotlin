@@ -55,7 +55,9 @@ public open class Wrapping<T>(
 
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -1480,7 +1482,14 @@ public fun Wrapping<Int>.reverseBits(): Wrapping<Int> = Wrapping(this.value.reve
  * @file:feature(wrappingIntImpl) import std.num.Wrapping; if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun Wrapping.Companion.fromBe(x: Wrapping<Int>, fieldLayout: TypeLayout<Int>): Wrapping<Int> = Wrapping(run { val swapVal0 = (x.value); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24)) }, fieldLayout = fieldLayout)
+public fun Wrapping.Companion.fromBe(x: Wrapping<Int>, fieldLayout: TypeLayout<Int>): Wrapping<Int> =
+    Wrapping(
+        run {
+            val swapVal0 = (x.value)
+            ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24))
+        },
+        fieldLayout = fieldLayout,
+    )
 
 /**
  * Converts an integer from little endian to the target's endianness.

@@ -1,8 +1,9 @@
 // port-lint: source sys/thread_local/guard/retained.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.retained
 
-import io.github.kotlinmania.rustlang.process.abort
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.core.io.write.Write
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 // Guards which run all TLS destructors themselves, and only then
 // [rt.threadCleanup], never free the values of keys without a

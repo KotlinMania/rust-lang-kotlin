@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.aarch64
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
-private object CorearchAarch64PrefetchJniBridge {
+private object Aarch64PrefetchJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -40,11 +40,14 @@ private object CorearchAarch64PrefetchJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchAarch64PrefetchJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = Aarch64PrefetchJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -58,9 +61,9 @@ private object CorearchAarch64PrefetchJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchAarch64PrefetchPrefetch(p: Long, rw: Int, loc: Int, ty: Int)
+    external fun corearchAarch64PrefetchPrefetch(p: Long, rw: Int, loc: Int, ty: Int)
 }
 
 public actual fun prefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int) {
-    CorearchAarch64PrefetchJniBridge.rustlangCorearchAarch64PrefetchPrefetch(p.rawAddress, rw, loc, ty)
+    Aarch64PrefetchJniBridge.corearchAarch64PrefetchPrefetch(p.rawAddress, rw, loc, ty)
 }

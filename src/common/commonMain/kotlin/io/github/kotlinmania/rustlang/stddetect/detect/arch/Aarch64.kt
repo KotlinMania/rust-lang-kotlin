@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.arch
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.detect.checkFor
+import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
 
 // Aarch64 run-time features.
 
@@ -470,436 +470,436 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun asimd(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.asimd)
+public fun asimd(): Boolean = checkFor(::asimd)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun pmull(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.pmull)
+public fun pmull(): Boolean = checkFor(::pmull)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fp(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.Feature::fp)
+public fun fp(): Boolean = checkFor(Feature::fp)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun aes(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.aes)
+public fun aes(): Boolean = checkFor(::aes)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun bf16(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.Feature::bf16)
+public fun bf16(): Boolean = checkFor(::bf16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun bti(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.bti)
+public fun bti(): Boolean = checkFor(::bti)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun crc(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.crc)
+public fun crc(): Boolean = checkFor(::crc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun cssc(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.cssc)
+public fun cssc(): Boolean = checkFor(::cssc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun dit(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.dit)
+public fun dit(): Boolean = checkFor(::dit)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun dpb(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.dpb)
+public fun dpb(): Boolean = checkFor(::dpb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun dpb2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.dpb2)
+public fun dpb2(): Boolean = checkFor(::dpb2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun dotprod(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.dotprod)
+public fun dotprod(): Boolean = checkFor(::dotprod)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ecv(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.ecv)
+public fun ecv(): Boolean = checkFor(::ecv)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun f32mm(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.f32mm)
+public fun f32mm(): Boolean = checkFor(::f32mm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun f64mm(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.f64mm)
+public fun f64mm(): Boolean = checkFor(::f64mm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun faminmax(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.faminmax)
+public fun faminmax(): Boolean = checkFor(::faminmax)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fcma(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.fcma)
+public fun fcma(): Boolean = checkFor(::fcma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fhm(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.fhm)
+public fun fhm(): Boolean = checkFor(::fhm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun flagm(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.flagm)
+public fun flagm(): Boolean = checkFor(::flagm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun flagm2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.flagm2)
+public fun flagm2(): Boolean = checkFor(::flagm2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fp16(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.fp16)
+public fun fp16(): Boolean = checkFor(::fp16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fp8(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.fp8)
+public fun fp8(): Boolean = checkFor(::fp8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fp8dot2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.fp8dot2)
+public fun fp8dot2(): Boolean = checkFor(::fp8dot2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fp8dot4(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.fp8dot4)
+public fun fp8dot4(): Boolean = checkFor(::fp8dot4)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fp8fma(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.fp8fma)
+public fun fp8fma(): Boolean = checkFor(::fp8fma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fpmr(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.fpmr)
+public fun fpmr(): Boolean = checkFor(::fpmr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun frintts(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.frintts)
+public fun frintts(): Boolean = checkFor(::frintts)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun hbc(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.hbc)
+public fun hbc(): Boolean = checkFor(::hbc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun i8mm(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.i8mm)
+public fun i8mm(): Boolean = checkFor(::i8mm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun jsconv(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.jsconv)
+public fun jsconv(): Boolean = checkFor(::jsconv)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lse(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.lse)
+public fun lse(): Boolean = checkFor(::lse)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lse128(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.lse128)
+public fun lse128(): Boolean = checkFor(::lse128)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lse2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.lse2)
+public fun lse2(): Boolean = checkFor(::lse2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lut(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.lut)
+public fun lut(): Boolean = checkFor(::lut)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun mops(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.mops)
+public fun mops(): Boolean = checkFor(::mops)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun mte(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.mte)
+public fun mte(): Boolean = checkFor(::mte)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun paca(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.paca)
+public fun paca(): Boolean = checkFor(::paca)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun pacg(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.pacg)
+public fun pacg(): Boolean = checkFor(::pacg)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun pauthLr(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.pauthLr)
+public fun pauthLr(): Boolean = checkFor(::pauthLr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rand(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rand)
+public fun rand(): Boolean = checkFor(::rand)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rcpc(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rcpc)
+public fun rcpc(): Boolean = checkFor(::rcpc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rcpc2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rcpc2)
+public fun rcpc2(): Boolean = checkFor(::rcpc2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rcpc3(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rcpc3)
+public fun rcpc3(): Boolean = checkFor(::rcpc3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rdm(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rdm)
+public fun rdm(): Boolean = checkFor(::rdm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sb(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sb)
+public fun sb(): Boolean = checkFor(::sb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sha2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sha2)
+public fun sha2(): Boolean = checkFor(::sha2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sha3(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sha3)
+public fun sha3(): Boolean = checkFor(::sha3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sm4(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sm4)
+public fun sm4(): Boolean = checkFor(::sm4)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sme(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sme)
+public fun sme(): Boolean = checkFor(::sme)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sme2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sme2)
+public fun sme2(): Boolean = checkFor(::sme2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sme2p1(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sme2p1)
+public fun sme2p1(): Boolean = checkFor(::sme2p1)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun smeB16b16(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.smeB16b16)
+public fun smeB16b16(): Boolean = checkFor(::smeB16b16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun smeF16f16(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.smeF16f16)
+public fun smeF16f16(): Boolean = checkFor(::smeF16f16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun smeF64f64(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.smeF64f64)
+public fun smeF64f64(): Boolean = checkFor(::smeF64f64)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun smeF8f16(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.smeF8f16)
+public fun smeF8f16(): Boolean = checkFor(::smeF8f16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun smeF8f32(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.smeF8f32)
+public fun smeF8f32(): Boolean = checkFor(::smeF8f32)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun smeFa64(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.smeFa64)
+public fun smeFa64(): Boolean = checkFor(::smeFa64)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun smeI16i64(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.smeI16i64)
+public fun smeI16i64(): Boolean = checkFor(::smeI16i64)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun smeLutv2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.smeLutv2)
+public fun smeLutv2(): Boolean = checkFor(::smeLutv2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ssbs(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.ssbs)
+public fun ssbs(): Boolean = checkFor(::ssbs)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ssveFp8dot2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.ssveFp8dot2)
+public fun ssveFp8dot2(): Boolean = checkFor(::ssveFp8dot2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ssveFp8dot4(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.ssveFp8dot4)
+public fun ssveFp8dot4(): Boolean = checkFor(::ssveFp8dot4)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ssveFp8fma(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.ssveFp8fma)
+public fun ssveFp8fma(): Boolean = checkFor(::ssveFp8fma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sve(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sve)
+public fun sve(): Boolean = checkFor(::sve)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sve2(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sve2)
+public fun sve2(): Boolean = checkFor(::sve2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sve2p1(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sve2p1)
+public fun sve2p1(): Boolean = checkFor(::sve2p1)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sve2Aes(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sve2Aes)
+public fun sve2Aes(): Boolean = checkFor(::sve2Aes)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sveB16b16(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sveB16b16)
+public fun sveB16b16(): Boolean = checkFor(::sveB16b16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sve2Bitperm(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sve2Bitperm)
+public fun sve2Bitperm(): Boolean = checkFor(::sve2Bitperm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sve2Sha3(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sve2Sha3)
+public fun sve2Sha3(): Boolean = checkFor(::sve2Sha3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sve2Sm4(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.sve2Sm4)
+public fun sve2Sm4(): Boolean = checkFor(::sve2Sm4)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun tme(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.tme)
+public fun tme(): Boolean = checkFor(::tme)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun wfxt(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.wfxt)
+public fun wfxt(): Boolean = checkFor(::wfxt)

@@ -1,38 +1,38 @@
 // port-lint: source option.rs
 package io.github.kotlinmania.rustlang.core.option
 
-import io.github.kotlinmania.rustlang.clone.TrivialClone
-import io.github.kotlinmania.rustlang.clone.UseCloned
+import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
+import io.github.kotlinmania.rustlang.core.ops.deref.Deref
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
+import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
+import io.github.kotlinmania.rustlang.core.panicking.panic
+import io.github.kotlinmania.rustlang.core.panicking.panicDisplay
+import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.intrinsics.discriminantValue
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.marker.StructuralPartialEq
-import io.github.kotlinmania.rustlang.mem.forget
-import io.github.kotlinmania.rustlang.mem.replace
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.ops.deref.Deref
-import io.github.kotlinmania.rustlang.ops.deref.DerefMut
-import io.github.kotlinmania.rustlang.ops.trytrait.FromResidual
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.ops.trytrait.Yeet
-import io.github.kotlinmania.rustlang.panicking.panic
-import io.github.kotlinmania.rustlang.panicking.panicDisplay
-import io.github.kotlinmania.rustlang.pin.Pin
 
 // Optional values.
 //
@@ -603,15 +603,23 @@ public typealias TryType<T> = Option<T>
 /**
  * The `Option` type. See [the module level documentation](self) for more.
  */
-public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, StructuralPartialEq, Try<Option<T>, T, Option<Nothing>>, FromResidual<Option<Nothing>, Option<T>> {
+public sealed class Option<T> :
+    UseCloned<Option<T>>,
+    TrivialClone<Option<T>>,
+    StructuralPartialEq,
+    Try<Option<T>, T, Option<Nothing>>,
+    FromResidual<Option<Nothing>, Option<T>> {
     /**
      * No value.
      */
-    public class None<T>() : Option<T>()
+    public class None<T> : Option<T>()
+
     /**
      * Some value of type `T`.
      */
-    public data class Some<T>(public var value: T) : Option<T>()
+    public data class Some<T>(
+        public var value: T,
+    ) : Option<T>()
 
     // ////////////////////////////////////////////////////////////////////////
     // Type implementation
@@ -840,7 +848,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         // Here we assume that `offsetOf` always returns an offset to an
         // in-bounds and correctly aligned position for a `T` (even if in the
         // `None` case it's just padding).
-        return rawSliceList(ConstPtr((ConstPtr(((constPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
+        return linearSliceView(ConstPtr((ConstPtr(((constPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
     }
 
     /**
@@ -891,7 +899,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         // here. As with `asSlice`, the intrinsic always returns a pointer to
         // an in-bounds and correctly aligned position for a `T` (even if in
         // the `None` case it's just padding).
-        return rawMutSliceList(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
     }
 
     // ////////////////////////////////////////////////////////////////////
@@ -1720,7 +1728,13 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun <R> getOrTryInsertWith(f: () -> R): TryType where R : Try<R, T, Any?> {
         if (this == null) {
-            this = Some(when (val tryResult = f()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
+            this =
+                Some(
+                    when (val tryResult = f()) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    },
+                )
         }
         // SAFETY: a `None` variant for `self` would have been replaced by a `Some`
         // variant in the code above.
@@ -1801,7 +1815,9 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * check(old1 == null)
      * ```
      */
-    public open fun replace(value: T): Option<T> = io.github.kotlinmania.rustlang.mem.replace(this, Some(value))
+    public open fun replace(value: T): Option<T> =
+        io.github.kotlinmania.rustlang.core.mem
+            .replace(this, Some(value))
 
     /**
      * Makes a tuple of the value in `self` and the value in another `Option`.
@@ -2008,7 +2024,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * See [the documentation](https://doc.rust-lang.org/std/option/#comparison-operators) for details.
      * [None] always compares less than any [Some]
      */
-    public open fun partialCmp(other: Option<T>): Option<Ordering> =
+    public open fun partialCmp(other: Option<T>): Option<cmp.Ordering> =
         run {
             val matchVal = Pair(this, other)
             when {
@@ -2017,13 +2033,13 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
                     val (r) = matchVal.second as Some<T>
                     l.partialCmp(r)
                 }
-                matchVal.first is Some && matchVal.second == null -> Some(Ordering.Greater)
-                matchVal.first == null && matchVal.second is Some -> Some(Ordering.Less)
-                else -> Some(Ordering.Equal)
+                matchVal.first is Some && matchVal.second == null -> Some(cmp.Ordering.Greater)
+                matchVal.first == null && matchVal.second is Some -> Some(cmp.Ordering.Less)
+                else -> Some(cmp.Ordering.Equal)
             }
         }
 
-    public open fun cmp(other: Option<T>): Ordering =
+    public open fun cmp(other: Option<T>): cmp.Ordering =
         run {
             val matchVal = Pair(this, other)
             when {
@@ -2032,9 +2048,9 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
                     val (r) = matchVal.second as Some<T>
                     l.cmp(r)
                 }
-                matchVal.first is Some && matchVal.second == null -> Ordering.Greater
-                matchVal.first == null && matchVal.second is Some -> Ordering.Less
-                else -> Ordering.Equal
+                matchVal.first is Some && matchVal.second == null -> cmp.Ordering.Greater
+                matchVal.first == null && matchVal.second is Some -> cmp.Ordering.Less
+                else -> cmp.Ordering.Equal
             }
         }
 
@@ -2232,15 +2248,17 @@ public fun <T> fromOptionT(o: Option<T>): Option<T> = o.asRef()
 // ////////////////////////////////////////////////////////////////////////
 public open class Item<A>(
     public var opt: Option<A>,
-) : TrustedLen<Item<A>>, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@Item.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<Item<A>>,
+    Iterable<A> {
+    override fun iterator(): Iterator<A> =
+        object : AbstractIterator<A>() {
+            override fun computeNext() {
+                when (val v = this@Item.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Item<A> = Item(opt)
 
@@ -2265,15 +2283,17 @@ public open class Item<A>(
  */
 public open class Iter<A>(
     public var inner: Item<A>,
-) : TrustedLen<Iter<A>>, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@Iter.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<Iter<A>>,
+    Iterable<A> {
+    override fun iterator(): Iterator<A> =
+        object : AbstractIterator<A>() {
+            override fun computeNext() {
+                when (val v = this@Iter.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public override fun next(): Option<A> = this.inner.next()
 
@@ -2293,15 +2313,17 @@ public open class Iter<A>(
  */
 public open class IterMut<A>(
     public var inner: Item<A>,
-) : TrustedLen<IterMut<A>>, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@IterMut.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<IterMut<A>>,
+    Iterable<A> {
+    override fun iterator(): Iterator<A> =
+        object : AbstractIterator<A>() {
+            override fun computeNext() {
+                when (val v = this@IterMut.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public override fun next(): Option<A> = this.inner.next()
 
@@ -2319,15 +2341,17 @@ public open class IterMut<A>(
  */
 public open class IntoIter<A>(
     public var inner: Item<A>,
-) : TrustedLen<IntoIter<A>>, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@IntoIter.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<IntoIter<A>>,
+    Iterable<A> {
+    override fun iterator(): Iterator<A> =
+        object : AbstractIterator<A>() {
+            override fun computeNext() {
+                when (val v = this@IntoIter.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): IntoIter<A> = IntoIter(inner)
 
@@ -2343,15 +2367,17 @@ public open class IntoIter<A>(
  */
 public open class OptionFlatten<A>(
     public var iter: Option<A>,
-) : TrustedLen<OptionFlatten<A>>, Iterable<Item> {
-    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
-        override fun computeNext() {
-            when (val v = this@OptionFlatten.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<OptionFlatten<A>>,
+    Iterable<Item> {
+    override fun iterator(): Iterator<Item> =
+        object : AbstractIterator<Item>() {
+            override fun computeNext() {
+                when (val v = this@OptionFlatten.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): OptionFlatten<A> = OptionFlatten(iter)
 

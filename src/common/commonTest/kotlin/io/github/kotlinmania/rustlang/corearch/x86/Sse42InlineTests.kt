@@ -3,11 +3,6 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.x86.M128i
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi8
-import io.github.kotlinmania.rustlang.x86.mmSetrEpi8
-
 // Streaming SIMD Extensions 4.2 (SSE4.2)
 //
 // Extends SSE4.1 with STTNI (String and Text New Instructions).
@@ -20,7 +15,11 @@ import io.github.kotlinmania.rustlang.x86.mmSetrEpi8
 public fun strToM128i(s: List<UByte>): M128i {
     check(s.size <= 16)
     val array = UByteArray(16) { 0u.toUByte() }
-    run { val dstTmp0 = array; val srcTmp0 = s; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
+    run {
+        val dstTmp0 = array
+        val srcTmp0 = s
+        for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
+    }
     return u8x16.fromArray(array).asM128i()
 }
 

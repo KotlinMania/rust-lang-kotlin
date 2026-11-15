@@ -4,31 +4,6 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.x86.MM_FROUND_NO_EXC
-import io.github.kotlinmania.rustlang.x86.MM_FROUND_TO_NEAREST_INT
-import io.github.kotlinmania.rustlang.x86.MM_FROUND_TO_ZERO
-import io.github.kotlinmania.rustlang.x86.Mmask16
-import io.github.kotlinmania.rustlang.x86.Mmask8
-import io.github.kotlinmania.rustlang.x86.mm256Set1Pd
-import io.github.kotlinmania.rustlang.x86.mm256Set1Ps
-import io.github.kotlinmania.rustlang.x86.mm256SetEpi32
-import io.github.kotlinmania.rustlang.x86.mm256SetEpi64x
-import io.github.kotlinmania.rustlang.x86.mm256SetPd
-import io.github.kotlinmania.rustlang.x86.mm256SetPs
-import io.github.kotlinmania.rustlang.x86.mm512Set1Pd
-import io.github.kotlinmania.rustlang.x86.mm512Set1Ps
-import io.github.kotlinmania.rustlang.x86.mm512SetEpi32
-import io.github.kotlinmania.rustlang.x86.mm512SetEpi64
-import io.github.kotlinmania.rustlang.x86.mm512SetPd
-import io.github.kotlinmania.rustlang.x86.mm512SetPs
-import io.github.kotlinmania.rustlang.x86.mmSet1Pd
-import io.github.kotlinmania.rustlang.x86.mmSet1Ps
-import io.github.kotlinmania.rustlang.x86.mmSetEpi32
-import io.github.kotlinmania.rustlang.x86.mmSetEpi64x
-import io.github.kotlinmania.rustlang.x86.mmSetPd
-import io.github.kotlinmania.rustlang.x86.mmSetPs
-import io.github.kotlinmania.rustlang.x86.mmSetSd
-import io.github.kotlinmania.rustlang.x86.mmSetSs
 
 public val OPRND1_64: Double = Double.fromBits(0x3333333333333333uL.toLong())
 

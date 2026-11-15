@@ -3,20 +3,20 @@
 
 package io.github.kotlinmania.rustlang.core.net.ipaddr
 
-import io.github.kotlinmania.rustlang.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
 import io.github.kotlinmania.rustlang.core.net.displaybuffer.DisplayBuffer
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAndAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.Not
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.mem.transmutability.transmute
-import io.github.kotlinmania.rustlang.ops.bit.BitAnd
-import io.github.kotlinmania.rustlang.ops.bit.BitAndAssign
-import io.github.kotlinmania.rustlang.ops.bit.BitOr
-import io.github.kotlinmania.rustlang.ops.bit.BitOrAssign
-import io.github.kotlinmania.rustlang.ops.bit.Not
 
 /**
  * An IP address, either IPv4 or IPv6.
@@ -43,11 +43,16 @@ public sealed class IpAddr {
     /**
      * An IPv4 address.
      */
-    public data class V4(public var value: Ipv4Addr) : IpAddr()
+    public data class V4(
+        public var value: Ipv4Addr,
+    ) : IpAddr()
+
     /**
      * An IPv6 address.
      */
-    public data class V6(public var value: Ipv6Addr) : IpAddr()
+    public data class V6(
+        public var value: Ipv6Addr,
+    ) : IpAddr()
 
     public fun rustEquals(other: IpAddr): Boolean = this == other
 
@@ -341,15 +346,25 @@ public sealed class IpAddr {
         when (this) {
             is IpAddr.V4 -> {
                 val (ip) = this
-                run { ip.fmt(fmt); Result.Ok(Unit) }
+                run {
+                    ip.fmt(fmt)
+                    Result.Ok(Unit)
+                }
             }
             is IpAddr.V6 -> {
                 val (ip1) = this
-                run { ip1.fmt(fmt); Result.Ok(Unit) }
+                run {
+                    ip1.fmt(fmt)
+                    Result.Ok(Unit)
+                }
             }
         }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> =
+        run {
+            fmt.append((this).toString())
+            Result.Ok(Unit)
+        }
 
     public open fun eq(other: Ipv4Addr): Boolean =
         when (this) {
@@ -544,7 +559,11 @@ public sealed class IpAddr {
  */
 public open class Ipv4Addr(
     public var octets: UByteArray,
-) : Not<Ipv4Addr>, BitAndAssign<Ipv4Addr>, BitAnd<Ipv4Addr, Ipv4Addr>, BitOrAssign<Ipv4Addr>, BitOr<Ipv4Addr, Ipv4Addr> {
+) : Not<Ipv4Addr>,
+    BitAndAssign<Ipv4Addr>,
+    BitAnd<Ipv4Addr, Ipv4Addr>,
+    BitOrAssign<Ipv4Addr>,
+    BitOr<Ipv4Addr, Ipv4Addr> {
     public open fun clone(): Ipv4Addr = Ipv4Addr(octets)
 
     public override fun hashCode(): Int {
@@ -552,7 +571,13 @@ public open class Ipv4Addr(
         // Hashers are often more efficient at hashing a fixed-width integer
         // than a bytestring, so convert before hashing. We don't use toBits()
         // here as that may involve a byteswap which is unnecessary.
-        state = 31 * state + (run { val bytesTmp0 = this.octets; ((bytesTmp0[3].toUInt() shl 24) or (bytesTmp0[2].toUInt() shl 16) or (bytesTmp0[1].toUInt() shl 8) or bytesTmp0[0].toUInt()) }).hashCode()
+        state = 31 * state +
+            (
+                run {
+                    val bytesTmp0 = this.octets
+                    ((bytesTmp0[3].toUInt() shl 24) or (bytesTmp0[2].toUInt() shl 16) or (bytesTmp0[1].toUInt() shl 8) or bytesTmp0[0].toUInt())
+                }
+            ).hashCode()
         return state
     }
 
@@ -582,7 +607,11 @@ public open class Ipv4Addr(
      * check(Ipv4Addr.new(0x12, 0x34, 0x56, 0x00) == Ipv4Addr.fromBits(addrBits))
      * ```
      */
-    public open fun toBits(): UInt = run { val bytesTmp1 = this.octets; ((bytesTmp1[0].toUInt() shl 24) or (bytesTmp1[1].toUInt() shl 16) or (bytesTmp1[2].toUInt() shl 8) or bytesTmp1[3].toUInt()) }
+    public open fun toBits(): UInt =
+        run {
+            val bytesTmp1 = this.octets
+            ((bytesTmp1[0].toUInt() shl 24) or (bytesTmp1[1].toUInt() shl 16) or (bytesTmp1[2].toUInt() shl 8) or bytesTmp1[3].toUInt())
+        }
 
     /**
      * Returns the four eight-bit integers that make up this address.
@@ -633,7 +662,11 @@ public open class Ipv4Addr(
      * check(Ipv4Addr.new(45, 22, 13, 197).isUnspecified() == false)
      * ```
      */
-    public open fun isUnspecified(): Boolean = run { val bytesTmp2 = this.octets; ((bytesTmp2[0].toUInt() shl 24) or (bytesTmp2[1].toUInt() shl 16) or (bytesTmp2[2].toUInt() shl 8) or bytesTmp2[3].toUInt()) } == 0u
+    public open fun isUnspecified(): Boolean =
+        run {
+            val bytesTmp2 = this.octets
+            ((bytesTmp2[0].toUInt() shl 24) or (bytesTmp2[1].toUInt() shl 16) or (bytesTmp2[2].toUInt() shl 8) or bytesTmp2[3].toUInt())
+        } == 0u
 
     /**
      * Returns [trueVal] if this is a loopback address (`127.0.0.0 / 8`).
@@ -782,14 +815,16 @@ public open class Ipv4Addr(
      * ```
      */
     public open fun isGlobal(): Boolean =
-        !(this.octets()[0] == 0u.toUByte() || this.isPrivate() || this.isShared() || this.isLoopback() || this.isLinkLocal() || (this.octets()[0] == 192u.toUByte() && this.octets()[1] == 0u.toUByte() && this.octets()[2] == 0u.toUByte() && this.octets()[3] != 9u.toUByte() && this.octets()[3] != 10u.toUByte()) ||
-            run {
-                val matchVal = this.octets()
-                when {
-                    matchVal.size == 4 && matchVal[0] == 192 && matchVal[1] == 88 && matchVal[2] == 99 && matchVal[3] == 2 -> true
-                    else -> false
-                }
-            } || this.isDocumentation() || this.isBenchmarking() || this.isReserved() || this.isBroadcast())
+        !(
+            this.octets()[0] == 0u.toUByte() || this.isPrivate() || this.isShared() || this.isLoopback() || this.isLinkLocal() || (this.octets()[0] == 192u.toUByte() && this.octets()[1] == 0u.toUByte() && this.octets()[2] == 0u.toUByte() && this.octets()[3] != 9u.toUByte() && this.octets()[3] != 10u.toUByte()) ||
+                run {
+                    val matchVal = this.octets()
+                    when {
+                        matchVal.size == 4 && matchVal[0] == 192 && matchVal[1] == 88 && matchVal[2] == 99 && matchVal[3] == 2 -> true
+                        else -> false
+                    }
+                } || this.isDocumentation() || this.isBenchmarking() || this.isReserved() || this.isBroadcast()
+        )
 
     /**
      * Returns [trueVal] if this address is part of the Shared Address Space defined in
@@ -908,7 +943,15 @@ public open class Ipv4Addr(
      * check(Ipv4Addr.new(236, 168, 10, 65).isBroadcast() == false)
      * ```
      */
-    public open fun isBroadcast(): Boolean = run { val bytesTmp3 = this.octets(); ((bytesTmp3[0].toUInt() shl 24) or (bytesTmp3[1].toUInt() shl 16) or (bytesTmp3[2].toUInt() shl 8) or bytesTmp3[3].toUInt()) } == run { val bytesTmp4 = Ipv4Addr.BROADCAST.octets(); ((bytesTmp4[0].toUInt() shl 24) or (bytesTmp4[1].toUInt() shl 16) or (bytesTmp4[2].toUInt() shl 8) or bytesTmp4[3].toUInt()) }
+    public open fun isBroadcast(): Boolean =
+        run {
+            val bytesTmp3 = this.octets()
+            ((bytesTmp3[0].toUInt() shl 24) or (bytesTmp3[1].toUInt() shl 16) or (bytesTmp3[2].toUInt() shl 8) or bytesTmp3[3].toUInt())
+        } ==
+            run {
+                val bytesTmp4 = Ipv4Addr.BROADCAST.octets()
+                ((bytesTmp4[0].toUInt() shl 24) or (bytesTmp4[1].toUInt() shl 16) or (bytesTmp4[2].toUInt() shl 8) or bytesTmp4[3].toUInt())
+            }
 
     /**
      * Returns [trueVal] if this address is in a range designated for documentation.
@@ -1001,11 +1044,18 @@ public open class Ipv4Addr(
             val buf = DisplayBuffer.buffer(LONGEST_IPV4_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("${octets[0]}.${octets[1]}.${octets[2]}.${octets[3]}").unwrap()
-            run { fmt.append(buf1.asStr()); Result.Ok(Unit) }
+            run {
+                fmt.append(buf1.asStr())
+                Result.Ok(Unit)
+            }
         }
     }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> =
+        run {
+            fmt.append((this).toString())
+            Result.Ok(Unit)
+        }
 
     public open fun eq(other: IpAddr): Boolean =
         when (other) {
@@ -1145,7 +1195,14 @@ public open class Ipv4Addr(
          * check(Ipv4Addr.new(0x12, 0x34, 0x56, 0x78) == addr)
          * ```
          */
-        public fun fromBits(bits: UInt): Ipv4Addr = Ipv4Addr(octets = run { val rawBits = bits; ubyteArrayOf((rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte()) })
+        public fun fromBits(bits: UInt): Ipv4Addr =
+            Ipv4Addr(
+                octets =
+                    run {
+                        val rawBits = bits
+                        ubyteArrayOf((rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte())
+                    },
+            )
 
         /**
          * An IPv4 address with the address pointing to localhost: `127.0.0.1`
@@ -1313,7 +1370,11 @@ public open class Ipv4Addr(
  */
 public open class Ipv6Addr(
     public var octets: UByteArray,
-) : Not<Ipv6Addr>, BitAndAssign<Ipv6Addr>, BitAnd<Ipv6Addr, Ipv6Addr>, BitOrAssign<Ipv6Addr>, BitOr<Ipv6Addr, Ipv6Addr> {
+) : Not<Ipv6Addr>,
+    BitAndAssign<Ipv6Addr>,
+    BitAnd<Ipv6Addr, Ipv6Addr>,
+    BitOrAssign<Ipv6Addr>,
+    BitOr<Ipv6Addr, Ipv6Addr> {
     public open fun clone(): Ipv6Addr = Ipv6Addr(octets)
 
     public override fun hashCode(): Int {
@@ -1470,84 +1531,90 @@ public open class Ipv6Addr(
      * ```
      */
     public open fun isGlobal(): Boolean =
-        !(this.isUnspecified() || this.isLoopback() ||
-            run {
-                val matchVal = this.segments()
-                when {
-                    matchVal.size == 8 && matchVal[0] == 0 && matchVal[1] == 0 && matchVal[2] == 0 && matchVal[3] == 0 && matchVal[4] == 0 && matchVal[5] == 0xffff -> true
-                    else -> false
-                }
-            } ||
-            run {
-                val matchVal1 = this.segments()
-                when {
-                    matchVal1.size == 8 && matchVal1[0] == 0x64 && matchVal1[1] == 0xff9b && matchVal1[2] == 1 -> true
-                    else -> false
-                }
-            } ||
-            run {
-                val matchVal2 = this.segments()
-                when {
-                    matchVal2.size == 8 && matchVal2[0] == 0x100 && matchVal2[1] == 0 && matchVal2[2] == 0 && matchVal2[3] == 0 -> true
-                    else -> false
-                }
-            } ||
-            run {
-                val matchVal3 = this.segments()
-                when {
-                    matchVal3.size == 8 && matchVal3[0] == 0x100 && matchVal3[1] == 0 && matchVal3[2] == 0 && matchVal3[3] == 1 -> true
-                    else -> false
-                }
-            } ||
-            (run {
-                val matchVal4 = this.segments()
-                when {
-                    matchVal4.size == 8 && matchVal4[0] == 0x2001 && matchVal4[1] < 0x200 -> {
-                        val b = matchVal4[1]
-                        true
+        !(
+            this.isUnspecified() || this.isLoopback() ||
+                run {
+                    val matchVal = this.segments()
+                    when {
+                        matchVal.size == 8 && matchVal[0] == 0 && matchVal[1] == 0 && matchVal[2] == 0 && matchVal[3] == 0 && matchVal[4] == 0 && matchVal[5] == 0xffff -> true
+                        else -> false
                     }
-                    else -> false
-                }
-            } &&
-                !(U128.fromBeBytes(this.octets()) == U128(0x2001000100000000uL, 0x1uL) || U128.fromBeBytes(this.octets()) == U128(0x2001000100000000uL, 0x2uL) || U128.fromBeBytes(this.octets()) == U128(0x2001000100000000uL, 0x3uL) ||
+                } ||
+                run {
+                    val matchVal1 = this.segments()
+                    when {
+                        matchVal1.size == 8 && matchVal1[0] == 0x64 && matchVal1[1] == 0xff9b && matchVal1[2] == 1 -> true
+                        else -> false
+                    }
+                } ||
+                run {
+                    val matchVal2 = this.segments()
+                    when {
+                        matchVal2.size == 8 && matchVal2[0] == 0x100 && matchVal2[1] == 0 && matchVal2[2] == 0 && matchVal2[3] == 0 -> true
+                        else -> false
+                    }
+                } ||
+                run {
+                    val matchVal3 = this.segments()
+                    when {
+                        matchVal3.size == 8 && matchVal3[0] == 0x100 && matchVal3[1] == 0 && matchVal3[2] == 0 && matchVal3[3] == 1 -> true
+                        else -> false
+                    }
+                } ||
+                (
                     run {
-                        val matchVal5 = this.segments()
+                        val matchVal4 = this.segments()
                         when {
-                            matchVal5.size == 8 && matchVal5[0] == 0x2001 && matchVal5[1] == 3 -> true
-                            else -> false
-                        }
-                    } ||
-                    run {
-                        val matchVal6 = this.segments()
-                        when {
-                            matchVal6.size == 8 && matchVal6[0] == 0x2001 && matchVal6[1] == 4 && matchVal6[2] == 0x112 -> true
-                            else -> false
-                        }
-                    } ||
-                    run {
-                        val matchVal7 = this.segments()
-                        when {
-                            matchVal7.size == 8 && matchVal7[0] == 0x2001 && matchVal7[1] >= 0x20 && matchVal7[1] <= 0x3F -> {
-                                val b1 = matchVal7[1]
+                            matchVal4.size == 8 && matchVal4[0] == 0x2001 && matchVal4[1] < 0x200 -> {
+                                val b = matchVal4[1]
                                 true
                             }
                             else -> false
                         }
-                    })) ||
-            run {
-                val matchVal8 = this.segments()
-                when {
-                    matchVal8.size == 8 && matchVal8[0] == 0x2002 -> true
-                    else -> false
-                }
-            } || this.isDocumentation() ||
-            run {
-                val matchVal9 = this.segments()
-                when {
-                    matchVal9.size >= 1 && matchVal9[0] == 0x5f00 -> true
-                    else -> false
-                }
-            } || this.isUniqueLocal() || this.isUnicastLinkLocal())
+                    } &&
+                        !(
+                            U128.fromBeBytes(this.octets()) == U128(0x2001000100000000uL, 0x1uL) || U128.fromBeBytes(this.octets()) == U128(0x2001000100000000uL, 0x2uL) || U128.fromBeBytes(this.octets()) == U128(0x2001000100000000uL, 0x3uL) ||
+                                run {
+                                    val matchVal5 = this.segments()
+                                    when {
+                                        matchVal5.size == 8 && matchVal5[0] == 0x2001 && matchVal5[1] == 3 -> true
+                                        else -> false
+                                    }
+                                } ||
+                                run {
+                                    val matchVal6 = this.segments()
+                                    when {
+                                        matchVal6.size == 8 && matchVal6[0] == 0x2001 && matchVal6[1] == 4 && matchVal6[2] == 0x112 -> true
+                                        else -> false
+                                    }
+                                } ||
+                                run {
+                                    val matchVal7 = this.segments()
+                                    when {
+                                        matchVal7.size == 8 && matchVal7[0] == 0x2001 && matchVal7[1] >= 0x20 && matchVal7[1] <= 0x3F -> {
+                                            val b1 = matchVal7[1]
+                                            true
+                                        }
+                                        else -> false
+                                    }
+                                }
+                        )
+                ) ||
+                run {
+                    val matchVal8 = this.segments()
+                    when {
+                        matchVal8.size == 8 && matchVal8[0] == 0x2002 -> true
+                        else -> false
+                    }
+                } || this.isDocumentation() ||
+                run {
+                    val matchVal9 = this.segments()
+                    when {
+                        matchVal9.size >= 1 && matchVal9[0] == 0x5f00 -> true
+                        else -> false
+                    }
+                } || this.isUniqueLocal() || this.isUnicastLinkLocal()
+        )
 
     /**
      * Returns [trueVal] if this is a unique local address (`fc00./ 7`).
@@ -1956,6 +2023,7 @@ public open class Ipv6Addr(
                     ) {
                         public open fun clone(): Span = Span(start, len)
                     }
+
                     /**
                      * Writes a colon-separated part of the address.
                      */
@@ -1974,30 +2042,37 @@ public open class Ipv6Addr(
                         }
                     }
                     // Find the inner 0 span
-                    val zeroes = run {
-                        var longest = Span.default()
-                        var current = Span.default()
-                        for ((i, segment) in segments.mapIndexed { index, item -> Pair(index, item) }) {
-                            if (segment == 0) {
-                                if (current.len == 0) {
-                                    current.start = i
+                    val zeroes =
+                        run {
+                            var longest = Span.default()
+                            var current = Span.default()
+                            for ((i, segment) in segments.mapIndexed { index, item -> Pair(index, item) }) {
+                                if (segment == 0) {
+                                    if (current.len == 0) {
+                                        current.start = i
+                                    }
+                                    current.len += 1
+                                    if (current.len > longest.len) {
+                                        longest = current
+                                    }
+                                } else {
+                                    current = Span.default()
                                 }
-                                current.len += 1
-                                if (current.len > longest.len) {
-                                    longest = current
-                                }
-                            } else {
-                                current = Span.default()
                             }
+                            longest
                         }
-                        longest
-                    }
                     if (zeroes.len > 1) {
                         fmtSubslice(f, ((segments).sliceArray(0 until zeroes.start)))
                         f.append("::")
-                        run { fmtSubslice(f, ((segments).sliceArray(zeroes.start + zeroes.len until segments.size))); Result.Ok(Unit) }
+                        run {
+                            fmtSubslice(f, ((segments).sliceArray(zeroes.start + zeroes.len until segments.size)))
+                            Result.Ok(Unit)
+                        }
                     } else {
-                        run { fmtSubslice(f, segments); Result.Ok(Unit) }
+                        run {
+                            fmtSubslice(f, segments)
+                            Result.Ok(Unit)
+                        }
                     }
                 }
                 else -> {
@@ -2010,11 +2085,18 @@ public open class Ipv6Addr(
             val buf = DisplayBuffer.buffer(LONGEST_IPV6_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("$this").unwrap()
-            run { f.append(buf1.asStr()); Result.Ok(Unit) }
+            run {
+                f.append(buf1.asStr())
+                Result.Ok(Unit)
+            }
         }
     }
 
-    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmtDebug(fmt: StringBuilder): Result<Unit, Unit> =
+        run {
+            fmt.append((this).toString())
+            Result.Ok(Unit)
+        }
 
     public open fun eq(other: IpAddr): Boolean =
         when (other) {
@@ -2340,69 +2422,84 @@ public sealed class Ipv6MulticastScope(
      * Reserved by IETF.
      */
     public data object Reserved0 : Ipv6MulticastScope(0x0)
+
     /**
      * Interface-Local scope.
      */
     public data object InterfaceLocal : Ipv6MulticastScope(0x1)
+
     /**
      * Link-Local scope.
      */
     public data object LinkLocal : Ipv6MulticastScope(0x2)
+
     /**
      * Realm-Local scope.
      */
     public data object RealmLocal : Ipv6MulticastScope(0x3)
+
     /**
      * Admin-Local scope.
      */
     public data object AdminLocal : Ipv6MulticastScope(0x4)
+
     /**
      * Site-Local scope.
      */
     public data object SiteLocal : Ipv6MulticastScope(0x5)
+
     /**
      * Scope 6. Unassigned, available for administrators
      * to define additional multicast regions.
      */
     public data object Unassigned6 : Ipv6MulticastScope(0x6)
+
     /**
      * Scope 7. Unassigned, available for administrators
      * to define additional multicast regions.
      */
     public data object Unassigned7 : Ipv6MulticastScope(0x7)
+
     /**
      * Organization-Local scope.
      */
     public data object OrganizationLocal : Ipv6MulticastScope(0x8)
+
     /**
      * Scope 9. Unassigned, available for administrators
      * to define additional multicast regions.
      */
     public data object Unassigned9 : Ipv6MulticastScope(0x9)
+
     /**
      * Scope A. Unassigned, available for administrators
      * to define additional multicast regions.
      */
     public data object UnassignedA : Ipv6MulticastScope(0xA)
+
     /**
      * Scope B. Unassigned, available for administrators
      * to define additional multicast regions.
      */
     public data object UnassignedB : Ipv6MulticastScope(0xB)
+
     /**
      * Scope C. Unassigned, available for administrators
      * to define additional multicast regions.
      */
     public data object UnassignedC : Ipv6MulticastScope(0xC)
+
     /**
      * Scope D. Unassigned, available for administrators
      * to define additional multicast regions.
      */
     public data object UnassignedD : Ipv6MulticastScope(0xD)
+
     /**
      * Global scope.
      */
     public data object Global : Ipv6MulticastScope(0xE)
+
     /**
      * Reserved by IETF.
      */

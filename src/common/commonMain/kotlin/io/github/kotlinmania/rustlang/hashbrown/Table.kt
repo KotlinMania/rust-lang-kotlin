@@ -3,22 +3,21 @@
 
 package io.github.kotlinmania.rustlang.hashbrown
 
-import io.github.kotlinmania.rustlang.TryReserveError
-import io.github.kotlinmania.rustlang.alloc.Allocator
-import io.github.kotlinmania.rustlang.alloc.Global
-import io.github.kotlinmania.rustlang.control.tag.Tag
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.raw.Bucket
-import io.github.kotlinmania.rustlang.raw.FullBucketsIndices
-import io.github.kotlinmania.rustlang.raw.RawDrain
-import io.github.kotlinmania.rustlang.raw.RawExtractIf
-import io.github.kotlinmania.rustlang.raw.RawIntoIter
-import io.github.kotlinmania.rustlang.raw.RawIter
-import io.github.kotlinmania.rustlang.raw.RawIterHash
-import io.github.kotlinmania.rustlang.raw.RawIterHashIndices
-import io.github.kotlinmania.rustlang.raw.RawTable
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.control.tag.Tag
+import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
+import io.github.kotlinmania.rustlang.hashbrown.raw.FullBucketsIndices
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawDrain
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawExtractIf
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawIntoIter
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawIter
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawIterHash
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawIterHashIndices
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawTable
 
 public class DebugStruct(
     private val out: StringBuilder,

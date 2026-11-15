@@ -17,8 +17,8 @@ import io.github.kotlinmania.rustlang.libc.wasi.PTHREAD_MUTEX_INITIALIZER
 import io.github.kotlinmania.rustlang.libc.wasi.PTHREAD_MUTEX_NORMAL
 import io.github.kotlinmania.rustlang.libc.wasi.PthreadMutexT
 import io.github.kotlinmania.rustlang.libc.wasi.PthreadMutexattrT
-import io.github.kotlinmania.rustlang.sys.helpers.copaque.COpaque
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvtNz
+import io.github.kotlinmania.rustlang.std.sys.helpers.copaque.COpaque
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtNz
 
 public open class Mutex internal constructor(
     innerCtorArg: COpaque<PthreadMutexT>,

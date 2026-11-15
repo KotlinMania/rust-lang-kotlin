@@ -4,680 +4,680 @@ package io.github.kotlinmania.rustlang.core.num.imp.libm
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.num.complex.Complex
+import io.github.kotlinmania.rustlang.core.num.complex.Complex
 
 // The host must provide the C companion wrapper exports in import module kmcore.
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmPowidf2")
-private external fun wasiRustlangCoreNumImpLibmPowidf2(a: Double, b: Int): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmPowidf2")
+private external fun wasiCoreNumImpLibmPowidf2(a: Double, b: Int): Double
 
 public actual fun powidf2(a: Double, b: Int): Double =
-    wasiRustlangCoreNumImpLibmPowidf2(a, b).toDouble()
+    wasiCoreNumImpLibmPowidf2(a, b).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmPowisf2")
-private external fun wasiRustlangCoreNumImpLibmPowisf2(a: Float, b: Int): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmPowisf2")
+private external fun wasiCoreNumImpLibmPowisf2(a: Float, b: Int): Float
 
 public actual fun powisf2(a: kotlin.Float, b: Int): kotlin.Float =
-    wasiRustlangCoreNumImpLibmPowisf2(a, b).toFloat()
+    wasiCoreNumImpLibmPowisf2(a, b).toFloat()
 
 public actual fun powitf2(a: F128, b: Int): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmPowitf2")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmPowitf2")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmCbrt")
-private external fun wasiRustlangCoreNumImpLibmCbrt(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmCbrt")
+private external fun wasiCoreNumImpLibmCbrt(x: Double): Double
 
 public actual fun cbrt(x: Double): Double =
-    wasiRustlangCoreNumImpLibmCbrt(x).toDouble()
+    wasiCoreNumImpLibmCbrt(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmCbrtf")
-private external fun wasiRustlangCoreNumImpLibmCbrtf(n: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmCbrtf")
+private external fun wasiCoreNumImpLibmCbrtf(n: Float): Float
 
 public actual fun cbrtf(n: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmCbrtf(n).toFloat()
+    wasiCoreNumImpLibmCbrtf(n).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmCeil")
-private external fun wasiRustlangCoreNumImpLibmCeil(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmCeil")
+private external fun wasiCoreNumImpLibmCeil(x: Double): Double
 
 public actual fun ceil(x: Double): Double =
-    wasiRustlangCoreNumImpLibmCeil(x).toDouble()
+    wasiCoreNumImpLibmCeil(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmCeilf")
-private external fun wasiRustlangCoreNumImpLibmCeilf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmCeilf")
+private external fun wasiCoreNumImpLibmCeilf(x: Float): Float
 
 public actual fun ceilf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmCeilf(x).toFloat()
+    wasiCoreNumImpLibmCeilf(x).toFloat()
 
 public actual fun ceilf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmCeilf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmCeilf128")
 
 public actual fun ceilf16(x: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmCeilf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmCeilf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmCopysign")
-private external fun wasiRustlangCoreNumImpLibmCopysign(x: Double, y: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmCopysign")
+private external fun wasiCoreNumImpLibmCopysign(x: Double, y: Double): Double
 
 public actual fun copysign(x: Double, y: Double): Double =
-    wasiRustlangCoreNumImpLibmCopysign(x, y).toDouble()
+    wasiCoreNumImpLibmCopysign(x, y).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmCopysignf")
-private external fun wasiRustlangCoreNumImpLibmCopysignf(x: Float, y: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmCopysignf")
+private external fun wasiCoreNumImpLibmCopysignf(x: Float, y: Float): Float
 
 public actual fun copysignf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmCopysignf(x, y).toFloat()
+    wasiCoreNumImpLibmCopysignf(x, y).toFloat()
 
 public actual fun copysignf128(x: F128, y: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmCopysignf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmCopysignf128")
 
 public actual fun copysignf16(x: F16, y: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmCopysignf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmCopysignf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFabs")
-private external fun wasiRustlangCoreNumImpLibmFabs(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFabs")
+private external fun wasiCoreNumImpLibmFabs(x: Double): Double
 
 public actual fun fabs(x: Double): Double =
-    wasiRustlangCoreNumImpLibmFabs(x).toDouble()
+    wasiCoreNumImpLibmFabs(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFabsf")
-private external fun wasiRustlangCoreNumImpLibmFabsf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFabsf")
+private external fun wasiCoreNumImpLibmFabsf(x: Float): Float
 
 public actual fun fabsf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmFabsf(x).toFloat()
+    wasiCoreNumImpLibmFabsf(x).toFloat()
 
 public actual fun fabsf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFabsf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFabsf128")
 
 public actual fun fabsf16(x: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFabsf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFabsf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFdim")
-private external fun wasiRustlangCoreNumImpLibmFdim(a: Double, b: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFdim")
+private external fun wasiCoreNumImpLibmFdim(a: Double, b: Double): Double
 
 public actual fun fdim(a: Double, b: Double): Double =
-    wasiRustlangCoreNumImpLibmFdim(a, b).toDouble()
+    wasiCoreNumImpLibmFdim(a, b).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFdimf")
-private external fun wasiRustlangCoreNumImpLibmFdimf(a: Float, b: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFdimf")
+private external fun wasiCoreNumImpLibmFdimf(a: Float, b: Float): Float
 
 public actual fun fdimf(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmFdimf(a, b).toFloat()
+    wasiCoreNumImpLibmFdimf(a, b).toFloat()
 
 public actual fun fdimf128(x: F128, y: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFdimf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFdimf128")
 
 public actual fun fdimf16(x: F16, y: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFdimf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFdimf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFloor")
-private external fun wasiRustlangCoreNumImpLibmFloor(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFloor")
+private external fun wasiCoreNumImpLibmFloor(x: Double): Double
 
 public actual fun floor(x: Double): Double =
-    wasiRustlangCoreNumImpLibmFloor(x).toDouble()
+    wasiCoreNumImpLibmFloor(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFloorf")
-private external fun wasiRustlangCoreNumImpLibmFloorf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFloorf")
+private external fun wasiCoreNumImpLibmFloorf(x: Float): Float
 
 public actual fun floorf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmFloorf(x).toFloat()
+    wasiCoreNumImpLibmFloorf(x).toFloat()
 
 public actual fun floorf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFloorf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFloorf128")
 
 public actual fun floorf16(x: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFloorf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFloorf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFma")
-private external fun wasiRustlangCoreNumImpLibmFma(x: Double, y: Double, z: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFma")
+private external fun wasiCoreNumImpLibmFma(x: Double, y: Double, z: Double): Double
 
 public actual fun fma(x: Double, y: Double, z: Double): Double =
-    wasiRustlangCoreNumImpLibmFma(x, y, z).toDouble()
+    wasiCoreNumImpLibmFma(x, y, z).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFmaf")
-private external fun wasiRustlangCoreNumImpLibmFmaf(x: Float, y: Float, z: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFmaf")
+private external fun wasiCoreNumImpLibmFmaf(x: Float, y: Float, z: Float): Float
 
 public actual fun fmaf(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmFmaf(x, y, z).toFloat()
+    wasiCoreNumImpLibmFmaf(x, y, z).toFloat()
 
 public actual fun fmaf128(x: F128, y: F128, z: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFmaf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFmaf128")
 
 public actual fun fmaf16(x: F16, y: F16, z: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFmaf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFmaf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFmax")
-private external fun wasiRustlangCoreNumImpLibmFmax(x: Double, y: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFmax")
+private external fun wasiCoreNumImpLibmFmax(x: Double, y: Double): Double
 
 public actual fun fmax(x: Double, y: Double): Double =
-    wasiRustlangCoreNumImpLibmFmax(x, y).toDouble()
+    wasiCoreNumImpLibmFmax(x, y).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFmaxf")
-private external fun wasiRustlangCoreNumImpLibmFmaxf(x: Float, y: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFmaxf")
+private external fun wasiCoreNumImpLibmFmaxf(x: Float, y: Float): Float
 
 public actual fun fmaxf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmFmaxf(x, y).toFloat()
+    wasiCoreNumImpLibmFmaxf(x, y).toFloat()
 
 public actual fun fmaxf128(x: F128, y: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFmaxf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFmaxf128")
 
 public actual fun fmaxf16(x: F16, y: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFmaxf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFmaxf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFmaximum")
-private external fun wasiRustlangCoreNumImpLibmFmaximum(x: Double, y: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFmaximum")
+private external fun wasiCoreNumImpLibmFmaximum(x: Double, y: Double): Double
 
 public actual fun fmaximum(x: Double, y: Double): Double =
-    wasiRustlangCoreNumImpLibmFmaximum(x, y).toDouble()
+    wasiCoreNumImpLibmFmaximum(x, y).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFmaximumf")
-private external fun wasiRustlangCoreNumImpLibmFmaximumf(x: Float, y: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFmaximumf")
+private external fun wasiCoreNumImpLibmFmaximumf(x: Float, y: Float): Float
 
 public actual fun fmaximumf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmFmaximumf(x, y).toFloat()
+    wasiCoreNumImpLibmFmaximumf(x, y).toFloat()
 
 public actual fun fmaximumf128(x: F128, y: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFmaximumf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFmaximumf128")
 
 public actual fun fmaximumf16(x: F16, y: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFmaximumf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFmaximumf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFmin")
-private external fun wasiRustlangCoreNumImpLibmFmin(x: Double, y: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFmin")
+private external fun wasiCoreNumImpLibmFmin(x: Double, y: Double): Double
 
 public actual fun fmin(x: Double, y: Double): Double =
-    wasiRustlangCoreNumImpLibmFmin(x, y).toDouble()
+    wasiCoreNumImpLibmFmin(x, y).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFminf")
-private external fun wasiRustlangCoreNumImpLibmFminf(x: Float, y: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFminf")
+private external fun wasiCoreNumImpLibmFminf(x: Float, y: Float): Float
 
 public actual fun fminf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmFminf(x, y).toFloat()
+    wasiCoreNumImpLibmFminf(x, y).toFloat()
 
 public actual fun fminf128(x: F128, y: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFminf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFminf128")
 
 public actual fun fminf16(x: F16, y: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFminf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFminf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFminimum")
-private external fun wasiRustlangCoreNumImpLibmFminimum(x: Double, y: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFminimum")
+private external fun wasiCoreNumImpLibmFminimum(x: Double, y: Double): Double
 
 public actual fun fminimum(x: Double, y: Double): Double =
-    wasiRustlangCoreNumImpLibmFminimum(x, y).toDouble()
+    wasiCoreNumImpLibmFminimum(x, y).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFminimumf")
-private external fun wasiRustlangCoreNumImpLibmFminimumf(x: Float, y: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFminimumf")
+private external fun wasiCoreNumImpLibmFminimumf(x: Float, y: Float): Float
 
 public actual fun fminimumf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmFminimumf(x, y).toFloat()
+    wasiCoreNumImpLibmFminimumf(x, y).toFloat()
 
 public actual fun fminimumf128(x: F128, y: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFminimumf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFminimumf128")
 
 public actual fun fminimumf16(x: F16, y: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFminimumf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFminimumf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFmod")
-private external fun wasiRustlangCoreNumImpLibmFmod(x: Double, y: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFmod")
+private external fun wasiCoreNumImpLibmFmod(x: Double, y: Double): Double
 
 public actual fun fmod(x: Double, y: Double): Double =
-    wasiRustlangCoreNumImpLibmFmod(x, y).toDouble()
+    wasiCoreNumImpLibmFmod(x, y).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmFmodf")
-private external fun wasiRustlangCoreNumImpLibmFmodf(x: Float, y: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmFmodf")
+private external fun wasiCoreNumImpLibmFmodf(x: Float, y: Float): Float
 
 public actual fun fmodf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmFmodf(x, y).toFloat()
+    wasiCoreNumImpLibmFmodf(x, y).toFloat()
 
 public actual fun fmodf128(x: F128, y: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFmodf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFmodf128")
 
 public actual fun fmodf16(x: F16, y: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmFmodf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmFmodf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmRint")
-private external fun wasiRustlangCoreNumImpLibmRint(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmRint")
+private external fun wasiCoreNumImpLibmRint(x: Double): Double
 
 public actual fun rint(x: Double): Double =
-    wasiRustlangCoreNumImpLibmRint(x).toDouble()
+    wasiCoreNumImpLibmRint(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmRintf")
-private external fun wasiRustlangCoreNumImpLibmRintf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmRintf")
+private external fun wasiCoreNumImpLibmRintf(x: Float): Float
 
 public actual fun rintf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmRintf(x).toFloat()
+    wasiCoreNumImpLibmRintf(x).toFloat()
 
 public actual fun rintf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmRintf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmRintf128")
 
 public actual fun rintf16(x: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmRintf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmRintf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmRound")
-private external fun wasiRustlangCoreNumImpLibmRound(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmRound")
+private external fun wasiCoreNumImpLibmRound(x: Double): Double
 
 public actual fun round(x: Double): Double =
-    wasiRustlangCoreNumImpLibmRound(x).toDouble()
+    wasiCoreNumImpLibmRound(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmRoundeven")
-private external fun wasiRustlangCoreNumImpLibmRoundeven(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmRoundeven")
+private external fun wasiCoreNumImpLibmRoundeven(x: Double): Double
 
 public actual fun roundeven(x: Double): Double =
-    wasiRustlangCoreNumImpLibmRoundeven(x).toDouble()
+    wasiCoreNumImpLibmRoundeven(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmRoundevenf")
-private external fun wasiRustlangCoreNumImpLibmRoundevenf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmRoundevenf")
+private external fun wasiCoreNumImpLibmRoundevenf(x: Float): Float
 
 public actual fun roundevenf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmRoundevenf(x).toFloat()
+    wasiCoreNumImpLibmRoundevenf(x).toFloat()
 
 public actual fun roundevenf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmRoundevenf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmRoundevenf128")
 
 public actual fun roundevenf16(x: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmRoundevenf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmRoundevenf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmRoundf")
-private external fun wasiRustlangCoreNumImpLibmRoundf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmRoundf")
+private external fun wasiCoreNumImpLibmRoundf(x: Float): Float
 
 public actual fun roundf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmRoundf(x).toFloat()
+    wasiCoreNumImpLibmRoundf(x).toFloat()
 
 public actual fun roundf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmRoundf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmRoundf128")
 
 public actual fun roundf16(x: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmRoundf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmRoundf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmSqrt")
-private external fun wasiRustlangCoreNumImpLibmSqrt(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmSqrt")
+private external fun wasiCoreNumImpLibmSqrt(x: Double): Double
 
 public actual fun sqrt(x: Double): Double =
-    wasiRustlangCoreNumImpLibmSqrt(x).toDouble()
+    wasiCoreNumImpLibmSqrt(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmSqrtf")
-private external fun wasiRustlangCoreNumImpLibmSqrtf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmSqrtf")
+private external fun wasiCoreNumImpLibmSqrtf(x: Float): Float
 
 public actual fun sqrtf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmSqrtf(x).toFloat()
+    wasiCoreNumImpLibmSqrtf(x).toFloat()
 
 public actual fun sqrtf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmSqrtf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmSqrtf128")
 
 public actual fun sqrtf16(x: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmSqrtf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmSqrtf16")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmTrunc")
-private external fun wasiRustlangCoreNumImpLibmTrunc(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmTrunc")
+private external fun wasiCoreNumImpLibmTrunc(x: Double): Double
 
 public actual fun trunc(x: Double): Double =
-    wasiRustlangCoreNumImpLibmTrunc(x).toDouble()
+    wasiCoreNumImpLibmTrunc(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmTruncf")
-private external fun wasiRustlangCoreNumImpLibmTruncf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmTruncf")
+private external fun wasiCoreNumImpLibmTruncf(x: Float): Float
 
 public actual fun truncf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmTruncf(x).toFloat()
+    wasiCoreNumImpLibmTruncf(x).toFloat()
 
 public actual fun truncf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmTruncf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmTruncf128")
 
 public actual fun truncf16(x: F16): F16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmTruncf16")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmTruncf16")
 
 public actual fun mulsc3(a: kotlin.Float, b: kotlin.Float, c: kotlin.Float, d: kotlin.Float): Complex<kotlin.Float> =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmMulsc3")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmMulsc3")
 
 public actual fun muldc3(a: Double, b: Double, c: Double, d: Double): Complex<Double> =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmMuldc3")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmMuldc3")
 
 public actual fun divsc3(a: kotlin.Float, b: kotlin.Float, c: kotlin.Float, d: kotlin.Float): Complex<kotlin.Float> =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmDivsc3")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmDivsc3")
 
 public actual fun divdc3(a: Double, b: Double, c: Double, d: Double): Complex<Double> =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmDivdc3")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmDivdc3")
 
 public actual fun rustMulhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmRustMulhc3")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmRustMulhc3")
 
 public actual fun rustMultc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmRustMultc3")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmRustMultc3")
 
 public actual fun rustDivhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmRustDivhc3")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmRustDivhc3")
 
 public actual fun rustDivtc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmRustDivtc3")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmRustDivtc3")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmAcosf")
-private external fun wasiRustlangCoreNumImpLibmAcosf(n: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmAcosf")
+private external fun wasiCoreNumImpLibmAcosf(n: Float): Float
 
 public actual fun acosf(n: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmAcosf(n).toFloat()
+    wasiCoreNumImpLibmAcosf(n).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmAsinf")
-private external fun wasiRustlangCoreNumImpLibmAsinf(n: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmAsinf")
+private external fun wasiCoreNumImpLibmAsinf(n: Float): Float
 
 public actual fun asinf(n: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmAsinf(n).toFloat()
+    wasiCoreNumImpLibmAsinf(n).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmAtan2f")
-private external fun wasiRustlangCoreNumImpLibmAtan2f(a: Float, b: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmAtan2f")
+private external fun wasiCoreNumImpLibmAtan2f(a: Float, b: Float): Float
 
 public actual fun atan2f(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmAtan2f(a, b).toFloat()
+    wasiCoreNumImpLibmAtan2f(a, b).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmAtanf")
-private external fun wasiRustlangCoreNumImpLibmAtanf(n: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmAtanf")
+private external fun wasiCoreNumImpLibmAtanf(n: Float): Float
 
 public actual fun atanf(n: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmAtanf(n).toFloat()
+    wasiCoreNumImpLibmAtanf(n).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmCosf")
-private external fun wasiRustlangCoreNumImpLibmCosf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmCosf")
+private external fun wasiCoreNumImpLibmCosf(x: Float): Float
 
 public actual fun cosf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmCosf(x).toFloat()
+    wasiCoreNumImpLibmCosf(x).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmCoshf")
-private external fun wasiRustlangCoreNumImpLibmCoshf(n: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmCoshf")
+private external fun wasiCoreNumImpLibmCoshf(n: Float): Float
 
 public actual fun coshf(n: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmCoshf(n).toFloat()
+    wasiCoreNumImpLibmCoshf(n).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmErfcf")
-private external fun wasiRustlangCoreNumImpLibmErfcf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmErfcf")
+private external fun wasiCoreNumImpLibmErfcf(x: Float): Float
 
 public actual fun erfcf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmErfcf(x).toFloat()
+    wasiCoreNumImpLibmErfcf(x).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmErff")
-private external fun wasiRustlangCoreNumImpLibmErff(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmErff")
+private external fun wasiCoreNumImpLibmErff(x: Float): Float
 
 public actual fun erff(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmErff(x).toFloat()
+    wasiCoreNumImpLibmErff(x).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmExp2f")
-private external fun wasiRustlangCoreNumImpLibmExp2f(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmExp2f")
+private external fun wasiCoreNumImpLibmExp2f(x: Float): Float
 
 public actual fun exp2f(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmExp2f(x).toFloat()
+    wasiCoreNumImpLibmExp2f(x).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmExpf")
-private external fun wasiRustlangCoreNumImpLibmExpf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmExpf")
+private external fun wasiCoreNumImpLibmExpf(x: Float): Float
 
 public actual fun expf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmExpf(x).toFloat()
+    wasiCoreNumImpLibmExpf(x).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmExpm1f")
-private external fun wasiRustlangCoreNumImpLibmExpm1f(n: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmExpm1f")
+private external fun wasiCoreNumImpLibmExpm1f(n: Float): Float
 
 public actual fun expm1f(n: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmExpm1f(n).toFloat()
+    wasiCoreNumImpLibmExpm1f(n).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmHypotf")
-private external fun wasiRustlangCoreNumImpLibmHypotf(x: Float, y: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmHypotf")
+private external fun wasiCoreNumImpLibmHypotf(x: Float, y: Float): Float
 
 public actual fun hypotf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmHypotf(x, y).toFloat()
+    wasiCoreNumImpLibmHypotf(x, y).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmLdexpf")
-private external fun wasiRustlangCoreNumImpLibmLdexpf(f: Float, n: Int): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmLdexpf")
+private external fun wasiCoreNumImpLibmLdexpf(f: Float, n: Int): Float
 
 public actual fun ldexpf(f: kotlin.Float, n: Int): kotlin.Float =
-    wasiRustlangCoreNumImpLibmLdexpf(f, n).toFloat()
+    wasiCoreNumImpLibmLdexpf(f, n).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmLog10f")
-private external fun wasiRustlangCoreNumImpLibmLog10f(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmLog10f")
+private external fun wasiCoreNumImpLibmLog10f(x: Float): Float
 
 public actual fun log10f(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmLog10f(x).toFloat()
+    wasiCoreNumImpLibmLog10f(x).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmLog1pf")
-private external fun wasiRustlangCoreNumImpLibmLog1pf(n: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmLog1pf")
+private external fun wasiCoreNumImpLibmLog1pf(n: Float): Float
 
 public actual fun log1pf(n: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmLog1pf(n).toFloat()
+    wasiCoreNumImpLibmLog1pf(n).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmLog2f")
-private external fun wasiRustlangCoreNumImpLibmLog2f(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmLog2f")
+private external fun wasiCoreNumImpLibmLog2f(x: Float): Float
 
 public actual fun log2f(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmLog2f(x).toFloat()
+    wasiCoreNumImpLibmLog2f(x).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmLogf")
-private external fun wasiRustlangCoreNumImpLibmLogf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmLogf")
+private external fun wasiCoreNumImpLibmLogf(x: Float): Float
 
 public actual fun logf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmLogf(x).toFloat()
+    wasiCoreNumImpLibmLogf(x).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmPowf")
-private external fun wasiRustlangCoreNumImpLibmPowf(x: Float, y: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmPowf")
+private external fun wasiCoreNumImpLibmPowf(x: Float, y: Float): Float
 
 public actual fun powf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmPowf(x, y).toFloat()
+    wasiCoreNumImpLibmPowf(x, y).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmSinf")
-private external fun wasiRustlangCoreNumImpLibmSinf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmSinf")
+private external fun wasiCoreNumImpLibmSinf(x: Float): Float
 
 public actual fun sinf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmSinf(x).toFloat()
+    wasiCoreNumImpLibmSinf(x).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmSinhf")
-private external fun wasiRustlangCoreNumImpLibmSinhf(n: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmSinhf")
+private external fun wasiCoreNumImpLibmSinhf(n: Float): Float
 
 public actual fun sinhf(n: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmSinhf(n).toFloat()
+    wasiCoreNumImpLibmSinhf(n).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmTanf")
-private external fun wasiRustlangCoreNumImpLibmTanf(n: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmTanf")
+private external fun wasiCoreNumImpLibmTanf(n: Float): Float
 
 public actual fun tanf(n: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmTanf(n).toFloat()
+    wasiCoreNumImpLibmTanf(n).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmTanhf")
-private external fun wasiRustlangCoreNumImpLibmTanhf(n: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmTanhf")
+private external fun wasiCoreNumImpLibmTanhf(n: Float): Float
 
 public actual fun tanhf(n: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmTanhf(n).toFloat()
+    wasiCoreNumImpLibmTanhf(n).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmTgammaf")
-private external fun wasiRustlangCoreNumImpLibmTgammaf(x: Float): Float
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmTgammaf")
+private external fun wasiCoreNumImpLibmTgammaf(x: Float): Float
 
 public actual fun tgammaf(x: kotlin.Float): kotlin.Float =
-    wasiRustlangCoreNumImpLibmTgammaf(x).toFloat()
+    wasiCoreNumImpLibmTgammaf(x).toFloat()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmAcos")
-private external fun wasiRustlangCoreNumImpLibmAcos(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmAcos")
+private external fun wasiCoreNumImpLibmAcos(x: Double): Double
 
 public actual fun acos(x: Double): Double =
-    wasiRustlangCoreNumImpLibmAcos(x).toDouble()
+    wasiCoreNumImpLibmAcos(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmAsin")
-private external fun wasiRustlangCoreNumImpLibmAsin(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmAsin")
+private external fun wasiCoreNumImpLibmAsin(x: Double): Double
 
 public actual fun asin(x: Double): Double =
-    wasiRustlangCoreNumImpLibmAsin(x).toDouble()
+    wasiCoreNumImpLibmAsin(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmAtan")
-private external fun wasiRustlangCoreNumImpLibmAtan(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmAtan")
+private external fun wasiCoreNumImpLibmAtan(x: Double): Double
 
 public actual fun atan(x: Double): Double =
-    wasiRustlangCoreNumImpLibmAtan(x).toDouble()
+    wasiCoreNumImpLibmAtan(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmAtan2")
-private external fun wasiRustlangCoreNumImpLibmAtan2(x: Double, y: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmAtan2")
+private external fun wasiCoreNumImpLibmAtan2(x: Double, y: Double): Double
 
 public actual fun atan2(x: Double, y: Double): Double =
-    wasiRustlangCoreNumImpLibmAtan2(x, y).toDouble()
+    wasiCoreNumImpLibmAtan2(x, y).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmCos")
-private external fun wasiRustlangCoreNumImpLibmCos(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmCos")
+private external fun wasiCoreNumImpLibmCos(x: Double): Double
 
 public actual fun cos(x: Double): Double =
-    wasiRustlangCoreNumImpLibmCos(x).toDouble()
+    wasiCoreNumImpLibmCos(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmCosh")
-private external fun wasiRustlangCoreNumImpLibmCosh(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmCosh")
+private external fun wasiCoreNumImpLibmCosh(x: Double): Double
 
 public actual fun cosh(x: Double): Double =
-    wasiRustlangCoreNumImpLibmCosh(x).toDouble()
+    wasiCoreNumImpLibmCosh(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmErf")
-private external fun wasiRustlangCoreNumImpLibmErf(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmErf")
+private external fun wasiCoreNumImpLibmErf(x: Double): Double
 
 public actual fun erf(x: Double): Double =
-    wasiRustlangCoreNumImpLibmErf(x).toDouble()
+    wasiCoreNumImpLibmErf(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmErfc")
-private external fun wasiRustlangCoreNumImpLibmErfc(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmErfc")
+private external fun wasiCoreNumImpLibmErfc(x: Double): Double
 
 public actual fun erfc(x: Double): Double =
-    wasiRustlangCoreNumImpLibmErfc(x).toDouble()
+    wasiCoreNumImpLibmErfc(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmExp")
-private external fun wasiRustlangCoreNumImpLibmExp(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmExp")
+private external fun wasiCoreNumImpLibmExp(x: Double): Double
 
 public actual fun exp(x: Double): Double =
-    wasiRustlangCoreNumImpLibmExp(x).toDouble()
+    wasiCoreNumImpLibmExp(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmExp2")
-private external fun wasiRustlangCoreNumImpLibmExp2(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmExp2")
+private external fun wasiCoreNumImpLibmExp2(x: Double): Double
 
 public actual fun exp2(x: Double): Double =
-    wasiRustlangCoreNumImpLibmExp2(x).toDouble()
+    wasiCoreNumImpLibmExp2(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmExpm1")
-private external fun wasiRustlangCoreNumImpLibmExpm1(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmExpm1")
+private external fun wasiCoreNumImpLibmExpm1(x: Double): Double
 
 public actual fun expm1(x: Double): Double =
-    wasiRustlangCoreNumImpLibmExpm1(x).toDouble()
+    wasiCoreNumImpLibmExpm1(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmHypot")
-private external fun wasiRustlangCoreNumImpLibmHypot(x: Double, y: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmHypot")
+private external fun wasiCoreNumImpLibmHypot(x: Double, y: Double): Double
 
 public actual fun hypot(x: Double, y: Double): Double =
-    wasiRustlangCoreNumImpLibmHypot(x, y).toDouble()
+    wasiCoreNumImpLibmHypot(x, y).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmLdexp")
-private external fun wasiRustlangCoreNumImpLibmLdexp(f: Double, n: Int): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmLdexp")
+private external fun wasiCoreNumImpLibmLdexp(f: Double, n: Int): Double
 
 public actual fun ldexp(f: Double, n: Int): Double =
-    wasiRustlangCoreNumImpLibmLdexp(f, n).toDouble()
+    wasiCoreNumImpLibmLdexp(f, n).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmLog")
-private external fun wasiRustlangCoreNumImpLibmLog(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmLog")
+private external fun wasiCoreNumImpLibmLog(x: Double): Double
 
 public actual fun log(x: Double): Double =
-    wasiRustlangCoreNumImpLibmLog(x).toDouble()
+    wasiCoreNumImpLibmLog(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmLog10")
-private external fun wasiRustlangCoreNumImpLibmLog10(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmLog10")
+private external fun wasiCoreNumImpLibmLog10(x: Double): Double
 
 public actual fun log10(x: Double): Double =
-    wasiRustlangCoreNumImpLibmLog10(x).toDouble()
+    wasiCoreNumImpLibmLog10(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmLog1p")
-private external fun wasiRustlangCoreNumImpLibmLog1p(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmLog1p")
+private external fun wasiCoreNumImpLibmLog1p(x: Double): Double
 
 public actual fun log1p(x: Double): Double =
-    wasiRustlangCoreNumImpLibmLog1p(x).toDouble()
+    wasiCoreNumImpLibmLog1p(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmLog2")
-private external fun wasiRustlangCoreNumImpLibmLog2(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmLog2")
+private external fun wasiCoreNumImpLibmLog2(x: Double): Double
 
 public actual fun log2(x: Double): Double =
-    wasiRustlangCoreNumImpLibmLog2(x).toDouble()
+    wasiCoreNumImpLibmLog2(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmPow")
-private external fun wasiRustlangCoreNumImpLibmPow(x: Double, y: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmPow")
+private external fun wasiCoreNumImpLibmPow(x: Double, y: Double): Double
 
 public actual fun pow(x: Double, y: Double): Double =
-    wasiRustlangCoreNumImpLibmPow(x, y).toDouble()
+    wasiCoreNumImpLibmPow(x, y).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmSin")
-private external fun wasiRustlangCoreNumImpLibmSin(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmSin")
+private external fun wasiCoreNumImpLibmSin(x: Double): Double
 
 public actual fun sin(x: Double): Double =
-    wasiRustlangCoreNumImpLibmSin(x).toDouble()
+    wasiCoreNumImpLibmSin(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmSinh")
-private external fun wasiRustlangCoreNumImpLibmSinh(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmSinh")
+private external fun wasiCoreNumImpLibmSinh(x: Double): Double
 
 public actual fun sinh(x: Double): Double =
-    wasiRustlangCoreNumImpLibmSinh(x).toDouble()
+    wasiCoreNumImpLibmSinh(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmTan")
-private external fun wasiRustlangCoreNumImpLibmTan(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmTan")
+private external fun wasiCoreNumImpLibmTan(x: Double): Double
 
 public actual fun tan(x: Double): Double =
-    wasiRustlangCoreNumImpLibmTan(x).toDouble()
+    wasiCoreNumImpLibmTan(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmTanh")
-private external fun wasiRustlangCoreNumImpLibmTanh(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmTanh")
+private external fun wasiCoreNumImpLibmTanh(x: Double): Double
 
 public actual fun tanh(x: Double): Double =
-    wasiRustlangCoreNumImpLibmTanh(x).toDouble()
+    wasiCoreNumImpLibmTanh(x).toDouble()
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangCoreNumImpLibmTgamma")
-private external fun wasiRustlangCoreNumImpLibmTgamma(x: Double): Double
+@kotlin.wasm.WasmImport("kmcore", "coreNumImpLibmTgamma")
+private external fun wasiCoreNumImpLibmTgamma(x: Double): Double
 
 public actual fun tgamma(x: Double): Double =
-    wasiRustlangCoreNumImpLibmTgamma(x).toDouble()
+    wasiCoreNumImpLibmTgamma(x).toDouble()
 
 public actual fun acosf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmAcosf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmAcosf128")
 
 public actual fun asinf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmAsinf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmAsinf128")
 
 public actual fun atanf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmAtanf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmAtanf128")
 
 public actual fun cbrtf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmCbrtf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmCbrtf128")
 
 public actual fun cosf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmCosf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmCosf128")
 
 public actual fun erff128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmErff128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmErff128")
 
 public actual fun expf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmExpf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmExpf128")
 
 public actual fun exp2f128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmExp2f128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmExp2f128")
 
 public actual fun expm1f128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmExpm1f128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmExpm1f128")
 
 public actual fun hypotf128(x: F128, y: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmHypotf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmHypotf128")
 
 public actual fun ldexpf128(f: F128, n: Int): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmLdexpf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmLdexpf128")
 
 public actual fun log10f128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmLog10f128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmLog10f128")
 
 public actual fun log1pf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmLog1pf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmLog1pf128")
 
 public actual fun log2f128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmLog2f128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmLog2f128")
 
 public actual fun logf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmLogf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmLogf128")
 
 public actual fun powf128(x: F128, y: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmPowf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmPowf128")
 
 public actual fun sinf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmSinf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmSinf128")
 
 public actual fun tanf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmTanf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmTanf128")
 
 public actual fun tanhf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmTanhf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmTanhf128")
 
 public actual fun tgammaf128(x: F128): F128 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCoreNumImpLibmTgammaf128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmTgammaf128")

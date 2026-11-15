@@ -1,12 +1,12 @@
 // port-lint: source mem/transmutability.rs
 package io.github.kotlinmania.rustlang.core.mem.transmutability
 
+import io.github.kotlinmania.rustlang.core.marker.ConstParamTy
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.result.and
-import io.github.kotlinmania.rustlang.marker.ConstParamTy
-import io.github.kotlinmania.rustlang.mem.manuallydrop.ManuallyDrop
 
 //
 
@@ -301,7 +301,9 @@ public open class Assume(
      * ```
      */
     public var validity: Boolean,
-) : ConstParamTy, Add<Assume, Assume>, Sub<Assume, Assume> {
+) : ConstParamTy,
+    Add<Assume, Assume>,
+    Sub<Assume, Assume> {
     public open fun clone(): Assume = Assume(alignment, lifetimes, safety, validity)
 
     /**

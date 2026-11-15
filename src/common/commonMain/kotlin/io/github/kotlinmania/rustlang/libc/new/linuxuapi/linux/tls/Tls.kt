@@ -3,14 +3,14 @@
 
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.tls
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U16
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U8
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U8
 
 // Header: `uapi / linux / tls.h`
 
@@ -134,10 +134,12 @@ public val TLS_SET_RECORD_TYPE: CInt = 1
 
 public val TLS_GET_RECORD_TYPE: CInt = 2
 
-public data class TlsCryptoInfo(
-    public var version: U16 = 0u,
-    public var cipherType: U16 = 0u,
+public open class TlsCryptoInfo(
+    public var version: U16,
+    public var cipherType: U16,
 ) {
+    public open fun clone(): TlsCryptoInfo = TlsCryptoInfo(version, cipherType)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TlsCryptoInfo> =
             object : TypeLayout<TlsCryptoInfo> {
@@ -165,32 +167,14 @@ public data class TlsCryptoInfo(
     }
 }
 
-public data class Tls12CryptoInfoAesGcm128(
-    public var info: TlsCryptoInfo = TlsCryptoInfo(),
-    public var iv: UByteArray = UByteArray(TLS_CIPHER_AES_GCM_128_IV_SIZE),
-    public var key: UByteArray = UByteArray(TLS_CIPHER_AES_GCM_128_KEY_SIZE),
-    public var salt: UByteArray = UByteArray(TLS_CIPHER_AES_GCM_128_SALT_SIZE),
-    public var recSeq: UByteArray = UByteArray(TLS_CIPHER_AES_GCM_128_REC_SEQ_SIZE),
+public open class Tls12CryptoInfoAesGcm128(
+    public var info: TlsCryptoInfo,
+    public var iv: UByteArray,
+    public var key: UByteArray,
+    public var salt: UByteArray,
+    public var recSeq: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tls12CryptoInfoAesGcm128) return false
-        if (this.info != other.info) return false
-        if (!this.iv.contentEquals(other.iv)) return false
-        if (!this.key.contentEquals(other.key)) return false
-        if (!this.salt.contentEquals(other.salt)) return false
-        if (!this.recSeq.contentEquals(other.recSeq)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.info.hashCode()
-        result = 31 * result + this.iv.contentHashCode()
-        result = 31 * result + this.key.contentHashCode()
-        result = 31 * result + this.salt.contentHashCode()
-        result = 31 * result + this.recSeq.contentHashCode()
-        return result
-    }
+    public open fun clone(): Tls12CryptoInfoAesGcm128 = Tls12CryptoInfoAesGcm128(info, iv, key, salt, recSeq)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tls12CryptoInfoAesGcm128> =
@@ -234,32 +218,14 @@ public data class Tls12CryptoInfoAesGcm128(
     }
 }
 
-public data class Tls12CryptoInfoAesGcm256(
-    public var info: TlsCryptoInfo = TlsCryptoInfo(),
-    public var iv: UByteArray = UByteArray(TLS_CIPHER_AES_GCM_256_IV_SIZE),
-    public var key: UByteArray = UByteArray(TLS_CIPHER_AES_GCM_256_KEY_SIZE),
-    public var salt: UByteArray = UByteArray(TLS_CIPHER_AES_GCM_256_SALT_SIZE),
-    public var recSeq: UByteArray = UByteArray(TLS_CIPHER_AES_GCM_256_REC_SEQ_SIZE),
+public open class Tls12CryptoInfoAesGcm256(
+    public var info: TlsCryptoInfo,
+    public var iv: UByteArray,
+    public var key: UByteArray,
+    public var salt: UByteArray,
+    public var recSeq: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tls12CryptoInfoAesGcm256) return false
-        if (this.info != other.info) return false
-        if (!this.iv.contentEquals(other.iv)) return false
-        if (!this.key.contentEquals(other.key)) return false
-        if (!this.salt.contentEquals(other.salt)) return false
-        if (!this.recSeq.contentEquals(other.recSeq)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.info.hashCode()
-        result = 31 * result + this.iv.contentHashCode()
-        result = 31 * result + this.key.contentHashCode()
-        result = 31 * result + this.salt.contentHashCode()
-        result = 31 * result + this.recSeq.contentHashCode()
-        return result
-    }
+    public open fun clone(): Tls12CryptoInfoAesGcm256 = Tls12CryptoInfoAesGcm256(info, iv, key, salt, recSeq)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tls12CryptoInfoAesGcm256> =
@@ -303,32 +269,14 @@ public data class Tls12CryptoInfoAesGcm256(
     }
 }
 
-public data class Tls12CryptoInfoAesCcm128(
-    public var info: TlsCryptoInfo = TlsCryptoInfo(),
-    public var iv: UByteArray = UByteArray(TLS_CIPHER_AES_CCM_128_IV_SIZE),
-    public var key: UByteArray = UByteArray(TLS_CIPHER_AES_CCM_128_KEY_SIZE),
-    public var salt: UByteArray = UByteArray(TLS_CIPHER_AES_CCM_128_SALT_SIZE),
-    public var recSeq: UByteArray = UByteArray(TLS_CIPHER_AES_CCM_128_REC_SEQ_SIZE),
+public open class Tls12CryptoInfoAesCcm128(
+    public var info: TlsCryptoInfo,
+    public var iv: UByteArray,
+    public var key: UByteArray,
+    public var salt: UByteArray,
+    public var recSeq: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tls12CryptoInfoAesCcm128) return false
-        if (this.info != other.info) return false
-        if (!this.iv.contentEquals(other.iv)) return false
-        if (!this.key.contentEquals(other.key)) return false
-        if (!this.salt.contentEquals(other.salt)) return false
-        if (!this.recSeq.contentEquals(other.recSeq)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.info.hashCode()
-        result = 31 * result + this.iv.contentHashCode()
-        result = 31 * result + this.key.contentHashCode()
-        result = 31 * result + this.salt.contentHashCode()
-        result = 31 * result + this.recSeq.contentHashCode()
-        return result
-    }
+    public open fun clone(): Tls12CryptoInfoAesCcm128 = Tls12CryptoInfoAesCcm128(info, iv, key, salt, recSeq)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tls12CryptoInfoAesCcm128> =
@@ -372,32 +320,14 @@ public data class Tls12CryptoInfoAesCcm128(
     }
 }
 
-public data class Tls12CryptoInfoChacha20Poly1305(
-    public var info: TlsCryptoInfo = TlsCryptoInfo(),
-    public var iv: UByteArray = UByteArray(TLS_CIPHER_CHACHA20_POLY1305_IV_SIZE),
-    public var key: UByteArray = UByteArray(TLS_CIPHER_CHACHA20_POLY1305_KEY_SIZE),
-    public var salt: UByteArray = UByteArray(TLS_CIPHER_CHACHA20_POLY1305_SALT_SIZE),
-    public var recSeq: UByteArray = UByteArray(TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE),
+public open class Tls12CryptoInfoChacha20Poly1305(
+    public var info: TlsCryptoInfo,
+    public var iv: UByteArray,
+    public var key: UByteArray,
+    public var salt: UByteArray,
+    public var recSeq: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tls12CryptoInfoChacha20Poly1305) return false
-        if (this.info != other.info) return false
-        if (!this.iv.contentEquals(other.iv)) return false
-        if (!this.key.contentEquals(other.key)) return false
-        if (!this.salt.contentEquals(other.salt)) return false
-        if (!this.recSeq.contentEquals(other.recSeq)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.info.hashCode()
-        result = 31 * result + this.iv.contentHashCode()
-        result = 31 * result + this.key.contentHashCode()
-        result = 31 * result + this.salt.contentHashCode()
-        result = 31 * result + this.recSeq.contentHashCode()
-        return result
-    }
+    public open fun clone(): Tls12CryptoInfoChacha20Poly1305 = Tls12CryptoInfoChacha20Poly1305(info, iv, key, salt, recSeq)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tls12CryptoInfoChacha20Poly1305> =
@@ -441,32 +371,14 @@ public data class Tls12CryptoInfoChacha20Poly1305(
     }
 }
 
-public data class Tls12CryptoInfoSm4Gcm(
-    public var info: TlsCryptoInfo = TlsCryptoInfo(),
-    public var iv: UByteArray = UByteArray(TLS_CIPHER_SM4_GCM_IV_SIZE),
-    public var key: UByteArray = UByteArray(TLS_CIPHER_SM4_GCM_KEY_SIZE),
-    public var salt: UByteArray = UByteArray(TLS_CIPHER_SM4_GCM_SALT_SIZE),
-    public var recSeq: UByteArray = UByteArray(TLS_CIPHER_SM4_GCM_REC_SEQ_SIZE),
+public open class Tls12CryptoInfoSm4Gcm(
+    public var info: TlsCryptoInfo,
+    public var iv: UByteArray,
+    public var key: UByteArray,
+    public var salt: UByteArray,
+    public var recSeq: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tls12CryptoInfoSm4Gcm) return false
-        if (this.info != other.info) return false
-        if (!this.iv.contentEquals(other.iv)) return false
-        if (!this.key.contentEquals(other.key)) return false
-        if (!this.salt.contentEquals(other.salt)) return false
-        if (!this.recSeq.contentEquals(other.recSeq)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.info.hashCode()
-        result = 31 * result + this.iv.contentHashCode()
-        result = 31 * result + this.key.contentHashCode()
-        result = 31 * result + this.salt.contentHashCode()
-        result = 31 * result + this.recSeq.contentHashCode()
-        return result
-    }
+    public open fun clone(): Tls12CryptoInfoSm4Gcm = Tls12CryptoInfoSm4Gcm(info, iv, key, salt, recSeq)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tls12CryptoInfoSm4Gcm> =
@@ -510,32 +422,14 @@ public data class Tls12CryptoInfoSm4Gcm(
     }
 }
 
-public data class Tls12CryptoInfoSm4Ccm(
-    public var info: TlsCryptoInfo = TlsCryptoInfo(),
-    public var iv: UByteArray = UByteArray(TLS_CIPHER_SM4_CCM_IV_SIZE),
-    public var key: UByteArray = UByteArray(TLS_CIPHER_SM4_CCM_KEY_SIZE),
-    public var salt: UByteArray = UByteArray(TLS_CIPHER_SM4_CCM_SALT_SIZE),
-    public var recSeq: UByteArray = UByteArray(TLS_CIPHER_SM4_CCM_REC_SEQ_SIZE),
+public open class Tls12CryptoInfoSm4Ccm(
+    public var info: TlsCryptoInfo,
+    public var iv: UByteArray,
+    public var key: UByteArray,
+    public var salt: UByteArray,
+    public var recSeq: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tls12CryptoInfoSm4Ccm) return false
-        if (this.info != other.info) return false
-        if (!this.iv.contentEquals(other.iv)) return false
-        if (!this.key.contentEquals(other.key)) return false
-        if (!this.salt.contentEquals(other.salt)) return false
-        if (!this.recSeq.contentEquals(other.recSeq)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.info.hashCode()
-        result = 31 * result + this.iv.contentHashCode()
-        result = 31 * result + this.key.contentHashCode()
-        result = 31 * result + this.salt.contentHashCode()
-        result = 31 * result + this.recSeq.contentHashCode()
-        return result
-    }
+    public open fun clone(): Tls12CryptoInfoSm4Ccm = Tls12CryptoInfoSm4Ccm(info, iv, key, salt, recSeq)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tls12CryptoInfoSm4Ccm> =
@@ -579,32 +473,14 @@ public data class Tls12CryptoInfoSm4Ccm(
     }
 }
 
-public data class Tls12CryptoInfoAriaGcm128(
-    public var info: TlsCryptoInfo = TlsCryptoInfo(),
-    public var iv: UByteArray = UByteArray(TLS_CIPHER_ARIA_GCM_128_IV_SIZE),
-    public var key: UByteArray = UByteArray(TLS_CIPHER_ARIA_GCM_128_KEY_SIZE),
-    public var salt: UByteArray = UByteArray(TLS_CIPHER_ARIA_GCM_128_SALT_SIZE),
-    public var recSeq: UByteArray = UByteArray(TLS_CIPHER_ARIA_GCM_128_REC_SEQ_SIZE),
+public open class Tls12CryptoInfoAriaGcm128(
+    public var info: TlsCryptoInfo,
+    public var iv: UByteArray,
+    public var key: UByteArray,
+    public var salt: UByteArray,
+    public var recSeq: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tls12CryptoInfoAriaGcm128) return false
-        if (this.info != other.info) return false
-        if (!this.iv.contentEquals(other.iv)) return false
-        if (!this.key.contentEquals(other.key)) return false
-        if (!this.salt.contentEquals(other.salt)) return false
-        if (!this.recSeq.contentEquals(other.recSeq)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.info.hashCode()
-        result = 31 * result + this.iv.contentHashCode()
-        result = 31 * result + this.key.contentHashCode()
-        result = 31 * result + this.salt.contentHashCode()
-        result = 31 * result + this.recSeq.contentHashCode()
-        return result
-    }
+    public open fun clone(): Tls12CryptoInfoAriaGcm128 = Tls12CryptoInfoAriaGcm128(info, iv, key, salt, recSeq)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tls12CryptoInfoAriaGcm128> =
@@ -648,32 +524,14 @@ public data class Tls12CryptoInfoAriaGcm128(
     }
 }
 
-public data class Tls12CryptoInfoAriaGcm256(
-    public var info: TlsCryptoInfo = TlsCryptoInfo(),
-    public var iv: UByteArray = UByteArray(TLS_CIPHER_ARIA_GCM_256_IV_SIZE),
-    public var key: UByteArray = UByteArray(TLS_CIPHER_ARIA_GCM_256_KEY_SIZE),
-    public var salt: UByteArray = UByteArray(TLS_CIPHER_ARIA_GCM_256_SALT_SIZE),
-    public var recSeq: UByteArray = UByteArray(TLS_CIPHER_ARIA_GCM_256_REC_SEQ_SIZE),
+public open class Tls12CryptoInfoAriaGcm256(
+    public var info: TlsCryptoInfo,
+    public var iv: UByteArray,
+    public var key: UByteArray,
+    public var salt: UByteArray,
+    public var recSeq: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tls12CryptoInfoAriaGcm256) return false
-        if (this.info != other.info) return false
-        if (!this.iv.contentEquals(other.iv)) return false
-        if (!this.key.contentEquals(other.key)) return false
-        if (!this.salt.contentEquals(other.salt)) return false
-        if (!this.recSeq.contentEquals(other.recSeq)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.info.hashCode()
-        result = 31 * result + this.iv.contentHashCode()
-        result = 31 * result + this.key.contentHashCode()
-        result = 31 * result + this.salt.contentHashCode()
-        result = 31 * result + this.recSeq.contentHashCode()
-        return result
-    }
+    public open fun clone(): Tls12CryptoInfoAriaGcm256 = Tls12CryptoInfoAriaGcm256(info, iv, key, salt, recSeq)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tls12CryptoInfoAriaGcm256> =

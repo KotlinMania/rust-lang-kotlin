@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.std.sys.helpers
 
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.io.error.Error
 

@@ -38,11 +38,14 @@ private object AllocJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val resourcePath = "io/github/kotlinmania/rustlang/alloc/native/$hostPlatform-$hostArch/$libFileName"
         val stream = AllocJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,10 +59,10 @@ private object AllocJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangAllocRustAllocErrorHandler(size: Long, align: Long)
+    external fun allocRustAllocErrorHandler(size: Long, align: Long)
 }
 
 public actual fun rustAllocErrorHandler(size: ULong, align: ULong): Nothing {
-    AllocJniBridge.rustlangAllocRustAllocErrorHandler(size.toLong(), align.toLong())
+    AllocJniBridge.allocRustAllocErrorHandler(size.toLong(), align.toLong())
     error("Unreachable noreturn C function rustAllocErrorHandler")
 }

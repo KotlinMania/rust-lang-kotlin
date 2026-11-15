@@ -4,8 +4,8 @@
 package io.github.kotlinmania.rustlang.core.unicode.unicodedata.n
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.unicode.unicodedata.ShortOffsetRunHeader
-import io.github.kotlinmania.rustlang.unicode.unicodedata.skipSearch
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.ShortOffsetRunHeader
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.skipSearch
 
 public var SHORT_OFFSET_RUNS: List<ShortOffsetRunHeader> = listOf(ShortOffsetRunHeader.new(0, 1632), ShortOffsetRunHeader.new(7, 2406), ShortOffsetRunHeader.new(13, 4160), ShortOffsetRunHeader.new(47, 4969), ShortOffsetRunHeader.new(51, 5870), ShortOffsetRunHeader.new(53, 6470), ShortOffsetRunHeader.new(61, 8304), ShortOffsetRunHeader.new(77, 9312), ShortOffsetRunHeader.new(87, 10102), ShortOffsetRunHeader.new(91, 11517), ShortOffsetRunHeader.new(93, 12295), ShortOffsetRunHeader.new(95, 12690), ShortOffsetRunHeader.new(101, 42528), ShortOffsetRunHeader.new(113, 43056), ShortOffsetRunHeader.new(117, 44016), ShortOffsetRunHeader.new(129, 65296), ShortOffsetRunHeader.new(131, 65799), ShortOffsetRunHeader.new(133, 66273), ShortOffsetRunHeader.new(139, 67672), ShortOffsetRunHeader.new(151, 68858), ShortOffsetRunHeader.new(181, 69216), ShortOffsetRunHeader.new(187, 70736), ShortOffsetRunHeader.new(207, 71248), ShortOffsetRunHeader.new(211, 71904), ShortOffsetRunHeader.new(219, 72688), ShortOffsetRunHeader.new(223, 73552), ShortOffsetRunHeader.new(233, 74752), ShortOffsetRunHeader.new(237, 75399), ShortOffsetRunHeader.new(242, 90416), ShortOffsetRunHeader.new(243, 92768), ShortOffsetRunHeader.new(245, 93552), ShortOffsetRunHeader.new(253, 93824), ShortOffsetRunHeader.new(255, 94196), ShortOffsetRunHeader.new(257, 118000), ShortOffsetRunHeader.new(259, 119488), ShortOffsetRunHeader.new(261, 120782), ShortOffsetRunHeader.new(267, 123200), ShortOffsetRunHeader.new(269, 123632), ShortOffsetRunHeader.new(271, 124144), ShortOffsetRunHeader.new(273, 125127), ShortOffsetRunHeader.new(277, 126065), ShortOffsetRunHeader.new(281, 127232), ShortOffsetRunHeader.new(291, 130032), ShortOffsetRunHeader.new(293, 1244154))
 

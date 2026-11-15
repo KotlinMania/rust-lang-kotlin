@@ -4,16 +4,16 @@ package io.github.kotlinmania.rustlang.corearch.mips.msa
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object CorearchMipsMsaJniBridge {
+private object MipsMsaJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun rustlangCorearchMipsMsaMsaCfcmsa(a: Int): Int
+    external fun corearchMipsMsaMsaCfcmsa(a: Int): Int
 
     @JvmStatic
-    external fun rustlangCorearchMipsMsaMsaCtcmsa(imm5: Int, a: Int)
+    external fun corearchMipsMsaMsaCtcmsa(imm5: Int, a: Int)
 }
 
 public actual fun msaAddAB(a: V16i8, b: V16i8): V16i8 =
@@ -359,7 +359,7 @@ public actual fun msaCeqiD(a: V2i64, b: Int): V2i64 =
     V2i64()
 
 public actual fun msaCfcmsa(a: Int): Int =
-    CorearchMipsMsaJniBridge.rustlangCorearchMipsMsaMsaCfcmsa(a)
+    MipsMsaJniBridge.corearchMipsMsaMsaCfcmsa(a)
 
 public actual fun msaCleSB(a: V16i8, b: V16i8): V16i8 =
     V16i8()
@@ -482,7 +482,7 @@ public actual fun msaCopyUD(a: V2i64, b: Int): ULong =
     0uL
 
 public actual fun msaCtcmsa(imm5: Int, a: Int) {
-    CorearchMipsMsaJniBridge.rustlangCorearchMipsMsaMsaCtcmsa(imm5, a)
+    MipsMsaJniBridge.corearchMipsMsaMsaCtcmsa(imm5, a)
 }
 
 public actual fun msaDivSB(a: V16i8, b: V16i8): V16i8 =

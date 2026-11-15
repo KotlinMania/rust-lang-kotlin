@@ -3,27 +3,27 @@ package io.github.kotlinmania.rustlang.std.os.unix.fs
 
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.fs.DirBuilder
-import io.github.kotlinmania.rustlang.fs.DirEntry
-import io.github.kotlinmania.rustlang.fs.File
-import io.github.kotlinmania.rustlang.fs.FileType
-import io.github.kotlinmania.rustlang.fs.Metadata
-import io.github.kotlinmania.rustlang.fs.OpenOptions
-import io.github.kotlinmania.rustlang.fs.Permissions
-import io.github.kotlinmania.rustlang.io.IoSlice
-import io.github.kotlinmania.rustlang.io.IoSliceMut
-import io.github.kotlinmania.rustlang.io.defaultReadBuf
-import io.github.kotlinmania.rustlang.io.defaultReadVectored
-import io.github.kotlinmania.rustlang.io.defaultWriteVectored
 import io.github.kotlinmania.rustlang.libc.wasi.S_IFBLK
 import io.github.kotlinmania.rustlang.libc.wasi.S_IFCHR
 import io.github.kotlinmania.rustlang.libc.wasi.S_IFIFO
 import io.github.kotlinmania.rustlang.libc.wasi.S_IFSOCK
-import io.github.kotlinmania.rustlang.os.fd.AsFd
-import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.fs.DirBuilder
+import io.github.kotlinmania.rustlang.std.fs.DirEntry
+import io.github.kotlinmania.rustlang.std.fs.File
+import io.github.kotlinmania.rustlang.std.fs.FileType
+import io.github.kotlinmania.rustlang.std.fs.Metadata
+import io.github.kotlinmania.rustlang.std.fs.OpenOptions
+import io.github.kotlinmania.rustlang.std.fs.Permissions
+import io.github.kotlinmania.rustlang.std.io.IoSlice
+import io.github.kotlinmania.rustlang.std.io.IoSliceMut
+import io.github.kotlinmania.rustlang.std.io.defaultReadBuf
+import io.github.kotlinmania.rustlang.std.io.defaultReadVectored
+import io.github.kotlinmania.rustlang.std.io.defaultWriteVectored
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.FromInner
+import io.github.kotlinmania.rustlang.std.os.fd.AsFd
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.sys.FromInner
 
 // Unix-specific extensions to primitives in the [std.fs] module.
 
@@ -145,7 +145,7 @@ public interface FileExt {
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(io.github.kotlinmania.rustlang.io.Error.READ_EXACT_EOF)
+            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
         } else {
             Result.Ok(Unit)
         }
@@ -238,7 +238,7 @@ public interface FileExt {
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err(io.github.kotlinmania.rustlang.io.Error.READ_EXACT_EOF)
+                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
             }
         }
         return Result.Ok(Unit)
@@ -358,7 +358,7 @@ public interface FileExt {
                 val matchVal = this.writeAt(buf1, offset1)
                 when {
                     matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
-                        return Result.Err(io.github.kotlinmania.rustlang.io.Error.WRITE_ALL_EOF)
+                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok<*, *> -> {
                         val n = (matchVal as Result.Ok<*, *>).value
@@ -1057,7 +1057,7 @@ public fun DirEntry.fileNameRef(): OsStr = this.asInner().fileNameOsStr()
  * }
  * ```kotlin
  */
-public fun symlink(original: Path, link: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.sys.fs.symlink(original, link)
+public fun symlink(original: Path, link: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.symlink(original, link)
 
 /**
  * Unix-specific extensions to [fs.DirBuilder].
@@ -1111,7 +1111,7 @@ public fun DirBuilder.mode(mode: UInt): DirBuilder {
  * }
  * ```kotlin
  */
-public fun chown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.sys.fs.unix.chown(dir, (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
+public fun chown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.chown(dir, (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
 
 /**
  * Change the owner and group of the file referenced by the specified open file descriptor.
@@ -1129,7 +1129,7 @@ public fun chown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.gi
  * }
  * ```kotlin
  */
-public fun <F : AsFd> fchown(fd: F, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.sys.fs.unix.fchown(fd.asFd().asRawFd(), (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
+public fun <F : AsFd> fchown(fd: F, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.fchown(fd.asFd().asRawFd(), (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
 
 /**
  * Change the owner and group of the specified path, without dereferencing symbolic links.
@@ -1147,7 +1147,7 @@ public fun <F : AsFd> fchown(fd: F, uid: UInt?, gid: UInt?): Result<Unit, Error>
  * }
  * ```kotlin
  */
-public fun lchown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.sys.fs.unix.lchown(dir, (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
+public fun lchown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.lchown(dir, (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
 
 /**
  * Change the root directory of the current process to the specified path.
@@ -1169,7 +1169,7 @@ public fun lchown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.g
  * }
  * ```kotlin
  */
-public fun chroot(dir: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.sys.fs.unix.chroot(dir)
+public fun chroot(dir: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.chroot(dir)
 
 /**
  * Create a FIFO special file at the specified path with the specified mode.
@@ -1203,4 +1203,4 @@ public fun chroot(dir: Path): Result<Unit, Error> = io.github.kotlinmania.rustla
  * # }
  * ```kotlin
  */
-public fun mkfifo(path: Path, permissions: Permissions): Result<Unit, Error> = io.github.kotlinmania.rustlang.sys.fs.unix.mkfifo(path, permissions.mode())
+public fun mkfifo(path: Path, permissions: Permissions): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.mkfifo(path, permissions.mode())

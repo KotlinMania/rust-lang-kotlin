@@ -7,4 +7,6 @@ import io.github.kotlinmania.rustlang.core.U128
 // Conversions from signed integers to floats.
 // Conversions from floats to unsigned integers.
 // Conversions from floats to signed integers.
-public fun floatuntidf(i: U128): Double = io.github.kotlinmania.rustlang.float.conv.floatuntidf(i)
+public fun floatuntidf(i: U128): Double =
+    io.github.kotlinmania.rustlang.compilerbuiltins.float.conv
+        .floatuntidf(i)

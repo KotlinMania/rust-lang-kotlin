@@ -140,11 +140,16 @@ public sealed class Cow<B> : Borrow<B> {
     /**
      * Borrowed data.
      */
-    public data class Borrowed<B>(public var value: B) : Cow<B>()
+    public data class Borrowed<B>(
+        public var value: B,
+    ) : Cow<B>()
+
     /**
      * Owned data.
      */
-    public data class Owned<B>(public var value: Owned) : Cow<B>()
+    public data class Owned<B>(
+        public var value: Owned,
+    ) : Cow<B>()
 
     // Note(inference): const bounds removed due to inference regressions found by crater;
     // see https://github.com/rust-lang/rust/issues/147964

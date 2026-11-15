@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64
 
-import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.libc.*
 
 public val SIZEOF_PTHREAD_RWLOCK_T: Int = 56
 

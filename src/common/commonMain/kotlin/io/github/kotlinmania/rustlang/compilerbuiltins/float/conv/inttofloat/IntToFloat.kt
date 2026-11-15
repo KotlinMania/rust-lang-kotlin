@@ -1,12 +1,12 @@
 // port-lint: source float/conv.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat
 
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.core.num.rustWrappingShl
-import io.github.kotlinmania.rustlang.support.Float
-import io.github.kotlinmania.rustlang.support.Int
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.wrappingShl
 
 // Conversions from integers to floats.
 //
@@ -84,7 +84,7 @@ public fun u32ToF32Bits(i: UInt): UInt {
     if (i == 0u) {
         return 0u
     }
-    val n = rustLeadingZeros(i)
+    val n = i.leadingZeros()
     // Mantissa with implicit bit set (significant bits)
     val mBase = (i shl n.toInt()) shr Float.EXP_BITS.toInt()
     // Bits that will be dropped (insignificant bits)
@@ -98,7 +98,7 @@ public fun u32ToF64Bits(i: UInt): ULong {
     if (i == 0u) {
         return 0uL
     }
-    val n = rustLeadingZeros(i)
+    val n = i.leadingZeros()
     // Mantissa with implicit bit set
     val m = (i.toULong()) shl (shiftFGtI<UInt, Double>(n)).toInt()
     val e = exp<UInt, Double>(n) - 1
@@ -109,7 +109,7 @@ public fun u32ToF128Bits(i: UInt): U128 {
     if (i == 0u) {
         return U128(0x0uL, 0x0uL)
     }
-    val n = rustLeadingZeros(i)
+    val n = i.leadingZeros()
     // Shift into mantissa position that is correct for the type, but shifted into the lower
     // 64 bits over so can can avoid 128-bit math.
     val m = (i.toULong()) shl (shiftFGtI<UInt, F128>(n) - 64u).toInt()
@@ -121,8 +121,8 @@ public fun u32ToF128Bits(i: UInt): U128 {
 }
 
 public fun u64ToF32Bits(i: ULong): UInt {
-    val n = rustLeadingZeros(i)
-    val iM = rustWrappingShl(i, n)
+    val n = i.leadingZeros()
+    val iM = i.wrappingShl(n)
     // Mantissa with implicit bit set
     val mBase: UInt = (iM shr (shiftFLtI<ULong, Float>()).toInt()).toUInt()
     // The entire lower half of `i` will be truncated (masked portion), plus the
@@ -142,7 +142,7 @@ public fun u64ToF64Bits(i: ULong): ULong {
     if (i == 0uL) {
         return 0uL
     }
-    val n = rustLeadingZeros(i)
+    val n = i.leadingZeros()
     // Mantissa with implicit bit set
     val mBase = (i shl n.toInt()) shr Double.EXP_BITS.toInt()
     val adj = (i shl n.toInt()) shl (Double.SIG_BITS + 1.0).toInt()
@@ -155,7 +155,7 @@ public fun u64ToF128Bits(i: ULong): U128 {
     if (i == 0uL) {
         return U128(0x0uL, 0x0uL)
     }
-    val n = rustLeadingZeros(i)
+    val n = i.leadingZeros()
     // Mantissa with implicit bit set
     val m = (U128.fromULong(i)) shl (shiftFGtI<ULong, F128>(n)).toInt()
     val e = exp<ULong, F128>(n) - 1
@@ -163,8 +163,8 @@ public fun u64ToF128Bits(i: ULong): U128 {
 }
 
 public fun u128ToF32Bits(i: U128): UInt {
-    val n = rustLeadingZeros(i)
-    val iM = rustWrappingShl(i, n)
+    val n = i.leadingZeros()
+    val iM = i.wrappingShl(n)
     // Mantissa, shifted so the first bit is nonzero
     val mBase: UInt = (iM shr (shiftFLtI<U128, Float>()).toInt()).toUInt()
     // Within the upper `F.BITS`, everything except for the signifcand
@@ -186,8 +186,8 @@ public fun u128ToF32Bits(i: U128): UInt {
 }
 
 public fun u128ToF64Bits(i: U128): ULong {
-    val n = rustLeadingZeros(i)
-    val iM = rustWrappingShl(i, n)
+    val n = i.leadingZeros()
+    val iM = i.wrappingShl(n)
     // Mantissa with implicit bit set
     val mBase: ULong = (iM shr (shiftFLtI<U128, Double>()).toInt()).toULong()
     // The entire lower half of `i` will be truncated (masked portion), plus the
@@ -207,7 +207,7 @@ public fun u128ToF128Bits(i: U128): U128 {
     if (i == U128(0x0uL, 0x0uL)) {
         return U128(0x0uL, 0x0uL)
     }
-    val n = rustLeadingZeros(i)
+    val n = i.leadingZeros()
     // Mantissa with implicit bit set
     val mBase = (i shl n.toInt()) shr F128.EXP_BITS.toInt()
     val adj = (i shl n.toInt()) shl (F128.SIG_BITS + F128.fromDouble(1.0)).toInt()

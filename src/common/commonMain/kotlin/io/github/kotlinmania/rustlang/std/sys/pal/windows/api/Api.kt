@@ -3,19 +3,52 @@
 
 package io.github.kotlinmania.rustlang.std.sys.pal.windows.api
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustLeadingOnes
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
+import io.github.kotlinmania.rustlang.core.num.leadingOnes
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_ACCESS_DENIED
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_ALREADY_EXISTS
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_BAD_NETPATH
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_BAD_NET_NAME
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_CANT_ACCESS_FILE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_DELETE_PENDING
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_DIRECTORY
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_DIR_NOT_EMPTY
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_FILE_NOT_FOUND
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_INSUFFICIENT_BUFFER
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_INVALID_FUNCTION
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_INVALID_HANDLE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_INVALID_PARAMETER
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_NOT_FOUND
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_NOT_SUPPORTED
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_NO_MORE_FILES
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_OPERATION_ABORTED
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_PATH_NOT_FOUND
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_SHARING_VIOLATION
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_SUCCESS
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_TIMEOUT
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.GetLastError
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.GetLogicalDrives
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.QueryDosDeviceW
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.SetFileInformationByHandle
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileAllocationInfo
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileBasicInfo
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileDispositionInfo
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileDispositionInfoEx
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileEndOfFileInfo
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileIoPriorityHintInfo
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Handle
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.UnicodeString
 
 // # Safe(r) wrappers around Windows API functions.
 //
@@ -59,7 +92,7 @@ public fun utf16Len(s: String): Int {
         // the length of a UTF-8 encoded code-point is given by the number of
         // leading ones, except in the case of ASCII.
         val utf8Len =
-            when (val matchVal = rustLeadingOnes(s1[i])) {
+            when (val matchVal = s1[i].leadingOnes()) {
                 0 -> 1
                 else -> {
                     val n = matchVal
@@ -90,7 +123,7 @@ public fun toUtf16(s: String, utf16Len: Int): UShortArray {
     val s1 = s.encodeToByteArray().map { it.toUByte() }
     var i = 0
     while (i < s1.size) {
-        when (rustLeadingOnes(s1[i])) {
+        when (s1[i].leadingOnes()) {
             // Decode UTF-8 based on its length.
             // See https://en.wikipedia.org/wiki/UTF-8
             0 -> {
@@ -152,7 +185,7 @@ public fun <T> win32SizeOf(): UInt {
     interface Win32SizeOf {
         public val WIN32_SIZE_OF: UInt
             get() = run {
-            val size = sizeOf<Win32SizeOf>(typeLayoutT = ObjectSlotLayout<Win32SizeOf>())
+            val size = sizeOf<Win32SizeOf>(typeLayoutT = UnresolvedTypeLayout<Win32SizeOf>())
             check(size <= UInt.MAX_VALUE.toInt())
             size.toUInt()
         }
@@ -209,22 +242,22 @@ public fun <T : SizedSetFileInformation> T.size(): UInt = win32SizeOf<T>()
 // FILE_DISPOSITION_INFO, FILE_DISPOSITION_INFO_EX and FILE_IO_PRIORITY_HINT_INFO
 // are all plain `repr(C)` structs that only contain primitive types.
 // The given information classes correctly match with the struct.
-public val CLASS1: Int = c.FileBasicInfo
+public val CLASS1: Int = FileBasicInfo
 
-public val CLASS2: Int = c.FileEndOfFileInfo
+public val CLASS2: Int = FileEndOfFileInfo
 
-public val CLASS3: Int = c.FileAllocationInfo
+public val CLASS3: Int = FileAllocationInfo
 
-public val CLASS4: Int = c.FileDispositionInfo
+public val CLASS4: Int = FileDispositionInfo
 
-public val CLASS5: Int = c.FileDispositionInfoEx
+public val CLASS5: Int = FileDispositionInfoEx
 
-public val CLASS6: Int = c.FileIoPriorityHintInfo
+public val CLASS6: Int = FileIoPriorityHintInfo
 
-public fun <T : SetFileInformation> setFileInformationByHandle(handle: c.Handle, info: T): Result<Unit, WinError> {
-    fun setInfo(handle1: c.Handle, cls: Int, info1: ConstPtr, size: UInt): Result<Unit, WinError> =
+public fun <T : SetFileInformation> setFileInformationByHandle(handle: Handle, info: T): Result<Unit, WinError> {
+    fun setInfo(handle1: Handle, cls: Int, info1: ConstPtr, size: UInt): Result<Unit, WinError> =
         run {
-            val result = c.SetFileInformationByHandle(handle1, cls, info1, size)
+            val result = SetFileInformationByHandle(handle1, cls, info1, size)
             (result != 0).thenSome().okOrElse(::getLastError)
         }
     // SAFETY: The `SetFileInformation` trait ensures that this is safe.
@@ -238,7 +271,7 @@ public fun <T : SetFileInformation> setFileInformationByHandle(handle: c.Handle,
  */
 public fun getLastError(): WinError {
     // SAFETY: This just returns a thread-local u32 and has no other effects.
-    return WinError(code = c.GetLastError(), fieldLayout = PrimitiveLayouts.U32)
+    return WinError(code = GetLastError(), fieldLayout = PrimitiveLayouts.U32)
 }
 
 /**
@@ -278,48 +311,48 @@ public open class WinError internal constructor(
          * Some Windows APIs do use this to distinguish between a zero return and an error return
          * but we should never return this to users as an error.
          */
-        public val SUCCESS: WinError = WinError.new(c.ERROR_SUCCESS, fieldLayout = PrimitiveLayouts.U32)
+        public val SUCCESS: WinError = WinError.new(ERROR_SUCCESS, fieldLayout = PrimitiveLayouts.U32)
 
         // tidy-alphabetical-start
-        public val ACCESS_DENIED: WinError = WinError.new(c.ERROR_ACCESS_DENIED, fieldLayout = PrimitiveLayouts.U32)
+        public val ACCESS_DENIED: WinError = WinError.new(ERROR_ACCESS_DENIED, fieldLayout = PrimitiveLayouts.U32)
 
-        public val ALREADY_EXISTS: WinError = WinError.new(c.ERROR_ALREADY_EXISTS, fieldLayout = PrimitiveLayouts.U32)
+        public val ALREADY_EXISTS: WinError = WinError.new(ERROR_ALREADY_EXISTS, fieldLayout = PrimitiveLayouts.U32)
 
-        public val BAD_NETPATH: WinError = WinError.new(c.ERROR_BAD_NETPATH, fieldLayout = PrimitiveLayouts.U32)
+        public val BAD_NETPATH: WinError = WinError.new(ERROR_BAD_NETPATH, fieldLayout = PrimitiveLayouts.U32)
 
-        public val BAD_NET_NAME: WinError = WinError.new(c.ERROR_BAD_NET_NAME, fieldLayout = PrimitiveLayouts.U32)
+        public val BAD_NET_NAME: WinError = WinError.new(ERROR_BAD_NET_NAME, fieldLayout = PrimitiveLayouts.U32)
 
-        public val CANT_ACCESS_FILE: WinError = WinError.new(c.ERROR_CANT_ACCESS_FILE, fieldLayout = PrimitiveLayouts.U32)
+        public val CANT_ACCESS_FILE: WinError = WinError.new(ERROR_CANT_ACCESS_FILE, fieldLayout = PrimitiveLayouts.U32)
 
-        public val DELETE_PENDING: WinError = WinError.new(c.ERROR_DELETE_PENDING, fieldLayout = PrimitiveLayouts.U32)
+        public val DELETE_PENDING: WinError = WinError.new(ERROR_DELETE_PENDING, fieldLayout = PrimitiveLayouts.U32)
 
-        public val DIRECTORY: WinError = WinError.new(c.ERROR_DIRECTORY, fieldLayout = PrimitiveLayouts.U32)
+        public val DIRECTORY: WinError = WinError.new(ERROR_DIRECTORY, fieldLayout = PrimitiveLayouts.U32)
 
-        public val DIR_NOT_EMPTY: WinError = WinError.new(c.ERROR_DIR_NOT_EMPTY, fieldLayout = PrimitiveLayouts.U32)
+        public val DIR_NOT_EMPTY: WinError = WinError.new(ERROR_DIR_NOT_EMPTY, fieldLayout = PrimitiveLayouts.U32)
 
-        public val FILE_NOT_FOUND: WinError = WinError.new(c.ERROR_FILE_NOT_FOUND, fieldLayout = PrimitiveLayouts.U32)
+        public val FILE_NOT_FOUND: WinError = WinError.new(ERROR_FILE_NOT_FOUND, fieldLayout = PrimitiveLayouts.U32)
 
-        public val INSUFFICIENT_BUFFER: WinError = WinError.new(c.ERROR_INSUFFICIENT_BUFFER, fieldLayout = PrimitiveLayouts.U32)
+        public val INSUFFICIENT_BUFFER: WinError = WinError.new(ERROR_INSUFFICIENT_BUFFER, fieldLayout = PrimitiveLayouts.U32)
 
-        public val INVALID_FUNCTION: WinError = WinError.new(c.ERROR_INVALID_FUNCTION, fieldLayout = PrimitiveLayouts.U32)
+        public val INVALID_FUNCTION: WinError = WinError.new(ERROR_INVALID_FUNCTION, fieldLayout = PrimitiveLayouts.U32)
 
-        public val INVALID_HANDLE: WinError = WinError.new(c.ERROR_INVALID_HANDLE, fieldLayout = PrimitiveLayouts.U32)
+        public val INVALID_HANDLE: WinError = WinError.new(ERROR_INVALID_HANDLE, fieldLayout = PrimitiveLayouts.U32)
 
-        public val INVALID_PARAMETER: WinError = WinError.new(c.ERROR_INVALID_PARAMETER, fieldLayout = PrimitiveLayouts.U32)
+        public val INVALID_PARAMETER: WinError = WinError.new(ERROR_INVALID_PARAMETER, fieldLayout = PrimitiveLayouts.U32)
 
-        public val NOT_FOUND: WinError = WinError.new(c.ERROR_NOT_FOUND, fieldLayout = PrimitiveLayouts.U32)
+        public val NOT_FOUND: WinError = WinError.new(ERROR_NOT_FOUND, fieldLayout = PrimitiveLayouts.U32)
 
-        public val NOT_SUPPORTED: WinError = WinError.new(c.ERROR_NOT_SUPPORTED, fieldLayout = PrimitiveLayouts.U32)
+        public val NOT_SUPPORTED: WinError = WinError.new(ERROR_NOT_SUPPORTED, fieldLayout = PrimitiveLayouts.U32)
 
-        public val NO_MORE_FILES: WinError = WinError.new(c.ERROR_NO_MORE_FILES, fieldLayout = PrimitiveLayouts.U32)
+        public val NO_MORE_FILES: WinError = WinError.new(ERROR_NO_MORE_FILES, fieldLayout = PrimitiveLayouts.U32)
 
-        public val OPERATION_ABORTED: WinError = WinError.new(c.ERROR_OPERATION_ABORTED, fieldLayout = PrimitiveLayouts.U32)
+        public val OPERATION_ABORTED: WinError = WinError.new(ERROR_OPERATION_ABORTED, fieldLayout = PrimitiveLayouts.U32)
 
-        public val PATH_NOT_FOUND: WinError = WinError.new(c.ERROR_PATH_NOT_FOUND, fieldLayout = PrimitiveLayouts.U32)
+        public val PATH_NOT_FOUND: WinError = WinError.new(ERROR_PATH_NOT_FOUND, fieldLayout = PrimitiveLayouts.U32)
 
-        public val SHARING_VIOLATION: WinError = WinError.new(c.ERROR_SHARING_VIOLATION, fieldLayout = PrimitiveLayouts.U32)
+        public val SHARING_VIOLATION: WinError = WinError.new(ERROR_SHARING_VIOLATION, fieldLayout = PrimitiveLayouts.U32)
 
-        public val TIMEOUT: WinError = WinError.new(c.ERROR_TIMEOUT, fieldLayout = PrimitiveLayouts.U32)
+        public val TIMEOUT: WinError = WinError.new(ERROR_TIMEOUT, fieldLayout = PrimitiveLayouts.U32)
     }
 }
 
@@ -333,7 +366,7 @@ public open class WinError internal constructor(
  * the u16 directly after the string. You cannot otherwise depend on nul termination.
  */
 public open class UnicodeStrRef(
-    public var s: c.UnicodeString,
+    public var s: UnicodeString,
     public var lifetime: Unit,
 ) {
     public open fun clone(): UnicodeStrRef = UnicodeStrRef(s, lifetime)
@@ -350,9 +383,9 @@ public open class UnicodeStrRef(
                     Triple(0, 2, MutPtr((EMPTY_STRING_NULL_TERMINATED.asPtr()).rawAddress))
                 } else {
                     val len = slice.size - (isNullTerminated.toInt())
-                    Triple(len * 2, sizeOfVal(slice), MutPtr((slice.asPtr()).rawAddress))
+                    Triple(len * 2, sizeOfVal(slice, typeLayoutT = UnresolvedTypeLayout<List<UShort>>()), MutPtr((slice.asPtr()).rawAddress))
                 }
-            return UnicodeStrRef(s = c.UnicodeString(length = len1.toUShort(), maximumLength = maxLen.toUShort(), buffer = ptr), lifetime = Unit)
+            return UnicodeStrRef(s = UnicodeString(length = len1.toUShort(), maximumLength = maxLen.toUShort(), buffer = ptr), lifetime = Unit)
         }
 
         public fun fromSliceWithNul(slice: List<UShort>): UnicodeStrRef {
@@ -378,7 +411,7 @@ public var EMPTY_STRING_NULL_TERMINATED: List<UShort> = listOf(0u.toUShort())
  */
 public fun getLogicalDrives(): Any {
     // SAFETY: `GetLogicalDrives` only returns information.
-    val drives = c.GetLogicalDrives()
+    val drives = GetLogicalDrives()
     return (65u..90u).filter({ letter -> (drives.toUInt() shr ((letter - 65u).toInt())).toUByte() and 1 == 1 })
 }
 
@@ -398,7 +431,7 @@ public fun queryDosDevice(deviceName: List<UShort>, buffer: MutableList<UShort>)
     val bufferLen = (buffer.size.tryInto().ok() ?: return null)
     // SAFETY: `devicePtr` points to a null-terminated u16 string.
     // `bufferPtr` is writeable up to bufferLen u16s.
-    val result = (c.QueryDosDeviceW(devicePtr, bufferPtr, bufferLen)).toInt()
+    val result = (QueryDosDeviceW(devicePtr, bufferPtr, bufferLen)).toInt()
     return if (result > 0) {
         // QueryDosDeviceW returns a list of null-terminated strings where the list itself is also null-terminated
         // In the case where you pass a device name (which we always) it only returns one string.

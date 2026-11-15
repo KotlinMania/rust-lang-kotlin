@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.new.musl.sys.socket.cinterop
-headers = libc_new_musl_sys_socket_wrapper.h
-headerFilter = libc_new_musl_sys_socket_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = libc_new_musl_sys_socket_wrapper.a

@@ -1,10 +1,10 @@
 package io.github.kotlinmania.rustlang.libc.windows.msvc
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.windows.SizeT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.windows.SizeT
 
 public expect fun stricmp(s1: ConstPtr, s2: ConstPtr): CInt
 

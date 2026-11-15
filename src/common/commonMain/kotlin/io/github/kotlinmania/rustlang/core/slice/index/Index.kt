@@ -1,25 +1,25 @@
 // port-lint: source slice/index.rs
 package io.github.kotlinmania.rustlang.core.slice.index
 
+import io.github.kotlinmania.rustlang.core.intrinsics.sliceGetUnchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
+import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
+import io.github.kotlinmania.rustlang.core.ops.range.Bound
+import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
+import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
+import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
+import io.github.kotlinmania.rustlang.core.ops.range.RangeTo
+import io.github.kotlinmania.rustlang.core.ops.range.RangeToInclusive
+import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.range.Range
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.intrinsics.sliceGetUnchecked
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedSub
-import io.github.kotlinmania.rustlang.ops.indexrange.IndexRange
-import io.github.kotlinmania.rustlang.ops.range.Bound
-import io.github.kotlinmania.rustlang.ops.range.RangeBounds
-import io.github.kotlinmania.rustlang.ops.range.RangeFrom
-import io.github.kotlinmania.rustlang.ops.range.RangeFull
-import io.github.kotlinmania.rustlang.ops.range.RangeInclusive
-import io.github.kotlinmania.rustlang.ops.range.RangeTo
-import io.github.kotlinmania.rustlang.ops.range.RangeToInclusive
-import io.github.kotlinmania.rustlang.panic.constPanic
-import io.github.kotlinmania.rustlang.range.Range
 
 // Indexing implementations for `[T]`.
 
@@ -224,7 +224,7 @@ public fun <T> IndexRange.indexMut(slice: MutableList<T>): MutableList<T> =
  */
 public fun <T> Range<Int>.get(slice: List<T>): List<T>? {
     // Using checkedSub is a safe way to get `SubUnchecked` in MIR
-    return if (rustCheckedSub(this.end, this.start.toInt()) != null && this.end <= slice.size) {
+    return if (this.end.checkedSub(this.start.toInt()) != null && this.end <= slice.size) {
         // SAFETY: `self` is checked to be valid and in bounds above.
         (PrimitiveLayouts.U8).readNative((getOffsetLenNoubcheck(slice, this.start, newLen)).rawAddress)
     } else {
@@ -233,7 +233,7 @@ public fun <T> Range<Int>.get(slice: List<T>): List<T>? {
 }
 
 public fun <T> Range<Int>.getMut(slice: MutableList<T>): MutableList<T>? =
-    if (rustCheckedSub(this.end, this.start.toInt()) != null && this.end <= slice.size) {
+    if (this.end.checkedSub(this.start.toInt()) != null && this.end <= slice.size) {
         // SAFETY: `self` is checked to be valid and in bounds above.
         RustMutableReference(MutPtr((getOffsetLenMutNoubcheck(slice, this.start, newLen)).rawAddress), PrimitiveLayouts.U8)
     } else {
@@ -265,7 +265,7 @@ public fun Range<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
 
 public fun <T> Range<Int>.index(slice: List<T>): List<T> {
     // Using checkedSub is a safe way to get `SubUnchecked` in MIR
-    return if (rustCheckedSub(this.end, this.start.toInt()) != null && this.end <= slice.size) {
+    return if (this.end.checkedSub(this.start.toInt()) != null && this.end <= slice.size) {
         // SAFETY: `self` is checked to be valid and in bounds above.
         (PrimitiveLayouts.U8).readNative((getOffsetLenNoubcheck(slice, this.start, newLen)).rawAddress)
     } else {
@@ -275,7 +275,7 @@ public fun <T> Range<Int>.index(slice: List<T>): List<T> {
 
 public fun <T> Range<Int>.indexMut(slice: MutableList<T>): MutableList<T> {
     // Using checkedSub is a safe way to get `SubUnchecked` in MIR
-    return if (rustCheckedSub(this.end, this.start.toInt()) != null && this.end <= slice.size) {
+    return if (this.end.checkedSub(this.start.toInt()) != null && this.end <= slice.size) {
         // SAFETY: `self` is checked to be valid and in bounds above.
         RustMutableReference(MutPtr((getOffsetLenMutNoubcheck(slice, this.start, newLen)).rawAddress), PrimitiveLayouts.U8)
     } else {
@@ -345,7 +345,7 @@ public fun <T> RangeFrom<Int>.index(slice: List<T>): List<T> {
     }
     // SAFETY: `self` is checked to be valid and in bounds above.
     return run {
-        val newLen = uncheckedSub(slice.size, this.start)
+        val newLen = ((slice.size) - (this.start))
         (PrimitiveLayouts.U8).readNative((getOffsetLenNoubcheck(slice, this.start, newLen)).rawAddress)
     }
 }
@@ -356,7 +356,7 @@ public fun <T> RangeFrom<Int>.indexMut(slice: MutableList<T>): MutableList<T> {
     }
     // SAFETY: `self` is checked to be valid and in bounds above.
     return run {
-        val newLen = uncheckedSub(slice.size, this.start)
+        val newLen = ((slice.size) - (this.start))
         RustMutableReference(MutPtr((getOffsetLenMutNoubcheck(slice, this.start, newLen)).rawAddress), PrimitiveLayouts.U8)
     }
 }
@@ -427,12 +427,13 @@ public fun <T> RangeInclusive<Int>.index(slice: List<T>): List<T> {
     val len = slice.size
     if (end < len) {
         end = end + 1
-        start = if (exhausted) {
-            end
-        } else {
-            start
-        }
-        when (val matchVal = rustCheckedSub(end, start.toInt())) {
+        start =
+            if (exhausted) {
+                end
+            } else {
+                start
+            }
+        when (val matchVal = end.checkedSub(start.toInt())) {
             null -> {}
             else -> {
                 val newLen = matchVal
@@ -451,12 +452,13 @@ public fun <T> RangeInclusive<Int>.indexMut(slice: MutableList<T>): MutableList<
     val len = slice.size
     if (end < len) {
         end = end + 1
-        start = if (exhausted) {
-            end
-        } else {
-            start
-        }
-        when (val matchVal = rustCheckedSub(end, start.toInt())) {
+        start =
+            if (exhausted) {
+                end
+            } else {
+                start
+            }
+        when (val matchVal = end.checkedSub(start.toInt())) {
             null -> {}
             else -> {
                 val newLen = matchVal
@@ -672,8 +674,13 @@ public fun intoRangeUnchecked(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>)
 }
 
 public sealed class RangeError {
-    public data class EndPastLen(public var end: Int) : RangeError()
-    public data class StartPastEnd(public var start: Int, public var end: Int) : RangeError()
+    public data class EndPastLen(
+        public var end: Int,
+    ) : RangeError()
+    public data class StartPastEnd(
+        public var start: Int,
+        public var end: Int,
+    ) : RangeError()
 
     public open fun report(len: Int): Nothing =
         when (this) {
@@ -746,13 +753,16 @@ public fun tryIntoSliceRange(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>):
 public fun intoSliceRange(len: Int, bounds: Pair<Bound<Int>, Bound<Int>>): Range<Int> =
     run {
         val matchVal = tryIntoSliceRange(len, bounds)
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val range = matchVal.value
-            range
-        }; is Result.Err<*, *> -> {
-            val e = matchVal.error
-            e.report(len)
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val range = matchVal.value
+                range
+            }
+            is Result.Err<*, *> -> {
+                val e = matchVal.error
+                e.report(len)
+            }
+        }
     }
 
 public fun <T> Pair<Bound<Int>, Bound<Int>>.get(slice: List<T>): List<T>? {

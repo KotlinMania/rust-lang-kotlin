@@ -9,8 +9,8 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.calloc
 import io.github.kotlinmania.rustlang.libc.posixMemalign
-import io.github.kotlinmania.rustlang.sys.alloc.MIN_ALIGN
-import io.github.kotlinmania.rustlang.sys.alloc.reallocFallback
+import io.github.kotlinmania.rustlang.std.sys.alloc.MIN_ALIGN
+import io.github.kotlinmania.rustlang.std.sys.alloc.reallocFallback
 
 public expect fun malloc(size: CSizeT): MutPtr
 

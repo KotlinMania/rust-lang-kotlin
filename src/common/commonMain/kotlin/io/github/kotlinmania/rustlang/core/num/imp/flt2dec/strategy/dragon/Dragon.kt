@@ -3,19 +3,19 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.dragon
 
-import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.num.imp.bignum.Big
-import io.github.kotlinmania.rustlang.num.imp.flt2dec.MAX_SIG_DIGITS
-import io.github.kotlinmania.rustlang.num.imp.flt2dec.decoder.Decoded
-import io.github.kotlinmania.rustlang.num.imp.flt2dec.estimator.estimateScalingFactor
-import io.github.kotlinmania.rustlang.num.imp.flt2dec.roundUp
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.imp.bignum.Big
+import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.MAX_SIG_DIGITS
+import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.Decoded
+import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.estimator.estimateScalingFactor
+import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.roundUp
 
 // Almost direct (but slightly optimized) Rust translation of Figure 3 of "Printing
 // Floating-Point Numbers Quickly and Accurately"[^1].
@@ -123,8 +123,8 @@ public fun formatShortest(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): Pai
     check(d.mant > 0uL)
     check(d.minus > 0uL)
     check(d.plus > 0uL)
-    check(rustCheckedAdd(d.mant, d.plus) != null)
-    check(rustCheckedSub(d.mant, d.minus) != null)
+    check(d.mant.checkedAdd(d.plus) != null)
+    check(d.mant.checkedSub(d.minus) != null)
     check(buf.size >= MAX_SIG_DIGITS)
     // `a.cmp(b)<rounding` is `if d.inclusive { a <= b } else { a<b }`
     val rounding =
@@ -271,8 +271,8 @@ public fun formatExact(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: 
     check(d1.mant > 0uL)
     check(d1.minus > 0uL)
     check(d1.plus > 0uL)
-    check(rustCheckedAdd(d1.mant, d1.plus) != null)
-    check(rustCheckedSub(d1.mant, d1.minus) != null)
+    check(d1.mant.checkedAdd(d1.plus) != null)
+    check(d1.mant.checkedSub(d1.minus) != null)
     // estimate `k0` from original inputs satisfying `10 ^(k0 - 1)<v <= 10 ^(k0 + 1)`.
     var k = estimateScalingFactor(d1.mant, d1.exp)
     // `v = mant / scale`.
@@ -328,7 +328,7 @@ public fun formatExact(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: 
                 // following digits are all zeroes, we stop here
                 // do *not* try to perform rounding! rather, fill remaining digits.
                 for (idx in ((buf).subList(i, len)).indices) {
-                    ((buf).subList(i, len))[idx] = MaybeUninit.new(48u, ObjectSlotLayout<Pair<List<UByte>, Short>>())
+                    ((buf).subList(i, len))[idx] = MaybeUninit.new(48u, UnresolvedTypeLayout<Pair<List<UByte>, Short>>())
                 }
                 // SAFETY: we initialized that memory above.
                 return Pair(((buf).subList(0, len)).assumeInitRef(), k)

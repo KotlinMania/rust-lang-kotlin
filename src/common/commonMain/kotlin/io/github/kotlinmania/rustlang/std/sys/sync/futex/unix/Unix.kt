@@ -13,9 +13,9 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAKE
 import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
 import io.github.kotlinmania.rustlang.libc.wasi.EINTR
 import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.sys.io.Errno
-import io.github.kotlinmania.rustlang.sys.pal.unix.time.Timespec
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sys.io.Errno
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
 
 /**
  * An atomic for use as a futex that is at least 32-bits but may be larger

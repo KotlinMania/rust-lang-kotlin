@@ -3,42 +3,21 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I32x8
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I64x4
-import io.github.kotlinmania.rustlang.simd.I8x32
-import io.github.kotlinmania.rustlang.simd.U32x8
-import io.github.kotlinmania.rustlang.simd.U64x4
-import io.github.kotlinmania.rustlang.x86.M128
-import io.github.kotlinmania.rustlang.x86.M128d
-import io.github.kotlinmania.rustlang.x86.M128i
-import io.github.kotlinmania.rustlang.x86.M256
-import io.github.kotlinmania.rustlang.x86.M256d
-import io.github.kotlinmania.rustlang.x86.M256i
-import io.github.kotlinmania.rustlang.x86.mmAndPd
-import io.github.kotlinmania.rustlang.x86.mmAndPs
-import io.github.kotlinmania.rustlang.x86.mmAndnotPd
-import io.github.kotlinmania.rustlang.x86.mmAndnotPs
-import io.github.kotlinmania.rustlang.x86.mmLoaduPd
-import io.github.kotlinmania.rustlang.x86.mmLoaduPs
-import io.github.kotlinmania.rustlang.x86.mmLoaduSi128
-import io.github.kotlinmania.rustlang.x86.mmSet1Ps
-import io.github.kotlinmania.rustlang.x86.mmSetzeroPd
-import io.github.kotlinmania.rustlang.x86.mmSetzeroPs
-import io.github.kotlinmania.rustlang.x86.mmStoreuPd
-import io.github.kotlinmania.rustlang.x86.mmStoreuPs
-import io.github.kotlinmania.rustlang.x86.mmStoreuSi128
-import io.github.kotlinmania.rustlang.x86.mmUndefinedPd
-import io.github.kotlinmania.rustlang.x86.mmUndefinedPs
+import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I32x8
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I64x4
+import io.github.kotlinmania.rustlang.corearch.simd.I8x32
+import io.github.kotlinmania.rustlang.corearch.simd.U32x8
+import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 
 // Advanced Vector Extensions (AVX)
 //
@@ -1245,7 +1224,7 @@ public fun mm256InsertEpi32(a: M256i, i: Int, index: Int): M256i {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_load_pd)
  */
-public fun mm256LoadPd(memAddr: ConstPtr): M256d = (ObjectSlotLayout<M256d>()).readNative(((ConstPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress)
+public fun mm256LoadPd(memAddr: ConstPtr): M256d = (UnresolvedTypeLayout<M256d>()).readNative(((ConstPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress)
 
 /**
  * Stores 256-bits (composed of 4 packed double-precision (64-bit)
@@ -1256,7 +1235,7 @@ public fun mm256LoadPd(memAddr: ConstPtr): M256d = (ObjectSlotLayout<M256d>()).r
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_store_pd)
  */
 public fun mm256StorePd(memAddr: MutPtr, a: M256d) {
-    (ObjectSlotLayout<M256d>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, a)
+    (UnresolvedTypeLayout<M256d>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, a)
 }
 
 /**
@@ -1267,7 +1246,7 @@ public fun mm256StorePd(memAddr: MutPtr, a: M256d) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_load_ps)
  */
-public fun mm256LoadPs(memAddr: ConstPtr): M256 = (ObjectSlotLayout<M256>()).readNative(((ConstPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress)
+public fun mm256LoadPs(memAddr: ConstPtr): M256 = (UnresolvedTypeLayout<M256>()).readNative(((ConstPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress)
 
 /**
  * Stores 256-bits (composed of 8 packed single-precision (32-bit)
@@ -1278,7 +1257,7 @@ public fun mm256LoadPs(memAddr: ConstPtr): M256 = (ObjectSlotLayout<M256>()).rea
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_store_ps)
  */
 public fun mm256StorePs(memAddr: MutPtr, a: M256) {
-    (ObjectSlotLayout<M256>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, a)
+    (UnresolvedTypeLayout<M256>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, a)
 }
 
 /**
@@ -1290,7 +1269,7 @@ public fun mm256StorePs(memAddr: MutPtr, a: M256) {
  */
 public fun mm256LoaduPd(memAddr: ConstPtr): M256d {
     val dst = mm256UndefinedPd()
-    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M256d>(typeLayoutT = ObjectSlotLayout<M256d>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M256d>(typeLayoutT = UnresolvedTypeLayout<M256d>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -1302,7 +1281,7 @@ public fun mm256LoaduPd(memAddr: ConstPtr): M256d {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_pd)
  */
 public fun mm256StoreuPd(memAddr: MutPtr, a: M256d) {
-    (ObjectSlotLayout<M256d>()).writeNative((MutPtr((memAddr).rawAddress)).rawAddress, a)
+    (UnresolvedTypeLayout<M256d>()).writeNative((MutPtr((memAddr).rawAddress)).rawAddress, a)
 }
 
 /**
@@ -1314,7 +1293,7 @@ public fun mm256StoreuPd(memAddr: MutPtr, a: M256d) {
  */
 public fun mm256LoaduPs(memAddr: ConstPtr): M256 {
     val dst = mm256UndefinedPs()
-    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M256>(typeLayoutT = ObjectSlotLayout<M256>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M256>(typeLayoutT = UnresolvedTypeLayout<M256>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -1326,7 +1305,7 @@ public fun mm256LoaduPs(memAddr: ConstPtr): M256 {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_ps)
  */
 public fun mm256StoreuPs(memAddr: MutPtr, a: M256) {
-    (ObjectSlotLayout<M256>()).writeNative((MutPtr((memAddr).rawAddress)).rawAddress, a)
+    (UnresolvedTypeLayout<M256>()).writeNative((MutPtr((memAddr).rawAddress)).rawAddress, a)
 }
 
 // Note vmovdqa expected
@@ -1338,7 +1317,7 @@ public fun mm256StoreuPs(memAddr: MutPtr, a: M256) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_load_si256)
  */
-public fun mm256LoadSi256(memAddr: ConstPtr): M256i = (ObjectSlotLayout<M256i>()).readNative((memAddr).rawAddress)
+public fun mm256LoadSi256(memAddr: ConstPtr): M256i = (UnresolvedTypeLayout<M256i>()).readNative((memAddr).rawAddress)
 
 // Note vmovdqa expected
 
@@ -1351,7 +1330,7 @@ public fun mm256LoadSi256(memAddr: ConstPtr): M256i = (ObjectSlotLayout<M256i>()
  */
 public fun mm256StoreSi256(memAddr: MutPtr, a: M256i) {
     val memAddr1 = memAddr
-    (ObjectSlotLayout<M256i>()).writeNative((memAddr1).rawAddress, a)
+    (UnresolvedTypeLayout<M256i>()).writeNative((memAddr1).rawAddress, a)
 }
 
 // Note vmovdqu expected
@@ -1364,7 +1343,7 @@ public fun mm256StoreSi256(memAddr: MutPtr, a: M256i) {
  */
 public fun mm256LoaduSi256(memAddr: ConstPtr): M256i {
     val dst = mm256UndefinedSi256()
-    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M256i>(typeLayoutT = ObjectSlotLayout<M256i>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M256i>(typeLayoutT = UnresolvedTypeLayout<M256i>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -1377,7 +1356,7 @@ public fun mm256LoaduSi256(memAddr: ConstPtr): M256i {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_si256)
  */
 public fun mm256StoreuSi256(memAddr: MutPtr, a: M256i) {
-    (ObjectSlotLayout<M256i>()).writeNative((memAddr).rawAddress, a)
+    (UnresolvedTypeLayout<M256i>()).writeNative((memAddr).rawAddress, a)
 }
 
 /**

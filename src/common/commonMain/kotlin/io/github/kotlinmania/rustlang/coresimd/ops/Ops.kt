@@ -1,7 +1,7 @@
 // port-lint: source ops.rs
 package io.github.kotlinmania.rustlang.coresimd.ops
 
-import io.github.kotlinmania.rustlang.Simd
+import io.github.kotlinmania.rustlang.coresimd.Simd
 
 // SAFETY: This macro should not be used for anything except Shl or Shr, and passed the appropriate shift intrinsic.
 // It handles performing a bitand in addition to calling the shift operator, so that the result

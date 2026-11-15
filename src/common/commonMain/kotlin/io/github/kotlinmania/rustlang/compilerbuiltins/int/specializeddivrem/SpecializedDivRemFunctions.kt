@@ -1,13 +1,13 @@
 package io.github.kotlinmania.rustlang.compilerbuiltins.int.specializeddivrem
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.num.rustCheckedDiv
-import io.github.kotlinmania.rustlang.core.num.rustCheckedRem
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.core.num.rustWrappingAdd
-import io.github.kotlinmania.rustlang.core.num.rustWrappingMul
-import io.github.kotlinmania.rustlang.core.num.rustWrappingShr
-import io.github.kotlinmania.rustlang.core.num.rustWrappingSub
+import io.github.kotlinmania.rustlang.core.num.checkedDiv
+import io.github.kotlinmania.rustlang.core.num.checkedRem
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.wrappingAdd
+import io.github.kotlinmania.rustlang.core.num.wrappingMul
+import io.github.kotlinmania.rustlang.core.num.wrappingShr
+import io.github.kotlinmania.rustlang.core.num.wrappingSub
 
 /**
  * The behavior of all divisions by zero is controlled by this function. This function should be
@@ -74,7 +74,7 @@ public fun zeroDivFn(): Nothing {
 public fun u32NormalizationShift(duo: UInt, div: UInt, fullNormalization: Boolean): Int {
     var shl: Int
     if (USE_LZ) {
-        shl = (rustLeadingZeros(div) - rustLeadingZeros(duo)).toInt()
+        shl = (div.leadingZeros() - duo.leadingZeros()).toInt()
         if (fullNormalization) {
             if (duo < (div shl shl)) {
                 shl -= 1
@@ -136,7 +136,7 @@ public fun u32NormalizationShift(duo: UInt, div: UInt, fullNormalization: Boolea
 public fun u64NormalizationShift(duo: ULong, div: ULong, fullNormalization: Boolean): Int {
     var shl: Int
     if (USE_LZ) {
-        shl = (rustLeadingZeros(div) - rustLeadingZeros(duo)).toInt()
+        shl = (div.leadingZeros() - duo.leadingZeros()).toInt()
         if (fullNormalization) {
             if (duo < (div shl shl)) {
                 shl -= 1
@@ -167,7 +167,7 @@ public fun u64NormalizationShift(duo: ULong, div: ULong, fullNormalization: Bool
  * dependencies.
  */
 public fun u64ByU64DivRem(duo: ULong, div: ULong): Pair<ULong, ULong> {
-    if (rustCheckedDiv(duo, div) != null && rustCheckedRem(duo, div) != null) {
+    if (duo.checkedDiv(div) != null && duo.checkedRem(div) != null) {
         return Pair(quo, rem)
     }
     return zeroDivFn()
@@ -180,19 +180,19 @@ public fun u64ByU64DivRem(duo: ULong, div: ULong): Pair<ULong, ULong> {
 public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
     val duo1 = duo
     fun carryingMul(lhs: ULong, rhs: ULong): Pair<ULong, ULong> {
-        val tmp = rustWrappingMul((U128.fromULong(lhs)), U128.fromULong(rhs))
+        val tmp = (U128.fromULong(lhs)).wrappingMul(U128.fromULong(rhs))
         return Pair(tmp.toULong(), (tmp shr (32 * 2).toInt()).toULong())
     }
     fun carryingMulAdd(lhs: ULong, mul: ULong, add: ULong): Pair<ULong, ULong> {
-        val tmp = rustWrappingAdd(rustWrappingMul((U128.fromULong(lhs)), U128.fromULong(mul)), U128.fromULong(add))
+        val tmp = (U128.fromULong(lhs)).wrappingMul(U128.fromULong(mul)).wrappingAdd(U128.fromULong(add))
         return Pair(tmp.toULong(), (tmp shr (32 * 2).toInt()).toULong())
     }
     val n = 32 * 2
     if (div == U128(0x0uL, 0x0uL)) {
         zeroDivFn()
     }
-    val divLz = rustLeadingZeros(div)
-    var duoLz = rustLeadingZeros(duo1)
+    val divLz = div.leadingZeros()
+    var duoLz = duo1.leadingZeros()
     if (divLz <= duoLz) {
         if (duo1 >= div) {
             return Pair(1, duo1 - div)
@@ -226,7 +226,7 @@ public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
         val (tmpHi, overflow) = carryingMulAdd(quo1, divHi, carry)
         val tmp = (U128.fromLong(tmpLo.toLong())) or ((U128.fromLong(tmpHi.toLong())) shl n.toInt())
         if ((overflow != 0) || (duo1 < tmp)) {
-            return Pair(U128.fromLong((quo1 - 1).toLong()), rustWrappingSub(rustWrappingAdd(duo1, div), tmp))
+            return Pair(U128.fromLong((quo1 - 1).toLong()), duo1.wrappingAdd(div).wrappingSub(tmp))
         } else {
             return Pair(U128.fromLong(quo1.toLong()), duo1 - tmp)
         }
@@ -243,7 +243,7 @@ public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
             val quoPart = U128.fromLong((u64ByU64DivRem(duoSigN1, divSigNHAdd1).first).toLong())
             val extraShl = duoExtra - divExtra
             quo2 += (quoPart shl extraShl.toInt())
-            duo2 -= (rustWrappingMul(div, quoPart) shl extraShl.toInt())
+            duo2 -= (div.wrappingMul(quoPart) shl extraShl.toInt())
         } else {
             val shift1 = n - duoLz
             val duoSigN2 = (duo2 shr shift1.toInt()).toULong()
@@ -300,7 +300,7 @@ public fun u128ByU64DivRem(duo: U128, div: ULong): Pair<ULong, ULong> {
  * dependencies.
  */
 public fun u32ByU32DivRem(duo: UInt, div: UInt): Pair<UInt, UInt> {
-    if (rustCheckedDiv(duo, div) != null && rustCheckedRem(duo, div) != null) {
+    if (duo.checkedDiv(div) != null && duo.checkedRem(div) != null) {
         return Pair(quo, rem)
     }
     return zeroDivFn()
@@ -353,7 +353,7 @@ public fun u64DivRem(duo: ULong, div: ULong): Pair<ULong, ULong> {
         }
         i -= 1
         duo2 = duo2.wrappingShl(1).wrappingSub(div2)
-        val mask1 = rustWrappingShr((duo2.toLong()), 64u - 1u).toULong()
+        val mask1 = (duo2.toLong()).wrappingShr(64u - 1u).toULong()
         duo2 = duo2.wrappingAdd(div2 and mask1)
     }
     return Pair((duo2 and mask) or quo, duo2 shr shl)
@@ -406,7 +406,7 @@ public fun u32DivRem(duo: UInt, div: UInt): Pair<UInt, UInt> {
         }
         i -= 1
         duo2 = duo2.wrappingShl(1).wrappingSub(div2)
-        val mask1 = rustWrappingShr((duo2.toInt()), 32u - 1u).toUInt()
+        val mask1 = (duo2.toInt()).wrappingShr(32u - 1u).toUInt()
         duo2 = duo2.wrappingAdd(div2 and mask1)
     }
     return Pair((duo2 and mask) or quo, duo2 shr shl)

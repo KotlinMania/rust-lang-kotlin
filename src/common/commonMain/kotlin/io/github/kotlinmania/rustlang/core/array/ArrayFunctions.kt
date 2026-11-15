@@ -1,30 +1,30 @@
 package io.github.kotlinmania.rustlang.core.array
 
-import io.github.kotlinmania.rustlang.array.drain.Drain
-import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.array.drain.Drain
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
+import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
+import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
+import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
+import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.intrinsics.transmuteUnchecked
-import io.github.kotlinmania.rustlang.iter.sources.repeatn.repeatN
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.mem.forget
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.ops.trytrait.ChangeOutputType
-import io.github.kotlinmania.rustlang.ops.trytrait.FromResidual
-import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.ops.trytrait.Residual
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.slice.iter.Iter
+import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 
 /**
  * Creates an array of type `[T; N]` by repeatedly cloning a value.
@@ -137,7 +137,7 @@ public fun <T> fromFn(f: (Int) -> T, n: Int): List<T> = tryFromFn(NeverShortCirc
  * ```
  */
 public fun <R> tryFromFn(cb: (Int) -> R, n: Int): ChangeOutputType<R, List<Output>> where R : Try<R, Any?, Any?> {
-    val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Output>()) }
+    val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Output>()) }
     return when (val matchVal = tryFromFnErased(array, cb)) {
         is ControlFlow.Break -> {
             val (r) = matchVal
@@ -155,7 +155,7 @@ public fun <R> tryFromFn(cb: (Int) -> R, n: Int): ChangeOutputType<R, List<Outpu
  */
 public fun <T> fromRef(s: T): List<T> {
     // SAFETY: Converting `T` to `[T; 1]` is sound.
-    return (ObjectSlotLayout<List<T>>()).readNative((ConstPtr(((constPtrFromRustCast(s))).rawAddress)).rawAddress)
+    return (UnresolvedTypeLayout<List<T>>()).readNative((ConstPtr(((constPtrFromRustCast(s))).rawAddress)).rawAddress)
 }
 
 /**
@@ -163,7 +163,7 @@ public fun <T> fromRef(s: T): List<T> {
  */
 public fun <T> fromMut(s: T): List<T> {
     // SAFETY: Converting `T` to `[T; 1]` is sound.
-    return RustMutableReference(MutPtr((MutPtr(((mutPtrFromRustCast(s))).rawAddress)).rawAddress), ObjectSlotLayout<List<T>>())
+    return RustMutableReference(MutPtr((MutPtr(((mutPtrFromRustCast(s))).rawAddress)).rawAddress), UnresolvedTypeLayout<List<T>>())
 }
 
 /**
@@ -184,7 +184,11 @@ public fun <T> fromMut(s: T): List<T> {
 public fun <R : Try<R, Any?, Any?>> tryFromFnErased(buffer: MutableList<MaybeUninit<Output>>, generator: (Int) -> R): ControlFlow<Residual> {
     val guard = Guard(arrayMut = buffer, initialized = 0)
     while (guard.initialized < guard.arrayMut.size) {
-        val item = when (val tryResult = generator(guard.initialized).branch()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val item =
+            when (val tryResult = generator(guard.initialized).branch()) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         // SAFETY: The loop condition ensures we have space to push the item
         guard.pushUnchecked(item)
     }
@@ -231,13 +235,14 @@ public fun <T> iterNextChunkErased(buffer: MutableList<MaybeUninit<T>>, iter: An
     // if `Iterator.next` panics, this guard will drop already initialized items
     val guard = Guard(arrayMut = buffer, initialized = 0)
     while (guard.initialized < guard.arrayMut.size) {
-        val item = iter.next() ?: run {
-            // Unlike `tryFromFnErased`, we want to keep the partial results,
-            // so we need to defuse the guard instead of using `?`.
-            val initialized = guard.initialized
-            forget(guard)
-            return Result.Err(initialized)
-        }
+        val item =
+            iter.next() ?: run {
+                // Unlike `tryFromFnErased`, we want to keep the partial results,
+                // so we need to defuse the guard instead of using `?`.
+                val initialized = guard.initialized
+                forget(guard)
+                return Result.Err(initialized)
+            }
         // SAFETY: The loop condition ensures we have space to push the item
         guard.pushUnchecked(item)
     }
@@ -284,11 +289,12 @@ public fun <T> iterNextChunkBackErased(buffer: MutableList<MaybeUninit<T>>, iter
     // if `Iterator.nextBack` panics, this guard will drop already initialized items
     val guard = GuardBack(arrayMut = buffer, initialized = 0)
     while (guard.initialized < guard.arrayMut.size) {
-        val item = iter.nextBack() ?: run {
-            val initialized = guard.initialized
-            forget(guard)
-            return Result.Err(initialized)
-        }
+        val item =
+            iter.nextBack() ?: run {
+                val initialized = guard.initialized
+                forget(guard)
+                return Result.Err(initialized)
+            }
         // SAFETY: The loop condition ensures we have space to push the item
         guard.pushUnchecked(item)
     }
@@ -395,7 +401,11 @@ public fun <T, H> List<T>.hashFromTArrayn(state: H, n: Int) {
     this.hash(state)
 }
 
-public fun <T> List<T>.fmtFromTArrayn(f: StringBuilder, n: Int): Result<Unit, Unit> = run { f.append((this).toString()); Result.Ok(Unit) }
+public fun <T> List<T>.fmtFromTArrayn(f: StringBuilder, n: Int): Result<Unit, Unit> =
+    run {
+        f.append((this).toString())
+        Result.Ok(Unit)
+    }
 
 public fun <T> List<T>.intoIter(n: Int): Iter<T> = this.iter()
 
@@ -436,11 +446,13 @@ public fun <T> specArrayCloneCloneT(array: List<T>, n: Int): List<T> {
     // SAFETY: Unless a panic occurs, fromFn will call the closure N times,
     // so our pointer arithmetic will be in bounds for the N-element array.
     // This works even for ZSTs, since in that case, add() is a no-op.
-    return fromFn({ run {
-        val old = ptr
-        ptr = ConstPtr((ptr).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-        ((ObjectSlotLayout<T>()).readNative((old).rawAddress)).clone()
-    } })
+    return fromFn({
+        run {
+            val old = ptr
+            ptr = ConstPtr((ptr).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+            ((UnresolvedTypeLayout<T>()).readNative((old).rawAddress)).clone()
+        }
+    })
 }
 
 public fun <T> defaultTArray32(defaultTFn: () -> T): List<T> = listOf(defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn())
@@ -819,21 +831,24 @@ public fun <T> List<T>.rsplitArrayRef(n: Int, m: Int): Pair<List<T>, List<T>> = 
 public fun <T> List<T>.rsplitArrayMut(n: Int, m: Int): Pair<MutableList<T>, List<T>> = this.splitLastChunkMut().unwrap()
 
 public fun <I : Iterator<T>, T> I.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> {
-    val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }
+    val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     val r = iterNextChunkErased(array, this)
-    return when (r) { is Result.Ok<*, *> -> {
-        // SAFETY: All elements of `array` were populated.
-        Result.Ok(MaybeUninit.arrayAssumeInit(array))
-    }; is Result.Err<*, *> -> {
-        val initialized = r.error
-        // SAFETY: Only the first `initialized` elements were populated
-        Result.Err(IntoIter.newUnchecked(array, 0 until initialized))
-    } }
+    return when (r) {
+        is Result.Ok<*, *> -> {
+            // SAFETY: All elements of `array` were populated.
+            Result.Ok(MaybeUninit.arrayAssumeInit(array))
+        }
+        is Result.Err<*, *> -> {
+            val initialized = r.error
+            // SAFETY: Only the first `initialized` elements were populated
+            Result.Err(IntoIter.newUnchecked(array, 0 until initialized))
+        }
+    }
 }
 
 public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T>, I : TrustedLen<I> {
     val len = this.sizeHint().first
-    val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }
+    val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {
         // SAFETY: `TrustedLen`, an unchecked trait, requires that i can get len items out of it.
         write(array, this, len)
@@ -848,21 +863,24 @@ public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where 
 }
 
 public fun <I, T> I.specNextChunkBack(n: Int): Result<List<T>, IntoIter<T>> {
-    val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }
+    val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     val r = iterNextChunkBackErased(array, this)
-    return when (r) { is Result.Ok<*, *> -> {
-        // SAFETY: All elements of `array` were populated.
-        Result.Ok(MaybeUninit.arrayAssumeInit(array))
-    }; is Result.Err<*, *> -> {
-        val initialized = r.error
-        // SAFETY: Only the last `initialized` elements were populated
-        Result.Err(IntoIter.newUnchecked(array, n - initialized until n))
-    } }
+    return when (r) {
+        is Result.Ok<*, *> -> {
+            // SAFETY: All elements of `array` were populated.
+            Result.Ok(MaybeUninit.arrayAssumeInit(array))
+        }
+        is Result.Err<*, *> -> {
+            val initialized = r.error
+            // SAFETY: Only the last `initialized` elements were populated
+            Result.Err(IntoIter.newUnchecked(array, n - initialized until n))
+        }
+    }
 }
 
 public fun <I : TrustedLen<I>, T> I.specNextChunkBackTN(n: Int): Result<List<T>, IntoIter<T>> {
     val len = this.sizeHint().first
-    val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }
+    val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {
         // SAFETY: `TrustedLen`, an unchecked trait, requires that i can get len items out of it.
         writeBack(array, this, len)

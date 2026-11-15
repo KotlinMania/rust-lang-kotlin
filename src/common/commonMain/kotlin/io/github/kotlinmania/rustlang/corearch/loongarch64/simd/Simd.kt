@@ -3,41 +3,41 @@ package io.github.kotlinmania.rustlang.corearch.loongarch64.simd
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.simd.I128x2
-import io.github.kotlinmania.rustlang.simd.I128x4
-import io.github.kotlinmania.rustlang.simd.I16x16
-import io.github.kotlinmania.rustlang.simd.I16x32
-import io.github.kotlinmania.rustlang.simd.I16x4
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x16
-import io.github.kotlinmania.rustlang.simd.I32x2
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I32x8
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I64x4
-import io.github.kotlinmania.rustlang.simd.I64x8
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.I8x32
-import io.github.kotlinmania.rustlang.simd.I8x8
-import io.github.kotlinmania.rustlang.simd.U128x2
-import io.github.kotlinmania.rustlang.simd.U128x4
-import io.github.kotlinmania.rustlang.simd.U16x16
-import io.github.kotlinmania.rustlang.simd.U16x32
-import io.github.kotlinmania.rustlang.simd.U16x8
-import io.github.kotlinmania.rustlang.simd.U32x16
-import io.github.kotlinmania.rustlang.simd.U32x4
-import io.github.kotlinmania.rustlang.simd.U32x8
-import io.github.kotlinmania.rustlang.simd.U64x2
-import io.github.kotlinmania.rustlang.simd.U64x4
-import io.github.kotlinmania.rustlang.simd.U64x8
-import io.github.kotlinmania.rustlang.simd.U8x16
-import io.github.kotlinmania.rustlang.simd.U8x32
+import io.github.kotlinmania.rustlang.corearch.simd.I128x2
+import io.github.kotlinmania.rustlang.corearch.simd.I128x4
+import io.github.kotlinmania.rustlang.corearch.simd.I16x16
+import io.github.kotlinmania.rustlang.corearch.simd.I16x32
+import io.github.kotlinmania.rustlang.corearch.simd.I16x4
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x16
+import io.github.kotlinmania.rustlang.corearch.simd.I32x2
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I32x8
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I64x4
+import io.github.kotlinmania.rustlang.corearch.simd.I64x8
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.I8x32
+import io.github.kotlinmania.rustlang.corearch.simd.I8x8
+import io.github.kotlinmania.rustlang.corearch.simd.U128x2
+import io.github.kotlinmania.rustlang.corearch.simd.U128x4
+import io.github.kotlinmania.rustlang.corearch.simd.U16x16
+import io.github.kotlinmania.rustlang.corearch.simd.U16x32
+import io.github.kotlinmania.rustlang.corearch.simd.U16x8
+import io.github.kotlinmania.rustlang.corearch.simd.U32x16
+import io.github.kotlinmania.rustlang.corearch.simd.U32x4
+import io.github.kotlinmania.rustlang.corearch.simd.U32x8
+import io.github.kotlinmania.rustlang.corearch.simd.U64x2
+import io.github.kotlinmania.rustlang.corearch.simd.U64x4
+import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U8x32
 
 // LoongArch64 SIMD helpers
 
@@ -138,7 +138,7 @@ public fun <T> simdExtFrsqrtD(a: T): T = simdExtFrecipD(run { val _simdArg0 = a;
 
 public inline fun <reified T> simdExtLd(a: ConstPtr, i: Int): T {
     val a1 = (ConstPtr((a).rawAddress + ((i).toLong() * (PrimitiveLayouts.I8).strideBytes))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    return readUnaligned(a1, typeLayoutT = ObjectSlotLayout<T>())
+    return readUnaligned(a1, typeLayoutT = UnresolvedTypeLayout<T>())
 }
 
 public fun <Elem, T : SimdExt<T, Any?>> simdExtLdi(i: Int): T {
@@ -182,7 +182,7 @@ public fun <Elem, T : SimdExt<T, Any?>> simdExtLdi(i: Int): T {
 
 public inline fun <reified T> simdExtLdx(a: ConstPtr, b: Long): T {
     val a1 = (ConstPtr((a).rawAddress + ((b.toInt()).toLong() * (PrimitiveLayouts.I8).strideBytes))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    return readUnaligned(a1, typeLayoutT = ObjectSlotLayout<T>())
+    return readUnaligned(a1, typeLayoutT = UnresolvedTypeLayout<T>())
 }
 
 public fun <T> simdExtMadd(a: T, b: T, c: T): T = run { val _simdArg0 = a; val _simdArg1 = run { val _simdArg0 = b; val _simdArg1 = c; _simdArg0 }; _simdArg0 }
@@ -193,7 +193,7 @@ public fun <Elem, T, W : SimdExt<W, Any?>> simdExtMuh(a: T, b: T): T {
     val a1: W = run { val _simdArg0 = a; _simdArg0 }
     val b1: W = run { val _simdArg0 = b; _simdArg0 }
     val p = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
-    return run { val _simdArg0 = run { val _simdArg0 = p; val _simdArg1 = simdExtSplat((sizeOf<Elem>(typeLayoutT = ObjectSlotLayout<Elem>()) * 8 / 2).toLong()); _simdArg0 }; _simdArg0 }
+    return run { val _simdArg0 = run { val _simdArg0 = p; val _simdArg1 = simdExtSplat((sizeOf<Elem>(typeLayoutT = UnresolvedTypeLayout<Elem>()) * 8 / 2).toLong()); _simdArg0 }; _simdArg0 }
 }
 
 public fun <Elem, T : SimdExt<T, Any?>> simdExtNor(a: T, b: T): T = simdExtNot(run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 })
@@ -203,19 +203,19 @@ public fun <Elem, T : SimdExt<T, Any?>> simdExtNot(a: T): T = run { val _simdArg
 public fun <Elem, T : SimdExt<T, Any?>> simdExtOrn(a: T, b: T): T = run { val _simdArg0 = a; val _simdArg1 = simdExtNot(b); _simdArg0 }
 
 public fun <Elem, T : SimdExt<T, Any?>> simdExtRotr(a: T, b: T): T {
-    val m = (sizeOf<Elem>(typeLayoutT = ObjectSlotLayout<Elem>()) * 8 - 1).toLong()
+    val m = (sizeOf<Elem>(typeLayoutT = UnresolvedTypeLayout<Elem>()) * 8 - 1).toLong()
     val r = run { val _simdArg0 = b; val _simdArg1 = simdExtSplat(m); _simdArg0 }
     val l = run { val _simdArg0 = run { val _simdArg0 = simdExtSplat(m + 1L); val _simdArg1 = r; _simdArg0 }; val _simdArg1 = simdExtSplat(m); _simdArg0 }
     return run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = r; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = a; val _simdArg1 = l; _simdArg0 }; _simdArg0 }
 }
 
 public fun <Elem, T : SimdExt<T, Any?>> simdExtShl(a: T, b: T): T {
-    val m = (sizeOf<Elem>(typeLayoutT = ObjectSlotLayout<Elem>()) * 8 - 1).toLong()
+    val m = (sizeOf<Elem>(typeLayoutT = UnresolvedTypeLayout<Elem>()) * 8 - 1).toLong()
     return run { val _simdArg0 = a; val _simdArg1 = run { val _simdArg0 = b; val _simdArg1 = simdExtSplat(m); _simdArg0 }; _simdArg0 }
 }
 
 public fun <Elem, T : SimdExt<T, Any?>> simdExtShr(a: T, b: T): T {
-    val m = (sizeOf<Elem>(typeLayoutT = ObjectSlotLayout<Elem>()) * 8 - 1).toLong()
+    val m = (sizeOf<Elem>(typeLayoutT = UnresolvedTypeLayout<Elem>()) * 8 - 1).toLong()
     return run { val _simdArg0 = a; val _simdArg1 = run { val _simdArg0 = b; val _simdArg1 = simdExtSplat(m); _simdArg0 }; _simdArg0 }
 }
 
@@ -223,10 +223,10 @@ public fun <Elem, T : SimdExt<T, Any?>> simdExtSplat(a: Long, splatTFn: (Long) -
 
 public fun <T> simdExtSt(a: T, b: MutPtr, i: Int) {
     val b1 = (MutPtr((b).rawAddress + ((i).toLong() * (PrimitiveLayouts.I8).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    writeUnaligned(b1, a, typeLayoutT = ObjectSlotLayout<T>())
+    writeUnaligned(b1, a, typeLayoutT = UnresolvedTypeLayout<T>())
 }
 
 public fun <T> simdExtStx(a: T, b: MutPtr, c: Long) {
     val b1 = (MutPtr((b).rawAddress + ((c.toInt()).toLong() * (PrimitiveLayouts.I8).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    writeUnaligned(b1, a, typeLayoutT = ObjectSlotLayout<T>())
+    writeUnaligned(b1, a, typeLayoutT = UnresolvedTypeLayout<T>())
 }

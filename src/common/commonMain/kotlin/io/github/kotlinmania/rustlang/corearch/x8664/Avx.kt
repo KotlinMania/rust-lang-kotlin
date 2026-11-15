@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.corearch.x8664
 
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.loongarch64.lasx.M256i
+import io.github.kotlinmania.rustlang.corearch.loongarch64.lasx.M256i
 
 // Advanced Vector Extensions (AVX)
 //

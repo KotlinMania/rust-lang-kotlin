@@ -1,8 +1,8 @@
 // port-lint: source symbolize/gimli/libs_libnx.rs
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.libslibnx
 
-import io.github.kotlinmania.rustlang.symbolize.gimli.Library
-import io.github.kotlinmania.rustlang.symbolize.gimli.LibrarySegment
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Library
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.LibrarySegment
 
 // DevkitA64 doesn't natively support debug info, but the build system will
 // place debug info at the path `romfs: / debugInfo.elf`.

@@ -5,11 +5,17 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDoubleToU128Unchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDoubleToU64Unchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloatToU128Unchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloatToU64Unchecked
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.floatToIntUncheckedWithLayout
+import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
+import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
+import io.github.kotlinmania.rustlang.core.num.f16.nextDown
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.intrinsics.floatToIntUnchecked
-import io.github.kotlinmania.rustlang.num.error.IntErrorKind
-import io.github.kotlinmania.rustlang.num.error.TryFromIntError
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
 
 // Implement `From<Boolean>` for integers
 //
@@ -75,7 +81,7 @@ public interface FloatToInt<Int> {
 // signed non-zero integer -> signed non-zero integer
 // unsigned non-zero integer -> signed non-zero integer
 // signed non-zero integer -> unsigned non-zero integer
-public fun F16.toIntUnchecked(): UByte = (floatToIntUnchecked(this)).toUByte()
+public fun F16.toIntUnchecked(): UByte = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F16_LAYOUT, PrimitiveLayouts.U8)).toUByte()
 
 public fun F16.toIntSaturating(): UByte = this.toUByte()
 
@@ -102,7 +108,7 @@ public fun F16.toIntChecked(): UByte? {
     }
 }
 
-public fun F16.toIntUncheckedUShort(): UShort = (floatToIntUnchecked(this)).toUShort()
+public fun F16.toIntUncheckedUShort(): UShort = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F16_LAYOUT, PrimitiveLayouts.U16)).toUShort()
 
 public fun F16.toIntSaturatingUShort(): UShort = this.toUShort()
 
@@ -129,7 +135,7 @@ public fun F16.toIntCheckedUShort(): UShort? {
     }
 }
 
-public fun F16.toIntUncheckedUInt(): UInt = (floatToIntUnchecked(this)).toUInt()
+public fun F16.toIntUncheckedUInt(): UInt = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F16_LAYOUT, PrimitiveLayouts.U32)).toUInt()
 
 public fun F16.toIntSaturatingUInt(): UInt = this.toUInt()
 
@@ -156,7 +162,7 @@ public fun F16.toIntCheckedUInt(): UInt? {
     }
 }
 
-public fun F16.toIntUncheckedULong(): ULong = (floatToIntUnchecked(this)).toULong()
+public fun F16.toIntUncheckedULong(): ULong = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F16_LAYOUT, PrimitiveLayouts.U64)).toULong()
 
 public fun F16.toIntSaturatingULong(): ULong = this.toULong()
 
@@ -183,7 +189,7 @@ public fun F16.toIntCheckedULong(): ULong? {
     }
 }
 
-public fun F16.toIntUncheckedU128(): U128 = floatToIntUnchecked(this)
+public fun F16.toIntUncheckedU128(): U128 = floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F16_LAYOUT, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 
 public fun F16.toIntSaturatingU128(): U128 = U128.fromULong(this.toULong())
 
@@ -210,7 +216,7 @@ public fun F16.toIntCheckedU128(): U128? {
     }
 }
 
-public fun F16.toIntUncheckedInt(): Int = floatToIntUnchecked(this)
+public fun F16.toIntUncheckedInt(): Int = floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F16_LAYOUT, PrimitiveLayouts.U32)
 
 public fun F16.toIntSaturatingInt(): Int = this.toInt()
 
@@ -237,7 +243,7 @@ public fun F16.toIntCheckedInt(): Int? {
     }
 }
 
-public fun F16.toIntUncheckedByte(): Byte = (floatToIntUnchecked(this)).toByte()
+public fun F16.toIntUncheckedByte(): Byte = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F16_LAYOUT, PrimitiveLayouts.I8)).toByte()
 
 public fun F16.toIntSaturatingByte(): Byte = this.toByte()
 
@@ -264,7 +270,7 @@ public fun F16.toIntCheckedByte(): Byte? {
     }
 }
 
-public fun F16.toIntUncheckedShort(): Short = (floatToIntUnchecked(this)).toShort()
+public fun F16.toIntUncheckedShort(): Short = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F16_LAYOUT, PrimitiveLayouts.I16)).toShort()
 
 public fun F16.toIntSaturatingShort(): Short = this.toShort()
 
@@ -291,7 +297,7 @@ public fun F16.toIntCheckedShort(): Short? {
     }
 }
 
-public fun F16.toIntUncheckedLong(): Long = (floatToIntUnchecked(this)).toLong()
+public fun F16.toIntUncheckedLong(): Long = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F16_LAYOUT, PrimitiveLayouts.I64)).toLong()
 
 public fun F16.toIntSaturatingLong(): Long = this.toLong()
 
@@ -318,7 +324,7 @@ public fun F16.toIntCheckedLong(): Long? {
     }
 }
 
-public fun F16.toIntUncheckedI128(): I128 = floatToIntUnchecked(this)
+public fun F16.toIntUncheckedI128(): I128 = floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F16_LAYOUT, PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 
 public fun F16.toIntSaturatingI128(): I128 = I128.fromLong(this.toLong())
 
@@ -345,7 +351,7 @@ public fun F16.toIntCheckedI128(): I128? {
     }
 }
 
-public fun kotlin.Float.toIntUnchecked(): UByte = (floatToIntUnchecked(this)).toUByte()
+public fun kotlin.Float.toIntUnchecked(): UByte = kmFloatToU64Unchecked(this).toUByte()
 
 public fun kotlin.Float.toIntSaturating(): UByte = this.toUByte()
 
@@ -372,7 +378,7 @@ public fun kotlin.Float.toIntChecked(): UByte? {
     }
 }
 
-public fun kotlin.Float.toIntUncheckedUShort(): UShort = (floatToIntUnchecked(this)).toUShort()
+public fun kotlin.Float.toIntUncheckedUShort(): UShort = kmFloatToU64Unchecked(this).toUShort()
 
 public fun kotlin.Float.toIntSaturatingUShort(): UShort = this.toUShort()
 
@@ -399,7 +405,7 @@ public fun kotlin.Float.toIntCheckedUShort(): UShort? {
     }
 }
 
-public fun kotlin.Float.toIntUncheckedUInt(): UInt = (floatToIntUnchecked(this)).toUInt()
+public fun kotlin.Float.toIntUncheckedUInt(): UInt = kmFloatToU64Unchecked(this).toUInt()
 
 public fun kotlin.Float.toIntSaturatingUInt(): UInt = this.toUInt()
 
@@ -426,7 +432,7 @@ public fun kotlin.Float.toIntCheckedUInt(): UInt? {
     }
 }
 
-public fun kotlin.Float.toIntUncheckedULong(): ULong = (floatToIntUnchecked(this)).toULong()
+public fun kotlin.Float.toIntUncheckedULong(): ULong = (kmFloatToU64Unchecked(this)).toULong()
 
 public fun kotlin.Float.toIntSaturatingULong(): ULong = this.toULong()
 
@@ -453,7 +459,7 @@ public fun kotlin.Float.toIntCheckedULong(): ULong? {
     }
 }
 
-public fun kotlin.Float.toIntUncheckedU128(): U128 = floatToIntUnchecked(this)
+public fun kotlin.Float.toIntUncheckedU128(): U128 = kmFloatToU128Unchecked(this).let { U128(it.hi, it.lo) }
 
 public fun kotlin.Float.toIntSaturatingU128(): U128 = U128.fromULong(this.toULong())
 
@@ -480,7 +486,7 @@ public fun kotlin.Float.toIntCheckedU128(): U128? {
     }
 }
 
-public fun kotlin.Float.toIntUncheckedInt(): Int = floatToIntUnchecked(this)
+public fun kotlin.Float.toIntUncheckedInt(): Int = kmFloatToU64Unchecked(this).toUInt()
 
 public fun kotlin.Float.toIntSaturatingInt(): Int = this.toInt()
 
@@ -507,7 +513,7 @@ public fun kotlin.Float.toIntCheckedInt(): Int? {
     }
 }
 
-public fun kotlin.Float.toIntUncheckedByte(): Byte = (floatToIntUnchecked(this)).toByte()
+public fun kotlin.Float.toIntUncheckedByte(): Byte = (this).toInt().toByte()
 
 public fun kotlin.Float.toIntSaturatingByte(): Byte = this.toByte()
 
@@ -534,7 +540,7 @@ public fun kotlin.Float.toIntCheckedByte(): Byte? {
     }
 }
 
-public fun kotlin.Float.toIntUncheckedShort(): Short = (floatToIntUnchecked(this)).toShort()
+public fun kotlin.Float.toIntUncheckedShort(): Short = (this).toInt().toShort()
 
 public fun kotlin.Float.toIntSaturatingShort(): Short = this.toShort()
 
@@ -561,7 +567,7 @@ public fun kotlin.Float.toIntCheckedShort(): Short? {
     }
 }
 
-public fun kotlin.Float.toIntUncheckedLong(): Long = (floatToIntUnchecked(this)).toLong()
+public fun kotlin.Float.toIntUncheckedLong(): Long = (this).toLong()
 
 public fun kotlin.Float.toIntSaturatingLong(): Long = this.toLong()
 
@@ -588,7 +594,7 @@ public fun kotlin.Float.toIntCheckedLong(): Long? {
     }
 }
 
-public fun kotlin.Float.toIntUncheckedI128(): I128 = floatToIntUnchecked(this)
+public fun kotlin.Float.toIntUncheckedI128(): I128 = floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F32, PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 
 public fun kotlin.Float.toIntSaturatingI128(): I128 = I128.fromLong(this.toLong())
 
@@ -615,7 +621,7 @@ public fun kotlin.Float.toIntCheckedI128(): I128? {
     }
 }
 
-public fun Double.toIntUnchecked(): UByte = (floatToIntUnchecked(this)).toUByte()
+public fun Double.toIntUnchecked(): UByte = kmDoubleToU64Unchecked(this).toUByte()
 
 public fun Double.toIntSaturating(): UByte = this.toUByte()
 
@@ -642,7 +648,7 @@ public fun Double.toIntChecked(): UByte? {
     }
 }
 
-public fun Double.toIntUncheckedUShort(): UShort = (floatToIntUnchecked(this)).toUShort()
+public fun Double.toIntUncheckedUShort(): UShort = kmDoubleToU64Unchecked(this).toUShort()
 
 public fun Double.toIntSaturatingUShort(): UShort = this.toUShort()
 
@@ -669,7 +675,7 @@ public fun Double.toIntCheckedUShort(): UShort? {
     }
 }
 
-public fun Double.toIntUncheckedUInt(): UInt = (floatToIntUnchecked(this)).toUInt()
+public fun Double.toIntUncheckedUInt(): UInt = kmDoubleToU64Unchecked(this).toUInt()
 
 public fun Double.toIntSaturatingUInt(): UInt = this.toUInt()
 
@@ -696,7 +702,7 @@ public fun Double.toIntCheckedUInt(): UInt? {
     }
 }
 
-public fun Double.toIntUncheckedULong(): ULong = (floatToIntUnchecked(this)).toULong()
+public fun Double.toIntUncheckedULong(): ULong = (kmDoubleToU64Unchecked(this)).toULong()
 
 public fun Double.toIntSaturatingULong(): ULong = this.toULong()
 
@@ -723,7 +729,7 @@ public fun Double.toIntCheckedULong(): ULong? {
     }
 }
 
-public fun Double.toIntUncheckedU128(): U128 = floatToIntUnchecked(this)
+public fun Double.toIntUncheckedU128(): U128 = kmDoubleToU128Unchecked(this).let { U128(it.hi, it.lo) }
 
 public fun Double.toIntSaturatingU128(): U128 = U128.fromULong(this.toULong())
 
@@ -750,7 +756,7 @@ public fun Double.toIntCheckedU128(): U128? {
     }
 }
 
-public fun Double.toIntUncheckedInt(): Int = floatToIntUnchecked(this)
+public fun Double.toIntUncheckedInt(): Int = kmDoubleToU64Unchecked(this).toUInt()
 
 public fun Double.toIntSaturatingInt(): Int = this.toInt()
 
@@ -777,7 +783,7 @@ public fun Double.toIntCheckedInt(): Int? {
     }
 }
 
-public fun Double.toIntUncheckedByte(): Byte = (floatToIntUnchecked(this)).toByte()
+public fun Double.toIntUncheckedByte(): Byte = (this).toInt().toByte()
 
 public fun Double.toIntSaturatingByte(): Byte = this.toByte()
 
@@ -804,7 +810,7 @@ public fun Double.toIntCheckedByte(): Byte? {
     }
 }
 
-public fun Double.toIntUncheckedShort(): Short = (floatToIntUnchecked(this)).toShort()
+public fun Double.toIntUncheckedShort(): Short = (this).toInt().toShort()
 
 public fun Double.toIntSaturatingShort(): Short = this.toShort()
 
@@ -831,7 +837,7 @@ public fun Double.toIntCheckedShort(): Short? {
     }
 }
 
-public fun Double.toIntUncheckedLong(): Long = (floatToIntUnchecked(this)).toLong()
+public fun Double.toIntUncheckedLong(): Long = (this).toLong()
 
 public fun Double.toIntSaturatingLong(): Long = this.toLong()
 
@@ -858,7 +864,7 @@ public fun Double.toIntCheckedLong(): Long? {
     }
 }
 
-public fun Double.toIntUncheckedI128(): I128 = floatToIntUnchecked(this)
+public fun Double.toIntUncheckedI128(): I128 = floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F64, PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 
 public fun Double.toIntSaturatingI128(): I128 = I128.fromLong(this.toLong())
 
@@ -885,7 +891,7 @@ public fun Double.toIntCheckedI128(): I128? {
     }
 }
 
-public fun F128.toIntUnchecked(): UByte = (floatToIntUnchecked(this)).toUByte()
+public fun F128.toIntUnchecked(): UByte = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F128_LAYOUT, PrimitiveLayouts.U8)).toUByte()
 
 public fun F128.toIntSaturating(): UByte = this.toUByte()
 
@@ -912,7 +918,7 @@ public fun F128.toIntChecked(): UByte? {
     }
 }
 
-public fun F128.toIntUncheckedUShort(): UShort = (floatToIntUnchecked(this)).toUShort()
+public fun F128.toIntUncheckedUShort(): UShort = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F128_LAYOUT, PrimitiveLayouts.U16)).toUShort()
 
 public fun F128.toIntSaturatingUShort(): UShort = this.toUShort()
 
@@ -939,7 +945,7 @@ public fun F128.toIntCheckedUShort(): UShort? {
     }
 }
 
-public fun F128.toIntUncheckedUInt(): UInt = (floatToIntUnchecked(this)).toUInt()
+public fun F128.toIntUncheckedUInt(): UInt = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F128_LAYOUT, PrimitiveLayouts.U32)).toUInt()
 
 public fun F128.toIntSaturatingUInt(): UInt = this.toUInt()
 
@@ -966,7 +972,7 @@ public fun F128.toIntCheckedUInt(): UInt? {
     }
 }
 
-public fun F128.toIntUncheckedULong(): ULong = (floatToIntUnchecked(this)).toULong()
+public fun F128.toIntUncheckedULong(): ULong = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F128_LAYOUT, PrimitiveLayouts.U64)).toULong()
 
 public fun F128.toIntSaturatingULong(): ULong = this.toULong()
 
@@ -993,7 +999,7 @@ public fun F128.toIntCheckedULong(): ULong? {
     }
 }
 
-public fun F128.toIntUncheckedU128(): U128 = floatToIntUnchecked(this)
+public fun F128.toIntUncheckedU128(): U128 = floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F128_LAYOUT, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
 
 public fun F128.toIntSaturatingU128(): U128 = U128.fromULong(this.toULong())
 
@@ -1020,7 +1026,7 @@ public fun F128.toIntCheckedU128(): U128? {
     }
 }
 
-public fun F128.toIntUncheckedInt(): Int = floatToIntUnchecked(this)
+public fun F128.toIntUncheckedInt(): Int = floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F128_LAYOUT, PrimitiveLayouts.U32)
 
 public fun F128.toIntSaturatingInt(): Int = this.toInt()
 
@@ -1047,7 +1053,7 @@ public fun F128.toIntCheckedInt(): Int? {
     }
 }
 
-public fun F128.toIntUncheckedByte(): Byte = (floatToIntUnchecked(this)).toByte()
+public fun F128.toIntUncheckedByte(): Byte = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F128_LAYOUT, PrimitiveLayouts.I8)).toByte()
 
 public fun F128.toIntSaturatingByte(): Byte = this.toByte()
 
@@ -1074,7 +1080,7 @@ public fun F128.toIntCheckedByte(): Byte? {
     }
 }
 
-public fun F128.toIntUncheckedShort(): Short = (floatToIntUnchecked(this)).toShort()
+public fun F128.toIntUncheckedShort(): Short = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F128_LAYOUT, PrimitiveLayouts.I16)).toShort()
 
 public fun F128.toIntSaturatingShort(): Short = this.toShort()
 
@@ -1101,7 +1107,7 @@ public fun F128.toIntCheckedShort(): Short? {
     }
 }
 
-public fun F128.toIntUncheckedLong(): Long = (floatToIntUnchecked(this)).toLong()
+public fun F128.toIntUncheckedLong(): Long = (floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F128_LAYOUT, PrimitiveLayouts.I64)).toLong()
 
 public fun F128.toIntSaturatingLong(): Long = this.toLong()
 
@@ -1128,7 +1134,7 @@ public fun F128.toIntCheckedLong(): Long? {
     }
 }
 
-public fun F128.toIntUncheckedI128(): I128 = floatToIntUnchecked(this)
+public fun F128.toIntUncheckedI128(): I128 = floatToIntUncheckedWithLayout(this, PrimitiveLayouts.F128_LAYOUT, PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
 
 public fun F128.toIntSaturatingI128(): I128 = I128.fromLong(this.toLong())
 
@@ -2957,43 +2963,113 @@ public fun tryFromNonZeroLong(value: Long): Result<NonZero<Long>, TryFromIntErro
 public fun tryFromNonZeroI128(value: I128): Result<NonZero<I128>, TryFromIntError> = NonZero.new(value).okOr(TryFromIntError(IntErrorKind.Zero))
 
 public fun tryFromNonZeroUByte(value: NonZero<UShort>): Result<NonZero<UByte>, TryFromIntError> {
-    return Result.Ok(NonZero.newUnchecked(when (val tryResult = UByte.tryFrom(value.get())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(
+        NonZero.newUnchecked(
+            when (val tryResult = UByte.tryFrom(value.get())) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            },
+        ),
+    )
 }
 
 public fun tryFromNonZeroUShort(value: NonZero<UInt>): Result<NonZero<UShort>, TryFromIntError> {
-    return Result.Ok(NonZero.newUnchecked(when (val tryResult = UShort.tryFrom(value.get())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(
+        NonZero.newUnchecked(
+            when (val tryResult = UShort.tryFrom(value.get())) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            },
+        ),
+    )
 }
 
 public fun tryFromNonZeroInt(value: NonZero<UInt>): Result<NonZero<Int>, TryFromIntError> {
-    return Result.Ok(NonZero.newUnchecked(when (val tryResult = Int.tryFrom(value.get())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(
+        NonZero.newUnchecked(
+            when (val tryResult = Int.tryFrom(value.get())) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            },
+        ),
+    )
 }
 
 public fun tryFromNonZeroUInt(value: NonZero<ULong>): Result<NonZero<UInt>, TryFromIntError> {
-    return Result.Ok(NonZero.newUnchecked(when (val tryResult = UInt.tryFrom(value.get())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(
+        NonZero.newUnchecked(
+            when (val tryResult = UInt.tryFrom(value.get())) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            },
+        ),
+    )
 }
 
 public fun tryFromNonZeroULong(value: NonZero<U128>): Result<NonZero<ULong>, TryFromIntError> {
-    return Result.Ok(NonZero.newUnchecked(when (val tryResult = ULong.tryFrom(value.get())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(
+        NonZero.newUnchecked(
+            when (val tryResult = ULong.tryFrom(value.get())) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            },
+        ),
+    )
 }
 
 public fun tryFromNonZeroU128(value: NonZero<Int>): Result<NonZero<U128>, TryFromIntError> {
-    return Result.Ok(NonZero.newUnchecked(when (val tryResult = U128.tryFrom(value.get())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(
+        NonZero.newUnchecked(
+            when (val tryResult = U128.tryFrom(value.get())) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            },
+        ),
+    )
 }
 
 public fun tryFromNonZeroByte(value: NonZero<Short>): Result<NonZero<Byte>, TryFromIntError> {
-    return Result.Ok(NonZero.newUnchecked(when (val tryResult = Byte.tryFrom(value.get())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(
+        NonZero.newUnchecked(
+            when (val tryResult = Byte.tryFrom(value.get())) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            },
+        ),
+    )
 }
 
 public fun tryFromNonZeroShort(value: NonZero<Int>): Result<NonZero<Short>, TryFromIntError> {
-    return Result.Ok(NonZero.newUnchecked(when (val tryResult = Short.tryFrom(value.get())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(
+        NonZero.newUnchecked(
+            when (val tryResult = Short.tryFrom(value.get())) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            },
+        ),
+    )
 }
 
 public fun tryFromNonZeroLong(value: NonZero<I128>): Result<NonZero<Long>, TryFromIntError> {
-    return Result.Ok(NonZero.newUnchecked(when (val tryResult = Long.tryFrom(value.get())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(
+        NonZero.newUnchecked(
+            when (val tryResult = Long.tryFrom(value.get())) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            },
+        ),
+    )
 }
 
 public fun tryFromNonZeroI128(value: NonZero<Int>): Result<NonZero<I128>, TryFromIntError> {
-    return Result.Ok(NonZero.newUnchecked(when (val tryResult = I128.tryFrom(value.get())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(
+        NonZero.newUnchecked(
+            when (val tryResult = I128.tryFrom(value.get())) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            },
+        ),
+    )
 }
 
 /**
@@ -3047,12 +3123,15 @@ public fun checkedCastFromIntUncheckedCastFromUByte(value: UByte): UByte = value
 public fun checkedCastFromIntStrictCastFromUByte(value: UByte): UByte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUByte(value: UByte): UByte = value
@@ -3079,12 +3158,15 @@ public fun checkedCastFromIntUncheckedCastFromUShort(value: UByte): UShort = val
 public fun checkedCastFromIntStrictCastFromUShort(value: UByte): UShort =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUShort(value: UByte): UShort = value.toUShort()
@@ -3111,12 +3193,15 @@ public fun checkedCastFromIntUncheckedCastFromUInt(value: UByte): UInt = value.t
 public fun checkedCastFromIntStrictCastFromUInt(value: UByte): UInt =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUInt(value: UByte): UInt = value.toUInt()
@@ -3143,12 +3228,15 @@ public fun checkedCastFromIntUncheckedCastFromULong(value: UByte): ULong = value
 public fun checkedCastFromIntStrictCastFromULong(value: UByte): ULong =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromULong(value: UByte): ULong = value.toULong()
@@ -3175,12 +3263,15 @@ public fun checkedCastFromIntUncheckedCastFromU128(value: UByte): U128 = value.t
 public fun checkedCastFromIntStrictCastFromU128(value: UByte): U128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromU128(value: UByte): U128 = U128.fromUByte(value)
@@ -3207,12 +3298,15 @@ public fun checkedCastFromIntUncheckedCastFromInt(value: UByte): Int = value.try
 public fun checkedCastFromIntStrictCastFromInt(value: UByte): Int =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromInt(value: UByte): Int = value.toInt()
@@ -3239,12 +3333,15 @@ public fun checkedCastFromIntUncheckedCastFromByte(value: UByte): Byte = value.t
 public fun checkedCastFromIntStrictCastFromByte(value: UByte): Byte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromByte(value: UByte): Byte = value.toByte()
@@ -3271,12 +3368,15 @@ public fun checkedCastFromIntUncheckedCastFromShort(value: UByte): Short = value
 public fun checkedCastFromIntStrictCastFromShort(value: UByte): Short =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromShort(value: UByte): Short = value.toShort()
@@ -3303,12 +3403,15 @@ public fun checkedCastFromIntUncheckedCastFromLong(value: UByte): Long = value.t
 public fun checkedCastFromIntStrictCastFromLong(value: UByte): Long =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromLong(value: UByte): Long = value.toLong()
@@ -3335,12 +3438,15 @@ public fun checkedCastFromIntUncheckedCastFromI128(value: UByte): I128 = value.t
 public fun checkedCastFromIntStrictCastFromI128(value: UByte): I128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromI128(value: UByte): I128 = I128.fromUByte(value)
@@ -3367,12 +3473,15 @@ public fun checkedCastFromIntUncheckedCastFromUByte(value: UShort): UByte = valu
 public fun checkedCastFromIntStrictCastFromUByte(value: UShort): UByte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUByte(value: UShort): UByte = value.toUByte()
@@ -3399,12 +3508,15 @@ public fun checkedCastFromIntUncheckedCastFromUShort(value: UShort): UShort = va
 public fun checkedCastFromIntStrictCastFromUShort(value: UShort): UShort =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUShort(value: UShort): UShort = value
@@ -3431,12 +3543,15 @@ public fun checkedCastFromIntUncheckedCastFromUInt(value: UShort): UInt = value.
 public fun checkedCastFromIntStrictCastFromUInt(value: UShort): UInt =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUInt(value: UShort): UInt = value.toUInt()
@@ -3463,12 +3578,15 @@ public fun checkedCastFromIntUncheckedCastFromULong(value: UShort): ULong = valu
 public fun checkedCastFromIntStrictCastFromULong(value: UShort): ULong =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromULong(value: UShort): ULong = value.toULong()
@@ -3495,12 +3613,15 @@ public fun checkedCastFromIntUncheckedCastFromU128(value: UShort): U128 = value.
 public fun checkedCastFromIntStrictCastFromU128(value: UShort): U128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromU128(value: UShort): U128 = U128.fromUShort(value)
@@ -3527,12 +3648,15 @@ public fun checkedCastFromIntUncheckedCastFromInt(value: UShort): Int = value.tr
 public fun checkedCastFromIntStrictCastFromInt(value: UShort): Int =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromInt(value: UShort): Int = value.toInt()
@@ -3559,12 +3683,15 @@ public fun checkedCastFromIntUncheckedCastFromByte(value: UShort): Byte = value.
 public fun checkedCastFromIntStrictCastFromByte(value: UShort): Byte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromByte(value: UShort): Byte = value.toByte()
@@ -3591,12 +3718,15 @@ public fun checkedCastFromIntUncheckedCastFromShort(value: UShort): Short = valu
 public fun checkedCastFromIntStrictCastFromShort(value: UShort): Short =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromShort(value: UShort): Short = value.toShort()
@@ -3623,12 +3753,15 @@ public fun checkedCastFromIntUncheckedCastFromLong(value: UShort): Long = value.
 public fun checkedCastFromIntStrictCastFromLong(value: UShort): Long =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromLong(value: UShort): Long = value.toLong()
@@ -3655,12 +3788,15 @@ public fun checkedCastFromIntUncheckedCastFromI128(value: UShort): I128 = value.
 public fun checkedCastFromIntStrictCastFromI128(value: UShort): I128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromI128(value: UShort): I128 = I128.fromUShort(value)
@@ -3687,12 +3823,15 @@ public fun checkedCastFromIntUncheckedCastFromUByte(value: UInt): UByte = value.
 public fun checkedCastFromIntStrictCastFromUByte(value: UInt): UByte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUByte(value: UInt): UByte = value.toUByte()
@@ -3719,12 +3858,15 @@ public fun checkedCastFromIntUncheckedCastFromUShort(value: UInt): UShort = valu
 public fun checkedCastFromIntStrictCastFromUShort(value: UInt): UShort =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUShort(value: UInt): UShort = value.toUShort()
@@ -3751,12 +3893,15 @@ public fun checkedCastFromIntUncheckedCastFromUInt(value: UInt): UInt = value.tr
 public fun checkedCastFromIntStrictCastFromUInt(value: UInt): UInt =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUInt(value: UInt): UInt = value
@@ -3783,12 +3928,15 @@ public fun checkedCastFromIntUncheckedCastFromULong(value: UInt): ULong = value.
 public fun checkedCastFromIntStrictCastFromULong(value: UInt): ULong =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromULong(value: UInt): ULong = value.toULong()
@@ -3815,12 +3963,15 @@ public fun checkedCastFromIntUncheckedCastFromU128(value: UInt): U128 = value.tr
 public fun checkedCastFromIntStrictCastFromU128(value: UInt): U128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromU128(value: UInt): U128 = U128.fromUInt(value)
@@ -3847,12 +3998,15 @@ public fun checkedCastFromIntUncheckedCastFromInt(value: UInt): Int = value.tryI
 public fun checkedCastFromIntStrictCastFromInt(value: UInt): Int =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromInt(value: UInt): Int = value.toInt()
@@ -3879,12 +4033,15 @@ public fun checkedCastFromIntUncheckedCastFromByte(value: UInt): Byte = value.tr
 public fun checkedCastFromIntStrictCastFromByte(value: UInt): Byte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromByte(value: UInt): Byte = value.toByte()
@@ -3911,12 +4068,15 @@ public fun checkedCastFromIntUncheckedCastFromShort(value: UInt): Short = value.
 public fun checkedCastFromIntStrictCastFromShort(value: UInt): Short =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromShort(value: UInt): Short = value.toShort()
@@ -3943,12 +4103,15 @@ public fun checkedCastFromIntUncheckedCastFromLong(value: UInt): Long = value.tr
 public fun checkedCastFromIntStrictCastFromLong(value: UInt): Long =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromLong(value: UInt): Long = value.toLong()
@@ -3975,12 +4138,15 @@ public fun checkedCastFromIntUncheckedCastFromI128(value: UInt): I128 = value.tr
 public fun checkedCastFromIntStrictCastFromI128(value: UInt): I128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromI128(value: UInt): I128 = I128.fromUInt(value)
@@ -4007,12 +4173,15 @@ public fun checkedCastFromIntUncheckedCastFromUByte(value: ULong): UByte = value
 public fun checkedCastFromIntStrictCastFromUByte(value: ULong): UByte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUByte(value: ULong): UByte = value.toUByte()
@@ -4039,12 +4208,15 @@ public fun checkedCastFromIntUncheckedCastFromUShort(value: ULong): UShort = val
 public fun checkedCastFromIntStrictCastFromUShort(value: ULong): UShort =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUShort(value: ULong): UShort = value.toUShort()
@@ -4071,12 +4243,15 @@ public fun checkedCastFromIntUncheckedCastFromUInt(value: ULong): UInt = value.t
 public fun checkedCastFromIntStrictCastFromUInt(value: ULong): UInt =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUInt(value: ULong): UInt = value.toUInt()
@@ -4103,12 +4278,15 @@ public fun checkedCastFromIntUncheckedCastFromULong(value: ULong): ULong = value
 public fun checkedCastFromIntStrictCastFromULong(value: ULong): ULong =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromULong(value: ULong): ULong = value
@@ -4135,12 +4313,15 @@ public fun checkedCastFromIntUncheckedCastFromU128(value: ULong): U128 = value.t
 public fun checkedCastFromIntStrictCastFromU128(value: ULong): U128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromU128(value: ULong): U128 = U128.fromULong(value)
@@ -4167,12 +4348,15 @@ public fun checkedCastFromIntUncheckedCastFromInt(value: ULong): Int = value.try
 public fun checkedCastFromIntStrictCastFromInt(value: ULong): Int =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromInt(value: ULong): Int = value.toInt()
@@ -4199,12 +4383,15 @@ public fun checkedCastFromIntUncheckedCastFromByte(value: ULong): Byte = value.t
 public fun checkedCastFromIntStrictCastFromByte(value: ULong): Byte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromByte(value: ULong): Byte = value.toByte()
@@ -4231,12 +4418,15 @@ public fun checkedCastFromIntUncheckedCastFromShort(value: ULong): Short = value
 public fun checkedCastFromIntStrictCastFromShort(value: ULong): Short =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromShort(value: ULong): Short = value.toShort()
@@ -4263,12 +4453,15 @@ public fun checkedCastFromIntUncheckedCastFromLong(value: ULong): Long = value.t
 public fun checkedCastFromIntStrictCastFromLong(value: ULong): Long =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromLong(value: ULong): Long = value.toLong()
@@ -4295,12 +4488,15 @@ public fun checkedCastFromIntUncheckedCastFromI128(value: ULong): I128 = value.t
 public fun checkedCastFromIntStrictCastFromI128(value: ULong): I128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromI128(value: ULong): I128 = I128.fromULong(value)
@@ -4327,12 +4523,15 @@ public fun checkedCastFromIntUncheckedCastFromUByte(value: U128): UByte = value.
 public fun checkedCastFromIntStrictCastFromUByte(value: U128): UByte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUByte(value: U128): UByte = value.toUByte()
@@ -4359,12 +4558,15 @@ public fun checkedCastFromIntUncheckedCastFromUShort(value: U128): UShort = valu
 public fun checkedCastFromIntStrictCastFromUShort(value: U128): UShort =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUShort(value: U128): UShort = value.toUShort()
@@ -4391,12 +4593,15 @@ public fun checkedCastFromIntUncheckedCastFromUInt(value: U128): UInt = value.tr
 public fun checkedCastFromIntStrictCastFromUInt(value: U128): UInt =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUInt(value: U128): UInt = value.toUInt()
@@ -4423,12 +4628,15 @@ public fun checkedCastFromIntUncheckedCastFromULong(value: U128): ULong = value.
 public fun checkedCastFromIntStrictCastFromULong(value: U128): ULong =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromULong(value: U128): ULong = value.toULong()
@@ -4455,12 +4663,15 @@ public fun checkedCastFromIntUncheckedCastFromU128(value: U128): U128 = value.tr
 public fun checkedCastFromIntStrictCastFromU128(value: U128): U128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromU128(value: U128): U128 = value
@@ -4487,12 +4698,15 @@ public fun checkedCastFromIntUncheckedCastFromInt(value: U128): Int = value.tryI
 public fun checkedCastFromIntStrictCastFromInt(value: U128): Int =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromInt(value: U128): Int = value.toInt()
@@ -4519,12 +4733,15 @@ public fun checkedCastFromIntUncheckedCastFromByte(value: U128): Byte = value.tr
 public fun checkedCastFromIntStrictCastFromByte(value: U128): Byte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromByte(value: U128): Byte = value.toByte()
@@ -4551,12 +4768,15 @@ public fun checkedCastFromIntUncheckedCastFromShort(value: U128): Short = value.
 public fun checkedCastFromIntStrictCastFromShort(value: U128): Short =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromShort(value: U128): Short = value.toShort()
@@ -4583,12 +4803,15 @@ public fun checkedCastFromIntUncheckedCastFromLong(value: U128): Long = value.tr
 public fun checkedCastFromIntStrictCastFromLong(value: U128): Long =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromLong(value: U128): Long = value.toLong()
@@ -4615,12 +4838,15 @@ public fun checkedCastFromIntUncheckedCastFromI128(value: U128): I128 = value.tr
 public fun checkedCastFromIntStrictCastFromI128(value: U128): I128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromI128(value: U128): I128 = value.toI128()
@@ -4647,12 +4873,15 @@ public fun checkedCastFromIntUncheckedCastFromUByte(value: Int): UByte = value.t
 public fun checkedCastFromIntStrictCastFromUByte(value: Int): UByte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUByte(value: Int): UByte = value.toUByte()
@@ -4679,12 +4908,15 @@ public fun checkedCastFromIntUncheckedCastFromUShort(value: Int): UShort = value
 public fun checkedCastFromIntStrictCastFromUShort(value: Int): UShort =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUShort(value: Int): UShort = value.toUShort()
@@ -4711,12 +4943,15 @@ public fun checkedCastFromIntUncheckedCastFromUInt(value: Int): UInt = value.try
 public fun checkedCastFromIntStrictCastFromUInt(value: Int): UInt =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUInt(value: Int): UInt = value.toUInt()
@@ -4743,12 +4978,15 @@ public fun checkedCastFromIntUncheckedCastFromULong(value: Int): ULong = value.t
 public fun checkedCastFromIntStrictCastFromULong(value: Int): ULong =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromULong(value: Int): ULong = value.toULong()
@@ -4775,12 +5013,15 @@ public fun checkedCastFromIntUncheckedCastFromU128(value: Int): U128 = value.try
 public fun checkedCastFromIntStrictCastFromU128(value: Int): U128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromU128(value: Int): U128 = U128.fromInt(value)
@@ -4807,12 +5048,15 @@ public fun checkedCastFromIntUncheckedCastFromInt(value: Int): Int = value.tryIn
 public fun checkedCastFromIntStrictCastFromInt(value: Int): Int =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromInt(value: Int): Int = value
@@ -4839,12 +5083,15 @@ public fun checkedCastFromIntUncheckedCastFromByte(value: Int): Byte = value.try
 public fun checkedCastFromIntStrictCastFromByte(value: Int): Byte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromByte(value: Int): Byte = value.toByte()
@@ -4871,12 +5118,15 @@ public fun checkedCastFromIntUncheckedCastFromShort(value: Int): Short = value.t
 public fun checkedCastFromIntStrictCastFromShort(value: Int): Short =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromShort(value: Int): Short = value.toShort()
@@ -4903,12 +5153,15 @@ public fun checkedCastFromIntUncheckedCastFromLong(value: Int): Long = value.try
 public fun checkedCastFromIntStrictCastFromLong(value: Int): Long =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromLong(value: Int): Long = value.toLong()
@@ -4935,12 +5188,15 @@ public fun checkedCastFromIntUncheckedCastFromI128(value: Int): I128 = value.try
 public fun checkedCastFromIntStrictCastFromI128(value: Int): I128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromI128(value: Int): I128 = I128.fromInt(value)
@@ -4967,12 +5223,15 @@ public fun checkedCastFromIntUncheckedCastFromUByte(value: Byte): UByte = value.
 public fun checkedCastFromIntStrictCastFromUByte(value: Byte): UByte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUByte(value: Byte): UByte = value.toUByte()
@@ -4999,12 +5258,15 @@ public fun checkedCastFromIntUncheckedCastFromUShort(value: Byte): UShort = valu
 public fun checkedCastFromIntStrictCastFromUShort(value: Byte): UShort =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUShort(value: Byte): UShort = value.toUShort()
@@ -5031,12 +5293,15 @@ public fun checkedCastFromIntUncheckedCastFromUInt(value: Byte): UInt = value.tr
 public fun checkedCastFromIntStrictCastFromUInt(value: Byte): UInt =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUInt(value: Byte): UInt = value.toUInt()
@@ -5063,12 +5328,15 @@ public fun checkedCastFromIntUncheckedCastFromULong(value: Byte): ULong = value.
 public fun checkedCastFromIntStrictCastFromULong(value: Byte): ULong =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromULong(value: Byte): ULong = value.toULong()
@@ -5095,12 +5363,15 @@ public fun checkedCastFromIntUncheckedCastFromU128(value: Byte): U128 = value.tr
 public fun checkedCastFromIntStrictCastFromU128(value: Byte): U128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromU128(value: Byte): U128 = U128.fromByte(value)
@@ -5127,12 +5398,15 @@ public fun checkedCastFromIntUncheckedCastFromInt(value: Byte): Int = value.tryI
 public fun checkedCastFromIntStrictCastFromInt(value: Byte): Int =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromInt(value: Byte): Int = value.toInt()
@@ -5159,12 +5433,15 @@ public fun checkedCastFromIntUncheckedCastFromByte(value: Byte): Byte = value.tr
 public fun checkedCastFromIntStrictCastFromByte(value: Byte): Byte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromByte(value: Byte): Byte = value
@@ -5191,12 +5468,15 @@ public fun checkedCastFromIntUncheckedCastFromShort(value: Byte): Short = value.
 public fun checkedCastFromIntStrictCastFromShort(value: Byte): Short =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromShort(value: Byte): Short = value.toShort()
@@ -5223,12 +5503,15 @@ public fun checkedCastFromIntUncheckedCastFromLong(value: Byte): Long = value.tr
 public fun checkedCastFromIntStrictCastFromLong(value: Byte): Long =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromLong(value: Byte): Long = value.toLong()
@@ -5255,12 +5538,15 @@ public fun checkedCastFromIntUncheckedCastFromI128(value: Byte): I128 = value.tr
 public fun checkedCastFromIntStrictCastFromI128(value: Byte): I128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromI128(value: Byte): I128 = I128.fromByte(value)
@@ -5287,12 +5573,15 @@ public fun checkedCastFromIntUncheckedCastFromUByte(value: Short): UByte = value
 public fun checkedCastFromIntStrictCastFromUByte(value: Short): UByte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUByte(value: Short): UByte = value.toUByte()
@@ -5319,12 +5608,15 @@ public fun checkedCastFromIntUncheckedCastFromUShort(value: Short): UShort = val
 public fun checkedCastFromIntStrictCastFromUShort(value: Short): UShort =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUShort(value: Short): UShort = value.toUShort()
@@ -5351,12 +5643,15 @@ public fun checkedCastFromIntUncheckedCastFromUInt(value: Short): UInt = value.t
 public fun checkedCastFromIntStrictCastFromUInt(value: Short): UInt =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUInt(value: Short): UInt = value.toUInt()
@@ -5383,12 +5678,15 @@ public fun checkedCastFromIntUncheckedCastFromULong(value: Short): ULong = value
 public fun checkedCastFromIntStrictCastFromULong(value: Short): ULong =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromULong(value: Short): ULong = value.toULong()
@@ -5415,12 +5713,15 @@ public fun checkedCastFromIntUncheckedCastFromU128(value: Short): U128 = value.t
 public fun checkedCastFromIntStrictCastFromU128(value: Short): U128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromU128(value: Short): U128 = U128.fromShort(value)
@@ -5447,12 +5748,15 @@ public fun checkedCastFromIntUncheckedCastFromInt(value: Short): Int = value.try
 public fun checkedCastFromIntStrictCastFromInt(value: Short): Int =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromInt(value: Short): Int = value.toInt()
@@ -5479,12 +5783,15 @@ public fun checkedCastFromIntUncheckedCastFromByte(value: Short): Byte = value.t
 public fun checkedCastFromIntStrictCastFromByte(value: Short): Byte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromByte(value: Short): Byte = value.toByte()
@@ -5511,12 +5818,15 @@ public fun checkedCastFromIntUncheckedCastFromShort(value: Short): Short = value
 public fun checkedCastFromIntStrictCastFromShort(value: Short): Short =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromShort(value: Short): Short = value
@@ -5543,12 +5853,15 @@ public fun checkedCastFromIntUncheckedCastFromLong(value: Short): Long = value.t
 public fun checkedCastFromIntStrictCastFromLong(value: Short): Long =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromLong(value: Short): Long = value.toLong()
@@ -5575,12 +5888,15 @@ public fun checkedCastFromIntUncheckedCastFromI128(value: Short): I128 = value.t
 public fun checkedCastFromIntStrictCastFromI128(value: Short): I128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromI128(value: Short): I128 = I128.fromShort(value)
@@ -5607,12 +5923,15 @@ public fun checkedCastFromIntUncheckedCastFromUByte(value: Long): UByte = value.
 public fun checkedCastFromIntStrictCastFromUByte(value: Long): UByte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUByte(value: Long): UByte = value.toUByte()
@@ -5639,12 +5958,15 @@ public fun checkedCastFromIntUncheckedCastFromUShort(value: Long): UShort = valu
 public fun checkedCastFromIntStrictCastFromUShort(value: Long): UShort =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUShort(value: Long): UShort = value.toUShort()
@@ -5671,12 +5993,15 @@ public fun checkedCastFromIntUncheckedCastFromUInt(value: Long): UInt = value.tr
 public fun checkedCastFromIntStrictCastFromUInt(value: Long): UInt =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUInt(value: Long): UInt = value.toUInt()
@@ -5703,12 +6028,15 @@ public fun checkedCastFromIntUncheckedCastFromULong(value: Long): ULong = value.
 public fun checkedCastFromIntStrictCastFromULong(value: Long): ULong =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromULong(value: Long): ULong = value.toULong()
@@ -5735,12 +6063,15 @@ public fun checkedCastFromIntUncheckedCastFromU128(value: Long): U128 = value.tr
 public fun checkedCastFromIntStrictCastFromU128(value: Long): U128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromU128(value: Long): U128 = U128.fromLong(value)
@@ -5767,12 +6098,15 @@ public fun checkedCastFromIntUncheckedCastFromInt(value: Long): Int = value.tryI
 public fun checkedCastFromIntStrictCastFromInt(value: Long): Int =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromInt(value: Long): Int = value.toInt()
@@ -5799,12 +6133,15 @@ public fun checkedCastFromIntUncheckedCastFromByte(value: Long): Byte = value.tr
 public fun checkedCastFromIntStrictCastFromByte(value: Long): Byte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromByte(value: Long): Byte = value.toByte()
@@ -5831,12 +6168,15 @@ public fun checkedCastFromIntUncheckedCastFromShort(value: Long): Short = value.
 public fun checkedCastFromIntStrictCastFromShort(value: Long): Short =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromShort(value: Long): Short = value.toShort()
@@ -5863,12 +6203,15 @@ public fun checkedCastFromIntUncheckedCastFromLong(value: Long): Long = value.tr
 public fun checkedCastFromIntStrictCastFromLong(value: Long): Long =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromLong(value: Long): Long = value
@@ -5895,12 +6238,15 @@ public fun checkedCastFromIntUncheckedCastFromI128(value: Long): I128 = value.tr
 public fun checkedCastFromIntStrictCastFromI128(value: Long): I128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromI128(value: Long): I128 = I128.fromLong(value)
@@ -5927,12 +6273,15 @@ public fun checkedCastFromIntUncheckedCastFromUByte(value: I128): UByte = value.
 public fun checkedCastFromIntStrictCastFromUByte(value: I128): UByte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUByte(value: I128): UByte = value.toUByte()
@@ -5959,12 +6308,15 @@ public fun checkedCastFromIntUncheckedCastFromUShort(value: I128): UShort = valu
 public fun checkedCastFromIntStrictCastFromUShort(value: I128): UShort =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUShort(value: I128): UShort = value.toUShort()
@@ -5991,12 +6343,15 @@ public fun checkedCastFromIntUncheckedCastFromUInt(value: I128): UInt = value.tr
 public fun checkedCastFromIntStrictCastFromUInt(value: I128): UInt =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromUInt(value: I128): UInt = value.toUInt()
@@ -6023,12 +6378,15 @@ public fun checkedCastFromIntUncheckedCastFromULong(value: I128): ULong = value.
 public fun checkedCastFromIntStrictCastFromULong(value: I128): ULong =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromULong(value: I128): ULong = value.toULong()
@@ -6055,12 +6413,15 @@ public fun checkedCastFromIntUncheckedCastFromU128(value: I128): U128 = value.tr
 public fun checkedCastFromIntStrictCastFromU128(value: I128): U128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromU128(value: I128): U128 = value.toU128()
@@ -6087,12 +6448,15 @@ public fun checkedCastFromIntUncheckedCastFromInt(value: I128): Int = value.tryI
 public fun checkedCastFromIntStrictCastFromInt(value: I128): Int =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromInt(value: I128): Int = value.toInt()
@@ -6119,12 +6483,15 @@ public fun checkedCastFromIntUncheckedCastFromByte(value: I128): Byte = value.tr
 public fun checkedCastFromIntStrictCastFromByte(value: I128): Byte =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromByte(value: I128): Byte = value.toByte()
@@ -6151,12 +6518,15 @@ public fun checkedCastFromIntUncheckedCastFromShort(value: I128): Short = value.
 public fun checkedCastFromIntStrictCastFromShort(value: I128): Short =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromShort(value: I128): Short = value.toShort()
@@ -6183,12 +6553,15 @@ public fun checkedCastFromIntUncheckedCastFromLong(value: I128): Long = value.tr
 public fun checkedCastFromIntStrictCastFromLong(value: I128): Long =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromLong(value: I128): Long = value.toLong()
@@ -6215,12 +6588,15 @@ public fun checkedCastFromIntUncheckedCastFromI128(value: I128): I128 = value.tr
 public fun checkedCastFromIntStrictCastFromI128(value: I128): I128 =
     run {
         val matchVal = value.tryInto()
-        when (matchVal) { is Result.Ok<*, *> -> {
-            val x = matchVal.value
-            x
-        }; is Result.Err<*, *> -> {
-            castInteger()
-        } }
+        when (matchVal) {
+            is Result.Ok<*, *> -> {
+                val x = matchVal.value
+                x
+            }
+            is Result.Err<*, *> -> {
+                castInteger()
+            }
+        }
     }
 
 public fun boundedCastFromIntWrappingCastFromI128(value: I128): I128 = value

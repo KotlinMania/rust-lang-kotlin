@@ -1,15 +1,15 @@
 // port-lint: source iter/adapters/fuse.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.fuse
 
+import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -25,15 +25,22 @@ public open class Fuse<I>(
     // we still have to be prepared for that state due to variance.
     // See rust-lang/rust#85863
     public var iter: I?,
-) : TrustedFused, TrustedLen<Fuse<I>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, FuseImpl<I, Item>, SourceIter<Source>, Iterable<Item> {
-    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
-        override fun computeNext() {
-            when (val v = this@Fuse.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedFused,
+    TrustedLen<Fuse<I>>,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    FuseImpl<I, Item>,
+    SourceIter<Source>,
+    Iterable<Item> {
+    override fun iterator(): Iterator<Item> =
+        object : AbstractIterator<Item>() {
+            override fun computeNext() {
+                when (val v = this@Fuse.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Fuse<I> = Fuse(iter)
 
@@ -158,13 +165,14 @@ public open class Fuse<I>(
     public open fun nextI(): Item? = andThenOrClear(this.iter, Iterator::next)
 
     public open fun advanceByI(n: Int): Result<Unit, NonZero<Int>> {
-        val iter = this.iter ?: return when (val matchVal = NonZero.new(n)) {
-    null -> Result.Ok(Unit)
-    else -> {
-        val n1 = matchVal
-        Result.Err(n1)
-    }
-}
+        val iter =
+            this.iter ?: return when (val matchVal = NonZero.new(n)) {
+                null -> Result.Ok(Unit)
+                else -> {
+                    val n1 = matchVal
+                    Result.Err(n1)
+                }
+            }
         val res = iter.advanceBy(n)
         if (res.isErr()) {
             this.iter = null
@@ -180,7 +188,11 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 =
+                    when (val tryResult = iter.tryFold(acc1, fold)) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    }
                 this.iter = null
             }
         }
@@ -192,13 +204,14 @@ public open class Fuse<I>(
     public open fun nextBackI(): Item? = andThenOrClear(this.iter, { iter -> iter.nextBack() })
 
     public open fun advanceBackByI(n: Int): Result<Unit, NonZero<Int>> {
-        val iter = this.iter ?: return when (val matchVal = NonZero.new(n)) {
-    null -> Result.Ok(Unit)
-    else -> {
-        val n1 = matchVal
-        Result.Err(n1)
-    }
-}
+        val iter =
+            this.iter ?: return when (val matchVal = NonZero.new(n)) {
+                null -> Result.Ok(Unit)
+                else -> {
+                    val n1 = matchVal
+                    Result.Err(n1)
+                }
+            }
         val res = iter.advanceBackBy(n)
         if (res.isErr()) {
             this.iter = null
@@ -214,7 +227,11 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 =
+                    when (val tryResult = iter.tryRfold(acc1, fold)) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    }
                 this.iter = null
             }
         }
@@ -233,13 +250,14 @@ public open class Fuse<I>(
 
     public open fun advanceByII(n: Int): Result<Unit, NonZero<Int>> =
         when (val matchVal = this.iter) {
-            null -> when (val matchVal1 = NonZero.new(n)) {
-                null -> Result.Ok(Unit)
-                else -> {
-                    val n1 = matchVal1
-                    Result.Err(n1)
+            null ->
+                when (val matchVal1 = NonZero.new(n)) {
+                    null -> Result.Ok(Unit)
+                    else -> {
+                        val n1 = matchVal1
+                        Result.Err(n1)
+                    }
                 }
-            }
             else -> {
                 val iter = matchVal
                 iter.advanceBy(n)
@@ -256,7 +274,11 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 =
+                    when (val tryResult = iter.tryFold(acc1, fold)) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    }
             }
         }
         return acc1
@@ -272,13 +294,14 @@ public open class Fuse<I>(
 
     public open fun advanceBackByII(n: Int): Result<Unit, NonZero<Int>> =
         when (val matchVal = this.iter) {
-            null -> when (val matchVal1 = NonZero.new(n)) {
-                null -> Result.Ok(Unit)
-                else -> {
-                    val n1 = matchVal1
-                    Result.Err(n1)
+            null ->
+                when (val matchVal1 = NonZero.new(n)) {
+                    null -> Result.Ok(Unit)
+                    else -> {
+                        val n1 = matchVal1
+                        Result.Err(n1)
+                    }
                 }
-            }
             else -> {
                 val iter = matchVal
                 iter.advanceBackBy(n)
@@ -295,7 +318,11 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 =
+                    when (val tryResult = iter.tryRfold(acc1, fold)) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    }
             }
         }
         return acc1

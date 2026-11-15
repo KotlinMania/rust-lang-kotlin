@@ -1,19 +1,20 @@
 // port-lint: source alloc/layout.rs
 package io.github.kotlinmania.rustlang.core.alloc.layout
 
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOfVal
+import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
+import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul
+import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
+import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.intrinsics.sizeOfVal
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedMul
-import io.github.kotlinmania.rustlang.intrinsics.uncheckedSub
-import io.github.kotlinmania.rustlang.mem.alignment.Alignment
-import io.github.kotlinmania.rustlang.mem.sizeOfValRaw
-import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 /**
  * Layout of a block of memory.
@@ -225,19 +226,22 @@ public open class Layout(
     public open fun repeat(n: Int): Result<Pair<Layout, Int>, LayoutError> {
         // Note(const-Note): the following could be way shorter with `?`
         val padded = this.padToAlign()
-        val result = (when (val matchVal = rustCheckedSub(n, 1)) {
-            null -> {
-                if (false) {
-                    check(n == 0)
+        val result =
+            (
+                when (val matchVal = n.checkedSub(1)) {
+                    null -> {
+                        if (false) {
+                            check(n == 0)
+                        }
+                        this.repeatPacked(0)
+                    }
+                    else -> {
+                        val k = matchVal
+                        val repeated = padded.repeatPacked(k) ?: return Result.Err(LayoutError())
+                        repeated.extendPacked(this)
+                    }
                 }
-                this.repeatPacked(0)
-            }
-            else -> {
-                val k = matchVal
-                val repeated = padded.repeatPacked(k) ?: return Result.Err(LayoutError())
-                repeated.extendPacked(this)
-            }
-        }) ?: return Result.Err(LayoutError())
+            ) ?: return Result.Err(LayoutError())
         return Result.Ok(Pair(result, padded.size()))
     }
 
@@ -314,7 +318,7 @@ public open class Layout(
      * On arithmetic overflow, returns `LayoutError`.
      */
     public open fun repeatPacked(n: Int): Result<Layout, LayoutError> =
-        when (val matchVal = rustCheckedMul(this.size, n)) {
+        when (val matchVal = this.size.checkedMul(n)) {
             null -> {
                 Result.Err(LayoutError())
             }
@@ -445,7 +449,7 @@ public open class Layout(
          * or other unsized type like a slice).
          */
         public fun <T> forValue(t: T): Layout {
-            val (size, alignment) = Pair(sizeOfVal(t), Alignment.ofVal(t))
+            val (size, alignment) = Pair(sizeOfVal(t, typeLayoutT = UnresolvedTypeLayout<T>()), Alignment.ofVal(t))
             // SAFETY: see rationale in `new` for why this is using the unchecked variant
             return Layout.fromSizeAlignmentUnchecked(size, alignment)
         }
@@ -539,7 +543,11 @@ public open class LayoutError {
     public open fun clone(): LayoutError = LayoutError()
 
     // (we need this for downstream impl of trait Error)
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("invalid parameters to Layout::from_size_align"); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append("invalid parameters to Layout::from_size_align")
+            Result.Ok(Unit)
+        }
 
     public companion object {
         public fun typeLayout(): TypeLayout<LayoutError> =

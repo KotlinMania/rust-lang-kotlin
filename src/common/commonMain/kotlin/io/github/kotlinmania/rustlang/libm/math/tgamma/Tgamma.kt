@@ -2,12 +2,12 @@
 package io.github.kotlinmania.rustlang.libm.math.tgamma
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.math.exp.exp
-import io.github.kotlinmania.rustlang.math.floor.floor
-import io.github.kotlinmania.rustlang.math.kcos.kCos
-import io.github.kotlinmania.rustlang.math.ksin.kSin
-import io.github.kotlinmania.rustlang.math.pow.pow
-import io.github.kotlinmania.rustlang.math.support.uncheckedDivIsize
+import io.github.kotlinmania.rustlang.libm.math.exp.exp
+import io.github.kotlinmania.rustlang.libm.math.floor.floor
+import io.github.kotlinmania.rustlang.libm.math.kcos.kCos
+import io.github.kotlinmania.rustlang.libm.math.ksin.kSin
+import io.github.kotlinmania.rustlang.libm.math.pow.pow
+import io.github.kotlinmania.rustlang.libm.math.support.uncheckedDivIsize
 
 public val PI: Double = 3.141592653589793238462643383279502884
 

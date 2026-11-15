@@ -1,11 +1,12 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.Poll
 import io.github.kotlinmania.rustlang.libc.Signal
@@ -29,9 +30,9 @@ import io.github.kotlinmania.rustlang.libc.wasi.NfdsT
 import io.github.kotlinmania.rustlang.libc.wasi.O_RDWR
 import io.github.kotlinmania.rustlang.libc.wasi.POLLNVAL
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.io.Errno
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.sys.thread.unix.setName
+import io.github.kotlinmania.rustlang.std.sys.io.Errno
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.thread.unix.setName
 
 // SAFETY: must be called only once during runtime initialization.
 // NOTE: this is not guaranteed to run, for example when Rust code is called externally.
@@ -59,7 +60,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
             }
         // fast path with a single syscall for systems with poll()
         run {
-            val localStorageL92C12 = AddressableArrayLocal.fromList(emptyList(), ObjectSlotLayout<Pollfd>())
+            val localStorageL92C12 = AddressableArrayLocal.fromList(emptyList(), UnresolvedTypeLayout<Pollfd>())
             val pfds by localStorageL92C12
             pfds[0].fd = 0
             pfds[0].events = 0
@@ -133,13 +134,13 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
                             null -> {}
                             else -> {
                                 val out = matchVal
-                                io.Write.writeFmt(out, "fatal runtime error: " + ("assertion failed: signal (libc :: SIGPIPE , handler) != libc :: SIG_ERR").toString() + ", aborting\n")
+                                Write.writeFmt(out, "fatal runtime error: " + ("assertion failed: signal (libc :: SIGPIPE , handler) != libc :: SIG_ERR").toString() + ", aborting\n")
                             }
                         }
                         run {
                             "fatal runtime error: " + ("assertion failed: signal (libc :: SIGPIPE , handler) != libc :: SIG_ERR").toString() + ", aborting\n"
                         }
-                        io.github.kotlinmania.rustlang.process.abort()
+                        io.github.kotlinmania.rustlang.std.process.abort()
                     }
                 }
             }
@@ -158,8 +159,8 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
     // to prevent this problem. Use `- Zon - broken - pipe = ...` to alter this
     // behavior.
     resetSigpipe(sigpipe)
-    io.github.kotlinmania.rustlang.sys.args.unix.init()
-    io.github.kotlinmania.rustlang.sys.args.unix.init(argc, argv)
+    io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.init()
+    io.github.kotlinmania.rustlang.std.sys.args.unix.init(argc, argv)
     // Normally, `thread.spawn` will call `Thread.setName` but since this thread
     // already exists, we have to call it ourselves. We only do this on Apple targets
     // because some unix-like operating systems such as Linux share process-id and
@@ -184,7 +185,7 @@ public fun cleanup() {}
  */
 public fun <T : IsMinusOne> cvt(t: T): Result<T, Error> =
     if (t.isMinusOne()) {
-        Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
+        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     } else {
         Result.Ok(t)
     }
@@ -218,7 +219,7 @@ public fun cvtNz(error: CInt): Result<Unit, Error> =
     if (error == 0) {
         Result.Ok(Unit)
     } else {
-        Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(error))
+        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
     }
 
 // libc.abort() will run the SIGABRT handler.  That's fine because anyone who

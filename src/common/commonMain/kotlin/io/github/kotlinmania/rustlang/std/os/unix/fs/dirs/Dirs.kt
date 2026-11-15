@@ -4,20 +4,20 @@
 package io.github.kotlinmania.rustlang.std.os.unix.fs.dirs
 
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.get
-import io.github.kotlinmania.rustlang.env.SplitPathsRef
-import io.github.kotlinmania.rustlang.env.joinPaths
-import io.github.kotlinmania.rustlang.env.varOs
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.fs.dirs.HomeDirs
-import io.github.kotlinmania.rustlang.fs.dirs.MediaDirs
-import io.github.kotlinmania.rustlang.fs.read
-import io.github.kotlinmania.rustlang.io.constError
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.path.PathBuf
+import io.github.kotlinmania.rustlang.std.env.SplitPathsRef
+import io.github.kotlinmania.rustlang.std.env.joinPaths
+import io.github.kotlinmania.rustlang.std.env.varOs
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
+import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
+import io.github.kotlinmania.rustlang.std.fs.read
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
 
 public open class ExtraHomeDirs(
     public var runtime: PathBuf?,

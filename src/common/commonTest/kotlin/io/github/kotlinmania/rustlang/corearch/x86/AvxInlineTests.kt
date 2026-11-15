@@ -6,21 +6,11 @@ import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.x86.mmSet1Pd
-import io.github.kotlinmania.rustlang.x86.mmSet1Ps
-import io.github.kotlinmania.rustlang.x86.mmSetrEpi32
-import io.github.kotlinmania.rustlang.x86.mmSetrEpi8
-import io.github.kotlinmania.rustlang.x86.mmSetrPd
-import io.github.kotlinmania.rustlang.x86.mmSetrPs
-import io.github.kotlinmania.rustlang.x86.mmSfence
-import io.github.kotlinmania.rustlang.x86.mmUndefinedPd
-import io.github.kotlinmania.rustlang.x86.mmUndefinedPs
-import io.github.kotlinmania.rustlang.x86.mmUndefinedSi128
 
 // Advanced Vector Extensions (AVX)
 //
@@ -1017,7 +1007,9 @@ public fun testMm256StreamPd() {
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+            set(value) {
+                fieldLayout.writeNative(fieldStorage.rawAddress, value)
+            }
 
         public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
@@ -1042,7 +1034,9 @@ public fun testMm256StreamPs() {
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+            set(value) {
+                fieldLayout.writeNative(fieldStorage.rawAddress, value)
+            }
 
         public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 

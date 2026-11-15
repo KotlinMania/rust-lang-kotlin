@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.x86.M128h
+import io.github.kotlinmania.rustlang.corearch.x86.M128h
 
 public actual fun vcvtsi642sh(a: M128h, b: Long, rounding: Int): M128h =
     throw UnsupportedOperationException("Native FFI addon is not available")

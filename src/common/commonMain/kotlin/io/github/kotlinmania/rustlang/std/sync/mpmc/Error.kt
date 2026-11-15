@@ -1,7 +1,7 @@
 // port-lint: source sync/mpmc/error.rs
 package io.github.kotlinmania.rustlang.std.sync.mpmc
 
-import io.github.kotlinmania.rustlang.sync.mpsc.SendError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.SendError
 
 /**
  * An error returned from the [sendTimeout] method.

@@ -1,12 +1,12 @@
 // port-lint: source math/pow.rs
 package io.github.kotlinmania.rustlang.libm.math.pow
 
-import io.github.kotlinmania.rustlang.math.arch.aarch64.sqrt.sqrt
-import io.github.kotlinmania.rustlang.math.fabs.fabs
-import io.github.kotlinmania.rustlang.math.getHighWord
-import io.github.kotlinmania.rustlang.math.scalbn.scalbn
-import io.github.kotlinmania.rustlang.math.withSetHighWord
-import io.github.kotlinmania.rustlang.math.withSetLowWord
+import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrt
+import io.github.kotlinmania.rustlang.libm.math.fabs.fabs
+import io.github.kotlinmania.rustlang.libm.math.getHighWord
+import io.github.kotlinmania.rustlang.libm.math.scalbn.scalbn
+import io.github.kotlinmania.rustlang.libm.math.withSetHighWord
+import io.github.kotlinmania.rustlang.libm.math.withSetLowWord
 
 public val BP: DoubleArray = doubleArrayOf(1.0, 1.5)
 

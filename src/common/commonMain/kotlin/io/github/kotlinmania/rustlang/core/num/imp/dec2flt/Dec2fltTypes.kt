@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt
 
-import io.github.kotlinmania.rustlang.num.imp.traits.FloatExt
+import io.github.kotlinmania.rustlang.core.num.imp.traits.FloatExt
 
 /**
  * Extension to `Float` that are necessary for parsing using the Lemire method.
@@ -14,10 +14,11 @@ public interface Lemire<T> : FloatExt<T> {
      * Maximum exponent for a fast path case, or `⌊(SIG_BITS+1)/log2(5)⌋`
      */
     public val MAX_EXPONENT_FAST_PATH: Long
-        get() = run {
-        val log25 = 3.321928094887362 - 1.0
-        (T.SIG_TOTAL_BITS.toDouble() / log25).toLong()
-    }
+        get() =
+            run {
+                val log25 = 3.321928094887362 - 1.0
+                (T.SIG_TOTAL_BITS.toDouble() / log25).toLong()
+            }
 
     /**
      * Minimum exponent for a fast path case, or `-⌊(SIG_BITS+1)/log2(5)⌋`

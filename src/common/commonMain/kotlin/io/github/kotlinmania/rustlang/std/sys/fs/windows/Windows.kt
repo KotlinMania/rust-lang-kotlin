@@ -13,54 +13,56 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.get
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.get
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.fs.TryLockError
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.io.constError
-import io.github.kotlinmania.rustlang.os.windows.io.AsHandle
-import io.github.kotlinmania.rustlang.os.windows.io.AsRawHandle
-import io.github.kotlinmania.rustlang.os.windows.io.BorrowedHandle
-import io.github.kotlinmania.rustlang.os.windows.io.FromRawHandle
-import io.github.kotlinmania.rustlang.os.windows.io.IntoRawHandle
-import io.github.kotlinmania.rustlang.os.windows.io.RawHandle
-import io.github.kotlinmania.rustlang.os.windows.raw.Handle
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.path.PathBuf
-import io.github.kotlinmania.rustlang.path.absolute
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.fs.TryLockError
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.std.os.windows.io.AsHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.AsRawHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.IntoRawHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.path.absolute
+import io.github.kotlinmania.rustlang.std.sys.AsInner
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.args.windows.fromWideToUserPath
+import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.dir.Dir
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.removedirall.removeDirAllIterative
-import io.github.kotlinmania.rustlang.sys.AsInner
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.IntoInner
-import io.github.kotlinmania.rustlang.sys.args.windows.fromWideToUserPath
-import io.github.kotlinmania.rustlang.sys.c
-import io.github.kotlinmania.rustlang.sys.osstr.bytes.Slice
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.sys.pal.windows.Align8
-import io.github.kotlinmania.rustlang.sys.pal.windows.api.WinError
-import io.github.kotlinmania.rustlang.sys.pal.windows.api.setFileInformationByHandle
-import io.github.kotlinmania.rustlang.sys.pal.windows.fillUtf16Buf
-import io.github.kotlinmania.rustlang.sys.pal.windows.toU16s
-import io.github.kotlinmania.rustlang.sys.pal.windows.truncateUtf16AtNul
-import io.github.kotlinmania.rustlang.sys.path.windows.WCStr
-import io.github.kotlinmania.rustlang.sys.path.windows.maybeVerbatim
-import io.github.kotlinmania.rustlang.sys.time.unix.SystemTime
+import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.Align8
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.setFileInformationByHandle
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.truncateUtf16AtNul
+import io.github.kotlinmania.rustlang.std.sys.path.windows.WCStr
+import io.github.kotlinmania.rustlang.std.sys.path.windows.maybeVerbatim
+import io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -116,7 +118,7 @@ public open class File internal constructor(
         internal set
 
     public open fun fsync(): Result<Unit, Error> {
-        when (val tryResult = cvt(FlushFileBuffers(this.handle.asRawHandle()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(c.FlushFileBuffers(this.handle.asRawHandle()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -124,45 +126,45 @@ public open class File internal constructor(
 
     public open fun acquireLock(flags: UInt): Result<Unit, Error> {
         return run {
-            val overlapped: Overlapped  = Overlapped()
-            val event = CreateEventW(MutPtr(0L), FALSE, FALSE, ConstPtr(0L))
+            val overlapped: c.Overlapped  = c.Overlapped()
+            val event = c.CreateEventW(MutPtr(0L), c.FALSE, c.FALSE, ConstPtr(0L))
             if (event.isNull()) {
-                return Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
+                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
             }
             overlapped.hEvent = event
-            val lockResult = cvt(LockFileEx(this.handle.asRawHandle(), flags, 0, UInt.MAX_VALUE, UInt.MAX_VALUE, overlapped))
+            val lockResult = cvt(c.LockFileEx(this.handle.asRawHandle(), flags, 0, UInt.MAX_VALUE, UInt.MAX_VALUE, overlapped))
             val finalResult =
                 when (lockResult) { is Result.Ok<*, *> -> {
                     Result.Ok(Unit)
                 }; is Result.Err<*, *> -> {
                     val err = lockResult.error
-                    if (err.rawOsError() == ERROR_IO_PENDING.toInt()) {
+                    if (err.rawOsError() == c.ERROR_IO_PENDING.toInt()) {
                         // Wait for the lock to be acquired, and get the lock operation status.
                         // This can happen asynchronously, if the file handle was opened for async IO
                         val localStorageL426C24 = AddressableLocal(0, PrimitiveLayouts.I32)
-                        cvt(GetOverlappedResult(this.handle.asRawHandle(), overlapped, RustMutableReference(localStorageL426C24.asMutPtr(), localStorageL426C24.layout), TRUE)).map({ Unit })
+                        cvt(c.GetOverlappedResult(this.handle.asRawHandle(), overlapped, RustMutableReference(localStorageL426C24.asMutPtr(), localStorageL426C24.layout), c.TRUE)).map({ Unit })
                     } else {
                         Result.Err(err)
                     }
                 } }
-            CloseHandle(overlapped.hEvent)
+            c.CloseHandle(overlapped.hEvent)
             finalResult
         }
     }
 
-    public open fun lock(): Result<Unit, Error> = this.acquireLock(LOCKFILE_EXCLUSIVE_LOCK)
+    public open fun lock(): Result<Unit, Error> = this.acquireLock(c.LOCKFILE_EXCLUSIVE_LOCK)
 
     public open fun lockShared(): Result<Unit, Error> = this.acquireLock(0)
 
     public open fun tryLock(): Result<Unit, TryLockError> {
         val result =
             cvt(run {
-                val overlapped = MaybeUninit.zeroed(ObjectSlotLayout<Result<Unit, TryLockError>>()).assumeInit()
-                LockFileEx(this.handle.asRawHandle(), LOCKFILE_EXCLUSIVE_LOCK or LOCKFILE_FAIL_IMMEDIATELY, 0, UInt.MAX_VALUE, UInt.MAX_VALUE, overlapped)
+                val overlapped = MaybeUninit.zeroed(UnresolvedTypeLayout<Result<Unit, TryLockError>>()).assumeInit()
+                c.LockFileEx(this.handle.asRawHandle(), c.LOCKFILE_EXCLUSIVE_LOCK or c.LOCKFILE_FAIL_IMMEDIATELY, 0, UInt.MAX_VALUE, UInt.MAX_VALUE, overlapped)
             })
         return when {
             result is Result.Ok<*, *> -> Result.Ok(Unit)
-            result is Result.Err<*, *> && (result as Result.Err<*, *>).error.rawOsError() == ERROR_LOCK_VIOLATION.toInt() -> {
+            result is Result.Err<*, *> && (result as Result.Err<*, *>).error.rawOsError() == c.ERROR_LOCK_VIOLATION.toInt() -> {
                 val err = (result as Result.Err<*, *>).error
                 Result.Err(TryLockError.WouldBlock)
             }
@@ -176,12 +178,12 @@ public open class File internal constructor(
     public open fun tryLockShared(): Result<Unit, TryLockError> {
         val result =
             cvt(run {
-                val overlapped = MaybeUninit.zeroed(ObjectSlotLayout<Result<Unit, TryLockError>>()).assumeInit()
-                LockFileEx(this.handle.asRawHandle(), LOCKFILE_FAIL_IMMEDIATELY, 0, UInt.MAX_VALUE, UInt.MAX_VALUE, overlapped)
+                val overlapped = MaybeUninit.zeroed(UnresolvedTypeLayout<Result<Unit, TryLockError>>()).assumeInit()
+                c.LockFileEx(this.handle.asRawHandle(), c.LOCKFILE_FAIL_IMMEDIATELY, 0, UInt.MAX_VALUE, UInt.MAX_VALUE, overlapped)
             })
         return when {
             result is Result.Ok<*, *> -> Result.Ok(Unit)
-            result is Result.Err<*, *> && (result as Result.Err<*, *>).error.rawOsError() == ERROR_LOCK_VIOLATION.toInt() -> {
+            result is Result.Err<*, *> && (result as Result.Err<*, *>).error.rawOsError() == c.ERROR_LOCK_VIOLATION.toInt() -> {
                 val err = (result as Result.Err<*, *>).error
                 Result.Err(TryLockError.WouldBlock)
             }
@@ -197,11 +199,11 @@ public open class File internal constructor(
         // both an exclusive and shared lock, in which case the documentation states that:
         // "...two unlock operations are necessary to unlock the region; the first unlock operation
         // unlocks the exclusive lock, the second unlock operation unlocks the shared lock"
-        when (val tryResult = cvt(UnlockFile(this.handle.asRawHandle(), 0, 0, UInt.MAX_VALUE, UInt.MAX_VALUE))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        val result = cvt(UnlockFile(this.handle.asRawHandle(), 0, 0, UInt.MAX_VALUE, UInt.MAX_VALUE))
+        when (val tryResult = cvt(c.UnlockFile(this.handle.asRawHandle(), 0, 0, UInt.MAX_VALUE, UInt.MAX_VALUE))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val result = cvt(c.UnlockFile(this.handle.asRawHandle(), 0, 0, UInt.MAX_VALUE, UInt.MAX_VALUE))
         return when {
             result is Result.Ok<*, *> -> Result.Ok(Unit)
-            result is Result.Err<*, *> && (result as Result.Err<*, *>).error.rawOsError() == ERROR_NOT_LOCKED.toInt() -> {
+            result is Result.Err<*, *> && (result as Result.Err<*, *>).error.rawOsError() == c.ERROR_NOT_LOCKED.toInt() -> {
                 val err = (result as Result.Err<*, *>).error
                 Result.Ok(Unit)
             }
@@ -219,14 +221,14 @@ public open class File internal constructor(
 
     public open fun fileAttr(): Result<FileAttr, Error> {
         return run {
-            val info: ByHandleFileInformation  = ByHandleFileInformation()
-            when (val tryResult = cvt(GetFileInformationByHandle(this.handle.asRawHandle(), info))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            val info: c.ByHandleFileInformation  = c.ByHandleFileInformation()
+            when (val tryResult = cvt(c.GetFileInformationByHandle(this.handle.asRawHandle(), info))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             var reparseTag = 0
-            if (info.dwFileAttributes and FILE_ATTRIBUTE_REPARSE_POINT != 0u) {
-                val localStorageL523C16 = AddressableLocal(FileAttributeTagInfo(), ObjectSlotLayout<FileAttributeTagInfo>())
+            if (info.dwFileAttributes and c.FILE_ATTRIBUTE_REPARSE_POINT != 0u) {
+                val localStorageL523C16 = AddressableLocal(c.FileAttributeTagInfo(), UnresolvedTypeLayout<c.FileAttributeTagInfo>())
                 val attrTag by localStorageL523C16
-                when (val tryResult = cvt(GetFileInformationByHandleEx(this.handle.asRawHandle(), FileAttributeTagInfo, (localStorageL523C16.asMutPtr()), sizeOf<FileAttributeTagInfo>(typeLayoutT = ObjectSlotLayout<FileAttributeTagInfo>()).tryInto().unwrap()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                if (attrTag.fileAttributes and FILE_ATTRIBUTE_REPARSE_POINT != 0u) {
+                when (val tryResult = cvt(c.GetFileInformationByHandleEx(this.handle.asRawHandle(), c.FileAttributeTagInfo, (localStorageL523C16.asMutPtr()), sizeOf<c.FileAttributeTagInfo>(typeLayoutT = UnresolvedTypeLayout<c.FileAttributeTagInfo>()).tryInto().unwrap()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                if (attrTag.fileAttributes and c.FILE_ATTRIBUTE_REPARSE_POINT != 0u) {
                     reparseTag = attrTag.reparseTag
                 }
             }
@@ -263,28 +265,28 @@ public open class File internal constructor(
                 // integer as `ULong`.
                 is SeekFrom.Start -> {
                     val (n) = pos
-                    Pair(FILE_BEGIN, n.toLong())
+                    Pair(c.FILE_BEGIN, n.toLong())
                 }
                 is SeekFrom.End -> {
                     val (n1) = pos
-                    Pair(FILE_END, n1)
+                    Pair(c.FILE_END, n1)
                 }
                 is SeekFrom.Current -> {
                     val (n2) = pos
-                    Pair(FILE_CURRENT, n2)
+                    Pair(c.FILE_CURRENT, n2)
                 }
             }
         val pos2 = pos1.toLong()
         val localStorageL667C8 = AddressableLocal(0, PrimitiveLayouts.I32)
         val newpos by localStorageL667C8
-        when (val tryResult = cvt(SetFilePointerEx(this.handle.asRawHandle(), pos2, RustMutableReference(localStorageL667C8.asMutPtr(), localStorageL667C8.layout), whence))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(c.SetFilePointerEx(this.handle.asRawHandle(), pos2, RustMutableReference(localStorageL667C8.asMutPtr(), localStorageL667C8.layout), whence))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(newpos.toULong())
     }
 
     public open fun size(): Result<ULong, Error>? {
         val localStorageL673C8 = AddressableLocal(0, PrimitiveLayouts.I32)
         val result by localStorageL673C8
-        return cvt(GetFileSizeEx(this.handle.asRawHandle(), RustMutableReference(localStorageL673C8.asMutPtr(), localStorageL673C8.layout))).map({ result.toULong() })
+        return cvt(c.GetFileSizeEx(this.handle.asRawHandle(), RustMutableReference(localStorageL673C8.asMutPtr(), localStorageL673C8.layout))).map({ result.toULong() })
     }
 
     public open fun tell(): Result<ULong, Error> = this.seek(SeekFrom.Current(0))
@@ -304,27 +306,27 @@ public open class File internal constructor(
                 // Grab this in advance to avoid it invalidating the pointer
                 // we get from `space.0.asMutPtr()`.
                 val len = space.first.len()
-                DeviceIoControl(this.handle.asRawHandle(), FSCTL_GET_REPARSE_POINT, MutPtr(0L), 0, space.first.asMutPtr().cast(), len.toUInt(), RustMutableReference(localStorageL696C12.asMutPtr(), localStorageL696C12.layout), MutPtr(0L))
+                c.DeviceIoControl(this.handle.asRawHandle(), c.FSCTL_GET_REPARSE_POINT, MutPtr(0L), 0, space.first.asMutPtr().cast(), len.toUInt(), RustMutableReference(localStorageL696C12.asMutPtr(), localStorageL696C12.layout), MutPtr(0L))
             })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             Result.Ok(Pair(bytes, space.first.asMutPtr().cast()))
         }
     }
 
     public open fun readlink(): Result<PathBuf, Error> {
-        val space = Align8(List(MAXIMUM_REPARSE_DATA_BUFFER_SIZE.toInt()) { MaybeUninit.uninit(PrimitiveLayouts.U8) })
+        val space = Align8(List(c.MAXIMUM_REPARSE_DATA_BUFFER_SIZE.toInt()) { MaybeUninit.uninit(PrimitiveLayouts.U8) })
         val (bytes, buf) = when (val tryResult = this.reparsePoint(space)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return run {
             val (pathBuffer, substOff, substLen, relative) =
                 when (buf.reparseTag) {
-                    ioReparseTagSymlink -> {
+                    c.ioReparseTagSymlink -> {
                         val info: MutPtr = (addrOfMut(buf.rest)).cast()
                         check(info.isAligned())
-                        listOf(MutPtr(((addrOfMut((ObjectSlotLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).pathBuffer))).rawAddress), (ObjectSlotLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).substituteNameOffset / 2u, (ObjectSlotLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).substituteNameLength / 2u, (ObjectSlotLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).flags and SYMLINK_FLAG_RELATIVE != 0uL)
+                        listOf(MutPtr(((addrOfMut((UnresolvedTypeLayout<c.SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).pathBuffer))).rawAddress), (UnresolvedTypeLayout<c.SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).substituteNameOffset / 2u, (UnresolvedTypeLayout<c.SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).substituteNameLength / 2u, (UnresolvedTypeLayout<c.SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).flags and c.SYMLINK_FLAG_RELATIVE != 0uL)
                     }
-                    ioReparseTagMountPoint -> {
+                    c.ioReparseTagMountPoint -> {
                         val info1: MutPtr = (addrOfMut(buf.rest)).cast()
                         check(info1.isAligned())
-                        listOf(MutPtr(((addrOfMut((ObjectSlotLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).pathBuffer))).rawAddress), (ObjectSlotLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameOffset / 2u, (ObjectSlotLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameLength / 2u, false)
+                        listOf(MutPtr(((addrOfMut((UnresolvedTypeLayout<c.MountPointReparseBuffer>()).readNative((info1).rawAddress).pathBuffer))).rawAddress), (UnresolvedTypeLayout<c.MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameOffset / 2u, (UnresolvedTypeLayout<c.MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameLength / 2u, false)
                     }
                     else -> {
                         return Result.Err(constError(ErrorKind.Uncategorized, "Unsupported reparse point type"))
@@ -360,11 +362,11 @@ public open class File internal constructor(
     }
 
     public open fun setTimes(times: FileTimes): Result<Unit, Error> {
-        val isZero = { t: Filetime -> t.dwLowDateTime == 0 && t.dwHighDateTime == 0 }
+        val isZero = { t: c.Filetime -> t.dwLowDateTime == 0 && t.dwHighDateTime == 0 }
         if (times.accessed.isSomeAnd(isZero) || times.modified.isSomeAnd(isZero) || times.created.isSomeAnd(isZero)) {
             return Result.Err(constError(ErrorKind.InvalidInput, "cannot set file timestamp to 0"))
         }
-        val isMax = { t: Filetime -> t.dwLowDateTime == UInt.MAX_VALUE && t.dwHighDateTime == UInt.MAX_VALUE }
+        val isMax = { t: c.Filetime -> t.dwLowDateTime == UInt.MAX_VALUE && t.dwHighDateTime == UInt.MAX_VALUE }
         if (times.accessed.isSomeAnd(isMax) || times.modified.isSomeAnd(isMax) || times.created.isSomeAnd(isMax)) {
             return Result.Err(constError(ErrorKind.InvalidInput, "cannot set file timestamp to 0xFFFF_FFFF_FFFF_FFFF"))
         }
@@ -372,7 +374,7 @@ public open class File internal constructor(
             val created = (times.created?.let({ a -> constPtrFromRustCast(a) }) ?: ConstPtr(0L))
             val accessed = (times.accessed?.let({ a -> constPtrFromRustCast(a) }) ?: ConstPtr(0L))
             val modified = (times.modified?.let({ a -> constPtrFromRustCast(a) }) ?: ConstPtr(0L))
-            SetFileTime(this.asRawHandle(), created, accessed, modified)
+            c.SetFileTime(this.asRawHandle(), created, accessed, modified)
         })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
@@ -380,12 +382,12 @@ public open class File internal constructor(
     /**
      * Gets only basic file information such as attributes and file times.
      */
-    public open fun basicInfo(): Result<FileBasicInfo, Error> {
+    public open fun basicInfo(): Result<c.FileBasicInfo, Error> {
         return run {
-            val localStorageL826C12 = AddressableLocal(FileBasicInfo(), ObjectSlotLayout<FileBasicInfo>())
+            val localStorageL826C12 = AddressableLocal(c.FileBasicInfo(), UnresolvedTypeLayout<c.FileBasicInfo>())
             val info by localStorageL826C12
-            val size = sizeOfVal(info)
-            when (val tryResult = cvt(GetFileInformationByHandleEx(this.handle.asRawHandle(), FileBasicInfo, ((localStorageL826C12.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, size.toUInt()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            val size = sizeOfVal(info, typeLayoutT = UnresolvedTypeLayout<c.FileBasicInfo>())
+            when (val tryResult = cvt(c.GetFileInformationByHandleEx(this.handle.asRawHandle(), c.FileBasicInfo, ((localStorageL826C12.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, size.toUInt()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             Result.Ok(info)
         }
     }
@@ -423,7 +425,7 @@ public open class File internal constructor(
      * then errors will be `ERROR_NOT_SUPPORTED` or `ERROR_INVALID_PARAMETER`.
      */
     public open fun posixDelete(): Result<Unit, WinError> {
-        val info = c.FileDispositionInfoEx(flags = FILE_DISPOSITION_FLAG_DELETE or FILE_DISPOSITION_FLAG_POSIX_SEMANTICS or FILE_DISPOSITION_FLAG_IGNORE_READONLY_ATTRIBUTE)
+        val info = c.FileDispositionInfoEx(flags = c.FILE_DISPOSITION_FLAG_DELETE or c.FILE_DISPOSITION_FLAG_POSIX_SEMANTICS or c.FILE_DISPOSITION_FLAG_IGNORE_READONLY_ATTRIBUTE)
         return api.setFileInformationByHandle(this.handle.asRawHandle(), info)
     }
 
@@ -456,17 +458,17 @@ public open class File internal constructor(
     public open fun fillDirBuff(buffer: DirBuff, restart: Boolean): Result<Boolean, WinError> {
         val cls =
             if (restart) {
-                FileIdBothDirectoryRestartInfo
+                c.FileIdBothDirectoryRestartInfo
             } else {
-                FileIdBothDirectoryInfo
+                c.FileIdBothDirectoryInfo
             }
         return run {
-            val result = GetFileInformationByHandleEx(this.asRawHandle(), cls, buffer.asMutPtr(), ((buffer.capacity() as Any?) as Result<Boolean, WinError>))
+            val result = c.GetFileInformationByHandleEx(this.asRawHandle(), cls, buffer.asMutPtr(), ((buffer.capacity() as Any?) as Result<Boolean, WinError>))
             if (result == 0) {
                 // Apparently ERROR_NO_MORE_FILES also means that the buffer is empty / was left
                 // unchanged. Note: find docs that say this.
                 val err = api.getLastError()
-                if (err.code == ERROR_NO_MORE_FILES) {
+                if (err.code == c.ERROR_NO_MORE_FILES) {
                     Result.Ok(false)
                 } else {
                     Result.Err(err)
@@ -508,9 +510,9 @@ public open class File internal constructor(
 
         public fun openNative(path: WCStr, opts: OpenOptions): Result<File, Error> {
             val creation = when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-            val sa = c.SecurityAttributes(nLength = sizeOf<SecurityAttributes>(typeLayoutT = ObjectSlotLayout<SecurityAttributes>()).toUInt(), lpSecurityDescriptor = MutPtr(0L), bInheritHandle = opts.inheritHandle.toInt())
+            val sa = c.SecurityAttributes(nLength = sizeOf<c.SecurityAttributes>(typeLayoutT = UnresolvedTypeLayout<c.SecurityAttributes>()).toUInt(), lpSecurityDescriptor = MutPtr(0L), bInheritHandle = opts.inheritHandle.toInt())
             val handle =
-                CreateFileW(path.asPtr(), when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, opts.shareMode, if (opts.inheritHandle) {
+                c.CreateFileW(path.asPtr(), when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, opts.shareMode, if (opts.inheritHandle) {
                     sa
                 } else {
                     ConstPtr(0L)
@@ -521,7 +523,7 @@ public open class File internal constructor(
                     val handle2 = matchVal.value
                     if (opts.freezeLastAccessTime || opts.freezeLastWriteTime) {
                         val fileTime = c.Filetime(dwLowDateTime = 0xFFFFFFFFu, dwHighDateTime = 0xFFFFFFFFu)
-                        when (val tryResult = cvt(SetFileTime(handle2.asRawHandle(), ConstPtr(0L), if (opts.freezeLastAccessTime) {
+                        when (val tryResult = cvt(c.SetFileTime(handle2.asRawHandle(), ConstPtr(0L), if (opts.freezeLastAccessTime) {
                             fileTime
                         } else {
                             ConstPtr(0L)
@@ -532,7 +534,7 @@ public open class File internal constructor(
                         }))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                     }
                     // Manual truncation. See #115745.
-                    if (opts.truncate && creation == OPEN_ALWAYS && api.getLastError() == WinError.ALREADY_EXISTS) {
+                    if (opts.truncate && creation == c.OPEN_ALWAYS && api.getLastError() == WinError.ALREADY_EXISTS) {
                         // This first tries `FileAllocationInfo` but falls back to
                         // `FileEndOfFileInfo` in order to support WINE.
                         // If WINE gains support for FileAllocationInfo, we should
@@ -559,10 +561,10 @@ public open class File internal constructor(
 
 public open class FileAttr(
     public var attributes: UInt,
-    public var creationTime: Filetime,
-    public var lastAccessTime: Filetime,
-    public var lastWriteTime: Filetime,
-    public var changeTime: Filetime?,
+    public var creationTime: c.Filetime,
+    public var lastAccessTime: c.Filetime,
+    public var lastWriteTime: c.Filetime,
+    public var changeTime: c.Filetime?,
     public var fileSize: ULong,
     public var reparseTag: UInt,
     public var volumeSerialNumber: UInt?,
@@ -600,8 +602,8 @@ public open class FileAttr(
     public open fun fileIndex(): ULong? = this.fileIndex
 
     public companion object {
-        public fun from(wfd: Win32FindDataw): FileAttr =
-            FileAttr(attributes = wfd.dwFileAttributes, creationTime = wfd.ftCreationTime, lastAccessTime = wfd.ftLastAccessTime, lastWriteTime = wfd.ftLastWriteTime, changeTime = null, fileSize = ((wfd.nFileSizeHigh.toULong()) shl 32) or (wfd.nFileSizeLow.toULong()), reparseTag = if (wfd.dwFileAttributes and FILE_ATTRIBUTE_REPARSE_POINT != 0u) {
+        public fun from(wfd: c.Win32FindDataw): FileAttr =
+            FileAttr(attributes = wfd.dwFileAttributes, creationTime = wfd.ftCreationTime, lastAccessTime = wfd.ftLastAccessTime, lastWriteTime = wfd.ftLastWriteTime, changeTime = null, fileSize = ((wfd.nFileSizeHigh.toULong()) shl 32) or (wfd.nFileSizeLow.toULong()), reparseTag = if (wfd.dwFileAttributes and c.FILE_ATTRIBUTE_REPARSE_POINT != 0u) {
                 // reserved unless this is a reparse point
                 wfd.dwReserved0
             } else {
@@ -652,9 +654,9 @@ public open class FileType(
             }
 
         public fun new(attributes: UInt, reparseTag: UInt): FileType {
-            val isDirectory = attributes and FILE_ATTRIBUTE_DIRECTORY != 0u
+            val isDirectory = attributes and c.FILE_ATTRIBUTE_DIRECTORY != 0u
             val isSymlink = run {
-                val isReparsePoint = attributes and FILE_ATTRIBUTE_REPARSE_POINT != 0u
+                val isReparsePoint = attributes and c.FILE_ATTRIBUTE_REPARSE_POINT != 0u
                 val isReparseTagNameSurrogate = reparseTag and 0x20000000u != 0u
                 isReparsePoint && isReparseTagNameSurrogate
             }
@@ -666,7 +668,7 @@ public open class FileType(
 public open class ReadDir(
     public var handle: FindNextFileHandle?,
     public var root: PathBuf,
-    public var first: Win32FindDataw?,
+    public var first: c.Win32FindDataw?,
 ) : Iterable<Result<DirEntry, Error>> {
     override fun iterator(): Iterator<Result<DirEntry, Error>> = object : AbstractIterator<Result<DirEntry, Error>>() {
         override fun computeNext() {
@@ -710,9 +712,9 @@ return null
             }
         }
         run {
-            val wfd = MaybeUninit.zeroed(ObjectSlotLayout<Result<DirEntry, Error>>()).assumeInit()
+            val wfd = MaybeUninit.zeroed(UnresolvedTypeLayout<Result<DirEntry, Error>>()).assumeInit()
             while (true) {
-                if (FindNextFileW(handle!!.value, wfd) == 0) {
+                if (c.FindNextFileW(handle!!.value, wfd) == 0) {
                     this.handle = null
                     when (val matchVal2 = api.getLastError()) {
                         WinError.noMoreFiles -> { return null }
@@ -735,25 +737,25 @@ return null
 }
 
 public open class FindNextFileHandle internal constructor(
-    valueCtorArg: Handle,
+    valueCtorArg: c.Handle,
 ) {
-    public var value: Handle = valueCtorArg
+    public var value: c.Handle = valueCtorArg
         internal set
 
-    public var field0: Handle
+    public var field0: c.Handle
         get() = value
         set(v) {
             value = v
         }
 
     public open fun drop() {
-        val r = FindClose(this.value)
+        val r = c.FindClose(this.value)
         check(r != 0)
     }
 
     public companion object {
         public operator fun invoke(
-            value: Handle,
+            value: c.Handle,
         ): FindNextFileHandle = FindNextFileHandle(
             valueCtorArg = value,
         )
@@ -762,7 +764,7 @@ public open class FindNextFileHandle internal constructor(
 
 public open class DirEntry(
     public var root: PathBuf,
-    public var data: Win32FindDataw,
+    public var data: c.Win32FindDataw,
 ) {
     public open fun path(): PathBuf = this.root.join(this.fileName())
 
@@ -776,7 +778,7 @@ public open class DirEntry(
     public open fun metadata(): Result<FileAttr, Error> = Result.Ok(this.data.into())
 
     public companion object {
-        public fun new(root: PathBuf, wfd: Win32FindDataw): DirEntry? {
+        public fun new(root: PathBuf, wfd: c.Win32FindDataw): DirEntry? {
             run {
                 val matchVal = ((wfd.cFileName).sliceArray(0 until 3))
                 when {
@@ -854,7 +856,7 @@ public open class OpenOptions(
     public open fun securityQosFlags(flags: UInt) {
         // We have to set `SECURITY_SQOS_PRESENT` here, because one of the valid flags we can
         // receive is `SECURITY_ANONYMOUS = 0x0`, which we can't check for later on.
-        this.securityQosFlags = flags or SECURITY_SQOS_PRESENT
+        this.securityQosFlags = flags or c.SECURITY_SQOS_PRESENT
     }
 
     public open fun inheritHandle(inherit: Boolean) {
@@ -881,15 +883,15 @@ public open class OpenOptions(
             val matchVal1 = Triple(this.read, this.write, this.append)
             when {
                 matchVal1.second == false && matchVal1.third == false && (this.truncate || this.create || this.createNew) -> {
-                    Result.Err(io.github.kotlinmania.rustlang.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
+                    Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
                 }
-                matchVal1.third == true && this.truncate && !this.createNew -> Result.Err(io.github.kotlinmania.rustlang.io.Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
-                matchVal1.first == true && matchVal1.second == false && matchVal1.third == false -> Result.Ok(GENERIC_READ)
-                matchVal1.first == false && matchVal1.second == true && matchVal1.third == false -> Result.Ok(GENERIC_WRITE)
-                matchVal1.first == true && matchVal1.second == true && matchVal1.third == false -> Result.Ok(GENERIC_READ or GENERIC_WRITE)
-                matchVal1.first == false && matchVal1.third == true -> Result.Ok(FILE_GENERIC_WRITE and FILE_WRITE_DATA.inv())
-                matchVal1.first == true && matchVal1.third == true -> Result.Ok(GENERIC_READ or (FILE_GENERIC_WRITE and FILE_WRITE_DATA.inv()))
-                else -> Result.Err(io.github.kotlinmania.rustlang.io.Error.new(ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
+                matchVal1.third == true && this.truncate && !this.createNew -> Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
+                matchVal1.first == true && matchVal1.second == false && matchVal1.third == false -> Result.Ok(c.GENERIC_READ)
+                matchVal1.first == false && matchVal1.second == true && matchVal1.third == false -> Result.Ok(c.GENERIC_WRITE)
+                matchVal1.first == true && matchVal1.second == true && matchVal1.third == false -> Result.Ok(c.GENERIC_READ or c.GENERIC_WRITE)
+                matchVal1.first == false && matchVal1.third == true -> Result.Ok(c.FILE_GENERIC_WRITE and c.FILE_WRITE_DATA.inv())
+                matchVal1.first == true && matchVal1.third == true -> Result.Ok(c.GENERIC_READ or (c.FILE_GENERIC_WRITE and c.FILE_WRITE_DATA.inv()))
+                else -> Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
             }
         }
     }
@@ -898,13 +900,13 @@ public open class OpenOptions(
         Result.Ok(run {
             val matchVal = Triple(this.create, this.truncate, this.createNew)
             when {
-                matchVal.first == false && matchVal.second == false && matchVal.third == false -> Pair(OPEN_EXISTING, FILE_OPEN)
-                matchVal.first == true && matchVal.second == false && matchVal.third == false -> Pair(OPEN_ALWAYS, FILE_OPEN_IF)
-                matchVal.first == false && matchVal.second == true && matchVal.third == false -> Pair(TRUNCATE_EXISTING, FILE_OVERWRITE)
+                matchVal.first == false && matchVal.second == false && matchVal.third == false -> Pair(c.OPEN_EXISTING, c.FILE_OPEN)
+                matchVal.first == true && matchVal.second == false && matchVal.third == false -> Pair(c.OPEN_ALWAYS, c.FILE_OPEN_IF)
+                matchVal.first == false && matchVal.second == true && matchVal.third == false -> Pair(c.TRUNCATE_EXISTING, c.FILE_OVERWRITE)
                 // `CREATE_ALWAYS` has weird semantics so we emulate it using
                 // `OPEN_ALWAYS` and a manual truncation step. See #115745.
-                matchVal.first == true && matchVal.second == true && matchVal.third == false -> Pair(OPEN_ALWAYS, FILE_OVERWRITE_IF)
-                else -> Pair(CREATE_NEW, FILE_CREATE)
+                matchVal.first == true && matchVal.second == true && matchVal.third == false -> Pair(c.OPEN_ALWAYS, c.FILE_OVERWRITE_IF)
+                else -> Pair(c.CREATE_NEW, c.FILE_CREATE)
             }
         })
 
@@ -915,13 +917,13 @@ public open class OpenOptions(
     public open fun getFlagsAndAttributes(): UInt =
         this.customFlags or this.attributes or this.securityQosFlags or
             if (this.createNew) {
-                FILE_FLAG_OPEN_REPARSE_POINT
+                c.FILE_FLAG_OPEN_REPARSE_POINT
             } else {
                 0u
             }
 
     public companion object {
-        public fun new(): OpenOptions = OpenOptions(read = false, write = false, append = false, truncate = false, create = false, createNew = false, customFlags = 0u, accessMode = null, shareMode = FILE_SHARE_READ or FILE_SHARE_WRITE or FILE_SHARE_DELETE, attributes = 0u, securityQosFlags = 0u, inheritHandle = false, freezeLastAccessTime = false, freezeLastWriteTime = false)
+        public fun new(): OpenOptions = OpenOptions(read = false, write = false, append = false, truncate = false, create = false, createNew = false, customFlags = 0u, accessMode = null, shareMode = c.FILE_SHARE_READ or c.FILE_SHARE_WRITE or c.FILE_SHARE_DELETE, attributes = 0u, securityQosFlags = 0u, inheritHandle = false, freezeLastAccessTime = false, freezeLastWriteTime = false)
     }
 }
 
@@ -930,13 +932,13 @@ public open class FilePermissions(
 ) : FromInner<UInt, FilePermissions> {
     public open fun clone(): FilePermissions = FilePermissions(attrs)
 
-    public open fun readonly(): Boolean = (this.attrs and FILE_ATTRIBUTE_READONLY != 0u).toUByte()
+    public open fun readonly(): Boolean = (this.attrs and c.FILE_ATTRIBUTE_READONLY != 0u).toUByte()
 
     public open fun setReadonly(readonly: Boolean) {
         if (readonly) {
-            this.attrs = this.attrs or FILE_ATTRIBUTE_READONLY
+            this.attrs = this.attrs or c.FILE_ATTRIBUTE_READONLY
         } else {
-            this.attrs = this.attrs and FILE_ATTRIBUTE_READONLY.inv()
+            this.attrs = this.attrs and c.FILE_ATTRIBUTE_READONLY.inv()
         }
     }
 
@@ -968,9 +970,9 @@ public open class FilePermissions(
 }
 
 public open class FileTimes(
-    public var accessed: Filetime?,
-    public var modified: Filetime?,
-    public var created: Filetime?,
+    public var accessed: c.Filetime?,
+    public var modified: c.Filetime?,
+    public var created: c.Filetime?,
 ) {
     public open fun clone(): FileTimes = FileTimes(accessed, modified, created)
 
@@ -987,7 +989,7 @@ public open class FileTimes(
     }
 }
 
-public fun Filetime.fmt(f: StringBuilder) {
+public fun c.Filetime.fmt(f: StringBuilder) {
     val time = ((this.dwHighDateTime.toULong()) shl 32) or this.dwLowDateTime.toULong()
     DebugTuple(f, "FILETIME").field(time).finish()
 }
@@ -995,7 +997,7 @@ public fun Filetime.fmt(f: StringBuilder) {
 public open class DirBuilder {
     public open fun mkdir(p: Path): Result<Unit, Error> {
         val p1 = when (val tryResult = maybeVerbatim(p)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        when (val tryResult = cvt(CreateDirectoryW(p1.asPtr(), MutPtr(0L)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(c.CreateDirectoryW(p1.asPtr(), MutPtr(0L)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -1092,11 +1094,11 @@ public open class DirBuffIter internal constructor(
                 // it does not seem that reality is so kind, and assuming this
                 // caused crashes in some cases (https://github.com/rust-lang/rust/issues/104530).
                 // Presumably, this can be blamed on buggy filesystem drivers, but who knows.
-                val nextEntry = (PrimitiveLayouts.U32).readNative(((addrOf((ObjectSlotLayout<FileIdBothDirInfo>()).readNative((info).rawAddress).nextEntryOffset))).rawAddress).toInt()
-                val length = (PrimitiveLayouts.U32).readNative(((addrOf((ObjectSlotLayout<FileIdBothDirInfo>()).readNative((info).rawAddress).fileNameLength))).rawAddress).toInt()
-                val attrs = (PrimitiveLayouts.U32).readNative(((addrOf((ObjectSlotLayout<FileIdBothDirInfo>()).readNative((info).rawAddress).fileAttributes))).rawAddress)
-                val name = fromMaybeUnaligned(ConstPtr(((addrOf((ObjectSlotLayout<FileIdBothDirInfo>()).readNative((info).rawAddress).fileName))).rawAddress), length / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16))
-                val isDirectory = (attrs and FILE_ATTRIBUTE_DIRECTORY) != 0
+                val nextEntry = (PrimitiveLayouts.U32).readNative(((addrOf((UnresolvedTypeLayout<c.FileIdBothDirInfo>()).readNative((info).rawAddress).nextEntryOffset))).rawAddress).toInt()
+                val length = (PrimitiveLayouts.U32).readNative(((addrOf((UnresolvedTypeLayout<c.FileIdBothDirInfo>()).readNative((info).rawAddress).fileNameLength))).rawAddress).toInt()
+                val attrs = (PrimitiveLayouts.U32).readNative(((addrOf((UnresolvedTypeLayout<c.FileIdBothDirInfo>()).readNative((info).rawAddress).fileAttributes))).rawAddress)
+                val name = fromMaybeUnaligned(ConstPtr(((addrOf((UnresolvedTypeLayout<c.FileIdBothDirInfo>()).readNative((info).rawAddress).fileName))).rawAddress), length / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16))
+                val isDirectory = (attrs and c.FILE_ATTRIBUTE_DIRECTORY) != 0
                 Triple(name, isDirectory, nextEntry)
             }
         if (nextEntry1 == 0) {
@@ -1126,7 +1128,7 @@ public open class DirBuffIter internal constructor(
 
 public fun fromMaybeUnaligned(p: ConstPtr, len: Int): List<UShort> =
     if (p.isAligned()) {
-        Slice.fromRawParts(p, len)
+        linearSliceView(p, len.toInt(), PrimitiveLayouts.U16)
     } else {
         (0 until len).map({ i -> (PrimitiveLayouts.U16).readNative((ConstPtr((p).rawAddress + ((i).toLong() * (PrimitiveLayouts.U16).strideBytes))).rawAddress) }).toMutableList()
     }
@@ -1145,7 +1147,7 @@ public fun debugPathHandle(handle: BorrowedHandle, f: StringBuilder, name: Strin
     return b
 }
 
-public fun toU64(ft: Filetime): ULong = (ft.dwLowDateTime.toULong()) or ((ft.dwHighDateTime.toULong()) shl 32)
+public fun toU64(ft: c.Filetime): ULong = (ft.dwLowDateTime.toULong()) or ((ft.dwHighDateTime.toULong()) shl 32)
 
 public fun readdir(p: Path): Result<ReadDir, Error> {
     // We push a `*` to the end of the path which cause the empty path to be
@@ -1154,13 +1156,13 @@ public fun readdir(p: Path): Result<ReadDir, Error> {
     if (p.asOsStr().isEmpty()) {
         // Return an error code consistent with other ways of opening files.
         // E.g. fs.metadata or File.open.
-        return Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(ERROR_PATH_NOT_FOUND.toInt()))
+        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.ERROR_PATH_NOT_FOUND.toInt()))
     }
     val root = p.toPathBuf()
     val star = p.join("*")
     val path = when (val tryResult = maybeVerbatim(star)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return run {
-        val localStorageL1257C8 = AddressableLocal(Win32FindDataw(), ObjectSlotLayout<Win32FindDataw>())
+        val localStorageL1257C8 = AddressableLocal(c.Win32FindDataw(), UnresolvedTypeLayout<c.Win32FindDataw>())
         val wfd by localStorageL1257C8
         // this is like FindFirstFileW (see https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-findfirstfileexw),
         // but with FindExInfoBasic it should skip filling WIN32_FIND_DATAW.cAlternateFileName
@@ -1169,8 +1171,8 @@ public fun readdir(p: Path): Result<ReadDir, Error> {
         //
         // We can pass FIND_FIRST_EX_LARGE_FETCH to dwAdditionalFlags to speed up things more,
         // but as we don't know user's use profile of this function, lets be conservative.
-        val findHandle = FindFirstFileExW(path.asPtr(), FindExInfoBasic, ((MutPtr(localStorageL1257C8.asMutPtr().rawAddress) as Any?) as Result<ReadDir, Error>), FindExSearchNameMatch, ConstPtr(0L), 0)
-        if (findHandle != INVALID_HANDLE_VALUE) {
+        val findHandle = c.FindFirstFileExW(path.asPtr(), c.FindExInfoBasic, ((MutPtr(localStorageL1257C8.asMutPtr().rawAddress) as Any?) as Result<ReadDir, Error>), c.FindExSearchNameMatch, ConstPtr(0L), 0)
+        if (findHandle != c.INVALID_HANDLE_VALUE) {
             Result.Ok(ReadDir(handle = FindNextFileHandle(findHandle), root = root, first = wfd))
         } else {
             // The status `ERROR_FILE_NOT_FOUND` is returned by the `FindFirstFileExW` function
@@ -1198,15 +1200,15 @@ public fun readdir(p: Path): Result<ReadDir, Error> {
 }
 
 public fun unlink(path: WCStr): Result<Unit, Error> {
-    return if (DeleteFileW(path.asPtr()) == 0) {
+    return if (c.DeleteFileW(path.asPtr()) == 0) {
         val err = api.getLastError()
         // if `DeleteFileW` fails with ERROR_ACCESS_DENIED then try to remove
         // the file while ignoring the readonly attribute.
         // This is accomplished by calling the `posixDelete` function on an open file handle.
         if (err == WinError.ACCESS_DENIED) {
             val opts = OpenOptions.new()
-            opts.accessMode(DELETE)
-            opts.customFlags(FILE_FLAG_OPEN_REPARSE_POINT)
+            opts.accessMode(c.DELETE)
+            opts.customFlags(c.FILE_FLAG_OPEN_REPARSE_POINT)
             when (val matchVal = File.openNative(path, opts)) {
                 is Ok -> {
                     val f = matchVal.value
@@ -1218,29 +1220,29 @@ public fun unlink(path: WCStr): Result<Unit, Error> {
             }
         }
         // return the original error if any of the above fails.
-        Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(err.code))
+        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(err.code))
     } else {
         Result.Ok(Unit)
     }
 }
 
 public fun renameInner(old: WCStr, new: WCStr, moveFlags: UInt, renameFlags: UInt): Result<Unit, Error> {
-    if (MoveFileExW(old.asPtr(), new.asPtr(), moveFlags) == 0) {
+    if (c.MoveFileExW(old.asPtr(), new.asPtr(), moveFlags) == 0) {
         val err = api.getLastError()
         // if `MoveFileExW` fails with ERROR_ACCESS_DENIED then try to move
         // the file while ignoring the readonly attribute.
         // This is accomplished by calling `SetFileInformationByHandle` with `FileRenameInfoEx`.
         if (err == WinError.ACCESS_DENIED) {
             val opts = OpenOptions.new()
-            opts.accessMode(DELETE)
-            opts.customFlags(FILE_FLAG_OPEN_REPARSE_POINT or FILE_FLAG_BACKUP_SEMANTICS)
+            opts.accessMode(c.DELETE)
+            opts.customFlags(c.FILE_FLAG_OPEN_REPARSE_POINT or c.FILE_FLAG_BACKUP_SEMANTICS)
             val f = File.openNative(old, opts) ?: return Result.Err(err).ioResult()
             // Calculate the layout of the `FILE_RENAME_INFO` we pass to `SetFileInformation`
             // This is a dynamically sized struct so we need to get the position of the last field to calculate the actual size.
             val newLenWithoutNulInBytes: Result<UInt> = ((new.countBytes() - 1) * 2).tryInto() ?: return Result.Err(err).ioResult()
             val offset: UInt = 0u.tryInto().unwrap()
             val structSize = offset + newLenWithoutNulInBytes + 2u
-            val layout = Layout.fromSizeAlign(structSize.toInt(), alignOf<FileRenameInfo>(typeLayoutT = ObjectSlotLayout<FileRenameInfo>())).unwrap()
+            val layout = Layout.fromSizeAlign(structSize.toInt(), alignOf<c.FileRenameInfo>(typeLayoutT = UnresolvedTypeLayout<c.FileRenameInfo>())).unwrap()
             val fileRenameInfo: Any?
             // SAFETY: We allocate enough memory for a full FILE_RENAME_INFO struct and a filename.
             run {
@@ -1254,7 +1256,7 @@ public fun renameInner(old: WCStr, new: WCStr, moveFlags: UInt, renameFlags: UIn
                 (addrOfMut(fileRenameInfo.fileNameLength)).write(newLenWithoutNulInBytes)
                 kmCopyNonoverlapping((new.asPtr()).rawAddress, ((addrOfMut(fileRenameInfo.fileName)).cast()).rawAddress, (new.countBytes()).toLong() * (PrimitiveLayouts.U16).sizeBytes)
             }
-            val result = SetFileInformationByHandle(f.asRawHandle(), FileRenameInfoEx, fileRenameInfo.cast(), structSize)
+            val result = c.SetFileInformationByHandle(f.asRawHandle(), c.FileRenameInfoEx, fileRenameInfo.cast(), structSize)
             dealloc(fileRenameInfo.cast(), layout)
             if (result == 0) {
                 if (api.getLastError() == WinError.DIR_NOT_EMPTY) {
@@ -1270,30 +1272,30 @@ public fun renameInner(old: WCStr, new: WCStr, moveFlags: UInt, renameFlags: UIn
     return Result.Ok(Unit)
 }
 
-public fun rename(old: WCStr, new: WCStr): Result<Unit, Error> = renameInner(old, new, MOVEFILE_REPLACE_EXISTING, FILE_RENAME_FLAG_REPLACE_IF_EXISTS or FILE_RENAME_FLAG_POSIX_SEMANTICS)
+public fun rename(old: WCStr, new: WCStr): Result<Unit, Error> = renameInner(old, new, c.MOVEFILE_REPLACE_EXISTING, c.FILE_RENAME_FLAG_REPLACE_IF_EXISTS or c.FILE_RENAME_FLAG_POSIX_SEMANTICS)
 
 public fun renameNoreplace(old: WCStr, new: WCStr): Result<Unit, Error> {
     // Without `MOVEFILE_REPLACE_EXISTING`, `MoveFileExW` fails if the destination
     // exists.
-    return renameInner(old, new, 0u, FILE_RENAME_FLAG_POSIX_SEMANTICS)
+    return renameInner(old, new, 0u, c.FILE_RENAME_FLAG_POSIX_SEMANTICS)
 }
 
 public fun rmdir(p: WCStr): Result<Unit, Error> {
-    when (val tryResult = cvt(RemoveDirectoryW(p.asPtr()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(c.RemoveDirectoryW(p.asPtr()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(Unit)
 }
 
 public fun removeDirAll(path: WCStr): Result<Unit, Error> {
     // Open a file or directory without following symlinks.
     val opts = OpenOptions.new()
-    opts.accessMode(FILE_LIST_DIRECTORY)
+    opts.accessMode(c.FILE_LIST_DIRECTORY)
     // `FILE_FLAG_BACKUP_SEMANTICS` allows opening directories.
     // `FILE_FLAG_OPEN_REPARSE_POINT` opens a link instead of its target.
-    opts.customFlags(FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT)
+    opts.customFlags(c.FILE_FLAG_BACKUP_SEMANTICS or c.FILE_FLAG_OPEN_REPARSE_POINT)
     val file = when (val tryResult = File.openNative(path, opts)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // Test if the file is not a directory or a symlink to a directory.
-    if ((when (val tryResult = file.basicInfo()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.fileAttributes and FILE_ATTRIBUTE_DIRECTORY) == 0u) {
-        return Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(((ERROR_DIRECTORY as Any?) as Result<Unit, Error>)))
+    if ((when (val tryResult = file.basicInfo()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.fileAttributes and c.FILE_ATTRIBUTE_DIRECTORY) == 0u) {
+        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(((c.ERROR_DIRECTORY as Any?) as Result<Unit, Error>)))
     }
     // Remove the directory and all its contents.
     return removeDirAllIterative(file).ioResult()
@@ -1305,7 +1307,7 @@ public fun readlink(path: WCStr): Result<PathBuf, Error> {
     // this is needed for a common case.
     val opts = OpenOptions.new()
     opts.accessMode(0)
-    opts.customFlags(FILE_FLAG_OPEN_REPARSE_POINT or FILE_FLAG_BACKUP_SEMANTICS)
+    opts.customFlags(c.FILE_FLAG_OPEN_REPARSE_POINT or c.FILE_FLAG_BACKUP_SEMANTICS)
     val file = when (val tryResult = File.openNative(path, opts)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return file.readlink()
 }
@@ -1317,7 +1319,7 @@ public fun symlinkInner(original: Path, link: Path, dir: Boolean): Result<Unit, 
     val link1 = when (val tryResult = maybeVerbatim(link)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     val flags =
         if (dir) {
-            SYMBOLIC_LINK_FLAG_DIRECTORY
+            c.SYMBOLIC_LINK_FLAG_DIRECTORY
         } else {
             0
         }
@@ -1325,13 +1327,13 @@ public fun symlinkInner(original: Path, link: Path, dir: Boolean): Result<Unit, 
     // Creators Update, Microsoft loosened this to allow unprivileged symlink creation if the
     // computer is in Developer Mode, but SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE must be
     // added to dwFlags to opt into this behavior.
-    val result = cvt(CreateSymbolicLinkW(link1.asPtr(), original1.asPtr(), flags or SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE).toInt())
+    val result = cvt(c.CreateSymbolicLinkW(link1.asPtr(), original1.asPtr(), flags or c.SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE).toInt())
     if (result is Result.Err<*, *>) {
         val err = (result as Result.Err<*, *>).error
-        if (err.rawOsError() == ERROR_INVALID_PARAMETER.toInt()) {
+        if (err.rawOsError() == c.ERROR_INVALID_PARAMETER.toInt()) {
             // Older Windows objects to SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE,
             // so if we encounter ERROR_INVALID_PARAMETER, retry without that flag.
-            when (val tryResult = cvt(CreateSymbolicLinkW(link1.asPtr(), original1.asPtr(), flags).toInt())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            when (val tryResult = cvt(c.CreateSymbolicLinkW(link1.asPtr(), original1.asPtr(), flags).toInt())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         } else {
             return Result.Err(err)
         }
@@ -1340,7 +1342,7 @@ public fun symlinkInner(original: Path, link: Path, dir: Boolean): Result<Unit, 
 }
 
 public fun link(original: WCStr, link: WCStr): Result<Unit, Error> {
-    when (val tryResult = cvt(CreateHardLinkW(link.asPtr(), original.asPtr(), MutPtr(0L)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(c.CreateHardLinkW(link.asPtr(), original.asPtr(), MutPtr(0L)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(Unit)
 }
 
@@ -1348,7 +1350,7 @@ public fun stat(path: WCStr): Result<FileAttr, Error> {
     return run {
         val matchVal = metadata(path, ReparsePoint.Follow)
         when {
-            matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.rawOsError() == ERROR_CANT_ACCESS_FILE.toInt() -> {
+            matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.rawOsError() == c.ERROR_CANT_ACCESS_FILE.toInt() -> {
                 val err = (matchVal as Result.Err<*, *>).error
                 // Fallback to opening reparse points when following fails. Needed for UNIX domain
                 // sockets. See <https://github.com/rust-lang/rust/issues/109106>.
@@ -1377,7 +1379,7 @@ public sealed class ReparsePoint(
     public val value: UInt,
 ) {
     public data object Follow : ReparsePoint(0u)
-    public data object Open : ReparsePoint(FILE_FLAG_OPEN_REPARSE_POINT)
+    public data object Open : ReparsePoint(c.FILE_FLAG_OPEN_REPARSE_POINT)
 
     public fun rustEquals(other: ReparsePoint): Boolean = this == other
 
@@ -1388,7 +1390,7 @@ public fun metadata(path: WCStr, reparse: ReparsePoint): Result<FileAttr, Error>
     val opts = OpenOptions.new()
     // No read or write permissions are necessary
     opts.accessMode(0)
-    opts.customFlags(FILE_FLAG_BACKUP_SEMANTICS or reparse.asFlag())
+    opts.customFlags(c.FILE_FLAG_BACKUP_SEMANTICS or reparse.asFlag())
     // Attempt to open the file normally.
     // If that fails with `ERROR_SHARING_VIOLATION` then retry using `FindFirstFileExW`.
     // If the fallback fails for any reason we return the original error.
@@ -1399,7 +1401,7 @@ public fun metadata(path: WCStr, reparse: ReparsePoint): Result<FileAttr, Error>
                 val file = (matchVal as Result.Ok<*, *>).value
                 file.fileAttr()
             }
-            matchVal is Result.Err<*, *> && listOf(((ERROR_SHARING_VIOLATION as Any?) as Result<FileAttr, Error>), ((ERROR_ACCESS_DENIED as Any?) as Result<FileAttr, Error>)).contains((matchVal as Result.Err<*, *>).error.rawOsError()) -> {
+            matchVal is Result.Err<*, *> && listOf(((c.ERROR_SHARING_VIOLATION as Any?) as Result<FileAttr, Error>), ((c.ERROR_ACCESS_DENIED as Any?) as Result<FileAttr, Error>)).contains((matchVal as Result.Err<*, *>).error.rawOsError()) -> {
                 val e = (matchVal as Result.Err<*, *>).error
                 // `ERROR_ACCESS_DENIED` is returned when the user doesn't have permission for the resource.
                 // One such example is `System Volume Information` as default but can be created as well
@@ -1413,16 +1415,16 @@ public fun metadata(path: WCStr, reparse: ReparsePoint): Result<FileAttr, Error>
                     // `ERROR_SHARING_VIOLATION` means the file exists (but is locked)
                     // therefore it's safe to assume the file name given does not
                     // include wildcards.
-                    val localStorageL1550C16 = AddressableLocal(Win32FindDataw(), ObjectSlotLayout<Win32FindDataw>())
+                    val localStorageL1550C16 = AddressableLocal(c.Win32FindDataw(), UnresolvedTypeLayout<c.Win32FindDataw>())
                     val wfd by localStorageL1550C16
-                    val handle = FindFirstFileExW(path.asPtr(), FindExInfoBasic, ((MutPtr(localStorageL1550C16.asMutPtr().rawAddress) as Any?) as Result<FileAttr, Error>), FindExSearchNameMatch, ConstPtr(0L), 0)
-                    if (handle == INVALID_HANDLE_VALUE) {
+                    val handle = c.FindFirstFileExW(path.asPtr(), c.FindExInfoBasic, ((MutPtr(localStorageL1550C16.asMutPtr().rawAddress) as Any?) as Result<FileAttr, Error>), c.FindExSearchNameMatch, ConstPtr(0L), 0)
+                    if (handle == c.INVALID_HANDLE_VALUE) {
                         // This can fail if the user does not have read access to the
                         // directory.
                         Result.Err(e)
                     } else {
                         // We no longer need the find handle.
-                        FindClose(handle)
+                        c.FindClose(handle)
                         // `FindFirstFileExW` reads the cached file information from the
                         // directory. The downside is that this metadata may be outdated.
                         val attrs = FileAttr.from(wfd)
@@ -1444,33 +1446,33 @@ public fun metadata(path: WCStr, reparse: ReparsePoint): Result<FileAttr, Error>
 
 public fun setPerm(p: WCStr, perm: FilePermissions): Result<Unit, Error> {
     return run {
-        when (val tryResult = cvt(SetFileAttributesW(p.asPtr(), perm.attrs))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(c.SetFileAttributesW(p.asPtr(), perm.attrs))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         Result.Ok(Unit)
     }
 }
 
 public fun setPermNofollow(p: WCStr, perm: FilePermissions): Result<Unit, Error> {
     val opts = OpenOptions.new()
-    opts.accessMode(FILE_WRITE_ATTRIBUTES)
+    opts.accessMode(c.FILE_WRITE_ATTRIBUTES)
     // `FILE_FLAG_OPEN_REPARSE_POINT` for noFollow behavior
-    opts.customFlags(FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT)
+    opts.customFlags(c.FILE_FLAG_BACKUP_SEMANTICS or c.FILE_FLAG_OPEN_REPARSE_POINT)
     val file = when (val tryResult = File.openNative(p, opts)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return file.setPermissions(perm)
 }
 
 public fun setTimes(p: WCStr, times: FileTimes): Result<Unit, Error> {
     val opts = OpenOptions.new()
-    opts.accessMode(FILE_WRITE_ATTRIBUTES)
-    opts.customFlags(FILE_FLAG_BACKUP_SEMANTICS)
+    opts.accessMode(c.FILE_WRITE_ATTRIBUTES)
+    opts.customFlags(c.FILE_FLAG_BACKUP_SEMANTICS)
     val file = when (val tryResult = File.openNative(p, opts)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return file.setTimes(times)
 }
 
 public fun setTimesNofollow(p: WCStr, times: FileTimes): Result<Unit, Error> {
     val opts = OpenOptions.new()
-    opts.accessMode(FILE_WRITE_ATTRIBUTES)
+    opts.accessMode(c.FILE_WRITE_ATTRIBUTES)
     // `FILE_FLAG_OPEN_REPARSE_POINT` for noFollow behavior
-    opts.customFlags(FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_OPEN_REPARSE_POINT)
+    opts.customFlags(c.FILE_FLAG_BACKUP_SEMANTICS or c.FILE_FLAG_OPEN_REPARSE_POINT)
     val file = when (val tryResult = File.openNative(p, opts)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return file.setTimes(times)
 }
@@ -1480,7 +1482,7 @@ public fun getPath(f: AsRawHandle): Result<PathBuf, Error> {
     // If getting the canonical path fails with ERROR_INVALID_FUNCTION
     // then it's likely it failed to resolve the path's drive.
     // In that case, use the fallback method to resolve it.
-    val invalidFunction = ERROR_INVALID_FUNCTION.toInt()
+    val invalidFunction = c.ERROR_INVALID_FUNCTION.toInt()
     return run {
         val matchVal = getPathCanonical(h)
         when {
@@ -1496,7 +1498,7 @@ public fun getPath(f: AsRawHandle): Result<PathBuf, Error> {
     }
 }
 
-public fun getPathCanonical(handle: Handle): Result<PathBuf, Error> = fillUtf16Buf({ buf, sz -> GetFinalPathNameByHandleW(handle, buf, sz, VOLUME_NAME_DOS) }, { buf -> PathBuf.from(OsString.fromWide(buf)) })
+public fun getPathCanonical(handle: c.Handle): Result<PathBuf, Error> = fillUtf16Buf({ buf, sz -> c.GetFinalPathNameByHandleW(handle, buf, sz, c.VOLUME_NAME_DOS) }, { buf -> PathBuf.from(OsString.fromWide(buf)) })
 
 /**
  * Fallback in case `getPathCanonical` fails.
@@ -1521,9 +1523,9 @@ public fun getPathCanonical(handle: Handle): Result<PathBuf, Error> = fillUtf16B
  * [GetLogicalDrives]: https://learn.microsoft.com/windows/win32/api/fileapi/nf-fileapi-getlogicaldrives
  * [QueryDosDeviceW]: https://learn.microsoft.com/windows/win32/api/fileapi/nf-fileapi-querydosdevicew
  */
-public fun getPathFallback(handle: Handle): PathBuf? {
-    return fillUtf16Buf({ buf, sz -> GetFinalPathNameByHandleW(handle, buf, sz, VOLUME_NAME_NT) }, closure@{ ntPath ->
-        var buf = UShortArray(MAX_PATH.toInt()) { 0u.toUShort() }
+public fun getPathFallback(handle: c.Handle): PathBuf? {
+    return fillUtf16Buf({ buf, sz -> c.GetFinalPathNameByHandleW(handle, buf, sz, c.VOLUME_NAME_NT) }, closure@{ ntPath ->
+        var buf = UShortArray(c.MAX_PATH.toInt()) { 0u.toUShort() }
         for (letter in api.getLogicalDrives()) {
             val deviceName = ushortArrayOf(letter.toUShort(), 58u.toUShort(), 0u)
             // SAFETY: `deviceName` is a null terminated u16 string
@@ -1561,22 +1563,22 @@ public fun canonicalize(p: WCStr): Result<PathBuf, Error> {
     // No read or write permissions are necessary
     opts.accessMode(0)
     // This flag is so we can open directories too
-    opts.customFlags(FILE_FLAG_BACKUP_SEMANTICS)
+    opts.customFlags(c.FILE_FLAG_BACKUP_SEMANTICS)
     val f = when (val tryResult = File.openNative(p, opts)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return getPath(f.handle)
 }
 
 public fun copy(from: WCStr, to: WCStr): Result<ULong, Error> {
-    fun callback(totalFileSize: Long, totalBytesTransferred: Long, streamSize: Long, streamBytesTransferred: Long, dwStreamNumber: UInt, dwCallbackReason: UInt, hSourceFile: Handle, hDestinationFile: Handle, lpData: ConstPtr): UInt =
+    fun callback(totalFileSize: Long, totalBytesTransferred: Long, streamSize: Long, streamBytesTransferred: Long, dwStreamNumber: UInt, dwCallbackReason: UInt, hSourceFile: c.Handle, hDestinationFile: c.Handle, lpData: ConstPtr): UInt =
         run {
             if (dwStreamNumber == 1u) {
                 (PrimitiveLayouts.I64).writeNative(((MutPtr(lpData.rawAddress, lpData.rawMeta))).rawAddress, streamBytesTransferred)
             }
-            PROGRESS_CONTINUE
+            c.PROGRESS_CONTINUE
         }
     val localStorageL1717C4 = AddressableLocal(0L, PrimitiveLayouts.I64)
     val size by localStorageL1717C4
-    when (val tryResult = cvt(CopyFileExW(from.asPtr(), to.asPtr(), ::callback, (localStorageL1717C4.asMutPtr()), MutPtr(0L), 0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(c.CopyFileExW(from.asPtr(), to.asPtr(), ::callback, (localStorageL1717C4.asMutPtr()), MutPtr(0L), 0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(size.toULong())
 }
 
@@ -1598,8 +1600,8 @@ public fun junctionPoint(original: Path, link: Path): Result<Unit, Error> {
     val opts = OpenOptions.new()
     opts.createNew(true)
     opts.write(true)
-    opts.customFlags(FILE_FLAG_BACKUP_SEMANTICS or FILE_FLAG_POSIX_SEMANTICS)
-    opts.attributes(FILE_ATTRIBUTE_DIRECTORY)
+    opts.customFlags(c.FILE_FLAG_BACKUP_SEMANTICS or c.FILE_FLAG_POSIX_SEMANTICS)
+    opts.attributes(c.FILE_ATTRIBUTE_DIRECTORY)
     val d = when (val tryResult = File.open(link, opts)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // We need to get an absolute, NT-style path.
     val pathBytes = original.asOsStr().asEncodedBytes()
@@ -1624,7 +1626,7 @@ public fun junctionPoint(original: Path, link: Path): Result<Unit, Error> {
                 return Result.Err(constError(ErrorKind.InvalidInput, "path is not valid"))
             }
         }
-    val localStorageL1778C4 = AddressableLocal(MountPointBuffer(reparseTag = IO_REPARSE_TAG_MOUNT_POINT, reparseDataLength = 0u, reserved = 0u, substituteNameOffset = 0u, substituteNameLength = (absPath1.size * 2).toUShort(), printNameOffset = ((absPath1.size + 1) * 2).toUShort(), printNameLength = 0u, pathBuffer = List(MAXIMUM_REPARSE_DATA_BUFFER_SIZE.toInt() / 2) { MaybeUninit.uninit(PrimitiveLayouts.U16) }), ObjectSlotLayout<MountPointBuffer>())
+    val localStorageL1778C4 = AddressableLocal(MountPointBuffer(reparseTag = c.IO_REPARSE_TAG_MOUNT_POINT, reparseDataLength = 0u, reserved = 0u, substituteNameOffset = 0u, substituteNameLength = (absPath1.size * 2).toUShort(), printNameOffset = ((absPath1.size + 1) * 2).toUShort(), printNameLength = 0u, pathBuffer = List(c.MAXIMUM_REPARSE_DATA_BUFFER_SIZE.toInt() / 2) { MaybeUninit.uninit(PrimitiveLayouts.U16) }), UnresolvedTypeLayout<MountPointBuffer>())
     val header by localStorageL1778C4
     // A mount point reparse point requires both the substitute name and the
     // (empty) print name to be null terminated, even though their lengths are
@@ -1643,7 +1645,7 @@ public fun junctionPoint(original: Path, link: Path): Result<Unit, Error> {
     header.reparseDataLength = (totalLen - 0).toUShort()
     return run {
         val localStorageL1808C8 = AddressableLocal(0, PrimitiveLayouts.I32)
-        cvt(DeviceIoControl(d.asRawHandle(), FSCTL_SET_REPARSE_POINT, ConstPtr(((localStorageL1778C4.asConstPtr())).rawAddress), totalLen.toUInt(), MutPtr(0L), 0, RustMutableReference(localStorageL1808C8.asMutPtr(), localStorageL1808C8.layout), MutPtr(0L))).map({ Unit })
+        cvt(c.DeviceIoControl(d.asRawHandle(), c.FSCTL_SET_REPARSE_POINT, ConstPtr(((localStorageL1778C4.asConstPtr())).rawAddress), totalLen.toUInt(), MutPtr(0L), 0, RustMutableReference(localStorageL1808C8.asMutPtr(), localStorageL1808C8.layout), MutPtr(0L))).map({ Unit })
     }
 }
 
@@ -1654,7 +1656,7 @@ public fun exists(path: WCStr): Result<Boolean, Error> {
     // No read, write, etc access rights are needed.
     opts.accessMode(0)
     // Backup semantics enables opening directories as well as files.
-    opts.customFlags(FILE_FLAG_BACKUP_SEMANTICS)
+    opts.customFlags(c.FILE_FLAG_BACKUP_SEMANTICS)
     return run {
         val matchVal = File.openNative(path, opts)
         when (matchVal) { is Result.Ok<*, *> -> {
@@ -1669,13 +1671,13 @@ public fun exists(path: WCStr): Result<Boolean, Error> {
                     // `ERROR_SHARING_VIOLATION` means that the file has been locked by
                     // another process. This is often temporary so we simply report it
                     // as the file existing.
-                    e.rawOsError() == ERROR_SHARING_VIOLATION.toInt() -> Result.Ok(true)
+                    e.rawOsError() == c.ERROR_SHARING_VIOLATION.toInt() -> Result.Ok(true)
                     // `ERROR_CANT_ACCESS_FILE` means that a file exists but that the
                     // reparse point could not be handled by `CreateFile`.
                     // This can happen for special files such as:
                     // * Unix domain sockets which you need to `connect` to
                     // * App exec links which require using `CreateProcess`
-                    e.rawOsError() == ERROR_CANT_ACCESS_FILE.toInt() -> Result.Ok(true)
+                    e.rawOsError() == c.ERROR_CANT_ACCESS_FILE.toInt() -> Result.Ok(true)
                     // Other errors such as `ERROR_ACCESS_DENIED` may indicate that the
                     // file exists. However, these types of errors are usually more
                     // permanent so we report them here.

@@ -1,10 +1,9 @@
 // port-lint: source ub_checks.rs
 package io.github.kotlinmania.rustlang.core.ubchecks
 
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.panicking.panicNounwind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.panicking.panicNounwind
-import io.github.kotlinmania.rustlang.ubchecks.assertUnsafePrecondition
 
 // Provides the [assertUnsafePrecondition] macro as well as some utility functions that cover
 // common preconditions.
@@ -67,7 +66,7 @@ public fun maybeIsNonoverlapping(src: ConstPtr, dst: ConstPtr, size: Int, count:
     return run {
         val srcUsize = (src).rawAddress.toInt()
         val dstUsize = (dst).rawAddress.toInt()
-        val size1 = rustCheckedMul(size, count) ?: panicNounwind("is_nonoverlapping: `size_of::<T>() * count` overflows a usize")
+        val size1 = size.checkedMul(count) ?: panicNounwind("is_nonoverlapping: `size_of::<T>() * count` overflows a usize")
         val diff = srcUsize.absDiff(dstUsize)
         diff >= size1
     }

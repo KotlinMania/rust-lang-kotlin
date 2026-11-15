@@ -3,17 +3,13 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I32x8
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I64x4
-import io.github.kotlinmania.rustlang.simd.I8x32
-import io.github.kotlinmania.rustlang.x86.M128
-import io.github.kotlinmania.rustlang.x86.M128d
-import io.github.kotlinmania.rustlang.x86.M256
-import io.github.kotlinmania.rustlang.x86.M256d
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I32x8
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I64x4
+import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 
-private object CorearchX86AvxJniBridge {
+private object X86AvxJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -49,11 +45,14 @@ private object CorearchX86AvxJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX86AvxJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X86AvxJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -67,10 +66,10 @@ private object CorearchX86AvxJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX86AvxVzeroall()
+    external fun corearchX86AvxVzeroall()
 
     @JvmStatic
-    external fun rustlangCorearchX86AvxVzeroupper()
+    external fun corearchX86AvxVzeroupper()
 }
 
 public actual fun roundpd256(a: M256d, b: Int): M256d =
@@ -113,11 +112,11 @@ public actual fun vcvttps2dq(a: M256): I32x8 =
     null as I32x8
 
 public actual fun vzeroall() {
-    CorearchX86AvxJniBridge.rustlangCorearchX86AvxVzeroall()
+    X86AvxJniBridge.corearchX86AvxVzeroall()
 }
 
 public actual fun vzeroupper() {
-    CorearchX86AvxJniBridge.rustlangCorearchX86AvxVzeroupper()
+    X86AvxJniBridge.corearchX86AvxVzeroupper()
 }
 
 public actual fun vpermilps256(a: M256, b: I32x8): M256 =

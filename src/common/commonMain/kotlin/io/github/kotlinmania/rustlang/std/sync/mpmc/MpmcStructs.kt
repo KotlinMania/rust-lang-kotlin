@@ -2,13 +2,12 @@ package io.github.kotlinmania.rustlang.std.sync.mpmc
 
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.sync.mpmc.SendTimeoutError
-import io.github.kotlinmania.rustlang.sync.mpsc.RecvError
-import io.github.kotlinmania.rustlang.sync.mpsc.RecvTimeoutError
-import io.github.kotlinmania.rustlang.sync.mpsc.SendError
-import io.github.kotlinmania.rustlang.sync.mpsc.TryRecvError
-import io.github.kotlinmania.rustlang.sync.mpsc.TrySendError
-import io.github.kotlinmania.rustlang.time.Instant
+import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvTimeoutError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.SendError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.TryRecvError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.TrySendError
+import io.github.kotlinmania.rustlang.std.time.Instant
 
 public class DebugStruct(
     private val out: StringBuilder,

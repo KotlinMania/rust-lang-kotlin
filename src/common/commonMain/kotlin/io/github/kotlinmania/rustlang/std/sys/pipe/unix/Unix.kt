@@ -6,8 +6,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.pipe2
 import io.github.kotlinmania.rustlang.libc.wasi.O_CLOEXEC
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public typealias Pipe = FileDesc
 

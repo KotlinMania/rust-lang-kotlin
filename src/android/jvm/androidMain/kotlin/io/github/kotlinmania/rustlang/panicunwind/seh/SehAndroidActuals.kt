@@ -8,8 +8,8 @@ private object SehJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangSehGetTYPEINFOVTABLE(): Byte
+    external fun panicunwindSehGetTYPEINFOVTABLE(): Byte
 }
 
 public actual val TYPE_INFO_VTABLE: UByte
-    get() = SehJniBridge.rustlangSehGetTYPEINFOVTABLE().toUByte()
+    get() = SehJniBridge.panicunwindSehGetTYPEINFOVTABLE().toUByte()

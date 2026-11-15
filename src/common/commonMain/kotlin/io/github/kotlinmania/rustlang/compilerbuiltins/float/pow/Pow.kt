@@ -1,9 +1,9 @@
 // port-lint: source float/pow.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.pow
 
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
-import io.github.kotlinmania.rustlang.support.Float
-import io.github.kotlinmania.rustlang.support.Int
 
 /**
  * Returns `a` raised to the power `b`

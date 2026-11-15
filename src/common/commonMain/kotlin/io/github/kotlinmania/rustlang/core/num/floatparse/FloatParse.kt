@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.core.num.floatparse
 
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.dec2flt
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.num.imp.dec2flt.dec2flt
 
 // User-facing API for float parsing.
 
@@ -228,6 +228,7 @@ public sealed class FloatErrorKind {
      * Cannot parse float from empty string.
      */
     public data object Empty : FloatErrorKind()
+
     /**
      * Invalid float literal.
      */

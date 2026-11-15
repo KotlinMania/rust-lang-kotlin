@@ -1,4 +1,3 @@
 package io.github.kotlinmania.rustlang.alloc.rawvec
 
-import io.github.kotlinmania.rustlang.collections.TryReserveErrorKind.*
-
+import io.github.kotlinmania.rustlang.alloc.collections.TryReserveErrorKind.*

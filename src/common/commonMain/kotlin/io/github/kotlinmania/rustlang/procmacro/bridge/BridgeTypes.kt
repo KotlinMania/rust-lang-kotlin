@@ -1,9 +1,9 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
-import io.github.kotlinmania.rustlang.Span
-import io.github.kotlinmania.rustlang.TokenStream
-import io.github.kotlinmania.rustlang.bridge.symbol.Symbol
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.procmacro.Span
+import io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream
+import io.github.kotlinmania.rustlang.procmacro.bridge.symbol.Symbol
 
 public sealed class ApiTags {
     public data object TrackEnvVar : ApiTags()

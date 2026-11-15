@@ -4,9 +4,9 @@ package io.github.kotlinmania.rustlang.core.num.imp.libm
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.num.complex.Complex
+import io.github.kotlinmania.rustlang.core.num.complex.Complex
 
-private object CoreNumImpLibmJniBridge {
+private object NumImpLibmJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -42,11 +42,14 @@ private object CoreNumImpLibmJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CoreNumImpLibmJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/core/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = NumImpLibmJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -60,272 +63,272 @@ private object CoreNumImpLibmJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmPowidf2(a: Double, b: Int): Double
+    external fun coreNumImpLibmPowidf2(a: Double, b: Int): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmPowisf2(a: Float, b: Int): Float
+    external fun coreNumImpLibmPowisf2(a: Float, b: Int): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmCbrt(x: Double): Double
+    external fun coreNumImpLibmCbrt(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmCbrtf(n: Float): Float
+    external fun coreNumImpLibmCbrtf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmCeil(x: Double): Double
+    external fun coreNumImpLibmCeil(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmCeilf(x: Float): Float
+    external fun coreNumImpLibmCeilf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmCopysign(x: Double, y: Double): Double
+    external fun coreNumImpLibmCopysign(x: Double, y: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmCopysignf(x: Float, y: Float): Float
+    external fun coreNumImpLibmCopysignf(x: Float, y: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFabs(x: Double): Double
+    external fun coreNumImpLibmFabs(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFabsf(x: Float): Float
+    external fun coreNumImpLibmFabsf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFdim(a: Double, b: Double): Double
+    external fun coreNumImpLibmFdim(a: Double, b: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFdimf(a: Float, b: Float): Float
+    external fun coreNumImpLibmFdimf(a: Float, b: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFloor(x: Double): Double
+    external fun coreNumImpLibmFloor(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFloorf(x: Float): Float
+    external fun coreNumImpLibmFloorf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFma(x: Double, y: Double, z: Double): Double
+    external fun coreNumImpLibmFma(x: Double, y: Double, z: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFmaf(x: Float, y: Float, z: Float): Float
+    external fun coreNumImpLibmFmaf(x: Float, y: Float, z: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFmax(x: Double, y: Double): Double
+    external fun coreNumImpLibmFmax(x: Double, y: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFmaxf(x: Float, y: Float): Float
+    external fun coreNumImpLibmFmaxf(x: Float, y: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFmaximum(x: Double, y: Double): Double
+    external fun coreNumImpLibmFmaximum(x: Double, y: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFmaximumf(x: Float, y: Float): Float
+    external fun coreNumImpLibmFmaximumf(x: Float, y: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFmin(x: Double, y: Double): Double
+    external fun coreNumImpLibmFmin(x: Double, y: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFminf(x: Float, y: Float): Float
+    external fun coreNumImpLibmFminf(x: Float, y: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFminimum(x: Double, y: Double): Double
+    external fun coreNumImpLibmFminimum(x: Double, y: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFminimumf(x: Float, y: Float): Float
+    external fun coreNumImpLibmFminimumf(x: Float, y: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFmod(x: Double, y: Double): Double
+    external fun coreNumImpLibmFmod(x: Double, y: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmFmodf(x: Float, y: Float): Float
+    external fun coreNumImpLibmFmodf(x: Float, y: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmRint(x: Double): Double
+    external fun coreNumImpLibmRint(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmRintf(x: Float): Float
+    external fun coreNumImpLibmRintf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmRound(x: Double): Double
+    external fun coreNumImpLibmRound(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmRoundeven(x: Double): Double
+    external fun coreNumImpLibmRoundeven(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmRoundevenf(x: Float): Float
+    external fun coreNumImpLibmRoundevenf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmRoundf(x: Float): Float
+    external fun coreNumImpLibmRoundf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmSqrt(x: Double): Double
+    external fun coreNumImpLibmSqrt(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmSqrtf(x: Float): Float
+    external fun coreNumImpLibmSqrtf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmTrunc(x: Double): Double
+    external fun coreNumImpLibmTrunc(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmTruncf(x: Float): Float
+    external fun coreNumImpLibmTruncf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmAcosf(n: Float): Float
+    external fun coreNumImpLibmAcosf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmAsinf(n: Float): Float
+    external fun coreNumImpLibmAsinf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmAtan2f(a: Float, b: Float): Float
+    external fun coreNumImpLibmAtan2f(a: Float, b: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmAtanf(n: Float): Float
+    external fun coreNumImpLibmAtanf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmCosf(x: Float): Float
+    external fun coreNumImpLibmCosf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmCoshf(n: Float): Float
+    external fun coreNumImpLibmCoshf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmErfcf(x: Float): Float
+    external fun coreNumImpLibmErfcf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmErff(x: Float): Float
+    external fun coreNumImpLibmErff(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmExp2f(x: Float): Float
+    external fun coreNumImpLibmExp2f(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmExpf(x: Float): Float
+    external fun coreNumImpLibmExpf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmExpm1f(n: Float): Float
+    external fun coreNumImpLibmExpm1f(n: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmHypotf(x: Float, y: Float): Float
+    external fun coreNumImpLibmHypotf(x: Float, y: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmLdexpf(f: Float, n: Int): Float
+    external fun coreNumImpLibmLdexpf(f: Float, n: Int): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmLog10f(x: Float): Float
+    external fun coreNumImpLibmLog10f(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmLog1pf(n: Float): Float
+    external fun coreNumImpLibmLog1pf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmLog2f(x: Float): Float
+    external fun coreNumImpLibmLog2f(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmLogf(x: Float): Float
+    external fun coreNumImpLibmLogf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmPowf(x: Float, y: Float): Float
+    external fun coreNumImpLibmPowf(x: Float, y: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmSinf(x: Float): Float
+    external fun coreNumImpLibmSinf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmSinhf(n: Float): Float
+    external fun coreNumImpLibmSinhf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmTanf(n: Float): Float
+    external fun coreNumImpLibmTanf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmTanhf(n: Float): Float
+    external fun coreNumImpLibmTanhf(n: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmTgammaf(x: Float): Float
+    external fun coreNumImpLibmTgammaf(x: Float): Float
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmAcos(x: Double): Double
+    external fun coreNumImpLibmAcos(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmAsin(x: Double): Double
+    external fun coreNumImpLibmAsin(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmAtan(x: Double): Double
+    external fun coreNumImpLibmAtan(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmAtan2(x: Double, y: Double): Double
+    external fun coreNumImpLibmAtan2(x: Double, y: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmCos(x: Double): Double
+    external fun coreNumImpLibmCos(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmCosh(x: Double): Double
+    external fun coreNumImpLibmCosh(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmErf(x: Double): Double
+    external fun coreNumImpLibmErf(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmErfc(x: Double): Double
+    external fun coreNumImpLibmErfc(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmExp(x: Double): Double
+    external fun coreNumImpLibmExp(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmExp2(x: Double): Double
+    external fun coreNumImpLibmExp2(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmExpm1(x: Double): Double
+    external fun coreNumImpLibmExpm1(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmHypot(x: Double, y: Double): Double
+    external fun coreNumImpLibmHypot(x: Double, y: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmLdexp(f: Double, n: Int): Double
+    external fun coreNumImpLibmLdexp(f: Double, n: Int): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmLog(x: Double): Double
+    external fun coreNumImpLibmLog(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmLog10(x: Double): Double
+    external fun coreNumImpLibmLog10(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmLog1p(x: Double): Double
+    external fun coreNumImpLibmLog1p(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmLog2(x: Double): Double
+    external fun coreNumImpLibmLog2(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmPow(x: Double, y: Double): Double
+    external fun coreNumImpLibmPow(x: Double, y: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmSin(x: Double): Double
+    external fun coreNumImpLibmSin(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmSinh(x: Double): Double
+    external fun coreNumImpLibmSinh(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmTan(x: Double): Double
+    external fun coreNumImpLibmTan(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmTanh(x: Double): Double
+    external fun coreNumImpLibmTanh(x: Double): Double
 
     @JvmStatic
-    external fun rustlangCoreNumImpLibmTgamma(x: Double): Double
+    external fun coreNumImpLibmTgamma(x: Double): Double
 }
 
 public actual fun powidf2(a: Double, b: Int): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmPowidf2(a, b)
+    NumImpLibmJniBridge.coreNumImpLibmPowidf2(a, b)
 
 public actual fun powisf2(a: kotlin.Float, b: Int): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmPowisf2(a, b)
+    NumImpLibmJniBridge.coreNumImpLibmPowisf2(a, b)
 
 public actual fun powitf2(a: F128, b: Int): F128 =
     F128()
 
 public actual fun cbrt(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmCbrt(x)
+    NumImpLibmJniBridge.coreNumImpLibmCbrt(x)
 
 public actual fun cbrtf(n: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmCbrtf(n)
+    NumImpLibmJniBridge.coreNumImpLibmCbrtf(n)
 
 public actual fun ceil(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmCeil(x)
+    NumImpLibmJniBridge.coreNumImpLibmCeil(x)
 
 public actual fun ceilf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmCeilf(x)
+    NumImpLibmJniBridge.coreNumImpLibmCeilf(x)
 
 public actual fun ceilf128(x: F128): F128 =
     F128()
@@ -334,10 +337,10 @@ public actual fun ceilf16(x: F16): F16 =
     F16()
 
 public actual fun copysign(x: Double, y: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmCopysign(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmCopysign(x, y)
 
 public actual fun copysignf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmCopysignf(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmCopysignf(x, y)
 
 public actual fun copysignf128(x: F128, y: F128): F128 =
     F128()
@@ -346,10 +349,10 @@ public actual fun copysignf16(x: F16, y: F16): F16 =
     F16()
 
 public actual fun fabs(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFabs(x)
+    NumImpLibmJniBridge.coreNumImpLibmFabs(x)
 
 public actual fun fabsf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFabsf(x)
+    NumImpLibmJniBridge.coreNumImpLibmFabsf(x)
 
 public actual fun fabsf128(x: F128): F128 =
     F128()
@@ -358,10 +361,10 @@ public actual fun fabsf16(x: F16): F16 =
     F16()
 
 public actual fun fdim(a: Double, b: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFdim(a, b)
+    NumImpLibmJniBridge.coreNumImpLibmFdim(a, b)
 
 public actual fun fdimf(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFdimf(a, b)
+    NumImpLibmJniBridge.coreNumImpLibmFdimf(a, b)
 
 public actual fun fdimf128(x: F128, y: F128): F128 =
     F128()
@@ -370,10 +373,10 @@ public actual fun fdimf16(x: F16, y: F16): F16 =
     F16()
 
 public actual fun floor(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFloor(x)
+    NumImpLibmJniBridge.coreNumImpLibmFloor(x)
 
 public actual fun floorf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFloorf(x)
+    NumImpLibmJniBridge.coreNumImpLibmFloorf(x)
 
 public actual fun floorf128(x: F128): F128 =
     F128()
@@ -382,10 +385,10 @@ public actual fun floorf16(x: F16): F16 =
     F16()
 
 public actual fun fma(x: Double, y: Double, z: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFma(x, y, z)
+    NumImpLibmJniBridge.coreNumImpLibmFma(x, y, z)
 
 public actual fun fmaf(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFmaf(x, y, z)
+    NumImpLibmJniBridge.coreNumImpLibmFmaf(x, y, z)
 
 public actual fun fmaf128(x: F128, y: F128, z: F128): F128 =
     F128()
@@ -394,10 +397,10 @@ public actual fun fmaf16(x: F16, y: F16, z: F16): F16 =
     F16()
 
 public actual fun fmax(x: Double, y: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFmax(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmFmax(x, y)
 
 public actual fun fmaxf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFmaxf(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmFmaxf(x, y)
 
 public actual fun fmaxf128(x: F128, y: F128): F128 =
     F128()
@@ -406,10 +409,10 @@ public actual fun fmaxf16(x: F16, y: F16): F16 =
     F16()
 
 public actual fun fmaximum(x: Double, y: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFmaximum(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmFmaximum(x, y)
 
 public actual fun fmaximumf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFmaximumf(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmFmaximumf(x, y)
 
 public actual fun fmaximumf128(x: F128, y: F128): F128 =
     F128()
@@ -418,10 +421,10 @@ public actual fun fmaximumf16(x: F16, y: F16): F16 =
     F16()
 
 public actual fun fmin(x: Double, y: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFmin(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmFmin(x, y)
 
 public actual fun fminf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFminf(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmFminf(x, y)
 
 public actual fun fminf128(x: F128, y: F128): F128 =
     F128()
@@ -430,10 +433,10 @@ public actual fun fminf16(x: F16, y: F16): F16 =
     F16()
 
 public actual fun fminimum(x: Double, y: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFminimum(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmFminimum(x, y)
 
 public actual fun fminimumf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFminimumf(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmFminimumf(x, y)
 
 public actual fun fminimumf128(x: F128, y: F128): F128 =
     F128()
@@ -442,10 +445,10 @@ public actual fun fminimumf16(x: F16, y: F16): F16 =
     F16()
 
 public actual fun fmod(x: Double, y: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFmod(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmFmod(x, y)
 
 public actual fun fmodf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmFmodf(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmFmodf(x, y)
 
 public actual fun fmodf128(x: F128, y: F128): F128 =
     F128()
@@ -454,10 +457,10 @@ public actual fun fmodf16(x: F16, y: F16): F16 =
     F16()
 
 public actual fun rint(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmRint(x)
+    NumImpLibmJniBridge.coreNumImpLibmRint(x)
 
 public actual fun rintf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmRintf(x)
+    NumImpLibmJniBridge.coreNumImpLibmRintf(x)
 
 public actual fun rintf128(x: F128): F128 =
     F128()
@@ -466,13 +469,13 @@ public actual fun rintf16(x: F16): F16 =
     F16()
 
 public actual fun round(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmRound(x)
+    NumImpLibmJniBridge.coreNumImpLibmRound(x)
 
 public actual fun roundeven(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmRoundeven(x)
+    NumImpLibmJniBridge.coreNumImpLibmRoundeven(x)
 
 public actual fun roundevenf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmRoundevenf(x)
+    NumImpLibmJniBridge.coreNumImpLibmRoundevenf(x)
 
 public actual fun roundevenf128(x: F128): F128 =
     F128()
@@ -481,7 +484,7 @@ public actual fun roundevenf16(x: F16): F16 =
     F16()
 
 public actual fun roundf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmRoundf(x)
+    NumImpLibmJniBridge.coreNumImpLibmRoundf(x)
 
 public actual fun roundf128(x: F128): F128 =
     F128()
@@ -490,10 +493,10 @@ public actual fun roundf16(x: F16): F16 =
     F16()
 
 public actual fun sqrt(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmSqrt(x)
+    NumImpLibmJniBridge.coreNumImpLibmSqrt(x)
 
 public actual fun sqrtf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmSqrtf(x)
+    NumImpLibmJniBridge.coreNumImpLibmSqrtf(x)
 
 public actual fun sqrtf128(x: F128): F128 =
     F128()
@@ -502,10 +505,10 @@ public actual fun sqrtf16(x: F16): F16 =
     F16()
 
 public actual fun trunc(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmTrunc(x)
+    NumImpLibmJniBridge.coreNumImpLibmTrunc(x)
 
 public actual fun truncf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmTruncf(x)
+    NumImpLibmJniBridge.coreNumImpLibmTruncf(x)
 
 public actual fun truncf128(x: F128): F128 =
     F128()
@@ -538,142 +541,142 @@ public actual fun rustDivtc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> 
     null as Complex<F128>
 
 public actual fun acosf(n: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmAcosf(n)
+    NumImpLibmJniBridge.coreNumImpLibmAcosf(n)
 
 public actual fun asinf(n: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmAsinf(n)
+    NumImpLibmJniBridge.coreNumImpLibmAsinf(n)
 
 public actual fun atan2f(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmAtan2f(a, b)
+    NumImpLibmJniBridge.coreNumImpLibmAtan2f(a, b)
 
 public actual fun atanf(n: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmAtanf(n)
+    NumImpLibmJniBridge.coreNumImpLibmAtanf(n)
 
 public actual fun cosf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmCosf(x)
+    NumImpLibmJniBridge.coreNumImpLibmCosf(x)
 
 public actual fun coshf(n: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmCoshf(n)
+    NumImpLibmJniBridge.coreNumImpLibmCoshf(n)
 
 public actual fun erfcf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmErfcf(x)
+    NumImpLibmJniBridge.coreNumImpLibmErfcf(x)
 
 public actual fun erff(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmErff(x)
+    NumImpLibmJniBridge.coreNumImpLibmErff(x)
 
 public actual fun exp2f(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmExp2f(x)
+    NumImpLibmJniBridge.coreNumImpLibmExp2f(x)
 
 public actual fun expf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmExpf(x)
+    NumImpLibmJniBridge.coreNumImpLibmExpf(x)
 
 public actual fun expm1f(n: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmExpm1f(n)
+    NumImpLibmJniBridge.coreNumImpLibmExpm1f(n)
 
 public actual fun hypotf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmHypotf(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmHypotf(x, y)
 
 public actual fun ldexpf(f: kotlin.Float, n: Int): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmLdexpf(f, n)
+    NumImpLibmJniBridge.coreNumImpLibmLdexpf(f, n)
 
 public actual fun log10f(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmLog10f(x)
+    NumImpLibmJniBridge.coreNumImpLibmLog10f(x)
 
 public actual fun log1pf(n: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmLog1pf(n)
+    NumImpLibmJniBridge.coreNumImpLibmLog1pf(n)
 
 public actual fun log2f(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmLog2f(x)
+    NumImpLibmJniBridge.coreNumImpLibmLog2f(x)
 
 public actual fun logf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmLogf(x)
+    NumImpLibmJniBridge.coreNumImpLibmLogf(x)
 
 public actual fun powf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmPowf(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmPowf(x, y)
 
 public actual fun sinf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmSinf(x)
+    NumImpLibmJniBridge.coreNumImpLibmSinf(x)
 
 public actual fun sinhf(n: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmSinhf(n)
+    NumImpLibmJniBridge.coreNumImpLibmSinhf(n)
 
 public actual fun tanf(n: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmTanf(n)
+    NumImpLibmJniBridge.coreNumImpLibmTanf(n)
 
 public actual fun tanhf(n: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmTanhf(n)
+    NumImpLibmJniBridge.coreNumImpLibmTanhf(n)
 
 public actual fun tgammaf(x: kotlin.Float): kotlin.Float =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmTgammaf(x)
+    NumImpLibmJniBridge.coreNumImpLibmTgammaf(x)
 
 public actual fun acos(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmAcos(x)
+    NumImpLibmJniBridge.coreNumImpLibmAcos(x)
 
 public actual fun asin(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmAsin(x)
+    NumImpLibmJniBridge.coreNumImpLibmAsin(x)
 
 public actual fun atan(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmAtan(x)
+    NumImpLibmJniBridge.coreNumImpLibmAtan(x)
 
 public actual fun atan2(x: Double, y: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmAtan2(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmAtan2(x, y)
 
 public actual fun cos(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmCos(x)
+    NumImpLibmJniBridge.coreNumImpLibmCos(x)
 
 public actual fun cosh(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmCosh(x)
+    NumImpLibmJniBridge.coreNumImpLibmCosh(x)
 
 public actual fun erf(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmErf(x)
+    NumImpLibmJniBridge.coreNumImpLibmErf(x)
 
 public actual fun erfc(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmErfc(x)
+    NumImpLibmJniBridge.coreNumImpLibmErfc(x)
 
 public actual fun exp(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmExp(x)
+    NumImpLibmJniBridge.coreNumImpLibmExp(x)
 
 public actual fun exp2(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmExp2(x)
+    NumImpLibmJniBridge.coreNumImpLibmExp2(x)
 
 public actual fun expm1(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmExpm1(x)
+    NumImpLibmJniBridge.coreNumImpLibmExpm1(x)
 
 public actual fun hypot(x: Double, y: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmHypot(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmHypot(x, y)
 
 public actual fun ldexp(f: Double, n: Int): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmLdexp(f, n)
+    NumImpLibmJniBridge.coreNumImpLibmLdexp(f, n)
 
 public actual fun log(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmLog(x)
+    NumImpLibmJniBridge.coreNumImpLibmLog(x)
 
 public actual fun log10(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmLog10(x)
+    NumImpLibmJniBridge.coreNumImpLibmLog10(x)
 
 public actual fun log1p(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmLog1p(x)
+    NumImpLibmJniBridge.coreNumImpLibmLog1p(x)
 
 public actual fun log2(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmLog2(x)
+    NumImpLibmJniBridge.coreNumImpLibmLog2(x)
 
 public actual fun pow(x: Double, y: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmPow(x, y)
+    NumImpLibmJniBridge.coreNumImpLibmPow(x, y)
 
 public actual fun sin(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmSin(x)
+    NumImpLibmJniBridge.coreNumImpLibmSin(x)
 
 public actual fun sinh(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmSinh(x)
+    NumImpLibmJniBridge.coreNumImpLibmSinh(x)
 
 public actual fun tan(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmTan(x)
+    NumImpLibmJniBridge.coreNumImpLibmTan(x)
 
 public actual fun tanh(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmTanh(x)
+    NumImpLibmJniBridge.coreNumImpLibmTanh(x)
 
 public actual fun tgamma(x: Double): Double =
-    CoreNumImpLibmJniBridge.rustlangCoreNumImpLibmTgamma(x)
+    NumImpLibmJniBridge.coreNumImpLibmTgamma(x)
 
 public actual fun acosf128(x: F128): F128 =
     F128()

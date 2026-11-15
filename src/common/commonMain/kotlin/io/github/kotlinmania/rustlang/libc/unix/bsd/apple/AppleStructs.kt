@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
@@ -11,39 +10,40 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.GidT
-import io.github.kotlinmania.rustlang.unix.IFNAMSIZ
-import io.github.kotlinmania.rustlang.unix.In6Addr
-import io.github.kotlinmania.rustlang.unix.InAddrT
-import io.github.kotlinmania.rustlang.unix.InPortT
-import io.github.kotlinmania.rustlang.unix.IntptrT
-import io.github.kotlinmania.rustlang.unix.PidT
-import io.github.kotlinmania.rustlang.unix.SighandlerT
-import io.github.kotlinmania.rustlang.unix.Sigval
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.UidT
-import io.github.kotlinmania.rustlang.unix.UintptrT
-import io.github.kotlinmania.rustlang.unix.bsd.FsidT
-import io.github.kotlinmania.rustlang.unix.bsd.SaFamilyT
-import io.github.kotlinmania.rustlang.unix.bsd.Sockaddr
-import io.github.kotlinmania.rustlang.unix.bsd.SockaddrIn6
-import io.github.kotlinmania.rustlang.unix.bsd.apple.b64.IfData
-import io.github.kotlinmania.rustlang.unix.bsd.apple.b64.Timeval32
-import io.github.kotlinmania.rustlang.unix.bsd.apple.b64.aarch64.BooleanT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timespec
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.BlkcntT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.NCCS
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.IFNAMSIZ
+import io.github.kotlinmania.rustlang.libc.unix.In6Addr
+import io.github.kotlinmania.rustlang.libc.unix.InAddrT
+import io.github.kotlinmania.rustlang.libc.unix.InPortT
+import io.github.kotlinmania.rustlang.libc.unix.IntptrT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.SighandlerT
+import io.github.kotlinmania.rustlang.libc.unix.Sigval
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.Timespec
+import io.github.kotlinmania.rustlang.libc.unix.Timeval
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.UintptrT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.BlkcntT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.FsidT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.NCCS
+import io.github.kotlinmania.rustlang.libc.unix.bsd.OffT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SaFamilyT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.Sockaddr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SockaddrIn6
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.IfData
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.Timeval32
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.aarch64.BooleanT
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -82,16 +82,20 @@ public class DebugStruct(
  * representation when available.
  * </div>
  */
-public data class Timezone(
-    public var data: Unit = Unit,
-    public var marker: Unit = Unit,
-)
+public open class Timezone(
+    public var data: Unit,
+    public var marker: Unit,
+) {
+    public open fun clone(): Timezone = Timezone(data, marker)
+}
 
 // Note(exhaustive): review for 1.0
-public data class IpMreq(
-    public var imrMultiaddr: InAddr = InAddr(),
-    public var imrInterface: InAddr = InAddr(),
+public open class IpMreq(
+    public var imrMultiaddr: InAddr,
+    public var imrInterface: InAddr,
 ) {
+    public open fun clone(): IpMreq = IpMreq(imrMultiaddr, imrInterface)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IpMreq> =
             object : TypeLayout<IpMreq> {
@@ -116,15 +120,19 @@ public data class IpMreq(
                     (InAddr.typeLayout()).writeBytes(buf, offset + 4, value.imrInterface)
                 }
             }
+
+        public fun default(): IpMreq = IpMreq(imrMultiaddr = Default.default(), imrInterface = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class IpMreqn(
-    public var imrMultiaddr: InAddr = InAddr(),
-    public var imrAddress: InAddr = InAddr(),
-    public var imrIfindex: CInt = 0,
+public open class IpMreqn(
+    public var imrMultiaddr: InAddr,
+    public var imrAddress: InAddr,
+    public var imrIfindex: CInt,
 ) {
+    public open fun clone(): IpMreqn = IpMreqn(imrMultiaddr, imrAddress, imrIfindex)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IpMreqn> =
             object : TypeLayout<IpMreqn> {
@@ -153,15 +161,19 @@ public data class IpMreqn(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.imrIfindex)
                 }
             }
+
+        public fun default(): IpMreqn = IpMreqn(imrMultiaddr = Default.default(), imrAddress = Default.default(), imrIfindex = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class IpMreqSource(
-    public var imrMultiaddr: InAddr = InAddr(),
-    public var imrSourceaddr: InAddr = InAddr(),
-    public var imrInterface: InAddr = InAddr(),
+public open class IpMreqSource(
+    public var imrMultiaddr: InAddr,
+    public var imrSourceaddr: InAddr,
+    public var imrInterface: InAddr,
 ) {
+    public open fun clone(): IpMreqSource = IpMreqSource(imrMultiaddr, imrSourceaddr, imrInterface)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IpMreqSource> =
             object : TypeLayout<IpMreqSource> {
@@ -190,11 +202,13 @@ public data class IpMreqSource(
                     (InAddr.typeLayout()).writeBytes(buf, offset + 8, value.imrInterface)
                 }
             }
+
+        public fun default(): IpMreqSource = IpMreqSource(imrMultiaddr = Default.default(), imrSourceaddr = Default.default(), imrInterface = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class Aiocb internal constructor(
+public open class Aiocb internal constructor(
     public var aioFildes: CInt,
     public var aioOffset: OffT,
     aioBufCtorArg: MutPtr,
@@ -206,67 +220,17 @@ public class Aiocb internal constructor(
     public var aioBuf: MutPtr = aioBufCtorArg
         internal set
 
-    public constructor() : this(
-        aioFildes = 0,
-        aioOffset = 0L,
-        aioBufCtorArg = MutPtr(0L),
-        aioNbytes = 0uL,
-        aioReqprio = 0,
-        aioSigevent = Sigevent(),
-        aioLioOpcode = 0,
-    )
-
-    public operator fun component1(): CInt = this.aioFildes
-
-    public operator fun component2(): OffT = this.aioOffset
-
-    public operator fun component3(): MutPtr = this.aioBuf
-
-    public operator fun component4(): SizeT = this.aioNbytes
-
-    public operator fun component5(): CInt = this.aioReqprio
-
-    public operator fun component6(): Sigevent = this.aioSigevent
-
-    public operator fun component7(): CInt = this.aioLioOpcode
-
-    public fun copy(aioFildes: CInt = this.aioFildes, aioOffset: OffT = this.aioOffset, aioBuf: MutPtr = this.aioBuf, aioNbytes: SizeT = this.aioNbytes, aioReqprio: CInt = this.aioReqprio, aioSigevent: Sigevent = this.aioSigevent, aioLioOpcode: CInt = this.aioLioOpcode): Aiocb = Aiocb(aioFildes = aioFildes, aioOffset = aioOffset, aioBufCtorArg = aioBuf, aioNbytes = aioNbytes, aioReqprio = aioReqprio, aioSigevent = aioSigevent, aioLioOpcode = aioLioOpcode)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Aiocb) return false
-        if (this.aioFildes != other.aioFildes) return false
-        if (this.aioOffset != other.aioOffset) return false
-        if (this.aioBuf != other.aioBuf) return false
-        if (this.aioNbytes != other.aioNbytes) return false
-        if (this.aioReqprio != other.aioReqprio) return false
-        if (this.aioSigevent != other.aioSigevent) return false
-        if (this.aioLioOpcode != other.aioLioOpcode) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.aioFildes.hashCode()
-        result = 31 * result + this.aioOffset.hashCode()
-        result = 31 * result + this.aioBuf.hashCode()
-        result = 31 * result + this.aioNbytes.hashCode()
-        result = 31 * result + this.aioReqprio.hashCode()
-        result = 31 * result + this.aioSigevent.hashCode()
-        result = 31 * result + this.aioLioOpcode.hashCode()
-        return result
-    }
-
-    public fun clone(): Aiocb = Aiocb(aioFildes, aioOffset, aioBuf, aioNbytes, aioReqprio, aioSigevent, aioLioOpcode)
+    public open fun clone(): Aiocb = Aiocb(aioFildes, aioOffset, aioBuf, aioNbytes, aioReqprio, aioSigevent, aioLioOpcode)
 
     public companion object {
         public operator fun invoke(
-            aioFildes: CInt = 0,
-            aioOffset: OffT = 0L,
-            aioBuf: MutPtr = MutPtr(0L),
-            aioNbytes: SizeT = 0uL,
-            aioReqprio: CInt = 0,
-            aioSigevent: Sigevent = Sigevent(),
-            aioLioOpcode: CInt = 0,
+            aioFildes: CInt,
+            aioOffset: OffT,
+            aioBuf: MutPtr,
+            aioNbytes: SizeT,
+            aioReqprio: CInt,
+            aioSigevent: Sigevent,
+            aioLioOpcode: CInt,
         ): Aiocb = Aiocb(
             aioFildes = aioFildes,
             aioOffset = aioOffset,
@@ -276,10 +240,12 @@ public class Aiocb internal constructor(
             aioSigevent = aioSigevent,
             aioLioOpcode = aioLioOpcode,
         )
+
+        public fun default(): Aiocb = Aiocb(aioFildes = Default.default(), aioOffset = Default.default(), aioBuf = MutPtr(0L), aioNbytes = Default.default(), aioReqprio = Default.default(), aioSigevent = Default.default(), aioLioOpcode = Default.default())
     }
 }
 
-public class GlobT internal constructor(
+public open class GlobT internal constructor(
     public var glPathc: SizeT,
     public var unused1: CInt,
     public var glOffs: SizeT,
@@ -314,82 +280,7 @@ public class GlobT internal constructor(
     public var unused8: MutPtr = unused8CtorArg
         internal set
 
-    public constructor() : this(
-        glPathc = 0uL,
-        unused1 = 0,
-        glOffs = 0uL,
-        unused2 = 0,
-        glPathvCtorArg = MutPtr(0L),
-        unused3CtorArg = MutPtr(0L),
-        unused4CtorArg = MutPtr(0L),
-        unused5CtorArg = MutPtr(0L),
-        unused6CtorArg = MutPtr(0L),
-        unused7CtorArg = MutPtr(0L),
-        unused8CtorArg = MutPtr(0L),
-        nonExhaustive = Unit,
-    )
-
-    public operator fun component1(): SizeT = this.glPathc
-
-    public operator fun component2(): CInt = this.unused1
-
-    public operator fun component3(): SizeT = this.glOffs
-
-    public operator fun component4(): CInt = this.unused2
-
-    public operator fun component5(): MutPtr = this.glPathv
-
-    public operator fun component6(): MutPtr = this.unused3
-
-    public operator fun component7(): MutPtr = this.unused4
-
-    public operator fun component8(): MutPtr = this.unused5
-
-    public operator fun component9(): MutPtr = this.unused6
-
-    public operator fun component10(): MutPtr = this.unused7
-
-    public operator fun component11(): MutPtr = this.unused8
-
-    public operator fun component12(): Unit = this.nonExhaustive
-
-    public fun copy(glPathc: SizeT = this.glPathc, unused1: CInt = this.unused1, glOffs: SizeT = this.glOffs, unused2: CInt = this.unused2, glPathv: MutPtr = this.glPathv, unused3: MutPtr = this.unused3, unused4: MutPtr = this.unused4, unused5: MutPtr = this.unused5, unused6: MutPtr = this.unused6, unused7: MutPtr = this.unused7, unused8: MutPtr = this.unused8, nonExhaustive: Unit = this.nonExhaustive): GlobT = GlobT(glPathc = glPathc, unused1 = unused1, glOffs = glOffs, unused2 = unused2, glPathvCtorArg = glPathv, unused3CtorArg = unused3, unused4CtorArg = unused4, unused5CtorArg = unused5, unused6CtorArg = unused6, unused7CtorArg = unused7, unused8CtorArg = unused8, nonExhaustive = nonExhaustive)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is GlobT) return false
-        if (this.glPathc != other.glPathc) return false
-        if (this.unused1 != other.unused1) return false
-        if (this.glOffs != other.glOffs) return false
-        if (this.unused2 != other.unused2) return false
-        if (this.glPathv != other.glPathv) return false
-        if (this.unused3 != other.unused3) return false
-        if (this.unused4 != other.unused4) return false
-        if (this.unused5 != other.unused5) return false
-        if (this.unused6 != other.unused6) return false
-        if (this.unused7 != other.unused7) return false
-        if (this.unused8 != other.unused8) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.glPathc.hashCode()
-        result = 31 * result + this.unused1.hashCode()
-        result = 31 * result + this.glOffs.hashCode()
-        result = 31 * result + this.unused2.hashCode()
-        result = 31 * result + this.glPathv.hashCode()
-        result = 31 * result + this.unused3.hashCode()
-        result = 31 * result + this.unused4.hashCode()
-        result = 31 * result + this.unused5.hashCode()
-        result = 31 * result + this.unused6.hashCode()
-        result = 31 * result + this.unused7.hashCode()
-        result = 31 * result + this.unused8.hashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
-    }
-
-    public fun clone(): GlobT = GlobT(glPathc, unused1, glOffs, unused2, glPathv, unused3, unused4, unused5, unused6, unused7, unused8, nonExhaustive)
+    public open fun clone(): GlobT = GlobT(glPathc, unused1, glOffs, unused2, glPathv, unused3, unused4, unused5, unused6, unused7, unused8, nonExhaustive)
 
     public companion object {
         public fun typeLayout(): TypeLayout<GlobT> =
@@ -457,18 +348,18 @@ public class GlobT internal constructor(
             }
 
         public operator fun invoke(
-            glPathc: SizeT = 0uL,
-            unused1: CInt = 0,
-            glOffs: SizeT = 0uL,
-            unused2: CInt = 0,
-            glPathv: MutPtr = MutPtr(0L),
-            unused3: MutPtr = MutPtr(0L),
-            unused4: MutPtr = MutPtr(0L),
-            unused5: MutPtr = MutPtr(0L),
-            unused6: MutPtr = MutPtr(0L),
-            unused7: MutPtr = MutPtr(0L),
-            unused8: MutPtr = MutPtr(0L),
-            nonExhaustive: Unit = Unit,
+            glPathc: SizeT,
+            unused1: CInt,
+            glOffs: SizeT,
+            unused2: CInt,
+            glPathv: MutPtr,
+            unused3: MutPtr,
+            unused4: MutPtr,
+            unused5: MutPtr,
+            unused6: MutPtr,
+            unused7: MutPtr,
+            unused8: MutPtr,
+            nonExhaustive: Unit,
         ): GlobT = GlobT(
             glPathc = glPathc,
             unused1 = unused1,
@@ -483,11 +374,13 @@ public class GlobT internal constructor(
             unused8CtorArg = unused8,
             nonExhaustive = nonExhaustive,
         )
+
+        public fun default(): GlobT = GlobT(glPathc = Default.default(), unused1 = Default.default(), glOffs = Default.default(), unused2 = Default.default(), glPathv = MutPtr(0L), unused3 = Default.default(), unused4 = Default.default(), unused5 = Default.default(), unused6 = Default.default(), unused7 = Default.default(), unused8 = Default.default(), nonExhaustive = Unit)
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class Tm internal constructor(
+public open class Tm internal constructor(
     public var tmSec: CInt,
     public var tmMin: CInt,
     public var tmHour: CInt,
@@ -503,77 +396,7 @@ public class Tm internal constructor(
     public var tmZone: MutPtr = tmZoneCtorArg
         internal set
 
-    public constructor() : this(
-        tmSec = 0,
-        tmMin = 0,
-        tmHour = 0,
-        tmMday = 0,
-        tmMon = 0,
-        tmYear = 0,
-        tmWday = 0,
-        tmYday = 0,
-        tmIsdst = 0,
-        tmGmtoff = 0L,
-        tmZoneCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): CInt = this.tmSec
-
-    public operator fun component2(): CInt = this.tmMin
-
-    public operator fun component3(): CInt = this.tmHour
-
-    public operator fun component4(): CInt = this.tmMday
-
-    public operator fun component5(): CInt = this.tmMon
-
-    public operator fun component6(): CInt = this.tmYear
-
-    public operator fun component7(): CInt = this.tmWday
-
-    public operator fun component8(): CInt = this.tmYday
-
-    public operator fun component9(): CInt = this.tmIsdst
-
-    public operator fun component10(): CLong = this.tmGmtoff
-
-    public operator fun component11(): MutPtr = this.tmZone
-
-    public fun copy(tmSec: CInt = this.tmSec, tmMin: CInt = this.tmMin, tmHour: CInt = this.tmHour, tmMday: CInt = this.tmMday, tmMon: CInt = this.tmMon, tmYear: CInt = this.tmYear, tmWday: CInt = this.tmWday, tmYday: CInt = this.tmYday, tmIsdst: CInt = this.tmIsdst, tmGmtoff: CLong = this.tmGmtoff, tmZone: MutPtr = this.tmZone): Tm = Tm(tmSec = tmSec, tmMin = tmMin, tmHour = tmHour, tmMday = tmMday, tmMon = tmMon, tmYear = tmYear, tmWday = tmWday, tmYday = tmYday, tmIsdst = tmIsdst, tmGmtoff = tmGmtoff, tmZoneCtorArg = tmZone)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tm) return false
-        if (this.tmSec != other.tmSec) return false
-        if (this.tmMin != other.tmMin) return false
-        if (this.tmHour != other.tmHour) return false
-        if (this.tmMday != other.tmMday) return false
-        if (this.tmMon != other.tmMon) return false
-        if (this.tmYear != other.tmYear) return false
-        if (this.tmWday != other.tmWday) return false
-        if (this.tmYday != other.tmYday) return false
-        if (this.tmIsdst != other.tmIsdst) return false
-        if (this.tmGmtoff != other.tmGmtoff) return false
-        if (this.tmZone != other.tmZone) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.tmSec.hashCode()
-        result = 31 * result + this.tmMin.hashCode()
-        result = 31 * result + this.tmHour.hashCode()
-        result = 31 * result + this.tmMday.hashCode()
-        result = 31 * result + this.tmMon.hashCode()
-        result = 31 * result + this.tmYear.hashCode()
-        result = 31 * result + this.tmWday.hashCode()
-        result = 31 * result + this.tmYday.hashCode()
-        result = 31 * result + this.tmIsdst.hashCode()
-        result = 31 * result + this.tmGmtoff.hashCode()
-        result = 31 * result + this.tmZone.hashCode()
-        return result
-    }
-
-    public fun clone(): Tm = Tm(tmSec, tmMin, tmHour, tmMday, tmMon, tmYear, tmWday, tmYday, tmIsdst, tmGmtoff, tmZone)
+    public open fun clone(): Tm = Tm(tmSec, tmMin, tmHour, tmMday, tmMon, tmYear, tmWday, tmYday, tmIsdst, tmGmtoff, tmZone)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tm> =
@@ -637,17 +460,17 @@ public class Tm internal constructor(
             }
 
         public operator fun invoke(
-            tmSec: CInt = 0,
-            tmMin: CInt = 0,
-            tmHour: CInt = 0,
-            tmMday: CInt = 0,
-            tmMon: CInt = 0,
-            tmYear: CInt = 0,
-            tmWday: CInt = 0,
-            tmYday: CInt = 0,
-            tmIsdst: CInt = 0,
-            tmGmtoff: CLong = 0L,
-            tmZone: MutPtr = MutPtr(0L),
+            tmSec: CInt,
+            tmMin: CInt,
+            tmHour: CInt,
+            tmMday: CInt,
+            tmMon: CInt,
+            tmYear: CInt,
+            tmWday: CInt,
+            tmYday: CInt,
+            tmIsdst: CInt,
+            tmGmtoff: CLong,
+            tmZone: MutPtr,
         ): Tm = Tm(
             tmSec = tmSec,
             tmMin = tmMin,
@@ -661,11 +484,13 @@ public class Tm internal constructor(
             tmGmtoff = tmGmtoff,
             tmZoneCtorArg = tmZone,
         )
+
+        public fun default(): Tm = Tm(tmSec = Default.default(), tmMin = Default.default(), tmHour = Default.default(), tmMday = Default.default(), tmMon = Default.default(), tmYear = Default.default(), tmWday = Default.default(), tmYday = Default.default(), tmIsdst = Default.default(), tmGmtoff = Default.default(), tmZone = MutPtr(0L))
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class Addrinfo internal constructor(
+public open class Addrinfo internal constructor(
     public var aiFlags: CInt,
     public var aiFamily: CInt,
     public var aiSocktype: CInt,
@@ -684,62 +509,7 @@ public class Addrinfo internal constructor(
     public var aiNext: MutPtr = aiNextCtorArg
         internal set
 
-    public constructor() : this(
-        aiFlags = 0,
-        aiFamily = 0,
-        aiSocktype = 0,
-        aiProtocol = 0,
-        aiAddrlen = 0u,
-        aiCanonnameCtorArg = MutPtr(0L),
-        aiAddrCtorArg = MutPtr(0L),
-        aiNextCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): CInt = this.aiFlags
-
-    public operator fun component2(): CInt = this.aiFamily
-
-    public operator fun component3(): CInt = this.aiSocktype
-
-    public operator fun component4(): CInt = this.aiProtocol
-
-    public operator fun component5(): SocklenT = this.aiAddrlen
-
-    public operator fun component6(): MutPtr = this.aiCanonname
-
-    public operator fun component7(): MutPtr = this.aiAddr
-
-    public operator fun component8(): MutPtr = this.aiNext
-
-    public fun copy(aiFlags: CInt = this.aiFlags, aiFamily: CInt = this.aiFamily, aiSocktype: CInt = this.aiSocktype, aiProtocol: CInt = this.aiProtocol, aiAddrlen: SocklenT = this.aiAddrlen, aiCanonname: MutPtr = this.aiCanonname, aiAddr: MutPtr = this.aiAddr, aiNext: MutPtr = this.aiNext): Addrinfo = Addrinfo(aiFlags = aiFlags, aiFamily = aiFamily, aiSocktype = aiSocktype, aiProtocol = aiProtocol, aiAddrlen = aiAddrlen, aiCanonnameCtorArg = aiCanonname, aiAddrCtorArg = aiAddr, aiNextCtorArg = aiNext)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Addrinfo) return false
-        if (this.aiFlags != other.aiFlags) return false
-        if (this.aiFamily != other.aiFamily) return false
-        if (this.aiSocktype != other.aiSocktype) return false
-        if (this.aiProtocol != other.aiProtocol) return false
-        if (this.aiAddrlen != other.aiAddrlen) return false
-        if (this.aiCanonname != other.aiCanonname) return false
-        if (this.aiAddr != other.aiAddr) return false
-        if (this.aiNext != other.aiNext) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.aiFlags.hashCode()
-        result = 31 * result + this.aiFamily.hashCode()
-        result = 31 * result + this.aiSocktype.hashCode()
-        result = 31 * result + this.aiProtocol.hashCode()
-        result = 31 * result + this.aiAddrlen.hashCode()
-        result = 31 * result + this.aiCanonname.hashCode()
-        result = 31 * result + this.aiAddr.hashCode()
-        result = 31 * result + this.aiNext.hashCode()
-        return result
-    }
-
-    public fun clone(): Addrinfo = Addrinfo(aiFlags, aiFamily, aiSocktype, aiProtocol, aiAddrlen, aiCanonname, aiAddr, aiNext)
+    public open fun clone(): Addrinfo = Addrinfo(aiFlags, aiFamily, aiSocktype, aiProtocol, aiAddrlen, aiCanonname, aiAddr, aiNext)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Addrinfo> =
@@ -791,14 +561,14 @@ public class Addrinfo internal constructor(
             }
 
         public operator fun invoke(
-            aiFlags: CInt = 0,
-            aiFamily: CInt = 0,
-            aiSocktype: CInt = 0,
-            aiProtocol: CInt = 0,
-            aiAddrlen: SocklenT = 0u,
-            aiCanonname: MutPtr = MutPtr(0L),
-            aiAddr: MutPtr = MutPtr(0L),
-            aiNext: MutPtr = MutPtr(0L),
+            aiFlags: CInt,
+            aiFamily: CInt,
+            aiSocktype: CInt,
+            aiProtocol: CInt,
+            aiAddrlen: SocklenT,
+            aiCanonname: MutPtr,
+            aiAddr: MutPtr,
+            aiNext: MutPtr,
         ): Addrinfo = Addrinfo(
             aiFlags = aiFlags,
             aiFamily = aiFamily,
@@ -809,13 +579,17 @@ public class Addrinfo internal constructor(
             aiAddrCtorArg = aiAddr,
             aiNextCtorArg = aiNext,
         )
+
+        public fun default(): Addrinfo = Addrinfo(aiFlags = Default.default(), aiFamily = Default.default(), aiSocktype = Default.default(), aiProtocol = Default.default(), aiAddrlen = Default.default(), aiCanonname = MutPtr(0L), aiAddr = MutPtr(0L), aiNext = MutPtr(0L))
     }
 }
 
-public data class MachTimebaseInfo(
-    public var numer: UInt = 0u,
-    public var denom: UInt = 0u,
+public open class MachTimebaseInfo(
+    public var numer: UInt,
+    public var denom: UInt,
 ) {
+    public open fun clone(): MachTimebaseInfo = MachTimebaseInfo(numer, denom)
+
     public companion object {
         public fun typeLayout(): TypeLayout<MachTimebaseInfo> =
             object : TypeLayout<MachTimebaseInfo> {
@@ -840,35 +614,37 @@ public data class MachTimebaseInfo(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.denom)
                 }
             }
+
+        public fun default(): MachTimebaseInfo = MachTimebaseInfo(numer = Default.default(), denom = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class Stat(
-    public var stDev: DevT = 0,
-    public var stMode: ModeT = 0u,
-    public var stNlink: NlinkT = 0u,
-    public var stIno: InoT = 0uL,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var stRdev: DevT = 0,
-    public var stAtime: TimeT = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: TimeT = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: TimeT = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var stBirthtime: TimeT = 0L,
-    public var stBirthtimeNsec: CLong = 0L,
-    public var stSize: OffT = 0L,
-    public var stBlocks: BlkcntT = 0L,
-    public var stBlksize: BlksizeT = 0,
-    public var stFlags: UInt = 0u,
-    public var stGen: UInt = 0u,
-    public var stLspare: Int = 0,
-    public var stQspare: LongArray = LongArray(2),
+public open class Stat(
+    public var stDev: DevT,
+    public var stMode: ModeT,
+    public var stNlink: NlinkT,
+    public var stIno: InoT,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var stRdev: DevT,
+    public var stAtime: TimeT,
+    public var stAtimeNsec: CLong,
+    public var stMtime: TimeT,
+    public var stMtimeNsec: CLong,
+    public var stCtime: TimeT,
+    public var stCtimeNsec: CLong,
+    public var stBirthtime: TimeT,
+    public var stBirthtimeNsec: CLong,
+    public var stSize: OffT,
+    public var stBlocks: BlkcntT,
+    public var stBlksize: BlksizeT,
+    public var stFlags: UInt,
+    public var stGen: UInt,
+    public var stLspare: Int,
+    public var stQspare: LongArray,
 ) {
-    public fun clone(): Stat = Stat(stDev, stMode, stNlink, stIno, stUid, stGid, stRdev, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, stBirthtime, stBirthtimeNsec, stSize, stBlocks, stBlksize, stFlags, stGen, stLspare, stQspare)
+    public open fun clone(): Stat = Stat(stDev, stMode, stNlink, stIno, stUid, stGid, stRdev, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, stBirthtime, stBirthtimeNsec, stSize, stBlocks, stBlksize, stFlags, stGen, stLspare, stQspare)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat> =
@@ -974,10 +750,12 @@ public class Stat(
                     (PrimitiveArrayLayouts.longArray(2)).writeBytes(buf, offset + 128, value.stQspare)
                 }
             }
+
+        public fun default(): Stat = Stat(stDev = Default.default(), stMode = Default.default(), stNlink = Default.default(), stIno = Default.default(), stUid = Default.default(), stGid = Default.default(), stRdev = Default.default(), stAtime = Default.default(), stAtimeNsec = Default.default(), stMtime = Default.default(), stMtimeNsec = Default.default(), stCtime = Default.default(), stCtimeNsec = Default.default(), stBirthtime = Default.default(), stBirthtimeNsec = Default.default(), stSize = Default.default(), stBlocks = Default.default(), stBlksize = Default.default(), stFlags = Default.default(), stGen = Default.default(), stLspare = Default.default(), stQspare = Default.default())
     }
 }
 
-public class SiginfoT internal constructor(
+public open class SiginfoT internal constructor(
     public var siSigno: CInt,
     public var siErrno: CInt,
     public var siCode: CInt,
@@ -993,81 +771,29 @@ public class SiginfoT internal constructor(
     public var siAddr: MutPtr = siAddrCtorArg
         internal set
 
-    public constructor() : this(
-        siSigno = 0,
-        siErrno = 0,
-        siCode = 0,
-        siPid = 0,
-        siUid = 0,
-        siStatus = 0,
-        siAddrCtorArg = MutPtr(0L),
-        pad = IntArray(9),
-        nonExhaustive = Unit,
-    )
+    public open fun clone(): SiginfoT = SiginfoT(siSigno, siErrno, siCode, siPid, siUid, siStatus, siAddr, pad, nonExhaustive)
 
-    public operator fun component1(): CInt = this.siSigno
+    public open fun siAddr(): MutPtr = this.siAddr
 
-    public operator fun component2(): CInt = this.siErrno
-
-    public operator fun component3(): CInt = this.siCode
-
-    public operator fun component4(): PidT = this.siPid
-
-    public operator fun component5(): UidT = this.siUid
-
-    public operator fun component6(): CInt = this.siStatus
-
-    public operator fun component7(): MutPtr = this.siAddr
-
-    public operator fun component8(): IntArray = this.pad
-
-    public operator fun component9(): Unit = this.nonExhaustive
-
-    public fun copy(siSigno: CInt = this.siSigno, siErrno: CInt = this.siErrno, siCode: CInt = this.siCode, siPid: PidT = this.siPid, siUid: UidT = this.siUid, siStatus: CInt = this.siStatus, siAddr: MutPtr = this.siAddr, pad: IntArray = this.pad, nonExhaustive: Unit = this.nonExhaustive): SiginfoT = SiginfoT(siSigno = siSigno, siErrno = siErrno, siCode = siCode, siPid = siPid, siUid = siUid, siStatus = siStatus, siAddrCtorArg = siAddr, pad = pad, nonExhaustive = nonExhaustive)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SiginfoT) return false
-        if (this.siSigno != other.siSigno) return false
-        if (this.siErrno != other.siErrno) return false
-        if (this.siCode != other.siCode) return false
-        if (this.siPid != other.siPid) return false
-        if (this.siUid != other.siUid) return false
-        if (this.siStatus != other.siStatus) return false
-        if (this.siAddr != other.siAddr) return false
-        if (!this.pad.contentEquals(other.pad)) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.siSigno.hashCode()
-        result = 31 * result + this.siErrno.hashCode()
-        result = 31 * result + this.siCode.hashCode()
-        result = 31 * result + this.siPid.hashCode()
-        result = 31 * result + this.siUid.hashCode()
-        result = 31 * result + this.siStatus.hashCode()
-        result = 31 * result + this.siAddr.hashCode()
-        result = 31 * result + this.pad.contentHashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
-    }
-
-    public fun clone(): SiginfoT = SiginfoT(siSigno, siErrno, siCode, siPid, siUid, siStatus, siAddr, pad, nonExhaustive)
-
-    public fun siValue(): Sigval {
-        data class SiginfoTimer(
-            public var siSigno: CInt = 0,
-            public var siErrno: CInt = 0,
-            public var siCode: CInt = 0,
-            public var siPid: PidT = 0,
-            public var siUid: UidT = 0,
-            public var siStatus: CInt = 0,
-            public var siAddr: MutPtr = MutPtr(0L),
-            public var siValue: Sigval = Sigval(),
+    public open fun siValue(): Sigval {
+        open class SiginfoTimer(
+            public var siSigno: CInt,
+            public var siErrno: CInt,
+            public var siCode: CInt,
+            public var siPid: PidT,
+            public var siUid: UidT,
+            public var siStatus: CInt,
+            public var siAddr: MutPtr,
+            public var siValue: Sigval,
         )
-        return (ObjectSlotLayout<SiginfoTimer>()).readNative((ConstPtr(((constPtrFromRustCast(this))).rawAddress)).rawAddress).siValue
+        return (UnresolvedTypeLayout<SiginfoTimer>()).readNative((ConstPtr(((constPtrFromRustCast(this))).rawAddress)).rawAddress).siValue
     }
+
+    public open fun siPid(): PidT = this.siPid
+
+    public open fun siUid(): UidT = this.siUid
+
+    public open fun siStatus(): CInt = this.siStatus
 
     public companion object {
         public fun typeLayout(): TypeLayout<SiginfoT> =
@@ -1123,15 +849,15 @@ public class SiginfoT internal constructor(
             }
 
         public operator fun invoke(
-            siSigno: CInt = 0,
-            siErrno: CInt = 0,
-            siCode: CInt = 0,
-            siPid: PidT = 0,
-            siUid: UidT = 0,
-            siStatus: CInt = 0,
-            siAddr: MutPtr = MutPtr(0L),
-            pad: IntArray = IntArray(9),
-            nonExhaustive: Unit = Unit,
+            siSigno: CInt,
+            siErrno: CInt,
+            siCode: CInt,
+            siPid: PidT,
+            siUid: UidT,
+            siStatus: CInt,
+            siAddr: MutPtr,
+            pad: IntArray,
+            nonExhaustive: Unit,
         ): SiginfoT = SiginfoT(
             siSigno = siSigno,
             siErrno = siErrno,
@@ -1143,16 +869,20 @@ public class SiginfoT internal constructor(
             pad = pad,
             nonExhaustive = nonExhaustive,
         )
+
+        public fun default(): SiginfoT = SiginfoT(siSigno = Default.default(), siErrno = Default.default(), siCode = Default.default(), siPid = Default.default(), siUid = Default.default(), siStatus = Default.default(), siAddr = MutPtr(0L), pad = Default.default(), nonExhaustive = Unit)
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Sigaction(
+public open class Sigaction(
     // Note(union): this field is actually a union
-    public var saSigaction: SighandlerT = 0uL,
-    public var saMask: SigsetT = SigsetT(),
-    public var saFlags: CInt = 0,
+    public var saSigaction: SighandlerT,
+    public var saMask: SigsetT,
+    public var saFlags: CInt,
 ) {
+    public open fun clone(): Sigaction = Sigaction(saSigaction, saMask, saFlags)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Sigaction> =
             object : TypeLayout<Sigaction> {
@@ -1181,11 +911,13 @@ public data class Sigaction(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 12, value.saFlags)
                 }
             }
+
+        public fun default(): Sigaction = Sigaction(saSigaction = Default.default(), saMask = Default.default(), saFlags = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class StackT internal constructor(
+public open class StackT internal constructor(
     ssSpCtorArg: MutPtr,
     public var ssSize: SizeT,
     public var ssFlags: CInt,
@@ -1193,37 +925,7 @@ public class StackT internal constructor(
     public var ssSp: MutPtr = ssSpCtorArg
         internal set
 
-    public constructor() : this(
-        ssSpCtorArg = MutPtr(0L),
-        ssSize = 0uL,
-        ssFlags = 0,
-    )
-
-    public operator fun component1(): MutPtr = this.ssSp
-
-    public operator fun component2(): SizeT = this.ssSize
-
-    public operator fun component3(): CInt = this.ssFlags
-
-    public fun copy(ssSp: MutPtr = this.ssSp, ssSize: SizeT = this.ssSize, ssFlags: CInt = this.ssFlags): StackT = StackT(ssSpCtorArg = ssSp, ssSize = ssSize, ssFlags = ssFlags)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is StackT) return false
-        if (this.ssSp != other.ssSp) return false
-        if (this.ssSize != other.ssSize) return false
-        if (this.ssFlags != other.ssFlags) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ssSp.hashCode()
-        result = 31 * result + this.ssSize.hashCode()
-        result = 31 * result + this.ssFlags.hashCode()
-        return result
-    }
-
-    public fun clone(): StackT = StackT(ssSp, ssSize, ssFlags)
+    public open fun clone(): StackT = StackT(ssSp, ssSize, ssFlags)
 
     public companion object {
         public fun typeLayout(): TypeLayout<StackT> =
@@ -1255,25 +957,29 @@ public class StackT internal constructor(
             }
 
         public operator fun invoke(
-            ssSp: MutPtr = MutPtr(0L),
-            ssSize: SizeT = 0uL,
-            ssFlags: CInt = 0,
+            ssSp: MutPtr,
+            ssSize: SizeT,
+            ssFlags: CInt,
         ): StackT = StackT(
             ssSpCtorArg = ssSp,
             ssSize = ssSize,
             ssFlags = ssFlags,
         )
+
+        public fun default(): StackT = StackT(ssSp = MutPtr(0L), ssSize = Default.default(), ssFlags = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class FstoreT(
-    public var fstFlags: CUint = 0u,
-    public var fstPosmode: CInt = 0,
-    public var fstOffset: OffT = 0L,
-    public var fstLength: OffT = 0L,
-    public var fstBytesalloc: OffT = 0L,
+public open class FstoreT(
+    public var fstFlags: CUint,
+    public var fstPosmode: CInt,
+    public var fstOffset: OffT,
+    public var fstLength: OffT,
+    public var fstBytesalloc: OffT,
 ) {
+    public open fun clone(): FstoreT = FstoreT(fstFlags, fstPosmode, fstOffset, fstLength, fstBytesalloc)
+
     public companion object {
         public fun typeLayout(): TypeLayout<FstoreT> =
             object : TypeLayout<FstoreT> {
@@ -1310,19 +1016,23 @@ public data class FstoreT(
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 24, value.fstBytesalloc)
                 }
             }
+
+        public fun default(): FstoreT = FstoreT(fstFlags = Default.default(), fstPosmode = Default.default(), fstOffset = Default.default(), fstLength = Default.default(), fstBytesalloc = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class FpunchholeT(
-    public var fpFlags: CUint = 0u,
+public open class FpunchholeT(
+    public var fpFlags: CUint,
     // unused
-    public var reserved: CUint = 0u,
+    public var reserved: CUint,
     // (to maintain 8-byte alignment)
-    public var fpOffset: OffT = 0L,
+    public var fpOffset: OffT,
     // IN: start of the region
-    public var fpLength: OffT = 0L,
+    public var fpLength: OffT,
 ) {
+    public open fun clone(): FpunchholeT = FpunchholeT(fpFlags, reserved, fpOffset, fpLength)
+
     public companion object {
         public fun typeLayout(): TypeLayout<FpunchholeT> =
             object : TypeLayout<FpunchholeT> {
@@ -1355,14 +1065,18 @@ public data class FpunchholeT(
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 16, value.fpLength)
                 }
             }
+
+        public fun default(): FpunchholeT = FpunchholeT(fpFlags = Default.default(), reserved = Default.default(), fpOffset = Default.default(), fpLength = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class FtrimactivefileT(
-    public var ftaOffset: OffT = 0L,
-    public var ftaLength: OffT = 0L,
+public open class FtrimactivefileT(
+    public var ftaOffset: OffT,
+    public var ftaLength: OffT,
 ) {
+    public open fun clone(): FtrimactivefileT = FtrimactivefileT(ftaOffset, ftaLength)
+
     public companion object {
         public fun typeLayout(): TypeLayout<FtrimactivefileT> =
             object : TypeLayout<FtrimactivefileT> {
@@ -1387,16 +1101,20 @@ public data class FtrimactivefileT(
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 8, value.ftaLength)
                 }
             }
+
+        public fun default(): FtrimactivefileT = FtrimactivefileT(ftaOffset = Default.default(), ftaLength = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class FspecreadT(
-    public var fsrFlags: CUint = 0u,
-    public var reserved: CUint = 0u,
-    public var fsrOffset: OffT = 0L,
-    public var fsrLength: OffT = 0L,
+public open class FspecreadT(
+    public var fsrFlags: CUint,
+    public var reserved: CUint,
+    public var fsrOffset: OffT,
+    public var fsrLength: OffT,
 ) {
+    public open fun clone(): FspecreadT = FspecreadT(fsrFlags, reserved, fsrOffset, fsrLength)
+
     public companion object {
         public fun typeLayout(): TypeLayout<FspecreadT> =
             object : TypeLayout<FspecreadT> {
@@ -1429,14 +1147,18 @@ public data class FspecreadT(
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 16, value.fsrLength)
                 }
             }
+
+        public fun default(): FspecreadT = FspecreadT(fsrFlags = Default.default(), reserved = Default.default(), fsrOffset = Default.default(), fsrLength = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Radvisory(
-    public var raOffset: OffT = 0L,
-    public var raCount: CInt = 0,
+public open class Radvisory(
+    public var raOffset: OffT,
+    public var raCount: CInt,
 ) {
+    public open fun clone(): Radvisory = Radvisory(raOffset, raCount)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Radvisory> =
             object : TypeLayout<Radvisory> {
@@ -1461,23 +1183,27 @@ public data class Radvisory(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.raCount)
                 }
             }
+
+        public fun default(): Radvisory = Radvisory(raOffset = Default.default(), raCount = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Statvfs(
-    public var fBsize: CUlong = 0uL,
-    public var fFrsize: CUlong = 0uL,
-    public var fBlocks: io.github.kotlinmania.rustlang.unix.bsd.apple.FsblkcntT = 0u,
-    public var fBfree: io.github.kotlinmania.rustlang.unix.bsd.apple.FsblkcntT = 0u,
-    public var fBavail: io.github.kotlinmania.rustlang.unix.bsd.apple.FsblkcntT = 0u,
-    public var fFiles: io.github.kotlinmania.rustlang.unix.bsd.apple.FsfilcntT = 0u,
-    public var fFfree: io.github.kotlinmania.rustlang.unix.bsd.apple.FsfilcntT = 0u,
-    public var fFavail: io.github.kotlinmania.rustlang.unix.bsd.apple.FsfilcntT = 0u,
-    public var fFsid: CUlong = 0uL,
-    public var fFlag: CUlong = 0uL,
-    public var fNamemax: CUlong = 0uL,
+public open class Statvfs(
+    public var fBsize: CUlong,
+    public var fFrsize: CUlong,
+    public var fBlocks: FsblkcntT,
+    public var fBfree: FsblkcntT,
+    public var fBavail: FsblkcntT,
+    public var fFiles: FsfilcntT,
+    public var fFfree: FsfilcntT,
+    public var fFavail: FsfilcntT,
+    public var fFsid: CUlong,
+    public var fFlag: CUlong,
+    public var fNamemax: CUlong,
 ) {
+    public open fun clone(): Statvfs = Statvfs(fBsize, fFrsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFavail, fFsid, fFlag, fNamemax)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Statvfs> =
             object : TypeLayout<Statvfs> {
@@ -1538,11 +1264,13 @@ public data class Statvfs(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 56, value.fNamemax)
                 }
             }
+
+        public fun default(): Statvfs = Statvfs(fBsize = Default.default(), fFrsize = Default.default(), fBlocks = Default.default(), fBfree = Default.default(), fBavail = Default.default(), fFiles = Default.default(), fFfree = Default.default(), fFavail = Default.default(), fFsid = Default.default(), fFlag = Default.default(), fNamemax = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class DlInfo internal constructor(
+public open class DlInfo internal constructor(
     dliFnameCtorArg: ConstPtr,
     dliFbaseCtorArg: MutPtr,
     dliSnameCtorArg: ConstPtr,
@@ -1560,42 +1288,7 @@ public class DlInfo internal constructor(
     public var dliSaddr: MutPtr = dliSaddrCtorArg
         internal set
 
-    public constructor() : this(
-        dliFnameCtorArg = ConstPtr(0L),
-        dliFbaseCtorArg = MutPtr(0L),
-        dliSnameCtorArg = ConstPtr(0L),
-        dliSaddrCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): ConstPtr = this.dliFname
-
-    public operator fun component2(): MutPtr = this.dliFbase
-
-    public operator fun component3(): ConstPtr = this.dliSname
-
-    public operator fun component4(): MutPtr = this.dliSaddr
-
-    public fun copy(dliFname: ConstPtr = this.dliFname, dliFbase: MutPtr = this.dliFbase, dliSname: ConstPtr = this.dliSname, dliSaddr: MutPtr = this.dliSaddr): DlInfo = DlInfo(dliFnameCtorArg = dliFname, dliFbaseCtorArg = dliFbase, dliSnameCtorArg = dliSname, dliSaddrCtorArg = dliSaddr)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is DlInfo) return false
-        if (this.dliFname != other.dliFname) return false
-        if (this.dliFbase != other.dliFbase) return false
-        if (this.dliSname != other.dliSname) return false
-        if (this.dliSaddr != other.dliSaddr) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.dliFname.hashCode()
-        result = 31 * result + this.dliFbase.hashCode()
-        result = 31 * result + this.dliSname.hashCode()
-        result = 31 * result + this.dliSaddr.hashCode()
-        return result
-    }
-
-    public fun clone(): DlInfo = DlInfo(dliFname, dliFbase, dliSname, dliSaddr)
+    public open fun clone(): DlInfo = DlInfo(dliFname, dliFbase, dliSname, dliSaddr)
 
     public companion object {
         public fun typeLayout(): TypeLayout<DlInfo> =
@@ -1631,46 +1324,30 @@ public class DlInfo internal constructor(
             }
 
         public operator fun invoke(
-            dliFname: ConstPtr = ConstPtr(0L),
-            dliFbase: MutPtr = MutPtr(0L),
-            dliSname: ConstPtr = ConstPtr(0L),
-            dliSaddr: MutPtr = MutPtr(0L),
+            dliFname: ConstPtr,
+            dliFbase: MutPtr,
+            dliSname: ConstPtr,
+            dliSaddr: MutPtr,
         ): DlInfo = DlInfo(
             dliFnameCtorArg = dliFname,
             dliFbaseCtorArg = dliFbase,
             dliSnameCtorArg = dliSname,
             dliSaddrCtorArg = dliSaddr,
         )
+
+        public fun default(): DlInfo = DlInfo(dliFname = MutPtr(0L), dliFbase = MutPtr(0L), dliSname = MutPtr(0L), dliSaddr = MutPtr(0L))
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class SockaddrIn(
-    public var sinLen: UByte = 0u,
-    public var sinFamily: SaFamilyT = 0u,
-    public var sinPort: InPortT = 0u,
-    public var sinAddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
-    public var sinZero: UByteArray = UByteArray(8),
+public open class SockaddrIn(
+    public var sinLen: UByte,
+    public var sinFamily: SaFamilyT,
+    public var sinPort: InPortT,
+    public var sinAddr: InAddr,
+    public var sinZero: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SockaddrIn) return false
-        if (this.sinLen != other.sinLen) return false
-        if (this.sinFamily != other.sinFamily) return false
-        if (this.sinPort != other.sinPort) return false
-        if (this.sinAddr != other.sinAddr) return false
-        if (!this.sinZero.contentEquals(other.sinZero)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sinLen.hashCode()
-        result = 31 * result + this.sinFamily.hashCode()
-        result = 31 * result + this.sinPort.hashCode()
-        result = 31 * result + this.sinAddr.hashCode()
-        result = 31 * result + this.sinZero.contentHashCode()
-        return result
-    }
+    public open fun clone(): SockaddrIn = SockaddrIn(sinLen, sinFamily, sinPort, sinAddr, sinZero)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrIn> =
@@ -1708,42 +1385,22 @@ public data class SockaddrIn(
                     (PrimitiveArrayLayouts.uByteArray(8)).writeBytes(buf, offset + 8, value.sinZero)
                 }
             }
+
+        public fun default(): SockaddrIn = SockaddrIn(sinLen = Default.default(), sinFamily = Default.default(), sinPort = Default.default(), sinAddr = Default.default(), sinZero = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Kevent64S(
-    public var ident: ULong = 0uL,
-    public var filter: Short = 0,
-    public var flags: UShort = 0u,
-    public var fflags: UInt = 0u,
-    public var data: Long = 0L,
-    public var udata: ULong = 0uL,
-    public var ext: ULongArray = ULongArray(2),
+public open class Kevent64S(
+    public var ident: ULong,
+    public var filter: Short,
+    public var flags: UShort,
+    public var fflags: UInt,
+    public var data: Long,
+    public var udata: ULong,
+    public var ext: ULongArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Kevent64S) return false
-        if (this.ident != other.ident) return false
-        if (this.filter != other.filter) return false
-        if (this.flags != other.flags) return false
-        if (this.fflags != other.fflags) return false
-        if (this.data != other.data) return false
-        if (this.udata != other.udata) return false
-        if (!this.ext.contentEquals(other.ext)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ident.hashCode()
-        result = 31 * result + this.filter.hashCode()
-        result = 31 * result + this.flags.hashCode()
-        result = 31 * result + this.fflags.hashCode()
-        result = 31 * result + this.data.hashCode()
-        result = 31 * result + this.udata.hashCode()
-        result = 31 * result + this.ext.contentHashCode()
-        return result
-    }
+    public open fun clone(): Kevent64S = Kevent64S(ident, filter, flags, fflags, data, udata, ext)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Kevent64S> =
@@ -1789,51 +1446,25 @@ public data class Kevent64S(
                     (PrimitiveArrayLayouts.uLongArray(2)).writeBytes(buf, offset + 32, value.ext)
                 }
             }
+
+        public fun default(): Kevent64S = Kevent64S(ident = Default.default(), filter = Default.default(), flags = Default.default(), fflags = Default.default(), data = Default.default(), udata = Default.default(), ext = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Dqblk(
-    public var dqbBhardlimit: ULong = 0uL,
-    public var dqbBsoftlimit: ULong = 0uL,
-    public var dqbCurbytes: ULong = 0uL,
-    public var dqbIhardlimit: UInt = 0u,
-    public var dqbIsoftlimit: UInt = 0u,
-    public var dqbCurinodes: UInt = 0u,
-    public var dqbBtime: UInt = 0u,
-    public var dqbItime: UInt = 0u,
-    public var dqbId: UInt = 0u,
-    public var dqbSpare: UIntArray = UIntArray(4),
+public open class Dqblk(
+    public var dqbBhardlimit: ULong,
+    public var dqbBsoftlimit: ULong,
+    public var dqbCurbytes: ULong,
+    public var dqbIhardlimit: UInt,
+    public var dqbIsoftlimit: UInt,
+    public var dqbCurinodes: UInt,
+    public var dqbBtime: UInt,
+    public var dqbItime: UInt,
+    public var dqbId: UInt,
+    public var dqbSpare: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Dqblk) return false
-        if (this.dqbBhardlimit != other.dqbBhardlimit) return false
-        if (this.dqbBsoftlimit != other.dqbBsoftlimit) return false
-        if (this.dqbCurbytes != other.dqbCurbytes) return false
-        if (this.dqbIhardlimit != other.dqbIhardlimit) return false
-        if (this.dqbIsoftlimit != other.dqbIsoftlimit) return false
-        if (this.dqbCurinodes != other.dqbCurinodes) return false
-        if (this.dqbBtime != other.dqbBtime) return false
-        if (this.dqbItime != other.dqbItime) return false
-        if (this.dqbId != other.dqbId) return false
-        if (!this.dqbSpare.contentEquals(other.dqbSpare)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.dqbBhardlimit.hashCode()
-        result = 31 * result + this.dqbBsoftlimit.hashCode()
-        result = 31 * result + this.dqbCurbytes.hashCode()
-        result = 31 * result + this.dqbIhardlimit.hashCode()
-        result = 31 * result + this.dqbIsoftlimit.hashCode()
-        result = 31 * result + this.dqbCurinodes.hashCode()
-        result = 31 * result + this.dqbBtime.hashCode()
-        result = 31 * result + this.dqbItime.hashCode()
-        result = 31 * result + this.dqbId.hashCode()
-        result = 31 * result + this.dqbSpare.contentHashCode()
-        return result
-    }
+    public open fun clone(): Dqblk = Dqblk(dqbBhardlimit, dqbBsoftlimit, dqbCurbytes, dqbIhardlimit, dqbIsoftlimit, dqbCurinodes, dqbBtime, dqbItime, dqbId, dqbSpare)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Dqblk> =
@@ -1891,30 +1522,40 @@ public data class Dqblk(
                     (PrimitiveArrayLayouts.uIntArray(4)).writeBytes(buf, offset + 48, value.dqbSpare)
                 }
             }
+
+        public fun default(): Dqblk = Dqblk(dqbBhardlimit = Default.default(), dqbBsoftlimit = Default.default(), dqbCurbytes = Default.default(), dqbIhardlimit = Default.default(), dqbIsoftlimit = Default.default(), dqbCurinodes = Default.default(), dqbBtime = Default.default(), dqbItime = Default.default(), dqbId = Default.default(), dqbSpare = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class IfMsghdr(
-    public var ifmMsglen: CUshort = 0u,
-    public var ifmVersion: CUchar = 0u,
-    public var ifmType: CUchar = 0u,
-    public var ifmAddrs: CInt = 0,
-    public var ifmFlags: CInt = 0,
-    public var ifmIndex: CUshort = 0u,
-    public var ifmData: IfData = IfData(),
-)
+public open class IfMsghdr(
+    public var ifmMsglen: CUshort,
+    public var ifmVersion: CUchar,
+    public var ifmType: CUchar,
+    public var ifmAddrs: CInt,
+    public var ifmFlags: CInt,
+    public var ifmIndex: CUshort,
+    public var ifmData: IfData,
+) {
+    public open fun clone(): IfMsghdr = IfMsghdr(ifmMsglen, ifmVersion, ifmType, ifmAddrs, ifmFlags, ifmIndex, ifmData)
+
+    public companion object {
+        public fun default(): IfMsghdr = IfMsghdr(ifmMsglen = Default.default(), ifmVersion = Default.default(), ifmType = Default.default(), ifmAddrs = Default.default(), ifmFlags = Default.default(), ifmIndex = Default.default(), ifmData = Default.default())
+    }
+}
 
 // Note(exhaustive): review for 1.0
-public data class IfaMsghdr(
-    public var ifamMsglen: CUshort = 0u,
-    public var ifamVersion: CUchar = 0u,
-    public var ifamType: CUchar = 0u,
-    public var ifamAddrs: CInt = 0,
-    public var ifamFlags: CInt = 0,
-    public var ifamIndex: CUshort = 0u,
-    public var ifamMetric: CInt = 0,
+public open class IfaMsghdr(
+    public var ifamMsglen: CUshort,
+    public var ifamVersion: CUchar,
+    public var ifamType: CUchar,
+    public var ifamAddrs: CInt,
+    public var ifamFlags: CInt,
+    public var ifamIndex: CUshort,
+    public var ifamMetric: CInt,
 ) {
+    public open fun clone(): IfaMsghdr = IfaMsghdr(ifamMsglen, ifamVersion, ifamType, ifamAddrs, ifamFlags, ifamIndex, ifamMetric)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IfaMsghdr> =
             object : TypeLayout<IfaMsghdr> {
@@ -1959,18 +1600,22 @@ public data class IfaMsghdr(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 16, value.ifamMetric)
                 }
             }
+
+        public fun default(): IfaMsghdr = IfaMsghdr(ifamMsglen = Default.default(), ifamVersion = Default.default(), ifamType = Default.default(), ifamAddrs = Default.default(), ifamFlags = Default.default(), ifamIndex = Default.default(), ifamMetric = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class IfmaMsghdr(
-    public var ifmamMsglen: CUshort = 0u,
-    public var ifmamVersion: CUchar = 0u,
-    public var ifmamType: CUchar = 0u,
-    public var ifmamAddrs: CInt = 0,
-    public var ifmamFlags: CInt = 0,
-    public var ifmamIndex: CUshort = 0u,
+public open class IfmaMsghdr(
+    public var ifmamMsglen: CUshort,
+    public var ifmamVersion: CUchar,
+    public var ifmamType: CUchar,
+    public var ifmamAddrs: CInt,
+    public var ifmamFlags: CInt,
+    public var ifmamIndex: CUshort,
 ) {
+    public open fun clone(): IfmaMsghdr = IfmaMsghdr(ifmamMsglen, ifmamVersion, ifmamType, ifmamAddrs, ifmamFlags, ifmamIndex)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IfmaMsghdr> =
             object : TypeLayout<IfmaMsghdr> {
@@ -2011,19 +1656,23 @@ public data class IfmaMsghdr(
                     (PrimitiveLayouts.U16).writeBytes(buf, offset + 12, value.ifmamIndex)
                 }
             }
+
+        public fun default(): IfmaMsghdr = IfmaMsghdr(ifmamMsglen = Default.default(), ifmamVersion = Default.default(), ifmamType = Default.default(), ifmamAddrs = Default.default(), ifmamFlags = Default.default(), ifmamIndex = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class IfmaMsghdr2(
-    public var ifmamMsglen: CUshort = 0u,
-    public var ifmamVersion: CUchar = 0u,
-    public var ifmamType: CUchar = 0u,
-    public var ifmamAddrs: CInt = 0,
-    public var ifmamFlags: CInt = 0,
-    public var ifmamIndex: CUshort = 0u,
-    public var ifmamRefcount: Int = 0,
+public open class IfmaMsghdr2(
+    public var ifmamMsglen: CUshort,
+    public var ifmamVersion: CUchar,
+    public var ifmamType: CUchar,
+    public var ifmamAddrs: CInt,
+    public var ifmamFlags: CInt,
+    public var ifmamIndex: CUshort,
+    public var ifmamRefcount: Int,
 ) {
+    public open fun clone(): IfmaMsghdr2 = IfmaMsghdr2(ifmamMsglen, ifmamVersion, ifmamType, ifmamAddrs, ifmamFlags, ifmamIndex, ifmamRefcount)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IfmaMsghdr2> =
             object : TypeLayout<IfmaMsghdr2> {
@@ -2068,61 +1717,31 @@ public data class IfmaMsghdr2(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 16, value.ifmamRefcount)
                 }
             }
+
+        public fun default(): IfmaMsghdr2 = IfmaMsghdr2(ifmamMsglen = Default.default(), ifmamVersion = Default.default(), ifmamType = Default.default(), ifmamAddrs = Default.default(), ifmamFlags = Default.default(), ifmamIndex = Default.default(), ifmamRefcount = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class RtMetrics(
-    public var rmxLocks: UInt = 0u,
-    public var rmxMtu: UInt = 0u,
-    public var rmxHopcount: UInt = 0u,
-    public var rmxExpire: Int = 0,
-    public var rmxRecvpipe: UInt = 0u,
-    public var rmxSendpipe: UInt = 0u,
-    public var rmxSsthresh: UInt = 0u,
-    public var rmxRtt: UInt = 0u,
-    public var rmxRttvar: UInt = 0u,
-    public var rmxPksent: UInt = 0u,
+public open class RtMetrics(
+    public var rmxLocks: UInt,
+    public var rmxMtu: UInt,
+    public var rmxHopcount: UInt,
+    public var rmxExpire: Int,
+    public var rmxRecvpipe: UInt,
+    public var rmxSendpipe: UInt,
+    public var rmxSsthresh: UInt,
+    public var rmxRtt: UInt,
+    public var rmxRttvar: UInt,
+    public var rmxPksent: UInt,
     /**
      * This field does not exist anymore, the u32 is now part of a resized
      * `rmxFiller` array.
      */
-    public var rmxState: UInt = 0u,
-    public var rmxFiller: UIntArray = UIntArray(3),
+    public var rmxState: UInt,
+    public var rmxFiller: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is RtMetrics) return false
-        if (this.rmxLocks != other.rmxLocks) return false
-        if (this.rmxMtu != other.rmxMtu) return false
-        if (this.rmxHopcount != other.rmxHopcount) return false
-        if (this.rmxExpire != other.rmxExpire) return false
-        if (this.rmxRecvpipe != other.rmxRecvpipe) return false
-        if (this.rmxSendpipe != other.rmxSendpipe) return false
-        if (this.rmxSsthresh != other.rmxSsthresh) return false
-        if (this.rmxRtt != other.rmxRtt) return false
-        if (this.rmxRttvar != other.rmxRttvar) return false
-        if (this.rmxPksent != other.rmxPksent) return false
-        if (this.rmxState != other.rmxState) return false
-        if (!this.rmxFiller.contentEquals(other.rmxFiller)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.rmxLocks.hashCode()
-        result = 31 * result + this.rmxMtu.hashCode()
-        result = 31 * result + this.rmxHopcount.hashCode()
-        result = 31 * result + this.rmxExpire.hashCode()
-        result = 31 * result + this.rmxRecvpipe.hashCode()
-        result = 31 * result + this.rmxSendpipe.hashCode()
-        result = 31 * result + this.rmxSsthresh.hashCode()
-        result = 31 * result + this.rmxRtt.hashCode()
-        result = 31 * result + this.rmxRttvar.hashCode()
-        result = 31 * result + this.rmxPksent.hashCode()
-        result = 31 * result + this.rmxState.hashCode()
-        result = 31 * result + this.rmxFiller.contentHashCode()
-        return result
-    }
+    public open fun clone(): RtMetrics = RtMetrics(rmxLocks, rmxMtu, rmxHopcount, rmxExpire, rmxRecvpipe, rmxSendpipe, rmxSsthresh, rmxRtt, rmxRttvar, rmxPksent, rmxState, rmxFiller)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RtMetrics> =
@@ -2188,23 +1807,27 @@ public data class RtMetrics(
                     (PrimitiveArrayLayouts.uIntArray(3)).writeBytes(buf, offset + 44, value.rmxFiller)
                 }
             }
+
+        public fun default(): RtMetrics = RtMetrics(rmxLocks = Default.default(), rmxMtu = Default.default(), rmxHopcount = Default.default(), rmxExpire = Default.default(), rmxRecvpipe = Default.default(), rmxSendpipe = Default.default(), rmxSsthresh = Default.default(), rmxRtt = Default.default(), rmxRttvar = Default.default(), rmxPksent = Default.default(), rmxState = Default.default(), rmxFiller = Default.default())
     }
 }
 
-public data class RtMsghdr(
-    public var rtmMsglen: CUshort = 0u,
-    public var rtmVersion: CUchar = 0u,
-    public var rtmType: CUchar = 0u,
-    public var rtmIndex: CUshort = 0u,
-    public var rtmFlags: CInt = 0,
-    public var rtmAddrs: CInt = 0,
-    public var rtmPid: PidT = 0,
-    public var rtmSeq: CInt = 0,
-    public var rtmErrno: CInt = 0,
-    public var rtmUse: CInt = 0,
-    public var rtmInits: UInt = 0u,
-    public var rtmRmx: RtMetrics = RtMetrics(),
+public open class RtMsghdr(
+    public var rtmMsglen: CUshort,
+    public var rtmVersion: CUchar,
+    public var rtmType: CUchar,
+    public var rtmIndex: CUshort,
+    public var rtmFlags: CInt,
+    public var rtmAddrs: CInt,
+    public var rtmPid: PidT,
+    public var rtmSeq: CInt,
+    public var rtmErrno: CInt,
+    public var rtmUse: CInt,
+    public var rtmInits: UInt,
+    public var rtmRmx: RtMetrics,
 ) {
+    public open fun clone(): RtMsghdr = RtMsghdr(rtmMsglen, rtmVersion, rtmType, rtmIndex, rtmFlags, rtmAddrs, rtmPid, rtmSeq, rtmErrno, rtmUse, rtmInits, rtmRmx)
+
     public companion object {
         public fun typeLayout(): TypeLayout<RtMsghdr> =
             object : TypeLayout<RtMsghdr> {
@@ -2269,23 +1892,27 @@ public data class RtMsghdr(
                     (RtMetrics.typeLayout()).writeBytes(buf, offset + 36, value.rtmRmx)
                 }
             }
+
+        public fun default(): RtMsghdr = RtMsghdr(rtmMsglen = Default.default(), rtmVersion = Default.default(), rtmType = Default.default(), rtmIndex = Default.default(), rtmFlags = Default.default(), rtmAddrs = Default.default(), rtmPid = Default.default(), rtmSeq = Default.default(), rtmErrno = Default.default(), rtmUse = Default.default(), rtmInits = Default.default(), rtmRmx = Default.default())
     }
 }
 
-public data class RtMsghdr2(
-    public var rtmMsglen: CUshort = 0u,
-    public var rtmVersion: CUchar = 0u,
-    public var rtmType: CUchar = 0u,
-    public var rtmIndex: CUshort = 0u,
-    public var rtmFlags: CInt = 0,
-    public var rtmAddrs: CInt = 0,
-    public var rtmRefcnt: Int = 0,
-    public var rtmParentflags: CInt = 0,
-    public var rtmReserved: CInt = 0,
-    public var rtmUse: CInt = 0,
-    public var rtmInits: UInt = 0u,
-    public var rtmRmx: RtMetrics = RtMetrics(),
+public open class RtMsghdr2(
+    public var rtmMsglen: CUshort,
+    public var rtmVersion: CUchar,
+    public var rtmType: CUchar,
+    public var rtmIndex: CUshort,
+    public var rtmFlags: CInt,
+    public var rtmAddrs: CInt,
+    public var rtmRefcnt: Int,
+    public var rtmParentflags: CInt,
+    public var rtmReserved: CInt,
+    public var rtmUse: CInt,
+    public var rtmInits: UInt,
+    public var rtmRmx: RtMetrics,
 ) {
+    public open fun clone(): RtMsghdr2 = RtMsghdr2(rtmMsglen, rtmVersion, rtmType, rtmIndex, rtmFlags, rtmAddrs, rtmRefcnt, rtmParentflags, rtmReserved, rtmUse, rtmInits, rtmRmx)
+
     public companion object {
         public fun typeLayout(): TypeLayout<RtMsghdr2> =
             object : TypeLayout<RtMsghdr2> {
@@ -2350,42 +1977,22 @@ public data class RtMsghdr2(
                     (RtMetrics.typeLayout()).writeBytes(buf, offset + 36, value.rtmRmx)
                 }
             }
+
+        public fun default(): RtMsghdr2 = RtMsghdr2(rtmMsglen = Default.default(), rtmVersion = Default.default(), rtmType = Default.default(), rtmIndex = Default.default(), rtmFlags = Default.default(), rtmAddrs = Default.default(), rtmRefcnt = Default.default(), rtmParentflags = Default.default(), rtmReserved = Default.default(), rtmUse = Default.default(), rtmInits = Default.default(), rtmRmx = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Termios(
-    public var cIflag: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0uL,
-    public var cOflag: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0uL,
-    public var cCflag: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0uL,
-    public var cLflag: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0uL,
-    public var cCc: UByteArray = UByteArray(NCCS),
-    public var cIspeed: io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT = 0uL,
-    public var cOspeed: io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT = 0uL,
+public open class Termios(
+    public var cIflag: TcflagT,
+    public var cOflag: TcflagT,
+    public var cCflag: TcflagT,
+    public var cLflag: TcflagT,
+    public var cCc: UByteArray,
+    public var cIspeed: SpeedT,
+    public var cOspeed: SpeedT,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Termios) return false
-        if (this.cIflag != other.cIflag) return false
-        if (this.cOflag != other.cOflag) return false
-        if (this.cCflag != other.cCflag) return false
-        if (this.cLflag != other.cLflag) return false
-        if (!this.cCc.contentEquals(other.cCc)) return false
-        if (this.cIspeed != other.cIspeed) return false
-        if (this.cOspeed != other.cOspeed) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.cIflag.hashCode()
-        result = 31 * result + this.cOflag.hashCode()
-        result = 31 * result + this.cCflag.hashCode()
-        result = 31 * result + this.cLflag.hashCode()
-        result = 31 * result + this.cCc.contentHashCode()
-        result = 31 * result + this.cIspeed.hashCode()
-        result = 31 * result + this.cOspeed.hashCode()
-        return result
-    }
+    public open fun clone(): Termios = Termios(cIflag, cOflag, cCflag, cLflag, cCc, cIspeed, cOspeed)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Termios> =
@@ -2433,17 +2040,21 @@ public data class Termios(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + off6.toInt(), value.cOspeed)
                 }
             }
+
+        public fun default(): Termios = Termios(cIflag = Default.default(), cOflag = Default.default(), cCflag = Default.default(), cLflag = Default.default(), cCc = Default.default(), cIspeed = Default.default(), cOspeed = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Flock(
-    public var lStart: OffT = 0L,
-    public var lLen: OffT = 0L,
-    public var lPid: PidT = 0,
-    public var lType: CShort = 0,
-    public var lWhence: CShort = 0,
+public open class Flock(
+    public var lStart: OffT,
+    public var lLen: OffT,
+    public var lPid: PidT,
+    public var lType: CShort,
+    public var lWhence: CShort,
 ) {
+    public open fun clone(): Flock = Flock(lStart, lLen, lPid, lType, lWhence)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Flock> =
             object : TypeLayout<Flock> {
@@ -2480,11 +2091,13 @@ public data class Flock(
                     (PrimitiveLayouts.I16).writeBytes(buf, offset + 22, value.lWhence)
                 }
             }
+
+        public fun default(): Flock = Flock(lStart = Default.default(), lLen = Default.default(), lPid = Default.default(), lType = Default.default(), lWhence = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class SfHdtr internal constructor(
+public open class SfHdtr internal constructor(
     headersCtorArg: MutPtr,
     public var hdrCnt: CInt,
     trailersCtorArg: MutPtr,
@@ -2496,42 +2109,7 @@ public class SfHdtr internal constructor(
     public var trailers: MutPtr = trailersCtorArg
         internal set
 
-    public constructor() : this(
-        headersCtorArg = MutPtr(0L),
-        hdrCnt = 0,
-        trailersCtorArg = MutPtr(0L),
-        trlCnt = 0,
-    )
-
-    public operator fun component1(): MutPtr = this.headers
-
-    public operator fun component2(): CInt = this.hdrCnt
-
-    public operator fun component3(): MutPtr = this.trailers
-
-    public operator fun component4(): CInt = this.trlCnt
-
-    public fun copy(headers: MutPtr = this.headers, hdrCnt: CInt = this.hdrCnt, trailers: MutPtr = this.trailers, trlCnt: CInt = this.trlCnt): SfHdtr = SfHdtr(headersCtorArg = headers, hdrCnt = hdrCnt, trailersCtorArg = trailers, trlCnt = trlCnt)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SfHdtr) return false
-        if (this.headers != other.headers) return false
-        if (this.hdrCnt != other.hdrCnt) return false
-        if (this.trailers != other.trailers) return false
-        if (this.trlCnt != other.trlCnt) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.headers.hashCode()
-        result = 31 * result + this.hdrCnt.hashCode()
-        result = 31 * result + this.trailers.hashCode()
-        result = 31 * result + this.trlCnt.hashCode()
-        return result
-    }
-
-    public fun clone(): SfHdtr = SfHdtr(headers, hdrCnt, trailers, trlCnt)
+    public open fun clone(): SfHdtr = SfHdtr(headers, hdrCnt, trailers, trlCnt)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SfHdtr> =
@@ -2567,21 +2145,23 @@ public class SfHdtr internal constructor(
             }
 
         public operator fun invoke(
-            headers: MutPtr = MutPtr(0L),
-            hdrCnt: CInt = 0,
-            trailers: MutPtr = MutPtr(0L),
-            trlCnt: CInt = 0,
+            headers: MutPtr,
+            hdrCnt: CInt,
+            trailers: MutPtr,
+            trlCnt: CInt,
         ): SfHdtr = SfHdtr(
             headersCtorArg = headers,
             hdrCnt = hdrCnt,
             trailersCtorArg = trailers,
             trlCnt = trlCnt,
         )
+
+        public fun default(): SfHdtr = SfHdtr(headers = MutPtr(0L), hdrCnt = Default.default(), trailers = MutPtr(0L), trlCnt = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class Lconv internal constructor(
+public open class Lconv internal constructor(
     decimalPointCtorArg: MutPtr,
     thousandsSepCtorArg: MutPtr,
     groupingCtorArg: MutPtr,
@@ -2637,34 +2217,7 @@ public class Lconv internal constructor(
     public var negativeSign: MutPtr = negativeSignCtorArg
         internal set
 
-    public constructor() : this(
-        decimalPointCtorArg = MutPtr(0L),
-        thousandsSepCtorArg = MutPtr(0L),
-        groupingCtorArg = MutPtr(0L),
-        intCurrSymbolCtorArg = MutPtr(0L),
-        currencySymbolCtorArg = MutPtr(0L),
-        monDecimalPointCtorArg = MutPtr(0L),
-        monThousandsSepCtorArg = MutPtr(0L),
-        monGroupingCtorArg = MutPtr(0L),
-        positiveSignCtorArg = MutPtr(0L),
-        negativeSignCtorArg = MutPtr(0L),
-        intFracDigits = 0u,
-        fracDigits = 0u,
-        pCsPrecedes = 0u,
-        pSepBySpace = 0u,
-        nCsPrecedes = 0u,
-        nSepBySpace = 0u,
-        pSignPosn = 0u,
-        nSignPosn = 0u,
-        intPCsPrecedes = 0u,
-        intNCsPrecedes = 0u,
-        intPSepBySpace = 0u,
-        intNSepBySpace = 0u,
-        intPSignPosn = 0u,
-        intNSignPosn = 0u,
-    )
-
-    public fun clone(): Lconv = Lconv(decimalPoint, thousandsSep, grouping, intCurrSymbol, currencySymbol, monDecimalPoint, monThousandsSep, monGrouping, positiveSign, negativeSign, intFracDigits, fracDigits, pCsPrecedes, pSepBySpace, nCsPrecedes, nSepBySpace, pSignPosn, nSignPosn, intPCsPrecedes, intNCsPrecedes, intPSepBySpace, intNSepBySpace, intPSignPosn, intNSignPosn)
+    public open fun clone(): Lconv = Lconv(decimalPoint, thousandsSep, grouping, intCurrSymbol, currencySymbol, monDecimalPoint, monThousandsSep, monGrouping, positiveSign, negativeSign, intFracDigits, fracDigits, pCsPrecedes, pSepBySpace, nCsPrecedes, nSepBySpace, pSignPosn, nSignPosn, intPCsPrecedes, intNCsPrecedes, intPSepBySpace, intNSepBySpace, intPSignPosn, intNSignPosn)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Lconv> =
@@ -2780,30 +2333,30 @@ public class Lconv internal constructor(
             }
 
         public operator fun invoke(
-            decimalPoint: MutPtr = MutPtr(0L),
-            thousandsSep: MutPtr = MutPtr(0L),
-            grouping: MutPtr = MutPtr(0L),
-            intCurrSymbol: MutPtr = MutPtr(0L),
-            currencySymbol: MutPtr = MutPtr(0L),
-            monDecimalPoint: MutPtr = MutPtr(0L),
-            monThousandsSep: MutPtr = MutPtr(0L),
-            monGrouping: MutPtr = MutPtr(0L),
-            positiveSign: MutPtr = MutPtr(0L),
-            negativeSign: MutPtr = MutPtr(0L),
-            intFracDigits: CChar = 0u,
-            fracDigits: CChar = 0u,
-            pCsPrecedes: CChar = 0u,
-            pSepBySpace: CChar = 0u,
-            nCsPrecedes: CChar = 0u,
-            nSepBySpace: CChar = 0u,
-            pSignPosn: CChar = 0u,
-            nSignPosn: CChar = 0u,
-            intPCsPrecedes: CChar = 0u,
-            intNCsPrecedes: CChar = 0u,
-            intPSepBySpace: CChar = 0u,
-            intNSepBySpace: CChar = 0u,
-            intPSignPosn: CChar = 0u,
-            intNSignPosn: CChar = 0u,
+            decimalPoint: MutPtr,
+            thousandsSep: MutPtr,
+            grouping: MutPtr,
+            intCurrSymbol: MutPtr,
+            currencySymbol: MutPtr,
+            monDecimalPoint: MutPtr,
+            monThousandsSep: MutPtr,
+            monGrouping: MutPtr,
+            positiveSign: MutPtr,
+            negativeSign: MutPtr,
+            intFracDigits: CChar,
+            fracDigits: CChar,
+            pCsPrecedes: CChar,
+            pSepBySpace: CChar,
+            nCsPrecedes: CChar,
+            nSepBySpace: CChar,
+            pSignPosn: CChar,
+            nSignPosn: CChar,
+            intPCsPrecedes: CChar,
+            intNCsPrecedes: CChar,
+            intPSepBySpace: CChar,
+            intNSepBySpace: CChar,
+            intPSignPosn: CChar,
+            intNSignPosn: CChar,
         ): Lconv = Lconv(
             decimalPointCtorArg = decimalPoint,
             thousandsSepCtorArg = thousandsSep,
@@ -2830,30 +2383,32 @@ public class Lconv internal constructor(
             intPSignPosn = intPSignPosn,
             intNSignPosn = intNSignPosn,
         )
+
+        public fun default(): Lconv = Lconv(decimalPoint = MutPtr(0L), thousandsSep = MutPtr(0L), grouping = MutPtr(0L), intCurrSymbol = MutPtr(0L), currencySymbol = MutPtr(0L), monDecimalPoint = MutPtr(0L), monThousandsSep = MutPtr(0L), monGrouping = MutPtr(0L), positiveSign = MutPtr(0L), negativeSign = MutPtr(0L), intFracDigits = Default.default(), fracDigits = Default.default(), pCsPrecedes = Default.default(), pSepBySpace = Default.default(), nCsPrecedes = Default.default(), nSepBySpace = Default.default(), pSignPosn = Default.default(), nSignPosn = Default.default(), intPCsPrecedes = Default.default(), intNCsPrecedes = Default.default(), intPSepBySpace = Default.default(), intNSepBySpace = Default.default(), intPSignPosn = Default.default(), intNSignPosn = Default.default())
     }
 }
 
-public class ProcTaskinfo(
-    public var ptiVirtualSize: ULong = 0uL,
-    public var ptiResidentSize: ULong = 0uL,
-    public var ptiTotalUser: ULong = 0uL,
-    public var ptiTotalSystem: ULong = 0uL,
-    public var ptiThreadsUser: ULong = 0uL,
-    public var ptiThreadsSystem: ULong = 0uL,
-    public var ptiPolicy: Int = 0,
-    public var ptiFaults: Int = 0,
-    public var ptiPageins: Int = 0,
-    public var ptiCowFaults: Int = 0,
-    public var ptiMessagesSent: Int = 0,
-    public var ptiMessagesReceived: Int = 0,
-    public var ptiSyscallsMach: Int = 0,
-    public var ptiSyscallsUnix: Int = 0,
-    public var ptiCsw: Int = 0,
-    public var ptiThreadnum: Int = 0,
-    public var ptiNumrunning: Int = 0,
-    public var ptiPriority: Int = 0,
+public open class ProcTaskinfo(
+    public var ptiVirtualSize: ULong,
+    public var ptiResidentSize: ULong,
+    public var ptiTotalUser: ULong,
+    public var ptiTotalSystem: ULong,
+    public var ptiThreadsUser: ULong,
+    public var ptiThreadsSystem: ULong,
+    public var ptiPolicy: Int,
+    public var ptiFaults: Int,
+    public var ptiPageins: Int,
+    public var ptiCowFaults: Int,
+    public var ptiMessagesSent: Int,
+    public var ptiMessagesReceived: Int,
+    public var ptiSyscallsMach: Int,
+    public var ptiSyscallsUnix: Int,
+    public var ptiCsw: Int,
+    public var ptiThreadnum: Int,
+    public var ptiNumrunning: Int,
+    public var ptiPriority: Int,
 ) {
-    public fun clone(): ProcTaskinfo = ProcTaskinfo(ptiVirtualSize, ptiResidentSize, ptiTotalUser, ptiTotalSystem, ptiThreadsUser, ptiThreadsSystem, ptiPolicy, ptiFaults, ptiPageins, ptiCowFaults, ptiMessagesSent, ptiMessagesReceived, ptiSyscallsMach, ptiSyscallsUnix, ptiCsw, ptiThreadnum, ptiNumrunning, ptiPriority)
+    public open fun clone(): ProcTaskinfo = ProcTaskinfo(ptiVirtualSize, ptiResidentSize, ptiTotalUser, ptiTotalSystem, ptiThreadsUser, ptiThreadsSystem, ptiPolicy, ptiFaults, ptiPageins, ptiCowFaults, ptiMessagesSent, ptiMessagesReceived, ptiSyscallsMach, ptiSyscallsUnix, ptiCsw, ptiThreadnum, ptiNumrunning, ptiPriority)
 
     public companion object {
         public fun typeLayout(): TypeLayout<ProcTaskinfo> =
@@ -2943,35 +2498,37 @@ public class ProcTaskinfo(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 92, value.ptiPriority)
                 }
             }
+
+        public fun default(): ProcTaskinfo = ProcTaskinfo(ptiVirtualSize = Default.default(), ptiResidentSize = Default.default(), ptiTotalUser = Default.default(), ptiTotalSystem = Default.default(), ptiThreadsUser = Default.default(), ptiThreadsSystem = Default.default(), ptiPolicy = Default.default(), ptiFaults = Default.default(), ptiPageins = Default.default(), ptiCowFaults = Default.default(), ptiMessagesSent = Default.default(), ptiMessagesReceived = Default.default(), ptiSyscallsMach = Default.default(), ptiSyscallsUnix = Default.default(), ptiCsw = Default.default(), ptiThreadnum = Default.default(), ptiNumrunning = Default.default(), ptiPriority = Default.default())
     }
 }
 
-public class ProcBsdinfo(
-    public var pbiFlags: UInt = 0u,
-    public var pbiStatus: UInt = 0u,
-    public var pbiXstatus: UInt = 0u,
-    public var pbiPid: UInt = 0u,
-    public var pbiPpid: UInt = 0u,
-    public var pbiUid: UidT = 0,
-    public var pbiGid: GidT = 0,
-    public var pbiRuid: UidT = 0,
-    public var pbiRgid: GidT = 0,
-    public var pbiSvuid: UidT = 0,
-    public var pbiSvgid: GidT = 0,
-    public var rfu1: UInt = 0u,
-    public var pbiComm: UByteArray = UByteArray(MAXCOMLEN),
-    public var pbiName: UByteArray = UByteArray(32),
+public open class ProcBsdinfo(
+    public var pbiFlags: UInt,
+    public var pbiStatus: UInt,
+    public var pbiXstatus: UInt,
+    public var pbiPid: UInt,
+    public var pbiPpid: UInt,
+    public var pbiUid: UidT,
+    public var pbiGid: GidT,
+    public var pbiRuid: UidT,
+    public var pbiRgid: GidT,
+    public var pbiSvuid: UidT,
+    public var pbiSvgid: GidT,
+    public var rfu1: UInt,
+    public var pbiComm: UByteArray,
+    public var pbiName: UByteArray,
     // MAXCOMLEN * 2, but macro isn't happy...
-    public var pbiNfiles: UInt = 0u,
-    public var pbiPgid: UInt = 0u,
-    public var pbiPjobc: UInt = 0u,
-    public var eTdev: UInt = 0u,
-    public var eTpgid: UInt = 0u,
-    public var pbiNice: Int = 0,
-    public var pbiStartTvsec: ULong = 0uL,
-    public var pbiStartTvusec: ULong = 0uL,
+    public var pbiNfiles: UInt,
+    public var pbiPgid: UInt,
+    public var pbiPjobc: UInt,
+    public var eTdev: UInt,
+    public var eTpgid: UInt,
+    public var pbiNice: Int,
+    public var pbiStartTvsec: ULong,
+    public var pbiStartTvusec: ULong,
 ) {
-    public fun clone(): ProcBsdinfo = ProcBsdinfo(pbiFlags, pbiStatus, pbiXstatus, pbiPid, pbiPpid, pbiUid, pbiGid, pbiRuid, pbiRgid, pbiSvuid, pbiSvgid, rfu1, pbiComm, pbiName, pbiNfiles, pbiPgid, pbiPjobc, eTdev, eTpgid, pbiNice, pbiStartTvsec, pbiStartTvusec)
+    public open fun clone(): ProcBsdinfo = ProcBsdinfo(pbiFlags, pbiStatus, pbiXstatus, pbiPid, pbiPpid, pbiUid, pbiGid, pbiRuid, pbiRgid, pbiSvuid, pbiSvgid, rfu1, pbiComm, pbiName, pbiNfiles, pbiPgid, pbiPjobc, eTdev, eTpgid, pbiNice, pbiStartTvsec, pbiStartTvusec)
 
     public companion object {
         public fun typeLayout(): TypeLayout<ProcBsdinfo> =
@@ -3086,101 +2643,67 @@ public class ProcBsdinfo(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + off21.toInt(), value.pbiStartTvusec)
                 }
             }
+
+        public fun default(): ProcBsdinfo = ProcBsdinfo(pbiFlags = Default.default(), pbiStatus = Default.default(), pbiXstatus = Default.default(), pbiPid = Default.default(), pbiPpid = Default.default(), pbiUid = Default.default(), pbiGid = Default.default(), pbiRuid = Default.default(), pbiRgid = Default.default(), pbiSvuid = Default.default(), pbiSvgid = Default.default(), rfu1 = Default.default(), pbiComm = Default.default(), pbiName = Default.default(), pbiNfiles = Default.default(), pbiPgid = Default.default(), pbiPjobc = Default.default(), eTdev = Default.default(), eTpgid = Default.default(), pbiNice = Default.default(), pbiStartTvsec = Default.default(), pbiStartTvusec = Default.default())
     }
 }
 
-public data class ProcBsdshortinfo(
+public open class ProcBsdshortinfo(
     /**
      * Process ID.
      */
-    public var pbsiPid: UInt = 0u,
+    public var pbsiPid: UInt,
     /**
      * Process parent ID.
      */
-    public var pbsiPpid: UInt = 0u,
+    public var pbsiPpid: UInt,
     /**
      * Process perp ID.
      */
-    public var pbsiPgid: UInt = 0u,
+    public var pbsiPgid: UInt,
     /**
      * `pStat` value: `SZOMB`, `SRUN`, etc.
      */
-    public var pbsiStatus: UInt = 0u,
+    public var pbsiStatus: UInt,
     /**
      * Up to 16 characters of process name.
      */
-    public var pbsiComm: UByteArray = UByteArray(MAXCOMLEN),
+    public var pbsiComm: UByteArray,
     /**
      * 64bit, emulated, etc.
      */
-    public var pbsiFlags: UInt = 0u,
+    public var pbsiFlags: UInt,
     /**
      * Current UID on process.
      */
-    public var pbsiUid: UidT = 0,
+    public var pbsiUid: UidT,
     /**
      * Current GID on process.
      */
-    public var pbsiGid: GidT = 0,
+    public var pbsiGid: GidT,
     /**
      * Current RUID on process.
      */
-    public var pbsiRuid: UidT = 0,
+    public var pbsiRuid: UidT,
     /**
      * Current RGID on process.
      */
-    public var pbsiRgid: GidT = 0,
+    public var pbsiRgid: GidT,
     /**
      * Current SVUID on process.
      */
-    public var pbsiSvuid: UidT = 0,
+    public var pbsiSvuid: UidT,
     /**
      * Current SVGID on process.
      */
-    public var pbsiSvgid: GidT = 0,
+    public var pbsiSvgid: GidT,
     /**
      * Reserved for future use.
      */
-    public var pbsiRfu: UInt = 0u,
-    public var nonExhaustive: Unit = Unit,
+    public var pbsiRfu: UInt,
+    public var nonExhaustive: Unit,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ProcBsdshortinfo) return false
-        if (this.pbsiPid != other.pbsiPid) return false
-        if (this.pbsiPpid != other.pbsiPpid) return false
-        if (this.pbsiPgid != other.pbsiPgid) return false
-        if (this.pbsiStatus != other.pbsiStatus) return false
-        if (!this.pbsiComm.contentEquals(other.pbsiComm)) return false
-        if (this.pbsiFlags != other.pbsiFlags) return false
-        if (this.pbsiUid != other.pbsiUid) return false
-        if (this.pbsiGid != other.pbsiGid) return false
-        if (this.pbsiRuid != other.pbsiRuid) return false
-        if (this.pbsiRgid != other.pbsiRgid) return false
-        if (this.pbsiSvuid != other.pbsiSvuid) return false
-        if (this.pbsiSvgid != other.pbsiSvgid) return false
-        if (this.pbsiRfu != other.pbsiRfu) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.pbsiPid.hashCode()
-        result = 31 * result + this.pbsiPpid.hashCode()
-        result = 31 * result + this.pbsiPgid.hashCode()
-        result = 31 * result + this.pbsiStatus.hashCode()
-        result = 31 * result + this.pbsiComm.contentHashCode()
-        result = 31 * result + this.pbsiFlags.hashCode()
-        result = 31 * result + this.pbsiUid.hashCode()
-        result = 31 * result + this.pbsiGid.hashCode()
-        result = 31 * result + this.pbsiRuid.hashCode()
-        result = 31 * result + this.pbsiRgid.hashCode()
-        result = 31 * result + this.pbsiSvuid.hashCode()
-        result = 31 * result + this.pbsiSvgid.hashCode()
-        result = 31 * result + this.pbsiRfu.hashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
-    }
+    public open fun clone(): ProcBsdshortinfo = ProcBsdshortinfo(pbsiPid, pbsiPpid, pbsiPgid, pbsiStatus, pbsiComm, pbsiFlags, pbsiUid, pbsiGid, pbsiRuid, pbsiRgid, pbsiSvuid, pbsiSvgid, pbsiRfu, nonExhaustive)
 
     public companion object {
         public fun typeLayout(): TypeLayout<ProcBsdshortinfo> =
@@ -3263,13 +2786,17 @@ public data class ProcBsdshortinfo(
                     (PrimitiveLayouts.UNIT).writeBytes(buf, offset + off13.toInt(), value.nonExhaustive)
                 }
             }
+
+        public fun default(): ProcBsdshortinfo = ProcBsdshortinfo(pbsiPid = Default.default(), pbsiPpid = Default.default(), pbsiPgid = Default.default(), pbsiStatus = Default.default(), pbsiComm = Default.default(), pbsiFlags = Default.default(), pbsiUid = Default.default(), pbsiGid = Default.default(), pbsiRuid = Default.default(), pbsiRgid = Default.default(), pbsiSvuid = Default.default(), pbsiSvgid = Default.default(), pbsiRfu = Default.default(), nonExhaustive = Unit)
     }
 }
 
-public data class ProcTaskallinfo(
-    public var pbsd: ProcBsdinfo = ProcBsdinfo(),
-    public var ptinfo: ProcTaskinfo = ProcTaskinfo(),
+public open class ProcTaskallinfo(
+    public var pbsd: ProcBsdinfo,
+    public var ptinfo: ProcTaskinfo,
 ) {
+    public open fun clone(): ProcTaskallinfo = ProcTaskallinfo(pbsd, ptinfo)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ProcTaskallinfo> =
             object : TypeLayout<ProcTaskallinfo> {
@@ -3295,17 +2822,21 @@ public data class ProcTaskallinfo(
                     (ProcTaskinfo.typeLayout()).writeBytes(buf, offset + off1.toInt(), value.ptinfo)
                 }
             }
+
+        public fun default(): ProcTaskallinfo = ProcTaskallinfo(pbsd = Default.default(), ptinfo = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class XswUsage(
-    public var xsuTotal: ULong = 0uL,
-    public var xsuAvail: ULong = 0uL,
-    public var xsuUsed: ULong = 0uL,
-    public var xsuPagesize: UInt = 0u,
-    public var xsuEncrypted: BooleanT = 0,
+public open class XswUsage(
+    public var xsuTotal: ULong,
+    public var xsuAvail: ULong,
+    public var xsuUsed: ULong,
+    public var xsuPagesize: UInt,
+    public var xsuEncrypted: BooleanT,
 ) {
+    public open fun clone(): XswUsage = XswUsage(xsuTotal, xsuAvail, xsuUsed, xsuPagesize, xsuEncrypted)
+
     public companion object {
         public fun typeLayout(): TypeLayout<XswUsage> =
             object : TypeLayout<XswUsage> {
@@ -3342,33 +2873,19 @@ public data class XswUsage(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 28, value.xsuEncrypted)
                 }
             }
+
+        public fun default(): XswUsage = XswUsage(xsuTotal = Default.default(), xsuAvail = Default.default(), xsuUsed = Default.default(), xsuPagesize = Default.default(), xsuEncrypted = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Xucred(
-    public var crVersion: CUint = 0u,
-    public var crUid: UidT = 0,
-    public var crNgroups: CShort = 0,
-    public var crGroups: IntArray = IntArray(16),
+public open class Xucred(
+    public var crVersion: CUint,
+    public var crUid: UidT,
+    public var crNgroups: CShort,
+    public var crGroups: IntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Xucred) return false
-        if (this.crVersion != other.crVersion) return false
-        if (this.crUid != other.crUid) return false
-        if (this.crNgroups != other.crNgroups) return false
-        if (!this.crGroups.contentEquals(other.crGroups)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.crVersion.hashCode()
-        result = 31 * result + this.crUid.hashCode()
-        result = 31 * result + this.crNgroups.hashCode()
-        result = 31 * result + this.crGroups.contentHashCode()
-        return result
-    }
+    public open fun clone(): Xucred = Xucred(crVersion, crUid, crNgroups, crGroups)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Xucred> =
@@ -3402,18 +2919,22 @@ public data class Xucred(
                     (PrimitiveArrayLayouts.intArray(16)).writeBytes(buf, offset + 12, value.crGroups)
                 }
             }
+
+        public fun default(): Xucred = Xucred(crVersion = Default.default(), crUid = Default.default(), crNgroups = Default.default(), crGroups = Default.default())
     }
 }
 
-public data class MachHeader(
-    public var magic: UInt = 0u,
-    public var cputype: CpuTypeT = 0,
-    public var cpusubtype: CpuSubtypeT = 0,
-    public var filetype: UInt = 0u,
-    public var ncmds: UInt = 0u,
-    public var sizeofcmds: UInt = 0u,
-    public var flags: UInt = 0u,
+public open class MachHeader(
+    public var magic: UInt,
+    public var cputype: CpuTypeT,
+    public var cpusubtype: CpuSubtypeT,
+    public var filetype: UInt,
+    public var ncmds: UInt,
+    public var sizeofcmds: UInt,
+    public var flags: UInt,
 ) {
+    public open fun clone(): MachHeader = MachHeader(magic, cputype, cpusubtype, filetype, ncmds, sizeofcmds, flags)
+
     public companion object {
         public fun typeLayout(): TypeLayout<MachHeader> =
             object : TypeLayout<MachHeader> {
@@ -3458,19 +2979,23 @@ public data class MachHeader(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 24, value.flags)
                 }
             }
+
+        public fun default(): MachHeader = MachHeader(magic = Default.default(), cputype = Default.default(), cpusubtype = Default.default(), filetype = Default.default(), ncmds = Default.default(), sizeofcmds = Default.default(), flags = Default.default())
     }
 }
 
-public data class MachHeader64(
-    public var magic: UInt = 0u,
-    public var cputype: CpuTypeT = 0,
-    public var cpusubtype: CpuSubtypeT = 0,
-    public var filetype: UInt = 0u,
-    public var ncmds: UInt = 0u,
-    public var sizeofcmds: UInt = 0u,
-    public var flags: UInt = 0u,
-    public var reserved: UInt = 0u,
+public open class MachHeader64(
+    public var magic: UInt,
+    public var cputype: CpuTypeT,
+    public var cpusubtype: CpuSubtypeT,
+    public var filetype: UInt,
+    public var ncmds: UInt,
+    public var sizeofcmds: UInt,
+    public var flags: UInt,
+    public var reserved: UInt,
 ) {
+    public open fun clone(): MachHeader64 = MachHeader64(magic, cputype, cpusubtype, filetype, ncmds, sizeofcmds, flags, reserved)
+
     public companion object {
         public fun typeLayout(): TypeLayout<MachHeader64> =
             object : TypeLayout<MachHeader64> {
@@ -3519,54 +3044,26 @@ public data class MachHeader64(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 28, value.reserved)
                 }
             }
+
+        public fun default(): MachHeader64 = MachHeader64(magic = Default.default(), cputype = Default.default(), cpusubtype = Default.default(), filetype = Default.default(), ncmds = Default.default(), sizeofcmds = Default.default(), flags = Default.default(), reserved = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class SegmentCommand(
-    public var cmd: UInt = 0u,
-    public var cmdsize: UInt = 0u,
-    public var segname: UByteArray = UByteArray(16),
-    public var vmaddr: UInt = 0u,
-    public var vmsize: UInt = 0u,
-    public var fileoff: UInt = 0u,
-    public var filesize: UInt = 0u,
-    public var maxprot: VmProtT = 0,
-    public var initprot: VmProtT = 0,
-    public var nsects: UInt = 0u,
-    public var flags: UInt = 0u,
+public open class SegmentCommand(
+    public var cmd: UInt,
+    public var cmdsize: UInt,
+    public var segname: UByteArray,
+    public var vmaddr: UInt,
+    public var vmsize: UInt,
+    public var fileoff: UInt,
+    public var filesize: UInt,
+    public var maxprot: VmProtT,
+    public var initprot: VmProtT,
+    public var nsects: UInt,
+    public var flags: UInt,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SegmentCommand) return false
-        if (this.cmd != other.cmd) return false
-        if (this.cmdsize != other.cmdsize) return false
-        if (!this.segname.contentEquals(other.segname)) return false
-        if (this.vmaddr != other.vmaddr) return false
-        if (this.vmsize != other.vmsize) return false
-        if (this.fileoff != other.fileoff) return false
-        if (this.filesize != other.filesize) return false
-        if (this.maxprot != other.maxprot) return false
-        if (this.initprot != other.initprot) return false
-        if (this.nsects != other.nsects) return false
-        if (this.flags != other.flags) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.cmd.hashCode()
-        result = 31 * result + this.cmdsize.hashCode()
-        result = 31 * result + this.segname.contentHashCode()
-        result = 31 * result + this.vmaddr.hashCode()
-        result = 31 * result + this.vmsize.hashCode()
-        result = 31 * result + this.fileoff.hashCode()
-        result = 31 * result + this.filesize.hashCode()
-        result = 31 * result + this.maxprot.hashCode()
-        result = 31 * result + this.initprot.hashCode()
-        result = 31 * result + this.nsects.hashCode()
-        result = 31 * result + this.flags.hashCode()
-        return result
-    }
+    public open fun clone(): SegmentCommand = SegmentCommand(cmd, cmdsize, segname, vmaddr, vmsize, fileoff, filesize, maxprot, initprot, nsects, flags)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SegmentCommand> =
@@ -3628,54 +3125,26 @@ public data class SegmentCommand(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 52, value.flags)
                 }
             }
+
+        public fun default(): SegmentCommand = SegmentCommand(cmd = Default.default(), cmdsize = Default.default(), segname = Default.default(), vmaddr = Default.default(), vmsize = Default.default(), fileoff = Default.default(), filesize = Default.default(), maxprot = Default.default(), initprot = Default.default(), nsects = Default.default(), flags = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class SegmentCommand64(
-    public var cmd: UInt = 0u,
-    public var cmdsize: UInt = 0u,
-    public var segname: UByteArray = UByteArray(16),
-    public var vmaddr: ULong = 0uL,
-    public var vmsize: ULong = 0uL,
-    public var fileoff: ULong = 0uL,
-    public var filesize: ULong = 0uL,
-    public var maxprot: VmProtT = 0,
-    public var initprot: VmProtT = 0,
-    public var nsects: UInt = 0u,
-    public var flags: UInt = 0u,
+public open class SegmentCommand64(
+    public var cmd: UInt,
+    public var cmdsize: UInt,
+    public var segname: UByteArray,
+    public var vmaddr: ULong,
+    public var vmsize: ULong,
+    public var fileoff: ULong,
+    public var filesize: ULong,
+    public var maxprot: VmProtT,
+    public var initprot: VmProtT,
+    public var nsects: UInt,
+    public var flags: UInt,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SegmentCommand64) return false
-        if (this.cmd != other.cmd) return false
-        if (this.cmdsize != other.cmdsize) return false
-        if (!this.segname.contentEquals(other.segname)) return false
-        if (this.vmaddr != other.vmaddr) return false
-        if (this.vmsize != other.vmsize) return false
-        if (this.fileoff != other.fileoff) return false
-        if (this.filesize != other.filesize) return false
-        if (this.maxprot != other.maxprot) return false
-        if (this.initprot != other.initprot) return false
-        if (this.nsects != other.nsects) return false
-        if (this.flags != other.flags) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.cmd.hashCode()
-        result = 31 * result + this.cmdsize.hashCode()
-        result = 31 * result + this.segname.contentHashCode()
-        result = 31 * result + this.vmaddr.hashCode()
-        result = 31 * result + this.vmsize.hashCode()
-        result = 31 * result + this.fileoff.hashCode()
-        result = 31 * result + this.filesize.hashCode()
-        result = 31 * result + this.maxprot.hashCode()
-        result = 31 * result + this.initprot.hashCode()
-        result = 31 * result + this.nsects.hashCode()
-        result = 31 * result + this.flags.hashCode()
-        return result
-    }
+    public open fun clone(): SegmentCommand64 = SegmentCommand64(cmd, cmdsize, segname, vmaddr, vmsize, fileoff, filesize, maxprot, initprot, nsects, flags)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SegmentCommand64> =
@@ -3737,14 +3206,18 @@ public data class SegmentCommand64(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 68, value.flags)
                 }
             }
+
+        public fun default(): SegmentCommand64 = SegmentCommand64(cmd = Default.default(), cmdsize = Default.default(), segname = Default.default(), vmaddr = Default.default(), vmsize = Default.default(), fileoff = Default.default(), filesize = Default.default(), maxprot = Default.default(), initprot = Default.default(), nsects = Default.default(), flags = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class LoadCommand(
-    public var cmd: UInt = 0u,
-    public var cmdsize: UInt = 0u,
+public open class LoadCommand(
+    public var cmd: UInt,
+    public var cmdsize: UInt,
 ) {
+    public open fun clone(): LoadCommand = LoadCommand(cmd, cmdsize)
+
     public companion object {
         public fun typeLayout(): TypeLayout<LoadCommand> =
             object : TypeLayout<LoadCommand> {
@@ -3769,45 +3242,23 @@ public data class LoadCommand(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.cmdsize)
                 }
             }
+
+        public fun default(): LoadCommand = LoadCommand(cmd = Default.default(), cmdsize = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class SockaddrDl(
-    public var sdlLen: CUchar = 0u,
-    public var sdlFamily: CUchar = 0u,
-    public var sdlIndex: CUshort = 0u,
-    public var sdlType: CUchar = 0u,
-    public var sdlNlen: CUchar = 0u,
-    public var sdlAlen: CUchar = 0u,
-    public var sdlSlen: CUchar = 0u,
-    public var sdlData: UByteArray = UByteArray(12),
+public open class SockaddrDl(
+    public var sdlLen: CUchar,
+    public var sdlFamily: CUchar,
+    public var sdlIndex: CUshort,
+    public var sdlType: CUchar,
+    public var sdlNlen: CUchar,
+    public var sdlAlen: CUchar,
+    public var sdlSlen: CUchar,
+    public var sdlData: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SockaddrDl) return false
-        if (this.sdlLen != other.sdlLen) return false
-        if (this.sdlFamily != other.sdlFamily) return false
-        if (this.sdlIndex != other.sdlIndex) return false
-        if (this.sdlType != other.sdlType) return false
-        if (this.sdlNlen != other.sdlNlen) return false
-        if (this.sdlAlen != other.sdlAlen) return false
-        if (this.sdlSlen != other.sdlSlen) return false
-        if (!this.sdlData.contentEquals(other.sdlData)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sdlLen.hashCode()
-        result = 31 * result + this.sdlFamily.hashCode()
-        result = 31 * result + this.sdlIndex.hashCode()
-        result = 31 * result + this.sdlType.hashCode()
-        result = 31 * result + this.sdlNlen.hashCode()
-        result = 31 * result + this.sdlAlen.hashCode()
-        result = 31 * result + this.sdlSlen.hashCode()
-        result = 31 * result + this.sdlData.contentHashCode()
-        return result
-    }
+    public open fun clone(): SockaddrDl = SockaddrDl(sdlLen, sdlFamily, sdlIndex, sdlType, sdlNlen, sdlAlen, sdlSlen, sdlData)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrDl> =
@@ -3857,18 +3308,22 @@ public data class SockaddrDl(
                     (PrimitiveArrayLayouts.uByteArray(12)).writeBytes(buf, offset + 8, value.sdlData)
                 }
             }
+
+        public fun default(): SockaddrDl = SockaddrDl(sdlLen = Default.default(), sdlFamily = Default.default(), sdlIndex = Default.default(), sdlType = Default.default(), sdlNlen = Default.default(), sdlAlen = Default.default(), sdlSlen = Default.default(), sdlData = Default.default())
     }
 }
 
-public data class SockaddrInarp(
-    public var sinLen: CUchar = 0u,
-    public var sinFamily: CUchar = 0u,
-    public var sinPort: CUshort = 0u,
-    public var sinAddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
-    public var sinSrcaddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
-    public var sinTos: CUshort = 0u,
-    public var sinOther: CUshort = 0u,
+public open class SockaddrInarp(
+    public var sinLen: CUchar,
+    public var sinFamily: CUchar,
+    public var sinPort: CUshort,
+    public var sinAddr: InAddr,
+    public var sinSrcaddr: InAddr,
+    public var sinTos: CUshort,
+    public var sinOther: CUshort,
 ) {
+    public open fun clone(): SockaddrInarp = SockaddrInarp(sinLen, sinFamily, sinPort, sinAddr, sinSrcaddr, sinTos, sinOther)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrInarp> =
             object : TypeLayout<SockaddrInarp> {
@@ -3913,38 +3368,20 @@ public data class SockaddrInarp(
                     (PrimitiveLayouts.U16).writeBytes(buf, offset + 14, value.sinOther)
                 }
             }
+
+        public fun default(): SockaddrInarp = SockaddrInarp(sinLen = Default.default(), sinFamily = Default.default(), sinPort = Default.default(), sinAddr = Default.default(), sinSrcaddr = Default.default(), sinTos = Default.default(), sinOther = Default.default())
     }
 }
 
-public data class SockaddrCtl(
-    public var scLen: CUchar = 0u,
-    public var scFamily: CUchar = 0u,
-    public var ssSysaddr: UShort = 0u,
-    public var scId: UInt = 0u,
-    public var scUnit: UInt = 0u,
-    public var scReserved: UIntArray = UIntArray(5),
+public open class SockaddrCtl(
+    public var scLen: CUchar,
+    public var scFamily: CUchar,
+    public var ssSysaddr: UShort,
+    public var scId: UInt,
+    public var scUnit: UInt,
+    public var scReserved: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SockaddrCtl) return false
-        if (this.scLen != other.scLen) return false
-        if (this.scFamily != other.scFamily) return false
-        if (this.ssSysaddr != other.ssSysaddr) return false
-        if (this.scId != other.scId) return false
-        if (this.scUnit != other.scUnit) return false
-        if (!this.scReserved.contentEquals(other.scReserved)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.scLen.hashCode()
-        result = 31 * result + this.scFamily.hashCode()
-        result = 31 * result + this.ssSysaddr.hashCode()
-        result = 31 * result + this.scId.hashCode()
-        result = 31 * result + this.scUnit.hashCode()
-        result = 31 * result + this.scReserved.contentHashCode()
-        return result
-    }
+    public open fun clone(): SockaddrCtl = SockaddrCtl(scLen, scFamily, ssSysaddr, scId, scUnit, scReserved)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrCtl> =
@@ -3986,15 +3423,19 @@ public data class SockaddrCtl(
                     (PrimitiveArrayLayouts.uIntArray(5)).writeBytes(buf, offset + 12, value.scReserved)
                 }
             }
+
+        public fun default(): SockaddrCtl = SockaddrCtl(scLen = Default.default(), scFamily = Default.default(), ssSysaddr = Default.default(), scId = Default.default(), scUnit = Default.default(), scReserved = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class InPktinfo(
-    public var ipiIfindex: CUint = 0u,
-    public var ipiSpecDst: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
-    public var ipiAddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
+public open class InPktinfo(
+    public var ipiIfindex: CUint,
+    public var ipiSpecDst: InAddr,
+    public var ipiAddr: InAddr,
 ) {
+    public open fun clone(): InPktinfo = InPktinfo(ipiIfindex, ipiSpecDst, ipiAddr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<InPktinfo> =
             object : TypeLayout<InPktinfo> {
@@ -4023,25 +3464,35 @@ public data class InPktinfo(
                     (InAddr.typeLayout()).writeBytes(buf, offset + 8, value.ipiAddr)
                 }
             }
+
+        public fun default(): InPktinfo = InPktinfo(ipiIfindex = Default.default(), ipiSpecDst = Default.default(), ipiAddr = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class In6Pktinfo(
-    public var ipi6Addr: In6Addr = In6Addr(),
-    public var ipi6Ifindex: CUint = 0u,
-)
+public open class In6Pktinfo(
+    public var ipi6Addr: In6Addr,
+    public var ipi6Ifindex: CUint,
+) {
+    public open fun clone(): In6Pktinfo = In6Pktinfo(ipi6Addr, ipi6Ifindex)
+
+    public companion object {
+        public fun default(): In6Pktinfo = In6Pktinfo(ipi6Addr = Default.default(), ipi6Ifindex = Default.default())
+    }
+}
 
 // Note(exhaustive): review for 1.0
-public data class IpcPerm(
-    public var uid: UidT = 0,
-    public var gid: GidT = 0,
-    public var cuid: UidT = 0,
-    public var cgid: GidT = 0,
-    public var mode: ModeT = 0u,
-    public var seq: CUshort = 0u,
-    public var key: io.github.kotlinmania.rustlang.unix.bsd.apple.KeyT = 0,
+public open class IpcPerm(
+    public var uid: UidT,
+    public var gid: GidT,
+    public var cuid: UidT,
+    public var cgid: GidT,
+    public var mode: ModeT,
+    public var seq: CUshort,
+    public var key: KeyT,
 ) {
+    public open fun clone(): IpcPerm = IpcPerm(uid, gid, cuid, cgid, mode, seq, key)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IpcPerm> =
             object : TypeLayout<IpcPerm> {
@@ -4086,15 +3537,19 @@ public data class IpcPerm(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 20, value.key)
                 }
             }
+
+        public fun default(): IpcPerm = IpcPerm(uid = Default.default(), gid = Default.default(), cuid = Default.default(), cgid = Default.default(), mode = Default.default(), seq = Default.default(), key = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Sembuf(
-    public var semNum: CUshort = 0u,
-    public var semOp: CShort = 0,
-    public var semFlg: CShort = 0,
+public open class Sembuf(
+    public var semNum: CUshort,
+    public var semOp: CShort,
+    public var semFlg: CShort,
 ) {
+    public open fun clone(): Sembuf = Sembuf(semNum, semOp, semFlg)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Sembuf> =
             object : TypeLayout<Sembuf> {
@@ -4123,16 +3578,20 @@ public data class Sembuf(
                     (PrimitiveLayouts.I16).writeBytes(buf, offset + 4, value.semFlg)
                 }
             }
+
+        public fun default(): Sembuf = Sembuf(semNum = Default.default(), semOp = Default.default(), semFlg = Default.default())
     }
 }
 
-public data class Arphdr(
-    public var arHrd: UShort = 0u,
-    public var arPro: UShort = 0u,
-    public var arHln: UByte = 0u,
-    public var arPln: UByte = 0u,
-    public var arOp: UShort = 0u,
+public open class Arphdr(
+    public var arHrd: UShort,
+    public var arPro: UShort,
+    public var arHln: UByte,
+    public var arPln: UByte,
+    public var arOp: UShort,
 ) {
+    public open fun clone(): Arphdr = Arphdr(arHrd, arPro, arHln, arPln, arOp)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Arphdr> =
             object : TypeLayout<Arphdr> {
@@ -4169,13 +3628,17 @@ public data class Arphdr(
                     (PrimitiveLayouts.U16).writeBytes(buf, offset + 6, value.arOp)
                 }
             }
+
+        public fun default(): Arphdr = Arphdr(arHrd = Default.default(), arPro = Default.default(), arHln = Default.default(), arPln = Default.default(), arOp = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class InAddr(
-    public var sAddr: InAddrT = 0u,
+public open class InAddr(
+    public var sAddr: InAddrT,
 ) {
+    public open fun clone(): InAddr = InAddr(sAddr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<InAddr> =
             object : TypeLayout<InAddr> {
@@ -4196,29 +3659,17 @@ public data class InAddr(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset, value.sAddr)
                 }
             }
+
+        public fun default(): InAddr = InAddr(sAddr = Default.default())
     }
 }
 
-public data class SockaddrNdrv(
-    public var sndLen: CUchar = 0u,
-    public var sndFamily: CUchar = 0u,
-    public var sndName: UByteArray = UByteArray(IFNAMSIZ.toInt()),
+public open class SockaddrNdrv(
+    public var sndLen: CUchar,
+    public var sndFamily: CUchar,
+    public var sndName: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SockaddrNdrv) return false
-        if (this.sndLen != other.sndLen) return false
-        if (this.sndFamily != other.sndFamily) return false
-        if (!this.sndName.contentEquals(other.sndName)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sndLen.hashCode()
-        result = 31 * result + this.sndFamily.hashCode()
-        result = 31 * result + this.sndName.contentHashCode()
-        return result
-    }
+    public open fun clone(): SockaddrNdrv = SockaddrNdrv(sndLen, sndFamily, sndName)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrNdrv> =
@@ -4248,11 +3699,13 @@ public data class SockaddrNdrv(
                     (PrimitiveArrayLayouts.uByteArray((IFNAMSIZ).toInt())).writeBytes(buf, offset + 2, value.sndName)
                 }
             }
+
+        public fun default(): SockaddrNdrv = SockaddrNdrv(sndLen = Default.default(), sndFamily = Default.default(), sndName = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class SaEndpointsT internal constructor(
+public open class SaEndpointsT internal constructor(
     public var saeSrcif: CUint,
     saeSrcaddrCtorArg: ConstPtr,
     // optional source address
@@ -4267,47 +3720,7 @@ public class SaEndpointsT internal constructor(
     public var saeDstaddr: ConstPtr = saeDstaddrCtorArg
         internal set
 
-    public constructor() : this(
-        saeSrcif = 0u,
-        saeSrcaddrCtorArg = ConstPtr(0L),
-        saeSrcaddrlen = 0u,
-        saeDstaddrCtorArg = ConstPtr(0L),
-        saeDstaddrlen = 0u,
-    )
-
-    public operator fun component1(): CUint = this.saeSrcif
-
-    public operator fun component2(): ConstPtr = this.saeSrcaddr
-
-    public operator fun component3(): SocklenT = this.saeSrcaddrlen
-
-    public operator fun component4(): ConstPtr = this.saeDstaddr
-
-    public operator fun component5(): SocklenT = this.saeDstaddrlen
-
-    public fun copy(saeSrcif: CUint = this.saeSrcif, saeSrcaddr: ConstPtr = this.saeSrcaddr, saeSrcaddrlen: SocklenT = this.saeSrcaddrlen, saeDstaddr: ConstPtr = this.saeDstaddr, saeDstaddrlen: SocklenT = this.saeDstaddrlen): SaEndpointsT = SaEndpointsT(saeSrcif = saeSrcif, saeSrcaddrCtorArg = saeSrcaddr, saeSrcaddrlen = saeSrcaddrlen, saeDstaddrCtorArg = saeDstaddr, saeDstaddrlen = saeDstaddrlen)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SaEndpointsT) return false
-        if (this.saeSrcif != other.saeSrcif) return false
-        if (this.saeSrcaddr != other.saeSrcaddr) return false
-        if (this.saeSrcaddrlen != other.saeSrcaddrlen) return false
-        if (this.saeDstaddr != other.saeDstaddr) return false
-        if (this.saeDstaddrlen != other.saeDstaddrlen) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.saeSrcif.hashCode()
-        result = 31 * result + this.saeSrcaddr.hashCode()
-        result = 31 * result + this.saeSrcaddrlen.hashCode()
-        result = 31 * result + this.saeDstaddr.hashCode()
-        result = 31 * result + this.saeDstaddrlen.hashCode()
-        return result
-    }
-
-    public fun clone(): SaEndpointsT = SaEndpointsT(saeSrcif, saeSrcaddr, saeSrcaddrlen, saeDstaddr, saeDstaddrlen)
+    public open fun clone(): SaEndpointsT = SaEndpointsT(saeSrcif, saeSrcaddr, saeSrcaddrlen, saeDstaddr, saeDstaddrlen)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SaEndpointsT> =
@@ -4347,11 +3760,11 @@ public class SaEndpointsT internal constructor(
             }
 
         public operator fun invoke(
-            saeSrcif: CUint = 0u,
-            saeSrcaddr: ConstPtr = ConstPtr(0L),
-            saeSrcaddrlen: SocklenT = 0u,
-            saeDstaddr: ConstPtr = ConstPtr(0L),
-            saeDstaddrlen: SocklenT = 0u,
+            saeSrcif: CUint,
+            saeSrcaddr: ConstPtr,
+            saeSrcaddrlen: SocklenT,
+            saeDstaddr: ConstPtr,
+            saeDstaddrlen: SocklenT,
         ): SaEndpointsT = SaEndpointsT(
             saeSrcif = saeSrcif,
             saeSrcaddrCtorArg = saeSrcaddr,
@@ -4359,30 +3772,32 @@ public class SaEndpointsT internal constructor(
             saeDstaddrCtorArg = saeDstaddr,
             saeDstaddrlen = saeDstaddrlen,
         )
+
+        public fun default(): SaEndpointsT = SaEndpointsT(saeSrcif = Default.default(), saeSrcaddr = MutPtr(0L), saeSrcaddrlen = Default.default(), saeDstaddr = MutPtr(0L), saeDstaddrlen = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class Timex(
-    public var modes: CUint = 0u,
-    public var offset: CLong = 0L,
-    public var freq: CLong = 0L,
-    public var maxerror: CLong = 0L,
-    public var esterror: CLong = 0L,
-    public var status: CInt = 0,
-    public var constant: CLong = 0L,
-    public var precision: CLong = 0L,
-    public var tolerance: CLong = 0L,
-    public var ppsfreq: CLong = 0L,
-    public var jitter: CLong = 0L,
-    public var shift: CInt = 0,
-    public var stabil: CLong = 0L,
-    public var jitcnt: CLong = 0L,
-    public var calcnt: CLong = 0L,
-    public var errcnt: CLong = 0L,
-    public var stbcnt: CLong = 0L,
+public open class Timex(
+    public var modes: CUint,
+    public var offset: CLong,
+    public var freq: CLong,
+    public var maxerror: CLong,
+    public var esterror: CLong,
+    public var status: CInt,
+    public var constant: CLong,
+    public var precision: CLong,
+    public var tolerance: CLong,
+    public var ppsfreq: CLong,
+    public var jitter: CLong,
+    public var shift: CInt,
+    public var stabil: CLong,
+    public var jitcnt: CLong,
+    public var calcnt: CLong,
+    public var errcnt: CLong,
+    public var stbcnt: CLong,
 ) {
-    public fun clone(): Timex = Timex(modes, offset, freq, maxerror, esterror, status, constant, precision, tolerance, ppsfreq, jitter, shift, stabil, jitcnt, calcnt, errcnt, stbcnt)
+    public open fun clone(): Timex = Timex(modes, offset, freq, maxerror, esterror, status, constant, precision, tolerance, ppsfreq, jitter, shift, stabil, jitcnt, calcnt, errcnt, stbcnt)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Timex> =
@@ -4468,22 +3883,32 @@ public class Timex(
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 128, value.stbcnt)
                 }
             }
+
+        public fun default(): Timex = Timex(modes = Default.default(), offset = Default.default(), freq = Default.default(), maxerror = Default.default(), esterror = Default.default(), status = Default.default(), constant = Default.default(), precision = Default.default(), tolerance = Default.default(), ppsfreq = Default.default(), jitter = Default.default(), shift = Default.default(), stabil = Default.default(), jitcnt = Default.default(), calcnt = Default.default(), errcnt = Default.default(), stbcnt = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Ntptimeval(
-    public var time: Timespec = Timespec(),
-    public var maxerror: CLong = 0L,
-    public var esterror: CLong = 0L,
-    public var tai: CLong = 0L,
-    public var timeState: CInt = 0,
-)
+public open class Ntptimeval(
+    public var time: Timespec,
+    public var maxerror: CLong,
+    public var esterror: CLong,
+    public var tai: CLong,
+    public var timeState: CInt,
+) {
+    public open fun clone(): Ntptimeval = Ntptimeval(time, maxerror, esterror, tai, timeState)
+
+    public companion object {
+        public fun default(): Ntptimeval = Ntptimeval(time = Default.default(), maxerror = Default.default(), esterror = Default.default(), tai = Default.default(), timeState = Default.default())
+    }
+}
 
 // Note(exhaustive): review for 1.0
-public data class ThreadStandardPolicy(
-    public var noData: NaturalT = 0u,
+public open class ThreadStandardPolicy(
+    public var noData: NaturalT,
 ) {
+    public open fun clone(): ThreadStandardPolicy = ThreadStandardPolicy(noData)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadStandardPolicy> =
             object : TypeLayout<ThreadStandardPolicy> {
@@ -4504,13 +3929,17 @@ public data class ThreadStandardPolicy(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset, value.noData)
                 }
             }
+
+        public fun default(): ThreadStandardPolicy = ThreadStandardPolicy(noData = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ThreadExtendedPolicy(
-    public var timeshare: BooleanT = 0,
+public open class ThreadExtendedPolicy(
+    public var timeshare: BooleanT,
 ) {
+    public open fun clone(): ThreadExtendedPolicy = ThreadExtendedPolicy(timeshare)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadExtendedPolicy> =
             object : TypeLayout<ThreadExtendedPolicy> {
@@ -4531,16 +3960,20 @@ public data class ThreadExtendedPolicy(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset, value.timeshare)
                 }
             }
+
+        public fun default(): ThreadExtendedPolicy = ThreadExtendedPolicy(timeshare = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ThreadTimeConstraintPolicy(
-    public var period: UInt = 0u,
-    public var computation: UInt = 0u,
-    public var constraint: UInt = 0u,
-    public var preemptible: BooleanT = 0,
+public open class ThreadTimeConstraintPolicy(
+    public var period: UInt,
+    public var computation: UInt,
+    public var constraint: UInt,
+    public var preemptible: BooleanT,
 ) {
+    public open fun clone(): ThreadTimeConstraintPolicy = ThreadTimeConstraintPolicy(period, computation, constraint, preemptible)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadTimeConstraintPolicy> =
             object : TypeLayout<ThreadTimeConstraintPolicy> {
@@ -4573,13 +4006,17 @@ public data class ThreadTimeConstraintPolicy(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 12, value.preemptible)
                 }
             }
+
+        public fun default(): ThreadTimeConstraintPolicy = ThreadTimeConstraintPolicy(period = Default.default(), computation = Default.default(), constraint = Default.default(), preemptible = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ThreadPrecedencePolicy(
-    public var importance: IntegerT = 0,
+public open class ThreadPrecedencePolicy(
+    public var importance: IntegerT,
 ) {
+    public open fun clone(): ThreadPrecedencePolicy = ThreadPrecedencePolicy(importance)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadPrecedencePolicy> =
             object : TypeLayout<ThreadPrecedencePolicy> {
@@ -4600,13 +4037,17 @@ public data class ThreadPrecedencePolicy(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset, value.importance)
                 }
             }
+
+        public fun default(): ThreadPrecedencePolicy = ThreadPrecedencePolicy(importance = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ThreadAffinityPolicy(
-    public var affinityTag: IntegerT = 0,
+public open class ThreadAffinityPolicy(
+    public var affinityTag: IntegerT,
 ) {
+    public open fun clone(): ThreadAffinityPolicy = ThreadAffinityPolicy(affinityTag)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadAffinityPolicy> =
             object : TypeLayout<ThreadAffinityPolicy> {
@@ -4627,13 +4068,17 @@ public data class ThreadAffinityPolicy(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset, value.affinityTag)
                 }
             }
+
+        public fun default(): ThreadAffinityPolicy = ThreadAffinityPolicy(affinityTag = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ThreadBackgroundPolicy(
-    public var priority: IntegerT = 0,
+public open class ThreadBackgroundPolicy(
+    public var priority: IntegerT,
 ) {
+    public open fun clone(): ThreadBackgroundPolicy = ThreadBackgroundPolicy(priority)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadBackgroundPolicy> =
             object : TypeLayout<ThreadBackgroundPolicy> {
@@ -4654,13 +4099,17 @@ public data class ThreadBackgroundPolicy(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset, value.priority)
                 }
             }
+
+        public fun default(): ThreadBackgroundPolicy = ThreadBackgroundPolicy(priority = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ThreadLatencyQosPolicy(
-    public var threadLatencyQosTier: ThreadLatencyQosT = 0,
+public open class ThreadLatencyQosPolicy(
+    public var threadLatencyQosTier: ThreadLatencyQosT,
 ) {
+    public open fun clone(): ThreadLatencyQosPolicy = ThreadLatencyQosPolicy(threadLatencyQosTier)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadLatencyQosPolicy> =
             object : TypeLayout<ThreadLatencyQosPolicy> {
@@ -4681,13 +4130,17 @@ public data class ThreadLatencyQosPolicy(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset, value.threadLatencyQosTier)
                 }
             }
+
+        public fun default(): ThreadLatencyQosPolicy = ThreadLatencyQosPolicy(threadLatencyQosTier = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ThreadThroughputQosPolicy(
-    public var threadThroughputQosTier: ThreadThroughputQosT = 0,
+public open class ThreadThroughputQosPolicy(
+    public var threadThroughputQosTier: ThreadThroughputQosT,
 ) {
+    public open fun clone(): ThreadThroughputQosPolicy = ThreadThroughputQosPolicy(threadThroughputQosTier)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadThroughputQosPolicy> =
             object : TypeLayout<ThreadThroughputQosPolicy> {
@@ -4708,16 +4161,20 @@ public data class ThreadThroughputQosPolicy(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset, value.threadThroughputQosTier)
                 }
             }
+
+        public fun default(): ThreadThroughputQosPolicy = ThreadThroughputQosPolicy(threadThroughputQosTier = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class MallocStatisticsT(
-    public var blocksInUse: CUint = 0u,
-    public var sizeInUse: SizeT = 0uL,
-    public var maxSizeInUse: SizeT = 0uL,
-    public var sizeAllocated: SizeT = 0uL,
+public open class MallocStatisticsT(
+    public var blocksInUse: CUint,
+    public var sizeInUse: SizeT,
+    public var maxSizeInUse: SizeT,
+    public var sizeAllocated: SizeT,
 ) {
+    public open fun clone(): MallocStatisticsT = MallocStatisticsT(blocksInUse, sizeInUse, maxSizeInUse, sizeAllocated)
+
     public companion object {
         public fun typeLayout(): TypeLayout<MallocStatisticsT> =
             object : TypeLayout<MallocStatisticsT> {
@@ -4750,17 +4207,21 @@ public data class MallocStatisticsT(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 24, value.sizeAllocated)
                 }
             }
+
+        public fun default(): MallocStatisticsT = MallocStatisticsT(blocksInUse = Default.default(), sizeInUse = Default.default(), maxSizeInUse = Default.default(), sizeAllocated = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Mstats(
-    public var bytesTotal: SizeT = 0uL,
-    public var chunksUsed: SizeT = 0uL,
-    public var bytesUsed: SizeT = 0uL,
-    public var chunksFree: SizeT = 0uL,
-    public var bytesFree: SizeT = 0uL,
+public open class Mstats(
+    public var bytesTotal: SizeT,
+    public var chunksUsed: SizeT,
+    public var bytesUsed: SizeT,
+    public var chunksFree: SizeT,
+    public var bytesFree: SizeT,
 ) {
+    public open fun clone(): Mstats = Mstats(bytesTotal, chunksUsed, bytesUsed, chunksFree, bytesFree)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Mstats> =
             object : TypeLayout<Mstats> {
@@ -4797,14 +4258,18 @@ public data class Mstats(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 32, value.bytesFree)
                 }
             }
+
+        public fun default(): Mstats = Mstats(bytesTotal = Default.default(), chunksUsed = Default.default(), bytesUsed = Default.default(), chunksFree = Default.default(), bytesFree = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class VmRangeT(
-    public var address: io.github.kotlinmania.rustlang.unix.bsd.apple.VmAddressT = 0uL,
-    public var size: io.github.kotlinmania.rustlang.unix.bsd.apple.VmSizeT = 0uL,
+public open class VmRangeT(
+    public var address: VmAddressT,
+    public var size: VmSizeT,
 ) {
+    public open fun clone(): VmRangeT = VmRangeT(address, size)
+
     public companion object {
         public fun typeLayout(): TypeLayout<VmRangeT> =
             object : TypeLayout<VmRangeT> {
@@ -4829,33 +4294,35 @@ public data class VmRangeT(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.size)
                 }
             }
+
+        public fun default(): VmRangeT = VmRangeT(address = Default.default(), size = Default.default())
     }
 }
 
-public class VinfoStat(
-    public var vstDev: UInt = 0u,
-    public var vstMode: UShort = 0u,
-    public var vstNlink: UShort = 0u,
-    public var vstIno: ULong = 0uL,
-    public var vstUid: UidT = 0,
-    public var vstGid: GidT = 0,
-    public var vstAtime: Long = 0L,
-    public var vstAtimensec: Long = 0L,
-    public var vstMtime: Long = 0L,
-    public var vstMtimensec: Long = 0L,
-    public var vstCtime: Long = 0L,
-    public var vstCtimensec: Long = 0L,
-    public var vstBirthtime: Long = 0L,
-    public var vstBirthtimensec: Long = 0L,
-    public var vstSize: OffT = 0L,
-    public var vstBlocks: Long = 0L,
-    public var vstBlksize: Int = 0,
-    public var vstFlags: UInt = 0u,
-    public var vstGen: UInt = 0u,
-    public var vstRdev: UInt = 0u,
-    public var vstQspare: LongArray = LongArray(2),
+public open class VinfoStat(
+    public var vstDev: UInt,
+    public var vstMode: UShort,
+    public var vstNlink: UShort,
+    public var vstIno: ULong,
+    public var vstUid: UidT,
+    public var vstGid: GidT,
+    public var vstAtime: Long,
+    public var vstAtimensec: Long,
+    public var vstMtime: Long,
+    public var vstMtimensec: Long,
+    public var vstCtime: Long,
+    public var vstCtimensec: Long,
+    public var vstBirthtime: Long,
+    public var vstBirthtimensec: Long,
+    public var vstSize: OffT,
+    public var vstBlocks: Long,
+    public var vstBlksize: Int,
+    public var vstFlags: UInt,
+    public var vstGen: UInt,
+    public var vstRdev: UInt,
+    public var vstQspare: LongArray,
 ) {
-    public fun clone(): VinfoStat = VinfoStat(vstDev, vstMode, vstNlink, vstIno, vstUid, vstGid, vstAtime, vstAtimensec, vstMtime, vstMtimensec, vstCtime, vstCtimensec, vstBirthtime, vstBirthtimensec, vstSize, vstBlocks, vstBlksize, vstFlags, vstGen, vstRdev, vstQspare)
+    public open fun clone(): VinfoStat = VinfoStat(vstDev, vstMode, vstNlink, vstIno, vstUid, vstGid, vstAtime, vstAtimensec, vstMtime, vstMtimensec, vstCtime, vstCtimensec, vstBirthtime, vstBirthtimensec, vstSize, vstBlocks, vstBlksize, vstFlags, vstGen, vstRdev, vstQspare)
 
     public companion object {
         public fun typeLayout(): TypeLayout<VinfoStat> =
@@ -4957,46 +4424,68 @@ public class VinfoStat(
                     (PrimitiveArrayLayouts.longArray(2)).writeBytes(buf, offset + 120, value.vstQspare)
                 }
             }
+
+        public fun default(): VinfoStat = VinfoStat(vstDev = Default.default(), vstMode = Default.default(), vstNlink = Default.default(), vstIno = Default.default(), vstUid = Default.default(), vstGid = Default.default(), vstAtime = Default.default(), vstAtimensec = Default.default(), vstMtime = Default.default(), vstMtimensec = Default.default(), vstCtime = Default.default(), vstCtimensec = Default.default(), vstBirthtime = Default.default(), vstBirthtimensec = Default.default(), vstSize = Default.default(), vstBlocks = Default.default(), vstBlksize = Default.default(), vstFlags = Default.default(), vstGen = Default.default(), vstRdev = Default.default(), vstQspare = Default.default())
     }
 }
 
-public data class VnodeInfo(
-    public var viStat: VinfoStat = VinfoStat(),
-    public var viType: CInt = 0,
-    public var viPad: CInt = 0,
-    public var viFsid: FsidT = FsidT(),
-)
+public open class VnodeInfo(
+    public var viStat: VinfoStat,
+    public var viType: CInt,
+    public var viPad: CInt,
+    public var viFsid: FsidT,
+) {
+    public open fun clone(): VnodeInfo = VnodeInfo(viStat, viType, viPad, viFsid)
 
-public data class VnodeInfoPath(
-    public var vipVi: VnodeInfo = VnodeInfo(),
+    public companion object {
+        public fun default(): VnodeInfo = VnodeInfo(viStat = Default.default(), viType = Default.default(), viPad = Default.default(), viFsid = Default.default())
+    }
+}
+
+public open class VnodeInfoPath(
+    public var vipVi: VnodeInfo,
     // Normally it's `vipPath: [cChar; MAXPATHLEN]` but because libc supports an old rustc
     // version, we go around this limitation like this.
-    public var vipPath: List<UByteArray> = List(32) { UByteArray(0) },
-)
+    public var vipPath: List<UByteArray>,
+) {
+    public open fun clone(): VnodeInfoPath = VnodeInfoPath(vipVi, vipPath)
 
-public data class ProcVnodepathinfo(
-    public var pviCdir: VnodeInfoPath = VnodeInfoPath(),
-    public var pviRdir: VnodeInfoPath = VnodeInfoPath(),
-)
+    public companion object {
+        public fun default(): VnodeInfoPath = VnodeInfoPath(vipVi = Default.default(), vipPath = Default.default())
+    }
+}
+
+public open class ProcVnodepathinfo(
+    public var pviCdir: VnodeInfoPath,
+    public var pviRdir: VnodeInfoPath,
+) {
+    public open fun clone(): ProcVnodepathinfo = ProcVnodepathinfo(pviCdir, pviRdir)
+
+    public companion object {
+        public fun default(): ProcVnodepathinfo = ProcVnodepathinfo(pviCdir = Default.default(), pviRdir = Default.default())
+    }
+}
 
 // Note(exhaustive): review for 1.0
-public data class VmStatistics(
-    public var freeCount: NaturalT = 0u,
-    public var activeCount: NaturalT = 0u,
-    public var inactiveCount: NaturalT = 0u,
-    public var wireCount: NaturalT = 0u,
-    public var zeroFillCount: NaturalT = 0u,
-    public var reactivations: NaturalT = 0u,
-    public var pageins: NaturalT = 0u,
-    public var pageouts: NaturalT = 0u,
-    public var faults: NaturalT = 0u,
-    public var cowFaults: NaturalT = 0u,
-    public var lookups: NaturalT = 0u,
-    public var hits: NaturalT = 0u,
-    public var purgeableCount: NaturalT = 0u,
-    public var purges: NaturalT = 0u,
-    public var speculativeCount: NaturalT = 0u,
+public open class VmStatistics(
+    public var freeCount: NaturalT,
+    public var activeCount: NaturalT,
+    public var inactiveCount: NaturalT,
+    public var wireCount: NaturalT,
+    public var zeroFillCount: NaturalT,
+    public var reactivations: NaturalT,
+    public var pageins: NaturalT,
+    public var pageouts: NaturalT,
+    public var faults: NaturalT,
+    public var cowFaults: NaturalT,
+    public var lookups: NaturalT,
+    public var hits: NaturalT,
+    public var purgeableCount: NaturalT,
+    public var purges: NaturalT,
+    public var speculativeCount: NaturalT,
 ) {
+    public open fun clone(): VmStatistics = VmStatistics(freeCount, activeCount, inactiveCount, wireCount, zeroFillCount, reactivations, pageins, pageouts, faults, cowFaults, lookups, hits, purgeableCount, purges, speculativeCount)
+
     public companion object {
         public fun typeLayout(): TypeLayout<VmStatistics> =
             object : TypeLayout<VmStatistics> {
@@ -5073,14 +4562,18 @@ public data class VmStatistics(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 56, value.speculativeCount)
                 }
             }
+
+        public fun default(): VmStatistics = VmStatistics(freeCount = Default.default(), activeCount = Default.default(), inactiveCount = Default.default(), wireCount = Default.default(), zeroFillCount = Default.default(), reactivations = Default.default(), pageins = Default.default(), pageouts = Default.default(), faults = Default.default(), cowFaults = Default.default(), lookups = Default.default(), hits = Default.default(), purgeableCount = Default.default(), purges = Default.default(), speculativeCount = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class TaskThreadTimesInfo(
-    public var userTime: TimeValueT = TimeValueT(),
-    public var systemTime: TimeValueT = TimeValueT(),
+public open class TaskThreadTimesInfo(
+    public var userTime: TimeValueT,
+    public var systemTime: TimeValueT,
 ) {
+    public open fun clone(): TaskThreadTimesInfo = TaskThreadTimesInfo(userTime, systemTime)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TaskThreadTimesInfo> =
             object : TypeLayout<TaskThreadTimesInfo> {
@@ -5105,54 +4598,26 @@ public data class TaskThreadTimesInfo(
                     (TimeValueT.typeLayout()).writeBytes(buf, offset + 8, value.systemTime)
                 }
             }
+
+        public fun default(): TaskThreadTimesInfo = TaskThreadTimesInfo(userTime = Default.default(), systemTime = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class RusageInfoV0(
-    public var riUuid: UByteArray = UByteArray(16),
-    public var riUserTime: ULong = 0uL,
-    public var riSystemTime: ULong = 0uL,
-    public var riPkgIdleWkups: ULong = 0uL,
-    public var riInterruptWkups: ULong = 0uL,
-    public var riPageins: ULong = 0uL,
-    public var riWiredSize: ULong = 0uL,
-    public var riResidentSize: ULong = 0uL,
-    public var riPhysFootprint: ULong = 0uL,
-    public var riProcStartAbstime: ULong = 0uL,
-    public var riProcExitAbstime: ULong = 0uL,
+public open class RusageInfoV0(
+    public var riUuid: UByteArray,
+    public var riUserTime: ULong,
+    public var riSystemTime: ULong,
+    public var riPkgIdleWkups: ULong,
+    public var riInterruptWkups: ULong,
+    public var riPageins: ULong,
+    public var riWiredSize: ULong,
+    public var riResidentSize: ULong,
+    public var riPhysFootprint: ULong,
+    public var riProcStartAbstime: ULong,
+    public var riProcExitAbstime: ULong,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is RusageInfoV0) return false
-        if (!this.riUuid.contentEquals(other.riUuid)) return false
-        if (this.riUserTime != other.riUserTime) return false
-        if (this.riSystemTime != other.riSystemTime) return false
-        if (this.riPkgIdleWkups != other.riPkgIdleWkups) return false
-        if (this.riInterruptWkups != other.riInterruptWkups) return false
-        if (this.riPageins != other.riPageins) return false
-        if (this.riWiredSize != other.riWiredSize) return false
-        if (this.riResidentSize != other.riResidentSize) return false
-        if (this.riPhysFootprint != other.riPhysFootprint) return false
-        if (this.riProcStartAbstime != other.riProcStartAbstime) return false
-        if (this.riProcExitAbstime != other.riProcExitAbstime) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.riUuid.contentHashCode()
-        result = 31 * result + this.riUserTime.hashCode()
-        result = 31 * result + this.riSystemTime.hashCode()
-        result = 31 * result + this.riPkgIdleWkups.hashCode()
-        result = 31 * result + this.riInterruptWkups.hashCode()
-        result = 31 * result + this.riPageins.hashCode()
-        result = 31 * result + this.riWiredSize.hashCode()
-        result = 31 * result + this.riResidentSize.hashCode()
-        result = 31 * result + this.riPhysFootprint.hashCode()
-        result = 31 * result + this.riProcStartAbstime.hashCode()
-        result = 31 * result + this.riProcExitAbstime.hashCode()
-        return result
-    }
+    public open fun clone(): RusageInfoV0 = RusageInfoV0(riUuid, riUserTime, riSystemTime, riPkgIdleWkups, riInterruptWkups, riPageins, riWiredSize, riResidentSize, riPhysFootprint, riProcStartAbstime, riProcExitAbstime)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RusageInfoV0> =
@@ -5214,30 +4679,32 @@ public data class RusageInfoV0(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 88, value.riProcExitAbstime)
                 }
             }
+
+        public fun default(): RusageInfoV0 = RusageInfoV0(riUuid = Default.default(), riUserTime = Default.default(), riSystemTime = Default.default(), riPkgIdleWkups = Default.default(), riInterruptWkups = Default.default(), riPageins = Default.default(), riWiredSize = Default.default(), riResidentSize = Default.default(), riPhysFootprint = Default.default(), riProcStartAbstime = Default.default(), riProcExitAbstime = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class RusageInfoV1(
-    public var riUuid: UByteArray = UByteArray(16),
-    public var riUserTime: ULong = 0uL,
-    public var riSystemTime: ULong = 0uL,
-    public var riPkgIdleWkups: ULong = 0uL,
-    public var riInterruptWkups: ULong = 0uL,
-    public var riPageins: ULong = 0uL,
-    public var riWiredSize: ULong = 0uL,
-    public var riResidentSize: ULong = 0uL,
-    public var riPhysFootprint: ULong = 0uL,
-    public var riProcStartAbstime: ULong = 0uL,
-    public var riProcExitAbstime: ULong = 0uL,
-    public var riChildUserTime: ULong = 0uL,
-    public var riChildSystemTime: ULong = 0uL,
-    public var riChildPkgIdleWkups: ULong = 0uL,
-    public var riChildInterruptWkups: ULong = 0uL,
-    public var riChildPageins: ULong = 0uL,
-    public var riChildElapsedAbstime: ULong = 0uL,
+public open class RusageInfoV1(
+    public var riUuid: UByteArray,
+    public var riUserTime: ULong,
+    public var riSystemTime: ULong,
+    public var riPkgIdleWkups: ULong,
+    public var riInterruptWkups: ULong,
+    public var riPageins: ULong,
+    public var riWiredSize: ULong,
+    public var riResidentSize: ULong,
+    public var riPhysFootprint: ULong,
+    public var riProcStartAbstime: ULong,
+    public var riProcExitAbstime: ULong,
+    public var riChildUserTime: ULong,
+    public var riChildSystemTime: ULong,
+    public var riChildPkgIdleWkups: ULong,
+    public var riChildInterruptWkups: ULong,
+    public var riChildPageins: ULong,
+    public var riChildElapsedAbstime: ULong,
 ) {
-    public fun clone(): RusageInfoV1 = RusageInfoV1(riUuid, riUserTime, riSystemTime, riPkgIdleWkups, riInterruptWkups, riPageins, riWiredSize, riResidentSize, riPhysFootprint, riProcStartAbstime, riProcExitAbstime, riChildUserTime, riChildSystemTime, riChildPkgIdleWkups, riChildInterruptWkups, riChildPageins, riChildElapsedAbstime)
+    public open fun clone(): RusageInfoV1 = RusageInfoV1(riUuid, riUserTime, riSystemTime, riPkgIdleWkups, riInterruptWkups, riPageins, riWiredSize, riResidentSize, riPhysFootprint, riProcStartAbstime, riProcExitAbstime, riChildUserTime, riChildSystemTime, riChildPkgIdleWkups, riChildInterruptWkups, riChildPageins, riChildElapsedAbstime)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RusageInfoV1> =
@@ -5323,32 +4790,34 @@ public class RusageInfoV1(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 136, value.riChildElapsedAbstime)
                 }
             }
+
+        public fun default(): RusageInfoV1 = RusageInfoV1(riUuid = Default.default(), riUserTime = Default.default(), riSystemTime = Default.default(), riPkgIdleWkups = Default.default(), riInterruptWkups = Default.default(), riPageins = Default.default(), riWiredSize = Default.default(), riResidentSize = Default.default(), riPhysFootprint = Default.default(), riProcStartAbstime = Default.default(), riProcExitAbstime = Default.default(), riChildUserTime = Default.default(), riChildSystemTime = Default.default(), riChildPkgIdleWkups = Default.default(), riChildInterruptWkups = Default.default(), riChildPageins = Default.default(), riChildElapsedAbstime = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class RusageInfoV2(
-    public var riUuid: UByteArray = UByteArray(16),
-    public var riUserTime: ULong = 0uL,
-    public var riSystemTime: ULong = 0uL,
-    public var riPkgIdleWkups: ULong = 0uL,
-    public var riInterruptWkups: ULong = 0uL,
-    public var riPageins: ULong = 0uL,
-    public var riWiredSize: ULong = 0uL,
-    public var riResidentSize: ULong = 0uL,
-    public var riPhysFootprint: ULong = 0uL,
-    public var riProcStartAbstime: ULong = 0uL,
-    public var riProcExitAbstime: ULong = 0uL,
-    public var riChildUserTime: ULong = 0uL,
-    public var riChildSystemTime: ULong = 0uL,
-    public var riChildPkgIdleWkups: ULong = 0uL,
-    public var riChildInterruptWkups: ULong = 0uL,
-    public var riChildPageins: ULong = 0uL,
-    public var riChildElapsedAbstime: ULong = 0uL,
-    public var riDiskioBytesread: ULong = 0uL,
-    public var riDiskioByteswritten: ULong = 0uL,
+public open class RusageInfoV2(
+    public var riUuid: UByteArray,
+    public var riUserTime: ULong,
+    public var riSystemTime: ULong,
+    public var riPkgIdleWkups: ULong,
+    public var riInterruptWkups: ULong,
+    public var riPageins: ULong,
+    public var riWiredSize: ULong,
+    public var riResidentSize: ULong,
+    public var riPhysFootprint: ULong,
+    public var riProcStartAbstime: ULong,
+    public var riProcExitAbstime: ULong,
+    public var riChildUserTime: ULong,
+    public var riChildSystemTime: ULong,
+    public var riChildPkgIdleWkups: ULong,
+    public var riChildInterruptWkups: ULong,
+    public var riChildPageins: ULong,
+    public var riChildElapsedAbstime: ULong,
+    public var riDiskioBytesread: ULong,
+    public var riDiskioByteswritten: ULong,
 ) {
-    public fun clone(): RusageInfoV2 = RusageInfoV2(riUuid, riUserTime, riSystemTime, riPkgIdleWkups, riInterruptWkups, riPageins, riWiredSize, riResidentSize, riPhysFootprint, riProcStartAbstime, riProcExitAbstime, riChildUserTime, riChildSystemTime, riChildPkgIdleWkups, riChildInterruptWkups, riChildPageins, riChildElapsedAbstime, riDiskioBytesread, riDiskioByteswritten)
+    public open fun clone(): RusageInfoV2 = RusageInfoV2(riUuid, riUserTime, riSystemTime, riPkgIdleWkups, riInterruptWkups, riPageins, riWiredSize, riResidentSize, riPhysFootprint, riProcStartAbstime, riProcExitAbstime, riChildUserTime, riChildSystemTime, riChildPkgIdleWkups, riChildInterruptWkups, riChildPageins, riChildElapsedAbstime, riDiskioBytesread, riDiskioByteswritten)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RusageInfoV2> =
@@ -5442,41 +4911,43 @@ public class RusageInfoV2(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 152, value.riDiskioByteswritten)
                 }
             }
+
+        public fun default(): RusageInfoV2 = RusageInfoV2(riUuid = Default.default(), riUserTime = Default.default(), riSystemTime = Default.default(), riPkgIdleWkups = Default.default(), riInterruptWkups = Default.default(), riPageins = Default.default(), riWiredSize = Default.default(), riResidentSize = Default.default(), riPhysFootprint = Default.default(), riProcStartAbstime = Default.default(), riProcExitAbstime = Default.default(), riChildUserTime = Default.default(), riChildSystemTime = Default.default(), riChildPkgIdleWkups = Default.default(), riChildInterruptWkups = Default.default(), riChildPageins = Default.default(), riChildElapsedAbstime = Default.default(), riDiskioBytesread = Default.default(), riDiskioByteswritten = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class RusageInfoV3(
-    public var riUuid: UByteArray = UByteArray(16),
-    public var riUserTime: ULong = 0uL,
-    public var riSystemTime: ULong = 0uL,
-    public var riPkgIdleWkups: ULong = 0uL,
-    public var riInterruptWkups: ULong = 0uL,
-    public var riPageins: ULong = 0uL,
-    public var riWiredSize: ULong = 0uL,
-    public var riResidentSize: ULong = 0uL,
-    public var riPhysFootprint: ULong = 0uL,
-    public var riProcStartAbstime: ULong = 0uL,
-    public var riProcExitAbstime: ULong = 0uL,
-    public var riChildUserTime: ULong = 0uL,
-    public var riChildSystemTime: ULong = 0uL,
-    public var riChildPkgIdleWkups: ULong = 0uL,
-    public var riChildInterruptWkups: ULong = 0uL,
-    public var riChildPageins: ULong = 0uL,
-    public var riChildElapsedAbstime: ULong = 0uL,
-    public var riDiskioBytesread: ULong = 0uL,
-    public var riDiskioByteswritten: ULong = 0uL,
-    public var riCpuTimeQosDefault: ULong = 0uL,
-    public var riCpuTimeQosMaintenance: ULong = 0uL,
-    public var riCpuTimeQosBackground: ULong = 0uL,
-    public var riCpuTimeQosUtility: ULong = 0uL,
-    public var riCpuTimeQosLegacy: ULong = 0uL,
-    public var riCpuTimeQosUserInitiated: ULong = 0uL,
-    public var riCpuTimeQosUserInteractive: ULong = 0uL,
-    public var riBilledSystemTime: ULong = 0uL,
-    public var riServicedSystemTime: ULong = 0uL,
+public open class RusageInfoV3(
+    public var riUuid: UByteArray,
+    public var riUserTime: ULong,
+    public var riSystemTime: ULong,
+    public var riPkgIdleWkups: ULong,
+    public var riInterruptWkups: ULong,
+    public var riPageins: ULong,
+    public var riWiredSize: ULong,
+    public var riResidentSize: ULong,
+    public var riPhysFootprint: ULong,
+    public var riProcStartAbstime: ULong,
+    public var riProcExitAbstime: ULong,
+    public var riChildUserTime: ULong,
+    public var riChildSystemTime: ULong,
+    public var riChildPkgIdleWkups: ULong,
+    public var riChildInterruptWkups: ULong,
+    public var riChildPageins: ULong,
+    public var riChildElapsedAbstime: ULong,
+    public var riDiskioBytesread: ULong,
+    public var riDiskioByteswritten: ULong,
+    public var riCpuTimeQosDefault: ULong,
+    public var riCpuTimeQosMaintenance: ULong,
+    public var riCpuTimeQosBackground: ULong,
+    public var riCpuTimeQosUtility: ULong,
+    public var riCpuTimeQosLegacy: ULong,
+    public var riCpuTimeQosUserInitiated: ULong,
+    public var riCpuTimeQosUserInteractive: ULong,
+    public var riBilledSystemTime: ULong,
+    public var riServicedSystemTime: ULong,
 ) {
-    public fun clone(): RusageInfoV3 = RusageInfoV3(riUuid, riUserTime, riSystemTime, riPkgIdleWkups, riInterruptWkups, riPageins, riWiredSize, riResidentSize, riPhysFootprint, riProcStartAbstime, riProcExitAbstime, riChildUserTime, riChildSystemTime, riChildPkgIdleWkups, riChildInterruptWkups, riChildPageins, riChildElapsedAbstime, riDiskioBytesread, riDiskioByteswritten, riCpuTimeQosDefault, riCpuTimeQosMaintenance, riCpuTimeQosBackground, riCpuTimeQosUtility, riCpuTimeQosLegacy, riCpuTimeQosUserInitiated, riCpuTimeQosUserInteractive, riBilledSystemTime, riServicedSystemTime)
+    public open fun clone(): RusageInfoV3 = RusageInfoV3(riUuid, riUserTime, riSystemTime, riPkgIdleWkups, riInterruptWkups, riPageins, riWiredSize, riResidentSize, riPhysFootprint, riProcStartAbstime, riProcExitAbstime, riChildUserTime, riChildSystemTime, riChildPkgIdleWkups, riChildInterruptWkups, riChildPageins, riChildElapsedAbstime, riDiskioBytesread, riDiskioByteswritten, riCpuTimeQosDefault, riCpuTimeQosMaintenance, riCpuTimeQosBackground, riCpuTimeQosUtility, riCpuTimeQosLegacy, riCpuTimeQosUserInitiated, riCpuTimeQosUserInteractive, riBilledSystemTime, riServicedSystemTime)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RusageInfoV3> =
@@ -5606,49 +5077,51 @@ public class RusageInfoV3(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 224, value.riServicedSystemTime)
                 }
             }
+
+        public fun default(): RusageInfoV3 = RusageInfoV3(riUuid = Default.default(), riUserTime = Default.default(), riSystemTime = Default.default(), riPkgIdleWkups = Default.default(), riInterruptWkups = Default.default(), riPageins = Default.default(), riWiredSize = Default.default(), riResidentSize = Default.default(), riPhysFootprint = Default.default(), riProcStartAbstime = Default.default(), riProcExitAbstime = Default.default(), riChildUserTime = Default.default(), riChildSystemTime = Default.default(), riChildPkgIdleWkups = Default.default(), riChildInterruptWkups = Default.default(), riChildPageins = Default.default(), riChildElapsedAbstime = Default.default(), riDiskioBytesread = Default.default(), riDiskioByteswritten = Default.default(), riCpuTimeQosDefault = Default.default(), riCpuTimeQosMaintenance = Default.default(), riCpuTimeQosBackground = Default.default(), riCpuTimeQosUtility = Default.default(), riCpuTimeQosLegacy = Default.default(), riCpuTimeQosUserInitiated = Default.default(), riCpuTimeQosUserInteractive = Default.default(), riBilledSystemTime = Default.default(), riServicedSystemTime = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class RusageInfoV4(
-    public var riUuid: UByteArray = UByteArray(16),
-    public var riUserTime: ULong = 0uL,
-    public var riSystemTime: ULong = 0uL,
-    public var riPkgIdleWkups: ULong = 0uL,
-    public var riInterruptWkups: ULong = 0uL,
-    public var riPageins: ULong = 0uL,
-    public var riWiredSize: ULong = 0uL,
-    public var riResidentSize: ULong = 0uL,
-    public var riPhysFootprint: ULong = 0uL,
-    public var riProcStartAbstime: ULong = 0uL,
-    public var riProcExitAbstime: ULong = 0uL,
-    public var riChildUserTime: ULong = 0uL,
-    public var riChildSystemTime: ULong = 0uL,
-    public var riChildPkgIdleWkups: ULong = 0uL,
-    public var riChildInterruptWkups: ULong = 0uL,
-    public var riChildPageins: ULong = 0uL,
-    public var riChildElapsedAbstime: ULong = 0uL,
-    public var riDiskioBytesread: ULong = 0uL,
-    public var riDiskioByteswritten: ULong = 0uL,
-    public var riCpuTimeQosDefault: ULong = 0uL,
-    public var riCpuTimeQosMaintenance: ULong = 0uL,
-    public var riCpuTimeQosBackground: ULong = 0uL,
-    public var riCpuTimeQosUtility: ULong = 0uL,
-    public var riCpuTimeQosLegacy: ULong = 0uL,
-    public var riCpuTimeQosUserInitiated: ULong = 0uL,
-    public var riCpuTimeQosUserInteractive: ULong = 0uL,
-    public var riBilledSystemTime: ULong = 0uL,
-    public var riServicedSystemTime: ULong = 0uL,
-    public var riLogicalWrites: ULong = 0uL,
-    public var riLifetimeMaxPhysFootprint: ULong = 0uL,
-    public var riInstructions: ULong = 0uL,
-    public var riCycles: ULong = 0uL,
-    public var riBilledEnergy: ULong = 0uL,
-    public var riServicedEnergy: ULong = 0uL,
-    public var riIntervalMaxPhysFootprint: ULong = 0uL,
-    public var riRunnableTime: ULong = 0uL,
+public open class RusageInfoV4(
+    public var riUuid: UByteArray,
+    public var riUserTime: ULong,
+    public var riSystemTime: ULong,
+    public var riPkgIdleWkups: ULong,
+    public var riInterruptWkups: ULong,
+    public var riPageins: ULong,
+    public var riWiredSize: ULong,
+    public var riResidentSize: ULong,
+    public var riPhysFootprint: ULong,
+    public var riProcStartAbstime: ULong,
+    public var riProcExitAbstime: ULong,
+    public var riChildUserTime: ULong,
+    public var riChildSystemTime: ULong,
+    public var riChildPkgIdleWkups: ULong,
+    public var riChildInterruptWkups: ULong,
+    public var riChildPageins: ULong,
+    public var riChildElapsedAbstime: ULong,
+    public var riDiskioBytesread: ULong,
+    public var riDiskioByteswritten: ULong,
+    public var riCpuTimeQosDefault: ULong,
+    public var riCpuTimeQosMaintenance: ULong,
+    public var riCpuTimeQosBackground: ULong,
+    public var riCpuTimeQosUtility: ULong,
+    public var riCpuTimeQosLegacy: ULong,
+    public var riCpuTimeQosUserInitiated: ULong,
+    public var riCpuTimeQosUserInteractive: ULong,
+    public var riBilledSystemTime: ULong,
+    public var riServicedSystemTime: ULong,
+    public var riLogicalWrites: ULong,
+    public var riLifetimeMaxPhysFootprint: ULong,
+    public var riInstructions: ULong,
+    public var riCycles: ULong,
+    public var riBilledEnergy: ULong,
+    public var riServicedEnergy: ULong,
+    public var riIntervalMaxPhysFootprint: ULong,
+    public var riRunnableTime: ULong,
 ) {
-    public fun clone(): RusageInfoV4 = RusageInfoV4(riUuid, riUserTime, riSystemTime, riPkgIdleWkups, riInterruptWkups, riPageins, riWiredSize, riResidentSize, riPhysFootprint, riProcStartAbstime, riProcExitAbstime, riChildUserTime, riChildSystemTime, riChildPkgIdleWkups, riChildInterruptWkups, riChildPageins, riChildElapsedAbstime, riDiskioBytesread, riDiskioByteswritten, riCpuTimeQosDefault, riCpuTimeQosMaintenance, riCpuTimeQosBackground, riCpuTimeQosUtility, riCpuTimeQosLegacy, riCpuTimeQosUserInitiated, riCpuTimeQosUserInteractive, riBilledSystemTime, riServicedSystemTime, riLogicalWrites, riLifetimeMaxPhysFootprint, riInstructions, riCycles, riBilledEnergy, riServicedEnergy, riIntervalMaxPhysFootprint, riRunnableTime)
+    public open fun clone(): RusageInfoV4 = RusageInfoV4(riUuid, riUserTime, riSystemTime, riPkgIdleWkups, riInterruptWkups, riPageins, riWiredSize, riResidentSize, riPhysFootprint, riProcStartAbstime, riProcExitAbstime, riChildUserTime, riChildSystemTime, riChildPkgIdleWkups, riChildInterruptWkups, riChildPageins, riChildElapsedAbstime, riDiskioBytesread, riDiskioByteswritten, riCpuTimeQosDefault, riCpuTimeQosMaintenance, riCpuTimeQosBackground, riCpuTimeQosUtility, riCpuTimeQosLegacy, riCpuTimeQosUserInitiated, riCpuTimeQosUserInteractive, riBilledSystemTime, riServicedSystemTime, riLogicalWrites, riLifetimeMaxPhysFootprint, riInstructions, riCycles, riBilledEnergy, riServicedEnergy, riIntervalMaxPhysFootprint, riRunnableTime)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RusageInfoV4> =
@@ -5810,27 +5283,17 @@ public class RusageInfoV4(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 288, value.riRunnableTime)
                 }
             }
+
+        public fun default(): RusageInfoV4 = RusageInfoV4(riUuid = Default.default(), riUserTime = Default.default(), riSystemTime = Default.default(), riPkgIdleWkups = Default.default(), riInterruptWkups = Default.default(), riPageins = Default.default(), riWiredSize = Default.default(), riResidentSize = Default.default(), riPhysFootprint = Default.default(), riProcStartAbstime = Default.default(), riProcExitAbstime = Default.default(), riChildUserTime = Default.default(), riChildSystemTime = Default.default(), riChildPkgIdleWkups = Default.default(), riChildInterruptWkups = Default.default(), riChildPageins = Default.default(), riChildElapsedAbstime = Default.default(), riDiskioBytesread = Default.default(), riDiskioByteswritten = Default.default(), riCpuTimeQosDefault = Default.default(), riCpuTimeQosMaintenance = Default.default(), riCpuTimeQosBackground = Default.default(), riCpuTimeQosUtility = Default.default(), riCpuTimeQosLegacy = Default.default(), riCpuTimeQosUserInitiated = Default.default(), riCpuTimeQosUserInteractive = Default.default(), riBilledSystemTime = Default.default(), riServicedSystemTime = Default.default(), riLogicalWrites = Default.default(), riLifetimeMaxPhysFootprint = Default.default(), riInstructions = Default.default(), riCycles = Default.default(), riBilledEnergy = Default.default(), riServicedEnergy = Default.default(), riIntervalMaxPhysFootprint = Default.default(), riRunnableTime = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ImageOffset(
-    public var uuid: io.github.kotlinmania.rustlang.unix.bsd.apple.UuidT = UByteArray(16),
-    public var offset: UInt = 0u,
+public open class ImageOffset(
+    public var uuid: UuidT,
+    public var offset: UInt,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ImageOffset) return false
-        if (!this.uuid.contentEquals(other.uuid)) return false
-        if (this.offset != other.offset) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.uuid.contentHashCode()
-        result = 31 * result + this.offset.hashCode()
-        return result
-    }
+    public open fun clone(): ImageOffset = ImageOffset(uuid, offset)
 
     public companion object {
         public fun typeLayout(): TypeLayout<ImageOffset> =
@@ -5856,19 +5319,23 @@ public data class ImageOffset(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 16, value.offset)
                 }
             }
+
+        public fun default(): ImageOffset = ImageOffset(uuid = Default.default(), offset = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Attrlist(
-    public var bitmapcount: CUshort = 0u,
-    public var reserved: UShort = 0u,
-    public var commonattr: AttrgroupT = 0u,
-    public var volattr: AttrgroupT = 0u,
-    public var dirattr: AttrgroupT = 0u,
-    public var fileattr: AttrgroupT = 0u,
-    public var forkattr: AttrgroupT = 0u,
+public open class Attrlist(
+    public var bitmapcount: CUshort,
+    public var reserved: UShort,
+    public var commonattr: AttrgroupT,
+    public var volattr: AttrgroupT,
+    public var dirattr: AttrgroupT,
+    public var fileattr: AttrgroupT,
+    public var forkattr: AttrgroupT,
 ) {
+    public open fun clone(): Attrlist = Attrlist(bitmapcount, reserved, commonattr, volattr, dirattr, fileattr, forkattr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Attrlist> =
             object : TypeLayout<Attrlist> {
@@ -5913,14 +5380,18 @@ public data class Attrlist(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 20, value.forkattr)
                 }
             }
+
+        public fun default(): Attrlist = Attrlist(bitmapcount = Default.default(), reserved = Default.default(), commonattr = Default.default(), volattr = Default.default(), dirattr = Default.default(), fileattr = Default.default(), forkattr = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class AttrreferenceT(
-    public var attrDataoffset: Int = 0,
-    public var attrLength: UInt = 0u,
+public open class AttrreferenceT(
+    public var attrDataoffset: Int,
+    public var attrLength: UInt,
 ) {
+    public open fun clone(): AttrreferenceT = AttrreferenceT(attrDataoffset, attrLength)
+
     public companion object {
         public fun typeLayout(): TypeLayout<AttrreferenceT> =
             object : TypeLayout<AttrreferenceT> {
@@ -5945,27 +5416,17 @@ public data class AttrreferenceT(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.attrLength)
                 }
             }
+
+        public fun default(): AttrreferenceT = AttrreferenceT(attrDataoffset = Default.default(), attrLength = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class VolCapabilitiesAttrT(
-    public var capabilities: VolCapabilitiesSetT = UIntArray(4),
-    public var valid: VolCapabilitiesSetT = UIntArray(4),
+public open class VolCapabilitiesAttrT(
+    public var capabilities: VolCapabilitiesSetT,
+    public var valid: VolCapabilitiesSetT,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is VolCapabilitiesAttrT) return false
-        if (!this.capabilities.contentEquals(other.capabilities)) return false
-        if (!this.valid.contentEquals(other.valid)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.capabilities.contentHashCode()
-        result = 31 * result + this.valid.contentHashCode()
-        return result
-    }
+    public open fun clone(): VolCapabilitiesAttrT = VolCapabilitiesAttrT(capabilities, valid)
 
     public companion object {
         public fun typeLayout(): TypeLayout<VolCapabilitiesAttrT> =
@@ -5991,17 +5452,21 @@ public data class VolCapabilitiesAttrT(
                     (PrimitiveArrayLayouts.uIntArray(4)).writeBytes(buf, offset + 16, value.valid)
                 }
             }
+
+        public fun default(): VolCapabilitiesAttrT = VolCapabilitiesAttrT(capabilities = Default.default(), valid = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class AttributeSetT(
-    public var commonattr: AttrgroupT = 0u,
-    public var volattr: AttrgroupT = 0u,
-    public var dirattr: AttrgroupT = 0u,
-    public var fileattr: AttrgroupT = 0u,
-    public var forkattr: AttrgroupT = 0u,
+public open class AttributeSetT(
+    public var commonattr: AttrgroupT,
+    public var volattr: AttrgroupT,
+    public var dirattr: AttrgroupT,
+    public var fileattr: AttrgroupT,
+    public var forkattr: AttrgroupT,
 ) {
+    public open fun clone(): AttributeSetT = AttributeSetT(commonattr, volattr, dirattr, fileattr, forkattr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<AttributeSetT> =
             object : TypeLayout<AttributeSetT> {
@@ -6038,14 +5503,18 @@ public data class AttributeSetT(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 16, value.forkattr)
                 }
             }
+
+        public fun default(): AttributeSetT = AttributeSetT(commonattr = Default.default(), volattr = Default.default(), dirattr = Default.default(), fileattr = Default.default(), forkattr = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class VolAttributesAttrT(
-    public var validattr: AttributeSetT = AttributeSetT(),
-    public var nativeattr: AttributeSetT = AttributeSetT(),
+public open class VolAttributesAttrT(
+    public var validattr: AttributeSetT,
+    public var nativeattr: AttributeSetT,
 ) {
+    public open fun clone(): VolAttributesAttrT = VolAttributesAttrT(validattr, nativeattr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<VolAttributesAttrT> =
             object : TypeLayout<VolAttributesAttrT> {
@@ -6070,52 +5539,54 @@ public data class VolAttributesAttrT(
                     (AttributeSetT.typeLayout()).writeBytes(buf, offset + 20, value.nativeattr)
                 }
             }
+
+        public fun default(): VolAttributesAttrT = VolAttributesAttrT(validattr = Default.default(), nativeattr = Default.default())
     }
 }
 
-public class TcpConnectionInfo(
-    public var tcpiState: UByte = 0u,
-    public var tcpiSndWscale: UByte = 0u,
-    public var tcpiRcvWscale: UByte = 0u,
-    public var pad1: UByte = 0u,
-    public var tcpiOptions: UInt = 0u,
-    public var tcpiFlags: UInt = 0u,
-    public var tcpiRto: UInt = 0u,
-    public var tcpiMaxseg: UInt = 0u,
-    public var tcpiSndSsthresh: UInt = 0u,
-    public var tcpiSndCwnd: UInt = 0u,
-    public var tcpiSndWnd: UInt = 0u,
-    public var tcpiSndSbbytes: UInt = 0u,
-    public var tcpiRcvWnd: UInt = 0u,
-    public var tcpiRttcur: UInt = 0u,
-    public var tcpiSrtt: UInt = 0u,
-    public var tcpiRttvar: UInt = 0u,
-    public var tcpiTfoCookieReq: UInt = 0u,
-    public var tcpiTfoCookieRcv: UInt = 0u,
-    public var tcpiTfoSynLoss: UInt = 0u,
-    public var tcpiTfoSynDataSent: UInt = 0u,
-    public var tcpiTfoSynDataAcked: UInt = 0u,
-    public var tcpiTfoSynDataRcv: UInt = 0u,
-    public var tcpiTfoCookieReqRcv: UInt = 0u,
-    public var tcpiTfoCookieSent: UInt = 0u,
-    public var tcpiTfoCookieInvalid: UInt = 0u,
-    public var tcpiTfoCookieWrong: UInt = 0u,
-    public var tcpiTfoNoCookieRcv: UInt = 0u,
-    public var tcpiTfoHeuristicsDisable: UInt = 0u,
-    public var tcpiTfoSendBlackhole: UInt = 0u,
-    public var tcpiTfoRecvBlackhole: UInt = 0u,
-    public var tcpiTfoOnebyteProxy: UInt = 0u,
-    public var pad2: UInt = 0u,
-    public var tcpiTxpackets: ULong = 0uL,
-    public var tcpiTxbytes: ULong = 0uL,
-    public var tcpiTxretransmitbytes: ULong = 0uL,
-    public var tcpiRxpackets: ULong = 0uL,
-    public var tcpiRxbytes: ULong = 0uL,
-    public var tcpiRxoutoforderbytes: ULong = 0uL,
-    public var tcpiRxretransmitpackets: ULong = 0uL,
-    public var nonExhaustive: Unit = Unit,
+public open class TcpConnectionInfo(
+    public var tcpiState: UByte,
+    public var tcpiSndWscale: UByte,
+    public var tcpiRcvWscale: UByte,
+    public var pad1: UByte,
+    public var tcpiOptions: UInt,
+    public var tcpiFlags: UInt,
+    public var tcpiRto: UInt,
+    public var tcpiMaxseg: UInt,
+    public var tcpiSndSsthresh: UInt,
+    public var tcpiSndCwnd: UInt,
+    public var tcpiSndWnd: UInt,
+    public var tcpiSndSbbytes: UInt,
+    public var tcpiRcvWnd: UInt,
+    public var tcpiRttcur: UInt,
+    public var tcpiSrtt: UInt,
+    public var tcpiRttvar: UInt,
+    public var tcpiTfoCookieReq: UInt,
+    public var tcpiTfoCookieRcv: UInt,
+    public var tcpiTfoSynLoss: UInt,
+    public var tcpiTfoSynDataSent: UInt,
+    public var tcpiTfoSynDataAcked: UInt,
+    public var tcpiTfoSynDataRcv: UInt,
+    public var tcpiTfoCookieReqRcv: UInt,
+    public var tcpiTfoCookieSent: UInt,
+    public var tcpiTfoCookieInvalid: UInt,
+    public var tcpiTfoCookieWrong: UInt,
+    public var tcpiTfoNoCookieRcv: UInt,
+    public var tcpiTfoHeuristicsDisable: UInt,
+    public var tcpiTfoSendBlackhole: UInt,
+    public var tcpiTfoRecvBlackhole: UInt,
+    public var tcpiTfoOnebyteProxy: UInt,
+    public var pad2: UInt,
+    public var tcpiTxpackets: ULong,
+    public var tcpiTxbytes: ULong,
+    public var tcpiTxretransmitbytes: ULong,
+    public var tcpiRxpackets: ULong,
+    public var tcpiRxbytes: ULong,
+    public var tcpiRxoutoforderbytes: ULong,
+    public var tcpiRxretransmitpackets: ULong,
+    public var nonExhaustive: Unit,
 ) {
-    public fun clone(): TcpConnectionInfo = TcpConnectionInfo(tcpiState, tcpiSndWscale, tcpiRcvWscale, pad1, tcpiOptions, tcpiFlags, tcpiRto, tcpiMaxseg, tcpiSndSsthresh, tcpiSndCwnd, tcpiSndWnd, tcpiSndSbbytes, tcpiRcvWnd, tcpiRttcur, tcpiSrtt, tcpiRttvar, tcpiTfoCookieReq, tcpiTfoCookieRcv, tcpiTfoSynLoss, tcpiTfoSynDataSent, tcpiTfoSynDataAcked, tcpiTfoSynDataRcv, tcpiTfoCookieReqRcv, tcpiTfoCookieSent, tcpiTfoCookieInvalid, tcpiTfoCookieWrong, tcpiTfoNoCookieRcv, tcpiTfoHeuristicsDisable, tcpiTfoSendBlackhole, tcpiTfoRecvBlackhole, tcpiTfoOnebyteProxy, pad2, tcpiTxpackets, tcpiTxbytes, tcpiTxretransmitbytes, tcpiRxpackets, tcpiRxbytes, tcpiRxoutoforderbytes, tcpiRxretransmitpackets, nonExhaustive)
+    public open fun clone(): TcpConnectionInfo = TcpConnectionInfo(tcpiState, tcpiSndWscale, tcpiRcvWscale, pad1, tcpiOptions, tcpiFlags, tcpiRto, tcpiMaxseg, tcpiSndSsthresh, tcpiSndCwnd, tcpiSndWnd, tcpiSndSbbytes, tcpiRcvWnd, tcpiRttcur, tcpiSrtt, tcpiRttvar, tcpiTfoCookieReq, tcpiTfoCookieRcv, tcpiTfoSynLoss, tcpiTfoSynDataSent, tcpiTfoSynDataAcked, tcpiTfoSynDataRcv, tcpiTfoCookieReqRcv, tcpiTfoCookieSent, tcpiTfoCookieInvalid, tcpiTfoCookieWrong, tcpiTfoNoCookieRcv, tcpiTfoHeuristicsDisable, tcpiTfoSendBlackhole, tcpiTfoRecvBlackhole, tcpiTfoOnebyteProxy, pad2, tcpiTxpackets, tcpiTxbytes, tcpiTxretransmitbytes, tcpiRxpackets, tcpiRxbytes, tcpiRxoutoforderbytes, tcpiRxretransmitpackets, nonExhaustive)
 
     public companion object {
         public fun typeLayout(): TypeLayout<TcpConnectionInfo> =
@@ -6293,15 +5764,19 @@ public class TcpConnectionInfo(
                     (PrimitiveLayouts.UNIT).writeBytes(buf, offset + 176, value.nonExhaustive)
                 }
             }
+
+        public fun default(): TcpConnectionInfo = TcpConnectionInfo(tcpiState = Default.default(), tcpiSndWscale = Default.default(), tcpiRcvWscale = Default.default(), pad1 = Default.default(), tcpiOptions = Default.default(), tcpiFlags = Default.default(), tcpiRto = Default.default(), tcpiMaxseg = Default.default(), tcpiSndSsthresh = Default.default(), tcpiSndCwnd = Default.default(), tcpiSndWnd = Default.default(), tcpiSndSbbytes = Default.default(), tcpiRcvWnd = Default.default(), tcpiRttcur = Default.default(), tcpiSrtt = Default.default(), tcpiRttvar = Default.default(), tcpiTfoCookieReq = Default.default(), tcpiTfoCookieRcv = Default.default(), tcpiTfoSynLoss = Default.default(), tcpiTfoSynDataSent = Default.default(), tcpiTfoSynDataAcked = Default.default(), tcpiTfoSynDataRcv = Default.default(), tcpiTfoCookieReqRcv = Default.default(), tcpiTfoCookieSent = Default.default(), tcpiTfoCookieInvalid = Default.default(), tcpiTfoCookieWrong = Default.default(), tcpiTfoNoCookieRcv = Default.default(), tcpiTfoHeuristicsDisable = Default.default(), tcpiTfoSendBlackhole = Default.default(), tcpiTfoRecvBlackhole = Default.default(), tcpiTfoOnebyteProxy = Default.default(), pad2 = Default.default(), tcpiTxpackets = Default.default(), tcpiTxbytes = Default.default(), tcpiTxretransmitbytes = Default.default(), tcpiRxpackets = Default.default(), tcpiRxbytes = Default.default(), tcpiRxoutoforderbytes = Default.default(), tcpiRxretransmitpackets = Default.default(), nonExhaustive = Unit)
     }
 }
 
-public data class In6Addrlifetime(
-    public var ia6tExpire: TimeT = 0L,
-    public var ia6tPreferred: TimeT = 0L,
-    public var ia6tVltime: UInt = 0u,
-    public var ia6tPltime: UInt = 0u,
+public open class In6Addrlifetime(
+    public var ia6tExpire: TimeT,
+    public var ia6tPreferred: TimeT,
+    public var ia6tVltime: UInt,
+    public var ia6tPltime: UInt,
 ) {
+    public open fun clone(): In6Addrlifetime = In6Addrlifetime(ia6tExpire, ia6tPreferred, ia6tVltime, ia6tPltime)
+
     public companion object {
         public fun typeLayout(): TypeLayout<In6Addrlifetime> =
             object : TypeLayout<In6Addrlifetime> {
@@ -6334,37 +5809,39 @@ public data class In6Addrlifetime(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 20, value.ia6tPltime)
                 }
             }
+
+        public fun default(): In6Addrlifetime = In6Addrlifetime(ia6tExpire = Default.default(), ia6tPreferred = Default.default(), ia6tVltime = Default.default(), ia6tPltime = Default.default())
     }
 }
 
-public class In6Ifstat(
-    public var ifs6InReceive: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InHdrerr: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InToobig: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InNoroute: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InAddrerr: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InProtounknown: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InTruncated: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InDiscard: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InDeliver: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutForward: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutRequest: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutDiscard: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutFragok: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutFragfail: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutFragcreat: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6ReassReqd: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6ReassOk: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6AtmfragRcvd: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6ReassFail: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InMcast: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutMcast: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6CantfowardIcmp6: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6AddrExpiryCnt: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6PfxExpiryCnt: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6DefrtrExpiryCnt: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+public open class In6Ifstat(
+    public var ifs6InReceive: UQuadT,
+    public var ifs6InHdrerr: UQuadT,
+    public var ifs6InToobig: UQuadT,
+    public var ifs6InNoroute: UQuadT,
+    public var ifs6InAddrerr: UQuadT,
+    public var ifs6InProtounknown: UQuadT,
+    public var ifs6InTruncated: UQuadT,
+    public var ifs6InDiscard: UQuadT,
+    public var ifs6InDeliver: UQuadT,
+    public var ifs6OutForward: UQuadT,
+    public var ifs6OutRequest: UQuadT,
+    public var ifs6OutDiscard: UQuadT,
+    public var ifs6OutFragok: UQuadT,
+    public var ifs6OutFragfail: UQuadT,
+    public var ifs6OutFragcreat: UQuadT,
+    public var ifs6ReassReqd: UQuadT,
+    public var ifs6ReassOk: UQuadT,
+    public var ifs6AtmfragRcvd: UQuadT,
+    public var ifs6ReassFail: UQuadT,
+    public var ifs6InMcast: UQuadT,
+    public var ifs6OutMcast: UQuadT,
+    public var ifs6CantfowardIcmp6: UQuadT,
+    public var ifs6AddrExpiryCnt: UQuadT,
+    public var ifs6PfxExpiryCnt: UQuadT,
+    public var ifs6DefrtrExpiryCnt: UQuadT,
 ) {
-    public fun clone(): In6Ifstat = In6Ifstat(ifs6InReceive, ifs6InHdrerr, ifs6InToobig, ifs6InNoroute, ifs6InAddrerr, ifs6InProtounknown, ifs6InTruncated, ifs6InDiscard, ifs6InDeliver, ifs6OutForward, ifs6OutRequest, ifs6OutDiscard, ifs6OutFragok, ifs6OutFragfail, ifs6OutFragcreat, ifs6ReassReqd, ifs6ReassOk, ifs6AtmfragRcvd, ifs6ReassFail, ifs6InMcast, ifs6OutMcast, ifs6CantfowardIcmp6, ifs6AddrExpiryCnt, ifs6PfxExpiryCnt, ifs6DefrtrExpiryCnt)
+    public open fun clone(): In6Ifstat = In6Ifstat(ifs6InReceive, ifs6InHdrerr, ifs6InToobig, ifs6InNoroute, ifs6InAddrerr, ifs6InProtounknown, ifs6InTruncated, ifs6InDiscard, ifs6InDeliver, ifs6OutForward, ifs6OutRequest, ifs6OutDiscard, ifs6OutFragok, ifs6OutFragfail, ifs6OutFragcreat, ifs6ReassReqd, ifs6ReassOk, ifs6AtmfragRcvd, ifs6ReassFail, ifs6InMcast, ifs6OutMcast, ifs6CantfowardIcmp6, ifs6AddrExpiryCnt, ifs6PfxExpiryCnt, ifs6DefrtrExpiryCnt)
 
     public companion object {
         public fun typeLayout(): TypeLayout<In6Ifstat> =
@@ -6482,46 +5959,48 @@ public class In6Ifstat(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 192, value.ifs6DefrtrExpiryCnt)
                 }
             }
+
+        public fun default(): In6Ifstat = In6Ifstat(ifs6InReceive = Default.default(), ifs6InHdrerr = Default.default(), ifs6InToobig = Default.default(), ifs6InNoroute = Default.default(), ifs6InAddrerr = Default.default(), ifs6InProtounknown = Default.default(), ifs6InTruncated = Default.default(), ifs6InDiscard = Default.default(), ifs6InDeliver = Default.default(), ifs6OutForward = Default.default(), ifs6OutRequest = Default.default(), ifs6OutDiscard = Default.default(), ifs6OutFragok = Default.default(), ifs6OutFragfail = Default.default(), ifs6OutFragcreat = Default.default(), ifs6ReassReqd = Default.default(), ifs6ReassOk = Default.default(), ifs6AtmfragRcvd = Default.default(), ifs6ReassFail = Default.default(), ifs6InMcast = Default.default(), ifs6OutMcast = Default.default(), ifs6CantfowardIcmp6 = Default.default(), ifs6AddrExpiryCnt = Default.default(), ifs6PfxExpiryCnt = Default.default(), ifs6DefrtrExpiryCnt = Default.default())
     }
 }
 
-public class Icmp6Ifstat(
-    public var ifs6InMsg: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InError: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InDstunreach: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InAdminprohib: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InTimeexceed: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InParamprob: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InPkttoobig: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InEcho: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InEchoreply: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InRoutersolicit: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InRouteradvert: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InNeighborsolicit: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InNeighboradvert: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InRedirect: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InMldquery: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InMldreport: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6InMlddone: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutMsg: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutError: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutDstunreach: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutAdminprohib: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutTimeexceed: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutParamprob: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutPkttoobig: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutEcho: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutEchoreply: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutRoutersolicit: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutRouteradvert: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutNeighborsolicit: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutNeighboradvert: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutRedirect: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutMldquery: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutMldreport: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
-    public var ifs6OutMlddone: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+public open class Icmp6Ifstat(
+    public var ifs6InMsg: UQuadT,
+    public var ifs6InError: UQuadT,
+    public var ifs6InDstunreach: UQuadT,
+    public var ifs6InAdminprohib: UQuadT,
+    public var ifs6InTimeexceed: UQuadT,
+    public var ifs6InParamprob: UQuadT,
+    public var ifs6InPkttoobig: UQuadT,
+    public var ifs6InEcho: UQuadT,
+    public var ifs6InEchoreply: UQuadT,
+    public var ifs6InRoutersolicit: UQuadT,
+    public var ifs6InRouteradvert: UQuadT,
+    public var ifs6InNeighborsolicit: UQuadT,
+    public var ifs6InNeighboradvert: UQuadT,
+    public var ifs6InRedirect: UQuadT,
+    public var ifs6InMldquery: UQuadT,
+    public var ifs6InMldreport: UQuadT,
+    public var ifs6InMlddone: UQuadT,
+    public var ifs6OutMsg: UQuadT,
+    public var ifs6OutError: UQuadT,
+    public var ifs6OutDstunreach: UQuadT,
+    public var ifs6OutAdminprohib: UQuadT,
+    public var ifs6OutTimeexceed: UQuadT,
+    public var ifs6OutParamprob: UQuadT,
+    public var ifs6OutPkttoobig: UQuadT,
+    public var ifs6OutEcho: UQuadT,
+    public var ifs6OutEchoreply: UQuadT,
+    public var ifs6OutRoutersolicit: UQuadT,
+    public var ifs6OutRouteradvert: UQuadT,
+    public var ifs6OutNeighborsolicit: UQuadT,
+    public var ifs6OutNeighboradvert: UQuadT,
+    public var ifs6OutRedirect: UQuadT,
+    public var ifs6OutMldquery: UQuadT,
+    public var ifs6OutMldreport: UQuadT,
+    public var ifs6OutMlddone: UQuadT,
 ) {
-    public fun clone(): Icmp6Ifstat = Icmp6Ifstat(ifs6InMsg, ifs6InError, ifs6InDstunreach, ifs6InAdminprohib, ifs6InTimeexceed, ifs6InParamprob, ifs6InPkttoobig, ifs6InEcho, ifs6InEchoreply, ifs6InRoutersolicit, ifs6InRouteradvert, ifs6InNeighborsolicit, ifs6InNeighboradvert, ifs6InRedirect, ifs6InMldquery, ifs6InMldreport, ifs6InMlddone, ifs6OutMsg, ifs6OutError, ifs6OutDstunreach, ifs6OutAdminprohib, ifs6OutTimeexceed, ifs6OutParamprob, ifs6OutPkttoobig, ifs6OutEcho, ifs6OutEchoreply, ifs6OutRoutersolicit, ifs6OutRouteradvert, ifs6OutNeighborsolicit, ifs6OutNeighboradvert, ifs6OutRedirect, ifs6OutMldquery, ifs6OutMldreport, ifs6OutMlddone)
+    public open fun clone(): Icmp6Ifstat = Icmp6Ifstat(ifs6InMsg, ifs6InError, ifs6InDstunreach, ifs6InAdminprohib, ifs6InTimeexceed, ifs6InParamprob, ifs6InPkttoobig, ifs6InEcho, ifs6InEchoreply, ifs6InRoutersolicit, ifs6InRouteradvert, ifs6InNeighborsolicit, ifs6InNeighboradvert, ifs6InRedirect, ifs6InMldquery, ifs6InMldreport, ifs6InMlddone, ifs6OutMsg, ifs6OutError, ifs6OutDstunreach, ifs6OutAdminprohib, ifs6OutTimeexceed, ifs6OutParamprob, ifs6OutPkttoobig, ifs6OutEcho, ifs6OutEchoreply, ifs6OutRoutersolicit, ifs6OutRouteradvert, ifs6OutNeighborsolicit, ifs6OutNeighboradvert, ifs6OutRedirect, ifs6OutMldquery, ifs6OutMldreport, ifs6OutMlddone)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Icmp6Ifstat> =
@@ -6675,21 +6154,16 @@ public class Icmp6Ifstat(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 264, value.ifs6OutMlddone)
                 }
             }
+
+        public fun default(): Icmp6Ifstat = Icmp6Ifstat(ifs6InMsg = Default.default(), ifs6InError = Default.default(), ifs6InDstunreach = Default.default(), ifs6InAdminprohib = Default.default(), ifs6InTimeexceed = Default.default(), ifs6InParamprob = Default.default(), ifs6InPkttoobig = Default.default(), ifs6InEcho = Default.default(), ifs6InEchoreply = Default.default(), ifs6InRoutersolicit = Default.default(), ifs6InRouteradvert = Default.default(), ifs6InNeighborsolicit = Default.default(), ifs6InNeighboradvert = Default.default(), ifs6InRedirect = Default.default(), ifs6InMldquery = Default.default(), ifs6InMldreport = Default.default(), ifs6InMlddone = Default.default(), ifs6OutMsg = Default.default(), ifs6OutError = Default.default(), ifs6OutDstunreach = Default.default(), ifs6OutAdminprohib = Default.default(), ifs6OutTimeexceed = Default.default(), ifs6OutParamprob = Default.default(), ifs6OutPkttoobig = Default.default(), ifs6OutEcho = Default.default(), ifs6OutEchoreply = Default.default(), ifs6OutRoutersolicit = Default.default(), ifs6OutRouteradvert = Default.default(), ifs6OutNeighborsolicit = Default.default(), ifs6OutNeighboradvert = Default.default(), ifs6OutRedirect = Default.default(), ifs6OutMldquery = Default.default(), ifs6OutMldreport = Default.default(), ifs6OutMlddone = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class HostCpuLoadInfo(
-    public var cpuTicks: UIntArray = UIntArray(CPU_STATE_MAX),
+public open class HostCpuLoadInfo(
+    public var cpuTicks: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is HostCpuLoadInfo) return false
-        if (!this.cpuTicks.contentEquals(other.cpuTicks)) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.cpuTicks.contentHashCode()
+    public open fun clone(): HostCpuLoadInfo = HostCpuLoadInfo(cpuTicks)
 
     public companion object {
         public fun typeLayout(): TypeLayout<HostCpuLoadInfo> =
@@ -6711,129 +6185,71 @@ public data class HostCpuLoadInfo(
                     (PrimitiveArrayLayouts.uIntArray((CPU_STATE_MAX).toInt())).writeBytes(buf, offset, value.cpuTicks)
                 }
             }
+
+        public fun default(): HostCpuLoadInfo = HostCpuLoadInfo(cpuTicks = Default.default())
     }
 }
 
-public data class Ifmibdata(
+public open class Ifmibdata(
     /**
      * Name of interface
      */
-    public var ifmdName: UByteArray = UByteArray(IFNAMSIZ.toInt()),
+    public var ifmdName: UByteArray,
     /**
      * Number of promiscuous listeners
      */
-    public var ifmdPcount: CUint = 0u,
+    public var ifmdPcount: CUint,
     /**
      * Interface flags
      */
-    public var ifmdFlags: CUint = 0u,
+    public var ifmdFlags: CUint,
     /**
      * Instantaneous length of send queue
      */
-    public var ifmdSndLen: CUint = 0u,
+    public var ifmdSndLen: CUint,
     /**
      * Maximum length of send queue
      */
-    public var ifmdSndMaxlen: CUint = 0u,
+    public var ifmdSndMaxlen: CUint,
     /**
      * Number of drops in send queue
      */
-    public var ifmdSndDrops: CUint = 0u,
+    public var ifmdSndDrops: CUint,
     /**
      * For future expansion
      */
-    public var ifmdFiller: UIntArray = UIntArray(4),
+    public var ifmdFiller: UIntArray,
     /**
      * Generic information and statistics
      */
-    public var ifmdData: IfData64 = IfData64(),
+    public var ifmdData: IfData64,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Ifmibdata) return false
-        if (!this.ifmdName.contentEquals(other.ifmdName)) return false
-        if (this.ifmdPcount != other.ifmdPcount) return false
-        if (this.ifmdFlags != other.ifmdFlags) return false
-        if (this.ifmdSndLen != other.ifmdSndLen) return false
-        if (this.ifmdSndMaxlen != other.ifmdSndMaxlen) return false
-        if (this.ifmdSndDrops != other.ifmdSndDrops) return false
-        if (!this.ifmdFiller.contentEquals(other.ifmdFiller)) return false
-        if (this.ifmdData != other.ifmdData) return false
-        return true
-    }
+    public open fun clone(): Ifmibdata = Ifmibdata(ifmdName, ifmdPcount, ifmdFlags, ifmdSndLen, ifmdSndMaxlen, ifmdSndDrops, ifmdFiller, ifmdData)
 
-    override fun hashCode(): Int {
-        var result = this.ifmdName.contentHashCode()
-        result = 31 * result + this.ifmdPcount.hashCode()
-        result = 31 * result + this.ifmdFlags.hashCode()
-        result = 31 * result + this.ifmdSndLen.hashCode()
-        result = 31 * result + this.ifmdSndMaxlen.hashCode()
-        result = 31 * result + this.ifmdSndDrops.hashCode()
-        result = 31 * result + this.ifmdFiller.contentHashCode()
-        result = 31 * result + this.ifmdData.hashCode()
-        return result
+    public companion object {
+        public fun default(): Ifmibdata = Ifmibdata(ifmdName = Default.default(), ifmdPcount = Default.default(), ifmdFlags = Default.default(), ifmdSndLen = Default.default(), ifmdSndMaxlen = Default.default(), ifmdSndDrops = Default.default(), ifmdFiller = Default.default(), ifmdData = Default.default())
     }
 }
 
-public data class IfsIso88023(
-    public var dot3StatsAlignmentErrors: UInt = 0u,
-    public var dot3StatsFCSErrors: UInt = 0u,
-    public var dot3StatsSingleCollisionFrames: UInt = 0u,
-    public var dot3StatsMultipleCollisionFrames: UInt = 0u,
-    public var dot3StatsSQETestErrors: UInt = 0u,
-    public var dot3StatsDeferredTransmissions: UInt = 0u,
-    public var dot3StatsLateCollisions: UInt = 0u,
-    public var dot3StatsExcessiveCollisions: UInt = 0u,
-    public var dot3StatsInternalMacTransmitErrors: UInt = 0u,
-    public var dot3StatsCarrierSenseErrors: UInt = 0u,
-    public var dot3StatsFrameTooLongs: UInt = 0u,
-    public var dot3StatsInternalMacReceiveErrors: UInt = 0u,
-    public var dot3StatsEtherChipSet: UInt = 0u,
-    public var dot3StatsMissedFrames: UInt = 0u,
-    public var dot3StatsCollFrequencies: UIntArray = UIntArray(16),
-    public var dot3Compliance: UInt = 0u,
+public open class IfsIso88023(
+    public var dot3StatsAlignmentErrors: UInt,
+    public var dot3StatsFCSErrors: UInt,
+    public var dot3StatsSingleCollisionFrames: UInt,
+    public var dot3StatsMultipleCollisionFrames: UInt,
+    public var dot3StatsSQETestErrors: UInt,
+    public var dot3StatsDeferredTransmissions: UInt,
+    public var dot3StatsLateCollisions: UInt,
+    public var dot3StatsExcessiveCollisions: UInt,
+    public var dot3StatsInternalMacTransmitErrors: UInt,
+    public var dot3StatsCarrierSenseErrors: UInt,
+    public var dot3StatsFrameTooLongs: UInt,
+    public var dot3StatsInternalMacReceiveErrors: UInt,
+    public var dot3StatsEtherChipSet: UInt,
+    public var dot3StatsMissedFrames: UInt,
+    public var dot3StatsCollFrequencies: UIntArray,
+    public var dot3Compliance: UInt,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is IfsIso88023) return false
-        if (this.dot3StatsAlignmentErrors != other.dot3StatsAlignmentErrors) return false
-        if (this.dot3StatsFCSErrors != other.dot3StatsFCSErrors) return false
-        if (this.dot3StatsSingleCollisionFrames != other.dot3StatsSingleCollisionFrames) return false
-        if (this.dot3StatsMultipleCollisionFrames != other.dot3StatsMultipleCollisionFrames) return false
-        if (this.dot3StatsSQETestErrors != other.dot3StatsSQETestErrors) return false
-        if (this.dot3StatsDeferredTransmissions != other.dot3StatsDeferredTransmissions) return false
-        if (this.dot3StatsLateCollisions != other.dot3StatsLateCollisions) return false
-        if (this.dot3StatsExcessiveCollisions != other.dot3StatsExcessiveCollisions) return false
-        if (this.dot3StatsInternalMacTransmitErrors != other.dot3StatsInternalMacTransmitErrors) return false
-        if (this.dot3StatsCarrierSenseErrors != other.dot3StatsCarrierSenseErrors) return false
-        if (this.dot3StatsFrameTooLongs != other.dot3StatsFrameTooLongs) return false
-        if (this.dot3StatsInternalMacReceiveErrors != other.dot3StatsInternalMacReceiveErrors) return false
-        if (this.dot3StatsEtherChipSet != other.dot3StatsEtherChipSet) return false
-        if (this.dot3StatsMissedFrames != other.dot3StatsMissedFrames) return false
-        if (!this.dot3StatsCollFrequencies.contentEquals(other.dot3StatsCollFrequencies)) return false
-        if (this.dot3Compliance != other.dot3Compliance) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.dot3StatsAlignmentErrors.hashCode()
-        result = 31 * result + this.dot3StatsFCSErrors.hashCode()
-        result = 31 * result + this.dot3StatsSingleCollisionFrames.hashCode()
-        result = 31 * result + this.dot3StatsMultipleCollisionFrames.hashCode()
-        result = 31 * result + this.dot3StatsSQETestErrors.hashCode()
-        result = 31 * result + this.dot3StatsDeferredTransmissions.hashCode()
-        result = 31 * result + this.dot3StatsLateCollisions.hashCode()
-        result = 31 * result + this.dot3StatsExcessiveCollisions.hashCode()
-        result = 31 * result + this.dot3StatsInternalMacTransmitErrors.hashCode()
-        result = 31 * result + this.dot3StatsCarrierSenseErrors.hashCode()
-        result = 31 * result + this.dot3StatsFrameTooLongs.hashCode()
-        result = 31 * result + this.dot3StatsInternalMacReceiveErrors.hashCode()
-        result = 31 * result + this.dot3StatsEtherChipSet.hashCode()
-        result = 31 * result + this.dot3StatsMissedFrames.hashCode()
-        result = 31 * result + this.dot3StatsCollFrequencies.contentHashCode()
-        result = 31 * result + this.dot3Compliance.hashCode()
-        return result
-    }
+    public open fun clone(): IfsIso88023 = IfsIso88023(dot3StatsAlignmentErrors, dot3StatsFCSErrors, dot3StatsSingleCollisionFrames, dot3StatsMultipleCollisionFrames, dot3StatsSQETestErrors, dot3StatsDeferredTransmissions, dot3StatsLateCollisions, dot3StatsExcessiveCollisions, dot3StatsInternalMacTransmitErrors, dot3StatsCarrierSenseErrors, dot3StatsFrameTooLongs, dot3StatsInternalMacReceiveErrors, dot3StatsEtherChipSet, dot3StatsMissedFrames, dot3StatsCollFrequencies, dot3Compliance)
 
     public companion object {
         public fun typeLayout(): TypeLayout<IfsIso88023> =
@@ -6915,26 +6331,16 @@ public data class IfsIso88023(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 120, value.dot3Compliance)
                 }
             }
+
+        public fun default(): IfsIso88023 = IfsIso88023(dot3StatsAlignmentErrors = Default.default(), dot3StatsFCSErrors = Default.default(), dot3StatsSingleCollisionFrames = Default.default(), dot3StatsMultipleCollisionFrames = Default.default(), dot3StatsSQETestErrors = Default.default(), dot3StatsDeferredTransmissions = Default.default(), dot3StatsLateCollisions = Default.default(), dot3StatsExcessiveCollisions = Default.default(), dot3StatsInternalMacTransmitErrors = Default.default(), dot3StatsCarrierSenseErrors = Default.default(), dot3StatsFrameTooLongs = Default.default(), dot3StatsInternalMacReceiveErrors = Default.default(), dot3StatsEtherChipSet = Default.default(), dot3StatsMissedFrames = Default.default(), dot3StatsCollFrequencies = Default.default(), dot3Compliance = Default.default())
     }
 }
 
-public data class CtlInfo(
-    public var ctlId: UInt = 0u,
-    public var ctlName: UByteArray = UByteArray(MAX_KCTL_NAME),
+public open class CtlInfo(
+    public var ctlId: UInt,
+    public var ctlName: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CtlInfo) return false
-        if (this.ctlId != other.ctlId) return false
-        if (!this.ctlName.contentEquals(other.ctlName)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ctlId.hashCode()
-        result = 31 * result + this.ctlName.contentHashCode()
-        return result
-    }
+    public open fun clone(): CtlInfo = CtlInfo(ctlId, ctlName)
 
     public companion object {
         public fun typeLayout(): TypeLayout<CtlInfo> =
@@ -6960,13 +6366,17 @@ public data class CtlInfo(
                     (PrimitiveArrayLayouts.uByteArray((MAX_KCTL_NAME).toInt())).writeBytes(buf, offset + 4, value.ctlName)
                 }
             }
+
+        public fun default(): CtlInfo = CtlInfo(ctlId = Default.default(), ctlName = UByteArray(MAX_KCTL_NAME) { 0u.toUByte() })
     }
 }
 
-public data class ProcFdinfo(
-    public var procFd: Int = 0,
-    public var procFdtype: UInt = 0u,
+public open class ProcFdinfo(
+    public var procFd: Int,
+    public var procFdtype: UInt,
 ) {
+    public open fun clone(): ProcFdinfo = ProcFdinfo(procFd, procFdtype)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ProcFdinfo> =
             object : TypeLayout<ProcFdinfo> {
@@ -6991,10 +6401,12 @@ public data class ProcFdinfo(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.procFdtype)
                 }
             }
+
+        public fun default(): ProcFdinfo = ProcFdinfo(procFd = Default.default(), procFdtype = Default.default())
     }
 }
 
-public class Kevent internal constructor(
+public open class Kevent internal constructor(
     public var ident: UintptrT,
     public var filter: Short,
     public var flags: UShort,
@@ -7005,52 +6417,7 @@ public class Kevent internal constructor(
     public var udata: MutPtr = udataCtorArg
         internal set
 
-    public constructor() : this(
-        ident = 0uL,
-        filter = 0,
-        flags = 0u,
-        fflags = 0u,
-        data = 0L,
-        udataCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): UintptrT = this.ident
-
-    public operator fun component2(): Short = this.filter
-
-    public operator fun component3(): UShort = this.flags
-
-    public operator fun component4(): UInt = this.fflags
-
-    public operator fun component5(): IntptrT = this.data
-
-    public operator fun component6(): MutPtr = this.udata
-
-    public fun copy(ident: UintptrT = this.ident, filter: Short = this.filter, flags: UShort = this.flags, fflags: UInt = this.fflags, data: IntptrT = this.data, udata: MutPtr = this.udata): Kevent = Kevent(ident = ident, filter = filter, flags = flags, fflags = fflags, data = data, udataCtorArg = udata)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Kevent) return false
-        if (this.ident != other.ident) return false
-        if (this.filter != other.filter) return false
-        if (this.flags != other.flags) return false
-        if (this.fflags != other.fflags) return false
-        if (this.data != other.data) return false
-        if (this.udata != other.udata) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ident.hashCode()
-        result = 31 * result + this.filter.hashCode()
-        result = 31 * result + this.flags.hashCode()
-        result = 31 * result + this.fflags.hashCode()
-        result = 31 * result + this.data.hashCode()
-        result = 31 * result + this.udata.hashCode()
-        return result
-    }
-
-    public fun clone(): Kevent = Kevent(ident, filter, flags, fflags, data, udata)
+    public open fun clone(): Kevent = Kevent(ident, filter, flags, fflags, data, udata)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Kevent> =
@@ -7094,12 +6461,12 @@ public class Kevent internal constructor(
             }
 
         public operator fun invoke(
-            ident: UintptrT = 0uL,
-            filter: Short = 0,
-            flags: UShort = 0u,
-            fflags: UInt = 0u,
-            data: IntptrT = 0L,
-            udata: MutPtr = MutPtr(0L),
+            ident: UintptrT,
+            filter: Short,
+            flags: UShort,
+            fflags: UInt,
+            data: IntptrT,
+            udata: MutPtr,
         ): Kevent = Kevent(
             ident = ident,
             filter = filter,
@@ -7108,45 +6475,23 @@ public class Kevent internal constructor(
             data = data,
             udataCtorArg = udata,
         )
+
+        public fun default(): Kevent = Kevent(ident = Default.default(), filter = Default.default(), flags = Default.default(), fflags = Default.default(), data = Default.default(), udata = MutPtr(0L))
     }
 }
 
-public data class SemidDs(
+public open class SemidDs(
     // Note the manpage shows different types than the system header.
-    public var semPerm: IpcPerm = IpcPerm(),
-    public var semBase: Int = 0,
-    public var semNsems: CUshort = 0u,
-    public var semOtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = 0L,
-    public var semPad1: Int = 0,
-    public var semCtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = 0L,
-    public var semPad2: Int = 0,
-    public var semPad3: IntArray = IntArray(4),
+    public var semPerm: IpcPerm,
+    public var semBase: Int,
+    public var semNsems: CUshort,
+    public var semOtime: TimeT,
+    public var semPad1: Int,
+    public var semCtime: TimeT,
+    public var semPad2: Int,
+    public var semPad3: IntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SemidDs) return false
-        if (this.semPerm != other.semPerm) return false
-        if (this.semBase != other.semBase) return false
-        if (this.semNsems != other.semNsems) return false
-        if (this.semOtime != other.semOtime) return false
-        if (this.semPad1 != other.semPad1) return false
-        if (this.semCtime != other.semCtime) return false
-        if (this.semPad2 != other.semPad2) return false
-        if (!this.semPad3.contentEquals(other.semPad3)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.semPerm.hashCode()
-        result = 31 * result + this.semBase.hashCode()
-        result = 31 * result + this.semNsems.hashCode()
-        result = 31 * result + this.semOtime.hashCode()
-        result = 31 * result + this.semPad1.hashCode()
-        result = 31 * result + this.semCtime.hashCode()
-        result = 31 * result + this.semPad2.hashCode()
-        result = 31 * result + this.semPad3.contentHashCode()
-        return result
-    }
+    public open fun clone(): SemidDs = SemidDs(semPerm, semBase, semNsems, semOtime, semPad1, semCtime, semPad2, semPad3)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SemidDs> =
@@ -7196,86 +6541,28 @@ public data class SemidDs(
                     (PrimitiveArrayLayouts.intArray(4)).writeBytes(buf, offset + 56, value.semPad3)
                 }
             }
+
+        public fun default(): SemidDs = SemidDs(semPerm = Default.default(), semBase = Default.default(), semNsems = Default.default(), semOtime = Default.default(), semPad1 = Default.default(), semCtime = Default.default(), semPad2 = Default.default(), semPad3 = Default.default())
     }
 }
 
-public class ShmidDs internal constructor(
+public open class ShmidDs internal constructor(
     public var shmPerm: IpcPerm,
     public var shmSegsz: SizeT,
     public var shmLpid: PidT,
     public var shmCpid: PidT,
-    public var shmNattch: io.github.kotlinmania.rustlang.unix.bsd.apple.ShmattT,
-    public var shmAtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT,
+    public var shmNattch: ShmattT,
+    public var shmAtime: TimeT,
     // Note(macos): 64-bit wrong align => wrong offset
-    public var shmDtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT,
+    public var shmDtime: TimeT,
     // Note(macos): 64-bit wrong align => wrong offset
-    public var shmCtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT,
+    public var shmCtime: TimeT,
     shmInternalCtorArg: MutPtr,
 ) {
     public var shmInternal: MutPtr = shmInternalCtorArg
         internal set
 
-    public constructor() : this(
-        shmPerm = IpcPerm(),
-        shmSegsz = 0uL,
-        shmLpid = 0,
-        shmCpid = 0,
-        shmNattch = 0u,
-        shmAtime = 0L,
-        shmDtime = 0L,
-        shmCtime = 0L,
-        shmInternalCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): IpcPerm = this.shmPerm
-
-    public operator fun component2(): SizeT = this.shmSegsz
-
-    public operator fun component3(): PidT = this.shmLpid
-
-    public operator fun component4(): PidT = this.shmCpid
-
-    public operator fun component5(): io.github.kotlinmania.rustlang.unix.bsd.apple.ShmattT = this.shmNattch
-
-    public operator fun component6(): io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmAtime
-
-    public operator fun component7(): io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmDtime
-
-    public operator fun component8(): io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmCtime
-
-    public operator fun component9(): MutPtr = this.shmInternal
-
-    public fun copy(shmPerm: IpcPerm = this.shmPerm, shmSegsz: SizeT = this.shmSegsz, shmLpid: PidT = this.shmLpid, shmCpid: PidT = this.shmCpid, shmNattch: io.github.kotlinmania.rustlang.unix.bsd.apple.ShmattT = this.shmNattch, shmAtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmAtime, shmDtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmDtime, shmCtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmCtime, shmInternal: MutPtr = this.shmInternal): ShmidDs = ShmidDs(shmPerm = shmPerm, shmSegsz = shmSegsz, shmLpid = shmLpid, shmCpid = shmCpid, shmNattch = shmNattch, shmAtime = shmAtime, shmDtime = shmDtime, shmCtime = shmCtime, shmInternalCtorArg = shmInternal)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ShmidDs) return false
-        if (this.shmPerm != other.shmPerm) return false
-        if (this.shmSegsz != other.shmSegsz) return false
-        if (this.shmLpid != other.shmLpid) return false
-        if (this.shmCpid != other.shmCpid) return false
-        if (this.shmNattch != other.shmNattch) return false
-        if (this.shmAtime != other.shmAtime) return false
-        if (this.shmDtime != other.shmDtime) return false
-        if (this.shmCtime != other.shmCtime) return false
-        if (this.shmInternal != other.shmInternal) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.shmPerm.hashCode()
-        result = 31 * result + this.shmSegsz.hashCode()
-        result = 31 * result + this.shmLpid.hashCode()
-        result = 31 * result + this.shmCpid.hashCode()
-        result = 31 * result + this.shmNattch.hashCode()
-        result = 31 * result + this.shmAtime.hashCode()
-        result = 31 * result + this.shmDtime.hashCode()
-        result = 31 * result + this.shmCtime.hashCode()
-        result = 31 * result + this.shmInternal.hashCode()
-        return result
-    }
-
-    public fun clone(): ShmidDs = ShmidDs(shmPerm, shmSegsz, shmLpid, shmCpid, shmNattch, shmAtime, shmDtime, shmCtime, shmInternal)
+    public open fun clone(): ShmidDs = ShmidDs(shmPerm, shmSegsz, shmLpid, shmCpid, shmNattch, shmAtime, shmDtime, shmCtime, shmInternal)
 
     public companion object {
         public fun typeLayout(): TypeLayout<ShmidDs> =
@@ -7331,15 +6618,15 @@ public class ShmidDs internal constructor(
             }
 
         public operator fun invoke(
-            shmPerm: IpcPerm = IpcPerm(),
-            shmSegsz: SizeT = 0uL,
-            shmLpid: PidT = 0,
-            shmCpid: PidT = 0,
-            shmNattch: io.github.kotlinmania.rustlang.unix.bsd.apple.ShmattT = 0u,
-            shmAtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = 0L,
-            shmDtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = 0L,
-            shmCtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = 0L,
-            shmInternal: MutPtr = MutPtr(0L),
+            shmPerm: IpcPerm,
+            shmSegsz: SizeT,
+            shmLpid: PidT,
+            shmCpid: PidT,
+            shmNattch: ShmattT,
+            shmAtime: TimeT,
+            shmDtime: TimeT,
+            shmCtime: TimeT,
+            shmInternal: MutPtr,
         ): ShmidDs = ShmidDs(
             shmPerm = shmPerm,
             shmSegsz = shmSegsz,
@@ -7351,53 +6638,25 @@ public class ShmidDs internal constructor(
             shmCtime = shmCtime,
             shmInternalCtorArg = shmInternal,
         )
+
+        public fun default(): ShmidDs = ShmidDs(shmPerm = Default.default(), shmSegsz = Default.default(), shmLpid = Default.default(), shmCpid = Default.default(), shmNattch = Default.default(), shmAtime = Default.default(), shmDtime = Default.default(), shmCtime = Default.default(), shmInternal = MutPtr(0L))
     }
 }
 
-public data class ProcThreadinfo(
-    public var pthUserTime: ULong = 0uL,
-    public var pthSystemTime: ULong = 0uL,
-    public var pthCpuUsage: Int = 0,
-    public var pthPolicy: Int = 0,
-    public var pthRunState: Int = 0,
-    public var pthFlags: Int = 0,
-    public var pthSleepTime: Int = 0,
-    public var pthCurpri: Int = 0,
-    public var pthPriority: Int = 0,
-    public var pthMaxpriority: Int = 0,
-    public var pthName: UByteArray = UByteArray(MAXTHREADNAMESIZE),
+public open class ProcThreadinfo(
+    public var pthUserTime: ULong,
+    public var pthSystemTime: ULong,
+    public var pthCpuUsage: Int,
+    public var pthPolicy: Int,
+    public var pthRunState: Int,
+    public var pthFlags: Int,
+    public var pthSleepTime: Int,
+    public var pthCurpri: Int,
+    public var pthPriority: Int,
+    public var pthMaxpriority: Int,
+    public var pthName: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ProcThreadinfo) return false
-        if (this.pthUserTime != other.pthUserTime) return false
-        if (this.pthSystemTime != other.pthSystemTime) return false
-        if (this.pthCpuUsage != other.pthCpuUsage) return false
-        if (this.pthPolicy != other.pthPolicy) return false
-        if (this.pthRunState != other.pthRunState) return false
-        if (this.pthFlags != other.pthFlags) return false
-        if (this.pthSleepTime != other.pthSleepTime) return false
-        if (this.pthCurpri != other.pthCurpri) return false
-        if (this.pthPriority != other.pthPriority) return false
-        if (this.pthMaxpriority != other.pthMaxpriority) return false
-        if (!this.pthName.contentEquals(other.pthName)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.pthUserTime.hashCode()
-        result = 31 * result + this.pthSystemTime.hashCode()
-        result = 31 * result + this.pthCpuUsage.hashCode()
-        result = 31 * result + this.pthPolicy.hashCode()
-        result = 31 * result + this.pthRunState.hashCode()
-        result = 31 * result + this.pthFlags.hashCode()
-        result = 31 * result + this.pthSleepTime.hashCode()
-        result = 31 * result + this.pthCurpri.hashCode()
-        result = 31 * result + this.pthPriority.hashCode()
-        result = 31 * result + this.pthMaxpriority.hashCode()
-        result = 31 * result + this.pthName.contentHashCode()
-        return result
-    }
+    public open fun clone(): ProcThreadinfo = ProcThreadinfo(pthUserTime, pthSystemTime, pthCpuUsage, pthPolicy, pthRunState, pthFlags, pthSleepTime, pthCurpri, pthPriority, pthMaxpriority, pthName)
 
     public companion object {
         public fun typeLayout(): TypeLayout<ProcThreadinfo> =
@@ -7459,62 +6718,48 @@ public data class ProcThreadinfo(
                     (PrimitiveArrayLayouts.uByteArray((MAXTHREADNAMESIZE).toInt())).writeBytes(buf, offset + 48, value.pthName)
                 }
             }
+
+        public fun default(): ProcThreadinfo = ProcThreadinfo(pthUserTime = Default.default(), pthSystemTime = Default.default(), pthCpuUsage = Default.default(), pthPolicy = Default.default(), pthRunState = Default.default(), pthFlags = Default.default(), pthSleepTime = Default.default(), pthCurpri = Default.default(), pthPriority = Default.default(), pthMaxpriority = Default.default(), pthName = UByteArray(MAXTHREADNAMESIZE) { 0u.toUByte() })
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class Statfs(
-    public var fBsize: UInt = 0u,
-    public var fIosize: Int = 0,
-    public var fBlocks: ULong = 0uL,
-    public var fBfree: ULong = 0uL,
-    public var fBavail: ULong = 0uL,
-    public var fFiles: ULong = 0uL,
-    public var fFfree: ULong = 0uL,
-    public var fFsid: FsidT = FsidT(),
-    public var fOwner: UidT = 0,
-    public var fType: UInt = 0u,
-    public var fFlags: UInt = 0u,
-    public var fFssubtype: UInt = 0u,
-    public var fFstypename: UByteArray = UByteArray(16),
-    public var fMntonname: UByteArray = UByteArray(1024),
-    public var fMntfromname: UByteArray = UByteArray(1024),
-    public var fFlagsExt: UInt = 0u,
-    public var fReserved: UIntArray = UIntArray(7),
+public open class Statfs(
+    public var fBsize: UInt,
+    public var fIosize: Int,
+    public var fBlocks: ULong,
+    public var fBfree: ULong,
+    public var fBavail: ULong,
+    public var fFiles: ULong,
+    public var fFfree: ULong,
+    public var fFsid: FsidT,
+    public var fOwner: UidT,
+    public var fType: UInt,
+    public var fFlags: UInt,
+    public var fFssubtype: UInt,
+    public var fFstypename: UByteArray,
+    public var fMntonname: UByteArray,
+    public var fMntfromname: UByteArray,
+    public var fFlagsExt: UInt,
+    public var fReserved: UIntArray,
 ) {
-    public fun clone(): Statfs = Statfs(fBsize, fIosize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fOwner, fType, fFlags, fFssubtype, fFstypename, fMntonname, fMntfromname, fFlagsExt, fReserved)
+    public open fun clone(): Statfs = Statfs(fBsize, fIosize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fOwner, fType, fFlags, fFssubtype, fFstypename, fMntonname, fMntfromname, fFlagsExt, fReserved)
+
+    public companion object {
+        public fun default(): Statfs = Statfs(fBsize = Default.default(), fIosize = Default.default(), fBlocks = Default.default(), fBfree = Default.default(), fBavail = Default.default(), fFiles = Default.default(), fFfree = Default.default(), fFsid = Default.default(), fOwner = Default.default(), fType = Default.default(), fFlags = Default.default(), fFssubtype = Default.default(), fFstypename = UByteArray(16) { 0u.toUByte() }, fMntonname = UByteArray(1024) { 0u.toUByte() }, fMntfromname = UByteArray(1024) { 0u.toUByte() }, fFlagsExt = Default.default(), fReserved = Default.default())
+    }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Dirent(
-    public var dIno: ULong = 0uL,
-    public var dSeekoff: ULong = 0uL,
-    public var dReclen: UShort = 0u,
-    public var dNamlen: UShort = 0u,
-    public var dType: UByte = 0u,
-    public var dName: UByteArray = UByteArray(1024),
+public open class Dirent(
+    public var dIno: ULong,
+    public var dSeekoff: ULong,
+    public var dReclen: UShort,
+    public var dNamlen: UShort,
+    public var dType: UByte,
+    public var dName: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Dirent) return false
-        if (this.dIno != other.dIno) return false
-        if (this.dSeekoff != other.dSeekoff) return false
-        if (this.dReclen != other.dReclen) return false
-        if (this.dNamlen != other.dNamlen) return false
-        if (this.dType != other.dType) return false
-        if (!this.dName.contentEquals(other.dName)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.dIno.hashCode()
-        result = 31 * result + this.dSeekoff.hashCode()
-        result = 31 * result + this.dReclen.hashCode()
-        result = 31 * result + this.dNamlen.hashCode()
-        result = 31 * result + this.dType.hashCode()
-        result = 31 * result + this.dName.contentHashCode()
-        return result
-    }
+    public open fun clone(): Dirent = Dirent(dIno, dSeekoff, dReclen, dNamlen, dType, dName)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Dirent> =
@@ -7556,38 +6801,20 @@ public data class Dirent(
                     (PrimitiveArrayLayouts.uByteArray(1024)).writeBytes(buf, offset + 21, value.dName)
                 }
             }
+
+        public fun default(): Dirent = Dirent(dIno = Default.default(), dSeekoff = Default.default(), dReclen = Default.default(), dNamlen = Default.default(), dType = Default.default(), dName = UByteArray(1024) { 0u.toUByte() })
     }
 }
 
-public data class SockaddrStorage(
-    public var ssLen: UByte = 0u,
-    public var ssFamily: SaFamilyT = 0u,
-    public var ssPad1: UByteArray = UByteArray(6),
-    public var ssAlign: Long = 0L,
-    public var ssPad2: UByteArray = UByteArray(112),
-    public var nonExhaustive: Unit = Unit,
+public open class SockaddrStorage(
+    public var ssLen: UByte,
+    public var ssFamily: SaFamilyT,
+    public var ssPad1: UByteArray,
+    public var ssAlign: Long,
+    public var ssPad2: UByteArray,
+    public var nonExhaustive: Unit,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SockaddrStorage) return false
-        if (this.ssLen != other.ssLen) return false
-        if (this.ssFamily != other.ssFamily) return false
-        if (!this.ssPad1.contentEquals(other.ssPad1)) return false
-        if (this.ssAlign != other.ssAlign) return false
-        if (!this.ssPad2.contentEquals(other.ssPad2)) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ssLen.hashCode()
-        result = 31 * result + this.ssFamily.hashCode()
-        result = 31 * result + this.ssPad1.contentHashCode()
-        result = 31 * result + this.ssAlign.hashCode()
-        result = 31 * result + this.ssPad2.contentHashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
-    }
+    public open fun clone(): SockaddrStorage = SockaddrStorage(ssLen, ssFamily, ssPad1, ssAlign, ssPad2, nonExhaustive)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrStorage> =
@@ -7629,13 +6856,17 @@ public data class SockaddrStorage(
                     (PrimitiveLayouts.UNIT).writeBytes(buf, offset + 128, value.nonExhaustive)
                 }
             }
+
+        public fun default(): SockaddrStorage = SockaddrStorage(ssLen = Default.default(), ssFamily = Default.default(), ssPad1 = Default.default(), ssAlign = Default.default(), ssPad2 = UByteArray(112) { 0u.toUByte() }, nonExhaustive = Unit)
     }
 }
 
-public data class GroupReq(
-    public var grInterface: UInt = 0u,
-    public var grGroup: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
+public open class GroupReq(
+    public var grInterface: UInt,
+    public var grGroup: SockaddrStorage,
 ) {
+    public open fun clone(): GroupReq = GroupReq(grInterface, grGroup)
+
     public companion object {
         public fun typeLayout(): TypeLayout<GroupReq> =
             object : TypeLayout<GroupReq> {
@@ -7660,14 +6891,18 @@ public data class GroupReq(
                     (SockaddrStorage.typeLayout()).writeBytes(buf, offset + 4, value.grGroup)
                 }
             }
+
+        public fun default(): GroupReq = GroupReq(grInterface = Default.default(), grGroup = Default.default())
     }
 }
 
-public data class GroupSourceReq(
-    public var gsrInterface: UInt = 0u,
-    public var gsrGroup: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
-    public var gsrSource: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
+public open class GroupSourceReq(
+    public var gsrInterface: UInt,
+    public var gsrGroup: SockaddrStorage,
+    public var gsrSource: SockaddrStorage,
 ) {
+    public open fun clone(): GroupSourceReq = GroupSourceReq(gsrInterface, gsrGroup, gsrSource)
+
     public companion object {
         public fun typeLayout(): TypeLayout<GroupSourceReq> =
             object : TypeLayout<GroupSourceReq> {
@@ -7696,50 +6931,30 @@ public data class GroupSourceReq(
                     (SockaddrStorage.typeLayout()).writeBytes(buf, offset + 132, value.gsrSource)
                 }
             }
+
+        public fun default(): GroupSourceReq = GroupSourceReq(gsrInterface = Default.default(), gsrGroup = Default.default(), gsrSource = Default.default())
     }
 }
 
-public data class Utmpx(
-    public var utUser: UByteArray = UByteArray(UTX_USERSIZE),
-    public var utId: UByteArray = UByteArray(UTX_IDSIZE),
-    public var utLine: UByteArray = UByteArray(UTX_LINESIZE),
-    public var utPid: PidT = 0,
-    public var utType: CShort = 0,
-    public var utTv: Timeval = Timeval(),
-    public var utHost: UByteArray = UByteArray(UTX_HOSTSIZE),
-    public var utPad: UIntArray = UIntArray(16),
-    public var nonExhaustive: Unit = Unit,
+public open class Utmpx(
+    public var utUser: UByteArray,
+    public var utId: UByteArray,
+    public var utLine: UByteArray,
+    public var utPid: PidT,
+    public var utType: CShort,
+    public var utTv: Timeval,
+    public var utHost: UByteArray,
+    public var utPad: UIntArray,
+    public var nonExhaustive: Unit,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Utmpx) return false
-        if (!this.utUser.contentEquals(other.utUser)) return false
-        if (!this.utId.contentEquals(other.utId)) return false
-        if (!this.utLine.contentEquals(other.utLine)) return false
-        if (this.utPid != other.utPid) return false
-        if (this.utType != other.utType) return false
-        if (this.utTv != other.utTv) return false
-        if (!this.utHost.contentEquals(other.utHost)) return false
-        if (!this.utPad.contentEquals(other.utPad)) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
+    public open fun clone(): Utmpx = Utmpx(utUser, utId, utLine, utPid, utType, utTv, utHost, utPad, nonExhaustive)
 
-    override fun hashCode(): Int {
-        var result = this.utUser.contentHashCode()
-        result = 31 * result + this.utId.contentHashCode()
-        result = 31 * result + this.utLine.contentHashCode()
-        result = 31 * result + this.utPid.hashCode()
-        result = 31 * result + this.utType.hashCode()
-        result = 31 * result + this.utTv.hashCode()
-        result = 31 * result + this.utHost.contentHashCode()
-        result = 31 * result + this.utPad.contentHashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
+    public companion object {
+        public fun default(): Utmpx = Utmpx(utUser = UByteArray(UTX_USERSIZE) { 0u.toUByte() }, utId = Default.default(), utLine = Default.default(), utPid = Default.default(), utType = Default.default(), utTv = Default.default(), utHost = UByteArray(UTX_HOSTSIZE) { 0u.toUByte() }, utPad = Default.default(), nonExhaustive = Unit)
     }
 }
 
-public class Sigevent internal constructor(
+public open class Sigevent internal constructor(
     public var sigevNotify: CInt,
     public var sigevSigno: CInt,
     public var sigevValue: Sigval,
@@ -7753,61 +6968,16 @@ public class Sigevent internal constructor(
     public var sigevNotifyAttributes: MutPtr = sigevNotifyAttributesCtorArg
         internal set
 
-    public constructor() : this(
-        sigevNotify = 0,
-        sigevSigno = 0,
-        sigevValue = Sigval(),
-        unused1CtorArg = MutPtr(0L),
-        sigevNotifyAttributesCtorArg = MutPtr(0L),
-        nonExhaustive = Unit,
-    )
-
-    public operator fun component1(): CInt = this.sigevNotify
-
-    public operator fun component2(): CInt = this.sigevSigno
-
-    public operator fun component3(): Sigval = this.sigevValue
-
-    public operator fun component4(): MutPtr = this.unused1
-
-    public operator fun component5(): MutPtr = this.sigevNotifyAttributes
-
-    public operator fun component6(): Unit = this.nonExhaustive
-
-    public fun copy(sigevNotify: CInt = this.sigevNotify, sigevSigno: CInt = this.sigevSigno, sigevValue: Sigval = this.sigevValue, unused1: MutPtr = this.unused1, sigevNotifyAttributes: MutPtr = this.sigevNotifyAttributes, nonExhaustive: Unit = this.nonExhaustive): Sigevent = Sigevent(sigevNotify = sigevNotify, sigevSigno = sigevSigno, sigevValue = sigevValue, unused1CtorArg = unused1, sigevNotifyAttributesCtorArg = sigevNotifyAttributes, nonExhaustive = nonExhaustive)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Sigevent) return false
-        if (this.sigevNotify != other.sigevNotify) return false
-        if (this.sigevSigno != other.sigevSigno) return false
-        if (this.sigevValue != other.sigevValue) return false
-        if (this.unused1 != other.unused1) return false
-        if (this.sigevNotifyAttributes != other.sigevNotifyAttributes) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sigevNotify.hashCode()
-        result = 31 * result + this.sigevSigno.hashCode()
-        result = 31 * result + this.sigevValue.hashCode()
-        result = 31 * result + this.unused1.hashCode()
-        result = 31 * result + this.sigevNotifyAttributes.hashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
-    }
-
-    public fun clone(): Sigevent = Sigevent(sigevNotify, sigevSigno, sigevValue, unused1, sigevNotifyAttributes, nonExhaustive)
+    public open fun clone(): Sigevent = Sigevent(sigevNotify, sigevSigno, sigevValue, unused1, sigevNotifyAttributes, nonExhaustive)
 
     public companion object {
         public operator fun invoke(
-            sigevNotify: CInt = 0,
-            sigevSigno: CInt = 0,
-            sigevValue: Sigval = Sigval(),
-            unused1: MutPtr = MutPtr(0L),
-            sigevNotifyAttributes: MutPtr = MutPtr(0L),
-            nonExhaustive: Unit = Unit,
+            sigevNotify: CInt,
+            sigevSigno: CInt,
+            sigevValue: Sigval,
+            unused1: MutPtr,
+            sigevNotifyAttributes: MutPtr,
+            nonExhaustive: Unit,
         ): Sigevent = Sigevent(
             sigevNotify = sigevNotify,
             sigevSigno = sigevSigno,
@@ -7816,21 +6986,16 @@ public class Sigevent internal constructor(
             sigevNotifyAttributesCtorArg = sigevNotifyAttributes,
             nonExhaustive = nonExhaustive,
         )
+
+        public fun default(): Sigevent = Sigevent(sigevNotify = Default.default(), sigevSigno = Default.default(), sigevValue = Default.default(), unused1 = Default.default(), sigevNotifyAttributes = MutPtr(0L), nonExhaustive = Unit)
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ProcessorCpuLoadInfo(
-    public var cpuTicks: UIntArray = UIntArray(CPU_STATE_MAX),
+public open class ProcessorCpuLoadInfo(
+    public var cpuTicks: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ProcessorCpuLoadInfo) return false
-        if (!this.cpuTicks.contentEquals(other.cpuTicks)) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.cpuTicks.contentHashCode()
+    public open fun clone(): ProcessorCpuLoadInfo = ProcessorCpuLoadInfo(cpuTicks)
 
     public companion object {
         public fun typeLayout(): TypeLayout<ProcessorCpuLoadInfo> =
@@ -7852,17 +7017,21 @@ public data class ProcessorCpuLoadInfo(
                     (PrimitiveArrayLayouts.uIntArray((CPU_STATE_MAX).toInt())).writeBytes(buf, offset, value.cpuTicks)
                 }
             }
+
+        public fun default(): ProcessorCpuLoadInfo = ProcessorCpuLoadInfo(cpuTicks = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ProcessorBasicInfo(
-    public var cpuType: CpuTypeT = 0,
-    public var cpuSubtype: CpuSubtypeT = 0,
-    public var running: BooleanT = 0,
-    public var slotNum: CInt = 0,
-    public var isMaster: BooleanT = 0,
+public open class ProcessorBasicInfo(
+    public var cpuType: CpuTypeT,
+    public var cpuSubtype: CpuSubtypeT,
+    public var running: BooleanT,
+    public var slotNum: CInt,
+    public var isMaster: BooleanT,
 ) {
+    public open fun clone(): ProcessorBasicInfo = ProcessorBasicInfo(cpuType, cpuSubtype, running, slotNum, isMaster)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ProcessorBasicInfo> =
             object : TypeLayout<ProcessorBasicInfo> {
@@ -7899,14 +7068,18 @@ public data class ProcessorBasicInfo(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 16, value.isMaster)
                 }
             }
+
+        public fun default(): ProcessorBasicInfo = ProcessorBasicInfo(cpuType = Default.default(), cpuSubtype = Default.default(), running = Default.default(), slotNum = Default.default(), isMaster = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ProcessorSetBasicInfo(
-    public var processorCount: CInt = 0,
-    public var defaultPolicy: CInt = 0,
+public open class ProcessorSetBasicInfo(
+    public var processorCount: CInt,
+    public var defaultPolicy: CInt,
 ) {
+    public open fun clone(): ProcessorSetBasicInfo = ProcessorSetBasicInfo(processorCount, defaultPolicy)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ProcessorSetBasicInfo> =
             object : TypeLayout<ProcessorSetBasicInfo> {
@@ -7931,16 +7104,20 @@ public data class ProcessorSetBasicInfo(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 4, value.defaultPolicy)
                 }
             }
+
+        public fun default(): ProcessorSetBasicInfo = ProcessorSetBasicInfo(processorCount = Default.default(), defaultPolicy = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ProcessorSetLoadInfo(
-    public var taskCount: CInt = 0,
-    public var threadCount: CInt = 0,
-    public var loadAverage: IntegerT = 0,
-    public var machFactor: IntegerT = 0,
+public open class ProcessorSetLoadInfo(
+    public var taskCount: CInt,
+    public var threadCount: CInt,
+    public var loadAverage: IntegerT,
+    public var machFactor: IntegerT,
 ) {
+    public open fun clone(): ProcessorSetLoadInfo = ProcessorSetLoadInfo(taskCount, threadCount, loadAverage, machFactor)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ProcessorSetLoadInfo> =
             object : TypeLayout<ProcessorSetLoadInfo> {
@@ -7973,14 +7150,18 @@ public data class ProcessorSetLoadInfo(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 12, value.machFactor)
                 }
             }
+
+        public fun default(): ProcessorSetLoadInfo = ProcessorSetLoadInfo(taskCount = Default.default(), threadCount = Default.default(), loadAverage = Default.default(), machFactor = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class TimeValueT(
-    public var seconds: IntegerT = 0,
-    public var microseconds: IntegerT = 0,
+public open class TimeValueT(
+    public var seconds: IntegerT,
+    public var microseconds: IntegerT,
 ) {
+    public open fun clone(): TimeValueT = TimeValueT(seconds, microseconds)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TimeValueT> =
             object : TypeLayout<TimeValueT> {
@@ -8005,20 +7186,24 @@ public data class TimeValueT(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 4, value.microseconds)
                 }
             }
+
+        public fun default(): TimeValueT = TimeValueT(seconds = Default.default(), microseconds = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ThreadBasicInfo(
-    public var userTime: TimeValueT = TimeValueT(),
-    public var systemTime: TimeValueT = TimeValueT(),
-    public var cpuUsage: io.github.kotlinmania.rustlang.unix.bsd.apple.IntegerT = 0,
-    public var policy: io.github.kotlinmania.rustlang.unix.bsd.apple.PolicyT = 0,
-    public var runState: io.github.kotlinmania.rustlang.unix.bsd.apple.IntegerT = 0,
-    public var flags: io.github.kotlinmania.rustlang.unix.bsd.apple.IntegerT = 0,
-    public var suspendCount: io.github.kotlinmania.rustlang.unix.bsd.apple.IntegerT = 0,
-    public var sleepTime: io.github.kotlinmania.rustlang.unix.bsd.apple.IntegerT = 0,
+public open class ThreadBasicInfo(
+    public var userTime: TimeValueT,
+    public var systemTime: TimeValueT,
+    public var cpuUsage: IntegerT,
+    public var policy: PolicyT,
+    public var runState: IntegerT,
+    public var flags: IntegerT,
+    public var suspendCount: IntegerT,
+    public var sleepTime: IntegerT,
 ) {
+    public open fun clone(): ThreadBasicInfo = ThreadBasicInfo(userTime, systemTime, cpuUsage, policy, runState, flags, suspendCount, sleepTime)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadBasicInfo> =
             object : TypeLayout<ThreadBasicInfo> {
@@ -8067,15 +7252,19 @@ public data class ThreadBasicInfo(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 36, value.sleepTime)
                 }
             }
+
+        public fun default(): ThreadBasicInfo = ThreadBasicInfo(userTime = Default.default(), systemTime = Default.default(), cpuUsage = Default.default(), policy = Default.default(), runState = Default.default(), flags = Default.default(), suspendCount = Default.default(), sleepTime = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ThreadIdentifierInfo(
-    public var threadId: ULong = 0uL,
-    public var threadHandle: ULong = 0uL,
-    public var dispatchQaddr: ULong = 0uL,
+public open class ThreadIdentifierInfo(
+    public var threadId: ULong,
+    public var threadHandle: ULong,
+    public var dispatchQaddr: ULong,
 ) {
+    public open fun clone(): ThreadIdentifierInfo = ThreadIdentifierInfo(threadId, threadHandle, dispatchQaddr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadIdentifierInfo> =
             object : TypeLayout<ThreadIdentifierInfo> {
@@ -8104,54 +7293,26 @@ public data class ThreadIdentifierInfo(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.dispatchQaddr)
                 }
             }
+
+        public fun default(): ThreadIdentifierInfo = ThreadIdentifierInfo(threadId = Default.default(), threadHandle = Default.default(), dispatchQaddr = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class ThreadExtendedInfo(
-    public var pthUserTime: ULong = 0uL,
-    public var pthSystemTime: ULong = 0uL,
-    public var pthCpuUsage: Int = 0,
-    public var pthPolicy: Int = 0,
-    public var pthRunState: Int = 0,
-    public var pthFlags: Int = 0,
-    public var pthSleepTime: Int = 0,
-    public var pthCurpri: Int = 0,
-    public var pthPriority: Int = 0,
-    public var pthMaxpriority: Int = 0,
-    public var pthName: UByteArray = UByteArray(MAXTHREADNAMESIZE),
+public open class ThreadExtendedInfo(
+    public var pthUserTime: ULong,
+    public var pthSystemTime: ULong,
+    public var pthCpuUsage: Int,
+    public var pthPolicy: Int,
+    public var pthRunState: Int,
+    public var pthFlags: Int,
+    public var pthSleepTime: Int,
+    public var pthCurpri: Int,
+    public var pthPriority: Int,
+    public var pthMaxpriority: Int,
+    public var pthName: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ThreadExtendedInfo) return false
-        if (this.pthUserTime != other.pthUserTime) return false
-        if (this.pthSystemTime != other.pthSystemTime) return false
-        if (this.pthCpuUsage != other.pthCpuUsage) return false
-        if (this.pthPolicy != other.pthPolicy) return false
-        if (this.pthRunState != other.pthRunState) return false
-        if (this.pthFlags != other.pthFlags) return false
-        if (this.pthSleepTime != other.pthSleepTime) return false
-        if (this.pthCurpri != other.pthCurpri) return false
-        if (this.pthPriority != other.pthPriority) return false
-        if (this.pthMaxpriority != other.pthMaxpriority) return false
-        if (!this.pthName.contentEquals(other.pthName)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.pthUserTime.hashCode()
-        result = 31 * result + this.pthSystemTime.hashCode()
-        result = 31 * result + this.pthCpuUsage.hashCode()
-        result = 31 * result + this.pthPolicy.hashCode()
-        result = 31 * result + this.pthRunState.hashCode()
-        result = 31 * result + this.pthFlags.hashCode()
-        result = 31 * result + this.pthSleepTime.hashCode()
-        result = 31 * result + this.pthCurpri.hashCode()
-        result = 31 * result + this.pthPriority.hashCode()
-        result = 31 * result + this.pthMaxpriority.hashCode()
-        result = 31 * result + this.pthName.contentHashCode()
-        return result
-    }
+    public open fun clone(): ThreadExtendedInfo = ThreadExtendedInfo(pthUserTime, pthSystemTime, pthCpuUsage, pthPolicy, pthRunState, pthFlags, pthSleepTime, pthCurpri, pthPriority, pthMaxpriority, pthName)
 
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadExtendedInfo> =
@@ -8213,62 +7374,76 @@ public data class ThreadExtendedInfo(
                     (PrimitiveArrayLayouts.uByteArray((MAXTHREADNAMESIZE).toInt())).writeBytes(buf, offset + 48, value.pthName)
                 }
             }
+
+        public fun default(): ThreadExtendedInfo = ThreadExtendedInfo(pthUserTime = Default.default(), pthSystemTime = Default.default(), pthCpuUsage = Default.default(), pthPolicy = Default.default(), pthRunState = Default.default(), pthFlags = Default.default(), pthSleepTime = Default.default(), pthCurpri = Default.default(), pthPriority = Default.default(), pthMaxpriority = Default.default(), pthName = UByteArray(MAXTHREADNAMESIZE) { 0u.toUByte() })
     }
 }
 
-public class IfData64(
-    public var ifiType: CUchar = 0u,
-    public var ifiTypelen: CUchar = 0u,
-    public var ifiPhysical: CUchar = 0u,
-    public var ifiAddrlen: CUchar = 0u,
-    public var ifiHdrlen: CUchar = 0u,
-    public var ifiRecvquota: CUchar = 0u,
-    public var ifiXmitquota: CUchar = 0u,
-    public var ifiUnused1: CUchar = 0u,
-    public var ifiMtu: UInt = 0u,
-    public var ifiMetric: UInt = 0u,
-    public var ifiBaudrate: ULong = 0uL,
-    public var ifiIpackets: ULong = 0uL,
-    public var ifiIerrors: ULong = 0uL,
-    public var ifiOpackets: ULong = 0uL,
-    public var ifiOerrors: ULong = 0uL,
-    public var ifiCollisions: ULong = 0uL,
-    public var ifiIbytes: ULong = 0uL,
-    public var ifiObytes: ULong = 0uL,
-    public var ifiImcasts: ULong = 0uL,
-    public var ifiOmcasts: ULong = 0uL,
-    public var ifiIqdrops: ULong = 0uL,
-    public var ifiNoproto: ULong = 0uL,
-    public var ifiRecvtiming: UInt = 0u,
-    public var ifiXmittiming: UInt = 0u,
-    public var ifiLastchange: Timeval32 = Timeval32(),
+public open class IfData64(
+    public var ifiType: CUchar,
+    public var ifiTypelen: CUchar,
+    public var ifiPhysical: CUchar,
+    public var ifiAddrlen: CUchar,
+    public var ifiHdrlen: CUchar,
+    public var ifiRecvquota: CUchar,
+    public var ifiXmitquota: CUchar,
+    public var ifiUnused1: CUchar,
+    public var ifiMtu: UInt,
+    public var ifiMetric: UInt,
+    public var ifiBaudrate: ULong,
+    public var ifiIpackets: ULong,
+    public var ifiIerrors: ULong,
+    public var ifiOpackets: ULong,
+    public var ifiOerrors: ULong,
+    public var ifiCollisions: ULong,
+    public var ifiIbytes: ULong,
+    public var ifiObytes: ULong,
+    public var ifiImcasts: ULong,
+    public var ifiOmcasts: ULong,
+    public var ifiIqdrops: ULong,
+    public var ifiNoproto: ULong,
+    public var ifiRecvtiming: UInt,
+    public var ifiXmittiming: UInt,
+    public var ifiLastchange: Timeval32,
 ) {
-    public fun clone(): IfData64 = IfData64(ifiType, ifiTypelen, ifiPhysical, ifiAddrlen, ifiHdrlen, ifiRecvquota, ifiXmitquota, ifiUnused1, ifiMtu, ifiMetric, ifiBaudrate, ifiIpackets, ifiIerrors, ifiOpackets, ifiOerrors, ifiCollisions, ifiIbytes, ifiObytes, ifiImcasts, ifiOmcasts, ifiIqdrops, ifiNoproto, ifiRecvtiming, ifiXmittiming, ifiLastchange)
+    public open fun clone(): IfData64 = IfData64(ifiType, ifiTypelen, ifiPhysical, ifiAddrlen, ifiHdrlen, ifiRecvquota, ifiXmitquota, ifiUnused1, ifiMtu, ifiMetric, ifiBaudrate, ifiIpackets, ifiIerrors, ifiOpackets, ifiOerrors, ifiCollisions, ifiIbytes, ifiObytes, ifiImcasts, ifiOmcasts, ifiIqdrops, ifiNoproto, ifiRecvtiming, ifiXmittiming, ifiLastchange)
+
+    public companion object {
+        public fun default(): IfData64 = IfData64(ifiType = Default.default(), ifiTypelen = Default.default(), ifiPhysical = Default.default(), ifiAddrlen = Default.default(), ifiHdrlen = Default.default(), ifiRecvquota = Default.default(), ifiXmitquota = Default.default(), ifiUnused1 = Default.default(), ifiMtu = Default.default(), ifiMetric = Default.default(), ifiBaudrate = Default.default(), ifiIpackets = Default.default(), ifiIerrors = Default.default(), ifiOpackets = Default.default(), ifiOerrors = Default.default(), ifiCollisions = Default.default(), ifiIbytes = Default.default(), ifiObytes = Default.default(), ifiImcasts = Default.default(), ifiOmcasts = Default.default(), ifiIqdrops = Default.default(), ifiNoproto = Default.default(), ifiRecvtiming = Default.default(), ifiXmittiming = Default.default(), ifiLastchange = Default.default())
+    }
 }
 
-public data class IfMsghdr2(
-    public var ifmMsglen: CUshort = 0u,
-    public var ifmVersion: CUchar = 0u,
-    public var ifmType: CUchar = 0u,
-    public var ifmAddrs: CInt = 0,
-    public var ifmFlags: CInt = 0,
-    public var ifmIndex: CUshort = 0u,
-    public var ifmSndLen: CInt = 0,
-    public var ifmSndMaxlen: CInt = 0,
-    public var ifmSndDrops: CInt = 0,
-    public var ifmTimer: CInt = 0,
-    public var ifmData: IfData64 = IfData64(),
-)
-
-public data class MachTaskBasicInfo(
-    public var virtualSize: MachVmSizeT = 0uL,
-    public var residentSize: MachVmSizeT = 0uL,
-    public var residentSizeMax: MachVmSizeT = 0uL,
-    public var userTime: TimeValueT = TimeValueT(),
-    public var systemTime: TimeValueT = TimeValueT(),
-    public var policy: io.github.kotlinmania.rustlang.unix.bsd.apple.PolicyT = 0,
-    public var suspendCount: IntegerT = 0,
+public open class IfMsghdr2(
+    public var ifmMsglen: CUshort,
+    public var ifmVersion: CUchar,
+    public var ifmType: CUchar,
+    public var ifmAddrs: CInt,
+    public var ifmFlags: CInt,
+    public var ifmIndex: CUshort,
+    public var ifmSndLen: CInt,
+    public var ifmSndMaxlen: CInt,
+    public var ifmSndDrops: CInt,
+    public var ifmTimer: CInt,
+    public var ifmData: IfData64,
 ) {
+    public open fun clone(): IfMsghdr2 = IfMsghdr2(ifmMsglen, ifmVersion, ifmType, ifmAddrs, ifmFlags, ifmIndex, ifmSndLen, ifmSndMaxlen, ifmSndDrops, ifmTimer, ifmData)
+
+    public companion object {
+        public fun default(): IfMsghdr2 = IfMsghdr2(ifmMsglen = Default.default(), ifmVersion = Default.default(), ifmType = Default.default(), ifmAddrs = Default.default(), ifmFlags = Default.default(), ifmIndex = Default.default(), ifmSndLen = Default.default(), ifmSndMaxlen = Default.default(), ifmSndDrops = Default.default(), ifmTimer = Default.default(), ifmData = Default.default())
+    }
+}
+
+public open class MachTaskBasicInfo(
+    public var virtualSize: MachVmSizeT,
+    public var residentSize: MachVmSizeT,
+    public var residentSizeMax: MachVmSizeT,
+    public var userTime: TimeValueT,
+    public var systemTime: TimeValueT,
+    public var policy: PolicyT,
+    public var suspendCount: IntegerT,
+) {
+    public open fun clone(): MachTaskBasicInfo = MachTaskBasicInfo(virtualSize, residentSize, residentSizeMax, userTime, systemTime, policy, suspendCount)
+
     public companion object {
         public fun typeLayout(): TypeLayout<MachTaskBasicInfo> =
             object : TypeLayout<MachTaskBasicInfo> {
@@ -8313,14 +7488,18 @@ public data class MachTaskBasicInfo(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 44, value.suspendCount)
                 }
             }
+
+        public fun default(): MachTaskBasicInfo = MachTaskBasicInfo(virtualSize = Default.default(), residentSize = Default.default(), residentSizeMax = Default.default(), userTime = Default.default(), systemTime = Default.default(), policy = Default.default(), suspendCount = Default.default())
     }
 }
 
-public data class Log2phys(
-    public var l2pFlags: CUint = 0u,
-    public var l2pContigbytes: OffT = 0L,
-    public var l2pDevoffset: OffT = 0L,
+public open class Log2phys(
+    public var l2pFlags: CUint,
+    public var l2pContigbytes: OffT,
+    public var l2pDevoffset: OffT,
 ) {
+    public open fun clone(): Log2phys = Log2phys(l2pFlags, l2pContigbytes, l2pDevoffset)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Log2phys> =
             object : TypeLayout<Log2phys> {
@@ -8349,13 +7528,17 @@ public data class Log2phys(
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 12, value.l2pDevoffset)
                 }
             }
+
+        public fun default(): Log2phys = Log2phys(l2pFlags = Default.default(), l2pContigbytes = Default.default(), l2pDevoffset = Default.default())
     }
 }
 
-public data class OsUnfairLockS(
-    public var osUnfairLockOpaque: UInt = 0u,
-    public var nonExhaustive: Unit = Unit,
+public open class OsUnfairLockS(
+    public var osUnfairLockOpaque: UInt,
+    public var nonExhaustive: Unit,
 ) {
+    public open fun clone(): OsUnfairLockS = OsUnfairLockS(osUnfairLockOpaque, nonExhaustive)
+
     public companion object {
         public fun typeLayout(): TypeLayout<OsUnfairLockS> =
             object : TypeLayout<OsUnfairLockS> {
@@ -8380,16 +7563,20 @@ public data class OsUnfairLockS(
                     (PrimitiveLayouts.UNIT).writeBytes(buf, offset + 4, value.nonExhaustive)
                 }
             }
+
+        public fun default(): OsUnfairLockS = OsUnfairLockS(osUnfairLockOpaque = Default.default(), nonExhaustive = Unit)
     }
 }
 
-public data class SockaddrVm(
-    public var svmLen: CUchar = 0u,
-    public var svmFamily: SaFamilyT = 0u,
-    public var svmReserved1: CUshort = 0u,
-    public var svmPort: CUint = 0u,
-    public var svmCid: CUint = 0u,
+public open class SockaddrVm(
+    public var svmLen: CUchar,
+    public var svmFamily: SaFamilyT,
+    public var svmReserved1: CUshort,
+    public var svmPort: CUint,
+    public var svmCid: CUint,
 ) {
+    public open fun clone(): SockaddrVm = SockaddrVm(svmLen, svmFamily, svmReserved1, svmPort, svmCid)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrVm> =
             object : TypeLayout<SockaddrVm> {
@@ -8426,15 +7613,19 @@ public data class SockaddrVm(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 8, value.svmCid)
                 }
             }
+
+        public fun default(): SockaddrVm = SockaddrVm(svmLen = Default.default(), svmFamily = Default.default(), svmReserved1 = Default.default(), svmPort = Default.default(), svmCid = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Ifdevmtu(
-    public var ifdmCurrent: CInt = 0,
-    public var ifdmMin: CInt = 0,
-    public var ifdmMax: CInt = 0,
+public open class Ifdevmtu(
+    public var ifdmCurrent: CInt,
+    public var ifdmMin: CInt,
+    public var ifdmMax: CInt,
 ) {
+    public open fun clone(): Ifdevmtu = Ifdevmtu(ifdmCurrent, ifdmMin, ifdmMax)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Ifdevmtu> =
             object : TypeLayout<Ifdevmtu> {
@@ -8463,87 +7654,67 @@ public data class Ifdevmtu(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.ifdmMax)
                 }
             }
+
+        public fun default(): Ifdevmtu = Ifdevmtu(ifdmCurrent = Default.default(), ifdmMin = Default.default(), ifdmMax = Default.default())
     }
 }
 
-public data class Ifkpi(
-    public var ifkModuleId: CUint = 0u,
-    public var ifkType: CUint = 0u,
-    public var ifkData: CAnonymousIfkData = CAnonymousIfkData(),
-)
+public open class Ifkpi(
+    public var ifkModuleId: CUint,
+    public var ifkType: CUint,
+    public var ifkData: CAnonymousIfkData,
+) {
+    public open fun clone(): Ifkpi = Ifkpi(ifkModuleId, ifkType, ifkData)
+
+    public companion object {
+        public fun default(): Ifkpi = Ifkpi(ifkModuleId = Default.default(), ifkType = Default.default(), ifkData = Default.default())
+    }
+}
 
 // Note(exhaustive): review for 1.0
-public data class Ifreq(
-    public var ifrName: UByteArray = UByteArray(IFNAMSIZ.toInt()),
-    public var ifrIfru: CAnonymousIfrIfru = CAnonymousIfrIfru(),
+public open class Ifreq(
+    public var ifrName: UByteArray,
+    public var ifrIfru: CAnonymousIfrIfru,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Ifreq) return false
-        if (!this.ifrName.contentEquals(other.ifrName)) return false
-        if (this.ifrIfru != other.ifrIfru) return false
-        return true
-    }
+    public open fun clone(): Ifreq = Ifreq(ifrName, ifrIfru)
 
-    override fun hashCode(): Int {
-        var result = this.ifrName.contentHashCode()
-        result = 31 * result + this.ifrIfru.hashCode()
-        return result
+    public companion object {
+        public fun default(): Ifreq = Ifreq(ifrName = Default.default(), ifrIfru = Default.default())
     }
 }
 
-public data class Ifaliasreq(
-    public var ifraName: UByteArray = UByteArray(IFNAMSIZ.toInt()),
-    public var ifraAddr: Sockaddr = Sockaddr(),
-    public var ifraBroadaddr: Sockaddr = Sockaddr(),
-    public var ifraMask: Sockaddr = Sockaddr(),
-    public var nonExhaustive: Unit = Unit,
+public open class Ifaliasreq(
+    public var ifraName: UByteArray,
+    public var ifraAddr: Sockaddr,
+    public var ifraBroadaddr: Sockaddr,
+    public var ifraMask: Sockaddr,
+    public var nonExhaustive: Unit,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Ifaliasreq) return false
-        if (!this.ifraName.contentEquals(other.ifraName)) return false
-        if (this.ifraAddr != other.ifraAddr) return false
-        if (this.ifraBroadaddr != other.ifraBroadaddr) return false
-        if (this.ifraMask != other.ifraMask) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
+    public open fun clone(): Ifaliasreq = Ifaliasreq(ifraName, ifraAddr, ifraBroadaddr, ifraMask, nonExhaustive)
 
-    override fun hashCode(): Int {
-        var result = this.ifraName.contentHashCode()
-        result = 31 * result + this.ifraAddr.hashCode()
-        result = 31 * result + this.ifraBroadaddr.hashCode()
-        result = 31 * result + this.ifraMask.hashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
+    public companion object {
+        public fun default(): Ifaliasreq = Ifaliasreq(ifraName = Default.default(), ifraAddr = Default.default(), ifraBroadaddr = Default.default(), ifraMask = Default.default(), nonExhaustive = Unit)
     }
 }
 
-public data class In6Ifreq(
-    public var ifrName: UByteArray = UByteArray(IFNAMSIZ.toInt()),
-    public var ifrIfru: CAnonymousIfrIfru6 = CAnonymousIfrIfru6(),
+public open class In6Ifreq(
+    public var ifrName: UByteArray,
+    public var ifrIfru: CAnonymousIfrIfru6,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is In6Ifreq) return false
-        if (!this.ifrName.contentEquals(other.ifrName)) return false
-        if (this.ifrIfru != other.ifrIfru) return false
-        return true
-    }
+    public open fun clone(): In6Ifreq = In6Ifreq(ifrName, ifrIfru)
 
-    override fun hashCode(): Int {
-        var result = this.ifrName.contentHashCode()
-        result = 31 * result + this.ifrIfru.hashCode()
-        return result
+    public companion object {
+        public fun default(): In6Ifreq = In6Ifreq(ifrName = Default.default(), ifrIfru = Default.default())
     }
 }
 
-public data class Ifconf(
-    public var ifcLen: CInt = 0,
-    public var ifcIfcu: CAnonymousIfcIfcu = CAnonymousIfcIfcu(),
+public open class Ifconf(
+    public var ifcLen: CInt,
+    public var ifcIfcu: CAnonymousIfcIfcu,
 ) {
-    public fun eq(other: Ifconf): Boolean {
+    public open fun clone(): Ifconf = Ifconf(ifcLen, ifcIfcu)
+
+    public open fun eq(other: Ifconf): Boolean {
         val lenPtr1 = addrOf(this.ifcLen)
         val lenPtr2 = addrOf(other.ifcLen)
         val ifcuPtr1 = addrOf(this.ifcIfcu)
@@ -8555,197 +7726,139 @@ public data class Ifconf(
         val ifcu2 = ifcuPtr2.readUnaligned()
         return len1 == len2 && ifcu1 == ifcu2
     }
+
+    public companion object {
+        public fun default(): Ifconf = Ifconf(ifcLen = Default.default(), ifcIfcu = Default.default())
+    }
 }
 
 public class CAnonymousIfkData internal constructor(
-    ifkPtrCtorArg: MutPtr,
-    public var ifkValue: CInt,
+    ifkPtrCtorArg: MutPtr?,
+    public var ifkValue: CInt?,
 ) {
-    public var ifkPtr: MutPtr = ifkPtrCtorArg
+    public var ifkPtr: MutPtr? = ifkPtrCtorArg
         internal set
 
     public constructor() : this(
-        ifkPtrCtorArg = MutPtr(0L),
-        ifkValue = 0,
+        ifkPtrCtorArg = null,
+        ifkValue = null,
     )
 
-    public operator fun component1(): MutPtr = this.ifkPtr
-
-    public operator fun component2(): CInt = this.ifkValue
-
-    public fun copy(ifkPtr: MutPtr = this.ifkPtr, ifkValue: CInt = this.ifkValue): CAnonymousIfkData = CAnonymousIfkData(ifkPtrCtorArg = ifkPtr, ifkValue = ifkValue)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousIfkData) return false
-        if (this.ifkPtr != other.ifkPtr) return false
-        if (this.ifkValue != other.ifkValue) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ifkPtr.hashCode()
-        result = 31 * result + this.ifkValue.hashCode()
-        return result
-    }
-
-    public fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "__c_anonymous_ifk_data").finishNonExhaustive()
     }
 
-    public fun eq(other: CAnonymousIfkData): Boolean = ((this.ifkPtr).rawAddress.toULong() == (other.ifkPtr).rawAddress.toULong()) && this.ifkValue == other.ifkValue
+    public open fun eq(other: CAnonymousIfkData): Boolean = ((this.ifkPtr).rawAddress.toULong() == (other.ifkPtr).rawAddress.toULong()) && this.ifkValue == other.ifkValue
+
+    public override fun hashCode(): Int {
+        var state = 0
+        run {
+            state = 31 * state + (this.ifkPtr).hashCode()
+            state = 31 * state + (this.ifkValue).hashCode()
+        }
+        return state
+    }
 
     public companion object {
         public operator fun invoke(
-            ifkPtr: MutPtr = MutPtr(0L),
-            ifkValue: CInt = 0,
+            ifkPtr: MutPtr? = null,
+            ifkValue: CInt? = null,
         ): CAnonymousIfkData = CAnonymousIfkData(
             ifkPtrCtorArg = ifkPtr,
             ifkValue = ifkValue,
         )
+
+        public fun default(): CAnonymousIfkData = CAnonymousIfkData()
     }
 }
 
 public class CAnonymousIfrIfru internal constructor(
-    public var ifruAddr: Sockaddr,
-    public var ifruDstaddr: Sockaddr,
-    public var ifruBroadaddr: Sockaddr,
-    public var ifruFlags: CShort,
-    public var ifruMetrics: CInt,
-    public var ifruMtu: CInt,
-    public var ifruPhys: CInt,
-    public var ifruMedia: CInt,
-    public var ifruIntval: CInt,
-    ifruDataCtorArg: MutPtr,
-    public var ifruDevmtu: Ifdevmtu,
-    public var ifruKpi: Ifkpi,
-    public var ifruWakeFlags: UInt,
-    public var ifruRouteRefcnt: UInt,
-    public var ifruCap: IntArray,
-    public var ifruFunctionalType: UInt,
+    public var ifruAddr: Sockaddr?,
+    public var ifruDstaddr: Sockaddr?,
+    public var ifruBroadaddr: Sockaddr?,
+    public var ifruFlags: CShort?,
+    public var ifruMetrics: CInt?,
+    public var ifruMtu: CInt?,
+    public var ifruPhys: CInt?,
+    public var ifruMedia: CInt?,
+    public var ifruIntval: CInt?,
+    ifruDataCtorArg: MutPtr?,
+    public var ifruDevmtu: Ifdevmtu?,
+    public var ifruKpi: Ifkpi?,
+    public var ifruWakeFlags: UInt?,
+    public var ifruRouteRefcnt: UInt?,
+    public var ifruCap: IntArray?,
+    public var ifruFunctionalType: UInt?,
 ) {
-    public var ifruData: MutPtr = ifruDataCtorArg
+    public var ifruData: MutPtr? = ifruDataCtorArg
         internal set
 
     public constructor() : this(
-        ifruAddr = Sockaddr(),
-        ifruDstaddr = Sockaddr(),
-        ifruBroadaddr = Sockaddr(),
-        ifruFlags = 0,
-        ifruMetrics = 0,
-        ifruMtu = 0,
-        ifruPhys = 0,
-        ifruMedia = 0,
-        ifruIntval = 0,
-        ifruDataCtorArg = MutPtr(0L),
-        ifruDevmtu = Ifdevmtu(),
-        ifruKpi = Ifkpi(),
-        ifruWakeFlags = 0u,
-        ifruRouteRefcnt = 0u,
-        ifruCap = IntArray(2),
-        ifruFunctionalType = 0u,
+        ifruAddr = null,
+        ifruDstaddr = null,
+        ifruBroadaddr = null,
+        ifruFlags = null,
+        ifruMetrics = null,
+        ifruMtu = null,
+        ifruPhys = null,
+        ifruMedia = null,
+        ifruIntval = null,
+        ifruDataCtorArg = null,
+        ifruDevmtu = null,
+        ifruKpi = null,
+        ifruWakeFlags = null,
+        ifruRouteRefcnt = null,
+        ifruCap = null,
+        ifruFunctionalType = null,
     )
 
-    public operator fun component1(): Sockaddr = this.ifruAddr
-
-    public operator fun component2(): Sockaddr = this.ifruDstaddr
-
-    public operator fun component3(): Sockaddr = this.ifruBroadaddr
-
-    public operator fun component4(): CShort = this.ifruFlags
-
-    public operator fun component5(): CInt = this.ifruMetrics
-
-    public operator fun component6(): CInt = this.ifruMtu
-
-    public operator fun component7(): CInt = this.ifruPhys
-
-    public operator fun component8(): CInt = this.ifruMedia
-
-    public operator fun component9(): CInt = this.ifruIntval
-
-    public operator fun component10(): MutPtr = this.ifruData
-
-    public operator fun component11(): Ifdevmtu = this.ifruDevmtu
-
-    public operator fun component12(): Ifkpi = this.ifruKpi
-
-    public operator fun component13(): UInt = this.ifruWakeFlags
-
-    public operator fun component14(): UInt = this.ifruRouteRefcnt
-
-    public operator fun component15(): IntArray = this.ifruCap
-
-    public operator fun component16(): UInt = this.ifruFunctionalType
-
-    public fun copy(ifruAddr: Sockaddr = this.ifruAddr, ifruDstaddr: Sockaddr = this.ifruDstaddr, ifruBroadaddr: Sockaddr = this.ifruBroadaddr, ifruFlags: CShort = this.ifruFlags, ifruMetrics: CInt = this.ifruMetrics, ifruMtu: CInt = this.ifruMtu, ifruPhys: CInt = this.ifruPhys, ifruMedia: CInt = this.ifruMedia, ifruIntval: CInt = this.ifruIntval, ifruData: MutPtr = this.ifruData, ifruDevmtu: Ifdevmtu = this.ifruDevmtu, ifruKpi: Ifkpi = this.ifruKpi, ifruWakeFlags: UInt = this.ifruWakeFlags, ifruRouteRefcnt: UInt = this.ifruRouteRefcnt, ifruCap: IntArray = this.ifruCap, ifruFunctionalType: UInt = this.ifruFunctionalType): CAnonymousIfrIfru = CAnonymousIfrIfru(ifruAddr = ifruAddr, ifruDstaddr = ifruDstaddr, ifruBroadaddr = ifruBroadaddr, ifruFlags = ifruFlags, ifruMetrics = ifruMetrics, ifruMtu = ifruMtu, ifruPhys = ifruPhys, ifruMedia = ifruMedia, ifruIntval = ifruIntval, ifruDataCtorArg = ifruData, ifruDevmtu = ifruDevmtu, ifruKpi = ifruKpi, ifruWakeFlags = ifruWakeFlags, ifruRouteRefcnt = ifruRouteRefcnt, ifruCap = ifruCap, ifruFunctionalType = ifruFunctionalType)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousIfrIfru) return false
-        if (this.ifruAddr != other.ifruAddr) return false
-        if (this.ifruDstaddr != other.ifruDstaddr) return false
-        if (this.ifruBroadaddr != other.ifruBroadaddr) return false
-        if (this.ifruFlags != other.ifruFlags) return false
-        if (this.ifruMetrics != other.ifruMetrics) return false
-        if (this.ifruMtu != other.ifruMtu) return false
-        if (this.ifruPhys != other.ifruPhys) return false
-        if (this.ifruMedia != other.ifruMedia) return false
-        if (this.ifruIntval != other.ifruIntval) return false
-        if (this.ifruData != other.ifruData) return false
-        if (this.ifruDevmtu != other.ifruDevmtu) return false
-        if (this.ifruKpi != other.ifruKpi) return false
-        if (this.ifruWakeFlags != other.ifruWakeFlags) return false
-        if (this.ifruRouteRefcnt != other.ifruRouteRefcnt) return false
-        if (!this.ifruCap.contentEquals(other.ifruCap)) return false
-        if (this.ifruFunctionalType != other.ifruFunctionalType) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ifruAddr.hashCode()
-        result = 31 * result + this.ifruDstaddr.hashCode()
-        result = 31 * result + this.ifruBroadaddr.hashCode()
-        result = 31 * result + this.ifruFlags.hashCode()
-        result = 31 * result + this.ifruMetrics.hashCode()
-        result = 31 * result + this.ifruMtu.hashCode()
-        result = 31 * result + this.ifruPhys.hashCode()
-        result = 31 * result + this.ifruMedia.hashCode()
-        result = 31 * result + this.ifruIntval.hashCode()
-        result = 31 * result + this.ifruData.hashCode()
-        result = 31 * result + this.ifruDevmtu.hashCode()
-        result = 31 * result + this.ifruKpi.hashCode()
-        result = 31 * result + this.ifruWakeFlags.hashCode()
-        result = 31 * result + this.ifruRouteRefcnt.hashCode()
-        result = 31 * result + this.ifruCap.contentHashCode()
-        result = 31 * result + this.ifruFunctionalType.hashCode()
-        return result
-    }
-
-    public fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "__c_anonymous_ifr_ifru").finishNonExhaustive()
     }
 
-    public fun eq(other: CAnonymousIfrIfru): Boolean = this.ifruAddr == other.ifruAddr && this.ifruDstaddr == other.ifruDstaddr && this.ifruBroadaddr == other.ifruBroadaddr && this.ifruFlags == other.ifruFlags && this.ifruMetrics == other.ifruMetrics && this.ifruMtu == other.ifruMtu && this.ifruPhys == other.ifruPhys && this.ifruMedia == other.ifruMedia && this.ifruIntval == other.ifruIntval && ((this.ifruData).rawAddress.toULong() == (other.ifruData).rawAddress.toULong()) && this.ifruDevmtu == other.ifruDevmtu && this.ifruKpi == other.ifruKpi && this.ifruWakeFlags == other.ifruWakeFlags && this.ifruRouteRefcnt == other.ifruRouteRefcnt && (this.ifruCap.zip(other.ifruCap)).all({ (a, b) -> a == b }) && this.ifruFunctionalType == other.ifruFunctionalType
+    public open fun eq(other: CAnonymousIfrIfru): Boolean = this.ifruAddr == other.ifruAddr && this.ifruDstaddr == other.ifruDstaddr && this.ifruBroadaddr == other.ifruBroadaddr && this.ifruFlags == other.ifruFlags && this.ifruMetrics == other.ifruMetrics && this.ifruMtu == other.ifruMtu && this.ifruPhys == other.ifruPhys && this.ifruMedia == other.ifruMedia && this.ifruIntval == other.ifruIntval && ((this.ifruData).rawAddress.toULong() == (other.ifruData).rawAddress.toULong()) && this.ifruDevmtu == other.ifruDevmtu && this.ifruKpi == other.ifruKpi && this.ifruWakeFlags == other.ifruWakeFlags && this.ifruRouteRefcnt == other.ifruRouteRefcnt && (this.ifruCap.zip(other.ifruCap)).all({ (a, b) -> a == b }) && this.ifruFunctionalType == other.ifruFunctionalType
+
+    public override fun hashCode(): Int {
+        var state = 0
+        run {
+            state = 31 * state + (this.ifruAddr).hashCode()
+            state = 31 * state + (this.ifruDstaddr).hashCode()
+            state = 31 * state + (this.ifruBroadaddr).hashCode()
+            state = 31 * state + (this.ifruFlags).hashCode()
+            state = 31 * state + (this.ifruMetrics).hashCode()
+            state = 31 * state + (this.ifruMtu).hashCode()
+            state = 31 * state + (this.ifruPhys).hashCode()
+            state = 31 * state + (this.ifruMedia).hashCode()
+            state = 31 * state + (this.ifruIntval).hashCode()
+            state = 31 * state + (this.ifruData).hashCode()
+            state = 31 * state + (this.ifruDevmtu).hashCode()
+            state = 31 * state + (this.ifruKpi).hashCode()
+            state = 31 * state + (this.ifruWakeFlags).hashCode()
+            state = 31 * state + (this.ifruRouteRefcnt).hashCode()
+            state = 31 * state + (this.ifruCap).hashCode()
+            state = 31 * state + (this.ifruFunctionalType).hashCode()
+        }
+        return state
+    }
 
     public companion object {
         public operator fun invoke(
-            ifruAddr: Sockaddr = Sockaddr(),
-            ifruDstaddr: Sockaddr = Sockaddr(),
-            ifruBroadaddr: Sockaddr = Sockaddr(),
-            ifruFlags: CShort = 0,
-            ifruMetrics: CInt = 0,
-            ifruMtu: CInt = 0,
-            ifruPhys: CInt = 0,
-            ifruMedia: CInt = 0,
-            ifruIntval: CInt = 0,
-            ifruData: MutPtr = MutPtr(0L),
-            ifruDevmtu: Ifdevmtu = Ifdevmtu(),
-            ifruKpi: Ifkpi = Ifkpi(),
-            ifruWakeFlags: UInt = 0u,
-            ifruRouteRefcnt: UInt = 0u,
-            ifruCap: IntArray = IntArray(2),
-            ifruFunctionalType: UInt = 0u,
+            ifruAddr: Sockaddr? = null,
+            ifruDstaddr: Sockaddr? = null,
+            ifruBroadaddr: Sockaddr? = null,
+            ifruFlags: CShort? = null,
+            ifruMetrics: CInt? = null,
+            ifruMtu: CInt? = null,
+            ifruPhys: CInt? = null,
+            ifruMedia: CInt? = null,
+            ifruIntval: CInt? = null,
+            ifruData: MutPtr? = null,
+            ifruDevmtu: Ifdevmtu? = null,
+            ifruKpi: Ifkpi? = null,
+            ifruWakeFlags: UInt? = null,
+            ifruRouteRefcnt: UInt? = null,
+            ifruCap: IntArray? = null,
+            ifruFunctionalType: UInt? = null,
         ): CAnonymousIfrIfru = CAnonymousIfrIfru(
             ifruAddr = ifruAddr,
             ifruDstaddr = ifruDstaddr,
@@ -8764,166 +7877,116 @@ public class CAnonymousIfrIfru internal constructor(
             ifruCap = ifruCap,
             ifruFunctionalType = ifruFunctionalType,
         )
+
+        public fun default(): CAnonymousIfrIfru = CAnonymousIfrIfru()
     }
 }
 
 public class CAnonymousIfcIfcu internal constructor(
-    ifcuBufCtorArg: MutPtr,
-    ifcuReqCtorArg: MutPtr,
+    ifcuBufCtorArg: MutPtr?,
+    ifcuReqCtorArg: MutPtr?,
 ) {
-    public var ifcuBuf: MutPtr = ifcuBufCtorArg
+    public var ifcuBuf: MutPtr? = ifcuBufCtorArg
         internal set
 
-    public var ifcuReq: MutPtr = ifcuReqCtorArg
+    public var ifcuReq: MutPtr? = ifcuReqCtorArg
         internal set
 
     public constructor() : this(
-        ifcuBufCtorArg = MutPtr(0L),
-        ifcuReqCtorArg = MutPtr(0L),
+        ifcuBufCtorArg = null,
+        ifcuReqCtorArg = null,
     )
 
-    public operator fun component1(): MutPtr = this.ifcuBuf
-
-    public operator fun component2(): MutPtr = this.ifcuReq
-
-    public fun copy(ifcuBuf: MutPtr = this.ifcuBuf, ifcuReq: MutPtr = this.ifcuReq): CAnonymousIfcIfcu = CAnonymousIfcIfcu(ifcuBufCtorArg = ifcuBuf, ifcuReqCtorArg = ifcuReq)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousIfcIfcu) return false
-        if (this.ifcuBuf != other.ifcuBuf) return false
-        if (this.ifcuReq != other.ifcuReq) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ifcuBuf.hashCode()
-        result = 31 * result + this.ifcuReq.hashCode()
-        return result
-    }
-
-    public fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "__c_anonymous_ifc_ifcu").finishNonExhaustive()
     }
 
-    public fun eq(other: CAnonymousIfcIfcu): Boolean = ((this.ifcuBuf).rawAddress.toULong() == (other.ifcuBuf).rawAddress.toULong()) && ((this.ifcuReq).rawAddress.toULong() == (other.ifcuReq).rawAddress.toULong())
+    public open fun eq(other: CAnonymousIfcIfcu): Boolean = ((this.ifcuBuf).rawAddress.toULong() == (other.ifcuBuf).rawAddress.toULong()) && ((this.ifcuReq).rawAddress.toULong() == (other.ifcuReq).rawAddress.toULong())
+
+    public override fun hashCode(): Int {
+        var state = 0
+        state = 31 * state + (this.ifcuBuf).hashCode()
+        state = 31 * state + (this.ifcuReq).hashCode()
+        return state
+    }
 
     public companion object {
         public operator fun invoke(
-            ifcuBuf: MutPtr = MutPtr(0L),
-            ifcuReq: MutPtr = MutPtr(0L),
+            ifcuBuf: MutPtr? = null,
+            ifcuReq: MutPtr? = null,
         ): CAnonymousIfcIfcu = CAnonymousIfcIfcu(
             ifcuBufCtorArg = ifcuBuf,
             ifcuReqCtorArg = ifcuReq,
         )
+
+        public fun default(): CAnonymousIfcIfcu = CAnonymousIfcIfcu()
     }
 }
 
 public class CAnonymousIfrIfru6 internal constructor(
-    public var ifruAddr: SockaddrIn6,
-    public var ifruDstaddr: SockaddrIn6,
-    public var ifruFlags: CInt,
-    public var ifruFlags6: CInt,
-    public var ifruMetrics: CInt,
-    public var ifruIntval: CInt,
-    ifruDataCtorArg: MutPtr,
-    public var ifruLifetime: In6Addrlifetime,
-    public var ifruStat: In6Ifstat,
-    public var ifruIcmp6stat: Icmp6Ifstat,
-    public var ifruScopeId: UIntArray,
+    public var ifruAddr: SockaddrIn6?,
+    public var ifruDstaddr: SockaddrIn6?,
+    public var ifruFlags: CInt?,
+    public var ifruFlags6: CInt?,
+    public var ifruMetrics: CInt?,
+    public var ifruIntval: CInt?,
+    ifruDataCtorArg: MutPtr?,
+    public var ifruLifetime: In6Addrlifetime?,
+    public var ifruStat: In6Ifstat?,
+    public var ifruIcmp6stat: Icmp6Ifstat?,
+    public var ifruScopeId: UIntArray?,
 ) {
-    public var ifruData: MutPtr = ifruDataCtorArg
+    public var ifruData: MutPtr? = ifruDataCtorArg
         internal set
 
     public constructor() : this(
-        ifruAddr = SockaddrIn6(),
-        ifruDstaddr = SockaddrIn6(),
-        ifruFlags = 0,
-        ifruFlags6 = 0,
-        ifruMetrics = 0,
-        ifruIntval = 0,
-        ifruDataCtorArg = MutPtr(0L),
-        ifruLifetime = In6Addrlifetime(),
-        ifruStat = In6Ifstat(),
-        ifruIcmp6stat = Icmp6Ifstat(),
-        ifruScopeId = UIntArray(SCOPE6_ID_MAX.toInt()),
+        ifruAddr = null,
+        ifruDstaddr = null,
+        ifruFlags = null,
+        ifruFlags6 = null,
+        ifruMetrics = null,
+        ifruIntval = null,
+        ifruDataCtorArg = null,
+        ifruLifetime = null,
+        ifruStat = null,
+        ifruIcmp6stat = null,
+        ifruScopeId = null,
     )
 
-    public operator fun component1(): SockaddrIn6 = this.ifruAddr
-
-    public operator fun component2(): SockaddrIn6 = this.ifruDstaddr
-
-    public operator fun component3(): CInt = this.ifruFlags
-
-    public operator fun component4(): CInt = this.ifruFlags6
-
-    public operator fun component5(): CInt = this.ifruMetrics
-
-    public operator fun component6(): CInt = this.ifruIntval
-
-    public operator fun component7(): MutPtr = this.ifruData
-
-    public operator fun component8(): In6Addrlifetime = this.ifruLifetime
-
-    public operator fun component9(): In6Ifstat = this.ifruStat
-
-    public operator fun component10(): Icmp6Ifstat = this.ifruIcmp6stat
-
-    public operator fun component11(): UIntArray = this.ifruScopeId
-
-    public fun copy(ifruAddr: SockaddrIn6 = this.ifruAddr, ifruDstaddr: SockaddrIn6 = this.ifruDstaddr, ifruFlags: CInt = this.ifruFlags, ifruFlags6: CInt = this.ifruFlags6, ifruMetrics: CInt = this.ifruMetrics, ifruIntval: CInt = this.ifruIntval, ifruData: MutPtr = this.ifruData, ifruLifetime: In6Addrlifetime = this.ifruLifetime, ifruStat: In6Ifstat = this.ifruStat, ifruIcmp6stat: Icmp6Ifstat = this.ifruIcmp6stat, ifruScopeId: UIntArray = this.ifruScopeId): CAnonymousIfrIfru6 = CAnonymousIfrIfru6(ifruAddr = ifruAddr, ifruDstaddr = ifruDstaddr, ifruFlags = ifruFlags, ifruFlags6 = ifruFlags6, ifruMetrics = ifruMetrics, ifruIntval = ifruIntval, ifruDataCtorArg = ifruData, ifruLifetime = ifruLifetime, ifruStat = ifruStat, ifruIcmp6stat = ifruIcmp6stat, ifruScopeId = ifruScopeId)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousIfrIfru6) return false
-        if (this.ifruAddr != other.ifruAddr) return false
-        if (this.ifruDstaddr != other.ifruDstaddr) return false
-        if (this.ifruFlags != other.ifruFlags) return false
-        if (this.ifruFlags6 != other.ifruFlags6) return false
-        if (this.ifruMetrics != other.ifruMetrics) return false
-        if (this.ifruIntval != other.ifruIntval) return false
-        if (this.ifruData != other.ifruData) return false
-        if (this.ifruLifetime != other.ifruLifetime) return false
-        if (this.ifruStat != other.ifruStat) return false
-        if (this.ifruIcmp6stat != other.ifruIcmp6stat) return false
-        if (!this.ifruScopeId.contentEquals(other.ifruScopeId)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ifruAddr.hashCode()
-        result = 31 * result + this.ifruDstaddr.hashCode()
-        result = 31 * result + this.ifruFlags.hashCode()
-        result = 31 * result + this.ifruFlags6.hashCode()
-        result = 31 * result + this.ifruMetrics.hashCode()
-        result = 31 * result + this.ifruIntval.hashCode()
-        result = 31 * result + this.ifruData.hashCode()
-        result = 31 * result + this.ifruLifetime.hashCode()
-        result = 31 * result + this.ifruStat.hashCode()
-        result = 31 * result + this.ifruIcmp6stat.hashCode()
-        result = 31 * result + this.ifruScopeId.contentHashCode()
-        return result
-    }
-
-    public fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "__c_anonymous_ifr_ifru6").finishNonExhaustive()
     }
 
-    public fun eq(other: CAnonymousIfrIfru6): Boolean = this.ifruAddr == other.ifruAddr && this.ifruDstaddr == other.ifruDstaddr && this.ifruFlags == other.ifruFlags && this.ifruFlags6 == other.ifruFlags6 && this.ifruMetrics == other.ifruMetrics && this.ifruIntval == other.ifruIntval && ((this.ifruData).rawAddress.toULong() == (other.ifruData).rawAddress.toULong()) && (this.ifruScopeId.zip(other.ifruScopeId)).all({ (a, b) -> a == b })
+    public open fun eq(other: CAnonymousIfrIfru6): Boolean = this.ifruAddr == other.ifruAddr && this.ifruDstaddr == other.ifruDstaddr && this.ifruFlags == other.ifruFlags && this.ifruFlags6 == other.ifruFlags6 && this.ifruMetrics == other.ifruMetrics && this.ifruIntval == other.ifruIntval && ((this.ifruData).rawAddress.toULong() == (other.ifruData).rawAddress.toULong()) && (this.ifruScopeId.zip(other.ifruScopeId)).all({ (a, b) -> a == b })
+
+    public override fun hashCode(): Int {
+        var state = 0
+        run {
+            state = 31 * state + (this.ifruAddr).hashCode()
+            state = 31 * state + (this.ifruDstaddr).hashCode()
+            state = 31 * state + (this.ifruFlags).hashCode()
+            state = 31 * state + (this.ifruFlags6).hashCode()
+            state = 31 * state + (this.ifruMetrics).hashCode()
+            state = 31 * state + (this.ifruIntval).hashCode()
+            state = 31 * state + (this.ifruData).hashCode()
+            state = 31 * state + (this.ifruScopeId).hashCode()
+        }
+        return state
+    }
 
     public companion object {
         public operator fun invoke(
-            ifruAddr: SockaddrIn6 = SockaddrIn6(),
-            ifruDstaddr: SockaddrIn6 = SockaddrIn6(),
-            ifruFlags: CInt = 0,
-            ifruFlags6: CInt = 0,
-            ifruMetrics: CInt = 0,
-            ifruIntval: CInt = 0,
-            ifruData: MutPtr = MutPtr(0L),
-            ifruLifetime: In6Addrlifetime = In6Addrlifetime(),
-            ifruStat: In6Ifstat = In6Ifstat(),
-            ifruIcmp6stat: Icmp6Ifstat = Icmp6Ifstat(),
-            ifruScopeId: UIntArray = UIntArray(SCOPE6_ID_MAX.toInt()),
+            ifruAddr: SockaddrIn6? = null,
+            ifruDstaddr: SockaddrIn6? = null,
+            ifruFlags: CInt? = null,
+            ifruFlags6: CInt? = null,
+            ifruMetrics: CInt? = null,
+            ifruIntval: CInt? = null,
+            ifruData: MutPtr? = null,
+            ifruLifetime: In6Addrlifetime? = null,
+            ifruStat: In6Ifstat? = null,
+            ifruIcmp6stat: Icmp6Ifstat? = null,
+            ifruScopeId: UIntArray? = null,
         ): CAnonymousIfrIfru6 = CAnonymousIfrIfru6(
             ifruAddr = ifruAddr,
             ifruDstaddr = ifruDstaddr,
@@ -8937,61 +8000,45 @@ public class CAnonymousIfrIfru6 internal constructor(
             ifruIcmp6stat = ifruIcmp6stat,
             ifruScopeId = ifruScopeId,
         )
+
+        public fun default(): CAnonymousIfrIfru6 = CAnonymousIfrIfru6()
     }
 }
 
 public class Semun internal constructor(
-    public var value: CInt,
-    bufCtorArg: MutPtr,
-    arrayCtorArg: MutPtr,
+    public var value: CInt?,
+    bufCtorArg: MutPtr?,
+    arrayCtorArg: MutPtr?,
 ) {
-    public var buf: MutPtr = bufCtorArg
+    public var buf: MutPtr? = bufCtorArg
         internal set
 
-    public var array: MutPtr = arrayCtorArg
+    public var array: MutPtr? = arrayCtorArg
         internal set
 
     public constructor() : this(
-        value = 0,
-        bufCtorArg = MutPtr(0L),
-        arrayCtorArg = MutPtr(0L),
+        value = null,
+        bufCtorArg = null,
+        arrayCtorArg = null,
     )
 
-    public operator fun component1(): CInt = this.value
-
-    public operator fun component2(): MutPtr = this.buf
-
-    public operator fun component3(): MutPtr = this.array
-
-    public fun copy(value: CInt = this.value, buf: MutPtr = this.buf, array: MutPtr = this.array): Semun = Semun(value = value, bufCtorArg = buf, arrayCtorArg = array)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Semun) return false
-        if (this.value != other.value) return false
-        if (this.buf != other.buf) return false
-        if (this.array != other.array) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.value.hashCode()
-        result = 31 * result + this.buf.hashCode()
-        result = 31 * result + this.array.hashCode()
-        return result
-    }
-
-    public fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "semun").finishNonExhaustive()
     }
 
-    public fun eq(other: Semun): Boolean = this.value == other.value
+    public open fun eq(other: Semun): Boolean = this.value == other.value
+
+    public override fun hashCode(): Int {
+        var state = 0
+        state = 31 * state + (this.value).hashCode()
+        return state
+    }
 
     public companion object {
         public operator fun invoke(
-            value: CInt = 0,
-            buf: MutPtr = MutPtr(0L),
-            array: MutPtr = MutPtr(0L),
+            value: CInt? = null,
+            buf: MutPtr? = null,
+            array: MutPtr? = null,
         ): Semun = Semun(
             value = value,
             bufCtorArg = buf,

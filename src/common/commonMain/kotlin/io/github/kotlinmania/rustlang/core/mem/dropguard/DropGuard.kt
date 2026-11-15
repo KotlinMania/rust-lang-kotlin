@@ -1,8 +1,8 @@
 // port-lint: source mem/drop_guard.rs
 package io.github.kotlinmania.rustlang.core.mem.dropguard
 
+import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.mem.manuallydrop.ManuallyDrop
 
 /**
  * Wrap a value and run a closure when dropped.
@@ -42,7 +42,11 @@ public open class DropGuard<T, F>(
         f(inner)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append((this).toString())
+            Result.Ok(Unit)
+        }
 
     public companion object {
         /**

@@ -1,12 +1,13 @@
 // port-lint: source math/cbrt.rs
 package io.github.kotlinmania.rustlang.libm.math.cbrt
 
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf64
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.libm.math.support.FpResult
 import io.github.kotlinmania.rustlang.libm.math.support.Round
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath
-import io.github.kotlinmania.rustlang.math.support.hexfloat.hf64
-import kotlin.math.abs
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
 
 /**
  * Compute the cube root of the argument.
@@ -66,7 +67,7 @@ public fun cbrtRound(x: Double, round: Round): FpResult<Double> {
         if (e == Double.EXP_SAT.toUInt() || ix == 0uL) {
             return FpResult.ok(x + x)
         }
-        val nz = rustLeadingZeros(ix) - 11u
+        val nz = ix.leadingZeros() - 11u
         // subnormal
         mant = mant shl nz.toInt()
         mant = mant and Double.SIG_MASK.toULong()
@@ -119,14 +120,14 @@ public fun cbrtRound(x: Double, round: Round): FpResult<Double> {
     dy = (y - y1) - dy
     // the approximation of zz^(1/3) is now y1 + dy, where |dy| < 1/2 ulp(y)
     // (for rounding to nearest)
-    var ady: Double = abs(dy)
+    var ady: Double = kmFabsf64(dy)
     // For directed roundings, ady0 is tiny when dy is tiny, or ady0 is near
     // from ulp(1);
     // for rounding to nearest, ady0 is tiny when dy is near from 1/2 ulp(1),
     // or from 3/2 ulp(1).
-    var ady0: Double = abs((ady - off[round.toInt()]))
+    var ady0: Double = kmFabsf64((ady - off[round.toInt()]))
     var ady1: Double =
-        abs((ady -
+        kmFabsf64((ady -
             (run {
                 val X: Double = hf64("0x1p-52")
                 X
@@ -151,9 +152,9 @@ public fun cbrtRound(x: Double, round: Round): FpResult<Double> {
         y = y1 - dy
         dy = (y1 - y) - dy
         y1 = y
-        ady = abs(dy)
-        ady0 = abs((ady - off[round.toInt()]))
-        ady1 = abs((ady -
+        ady = kmFabsf64(dy)
+        ady0 = kmFabsf64((ady - off[round.toInt()]))
+        ady1 = kmFabsf64((ady -
             (run {
                 val X: Double = hf64("0x1p-52")
                 X
@@ -169,17 +170,17 @@ public fun cbrtRound(x: Double, round: Round): FpResult<Double> {
                     X
                 }) {
             coldPath()
-            val azz: Double = abs(zz)
+            val azz: Double = kmFabsf64(zz)
             // ~ 0x1.79d15d0e8d59b80000000000000ffc3dp+0
             if (azz ==
                 run {
                     val X: Double = hf64("0x1.9b78223aa307cp+1")
                     X
                 }) {
-                y1 = run {
+                y1 = kmCopysignf64(run {
                     val X: Double = hf64("0x1.79d15d0e8d59cp+0")
                     X
-                }.copysign(zz)
+                }, zz)
             }
             // ~ 0x1.de87aa837820e80000000000001c0f08p+0
             if (azz ==
@@ -187,10 +188,10 @@ public fun cbrtRound(x: Double, round: Round): FpResult<Double> {
                     val X: Double = hf64("0x1.a202bfc89ddffp+2")
                     X
                 }) {
-                y1 = run {
+                y1 = kmCopysignf64(run {
                     val X: Double = hf64("0x1.de87aa837820fp+0")
                     X
-                }.copysign(zz)
+                }, zz)
             }
             if (round != Round.Nearest) {
                 val wlist =
@@ -248,7 +249,7 @@ public fun cbrtRound(x: Double, round: Round): FpResult<Double> {
                             } else {
                                 0.0
                             }
-                        y1 = (b + tmp).copysign(zz)
+                        y1 = kmCopysignf64((b + tmp), zz)
                     }
                 }
             }
@@ -262,11 +263,11 @@ public fun cbrtRound(x: Double, round: Round): FpResult<Double> {
         coldPath()
         var cvt4: ULong = y1.toRawBits().toULong()
         cvt4 = (cvt4 + (164uL shl 15)) and 0xffffffffffff0000uL
-        if (abs(((Double.fromBits(cvt4.toLong()) - y1) - dy)) <
+        if (kmFabsf64(((Double.fromBits(cvt4.toLong()) - y1) - dy)) <
             run {
                 val X: Double = hf64("0x1p-60")
                 X
-            } || abs((zz)) == 1.0) {
+            } || kmFabsf64((zz)) == 1.0) {
             cvt3 = (cvt3 + (1uL shl 15)) and 0xffffffffffff0000uL
         }
     }

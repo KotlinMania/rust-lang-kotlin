@@ -3,10 +3,9 @@ package io.github.kotlinmania.rustlang.libm.math.support.featuredetect
 
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.math.j1.V0
-import io.github.kotlinmania.rustlang.math.lgammar.V1
-import io.github.kotlinmania.rustlang.math.lgammar.V2
-import io.github.kotlinmania.rustlang.math.support.featuredetect.selectOnce
+import io.github.kotlinmania.rustlang.libm.math.j1.V0
+import io.github.kotlinmania.rustlang.libm.math.lgammar.V1
+import io.github.kotlinmania.rustlang.libm.math.lgammar.V2
 
 // Helpers for runtime target feature detection that are shared across architectures.
 

@@ -2,12 +2,12 @@
 package io.github.kotlinmania.rustlang.std.sync.oncelock
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
-import io.github.kotlinmania.rustlang.sync.once.Once
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -671,7 +671,7 @@ public open class OnceLock<T> internal constructor(
          * }
          * ```
          */
-        public fun <T> newInit(initValue: T): OnceLock<T> = OnceLock(once = Once.newComplete(), value = UnsafeCell.new(MaybeUninit.new(initValue, ObjectSlotLayout<T>())), marker = Unit)
+        public fun <T> newInit(initValue: T): OnceLock<T> = OnceLock(once = Once.newComplete(), value = UnsafeCell.new(MaybeUninit.new(initValue, UnresolvedTypeLayout<T>())), marker = Unit)
 
         /**
          * Creates a new uninitialized cell.
@@ -705,6 +705,6 @@ public open class OnceLock<T> internal constructor(
          * }
          * ```
          */
-        public fun <T> from(value: T): OnceLock<T> = OnceLock(once = Once.newComplete(), value = UnsafeCell.new(MaybeUninit.new(value, ObjectSlotLayout<T>())), marker = Unit)
+        public fun <T> from(value: T): OnceLock<T> = OnceLock(once = Once.newComplete(), value = UnsafeCell.new(MaybeUninit.new(value, UnresolvedTypeLayout<T>())), marker = Unit)
     }
 }

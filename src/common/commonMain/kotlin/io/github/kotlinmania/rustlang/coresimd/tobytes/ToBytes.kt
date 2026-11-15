@@ -1,8 +1,8 @@
 // port-lint: source to_bytes.rs
 package io.github.kotlinmania.rustlang.coresimd.tobytes
 
-import io.github.kotlinmania.rustlang.Simd
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.coresimd.Simd
 
 /**
  * Converts SIMD vectors to vectors of bytes

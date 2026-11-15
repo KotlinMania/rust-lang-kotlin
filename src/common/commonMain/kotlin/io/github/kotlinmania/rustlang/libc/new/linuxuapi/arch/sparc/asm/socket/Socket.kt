@@ -1,8 +1,8 @@
 // port-lint: source new/linux_uapi/arch/sparc/asm/socket.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.arch.sparc.asm.socket
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `arch / sparc / include / uapi / asm / socket.h`
 

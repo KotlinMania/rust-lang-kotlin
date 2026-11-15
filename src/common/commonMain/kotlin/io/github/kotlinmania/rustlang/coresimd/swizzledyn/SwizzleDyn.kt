@@ -1,11 +1,11 @@
 // port-lint: source swizzle_dyn.rs
 package io.github.kotlinmania.rustlang.coresimd.swizzledyn
 
-import io.github.kotlinmania.rustlang.Simd
-import io.github.kotlinmania.rustlang.Swizzle
 import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
-import io.github.kotlinmania.rustlang.x86.mm256Permute2x128Si256 as avx2CrossShuffle
-import io.github.kotlinmania.rustlang.x86.mm256ShuffleEpi8 as avx2HalfPshufb
+import io.github.kotlinmania.rustlang.coresimd.Simd
+import io.github.kotlinmania.rustlang.coresimd.Swizzle
+import io.github.kotlinmania.rustlang.coresimd.x86.mm256Permute2x128Si256 as avx2CrossShuffle
+import io.github.kotlinmania.rustlang.coresimd.x86.mm256ShuffleEpi8 as avx2HalfPshufb
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: T, arg1: T): T

@@ -1,10 +1,10 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.aarch64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
-import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
 
 public val O_DIRECT: CInt = 0x10000
 

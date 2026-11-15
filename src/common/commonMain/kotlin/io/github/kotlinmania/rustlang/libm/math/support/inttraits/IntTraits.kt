@@ -5,42 +5,41 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.core.num.rustOverflowingAdd
-import io.github.kotlinmania.rustlang.core.num.rustOverflowingSub
-import io.github.kotlinmania.rustlang.core.num.rustWrappingMul
-import io.github.kotlinmania.rustlang.core.num.rustWrappingShr
-import io.github.kotlinmania.rustlang.core.ops.Add
-import io.github.kotlinmania.rustlang.core.ops.AddAssign
-import io.github.kotlinmania.rustlang.core.ops.BitAnd
-import io.github.kotlinmania.rustlang.core.ops.BitAndAssign
-import io.github.kotlinmania.rustlang.core.ops.BitOr
-import io.github.kotlinmania.rustlang.core.ops.BitOrAssign
-import io.github.kotlinmania.rustlang.core.ops.BitXor
-import io.github.kotlinmania.rustlang.core.ops.BitXorAssign
-import io.github.kotlinmania.rustlang.core.ops.Div
-import io.github.kotlinmania.rustlang.core.ops.DivAssign
-import io.github.kotlinmania.rustlang.core.ops.Mul
-import io.github.kotlinmania.rustlang.core.ops.MulAssign
-import io.github.kotlinmania.rustlang.core.ops.Not
-import io.github.kotlinmania.rustlang.core.ops.Rem
-import io.github.kotlinmania.rustlang.core.ops.RemAssign
-import io.github.kotlinmania.rustlang.core.ops.Shl
-import io.github.kotlinmania.rustlang.core.ops.ShlAssign
-import io.github.kotlinmania.rustlang.core.ops.Shr
-import io.github.kotlinmania.rustlang.core.ops.ShrAssign
-import io.github.kotlinmania.rustlang.core.ops.Sub
-import io.github.kotlinmania.rustlang.core.ops.SubAssign
-import io.github.kotlinmania.rustlang.math.support.hexfloat.DisplayHex
-import io.github.kotlinmania.rustlang.math.support.inttraits.OtherSign
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.overflowingAdd
+import io.github.kotlinmania.rustlang.core.num.overflowingSub
+import io.github.kotlinmania.rustlang.core.num.wrappingMul
+import io.github.kotlinmania.rustlang.core.num.wrappingShr
+import io.github.kotlinmania.rustlang.core.ops.arith.Add
+import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Div
+import io.github.kotlinmania.rustlang.core.ops.arith.DivAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Mul
+import io.github.kotlinmania.rustlang.core.ops.arith.MulAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Rem
+import io.github.kotlinmania.rustlang.core.ops.arith.RemAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Sub
+import io.github.kotlinmania.rustlang.core.ops.arith.SubAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAndAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.BitXor
+import io.github.kotlinmania.rustlang.core.ops.bit.BitXorAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.Not
+import io.github.kotlinmania.rustlang.core.ops.bit.Shl
+import io.github.kotlinmania.rustlang.core.ops.bit.ShlAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.Shr
+import io.github.kotlinmania.rustlang.core.ops.bit.ShrAssign
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.DisplayHex
 
 // Some constants are only used with tests
 
 /**
  * Minimal integer implementations needed on all integer types, including wide integers.
  */
-public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T, T>, Not<T>, Shl<UInt, T> {
+public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T>, Not<T>, Shl<UInt, T> {
     /**
      * If `Self` is a signed integer
      */
@@ -63,7 +62,7 @@ public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T, T>, Not<T>, S
 /**
  * Trait for some basic operations on integers
  */
-public interface Int<T> : DisplayHex, AddAssign<T>, SubAssign<T>, MulAssign<T>, DivAssign<T>, RemAssign<T>, BitAndAssign<T>, BitOrAssign<T>, BitXorAssign<T>, ShlAssign<Int<T>>, ShlAssign<UInt>, ShrAssign<UInt>, ShrAssign<Int<T>>, Add<T, T>, Sub<T, T>, Mul<T, T>, Div<T, T>, Rem<T, T>, Shl<Int<T>, T>, Shl<UInt, T>, Shr<Int<T>, T>, Shr<UInt, T>, BitXor<T, T>, BitAnd<T, T>, CastFrom<Int<T>, T>, CastFrom<UShort, T>, CastFrom<UInt, T>, CastFrom<UByte, T>, CastInto<Int<T>>, CastInto<UShort>, CastInto<UInt>, CastInto<UByte> {
+public interface Int<T> : DisplayHex, AddAssign, SubAssign, MulAssign, DivAssign, RemAssign, BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign<Int<T>>, ShlAssign<UInt>, ShrAssign<UInt>, ShrAssign<Int<T>>, Add<T>, Sub<T>, Mul<T>, Div<T>, Rem<T>, Shl<Int<T>, T>, Shl<UInt, T>, Shr<Int<T>, T>, Shr<UInt, T>, BitXor<T>, BitAnd<T>, CastFrom<Int<T>, T>, CastFrom<UShort, T>, CastFrom<UInt, T>, CastFrom<UByte, T>, CastInto<Int<T>>, CastInto<UShort>, CastInto<UInt>, CastInto<UByte> {
     public fun signed(): OtherSign<Unsigned>
 
     public fun unsigned(): Unsigned
@@ -153,13 +152,13 @@ public fun Int.absDiffInt(other: Int): Int = this.absDiff(other)
 
 public fun intFromBoolInt(b: Boolean): Int = b.toInt()
 
-public fun Int.logicalShr(other: UInt): Int = Int.fromUnsigned(rustWrappingShr(this.unsigned(), other))
+public fun Int.logicalShr(other: UInt): Int = Int.fromUnsigned(this.unsigned().wrappingShr(other))
 
 public fun Int.isZero(): Boolean = this == Int.ZERO
 
-public fun Int.checkedAddInt(other: Int): Int? = rustCheckedAdd(this, other)
+public fun Int.checkedAddInt(other: Int): Int? = this.checkedAdd(other)
 
-public fun Int.checkedSubInt(other: Int): Int? = rustCheckedSub(this, other)
+public fun Int.checkedSubInt(other: Int): Int? = this.checkedSub(other)
 
 public fun Int.wrappingNeg(): Int = this.wrappingNeg()
 
@@ -188,13 +187,13 @@ public fun Int.countOnes(): UInt = this.countOnes()
 public fun Int.ilog2(): UInt = this.ilog2()
 
 public fun Int.carryingAdd(other: Int, carry: Boolean): Pair<Int, Boolean> {
-    val (ab, of1) = rustOverflowingAdd(this, other)
+    val (ab, of1) = this.overflowingAdd(other)
     val (abc, of2) = ab.overflowingAdd(Int.fromBool(carry))
     return Pair(abc, of1 xor of2)
 }
 
 public fun Int.borrowingSub(other: Int, borrow: Boolean): Pair<Int, Boolean> {
-    val (ab, of1) = rustOverflowingSub(this, other)
+    val (ab, of1) = this.overflowingSub(other)
     val (abc, of2) = ab.overflowingSub(Int.fromBool(borrow))
     return Pair(abc, of1 xor of2)
 }
@@ -245,13 +244,13 @@ public fun UByte.absDiffInt(other: UByte): UByte = this.absDiff(other)
 
 public fun intFromBoolUByte(b: Boolean): UByte = b.toUByte()
 
-public fun UByte.logicalShr(other: UInt): UByte = UByte.fromUnsigned(rustWrappingShr(this.unsigned(), other))
+public fun UByte.logicalShr(other: UInt): UByte = UByte.fromUnsigned(this.unsigned().wrappingShr(other))
 
 public fun UByte.isZero(): Boolean = this == UByte.ZERO
 
-public fun UByte.checkedAddInt(other: UByte): UByte? = rustCheckedAdd(this, other)
+public fun UByte.checkedAddInt(other: UByte): UByte? = this.checkedAdd(other)
 
-public fun UByte.checkedSubInt(other: UByte): UByte? = rustCheckedSub(this, other)
+public fun UByte.checkedSubInt(other: UByte): UByte? = this.checkedSub(other)
 
 public fun UByte.wrappingNeg(): UByte = UByte.wrappingNeg(this)
 
@@ -280,13 +279,13 @@ public fun UByte.countOnes(): UInt = UByte.countOnes(this)
 public fun UByte.ilog2(): UInt = UByte.ilog2(this)
 
 public fun UByte.carryingAdd(other: UByte, carry: Boolean): Pair<UByte, Boolean> {
-    val (ab, of1) = rustOverflowingAdd(this, other)
+    val (ab, of1) = this.overflowingAdd(other)
     val (abc, of2) = ab.overflowingAdd(UByte.fromBool(carry))
     return Pair(abc, of1 xor of2)
 }
 
 public fun UByte.borrowingSub(other: UByte, borrow: Boolean): Pair<UByte, Boolean> {
-    val (ab, of1) = rustOverflowingSub(this, other)
+    val (ab, of1) = this.overflowingSub(other)
     val (abc, of2) = ab.overflowingSub(UByte.fromBool(borrow))
     return Pair(abc, of1 xor of2)
 }
@@ -317,13 +316,13 @@ public fun Byte.absDiffInt(other: Byte): UByte = this.absDiff(other)
 
 public fun intFromBoolByte(b: Boolean): Byte = b.toByte()
 
-public fun Byte.logicalShr(other: UInt): Byte = Byte.fromUnsigned(rustWrappingShr(this.unsigned(), other))
+public fun Byte.logicalShr(other: UInt): Byte = Byte.fromUnsigned(this.unsigned().wrappingShr(other))
 
 public fun Byte.isZero(): Boolean = this == Byte.ZERO
 
-public fun Byte.checkedAddInt(other: Byte): Byte? = rustCheckedAdd(this, other)
+public fun Byte.checkedAddInt(other: Byte): Byte? = this.checkedAdd(other)
 
-public fun Byte.checkedSubInt(other: Byte): Byte? = rustCheckedSub(this, other)
+public fun Byte.checkedSubInt(other: Byte): Byte? = this.checkedSub(other)
 
 public fun Byte.wrappingNeg(): Byte = Byte.wrappingNeg(this)
 
@@ -352,13 +351,13 @@ public fun Byte.countOnes(): UInt = Byte.countOnes(this)
 public fun Byte.ilog2(): UInt = Byte.ilog2(this)
 
 public fun Byte.carryingAdd(other: Byte, carry: Boolean): Pair<Byte, Boolean> {
-    val (ab, of1) = rustOverflowingAdd(this, other)
+    val (ab, of1) = this.overflowingAdd(other)
     val (abc, of2) = ab.overflowingAdd(Byte.fromBool(carry))
     return Pair(abc, of1 xor of2)
 }
 
 public fun Byte.borrowingSub(other: Byte, borrow: Boolean): Pair<Byte, Boolean> {
-    val (ab, of1) = rustOverflowingSub(this, other)
+    val (ab, of1) = this.overflowingSub(other)
     val (abc, of2) = ab.overflowingSub(Byte.fromBool(borrow))
     return Pair(abc, of1 xor of2)
 }
@@ -393,13 +392,13 @@ public fun UShort.absDiffInt(other: UShort): UShort = this.absDiff(other)
 
 public fun intFromBoolUShort(b: Boolean): UShort = b.toUShort()
 
-public fun UShort.logicalShr(other: UInt): UShort = UShort.fromUnsigned(rustWrappingShr(this.unsigned(), other))
+public fun UShort.logicalShr(other: UInt): UShort = UShort.fromUnsigned(this.unsigned().wrappingShr(other))
 
 public fun UShort.isZero(): Boolean = this == UShort.ZERO
 
-public fun UShort.checkedAddInt(other: UShort): UShort? = rustCheckedAdd(this, other)
+public fun UShort.checkedAddInt(other: UShort): UShort? = this.checkedAdd(other)
 
-public fun UShort.checkedSubInt(other: UShort): UShort? = rustCheckedSub(this, other)
+public fun UShort.checkedSubInt(other: UShort): UShort? = this.checkedSub(other)
 
 public fun UShort.wrappingNeg(): UShort = UShort.wrappingNeg(this)
 
@@ -428,13 +427,13 @@ public fun UShort.countOnes(): UInt = UShort.countOnes(this)
 public fun UShort.ilog2(): UInt = UShort.ilog2(this)
 
 public fun UShort.carryingAdd(other: UShort, carry: Boolean): Pair<UShort, Boolean> {
-    val (ab, of1) = rustOverflowingAdd(this, other)
+    val (ab, of1) = this.overflowingAdd(other)
     val (abc, of2) = ab.overflowingAdd(UShort.fromBool(carry))
     return Pair(abc, of1 xor of2)
 }
 
 public fun UShort.borrowingSub(other: UShort, borrow: Boolean): Pair<UShort, Boolean> {
-    val (ab, of1) = rustOverflowingSub(this, other)
+    val (ab, of1) = this.overflowingSub(other)
     val (abc, of2) = ab.overflowingSub(UShort.fromBool(borrow))
     return Pair(abc, of1 xor of2)
 }
@@ -465,13 +464,13 @@ public fun Short.absDiffInt(other: Short): UShort = this.absDiff(other)
 
 public fun intFromBoolShort(b: Boolean): Short = b.toShort()
 
-public fun Short.logicalShr(other: UInt): Short = Short.fromUnsigned(rustWrappingShr(this.unsigned(), other))
+public fun Short.logicalShr(other: UInt): Short = Short.fromUnsigned(this.unsigned().wrappingShr(other))
 
 public fun Short.isZero(): Boolean = this == Short.ZERO
 
-public fun Short.checkedAddInt(other: Short): Short? = rustCheckedAdd(this, other)
+public fun Short.checkedAddInt(other: Short): Short? = this.checkedAdd(other)
 
-public fun Short.checkedSubInt(other: Short): Short? = rustCheckedSub(this, other)
+public fun Short.checkedSubInt(other: Short): Short? = this.checkedSub(other)
 
 public fun Short.wrappingNeg(): Short = Short.wrappingNeg(this)
 
@@ -500,13 +499,13 @@ public fun Short.countOnes(): UInt = Short.countOnes(this)
 public fun Short.ilog2(): UInt = Short.ilog2(this)
 
 public fun Short.carryingAdd(other: Short, carry: Boolean): Pair<Short, Boolean> {
-    val (ab, of1) = rustOverflowingAdd(this, other)
+    val (ab, of1) = this.overflowingAdd(other)
     val (abc, of2) = ab.overflowingAdd(Short.fromBool(carry))
     return Pair(abc, of1 xor of2)
 }
 
 public fun Short.borrowingSub(other: Short, borrow: Boolean): Pair<Short, Boolean> {
-    val (ab, of1) = rustOverflowingSub(this, other)
+    val (ab, of1) = this.overflowingSub(other)
     val (abc, of2) = ab.overflowingSub(Short.fromBool(borrow))
     return Pair(abc, of1 xor of2)
 }
@@ -541,13 +540,13 @@ public fun UInt.absDiffInt(other: UInt): UInt = this.absDiff(other)
 
 public fun intFromBoolUInt(b: Boolean): UInt = b.toUInt()
 
-public fun UInt.logicalShr(other: UInt): UInt = UInt.fromUnsigned(rustWrappingShr(this.unsigned(), other))
+public fun UInt.logicalShr(other: UInt): UInt = UInt.fromUnsigned(this.unsigned().wrappingShr(other))
 
 public fun UInt.isZero(): Boolean = this == UInt.ZERO
 
-public fun UInt.checkedAddInt(other: UInt): UInt? = rustCheckedAdd(this, other)
+public fun UInt.checkedAddInt(other: UInt): UInt? = this.checkedAdd(other)
 
-public fun UInt.checkedSubInt(other: UInt): UInt? = rustCheckedSub(this, other)
+public fun UInt.checkedSubInt(other: UInt): UInt? = this.checkedSub(other)
 
 public fun UInt.wrappingNeg(): UInt = UInt.wrappingNeg(this)
 
@@ -576,13 +575,13 @@ public fun UInt.countOnes(): UInt = UInt.countOnes(this)
 public fun UInt.ilog2(): UInt = UInt.ilog2(this)
 
 public fun UInt.carryingAdd(other: UInt, carry: Boolean): Pair<UInt, Boolean> {
-    val (ab, of1) = rustOverflowingAdd(this, other)
+    val (ab, of1) = this.overflowingAdd(other)
     val (abc, of2) = ab.overflowingAdd(UInt.fromBool(carry))
     return Pair(abc, of1 xor of2)
 }
 
 public fun UInt.borrowingSub(other: UInt, borrow: Boolean): Pair<UInt, Boolean> {
-    val (ab, of1) = rustOverflowingSub(this, other)
+    val (ab, of1) = this.overflowingSub(other)
     val (abc, of2) = ab.overflowingSub(UInt.fromBool(borrow))
     return Pair(abc, of1 xor of2)
 }
@@ -631,13 +630,13 @@ public fun ULong.absDiffInt(other: ULong): ULong = this.absDiff(other)
 
 public fun intFromBoolULong(b: Boolean): ULong = b.toULong()
 
-public fun ULong.logicalShr(other: UInt): ULong = ULong.fromUnsigned(rustWrappingShr(this.unsigned(), other))
+public fun ULong.logicalShr(other: UInt): ULong = ULong.fromUnsigned(this.unsigned().wrappingShr(other))
 
 public fun ULong.isZero(): Boolean = this == ULong.ZERO
 
-public fun ULong.checkedAddInt(other: ULong): ULong? = rustCheckedAdd(this, other)
+public fun ULong.checkedAddInt(other: ULong): ULong? = this.checkedAdd(other)
 
-public fun ULong.checkedSubInt(other: ULong): ULong? = rustCheckedSub(this, other)
+public fun ULong.checkedSubInt(other: ULong): ULong? = this.checkedSub(other)
 
 public fun ULong.wrappingNeg(): ULong = ULong.wrappingNeg(this)
 
@@ -666,13 +665,13 @@ public fun ULong.countOnes(): UInt = ULong.countOnes(this)
 public fun ULong.ilog2(): UInt = ULong.ilog2(this)
 
 public fun ULong.carryingAdd(other: ULong, carry: Boolean): Pair<ULong, Boolean> {
-    val (ab, of1) = rustOverflowingAdd(this, other)
+    val (ab, of1) = this.overflowingAdd(other)
     val (abc, of2) = ab.overflowingAdd(ULong.fromBool(carry))
     return Pair(abc, of1 xor of2)
 }
 
 public fun ULong.borrowingSub(other: ULong, borrow: Boolean): Pair<ULong, Boolean> {
-    val (ab, of1) = rustOverflowingSub(this, other)
+    val (ab, of1) = this.overflowingSub(other)
     val (abc, of2) = ab.overflowingSub(ULong.fromBool(borrow))
     return Pair(abc, of1 xor of2)
 }
@@ -703,13 +702,13 @@ public fun Long.absDiffInt(other: Long): ULong = this.absDiff(other)
 
 public fun intFromBoolLong(b: Boolean): Long = b.toLong()
 
-public fun Long.logicalShr(other: UInt): Long = Long.fromUnsigned(rustWrappingShr(this.unsigned(), other))
+public fun Long.logicalShr(other: UInt): Long = Long.fromUnsigned(this.unsigned().wrappingShr(other))
 
 public fun Long.isZero(): Boolean = this == Long.ZERO
 
-public fun Long.checkedAddInt(other: Long): Long? = rustCheckedAdd(this, other)
+public fun Long.checkedAddInt(other: Long): Long? = this.checkedAdd(other)
 
-public fun Long.checkedSubInt(other: Long): Long? = rustCheckedSub(this, other)
+public fun Long.checkedSubInt(other: Long): Long? = this.checkedSub(other)
 
 public fun Long.wrappingNeg(): Long = Long.wrappingNeg(this)
 
@@ -738,13 +737,13 @@ public fun Long.countOnes(): UInt = Long.countOnes(this)
 public fun Long.ilog2(): UInt = Long.ilog2(this)
 
 public fun Long.carryingAdd(other: Long, carry: Boolean): Pair<Long, Boolean> {
-    val (ab, of1) = rustOverflowingAdd(this, other)
+    val (ab, of1) = this.overflowingAdd(other)
     val (abc, of2) = ab.overflowingAdd(Long.fromBool(carry))
     return Pair(abc, of1 xor of2)
 }
 
 public fun Long.borrowingSub(other: Long, borrow: Boolean): Pair<Long, Boolean> {
-    val (ab, of1) = rustOverflowingSub(this, other)
+    val (ab, of1) = this.overflowingSub(other)
     val (abc, of2) = ab.overflowingSub(Long.fromBool(borrow))
     return Pair(abc, of1 xor of2)
 }
@@ -779,13 +778,13 @@ public fun U128.absDiffInt(other: U128): U128 = this.absDiff(other)
 
 public fun intFromBoolU128(b: Boolean): U128 = U128.fromLong(b.toLong())
 
-public fun U128.logicalShr(other: UInt): U128 = U128.fromUnsigned(rustWrappingShr(this.unsigned(), other))
+public fun U128.logicalShr(other: UInt): U128 = U128.fromUnsigned(this.unsigned().wrappingShr(other))
 
 public fun U128.isZero(): Boolean = this == U128.ZERO
 
-public fun U128.checkedAddInt(other: U128): U128? = rustCheckedAdd(this, other)
+public fun U128.checkedAddInt(other: U128): U128? = this.checkedAdd(other)
 
-public fun U128.checkedSubInt(other: U128): U128? = rustCheckedSub(this, other)
+public fun U128.checkedSubInt(other: U128): U128? = this.checkedSub(other)
 
 public fun U128.wrappingNeg(): U128 = U128.wrappingNeg(this)
 
@@ -814,13 +813,13 @@ public fun U128.countOnes(): UInt = U128.countOnes(this)
 public fun U128.ilog2(): UInt = U128.ilog2(this)
 
 public fun U128.carryingAdd(other: U128, carry: Boolean): Pair<U128, Boolean> {
-    val (ab, of1) = rustOverflowingAdd(this, other)
+    val (ab, of1) = this.overflowingAdd(other)
     val (abc, of2) = ab.overflowingAdd(U128.fromBool(carry))
     return Pair(abc, of1 xor of2)
 }
 
 public fun U128.borrowingSub(other: U128, borrow: Boolean): Pair<U128, Boolean> {
-    val (ab, of1) = rustOverflowingSub(this, other)
+    val (ab, of1) = this.overflowingSub(other)
     val (abc, of2) = ab.overflowingSub(U128.fromBool(borrow))
     return Pair(abc, of1 xor of2)
 }
@@ -851,13 +850,13 @@ public fun I128.absDiffInt(other: I128): U128 = this.absDiff(other)
 
 public fun intFromBoolI128(b: Boolean): I128 = I128.fromLong(b.toLong())
 
-public fun I128.logicalShr(other: UInt): I128 = I128.fromUnsigned(rustWrappingShr(this.unsigned(), other))
+public fun I128.logicalShr(other: UInt): I128 = I128.fromUnsigned(this.unsigned().wrappingShr(other))
 
 public fun I128.isZero(): Boolean = this == I128.ZERO
 
-public fun I128.checkedAddInt(other: I128): I128? = rustCheckedAdd(this, other)
+public fun I128.checkedAddInt(other: I128): I128? = this.checkedAdd(other)
 
-public fun I128.checkedSubInt(other: I128): I128? = rustCheckedSub(this, other)
+public fun I128.checkedSubInt(other: I128): I128? = this.checkedSub(other)
 
 public fun I128.wrappingNeg(): I128 = I128.wrappingNeg(this)
 
@@ -886,13 +885,13 @@ public fun I128.countOnes(): UInt = I128.countOnes(this)
 public fun I128.ilog2(): UInt = I128.ilog2(this)
 
 public fun I128.carryingAdd(other: I128, carry: Boolean): Pair<I128, Boolean> {
-    val (ab, of1) = rustOverflowingAdd(this, other)
+    val (ab, of1) = this.overflowingAdd(other)
     val (abc, of2) = ab.overflowingAdd(I128.fromBool(carry))
     return Pair(abc, of1 xor of2)
 }
 
 public fun I128.borrowingSub(other: I128, borrow: Boolean): Pair<I128, Boolean> {
-    val (ab, of1) = rustOverflowingSub(this, other)
+    val (ab, of1) = this.overflowingSub(other)
     val (abc, of2) = ab.overflowingSub(I128.fromBool(borrow))
     return Pair(abc, of1 xor of2)
 }
@@ -901,7 +900,7 @@ public fun I128.borrowingSub(other: I128, borrow: Boolean): Pair<I128, Boolean> 
  * Trait for integers twice the bit width of another integer. This is implemented for all
  * primitives except for `UByte`, because there is not a smaller primitive.
  */
-public interface DInt<T, H> : Add<T, T>, Sub<T, T>, Shl<UInt, T>, Shr<UInt, T> {
+public interface DInt<T, H> : Add<T>, Sub<T>, Shl<UInt, T>, Shr<UInt, T> {
     /**
      * Returns the low half of `self`
      */
@@ -1021,9 +1020,9 @@ public fun ULong.widen(): U128 = U128.fromULong(this)
 
 public fun ULong.zeroWiden(): U128 = U128.fromULong((this))
 
-public fun ULong.zeroWidenMul(rhs: ULong): U128 = rustWrappingMul(this.zeroWiden(), rhs.zeroWiden())
+public fun ULong.zeroWidenMul(rhs: ULong): U128 = this.zeroWiden().wrappingMul(rhs.zeroWiden())
 
-public fun ULong.widenMul(rhs: ULong): U128 = rustWrappingMul(this.widen(), rhs.widen())
+public fun ULong.widenMul(rhs: ULong): U128 = this.widen().wrappingMul(rhs.widen())
 
 public fun ULong.widenHi(): U128 = (U128.fromULong(this)) shl ULong.BITS.toInt()
 
@@ -1061,9 +1060,9 @@ public fun Long.widen(): I128 = I128.fromLong(this)
 
 public fun Long.zeroWiden(): I128 = I128.fromULong((this.toULong()))
 
-public fun Long.zeroWidenMul(rhs: Long): I128 = rustWrappingMul(this.zeroWiden(), rhs.zeroWiden())
+public fun Long.zeroWidenMul(rhs: Long): I128 = this.zeroWiden().wrappingMul(rhs.zeroWiden())
 
-public fun Long.widenMul(rhs: Long): I128 = rustWrappingMul(this.widen(), rhs.widen())
+public fun Long.widenMul(rhs: Long): I128 = this.widen().wrappingMul(rhs.widen())
 
 public fun Long.widenHi(): I128 = (I128.fromLong(this)) shl Long.BITS.toInt()
 
@@ -1102,770 +1101,770 @@ public fun <T, U : CastInto<T>> castFromT(value: U): T = value.cast()
 public fun <T, U : CastInto<T>> castFromCastFromLossyT(value: U): T = value.castLossy()
 
 public fun Int.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this
 }
 
 public fun Int.castLossy(): Int = this
 
 public fun Int.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this
 }
 
 public fun Int.castLossyInt(): Int = this
 
 public fun Int.castUByte(): UByte {
-    check(UByte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUByte()
 }
 
 public fun Int.castLossyUByte(): UByte = this.toUByte()
 
 public fun Int.castByte(): Byte {
-    check(Byte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Byte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toByte()
 }
 
 public fun Int.castLossyByte(): Byte = this.toByte()
 
 public fun Int.castUShort(): UShort {
-    check(UShort.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UShort.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUShort()
 }
 
 public fun Int.castLossyUShort(): UShort = this.toUShort()
 
 public fun Int.castShort(): Short {
-    check(Short.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Short.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toShort()
 }
 
 public fun Int.castLossyShort(): Short = this.toShort()
 
 public fun Int.castUInt(): UInt {
-    check(UInt.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UInt.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUInt()
 }
 
 public fun Int.castLossyUInt(): UInt = this.toUInt()
 
 public fun Int.castULong(): ULong {
-    check(ULong.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(ULong.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toULong()
 }
 
 public fun Int.castLossyULong(): ULong = this.toULong()
 
 public fun Int.castLong(): Long {
-    check(Long.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Long.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toLong()
 }
 
 public fun Int.castLossyLong(): Long = this.toLong()
 
 public fun Int.castU128(): U128 {
-    check(U128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(U128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return U128.fromInt(this)
 }
 
 public fun Int.castLossyU128(): U128 = U128.fromInt(this)
 
 public fun Int.castI128(): I128 {
-    check(I128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(I128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return I128.fromInt(this)
 }
 
 public fun Int.castLossyI128(): I128 = I128.fromInt(this)
 
 public fun UByte.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun UByte.castLossy(): Int = this.toInt()
 
 public fun UByte.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun UByte.castLossyInt(): Int = this.toInt()
 
 public fun UByte.castUByte(): UByte {
-    check(UByte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this
 }
 
 public fun UByte.castLossyUByte(): UByte = this
 
 public fun UByte.castByte(): Byte {
-    check(Byte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Byte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toByte()
 }
 
 public fun UByte.castLossyByte(): Byte = this.toByte()
 
 public fun UByte.castUShort(): UShort {
-    check(UShort.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UShort.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUShort()
 }
 
 public fun UByte.castLossyUShort(): UShort = this.toUShort()
 
 public fun UByte.castShort(): Short {
-    check(Short.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Short.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toShort()
 }
 
 public fun UByte.castLossyShort(): Short = this.toShort()
 
 public fun UByte.castUInt(): UInt {
-    check(UInt.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UInt.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUInt()
 }
 
 public fun UByte.castLossyUInt(): UInt = this.toUInt()
 
 public fun UByte.castULong(): ULong {
-    check(ULong.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(ULong.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toULong()
 }
 
 public fun UByte.castLossyULong(): ULong = this.toULong()
 
 public fun UByte.castLong(): Long {
-    check(Long.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Long.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toLong()
 }
 
 public fun UByte.castLossyLong(): Long = this.toLong()
 
 public fun UByte.castU128(): U128 {
-    check(U128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(U128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return U128.fromUByte(this)
 }
 
 public fun UByte.castLossyU128(): U128 = U128.fromUByte(this)
 
 public fun UByte.castI128(): I128 {
-    check(I128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(I128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return I128.fromUByte(this)
 }
 
 public fun UByte.castLossyI128(): I128 = I128.fromUByte(this)
 
 public fun Byte.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun Byte.castLossy(): Int = this.toInt()
 
 public fun Byte.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun Byte.castLossyInt(): Int = this.toInt()
 
 public fun Byte.castUByte(): UByte {
-    check(UByte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUByte()
 }
 
 public fun Byte.castLossyUByte(): UByte = this.toUByte()
 
 public fun Byte.castByte(): Byte {
-    check(Byte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Byte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this
 }
 
 public fun Byte.castLossyByte(): Byte = this
 
 public fun Byte.castUShort(): UShort {
-    check(UShort.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UShort.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUShort()
 }
 
 public fun Byte.castLossyUShort(): UShort = this.toUShort()
 
 public fun Byte.castShort(): Short {
-    check(Short.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Short.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toShort()
 }
 
 public fun Byte.castLossyShort(): Short = this.toShort()
 
 public fun Byte.castUInt(): UInt {
-    check(UInt.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UInt.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUInt()
 }
 
 public fun Byte.castLossyUInt(): UInt = this.toUInt()
 
 public fun Byte.castULong(): ULong {
-    check(ULong.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(ULong.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toULong()
 }
 
 public fun Byte.castLossyULong(): ULong = this.toULong()
 
 public fun Byte.castLong(): Long {
-    check(Long.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Long.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toLong()
 }
 
 public fun Byte.castLossyLong(): Long = this.toLong()
 
 public fun Byte.castU128(): U128 {
-    check(U128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(U128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return U128.fromByte(this)
 }
 
 public fun Byte.castLossyU128(): U128 = U128.fromByte(this)
 
 public fun Byte.castI128(): I128 {
-    check(I128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(I128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return I128.fromByte(this)
 }
 
 public fun Byte.castLossyI128(): I128 = I128.fromByte(this)
 
 public fun UShort.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun UShort.castLossy(): Int = this.toInt()
 
 public fun UShort.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun UShort.castLossyInt(): Int = this.toInt()
 
 public fun UShort.castUByte(): UByte {
-    check(UByte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUByte()
 }
 
 public fun UShort.castLossyUByte(): UByte = this.toUByte()
 
 public fun UShort.castByte(): Byte {
-    check(Byte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Byte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toByte()
 }
 
 public fun UShort.castLossyByte(): Byte = this.toByte()
 
 public fun UShort.castUShort(): UShort {
-    check(UShort.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UShort.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this
 }
 
 public fun UShort.castLossyUShort(): UShort = this
 
 public fun UShort.castShort(): Short {
-    check(Short.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Short.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toShort()
 }
 
 public fun UShort.castLossyShort(): Short = this.toShort()
 
 public fun UShort.castUInt(): UInt {
-    check(UInt.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UInt.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUInt()
 }
 
 public fun UShort.castLossyUInt(): UInt = this.toUInt()
 
 public fun UShort.castULong(): ULong {
-    check(ULong.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(ULong.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toULong()
 }
 
 public fun UShort.castLossyULong(): ULong = this.toULong()
 
 public fun UShort.castLong(): Long {
-    check(Long.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Long.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toLong()
 }
 
 public fun UShort.castLossyLong(): Long = this.toLong()
 
 public fun UShort.castU128(): U128 {
-    check(U128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(U128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return U128.fromUShort(this)
 }
 
 public fun UShort.castLossyU128(): U128 = U128.fromUShort(this)
 
 public fun UShort.castI128(): I128 {
-    check(I128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(I128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return I128.fromUShort(this)
 }
 
 public fun UShort.castLossyI128(): I128 = I128.fromUShort(this)
 
 public fun Short.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun Short.castLossy(): Int = this.toInt()
 
 public fun Short.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun Short.castLossyInt(): Int = this.toInt()
 
 public fun Short.castUByte(): UByte {
-    check(UByte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUByte()
 }
 
 public fun Short.castLossyUByte(): UByte = this.toUByte()
 
 public fun Short.castByte(): Byte {
-    check(Byte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Byte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toByte()
 }
 
 public fun Short.castLossyByte(): Byte = this.toByte()
 
 public fun Short.castUShort(): UShort {
-    check(UShort.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UShort.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUShort()
 }
 
 public fun Short.castLossyUShort(): UShort = this.toUShort()
 
 public fun Short.castShort(): Short {
-    check(Short.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Short.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this
 }
 
 public fun Short.castLossyShort(): Short = this
 
 public fun Short.castUInt(): UInt {
-    check(UInt.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UInt.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUInt()
 }
 
 public fun Short.castLossyUInt(): UInt = this.toUInt()
 
 public fun Short.castULong(): ULong {
-    check(ULong.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(ULong.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toULong()
 }
 
 public fun Short.castLossyULong(): ULong = this.toULong()
 
 public fun Short.castLong(): Long {
-    check(Long.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Long.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toLong()
 }
 
 public fun Short.castLossyLong(): Long = this.toLong()
 
 public fun Short.castU128(): U128 {
-    check(U128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(U128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return U128.fromShort(this)
 }
 
 public fun Short.castLossyU128(): U128 = U128.fromShort(this)
 
 public fun Short.castI128(): I128 {
-    check(I128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(I128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return I128.fromShort(this)
 }
 
 public fun Short.castLossyI128(): I128 = I128.fromShort(this)
 
 public fun UInt.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun UInt.castLossy(): Int = this.toInt()
 
 public fun UInt.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun UInt.castLossyInt(): Int = this.toInt()
 
 public fun UInt.castUByte(): UByte {
-    check(UByte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUByte()
 }
 
 public fun UInt.castLossyUByte(): UByte = this.toUByte()
 
 public fun UInt.castByte(): Byte {
-    check(Byte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Byte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toByte()
 }
 
 public fun UInt.castLossyByte(): Byte = this.toByte()
 
 public fun UInt.castUShort(): UShort {
-    check(UShort.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UShort.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUShort()
 }
 
 public fun UInt.castLossyUShort(): UShort = this.toUShort()
 
 public fun UInt.castShort(): Short {
-    check(Short.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Short.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toShort()
 }
 
 public fun UInt.castLossyShort(): Short = this.toShort()
 
 public fun UInt.castUInt(): UInt {
-    check(UInt.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UInt.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this
 }
 
 public fun UInt.castLossyUInt(): UInt = this
 
 public fun UInt.castULong(): ULong {
-    check(ULong.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(ULong.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toULong()
 }
 
 public fun UInt.castLossyULong(): ULong = this.toULong()
 
 public fun UInt.castLong(): Long {
-    check(Long.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Long.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toLong()
 }
 
 public fun UInt.castLossyLong(): Long = this.toLong()
 
 public fun UInt.castU128(): U128 {
-    check(U128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(U128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return U128.fromUInt(this)
 }
 
 public fun UInt.castLossyU128(): U128 = U128.fromUInt(this)
 
 public fun UInt.castI128(): I128 {
-    check(I128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(I128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return I128.fromUInt(this)
 }
 
 public fun UInt.castLossyI128(): I128 = I128.fromUInt(this)
 
 public fun ULong.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun ULong.castLossy(): Int = this.toInt()
 
 public fun ULong.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun ULong.castLossyInt(): Int = this.toInt()
 
 public fun ULong.castUByte(): UByte {
-    check(UByte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUByte()
 }
 
 public fun ULong.castLossyUByte(): UByte = this.toUByte()
 
 public fun ULong.castByte(): Byte {
-    check(Byte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Byte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toByte()
 }
 
 public fun ULong.castLossyByte(): Byte = this.toByte()
 
 public fun ULong.castUShort(): UShort {
-    check(UShort.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UShort.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUShort()
 }
 
 public fun ULong.castLossyUShort(): UShort = this.toUShort()
 
 public fun ULong.castShort(): Short {
-    check(Short.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Short.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toShort()
 }
 
 public fun ULong.castLossyShort(): Short = this.toShort()
 
 public fun ULong.castUInt(): UInt {
-    check(UInt.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UInt.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUInt()
 }
 
 public fun ULong.castLossyUInt(): UInt = this.toUInt()
 
 public fun ULong.castULong(): ULong {
-    check(ULong.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(ULong.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this
 }
 
 public fun ULong.castLossyULong(): ULong = this
 
 public fun ULong.castLong(): Long {
-    check(Long.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Long.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toLong()
 }
 
 public fun ULong.castLossyLong(): Long = this.toLong()
 
 public fun ULong.castU128(): U128 {
-    check(U128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(U128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return U128.fromULong(this)
 }
 
 public fun ULong.castLossyU128(): U128 = U128.fromULong(this)
 
 public fun ULong.castI128(): I128 {
-    check(I128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(I128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return I128.fromULong(this)
 }
 
 public fun ULong.castLossyI128(): I128 = I128.fromULong(this)
 
 public fun Long.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun Long.castLossy(): Int = this.toInt()
 
 public fun Long.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun Long.castLossyInt(): Int = this.toInt()
 
 public fun Long.castUByte(): UByte {
-    check(UByte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUByte()
 }
 
 public fun Long.castLossyUByte(): UByte = this.toUByte()
 
 public fun Long.castByte(): Byte {
-    check(Byte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Byte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toByte()
 }
 
 public fun Long.castLossyByte(): Byte = this.toByte()
 
 public fun Long.castUShort(): UShort {
-    check(UShort.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UShort.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUShort()
 }
 
 public fun Long.castLossyUShort(): UShort = this.toUShort()
 
 public fun Long.castShort(): Short {
-    check(Short.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Short.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toShort()
 }
 
 public fun Long.castLossyShort(): Short = this.toShort()
 
 public fun Long.castUInt(): UInt {
-    check(UInt.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UInt.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUInt()
 }
 
 public fun Long.castLossyUInt(): UInt = this.toUInt()
 
 public fun Long.castULong(): ULong {
-    check(ULong.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(ULong.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toULong()
 }
 
 public fun Long.castLossyULong(): ULong = this.toULong()
 
 public fun Long.castLong(): Long {
-    check(Long.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Long.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this
 }
 
 public fun Long.castLossyLong(): Long = this
 
 public fun Long.castU128(): U128 {
-    check(U128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(U128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return U128.fromLong(this)
 }
 
 public fun Long.castLossyU128(): U128 = U128.fromLong(this)
 
 public fun Long.castI128(): I128 {
-    check(I128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(I128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return I128.fromLong(this)
 }
 
 public fun Long.castLossyI128(): I128 = I128.fromLong(this)
 
 public fun U128.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun U128.castLossy(): Int = this.toInt()
 
 public fun U128.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun U128.castLossyInt(): Int = this.toInt()
 
 public fun U128.castUByte(): UByte {
-    check(UByte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUByte()
 }
 
 public fun U128.castLossyUByte(): UByte = this.toUByte()
 
 public fun U128.castByte(): Byte {
-    check(Byte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Byte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toByte()
 }
 
 public fun U128.castLossyByte(): Byte = this.toByte()
 
 public fun U128.castUShort(): UShort {
-    check(UShort.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UShort.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUShort()
 }
 
 public fun U128.castLossyUShort(): UShort = this.toUShort()
 
 public fun U128.castShort(): Short {
-    check(Short.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Short.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toShort()
 }
 
 public fun U128.castLossyShort(): Short = this.toShort()
 
 public fun U128.castUInt(): UInt {
-    check(UInt.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UInt.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUInt()
 }
 
 public fun U128.castLossyUInt(): UInt = this.toUInt()
 
 public fun U128.castULong(): ULong {
-    check(ULong.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(ULong.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toULong()
 }
 
 public fun U128.castLossyULong(): ULong = this.toULong()
 
 public fun U128.castLong(): Long {
-    check(Long.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Long.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toLong()
 }
 
 public fun U128.castLossyLong(): Long = this.toLong()
 
 public fun U128.castU128(): U128 {
-    check(U128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(U128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this
 }
 
 public fun U128.castLossyU128(): U128 = this
 
 public fun U128.castI128(): I128 {
-    check(I128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(I128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toI128()
 }
 
 public fun U128.castLossyI128(): I128 = this.toI128()
 
 public fun I128.cast(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun I128.castLossy(): Int = this.toInt()
 
 public fun I128.castInt(): Int {
-    check(Int.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Int.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toInt()
 }
 
 public fun I128.castLossyInt(): Int = this.toInt()
 
 public fun I128.castUByte(): UByte {
-    check(UByte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UByte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUByte()
 }
 
 public fun I128.castLossyUByte(): UByte = this.toUByte()
 
 public fun I128.castByte(): Byte {
-    check(Byte.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Byte.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toByte()
 }
 
 public fun I128.castLossyByte(): Byte = this.toByte()
 
 public fun I128.castUShort(): UShort {
-    check(UShort.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UShort.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUShort()
 }
 
 public fun I128.castLossyUShort(): UShort = this.toUShort()
 
 public fun I128.castShort(): Short {
-    check(Short.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Short.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toShort()
 }
 
 public fun I128.castLossyShort(): Short = this.toShort()
 
 public fun I128.castUInt(): UInt {
-    check(UInt.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(UInt.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toUInt()
 }
 
 public fun I128.castLossyUInt(): UInt = this.toUInt()
 
 public fun I128.castULong(): ULong {
-    check(ULong.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(ULong.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toULong()
 }
 
 public fun I128.castLossyULong(): ULong = this.toULong()
 
 public fun I128.castLong(): Long {
-    check(Long.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(Long.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toLong()
 }
 
 public fun I128.castLossyLong(): Long = this.toLong()
 
 public fun I128.castU128(): U128 {
-    check(U128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(U128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this.toU128()
 }
 
 public fun I128.castLossyU128(): U128 = this.toU128()
 
 public fun I128.castI128(): I128 {
-    check(I128.tryFrom(this).isOk()) { "failed cast from $this" }
+    check(I128.tryFrom(this).isOk()) { "failed cast from ${this}" }
     return this
 }
 

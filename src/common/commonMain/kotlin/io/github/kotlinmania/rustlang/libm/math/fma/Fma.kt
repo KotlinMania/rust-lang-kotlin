@@ -2,8 +2,9 @@
 package io.github.kotlinmania.rustlang.libm.math.fma
 
 import io.github.kotlinmania.rustlang.core.F128
-import io.github.kotlinmania.rustlang.libm.math.Generic
-import io.github.kotlinmania.rustlang.math.support.env.Round
+import io.github.kotlinmania.rustlang.libm.math.generic.fma.fmaRound
+import io.github.kotlinmania.rustlang.libm.math.generic.fmawide.fmaWideRound
+import io.github.kotlinmania.rustlang.libm.math.support.env.Round
 
 // See `fmaf16.rs` for that implementation
 
@@ -14,9 +15,9 @@ import io.github.kotlinmania.rustlang.math.support.env.Round
  */
 public fun fmaf(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float {
     if (true) {
-        return io.github.kotlinmania.rustlang.math.arch.aarch64.fma.fmaf(x, y, z)
+        return io.github.kotlinmania.rustlang.libm.math.arch.fmaf(x, y, z)
     }
-    return Generic.fmaWideRound(x, y, z, Round.Nearest).value
+    return fmaWideRound(x, y, z, Round.Nearest).value
 }
 
 /**
@@ -26,9 +27,9 @@ public fun fmaf(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float
  */
 public fun fma(x: Double, y: Double, z: Double): Double {
     if (true) {
-        return io.github.kotlinmania.rustlang.math.arch.aarch64.fma.fma(x, y, z)
+        return io.github.kotlinmania.rustlang.libm.math.arch.fma(x, y, z)
     }
-    return Generic.fmaRound(x, y, z, Round.Nearest).value
+    return fmaRound(x, y, z, Round.Nearest).value
 }
 
 /**
@@ -36,4 +37,4 @@ public fun fma(x: Double, y: Double, z: Double): Double {
  *
  * Computes `(x * y) + z`, rounded as one ternary operation (i.e. calculated with infinite precision).
  */
-public fun fmaf128(x: F128, y: F128, z: F128): F128 = Generic.fmaRound(x, y, z, Round.Nearest).value
+public fun fmaf128(x: F128, y: F128, z: F128): F128 = fmaRound(x, y, z, Round.Nearest).value

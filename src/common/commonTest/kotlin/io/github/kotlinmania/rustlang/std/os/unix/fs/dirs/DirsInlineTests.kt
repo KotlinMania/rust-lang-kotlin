@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.std.os.unix.fs.dirs
 
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.fs.dirs.HomeDirs
-import io.github.kotlinmania.rustlang.fs.dirs.MediaDirs
-import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
+import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
+import io.github.kotlinmania.rustlang.std.path.Path
 
 public class DirsInlineTests {
     @kotlin.test.Test

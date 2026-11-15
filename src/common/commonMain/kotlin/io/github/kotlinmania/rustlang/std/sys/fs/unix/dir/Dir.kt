@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.fs.unix.dir
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.CInt
@@ -18,24 +18,24 @@ import io.github.kotlinmania.rustlang.libc.wasi.AT_SYMLINK_NOFOLLOW
 import io.github.kotlinmania.rustlang.libc.wasi.O_ACCMODE
 import io.github.kotlinmania.rustlang.libc.wasi.O_CLOEXEC
 import io.github.kotlinmania.rustlang.libc.wasi.O_DIRECTORY
-import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.os.fd.FromRawFd
-import io.github.kotlinmania.rustlang.os.fd.OwnedFd
-import io.github.kotlinmania.rustlang.os.fd.RawFd
-import io.github.kotlinmania.rustlang.path.Path
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
+import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.FileAttr
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.Stat64
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.cfgHasStatx
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.debugPathFd
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.open64
-import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.sys.fs.unix.File
-import io.github.kotlinmania.rustlang.sys.fs.unix.FileAttr
-import io.github.kotlinmania.rustlang.sys.fs.unix.OpenOptions
-import io.github.kotlinmania.rustlang.sys.fs.unix.cfgHasStatx
-import io.github.kotlinmania.rustlang.sys.fs.unix.debugPathFd
-import io.github.kotlinmania.rustlang.sys.fs.unix.tryStatx
-import io.github.kotlinmania.rustlang.sys.helpers.smallcstring.runPathWithCstr
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvtR
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.tryStatx
+import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runPathWithCstr
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
 import io.github.kotlinmania.rustlang.libc.fstatat as fstatat64
 import io.github.kotlinmania.rustlang.libc.openat as openat64
 
@@ -59,7 +59,7 @@ public open class Dir(
     public open fun selfMetadata(): Result<FileAttr, Error> {
         // Reuse the implementation for files, which should work for all FDs.
         val fd = this.value.asRawFd()
-        val f = mem.ManuallyDrop.new(File(FileDesc.fromRawFd(fd)))
+        val f = File(FileDesc.fromRawFd(fd))
         return f.fileAttr()
     }
 
@@ -115,7 +115,7 @@ public open class Dir(
                 return ret
             }
         })
-        val stat: Stat64  = MaybeUninit.zeroed(ObjectSlotLayout<Stat64>()).assumeInit()
+        val stat: Stat64  = MaybeUninit.zeroed(UnresolvedTypeLayout<Stat64>()).assumeInit()
         when (val tryResult = cvt(fstatat64(fd, path.asPtr(), stat, flag))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(FileAttr.fromStat64(stat))
     }
@@ -145,14 +145,14 @@ public open class Dir(
     }
 }
 
-public fun io.github.kotlinmania.rustlang.fs.Dir.asRawFd(): RawFd = this.asInner().first.asRawFd()
+public fun io.github.kotlinmania.rustlang.std.fs.Dir.asRawFd(): RawFd = this.asInner().first.asRawFd()
 
-public fun io.github.kotlinmania.rustlang.fs.Dir.intoRawFd(): RawFd = this.intoInner().first.intoRawFd()
+public fun io.github.kotlinmania.rustlang.std.fs.Dir.intoRawFd(): RawFd = this.intoInner().first.intoRawFd()
 
-public fun fromRawFdDir(fd: RawFd): io.github.kotlinmania.rustlang.fs.Dir = io.github.kotlinmania.rustlang.fs.Dir.fromInner(Dir(FromRawFd.fromRawFd(fd)))
+public fun fromRawFdDir(fd: RawFd): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.fromInner(Dir(FromRawFd.fromRawFd(fd)))
 
-public fun io.github.kotlinmania.rustlang.fs.Dir.asFd(): BorrowedFd = this.asInner().first.asFd()
+public fun io.github.kotlinmania.rustlang.std.fs.Dir.asFd(): BorrowedFd = this.asInner().first.asFd()
 
-public fun fromOwnedFd(value: io.github.kotlinmania.rustlang.fs.Dir): OwnedFd = value.intoInner().first
+public fun fromOwnedFd(value: io.github.kotlinmania.rustlang.std.fs.Dir): OwnedFd = value.intoInner().first
 
-public fun fromDir(value: OwnedFd): io.github.kotlinmania.rustlang.fs.Dir = io.github.kotlinmania.rustlang.fs.Dir.fromInner(Dir(value))
+public fun fromDir(value: OwnedFd): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.fromInner(Dir(value))

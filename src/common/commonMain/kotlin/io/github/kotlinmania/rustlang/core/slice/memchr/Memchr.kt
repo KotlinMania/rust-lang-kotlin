@@ -1,12 +1,12 @@
 // port-lint: source slice/memchr.rs
 package io.github.kotlinmania.rustlang.core.slice.memchr
 
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
 
 public typealias Chunk = Int
 
@@ -92,7 +92,7 @@ public fun memchrAligned(x: UByte, text: List<UByte>): Int? {
             }
             offset += USIZE_BYTES * 2
         }
-        val slice1 = rawSliceList(ConstPtr((text.asPtr()).rawAddress + ((offset).toLong() * (PrimitiveLayouts.U8).strideBytes)), (text.size - offset).toInt(), PrimitiveLayouts.U8)
+        val slice1 = linearSliceView(ConstPtr((text.asPtr()).rawAddress + ((offset).toLong() * (PrimitiveLayouts.U8).strideBytes)), (text.size - offset).toInt(), PrimitiveLayouts.U8)
         when (val matchVal1 = memchrNaive(x, slice1)) {
             null -> {
                 null
@@ -127,14 +127,15 @@ public fun memrchrAligned(x: UByte, text: List<UByte>): Int? {
     // - the first remaining bytes, < 2 word size.
     val len = text.size
     val ptr = text.asPtr()
-    val (minAlignedOffset, maxAlignedOffset) = run {
-        // We call this just to obtain the length of the prefix and suffix.
-        // In the middle we always process two chunks at once.
-        // SAFETY: transmuting `[UByte]` to `[Int]` is safe except for size differences
-        // which are handled by `alignTo`.
-        val (prefix, _, suffix) = text.alignTo<Pair<Chunk, Chunk>>()
-        Pair(prefix.len(), len - suffix.len())
-    }
+    val (minAlignedOffset, maxAlignedOffset) =
+        run {
+            // We call this just to obtain the length of the prefix and suffix.
+            // In the middle we always process two chunks at once.
+            // SAFETY: transmuting `[UByte]` to `[Int]` is safe except for size differences
+            // which are handled by `alignTo`.
+            val (prefix, _, suffix) = text.alignTo<Pair<Chunk, Chunk>>()
+            Pair(prefix.len(), len - suffix.len())
+        }
     var offset = maxAlignedOffset
     when (val matchVal = ((text).subList(offset, (text).size)).iter().indexOfLast({ elt -> elt == x }).takeIf { it >= 0 }) {
         null -> {}

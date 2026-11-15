@@ -4,12 +4,12 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.sync.Arc
-import io.github.kotlinmania.rustlang.sys.thread.unix.Thread
-import io.github.kotlinmania.rustlang.sys.threadlocal.guard.windows.KEY
-import io.github.kotlinmania.rustlang.sys.threadlocal.key.racy.LazyKey
-import io.github.kotlinmania.rustlang.sys.threadlocal.key.unix.get
-import io.github.kotlinmania.rustlang.sys.threadlocal.key.unix.set
+import io.github.kotlinmania.rustlang.std.sync.Arc
+import io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.windows.KEY
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.get
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
 
 public class TestsInlineTests {
     @kotlin.test.Test

@@ -1,9 +1,9 @@
 // port-lint: source io/error/os_functions.rs
 package io.github.kotlinmania.rustlang.core.io.error.osfunctions
 
-import io.github.kotlinmania.rustlang.io.error.ErrorKind
-import io.github.kotlinmania.rustlang.io.error.OsFunctions
-import io.github.kotlinmania.rustlang.io.error.RawOsError
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.OsFunctions
+import io.github.kotlinmania.rustlang.core.io.error.RawOsError
 
 /**
  * # Safety

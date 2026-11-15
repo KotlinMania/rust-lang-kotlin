@@ -1,10 +1,10 @@
 // port-lint: tests external_trait_impls/rayon/map.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map
 
-import io.github.kotlinmania.rustlang.HashMap
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.hashbrown.HashMap
 
 // Rayon extensions for `HashMap`.
 

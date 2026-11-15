@@ -3,15 +3,13 @@
 
 package io.github.kotlinmania.rustlang.coresimd
 
-import io.github.kotlinmania.rustlang.Simd
-import io.github.kotlinmania.rustlang.SimdCast
-import io.github.kotlinmania.rustlang.SimdElement
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.num.rustReverseBits
+import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
+import io.github.kotlinmania.rustlang.core.num.reverseBits
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 // Types and traits associated with masking elements of vectors.
@@ -23,28 +21,28 @@ public interface FixEndianness<T> {
 
 public fun UByte.fixEndianness(): UByte =
     if (false) {
-        rustReverseBits(this)
+        this.reverseBits()
     } else {
         this
     }
 
 public fun UShort.fixEndianness(): UShort =
     if (false) {
-        rustReverseBits(this)
+        this.reverseBits()
     } else {
         this
     }
 
 public fun UInt.fixEndianness(): UInt =
     if (false) {
-        rustReverseBits(this)
+        this.reverseBits()
     } else {
         this
     }
 
 public fun ULong.fixEndianness(): ULong =
     if (false) {
-        rustReverseBits(this)
+        this.reverseBits()
     } else {
         this
     }
@@ -508,7 +506,7 @@ public fun <T> Mask<T, N>.bitand(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : 
 
 public fun <T> Mask<T, N>.bitand(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this and Mask.splat(rhs, fieldLayout = this.fieldLayout)
 
-public fun <T> Boolean.bitand(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = ObjectSlotLayout<Simd<T>>()) and rhs
+public fun <T> Boolean.bitand(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = UnresolvedTypeLayout<Simd<T>>()) and rhs
 
 public fun <T> Mask<T, N>.bitor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : MaskElement<T> {
     // Safety: `self` is an integer vector
@@ -517,7 +515,7 @@ public fun <T> Mask<T, N>.bitor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : M
 
 public fun <T> Mask<T, N>.bitor(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this or Mask.splat(rhs, fieldLayout = this.fieldLayout)
 
-public fun <T> Boolean.bitor(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = ObjectSlotLayout<Simd<T>>()) or rhs
+public fun <T> Boolean.bitor(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = UnresolvedTypeLayout<Simd<T>>()) or rhs
 
 public fun <T> Mask<T, N>.bitxor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : MaskElement<T> {
     // Safety: `self` is an integer vector
@@ -526,7 +524,7 @@ public fun <T> Mask<T, N>.bitxor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : 
 
 public fun <T> Mask<T, N>.bitxor(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this xor Mask.splat(rhs, fieldLayout = this.fieldLayout)
 
-public fun <T> Boolean.bitxor(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = ObjectSlotLayout<Simd<T>>()) xor rhs
+public fun <T> Boolean.bitxor(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = UnresolvedTypeLayout<Simd<T>>()) xor rhs
 
 public fun <T> Mask<T, N>.not(n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(true, fieldLayout = this.fieldLayout) xor this
 

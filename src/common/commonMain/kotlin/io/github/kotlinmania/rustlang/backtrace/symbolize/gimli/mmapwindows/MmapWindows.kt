@@ -2,13 +2,11 @@
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmapwindows
 
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.fs.File
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.backtrace.windowssys.FILE_MAP_READ
+import io.github.kotlinmania.rustlang.backtrace.windowssys.MemoryMappedViewAddress
+import io.github.kotlinmania.rustlang.backtrace.windowssys.PAGE_READONLY
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.windowssys.FILE_MAP_READ
-import io.github.kotlinmania.rustlang.windowssys.MemoryMappedViewAddress
-import io.github.kotlinmania.rustlang.windowssys.PAGE_READONLY
 
 public open class Mmap internal constructor(
     // keep the file alive to prevent it from being deleted which would cause
@@ -20,7 +18,7 @@ public open class Mmap internal constructor(
     public var ptr: MutPtr = ptrCtorArg
         internal set
 
-    public open fun deref(): List<UByte> = rawSliceList(ConstPtr((ConstPtr((this.ptr).rawAddress)).rawAddress), this.len.toInt(), PrimitiveLayouts.U8)
+    public open fun deref(): List<UByte> = Slice.fromRawParts(ConstPtr((ConstPtr((this.ptr).rawAddress)).rawAddress), this.len)
 
     public open fun drop() {
         run {
@@ -34,11 +32,12 @@ public open class Mmap internal constructor(
             file: File,
             ptr: MutPtr,
             len: Int,
-        ): Mmap = Mmap(
-            file = file,
-            ptrCtorArg = ptr,
-            len = len,
-        )
+        ): Mmap =
+            Mmap(
+                file = file,
+                ptrCtorArg = ptr,
+                len = len,
+            )
 
         public fun map(file: File, len: Int, offset: ULong): Mmap? {
             return run {

@@ -5,9 +5,9 @@ package io.github.kotlinmania.rustlang.procmacro.bridge.buffer
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 // Buffer management for same-process client<->server communication.
 
@@ -35,7 +35,7 @@ public open class Buffer internal constructor(
         this.len = 0
     }
 
-    public open fun take(): Buffer = take(this)
+    public open fun take(): Buffer = io.github.kotlinmania.rustlang.core.mem.take(this)
 
     // We have the array method separate from extending from a slice. This is
     // because in the case of small arrays, codegen can be more efficient
@@ -115,7 +115,7 @@ public open class Buffer internal constructor(
                 return Buffer.from(v1)
             }
             fun drop(b: Buffer) {
-                drop(toVec(b))
+                io.github.kotlinmania.rustlang.core.mem.drop(toVec(b))
             }
             val (data, len, capacity) = v.intoRawParts()
             return Buffer(data = data, len = len, capacity = capacity, reserve = ::reserve, drop = ::drop)

@@ -3,22 +3,24 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.mach.arm.structs
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
+import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `arm / _structs.h`
 //
 // <https://github.com/apple-oss-distributions/xnu/blob/main/osfmk/mach/arm/_structs.h>
 
-public data class DarwinArmExceptionState64(
-    public var far: ULong = 0uL,
-    public var esr: UInt = 0u,
-    public var exception: UInt = 0u,
+public open class DarwinArmExceptionState64(
+    public var far: ULong,
+    public var esr: UInt,
+    public var exception: UInt,
 ) {
+    public open fun clone(): DarwinArmExceptionState64 = DarwinArmExceptionState64(far, esr, exception)
+
     public companion object {
         public fun typeLayout(): TypeLayout<DarwinArmExceptionState64> =
             object : TypeLayout<DarwinArmExceptionState64> {
@@ -50,38 +52,16 @@ public data class DarwinArmExceptionState64(
     }
 }
 
-public data class DarwinArmThreadState64(
-    public var x: ULongArray = ULongArray(29),
-    public var fp: ULong = 0uL,
-    public var lr: ULong = 0uL,
-    public var sp: ULong = 0uL,
-    public var pc: ULong = 0uL,
-    public var cpsr: UInt = 0u,
-    public var pad: UInt = 0u,
+public open class DarwinArmThreadState64(
+    public var x: ULongArray,
+    public var fp: ULong,
+    public var lr: ULong,
+    public var sp: ULong,
+    public var pc: ULong,
+    public var cpsr: UInt,
+    public var pad: UInt,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is DarwinArmThreadState64) return false
-        if (!this.x.contentEquals(other.x)) return false
-        if (this.fp != other.fp) return false
-        if (this.lr != other.lr) return false
-        if (this.sp != other.sp) return false
-        if (this.pc != other.pc) return false
-        if (this.cpsr != other.cpsr) return false
-        if (this.pad != other.pad) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.x.contentHashCode()
-        result = 31 * result + this.fp.hashCode()
-        result = 31 * result + this.lr.hashCode()
-        result = 31 * result + this.sp.hashCode()
-        result = 31 * result + this.pc.hashCode()
-        result = 31 * result + this.cpsr.hashCode()
-        result = 31 * result + this.pad.hashCode()
-        return result
-    }
+    public open fun clone(): DarwinArmThreadState64 = DarwinArmThreadState64(x, fp, lr, sp, pc, cpsr, pad)
 
     public companion object {
         public fun typeLayout(): TypeLayout<DarwinArmThreadState64> =
@@ -130,11 +110,13 @@ public data class DarwinArmThreadState64(
     }
 }
 
-public data class DarwinArmNeonState64(
-    public var v: List<U128> = List(32) { U128() },
-    public var fpsr: UInt = 0u,
-    public var fpcr: UInt = 0u,
+public open class DarwinArmNeonState64(
+    public var v: List<U128>,
+    public var fpsr: UInt,
+    public var fpcr: UInt,
 ) {
+    public open fun clone(): DarwinArmNeonState64 = DarwinArmNeonState64(v, fpsr, fpcr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<DarwinArmNeonState64> =
             object : TypeLayout<DarwinArmNeonState64> {

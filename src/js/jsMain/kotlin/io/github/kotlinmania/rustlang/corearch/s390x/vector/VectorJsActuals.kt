@@ -6,11 +6,11 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 
-private val corearchS390xVectorNapiAddon: dynamic =
+private val s390xVectorNapiAddon: dynamic =
     js("(function() { if (typeof globalThis !== 'undefined' && typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore; if (typeof process === 'undefined' || !process.versions || !process.versions.node) return null; var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) return null; try { var pkg = req('@kotlinmania/kmcore-native-bindings'); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = pkg; return pkg; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { var loaded = req(c); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = loaded; return loaded; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = null; return null; })()")
 
 public actual fun nearbyintV4f32(a: VectorFloat): VectorFloat =
@@ -139,19 +139,15 @@ public actual fun vfaezfs(a: VectorSignedInt, b: VectorSignedInt, c: Int): Packe
 public actual fun vll(a: UInt, b: ConstPtr): VectorSignedChar =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vstl(a: VectorSignedChar, b: UInt, c: MutPtr) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vstl(a: VectorSignedChar, b: UInt, c: MutPtr): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vlrl(a: UInt, b: ConstPtr): VectorUnsignedChar =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lcbb(a: ConstPtr, b: UInt): UInt =
-    if (corearchS390xVectorNapiAddon != null) (corearchS390xVectorNapiAddon.rustlangCorearchS390xVectorLcbb(a.rawAddress.toString(), b.toInt()) as Int).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (s390xVectorNapiAddon != null) (s390xVectorNapiAddon.corearchS390xVectorLcbb(a.rawAddress.toString(), b.toInt()) as Int).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vlbb(a: ConstPtr, b: UInt): MaybeUninit<VectorSignedChar> =
     throw UnsupportedOperationException("Native FFI addon is not available")

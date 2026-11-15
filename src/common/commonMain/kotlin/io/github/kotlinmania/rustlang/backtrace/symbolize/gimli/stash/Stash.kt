@@ -1,8 +1,8 @@
 // port-lint: source symbolize/gimli/stash.rs
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash
 
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmapfake.Mmap
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.symbolize.gimli.mmapfake.Mmap
 
 /**
  * A simple arena allocator for byte buffers.
@@ -53,10 +53,11 @@ public open class Stash internal constructor(
         public operator fun invoke(
             buffers: UnsafeCell<List<List<UByte>>>,
             mmaps: UnsafeCell<List<Mmap>>,
-        ): Stash = Stash(
-            buffersCtorArg = buffers,
-            mmapsCtorArg = mmaps,
-        )
+        ): Stash =
+            Stash(
+                buffersCtorArg = buffers,
+                mmapsCtorArg = mmaps,
+            )
 
         public fun new(): Stash = Stash(buffers = UnsafeCell.new(mutableListOf()), mmaps = UnsafeCell.new(mutableListOf()))
     }

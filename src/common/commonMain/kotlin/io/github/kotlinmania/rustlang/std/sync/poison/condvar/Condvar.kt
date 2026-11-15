@@ -3,13 +3,13 @@ package io.github.kotlinmania.rustlang.std.sync.poison.condvar
 
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.sync.WaitTimeoutResult
-import io.github.kotlinmania.rustlang.sync.poison.LockResult
-import io.github.kotlinmania.rustlang.sync.poison.PoisonError
-import io.github.kotlinmania.rustlang.sync.poison.mapResult
-import io.github.kotlinmania.rustlang.sync.poison.mutex.Mutex
-import io.github.kotlinmania.rustlang.sync.poison.mutex.MutexGuard
-import io.github.kotlinmania.rustlang.time.Instant
+import io.github.kotlinmania.rustlang.std.sync.WaitTimeoutResult
+import io.github.kotlinmania.rustlang.std.sync.poison.LockResult
+import io.github.kotlinmania.rustlang.std.sync.poison.PoisonError
+import io.github.kotlinmania.rustlang.std.sync.poison.mapResult
+import io.github.kotlinmania.rustlang.std.sync.poison.mutex.Mutex
+import io.github.kotlinmania.rustlang.std.sync.poison.mutex.MutexGuard
+import io.github.kotlinmania.rustlang.std.time.Instant
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -75,7 +75,7 @@ public class DebugStruct(
  * ```
  */
 public open class Condvar(
-    public var inner: io.github.kotlinmania.rustlang.sys.sync.condvar.futex.Condvar,
+    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.condvar.futex.Condvar,
 ) {
     /**
      * Blocks the current thread until this condition variable receives a
@@ -501,7 +501,7 @@ public open class Condvar(
          * val condvar = Condvar.new()
          * ```
          */
-        public fun new(): Condvar = Condvar(inner = io.github.kotlinmania.rustlang.sys.sync.condvar.new())
+        public fun new(): Condvar = Condvar(inner = io.github.kotlinmania.rustlang.std.sys.sync.condvar.new())
 
         /**
          * Creates a `Condvar` which is ready to be waited on and notified.

@@ -5,9 +5,9 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
 
 public typealias TryType<T> = NeverShortCircuit<T>
 
@@ -242,7 +242,8 @@ public typealias ChangeOutputType<T : Try<T, Any?, Any?>, V, Output, Residual> =
 public open class NeverShortCircuit<T>(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<T>,
-) : Try<NeverShortCircuit<T>, T, NeverShortCircuitResidual>, FromResidual<Residual, NeverShortCircuit<T>> {
+) : Try<NeverShortCircuit<T>, T, NeverShortCircuitResidual>,
+    FromResidual<Residual, NeverShortCircuit<T>> {
     public var field0: T
         get() = value
         set(v) {
@@ -251,7 +252,9 @@ public open class NeverShortCircuit<T>(
 
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 

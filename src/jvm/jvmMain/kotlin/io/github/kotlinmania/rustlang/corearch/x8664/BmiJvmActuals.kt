@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-private object CorearchX8664BmiJniBridge {
+private object X8664BmiJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,11 +38,14 @@ private object CorearchX8664BmiJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX8664BmiJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X8664BmiJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,8 +59,8 @@ private object CorearchX8664BmiJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX8664BmiX86BmiBextr64(x: Long, y: Long): Long
+    external fun corearchX8664BmiX86BmiBextr64(x: Long, y: Long): Long
 }
 
 public actual fun x86BmiBextr64(x: ULong, y: ULong): ULong =
-    CorearchX8664BmiJniBridge.rustlangCorearchX8664BmiX86BmiBextr64(x.toLong(), y.toLong()).toULong()
+    X8664BmiJniBridge.corearchX8664BmiX86BmiBextr64(x.toLong(), y.toLong()).toULong()

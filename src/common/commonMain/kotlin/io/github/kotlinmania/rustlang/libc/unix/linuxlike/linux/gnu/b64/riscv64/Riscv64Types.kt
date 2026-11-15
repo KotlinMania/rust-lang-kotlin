@@ -1,9 +1,9 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.riscv64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.libc.*
 
 public typealias WcharT = CInt
 

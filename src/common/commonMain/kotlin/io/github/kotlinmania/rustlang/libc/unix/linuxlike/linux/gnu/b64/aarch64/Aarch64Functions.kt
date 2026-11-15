@@ -1,10 +1,10 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
 
 public fun interface MakecontextFuncCallback {
     public operator fun invoke()

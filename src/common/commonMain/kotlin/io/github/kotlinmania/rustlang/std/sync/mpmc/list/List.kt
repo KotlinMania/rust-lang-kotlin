@@ -2,9 +2,9 @@
 package io.github.kotlinmania.rustlang.std.sync.mpmc.list
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpmc.context.Context
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
@@ -22,11 +23,10 @@ import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Token
 import io.github.kotlinmania.rustlang.std.sync.mpmc.utils.Backoff
 import io.github.kotlinmania.rustlang.std.sync.mpmc.utils.CachePadded
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.SyncWaker
-import io.github.kotlinmania.rustlang.sync.mpmc.SendTimeoutError
-import io.github.kotlinmania.rustlang.sync.mpsc.RecvTimeoutError
-import io.github.kotlinmania.rustlang.sync.mpsc.TryRecvError
-import io.github.kotlinmania.rustlang.sync.mpsc.TrySendError
-import io.github.kotlinmania.rustlang.time.Instant
+import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvTimeoutError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.TryRecvError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.TrySendError
+import io.github.kotlinmania.rustlang.std.time.Instant
 
 // Unbounded channel implemented as a linked list.
 
@@ -155,7 +155,7 @@ public open class Block<T> internal constructor(
             // It is not necessary to set the `DESTROY` bit in the last slot because that slot has
             // begun destruction of the block.
             for (i in start until BLOCK_CAP - 1) {
-                val slot = (ObjectSlotLayout<Block<T>>()).readNative((thisRef).rawAddress).slots.getUnchecked(i)
+                val slot = (UnresolvedTypeLayout<Block<T>>()).readNative((thisRef).rawAddress).slots.getUnchecked(i)
                 // Mark the `DESTROY` bit if a thread is still using the slot.
                 if (slot.state.load(Ordering.Acquire) and READ == 0 && slot.state.fetchOr(DESTROY, Ordering.AcqRel) and READ == 0) {
                     // If a thread is still using the slot, it will continue destruction of the block.
@@ -364,8 +364,8 @@ public open class Channel<T> internal constructor(
         val block = (token.list.block).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
         val offset = token.list.offset
         run {
-            val slot = (ObjectSlotLayout<Block<T>>()).readNative((block).rawAddress).slots.getUnchecked(offset)
-            slot.msg.get().write(MaybeUninit.new(msg, ObjectSlotLayout<T>()))
+            val slot = (UnresolvedTypeLayout<Block<T>>()).readNative((block).rawAddress).slots.getUnchecked(offset)
+            slot.msg.get().write(MaybeUninit.new(msg, UnresolvedTypeLayout<T>()))
             slot.state.fetchOr(WRITE, Ordering.Release)
         }
         // Wake a sleeping receiver.
@@ -392,7 +392,7 @@ public open class Channel<T> internal constructor(
             }
             var newHead = head + (1 shl SHIFT)
             if (newHead and MARK_BIT == 0) {
-                fence(Ordering.SeqCst)
+                atomic.fence(Ordering.SeqCst)
                 val tail = this.tail.index.load(Ordering.Relaxed)
                 // If the tail equals the head, that means the channel is empty.
                 if (head shr SHIFT == tail shr SHIFT) {
@@ -459,7 +459,7 @@ public open class Channel<T> internal constructor(
         val block = (token.list.block).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
         val offset = token.list.offset
         return run {
-            val slot = (ObjectSlotLayout<Block<T>>()).readNative((block).rawAddress).slots.getUnchecked(offset)
+            val slot = (UnresolvedTypeLayout<Block<T>>()).readNative((block).rawAddress).slots.getUnchecked(offset)
             slot.waitWrite()
             val msg = slot.msg.get().read().assumeInit()
             // Destroy the block if we've reached the end, or if another thread wanted to destroy but

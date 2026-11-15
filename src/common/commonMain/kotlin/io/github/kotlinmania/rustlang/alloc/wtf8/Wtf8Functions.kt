@@ -1,12 +1,12 @@
 package io.github.kotlinmania.rustlang.alloc.wtf8
 
+import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
+import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.wtf8.Wtf8
-import io.github.kotlinmania.rustlang.rcs.arc.Arc
-import io.github.kotlinmania.rustlang.rcs.rc.Rc
 
 /**
  * Creates an owned `Wtf8Buf` from a borrowed `Wtf8`.
@@ -22,9 +22,10 @@ public fun toOwned(slice: Wtf8): Wtf8Buf = Wtf8Buf(bytes = slice.asBytes().toMut
  * This only copies the data if necessary (if it contains any surrogate).
  */
 public fun toStringLossy(slice: Wtf8): String {
-    val (surrogatePos, _) = slice.nextSurrogate(0) ?: // SAFETY: `nextSurrogate` found no surrogate, so the well-formed WTF-8
+    val (surrogatePos, _) =
+        slice.nextSurrogate(0) ?: // SAFETY: `nextSurrogate` found no surrogate, so the well-formed WTF-8
 // bytes are valid UTF-8.
-return String.fromUtf8Unchecked(slice.asBytes())
+            return String.fromUtf8Unchecked(slice.asBytes())
     val wtf8Bytes = slice.asBytes()
     val utf8Bytes = ArrayList(slice.len())
     utf8Bytes.addAll(((wtf8Bytes).subList(0, surrogatePos)))

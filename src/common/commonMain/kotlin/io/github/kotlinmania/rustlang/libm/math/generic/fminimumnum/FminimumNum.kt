@@ -1,8 +1,8 @@
 // port-lint: source math/generic/fminimum_num.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.fminimumnum
 
-import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 
 // IEEE 754-2019 `minimum`.
 //
@@ -19,9 +19,9 @@ import io.github.kotlinmania.rustlang.math.support.floattraits.Float
 
 public fun <Int, SignedInt, F : Float<F, Any?, Any?>> fminimumNum(x: F, y: F): F {
     val res =
-        if ((compareNaturalOrder(x, y) > 0) || x.isNan()) {
+        if ((kmCompareValues(x, y) > 0) || x.isNan()) {
             y
-        } else if ((compareNaturalOrder(y, x) > 0) || y.isNan()) {
+        } else if ((kmCompareValues(y, x) > 0) || y.isNan()) {
             x
         } else if (x.isSignPositive()) {
             y

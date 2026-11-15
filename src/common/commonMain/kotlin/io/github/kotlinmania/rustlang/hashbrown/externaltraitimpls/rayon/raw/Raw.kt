@@ -1,18 +1,20 @@
 // port-lint: source external_trait_impls/rayon/raw.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw
 
-import io.github.kotlinmania.rustlang.Guard
-import io.github.kotlinmania.rustlang.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.raw.Bucket
-import io.github.kotlinmania.rustlang.raw.RawIter
-import io.github.kotlinmania.rustlang.raw.RawIterRange
-import io.github.kotlinmania.rustlang.raw.RawTable
-import io.github.kotlinmania.rustlang.rayon.iter.ParallelIterator
-import io.github.kotlinmania.rustlang.rayon.iter.plumbing
-import io.github.kotlinmania.rustlang.rayon.iter.plumbing.Folder
-import io.github.kotlinmania.rustlang.rayon.iter.plumbing.UnindexedConsumer
-import io.github.kotlinmania.rustlang.rayon.iter.plumbing.UnindexedProducer
+import io.github.kotlinmania.rustlang.hashbrown.Guard
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawIter
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawIterRange
+import io.github.kotlinmania.rustlang.hashbrown.raw.RawTable
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.ParallelIterator
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.plumbing
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.plumbing.Folder
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.plumbing.UnindexedConsumer
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.plumbing.UnindexedProducer
 
 /**
  * Parallel iterator which returns a raw pointer to every full bucket in the table.

@@ -1,8 +1,8 @@
 // port-lint: tests math/cbrt.rs
 package io.github.kotlinmania.rustlang.libm.math.cbrt
 
-import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
-import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 
 public class CbrtInlineTests {
     @kotlin.test.Test

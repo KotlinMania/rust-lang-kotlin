@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.armshared
 
-private object CorearchArmsharedHintsJniBridge {
+private object ArmsharedHintsJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,11 +38,14 @@ private object CorearchArmsharedHintsJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchArmsharedHintsJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = ArmsharedHintsJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,9 +59,9 @@ private object CorearchArmsharedHintsJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchArmsharedHintsHint(arg0: Int)
+    external fun corearchArmsharedHintsHint(arg0: Int)
 }
 
 public actual fun hint(arg0: Int) {
-    CorearchArmsharedHintsJniBridge.rustlangCorearchArmsharedHintsHint(arg0)
+    ArmsharedHintsJniBridge.corearchArmsharedHintsHint(arg0)
 }

@@ -1,17 +1,18 @@
 // port-lint: source bench.rs
 package io.github.kotlinmania.rustlang.test.bench
 
-import io.github.kotlinmania.rustlang.core.num.rustPow
+import io.github.kotlinmania.rustlang.core.num.pow
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.stats.Stats
+import io.github.kotlinmania.rustlang.std.io.stdio.setOutputCapture
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.test.Sender
 import io.github.kotlinmania.rustlang.test.event.CompletedTest
 import io.github.kotlinmania.rustlang.test.options.BenchMode
+import io.github.kotlinmania.rustlang.test.stats.Stats
 import io.github.kotlinmania.rustlang.test.testresult.TestResult
 import io.github.kotlinmania.rustlang.test.types.TestDesc
 import io.github.kotlinmania.rustlang.test.types.TestId
@@ -81,7 +82,7 @@ public fun fmtThousandsSep(n: Double, sep: Char): String {
     var output = ""
     var trailing = false
     for (pow in listOf(9, 6, 3, 0)) {
-        val base = rustPow(10, pow.toUInt())
+        val base = 10.pow(pow.toUInt())
         if (pow == 0 || trailing || n1 / base.toDouble() >= 1.0) {
             run {
                 val matchVal = Pair(pow, trailing)

@@ -1,15 +1,15 @@
 // port-lint: source sync/mpmc/counter.rs
 package io.github.kotlinmania.rustlang.std.sync.mpmc.counter
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.sys.process.unix.unix.Process
+import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.Process
 
 /**
  * Reference counter internals.
@@ -78,7 +78,7 @@ public open class Sender<C> internal constructor(
     /**
      * Returns the internal `Counter`.
      */
-    public open fun counter(): Counter<C> = (ObjectSlotLayout<Counter<C>>()).readNative((this.counter).rawAddress)
+    public open fun counter(): Counter<C> = (UnresolvedTypeLayout<Counter<C>>()).readNative((this.counter).rawAddress)
 
     /**
      * Acquires another sender reference.
@@ -153,7 +153,7 @@ public open class Receiver<C> internal constructor(
     /**
      * Returns the internal `Counter`.
      */
-    public open fun counter(): Counter<C> = (ObjectSlotLayout<Counter<C>>()).readNative((this.counter).rawAddress)
+    public open fun counter(): Counter<C> = (UnresolvedTypeLayout<Counter<C>>()).readNative((this.counter).rawAddress)
 
     /**
      * Acquires another receiver reference.

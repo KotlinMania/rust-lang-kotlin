@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.qos.cinterop
-headers = libc_new_apple_libpthread_pthread_qos_wrapper.h
-headerFilter = libc_new_apple_libpthread_pthread_qos_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = libc_new_apple_libpthread_pthread_qos_wrapper.a

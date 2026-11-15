@@ -5,7 +5,7 @@ package io.github.kotlinmania.rustlang.corearch.x8664
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object CorearchX8664XsaveJniBridge {
+private object X8664XsaveJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -41,11 +41,14 @@ private object CorearchX8664XsaveJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX8664XsaveJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X8664XsaveJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -59,44 +62,44 @@ private object CorearchX8664XsaveJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX8664XsaveXsave64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveXsave64(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun rustlangCorearchX8664XsaveXrstor64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveXrstor64(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun rustlangCorearchX8664XsaveXsaveopt64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveXsaveopt64(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun rustlangCorearchX8664XsaveXsavec64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveXsavec64(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun rustlangCorearchX8664XsaveXsaves64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveXsaves64(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun rustlangCorearchX8664XsaveXrstors64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveXrstors64(p: Long, hi: Int, lo: Int)
 }
 
 public actual fun xsave64(p: MutPtr, hi: UInt, lo: UInt) {
-    CorearchX8664XsaveJniBridge.rustlangCorearchX8664XsaveXsave64(p.rawAddress, hi.toInt(), lo.toInt())
+    X8664XsaveJniBridge.corearchX8664XsaveXsave64(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
 public actual fun xrstor64(p: ConstPtr, hi: UInt, lo: UInt) {
-    CorearchX8664XsaveJniBridge.rustlangCorearchX8664XsaveXrstor64(p.rawAddress, hi.toInt(), lo.toInt())
+    X8664XsaveJniBridge.corearchX8664XsaveXrstor64(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
 public actual fun xsaveopt64(p: MutPtr, hi: UInt, lo: UInt) {
-    CorearchX8664XsaveJniBridge.rustlangCorearchX8664XsaveXsaveopt64(p.rawAddress, hi.toInt(), lo.toInt())
+    X8664XsaveJniBridge.corearchX8664XsaveXsaveopt64(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
 public actual fun xsavec64(p: MutPtr, hi: UInt, lo: UInt) {
-    CorearchX8664XsaveJniBridge.rustlangCorearchX8664XsaveXsavec64(p.rawAddress, hi.toInt(), lo.toInt())
+    X8664XsaveJniBridge.corearchX8664XsaveXsavec64(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
 public actual fun xsaves64(p: MutPtr, hi: UInt, lo: UInt) {
-    CorearchX8664XsaveJniBridge.rustlangCorearchX8664XsaveXsaves64(p.rawAddress, hi.toInt(), lo.toInt())
+    X8664XsaveJniBridge.corearchX8664XsaveXsaves64(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
 public actual fun xrstors64(p: ConstPtr, hi: UInt, lo: UInt) {
-    CorearchX8664XsaveJniBridge.rustlangCorearchX8664XsaveXrstors64(p.rawAddress, hi.toInt(), lo.toInt())
+    X8664XsaveJniBridge.corearchX8664XsaveXrstors64(p.rawAddress, hi.toInt(), lo.toInt())
 }

@@ -1,43 +1,52 @@
 package io.github.kotlinmania.rustlang.alloc.vec
 
-import io.github.kotlinmania.rustlang.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.alloc.vec.drain.Drain
 import io.github.kotlinmania.rustlang.alloc.vec.extractif.ExtractIf
 import io.github.kotlinmania.rustlang.alloc.vec.intoiter.IntoIter
 import io.github.kotlinmania.rustlang.alloc.vec.peekmut.PeekMut
 import io.github.kotlinmania.rustlang.alloc.vec.setlenondrop.SetLenOnDrop
 import io.github.kotlinmania.rustlang.alloc.vec.splice.Splice
-import io.github.kotlinmania.rustlang.collections.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.vec.sveretain.MIN_SVE_SIZE_1
+import io.github.kotlinmania.rustlang.alloc.vec.sveretain.MIN_SVE_SIZE_2
+import io.github.kotlinmania.rustlang.alloc.vec.sveretain.MIN_SVE_SIZE_4
+import io.github.kotlinmania.rustlang.alloc.vec.sveretain.MIN_SVE_SIZE_8
+import io.github.kotlinmania.rustlang.alloc.vec.sveretain.PanicGuard
+import io.github.kotlinmania.rustlang.alloc.vec.sveretain.chunkedRetain
+import io.github.kotlinmania.rustlang.alloc.wtf8.cloneInto
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.hint.unlikely
 import io.github.kotlinmania.rustlang.core.marker.Freeze
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.option.Iter
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.rawvec.RawVec
-import io.github.kotlinmania.rustlang.vec.sveretain.MIN_SVE_SIZE_1
-import io.github.kotlinmania.rustlang.vec.sveretain.MIN_SVE_SIZE_2
-import io.github.kotlinmania.rustlang.vec.sveretain.MIN_SVE_SIZE_4
-import io.github.kotlinmania.rustlang.vec.sveretain.MIN_SVE_SIZE_8
-import io.github.kotlinmania.rustlang.vec.sveretain.PanicGuard
-import io.github.kotlinmania.rustlang.vec.sveretain.chunkedRetain
-import io.github.kotlinmania.rustlang.wtf8.cloneInto
+import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
 
 /**
  * A contiguous growable array type, written as `List<T>`, short for 'vector'.
@@ -273,7 +282,11 @@ import io.github.kotlinmania.rustlang.wtf8.cloneInto
 public open class Vec<T, A : Allocator> internal constructor(
     bufCtorArg: RawVec<T, A>,
     public var len: Int,
-) : ExtendFromWithinSpec, DerefPure, AsRef<Vec<T, A>>, AsMut<Vec<T, A>>, Iterable<T> {
+) : ExtendFromWithinSpec,
+    DerefPure,
+    AsRef<Vec<T, A>>,
+    AsMut<Vec<T, A>>,
+    Iterable<T> {
     public var buf: RawVec<T, A> = bufCtorArg
         internal set
 
@@ -761,8 +774,8 @@ public open class Vec<T, A : Allocator> internal constructor(
      * }
      * ```
      */
-    public open fun intoArray(n: Int): Result<List<T>, Vec<T, A>> {
-        return if (this.len() == n) {
+    public open fun intoArray(n: Int): Result<List<T>, Vec<T, A>> =
+        if (this.len() == n) {
             // SAFETY: `Holder.intoArray` is guaranteed to return `Ok` if the
             // length of the slice is equal to `N`.
             // `self.intoBoxedSlice().len()` is equal to `self.len()`,
@@ -771,7 +784,6 @@ public open class Vec<T, A : Allocator> internal constructor(
         } else {
             Result.Err(this)
         }
-    }
 
     /**
      * Shortens the vector, keeping the first `len` elements and dropping
@@ -1686,16 +1698,17 @@ public open class Vec<T, A : Allocator> internal constructor(
         var firstDuplicateIdx: Int = 1
         val start = this.asMutPtr()
         while (firstDuplicateIdx != len) {
-            val foundDuplicate = run {
-                // SAFETY: firstDuplicate always in range [1..len).
-                // Note that we start iteration from 1 so we never overflow.
-                val prev = start.add((firstDuplicateIdx - 1))
-                // ignore-tidy-undocumented-unchecked
-                val current = start.add(firstDuplicateIdx)
-                // We explicitly say in docs that references are reversed.
-                // ignore-tidy-undocumented-unchecked
-                sameBucket(current, prev)
-            }
+            val foundDuplicate =
+                run {
+                    // SAFETY: firstDuplicate always in range [1..len).
+                    // Note that we start iteration from 1 so we never overflow.
+                    val prev = start.add((firstDuplicateIdx - 1))
+                    // ignore-tidy-undocumented-unchecked
+                    val current = start.add(firstDuplicateIdx)
+                    // We explicitly say in docs that references are reversed.
+                    // ignore-tidy-undocumented-unchecked
+                    sameBucket(current, prev)
+                }
             if (foundDuplicate) {
                 break
             }
@@ -1985,7 +1998,10 @@ public open class Vec<T, A : Allocator> internal constructor(
      * Appends elements to `self` from other buffer, returning [TryReserveError] on OOM.
      */
     public open fun tryAppendElements(other: ConstPtr): Result<Unit, TryReserveError> {
-        when (val tryResult = this.tryReserve(other.len())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.tryReserve(other.len())) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
         // ignore-tidy-undocumented-unchecked
         run {
             this.appendElementsUnreserved(other)
@@ -2051,14 +2067,14 @@ public open class Vec<T, A : Allocator> internal constructor(
         // the hole, and the vector length is restored to the new length.
         //
         val len = this.len()
-        val structVal = range(range, 0 until len)
+        val structVal = Range(range, 0 until len)
         val start = structVal.start
         val end = structVal.end
         // ignore-tidy-undocumented-unchecked
         return run {
             // set self.vec length's to start, to be safe in case Drain is leaked
             this.setLen(start)
-            val rangeSlice = rawSliceList(this.asPtr().add(start), (end - start).toInt(), PrimitiveLayouts.U8)
+            val rangeSlice = linearSliceView(this.asPtr().add(start), (end - start).toInt(), PrimitiveLayouts.U8)
             Drain(tailStart = end, tailLen = len - end, iter = rangeSlice.iter(), vec = NonNull.from(this))
         }
     }
@@ -2246,7 +2262,7 @@ public open class Vec<T, A : Allocator> internal constructor(
     public open fun leak(): MutableList<T> {
         val me = this
         // ignore-tidy-undocumented-unchecked
-        return rawMutSliceList(me.asMutPtr(), me.len.toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(me.asMutPtr(), me.len.toInt(), PrimitiveLayouts.U8)
     }
 
     /**
@@ -2281,7 +2297,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         // This method is not implemented in terms of `splitAtSpareMut`,
         // to prevent invalidation of pointers to the buffer.
         // ignore-tidy-undocumented-unchecked
-        return rawMutSliceList(mutPtrFromRustCast(this.asMutPtr().add(this.len)), (this.buf.capacity() - this.len).toInt(), ObjectSlotLayout<MaybeUninit<T>>())
+        return linearMutSliceView(mutPtrFromRustCast(this.asMutPtr().add(this.len)), (this.buf.capacity() - this.len).toInt(), UnresolvedTypeLayout<MaybeUninit<T>>())
     }
 
     /**
@@ -2360,8 +2376,8 @@ public open class Vec<T, A : Allocator> internal constructor(
         // - `ptr` is guaranteed to be valid for `self.len` elements
         // - `sparePtr` is pointing one element past the buffer, so it doesn't overlap with `initialized`
         return run {
-            val initialized = rawMutSliceList(ptr, this.len.toInt(), PrimitiveLayouts.U8)
-            val spare = rawMutSliceList(sparePtr1, spareLen.toInt(), PrimitiveLayouts.U8)
+            val initialized = linearMutSliceView(ptr, this.len.toInt(), PrimitiveLayouts.U8)
+            val spare = linearMutSliceView(sparePtr1, spareLen.toInt(), PrimitiveLayouts.U8)
             Triple(initialized, spare, this.len)
         }
     }
@@ -2474,8 +2490,8 @@ public open class Vec<T, A : Allocator> internal constructor(
         this.clear()
         run {
             // Note(const-Note, 146097): compare `Layout`s
-            check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == sizeOf<U>(typeLayoutT = ObjectSlotLayout<U>()))
-            check(alignOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == alignOf<U>(typeLayoutT = ObjectSlotLayout<U>()))
+            check(sizeOf<T>(typeLayoutT = UnresolvedTypeLayout<T>()) == sizeOf<U>(typeLayoutT = UnresolvedTypeLayout<U>()))
+            check(alignOf<T>(typeLayoutT = UnresolvedTypeLayout<T>()) == alignOf<U>(typeLayoutT = UnresolvedTypeLayout<U>()))
         }
         val (ptr, length, capacity, alloc) = this.intoPartsWithAllocator()
         check(length == 0)
@@ -2578,7 +2594,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> extendFromWithin(src: R) where R : RangeBounds<Int> {
-        val range = range(src, 0 until this.len())
+        val range = Range(src, 0 until this.len())
         this.reserve(range.len())
         // SAFETY:
         // - `slice.range` guarantees that the given range is valid for indexing self
@@ -3010,10 +3026,11 @@ public open class Vec<T, A : Allocator> internal constructor(
         public operator fun <T, A : Allocator> invoke(
             buf: RawVec<T, A>,
             len: Int,
-        ): Vec<T, A> = Vec<T, A>(
-            bufCtorArg = buf,
-            len = len,
-        )
+        ): Vec<T, A> =
+            Vec<T, A>(
+                bufCtorArg = buf,
+                len = len,
+            )
 
         /**
          * Constructs a new, empty `List<T, A>` with at least the specified capacity
@@ -3102,7 +3119,16 @@ public open class Vec<T, A : Allocator> internal constructor(
          * [will not allocate]: self#memory-layout
          */
         public fun <T, A : Allocator> tryWithCapacityIn(capacity: Int, alloc: A): Result<Vec<T, A>, TryReserveError> {
-            return Result.Ok(Vec(buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, len = 0))
+            return Result.Ok(
+                Vec(
+                    buf =
+                        when (val tryResult = RawVec.tryWithCapacityIn(capacity, alloc)) {
+                            is Result.Ok<*, *> -> tryResult.value
+                            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                        },
+                    len = 0,
+                ),
+            )
         }
 
         /**
@@ -3650,13 +3676,13 @@ public fun <T> Vec<T>.constMakeGlobal(): List<T> where T : Freeze {
     return if (this.capacity() == 0 || T.IS_ZST) {
         val me = this
         // ignore-tidy-undocumented-unchecked
-        rawSliceList(NonNull.dangling().asPtr(), me.len.toInt(), PrimitiveLayouts.U8)
+        linearSliceView(NonNull.dangling().asPtr(), me.len.toInt(), PrimitiveLayouts.U8)
     } else {
         // ignore-tidy-undocumented-unchecked
         constMakeGlobal(this.asMutPtr())
         val me1 = this
         // ignore-tidy-undocumented-unchecked
-        rawSliceList(me1.asPtr(), me1.len.toInt(), PrimitiveLayouts.U8)
+        linearSliceView(me1.asPtr(), me1.len.toInt(), PrimitiveLayouts.U8)
     }
 }
 

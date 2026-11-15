@@ -2,9 +2,10 @@
 
 package io.github.kotlinmania.rustlang.libc.unix
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
 
 public val INT_MIN: CInt = Int.MIN_VALUE
 
@@ -141,9 +142,9 @@ public val INADDR_BROADCAST: InAddrT = 4294967295u
 
 public val INADDR_NONE: InAddrT = 4294967295u
 
-public val IN6ADDR_LOOPBACK_INIT: In6Addr = In6Addr(s6Addr = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u))
+public val IN6ADDR_LOOPBACK_INIT: In6Addr = In6Addr(s6Addr = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u), fieldLayout = PrimitiveArrayLayouts.uByteArray((16).toInt()))
 
-public val IN6ADDR_ANY_INIT: In6Addr = In6Addr(s6Addr = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u))
+public val IN6ADDR_ANY_INIT: In6Addr = In6Addr(s6Addr = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), fieldLayout = PrimitiveArrayLayouts.uByteArray((16).toInt()))
 
 public val ARPOP_REQUEST: UShort = 1u
 

@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
@@ -10,19 +9,19 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U16
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U64
-import io.github.kotlinmania.rustlang.unix.bsd.apple.IPC_STAT
-import io.github.kotlinmania.rustlang.unix.linuxlike.SIZEOF_PTHREAD_COND_T
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.NLMSG_MIN_TYPE
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.NLMSG_OVERRUN
-import io.github.kotlinmania.rustlang.unix.linuxlike.io
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Ioctl
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.O_CLOEXEC
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.O_NONBLOCK
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_MUTEX_T
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_RWLOCK_T
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.IPC_STAT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIZEOF_PTHREAD_COND_T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.NLMSG_MIN_TYPE
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.NLMSG_OVERRUN
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Ioctl
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.O_CLOEXEC
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.O_NONBLOCK
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_MUTEX_T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_RWLOCK_T
 
 // linux/cnProc.h
 // uapi/linux/magic.h
@@ -109,11 +108,11 @@ public val MPOL_F_RELATIVE_NODES: CInt = 1 shl 14
 public val MPOL_F_STATIC_NODES: CInt = 1 shl 15
 
 // defined in `new / glibc`
-public val PTHREAD_MUTEX_INITIALIZER: io.github.kotlinmania.rustlang.unix.linuxlike.linux.PthreadMutexT = io.github.kotlinmania.rustlang.unix.linuxlike.linux.PthreadMutexT(size = UByteArray(SIZEOF_PTHREAD_MUTEX_T) { 0u.toUByte() })
+public val PTHREAD_MUTEX_INITIALIZER: PthreadMutexT = PthreadMutexT(size = UByteArray(SIZEOF_PTHREAD_MUTEX_T) { 0u.toUByte() })
 
-public val PTHREAD_COND_INITIALIZER: io.github.kotlinmania.rustlang.unix.linuxlike.linux.PthreadCondT = io.github.kotlinmania.rustlang.unix.linuxlike.linux.PthreadCondT(size = UByteArray(SIZEOF_PTHREAD_COND_T) { 0u.toUByte() })
+public val PTHREAD_COND_INITIALIZER: PthreadCondT = PthreadCondT(size = UByteArray(SIZEOF_PTHREAD_COND_T) { 0u.toUByte() })
 
-public val PTHREAD_RWLOCK_INITIALIZER: io.github.kotlinmania.rustlang.unix.linuxlike.linux.PthreadRwlockT = io.github.kotlinmania.rustlang.unix.linuxlike.linux.PthreadRwlockT(size = UByteArray(SIZEOF_PTHREAD_RWLOCK_T) { 0u.toUByte() })
+public val PTHREAD_RWLOCK_INITIALIZER: PthreadRwlockT = PthreadRwlockT(size = UByteArray(SIZEOF_PTHREAD_RWLOCK_T) { 0u.toUByte() })
 
 public val RENAME_NOREPLACE: CUint = 1u
 

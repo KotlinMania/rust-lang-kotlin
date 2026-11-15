@@ -29,10 +29,11 @@ public open class SetLenOnDrop internal constructor(
         public operator fun invoke(
             len: RustMutableReference<Int>,
             localLen: Int,
-        ): SetLenOnDrop = SetLenOnDrop(
-            lenCtorArg = len,
-            localLen = localLen,
-        )
+        ): SetLenOnDrop =
+            SetLenOnDrop(
+                lenCtorArg = len,
+                localLen = localLen,
+            )
 
         public fun new(len: RustMutableReference<Int>): SetLenOnDrop = SetLenOnDrop(localLen = (len).read(), len = len)
     }

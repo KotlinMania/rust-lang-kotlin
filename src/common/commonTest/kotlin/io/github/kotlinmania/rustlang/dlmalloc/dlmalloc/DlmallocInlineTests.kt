@@ -1,9 +1,9 @@
 // port-lint: tests dlmalloc.rs
 package io.github.kotlinmania.rustlang.dlmalloc.dlmalloc
 
-import io.github.kotlinmania.rustlang.Allocator
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.System
+import io.github.kotlinmania.rustlang.dlmalloc.Allocator
+import io.github.kotlinmania.rustlang.dlmalloc.unix.System
 
 // Prime the allocator with some allocations such that there will be free
 // chunks in the treemap

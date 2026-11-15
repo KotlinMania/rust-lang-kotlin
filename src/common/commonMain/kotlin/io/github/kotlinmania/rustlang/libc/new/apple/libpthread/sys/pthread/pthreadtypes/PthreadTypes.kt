@@ -3,13 +3,13 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `sys / _pthread / _pthread_types.h`
 //
@@ -37,23 +37,11 @@ public val PTHREAD_RWLOCK_SIZE: Int = 192
 
 public val PTHREAD_RWLOCKATTR_SIZE: Int = 16
 
-public data class PthreadAttrT(
-    public var sig: CLong = 0L,
-    public var opaque: UByteArray = UByteArray(PTHREAD_ATTR_SIZE),
+public open class PthreadAttrT(
+    public var sig: CLong,
+    public var opaque: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadAttrT) return false
-        if (this.sig != other.sig) return false
-        if (!this.opaque.contentEquals(other.opaque)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sig.hashCode()
-        result = 31 * result + this.opaque.contentHashCode()
-        return result
-    }
+    public open fun clone(): PthreadAttrT = PthreadAttrT(sig, opaque)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadAttrT> =
@@ -82,23 +70,11 @@ public data class PthreadAttrT(
     }
 }
 
-public data class PthreadCondT(
-    public var sig: CLong = 0L,
-    public var opaque: UByteArray = UByteArray(PTHREAD_COND_SIZE),
+public open class PthreadCondT(
+    public var sig: CLong,
+    public var opaque: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadCondT) return false
-        if (this.sig != other.sig) return false
-        if (!this.opaque.contentEquals(other.opaque)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sig.hashCode()
-        result = 31 * result + this.opaque.contentHashCode()
-        return result
-    }
+    public open fun clone(): PthreadCondT = PthreadCondT(sig, opaque)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadCondT> =
@@ -127,23 +103,11 @@ public data class PthreadCondT(
     }
 }
 
-public data class PthreadCondattrT(
-    public var sig: CLong = 0L,
-    public var opaque: UByteArray = UByteArray(PTHREAD_CONDATTR_SIZE),
+public open class PthreadCondattrT(
+    public var sig: CLong,
+    public var opaque: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadCondattrT) return false
-        if (this.sig != other.sig) return false
-        if (!this.opaque.contentEquals(other.opaque)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sig.hashCode()
-        result = 31 * result + this.opaque.contentHashCode()
-        return result
-    }
+    public open fun clone(): PthreadCondattrT = PthreadCondattrT(sig, opaque)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadCondattrT> =
@@ -172,23 +136,11 @@ public data class PthreadCondattrT(
     }
 }
 
-public data class PthreadMutexT(
-    public var sig: CLong = 0L,
-    public var opaque: UByteArray = UByteArray(PTHREAD_MUTEX_SIZE),
+public open class PthreadMutexT(
+    public var sig: CLong,
+    public var opaque: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadMutexT) return false
-        if (this.sig != other.sig) return false
-        if (!this.opaque.contentEquals(other.opaque)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sig.hashCode()
-        result = 31 * result + this.opaque.contentHashCode()
-        return result
-    }
+    public open fun clone(): PthreadMutexT = PthreadMutexT(sig, opaque)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadMutexT> =
@@ -217,23 +169,11 @@ public data class PthreadMutexT(
     }
 }
 
-public data class PthreadMutexattrT(
-    public var sig: CLong = 0L,
-    public var opaque: UByteArray = UByteArray(PTHREAD_MUTEXATTR_SIZE),
+public open class PthreadMutexattrT(
+    public var sig: CLong,
+    public var opaque: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadMutexattrT) return false
-        if (this.sig != other.sig) return false
-        if (!this.opaque.contentEquals(other.opaque)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sig.hashCode()
-        result = 31 * result + this.opaque.contentHashCode()
-        return result
-    }
+    public open fun clone(): PthreadMutexattrT = PthreadMutexattrT(sig, opaque)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadMutexattrT> =
@@ -262,23 +202,11 @@ public data class PthreadMutexattrT(
     }
 }
 
-public data class PthreadOnceT(
-    public var sig: CLong = 0L,
-    public var opaque: UByteArray = UByteArray(PTHREAD_ONCE_SIZE),
+public open class PthreadOnceT(
+    public var sig: CLong,
+    public var opaque: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadOnceT) return false
-        if (this.sig != other.sig) return false
-        if (!this.opaque.contentEquals(other.opaque)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sig.hashCode()
-        result = 31 * result + this.opaque.contentHashCode()
-        return result
-    }
+    public open fun clone(): PthreadOnceT = PthreadOnceT(sig, opaque)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadOnceT> =
@@ -307,23 +235,11 @@ public data class PthreadOnceT(
     }
 }
 
-public data class PthreadRwlockT(
-    public var sig: CLong = 0L,
-    public var opaque: UByteArray = UByteArray(PTHREAD_RWLOCK_SIZE),
+public open class PthreadRwlockT(
+    public var sig: CLong,
+    public var opaque: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadRwlockT) return false
-        if (this.sig != other.sig) return false
-        if (!this.opaque.contentEquals(other.opaque)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sig.hashCode()
-        result = 31 * result + this.opaque.contentHashCode()
-        return result
-    }
+    public open fun clone(): PthreadRwlockT = PthreadRwlockT(sig, opaque)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadRwlockT> =
@@ -352,23 +268,11 @@ public data class PthreadRwlockT(
     }
 }
 
-public data class PthreadRwlockattrT(
-    public var sig: CLong = 0L,
-    public var opaque: UByteArray = UByteArray(PTHREAD_RWLOCKATTR_SIZE),
+public open class PthreadRwlockattrT(
+    public var sig: CLong,
+    public var opaque: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadRwlockattrT) return false
-        if (this.sig != other.sig) return false
-        if (!this.opaque.contentEquals(other.opaque)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sig.hashCode()
-        result = 31 * result + this.opaque.contentHashCode()
-        return result
-    }
+    public open fun clone(): PthreadRwlockattrT = PthreadRwlockattrT(sig, opaque)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadRwlockattrT> =

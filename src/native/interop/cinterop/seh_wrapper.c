@@ -15,7 +15,7 @@
 #endif
 #endif
 
-uint8_t rustlangSehGetTYPEINFOVTABLE(void) {
+uint8_t panicunwindSehGetTYPEINFOVTABLE(void) {
     static uint8_t* km_sym_ptr = NULL;
 #ifdef _WIN32
     if (km_sym_ptr == NULL) {

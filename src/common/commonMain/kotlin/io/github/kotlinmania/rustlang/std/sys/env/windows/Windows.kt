@@ -1,22 +1,22 @@
 // port-lint: source sys/env/windows.rs
 package io.github.kotlinmania.rustlang.std.sys.env.windows
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.io.Error
-import io.github.kotlinmania.rustlang.os.windows.ffi.OsStringExt
-import io.github.kotlinmania.rustlang.sys.osstr.bytes.Slice
-import io.github.kotlinmania.rustlang.sys.pal.c
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.sys.pal.windows.fillUtf16Buf
-import io.github.kotlinmania.rustlang.sys.pal.windows.toU16s
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.io.Error
+import io.github.kotlinmania.rustlang.std.os.windows.ffi.OsStringExt
+import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
+import io.github.kotlinmania.rustlang.std.sys.pal.c
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
 
 public open class Env internal constructor(
     baseCtorArg: MutPtr,
@@ -119,16 +119,16 @@ public open class EnvIterator internal constructor(
         }
         while (true) {
             run {
-                if ((ObjectSlotLayout<c.Wchar>()).readNative((cur).rawAddress) == 0u.toUShort()) {
+                if ((UnresolvedTypeLayout<c.Wchar>()).readNative((cur).rawAddress) == 0u.toUShort()) {
                     return null
                 }
-                val p = ConstPtr(((ObjectSlotLayout<c.Wchar>()).readNative((cur).rawAddress)).toLong())
+                val p = ConstPtr(((UnresolvedTypeLayout<c.Wchar>()).readNative((cur).rawAddress)).toLong())
                 var len = 0
                 while ((PrimitiveLayouts.U16).readNative((ConstPtr((p).rawAddress + ((len).toLong() * (PrimitiveLayouts.U16).strideBytes))).rawAddress) != 0u.toUShort()) {
                     len += 1
                 }
                 val s = Slice.fromRawParts(p, len)
-                (ObjectSlotLayout<c.Wchar>()).writeNative((cur).rawAddress, MutPtr((cur).rawAddress + ((len + 1).toLong() * (ObjectSlotLayout<c.Wchar>()).strideBytes)))
+                (UnresolvedTypeLayout<c.Wchar>()).writeNative((cur).rawAddress, MutPtr((cur).rawAddress + ((len + 1).toLong() * (UnresolvedTypeLayout<c.Wchar>()).strideBytes)))
                 // Windows allows environment variables to start with an equals
                 // symbol (in any other position, this is the separator between
                 // variable name and value). Since`s` has at least length 1 at

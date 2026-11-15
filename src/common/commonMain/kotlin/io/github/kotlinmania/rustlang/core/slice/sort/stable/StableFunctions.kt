@@ -1,9 +1,9 @@
 package io.github.kotlinmania.rustlang.core.slice.sort.stable
 
+import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.slice.sort.shared.smallsort.SMALL_SORT_GENERAL_SCRATCH_LEN
-import io.github.kotlinmania.rustlang.slice.sort.stable.tiny.mergesort
+import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.SMALL_SORT_GENERAL_SCRATCH_LEN
+import io.github.kotlinmania.rustlang.core.slice.sort.stable.tiny.mergesort
 
 /**
  * Stable sort called driftsort by Orson Peters and Lukas Bergdoll.
@@ -69,7 +69,7 @@ public fun <T, BufT : BufGuard<T, BufT>> driftsortMain(v: MutableList<T>, isLess
     // 8MB
     val maxFullAlloc = MAX_FULL_ALLOC_BYTES / sizeOf<T>(typeLayoutT = typeLayoutT)
     val len = v.size
-    val allocLen = max(max(len - len / 2, minOf(len, maxFullAlloc)), SMALL_SORT_GENERAL_SCRATCH_LEN)
+    val allocLen = cmp.max(cmp.max(len - len / 2, minOf(len, maxFullAlloc)), SMALL_SORT_GENERAL_SCRATCH_LEN)
     // For small inputs 4KiB of stack storage suffices, which allows us to avoid
     // calling the (de-)allocator. Benchmarks showed this was quite beneficial.
     val stackBuf = AlignedStorage.new()
@@ -86,5 +86,6 @@ public fun <T, BufT : BufGuard<T, BufT>> driftsortMain(v: MutableList<T>, isLess
     // small-sort or two small-sorts plus a single merge outperforms it, so use
     // eager mode.
     val eagerSort = len <= smallSortThresholdTFn() * 2
-    io.github.kotlinmania.rustlang.slice.sort.stable.drift.sort(v, scratch, eagerSort, isLess)
+    io.github.kotlinmania.rustlang.core.slice.sort.stable.drift
+        .sort(v, scratch, eagerSort, isLess)
 }

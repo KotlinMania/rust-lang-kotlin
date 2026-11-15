@@ -3,23 +3,21 @@ package io.github.kotlinmania.rustlang.std.os.windows.io
 
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.fs.File
-import io.github.kotlinmania.rustlang.io.pipe.PipeReader
-import io.github.kotlinmania.rustlang.io.pipe.PipeWriter
-import io.github.kotlinmania.rustlang.io.stdio.Stderr
-import io.github.kotlinmania.rustlang.io.stdio.StderrLock
-import io.github.kotlinmania.rustlang.io.stdio.Stdin
-import io.github.kotlinmania.rustlang.io.stdio.StdinLock
-import io.github.kotlinmania.rustlang.io.stdio.Stdout
-import io.github.kotlinmania.rustlang.io.stdio.StdoutLock
-import io.github.kotlinmania.rustlang.net.tcp.TcpListener
-import io.github.kotlinmania.rustlang.net.tcp.TcpStream
-import io.github.kotlinmania.rustlang.net.udp.UdpSocket
-import io.github.kotlinmania.rustlang.os.windows.io.OwnedHandle
-import io.github.kotlinmania.rustlang.os.windows.io.OwnedSocket
-import io.github.kotlinmania.rustlang.os.windows.raw.Handle
-import io.github.kotlinmania.rustlang.os.windows.raw.Socket
-import io.github.kotlinmania.rustlang.sys.FromInner
+import io.github.kotlinmania.rustlang.std.fs.File
+import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
+import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
+import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
+import io.github.kotlinmania.rustlang.std.io.stdio.StderrLock
+import io.github.kotlinmania.rustlang.std.io.stdio.Stdin
+import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
+import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
+import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
+import io.github.kotlinmania.rustlang.std.net.tcp.TcpListener
+import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
+import io.github.kotlinmania.rustlang.std.net.udp.UdpSocket
+import io.github.kotlinmania.rustlang.std.os.windows.raw.Handle
+import io.github.kotlinmania.rustlang.std.os.windows.raw.Socket
+import io.github.kotlinmania.rustlang.std.sys.FromInner
 
 // Windows-specific extensions to general I/O primitives.
 
@@ -144,7 +142,7 @@ public fun stdioHandle(raw: RawHandle): RawHandle {
 public fun fromRawHandleFile(handle: RawHandle): File =
     run {
         val handle1 = MutPtr(handle.rawAddress)
-        File.fromInner(io.github.kotlinmania.rustlang.sys.fs.unix.File.fromInner(FromInner.fromInner(OwnedHandle.FromRawHandle(handle1))))
+        File.fromInner(io.github.kotlinmania.rustlang.std.sys.fs.unix.File.fromInner(FromInner.fromInner(OwnedHandle.FromRawHandle(handle1))))
     }
 
 public fun File.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoRawHandle())
@@ -223,20 +221,20 @@ public fun UdpSocket.asRawSocket(): RawSocket = this.asInner().socket().asRawSoc
 
 public fun fromRawSocketTcpStream(sock: RawSocket): TcpStream =
     run {
-        val sock1 = io.github.kotlinmania.rustlang.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
-        TcpStream.fromInner(io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpStream.fromInner(sock1))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        TcpStream.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream.fromInner(sock1))
     }
 
 public fun fromRawSocketTcpListener(sock: RawSocket): TcpListener =
     run {
-        val sock1 = io.github.kotlinmania.rustlang.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
-        TcpListener.fromInner(io.github.kotlinmania.rustlang.sys.net.connection.socket.TcpListener.fromInner(sock1))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        TcpListener.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener.fromInner(sock1))
     }
 
 public fun fromRawSocketUdpSocket(sock: RawSocket): UdpSocket =
     run {
-        val sock1 = io.github.kotlinmania.rustlang.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
-        UdpSocket.fromInner(io.github.kotlinmania.rustlang.sys.net.connection.socket.UdpSocket.fromInner(sock1))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        UdpSocket.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.UdpSocket.fromInner(sock1))
     }
 
 public fun TcpStream.intoRawSocket(): RawSocket = this.intoInner().intoSocket().intoInner().intoRawSocket()

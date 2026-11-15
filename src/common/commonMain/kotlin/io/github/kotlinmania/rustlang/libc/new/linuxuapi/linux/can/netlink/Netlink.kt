@@ -3,25 +3,27 @@
 
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.netlink
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `linux / can / netlink.h`
 
-public data class CanBittiming(
-    public var bitrate: UInt = 0u,
-    public var samplePoint: UInt = 0u,
-    public var tq: UInt = 0u,
-    public var propSeg: UInt = 0u,
-    public var phaseSeg1: UInt = 0u,
-    public var phaseSeg2: UInt = 0u,
-    public var sjw: UInt = 0u,
-    public var brp: UInt = 0u,
+public open class CanBittiming(
+    public var bitrate: UInt,
+    public var samplePoint: UInt,
+    public var tq: UInt,
+    public var propSeg: UInt,
+    public var phaseSeg1: UInt,
+    public var phaseSeg2: UInt,
+    public var sjw: UInt,
+    public var brp: UInt,
 ) {
+    public open fun clone(): CanBittiming = CanBittiming(bitrate, samplePoint, tq, propSeg, phaseSeg1, phaseSeg2, sjw, brp)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CanBittiming> =
             object : TypeLayout<CanBittiming> {
@@ -73,44 +75,18 @@ public data class CanBittiming(
     }
 }
 
-public data class CanBittimingConst(
-    public var name: UByteArray = UByteArray(16),
-    public var tseg1Min: UInt = 0u,
-    public var tseg1Max: UInt = 0u,
-    public var tseg2Min: UInt = 0u,
-    public var tseg2Max: UInt = 0u,
-    public var sjwMax: UInt = 0u,
-    public var brpMin: UInt = 0u,
-    public var brpMax: UInt = 0u,
-    public var brpInc: UInt = 0u,
+public open class CanBittimingConst(
+    public var name: UByteArray,
+    public var tseg1Min: UInt,
+    public var tseg1Max: UInt,
+    public var tseg2Min: UInt,
+    public var tseg2Max: UInt,
+    public var sjwMax: UInt,
+    public var brpMin: UInt,
+    public var brpMax: UInt,
+    public var brpInc: UInt,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CanBittimingConst) return false
-        if (!this.name.contentEquals(other.name)) return false
-        if (this.tseg1Min != other.tseg1Min) return false
-        if (this.tseg1Max != other.tseg1Max) return false
-        if (this.tseg2Min != other.tseg2Min) return false
-        if (this.tseg2Max != other.tseg2Max) return false
-        if (this.sjwMax != other.sjwMax) return false
-        if (this.brpMin != other.brpMin) return false
-        if (this.brpMax != other.brpMax) return false
-        if (this.brpInc != other.brpInc) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.name.contentHashCode()
-        result = 31 * result + this.tseg1Min.hashCode()
-        result = 31 * result + this.tseg1Max.hashCode()
-        result = 31 * result + this.tseg2Min.hashCode()
-        result = 31 * result + this.tseg2Max.hashCode()
-        result = 31 * result + this.sjwMax.hashCode()
-        result = 31 * result + this.brpMin.hashCode()
-        result = 31 * result + this.brpMax.hashCode()
-        result = 31 * result + this.brpInc.hashCode()
-        return result
-    }
+    public open fun clone(): CanBittimingConst = CanBittimingConst(name, tseg1Min, tseg1Max, tseg2Min, tseg2Max, sjwMax, brpMin, brpMax, brpInc)
 
     public companion object {
         public fun typeLayout(): TypeLayout<CanBittimingConst> =
@@ -167,9 +143,11 @@ public data class CanBittimingConst(
     }
 }
 
-public data class CanClock(
-    public var freq: UInt = 0u,
+public open class CanClock(
+    public var freq: UInt,
 ) {
+    public open fun clone(): CanClock = CanClock(freq)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CanClock> =
             object : TypeLayout<CanClock> {
@@ -193,10 +171,12 @@ public data class CanClock(
     }
 }
 
-public data class CanBerrCounter(
-    public var txerr: UShort = 0u,
-    public var rxerr: UShort = 0u,
+public open class CanBerrCounter(
+    public var txerr: UShort,
+    public var rxerr: UShort,
 ) {
+    public open fun clone(): CanBerrCounter = CanBerrCounter(txerr, rxerr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CanBerrCounter> =
             object : TypeLayout<CanBerrCounter> {
@@ -224,10 +204,12 @@ public data class CanBerrCounter(
     }
 }
 
-public data class CanCtrlmode(
-    public var mask: UInt = 0u,
-    public var flags: UInt = 0u,
+public open class CanCtrlmode(
+    public var mask: UInt,
+    public var flags: UInt,
 ) {
+    public open fun clone(): CanCtrlmode = CanCtrlmode(mask, flags)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CanCtrlmode> =
             object : TypeLayout<CanCtrlmode> {
@@ -255,14 +237,16 @@ public data class CanCtrlmode(
     }
 }
 
-public data class CanDeviceStats(
-    public var busError: UInt = 0u,
-    public var errorWarning: UInt = 0u,
-    public var errorPassive: UInt = 0u,
-    public var busOff: UInt = 0u,
-    public var arbitrationLost: UInt = 0u,
-    public var restarts: UInt = 0u,
+public open class CanDeviceStats(
+    public var busError: UInt,
+    public var errorWarning: UInt,
+    public var errorPassive: UInt,
+    public var busOff: UInt,
+    public var arbitrationLost: UInt,
+    public var restarts: UInt,
 ) {
+    public open fun clone(): CanDeviceStats = CanDeviceStats(busError, errorWarning, errorPassive, busOff, arbitrationLost, restarts)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CanDeviceStats> =
             object : TypeLayout<CanDeviceStats> {

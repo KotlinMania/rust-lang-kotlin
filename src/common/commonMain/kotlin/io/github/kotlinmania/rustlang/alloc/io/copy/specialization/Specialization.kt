@@ -1,10 +1,10 @@
 // port-lint: source io/copy/specialization.rs
 package io.github.kotlinmania.rustlang.alloc.io.copy.specialization
 
+import io.github.kotlinmania.rustlang.alloc.io.copy.CopyState
+import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.io.copy.CopyState
-import io.github.kotlinmania.rustlang.io.read.Read
 
 // Provides specialization for `io.copy`.
 

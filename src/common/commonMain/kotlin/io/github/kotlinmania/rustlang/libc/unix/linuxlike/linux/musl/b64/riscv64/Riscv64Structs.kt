@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.riscv64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
@@ -12,17 +11,18 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.GidT
-import io.github.kotlinmania.rustlang.unix.UidT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.KeyT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.DevT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.BlkcntT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.InoT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.riscv64.StackT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.SigsetT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.KeyT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.DevT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.ModeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.BlkcntT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.InoT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.OffT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.TimeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.SigsetT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.StackT
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -49,28 +49,28 @@ public class DebugStruct(
     }
 }
 
-public class Stat(
-    public var stDev: DevT = 0uL,
-    public var stIno: InoT = 0uL,
-    public var stMode: ModeT = 0u,
-    public var stNlink: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.riscv64.NlinkT = 0u,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var stRdev: DevT = 0uL,
-    public var pad1: DevT = 0uL,
-    public var stSize: OffT = 0L,
-    public var stBlksize: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.riscv64.BlksizeT = 0,
-    public var pad2: CInt = 0,
-    public var stBlocks: BlkcntT = 0L,
-    public var stAtime: TimeT = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: TimeT = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: TimeT = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var unused: IntArray = IntArray(2),
+public open class Stat(
+    public var stDev: DevT,
+    public var stIno: InoT,
+    public var stMode: ModeT,
+    public var stNlink: NlinkT,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var stRdev: DevT,
+    public var pad1: DevT,
+    public var stSize: OffT,
+    public var stBlksize: BlksizeT,
+    public var pad2: CInt,
+    public var stBlocks: BlkcntT,
+    public var stAtime: TimeT,
+    public var stAtimeNsec: CLong,
+    public var stMtime: TimeT,
+    public var stMtimeNsec: CLong,
+    public var stCtime: TimeT,
+    public var stCtimeNsec: CLong,
+    public var unused: IntArray,
 ) {
-    public fun clone(): Stat = Stat(stDev, stIno, stMode, stNlink, stUid, stGid, stRdev, pad1, stSize, stBlksize, pad2, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused)
+    public open fun clone(): Stat = Stat(stDev, stIno, stMode, stNlink, stUid, stGid, stRdev, pad1, stSize, stBlksize, pad2, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat> =
@@ -167,17 +167,19 @@ public class Stat(
     }
 }
 
-public data class IpcPerm(
-    public var key: KeyT = 0,
-    public var uid: UidT = 0,
-    public var gid: GidT = 0,
-    public var cuid: UidT = 0,
-    public var cgid: GidT = 0,
-    public var mode: ModeT = 0u,
-    public var ipcPermSeq: CInt = 0,
-    public var pad1: CLong = 0L,
-    public var pad2: CLong = 0L,
+public open class IpcPerm(
+    public var key: KeyT,
+    public var uid: UidT,
+    public var gid: GidT,
+    public var cuid: UidT,
+    public var cgid: GidT,
+    public var mode: ModeT,
+    public var ipcPermSeq: CInt,
+    public var pad1: CLong,
+    public var pad2: CLong,
 ) {
+    public open fun clone(): IpcPerm = IpcPerm(key, uid, gid, cuid, cgid, mode, ipcPermSeq, pad1, pad2)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IpcPerm> =
             object : TypeLayout<IpcPerm> {
@@ -233,19 +235,21 @@ public data class IpcPerm(
     }
 }
 
-public data class CloneArgs(
-    public var flags: CUlonglong = 0uL,
-    public var pidfd: CUlonglong = 0uL,
-    public var childTid: CUlonglong = 0uL,
-    public var parentTid: CUlonglong = 0uL,
-    public var exitSignal: CUlonglong = 0uL,
-    public var stack: CUlonglong = 0uL,
-    public var stackSize: CUlonglong = 0uL,
-    public var tls: CUlonglong = 0uL,
-    public var setTid: CUlonglong = 0uL,
-    public var setTidSize: CUlonglong = 0uL,
-    public var cgroup: CUlonglong = 0uL,
+public open class CloneArgs(
+    public var flags: CUlonglong,
+    public var pidfd: CUlonglong,
+    public var childTid: CUlonglong,
+    public var parentTid: CUlonglong,
+    public var exitSignal: CUlonglong,
+    public var stack: CUlonglong,
+    public var stackSize: CUlonglong,
+    public var tls: CUlonglong,
+    public var setTid: CUlonglong,
+    public var setTidSize: CUlonglong,
+    public var cgroup: CUlonglong,
 ) {
+    public open fun clone(): CloneArgs = CloneArgs(flags, pidfd, childTid, parentTid, exitSignal, stack, stackSize, tls, setTid, setTidSize, cgroup)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CloneArgs> =
             object : TypeLayout<CloneArgs> {
@@ -309,7 +313,7 @@ public data class CloneArgs(
     }
 }
 
-public class UcontextT internal constructor(
+public open class UcontextT internal constructor(
     public var ucFlags: CUlong,
     ucLinkCtorArg: MutPtr,
     public var ucStack: StackT,
@@ -322,55 +326,15 @@ public class UcontextT internal constructor(
     public var ucMcontext: McontextT = ucMcontextCtorArg
         internal set
 
-    public constructor() : this(
-        ucFlags = 0uL,
-        ucLinkCtorArg = MutPtr(0L),
-        ucStack = StackT(),
-        ucSigmask = SigsetT(),
-        ucMcontextCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): CUlong = this.ucFlags
-
-    public operator fun component2(): MutPtr = this.ucLink
-
-    public operator fun component3(): StackT = this.ucStack
-
-    public operator fun component4(): SigsetT = this.ucSigmask
-
-    public operator fun component5(): McontextT = this.ucMcontext
-
-    public fun copy(ucFlags: CUlong = this.ucFlags, ucLink: MutPtr = this.ucLink, ucStack: StackT = this.ucStack, ucSigmask: SigsetT = this.ucSigmask, ucMcontext: McontextT = this.ucMcontext): UcontextT = UcontextT(ucFlags = ucFlags, ucLinkCtorArg = ucLink, ucStack = ucStack, ucSigmask = ucSigmask, ucMcontextCtorArg = ucMcontext)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is UcontextT) return false
-        if (this.ucFlags != other.ucFlags) return false
-        if (this.ucLink != other.ucLink) return false
-        if (this.ucStack != other.ucStack) return false
-        if (this.ucSigmask != other.ucSigmask) return false
-        if (this.ucMcontext != other.ucMcontext) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ucFlags.hashCode()
-        result = 31 * result + this.ucLink.hashCode()
-        result = 31 * result + this.ucStack.hashCode()
-        result = 31 * result + this.ucSigmask.hashCode()
-        result = 31 * result + this.ucMcontext.hashCode()
-        return result
-    }
-
-    public fun clone(): UcontextT = UcontextT(ucFlags, ucLink, ucStack, ucSigmask, ucMcontext)
+    public open fun clone(): UcontextT = UcontextT(ucFlags, ucLink, ucStack, ucSigmask, ucMcontext)
 
     public companion object {
         public operator fun invoke(
-            ucFlags: CUlong = 0uL,
-            ucLink: MutPtr = MutPtr(0L),
-            ucStack: StackT = StackT(),
-            ucSigmask: SigsetT = SigsetT(),
-            ucMcontext: McontextT = MutPtr(0L),
+            ucFlags: CUlong,
+            ucLink: MutPtr,
+            ucStack: StackT,
+            ucSigmask: SigsetT,
+            ucMcontext: McontextT,
         ): UcontextT = UcontextT(
             ucFlags = ucFlags,
             ucLinkCtorArg = ucLink,
@@ -381,52 +345,28 @@ public class UcontextT internal constructor(
     }
 }
 
-public data class McontextT(
-    public var gregs: ULongArray = ULongArray(32),
-    public var fpregs: RiscvMcFpState = RiscvMcFpState(),
+public open class McontextT(
+    public var gregs: ULongArray,
+    public var fpregs: RiscvMcFpState,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is McontextT) return false
-        if (!this.gregs.contentEquals(other.gregs)) return false
-        if (this.fpregs != other.fpregs) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.gregs.contentHashCode()
-        result = 31 * result + this.fpregs.hashCode()
-        return result
-    }
+    public open fun clone(): McontextT = McontextT(gregs, fpregs)
 }
 
-public data class RiscvMcFpState(
-    public var f: RiscvMcFExtState = RiscvMcFExtState(),
-    public var d: RiscvMcDExtState = RiscvMcDExtState(),
-    public var q: RiscvMcQExtState = RiscvMcQExtState(),
+public open class RiscvMcFpState(
+    public var f: RiscvMcFExtState? = null,
+    public var d: RiscvMcDExtState? = null,
+    public var q: RiscvMcQExtState? = null,
 ) {
-    public fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "__riscv_mc_fp_state").finishNonExhaustive()
     }
 }
 
-public data class RiscvMcFExtState(
-    public var f: UIntArray = UIntArray(32),
-    public var fcsr: CUint = 0u,
+public open class RiscvMcFExtState(
+    public var f: UIntArray,
+    public var fcsr: CUint,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is RiscvMcFExtState) return false
-        if (!this.f.contentEquals(other.f)) return false
-        if (this.fcsr != other.fcsr) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.f.contentHashCode()
-        result = 31 * result + this.fcsr.hashCode()
-        return result
-    }
+    public open fun clone(): RiscvMcFExtState = RiscvMcFExtState(f, fcsr)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RiscvMcFExtState> =
@@ -455,23 +395,11 @@ public data class RiscvMcFExtState(
     }
 }
 
-public data class RiscvMcDExtState(
-    public var f: ULongArray = ULongArray(32),
-    public var fcsr: CUint = 0u,
+public open class RiscvMcDExtState(
+    public var f: ULongArray,
+    public var fcsr: CUint,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is RiscvMcDExtState) return false
-        if (!this.f.contentEquals(other.f)) return false
-        if (this.fcsr != other.fcsr) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.f.contentHashCode()
-        result = 31 * result + this.fcsr.hashCode()
-        return result
-    }
+    public open fun clone(): RiscvMcDExtState = RiscvMcDExtState(f, fcsr)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RiscvMcDExtState> =
@@ -500,26 +428,12 @@ public data class RiscvMcDExtState(
     }
 }
 
-public data class RiscvMcQExtState(
-    public var f: ULongArray = ULongArray(64),
-    public var fcsr: CUint = 0u,
-    public var reserved: UIntArray = UIntArray(3),
+public open class RiscvMcQExtState(
+    public var f: ULongArray,
+    public var fcsr: CUint,
+    public var reserved: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is RiscvMcQExtState) return false
-        if (!this.f.contentEquals(other.f)) return false
-        if (this.fcsr != other.fcsr) return false
-        if (!this.reserved.contentEquals(other.reserved)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.f.contentHashCode()
-        result = 31 * result + this.fcsr.hashCode()
-        result = 31 * result + this.reserved.contentHashCode()
-        return result
-    }
+    public open fun clone(): RiscvMcQExtState = RiscvMcQExtState(f, fcsr, reserved)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RiscvMcQExtState> =

@@ -1,10 +1,10 @@
 // port-lint: source task/poll.rs
 package io.github.kotlinmania.rustlang.core.task.poll
 
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
 
 /**
  * Indicates whether a value is available or if the current task has been
@@ -16,7 +16,10 @@ public sealed class Poll<T> {
     /**
      * Represents that a value is immediately ready.
      */
-    public data class Ready<T>(public var value: T) : Poll<T>()
+    public data class Ready<T>(
+        public var value: T,
+    ) : Poll<T>()
+
     /**
      * Represents that a value is not ready yet.
      *
@@ -24,7 +27,7 @@ public sealed class Poll<T> {
      * ensure that the current task is scheduled to be awoken when
      * progress can be made.
      */
-    public class Pending<T>() : Poll<T>()
+    public class Pending<T> : Poll<T>()
 
     public fun rustEquals(other: Poll<T>): Boolean = this == other
 

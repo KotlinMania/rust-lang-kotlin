@@ -8,14 +8,14 @@ import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.rustDropPanic
-import io.github.kotlinmania.rustlang.rustForeignException
+import io.github.kotlinmania.rustlang.panicunwind.rustDropPanic
+import io.github.kotlinmania.rustlang.panicunwind.rustForeignException
 
 // Windows SEH
 //
@@ -206,7 +206,7 @@ public var TYPE_DESCRIPTOR: TypeDescriptor = TypeDescriptor(pVFTable = addrOf(TY
 
 public fun exceptionCleanup(e: MutPtr) {
     run {
-        val matchVal = (ObjectSlotLayout<Exception>()).readNative((e).rawAddress)
+        val matchVal = (UnresolvedTypeLayout<Exception>()).readNative((e).rawAddress)
         if (matchVal.data != null) {
             val b = matchVal.data
             (b).let { }
@@ -223,7 +223,7 @@ public fun exceptionCopy(dest: MutPtr, src: MutPtr): MutPtr =
 public fun panic(data: PanicPayload): UInt = throwException(data.takeBox())
 
 public fun throwException(data: RustAny?): Nothing {
-    fun cxxThrowException(pExceptionObject: MutPtr, pThrowInfo: ConstPtr): Nothing = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nothing>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nothing>()).alignBytes)); val res = (ObjectSlotLayout<Nothing>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nothing>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nothing>()).alignBytes)); res }
+    fun cxxThrowException(pExceptionObject: MutPtr, pThrowInfo: ConstPtr): Nothing = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes)); val res = (UnresolvedTypeLayout<Nothing>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes)); res }
     // _CxxThrowException executes entirely on this stack frame, so there's no
     // need to otherwise transfer `data` to the heap. We just pass a stack
     // pointer to this function.
@@ -231,7 +231,7 @@ public fun throwException(data: RustAny?): Nothing {
     // The ManuallyDrop is needed here since we don't want Exception to be
     // dropped when unwinding. Instead it will be dropped by exceptionCleanup
     // which is invoked by the C++ runtime.
-    val localStorageL207C4 = AddressableLocal(Exception(canary = addrOf(TYPE_DESCRIPTOR), data = data), ObjectSlotLayout<Any?>())
+    val localStorageL207C4 = AddressableLocal(Exception(canary = addrOf(TYPE_DESCRIPTOR), data = data), UnresolvedTypeLayout<Any?>())
     val throwInfo: ConstPtr
     return run {
         Unit
@@ -247,11 +247,11 @@ public fun cleanup(payload: MutPtr): RustAny {
     }
     val exception = MutPtr(payload.rawAddress, payload.rawMeta)
     return run {
-        val canary = (PrimitiveLayouts.constPtrLayout(64L)).readNative(((addrOf((ObjectSlotLayout<Exception>()).readNative((exception).rawAddress).canary))).rawAddress)
+        val canary = (PrimitiveLayouts.constPtrLayout(64L)).readNative(((addrOf((UnresolvedTypeLayout<Exception>()).readNative((exception).rawAddress).canary))).rawAddress)
         if (!eq(canary, addrOf(TYPE_DESCRIPTOR))) {
             // A foreign Rust exception.
             rustForeignException()
         }
-        (ObjectSlotLayout<Exception>()).readNative((exception).rawAddress).data.take()!!
+        (UnresolvedTypeLayout<Exception>()).readNative((exception).rawAddress).data.take()!!
     }
 }

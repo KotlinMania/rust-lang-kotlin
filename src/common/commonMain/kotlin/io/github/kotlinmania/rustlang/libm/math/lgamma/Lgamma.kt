@@ -1,7 +1,7 @@
 // port-lint: source math/lgamma.rs
 package io.github.kotlinmania.rustlang.libm.math.lgamma
 
-import io.github.kotlinmania.rustlang.math.lgammar.lgammaR
+import io.github.kotlinmania.rustlang.libm.math.lgammar.lgammaR
 
 /**
  * The natural logarithm of the

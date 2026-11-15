@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.libm.math.support
 
-import io.github.kotlinmania.rustlang.core.num.rustCheckedShr
+import io.github.kotlinmania.rustlang.core.num.checkedShr
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 /**
@@ -23,7 +23,7 @@ public fun uncheckedDivI32(x: Int, y: Int): Int {
     //
     // Note: I am not sure whether the above comment is still up to date, we need
     // to double check whether panics are elided where we use this.
-    uncheckedDiv(x, y)
+    ((x) / (y))
     return x / y
 }
 
@@ -33,7 +33,7 @@ public fun uncheckedDivI32(x: Int, y: Int): Int {
  * `y` must not be zero and the result must not overflow (`x> Long.MIN`).
  */
 public fun uncheckedDivIsize(x: Int, y: Int): Int {
-    uncheckedDiv(x, y)
+    ((x) / (y))
     return x / y
 }
 
@@ -49,4 +49,4 @@ public fun divCeilU32(a: UInt, b: UInt): UInt {
 }
 
 // Note(msrv): unbounded shifts are stable in 1.87
-public fun unboundedShrU64(x: ULong, shift: UInt): ULong = (rustCheckedShr(x, shift) ?: 0uL)
+public fun unboundedShrU64(x: ULong, shift: UInt): ULong = (x.checkedShr(shift) ?: 0uL)

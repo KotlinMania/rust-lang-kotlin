@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.procmacro.bridge.fxhash
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustRotateLeft
+import io.github.kotlinmania.rustlang.core.num.rotateLeft
 
 // This is a copy of the `rustcHash` crate, adapted to work as a module.
 //
@@ -35,7 +35,7 @@ public open class FxHasher(
 ) {
     public open fun addToHash(i: Int) {
         val K: Int = 0x517cc1b727220a95L.toInt()
-        this.hash = rustRotateLeft(this.hash, 5u).bitxor(i).wrappingMul(K)
+        this.hash = this.hash.rotateLeft(5u).bitxor(i).wrappingMul(K)
     }
 
     public open fun write(bytes: List<UByte>) {

@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.std.os.windows.ffi
 
 import io.github.kotlinmania.rustlang.alloc.wtf8.Wtf8Buf
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.osstr.bytes.Buf
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Buf
 
 // Windows-specific extensions to primitives in the [std.ffi] module.
 //

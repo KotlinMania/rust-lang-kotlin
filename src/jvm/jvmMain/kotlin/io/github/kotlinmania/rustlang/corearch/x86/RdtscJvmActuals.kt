@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-private object CorearchX86RdtscJniBridge {
+private object X86RdtscJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,11 +38,14 @@ private object CorearchX86RdtscJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX86RdtscJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X86RdtscJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,11 +59,11 @@ private object CorearchX86RdtscJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX86RdtscRdtsc(): Long
+    external fun corearchX86RdtscRdtsc(): Long
 }
 
 public actual fun rdtsc(): ULong =
-    CorearchX86RdtscJniBridge.rustlangCorearchX86RdtscRdtsc().toULong()
+    X86RdtscJniBridge.corearchX86RdtscRdtsc().toULong()
 
 public actual fun rdtscp(): Pair<ULong, UInt> =
     Pair<ULong, UInt>(0uL, 0u)

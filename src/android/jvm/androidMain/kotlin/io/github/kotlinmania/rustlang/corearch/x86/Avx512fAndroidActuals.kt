@@ -4,45 +4,41 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.simd.F32x16
-import io.github.kotlinmania.rustlang.simd.F32x4
-import io.github.kotlinmania.rustlang.simd.F32x8
-import io.github.kotlinmania.rustlang.simd.F64x2
-import io.github.kotlinmania.rustlang.simd.F64x4
-import io.github.kotlinmania.rustlang.simd.F64x8
-import io.github.kotlinmania.rustlang.simd.I16x16
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x16
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I32x8
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I64x4
-import io.github.kotlinmania.rustlang.simd.I64x8
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.U16x16
-import io.github.kotlinmania.rustlang.simd.U16x8
-import io.github.kotlinmania.rustlang.simd.U32x16
-import io.github.kotlinmania.rustlang.simd.U32x4
-import io.github.kotlinmania.rustlang.simd.U32x8
-import io.github.kotlinmania.rustlang.simd.U64x2
-import io.github.kotlinmania.rustlang.simd.U64x4
-import io.github.kotlinmania.rustlang.simd.U64x8
-import io.github.kotlinmania.rustlang.simd.U8x16
-import io.github.kotlinmania.rustlang.x86.M128
-import io.github.kotlinmania.rustlang.x86.M128d
-import io.github.kotlinmania.rustlang.x86.M512
-import io.github.kotlinmania.rustlang.x86.M512d
+import io.github.kotlinmania.rustlang.corearch.simd.F32x16
+import io.github.kotlinmania.rustlang.corearch.simd.F32x4
+import io.github.kotlinmania.rustlang.corearch.simd.F32x8
+import io.github.kotlinmania.rustlang.corearch.simd.F64x2
+import io.github.kotlinmania.rustlang.corearch.simd.F64x4
+import io.github.kotlinmania.rustlang.corearch.simd.F64x8
+import io.github.kotlinmania.rustlang.corearch.simd.I16x16
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x16
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I32x8
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I64x4
+import io.github.kotlinmania.rustlang.corearch.simd.I64x8
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U16x16
+import io.github.kotlinmania.rustlang.corearch.simd.U16x8
+import io.github.kotlinmania.rustlang.corearch.simd.U32x16
+import io.github.kotlinmania.rustlang.corearch.simd.U32x4
+import io.github.kotlinmania.rustlang.corearch.simd.U32x8
+import io.github.kotlinmania.rustlang.corearch.simd.U64x2
+import io.github.kotlinmania.rustlang.corearch.simd.U64x4
+import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 
-private object CorearchX86Avx512fJniBridge {
+private object X86Avx512fJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun rustlangCorearchX86Avx512fVfmaddssround(a: Float, b: Float, c: Float, rounding: Int): Float
+    external fun corearchX86Avx512fVfmaddssround(a: Float, b: Float, c: Float, rounding: Int): Float
 
     @JvmStatic
-    external fun rustlangCorearchX86Avx512fVfmaddsdround(a: Double, b: Double, c: Double, rounding: Int): Double
+    external fun corearchX86Avx512fVfmaddsdround(a: Double, b: Double, c: Double, rounding: Int): Double
 }
 
 public actual fun vsqrtps(a: F32x16, rounding: Int): F32x16 =
@@ -1057,10 +1053,10 @@ public actual fun vscalefsd(a: F64x2, b: F64x2, src: F64x2, mask: UByte, roundin
     null as F64x2
 
 public actual fun vfmaddssround(a: Float, b: Float, c: Float, rounding: Int): Float =
-    CorearchX86Avx512fJniBridge.rustlangCorearchX86Avx512fVfmaddssround(a, b, c, rounding)
+    X86Avx512fJniBridge.corearchX86Avx512fVfmaddssround(a, b, c, rounding)
 
 public actual fun vfmaddsdround(a: Double, b: Double, c: Double, rounding: Int): Double =
-    CorearchX86Avx512fJniBridge.rustlangCorearchX86Avx512fVfmaddsdround(a, b, c, rounding)
+    X86Avx512fJniBridge.corearchX86Avx512fVfmaddsdround(a, b, c, rounding)
 
 public actual fun vfixupimmss(a: F32x4, b: F32x4, c: I32x4, imm8: Int, mask: UByte, sae: Int): F32x4 =
     null as F32x4

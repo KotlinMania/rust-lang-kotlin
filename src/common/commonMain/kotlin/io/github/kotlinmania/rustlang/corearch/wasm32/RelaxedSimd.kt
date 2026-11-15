@@ -1,8 +1,6 @@
 // port-lint: source wasm32/relaxed_simd.rs
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
-import io.github.kotlinmania.rustlang.wasm32.V128
-
 public expect fun llvmRelaxedSwizzle(a: I8x16, b: I8x16): I8x16
 
 public expect fun llvmRelaxedTruncSigned(a: F32x4): I32x4

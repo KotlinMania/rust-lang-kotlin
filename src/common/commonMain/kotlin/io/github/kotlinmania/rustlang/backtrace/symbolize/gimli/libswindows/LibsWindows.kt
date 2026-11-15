@@ -1,17 +1,18 @@
 // port-lint: source symbolize/gimli/libs_windows.rs
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.libswindows
 
-import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.coff
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Library
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.LibrarySegment
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.coff.getImageBase
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmap
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsString
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.backtrace.windowssys.INVALID_HANDLE_VALUE
+import io.github.kotlinmania.rustlang.backtrace.windowssys.Moduleentry32w
+import io.github.kotlinmania.rustlang.backtrace.windowssys.TH32CS_SNAPMODULE
+import io.github.kotlinmania.rustlang.backtrace.windowssys.TRUE
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.symbolize.gimli.Library
-import io.github.kotlinmania.rustlang.symbolize.gimli.LibrarySegment
-import io.github.kotlinmania.rustlang.symbolize.gimli.mmap
-import io.github.kotlinmania.rustlang.windowssys.INVALID_HANDLE_VALUE
-import io.github.kotlinmania.rustlang.windowssys.Moduleentry32w
-import io.github.kotlinmania.rustlang.windowssys.TH32CS_SNAPMODULE
-import io.github.kotlinmania.rustlang.windowssys.TRUE
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 
 // For loading native libraries on Windows, see some discussion on
 // rust-lang/rust#71060 for the various strategies here.
@@ -30,7 +31,7 @@ public fun addLoadedImages(ret: List<Library>) {
             return
         }
         // huge struct, probably should avoid manually initializing it even if we can
-        val me = MaybeUninit.zeroed(ObjectSlotLayout<Moduleentry32w>()).assumeInit()
+        val me = MaybeUninit.zeroed(UnresolvedTypeLayout<Moduleentry32w>()).assumeInit()
         me.dwSize = sizeOfVal(me).toUInt()
         if (Module32FirstW(snap, me) == TRUE) {
             while (true) {
@@ -51,10 +52,11 @@ public fun addLoadedImages(ret: List<Library>) {
 }
 
 public fun loadLibrary(me: Moduleentry32w): Library? {
-    val name = run {
-        val pos = (me.szExePath.indexOfFirst({ i -> i == 0 }).takeIf { it >= 0 } ?: me.szExePath.size)
-        OsString.fromWide(((me.szExePath).sliceArray(0 until pos)))
-    }
+    val name =
+        run {
+            val pos = (me.szExePath.indexOfFirst({ i -> i == 0 }).takeIf { it >= 0 } ?: me.szExePath.size)
+            OsString.fromWide(((me.szExePath).sliceArray(0 until pos)))
+        }
     // MinGW libraries currently don't support ASLR
     // (rust-lang/rust#16514), but DLLs can still be relocated around in
     // the address space. It appears that addresses in debug info are
@@ -84,7 +86,7 @@ public fun loadLibrary(me: Moduleentry32w): Library? {
     // For now it appears that unlike ELF/MachO we can make do with one
     // segment per library, using `modBaseSize` as the whole size.
     val mmap = (mmap(name.asRef()) ?: return null)
-    val imageBase = (coff.getImageBase(mmap) ?: return null)
+    val imageBase = (getImageBase(mmap) ?: return null)
     val baseAddr = me.modBaseAddr.rawAddress.toInt()
     return Library(name = name, bias = (baseAddr - (imageBase.toInt())), segments = mutableListOf(LibrarySegment(statedVirtualMemoryAddress = imageBase, len = me.modBaseSize.toInt())))
 }

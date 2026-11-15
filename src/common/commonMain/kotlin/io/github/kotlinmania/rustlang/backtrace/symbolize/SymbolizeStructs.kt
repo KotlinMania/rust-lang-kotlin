@@ -1,12 +1,14 @@
 package io.github.kotlinmania.rustlang.backtrace.symbolize
 
 import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
+import io.github.kotlinmania.rustlang.core.fmt.Debug
+import io.github.kotlinmania.rustlang.core.fmt.Display
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.rustcdemangle.Demangle
 import io.github.kotlinmania.rustlang.rustcdemangle.tryDemangle
-import io.github.kotlinmania.rustlang.backtrace.symbolize.dbghelp as imp
+import io.github.kotlinmania.rustlang.std.path.Path
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: String, arg1: StringBuilder)
@@ -52,7 +54,7 @@ public open class Symbol(
     // Note: this scope bound needs to be persisted eventually to `Symbol`,
     // but that's currently a breaking change. For now this is safe since
     // `Symbol` is only ever handed out by reference and can't be cloned.
-    public var inner: imp.Symbol,
+    public var inner: io.github.kotlinmania.rustlang.backtrace.symbolize.noop.Symbol,
 ) {
     /**
      * Returns the name of this function.
@@ -203,7 +205,7 @@ public open class SymbolName(
                 }
             }
         }
-        formatSymbolName(fmt.Display::fmt, this.bytes, f)
+        formatSymbolName(Display::fmt, this.bytes, f)
     }
 
     public open fun fmtDebug(f: StringBuilder) {
@@ -227,7 +229,7 @@ public open class SymbolName(
                 }
             }
         }
-        formatSymbolName(fmt.Debug::fmt, this.bytes, f)
+        formatSymbolName(Debug::fmt, this.bytes, f)
     }
 
     public companion object {

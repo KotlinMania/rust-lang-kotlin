@@ -8,280 +8,280 @@ private object LibGeneratedJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangLibGeneratedArgsGet(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedArgsGet(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedArgsSizesGet(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedArgsSizesGet(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedEnvironGet(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedEnvironGet(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedEnvironSizesGet(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedEnvironSizesGet(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedClockResGet(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedClockResGet(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedClockTimeGet(arg0: Int, arg1: Long, arg2: Int): Int
+    external fun wasip1LibGeneratedClockTimeGet(arg0: Int, arg1: Long, arg2: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdAdvise(arg0: Int, arg1: Long, arg2: Long, arg3: Int): Int
+    external fun wasip1LibGeneratedFdAdvise(arg0: Int, arg1: Long, arg2: Long, arg3: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdAllocate(arg0: Int, arg1: Long, arg2: Long): Int
+    external fun wasip1LibGeneratedFdAllocate(arg0: Int, arg1: Long, arg2: Long): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdClose(arg0: Int): Int
+    external fun wasip1LibGeneratedFdClose(arg0: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdDatasync(arg0: Int): Int
+    external fun wasip1LibGeneratedFdDatasync(arg0: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdFdstatGet(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedFdFdstatGet(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdFdstatSetFlags(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedFdFdstatSetFlags(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdFdstatSetRights(arg0: Int, arg1: Long, arg2: Long): Int
+    external fun wasip1LibGeneratedFdFdstatSetRights(arg0: Int, arg1: Long, arg2: Long): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdFilestatGet(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedFdFilestatGet(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdFilestatSetSize(arg0: Int, arg1: Long): Int
+    external fun wasip1LibGeneratedFdFilestatSetSize(arg0: Int, arg1: Long): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdFilestatSetTimes(arg0: Int, arg1: Long, arg2: Long, arg3: Int): Int
+    external fun wasip1LibGeneratedFdFilestatSetTimes(arg0: Int, arg1: Long, arg2: Long, arg3: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdPread(arg0: Int, arg1: Int, arg2: Int, arg3: Long, arg4: Int): Int
+    external fun wasip1LibGeneratedFdPread(arg0: Int, arg1: Int, arg2: Int, arg3: Long, arg4: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdPrestatGet(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedFdPrestatGet(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdPrestatDirName(arg0: Int, arg1: Int, arg2: Int): Int
+    external fun wasip1LibGeneratedFdPrestatDirName(arg0: Int, arg1: Int, arg2: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdPwrite(arg0: Int, arg1: Int, arg2: Int, arg3: Long, arg4: Int): Int
+    external fun wasip1LibGeneratedFdPwrite(arg0: Int, arg1: Int, arg2: Int, arg3: Long, arg4: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdRead(arg0: Int, arg1: Int, arg2: Int, arg3: Int): Int
+    external fun wasip1LibGeneratedFdRead(arg0: Int, arg1: Int, arg2: Int, arg3: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdReaddir(arg0: Int, arg1: Int, arg2: Int, arg3: Long, arg4: Int): Int
+    external fun wasip1LibGeneratedFdReaddir(arg0: Int, arg1: Int, arg2: Int, arg3: Long, arg4: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdRenumber(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedFdRenumber(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdSeek(arg0: Int, arg1: Long, arg2: Int, arg3: Int): Int
+    external fun wasip1LibGeneratedFdSeek(arg0: Int, arg1: Long, arg2: Int, arg3: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdSync(arg0: Int): Int
+    external fun wasip1LibGeneratedFdSync(arg0: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdTell(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedFdTell(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedFdWrite(arg0: Int, arg1: Int, arg2: Int, arg3: Int): Int
+    external fun wasip1LibGeneratedFdWrite(arg0: Int, arg1: Int, arg2: Int, arg3: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedPathCreateDirectory(arg0: Int, arg1: Int, arg2: Int): Int
+    external fun wasip1LibGeneratedPathCreateDirectory(arg0: Int, arg1: Int, arg2: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedPathFilestatGet(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int): Int
+    external fun wasip1LibGeneratedPathFilestatGet(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedPathFilestatSetTimes(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Long, arg5: Long, arg6: Int): Int
+    external fun wasip1LibGeneratedPathFilestatSetTimes(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Long, arg5: Long, arg6: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedPathLink(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int, arg6: Int): Int
+    external fun wasip1LibGeneratedPathLink(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int, arg6: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedPathOpen(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Long, arg6: Long, arg7: Int, arg8: Int): Int
+    external fun wasip1LibGeneratedPathOpen(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Long, arg6: Long, arg7: Int, arg8: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedPathReadlink(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int): Int
+    external fun wasip1LibGeneratedPathReadlink(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedPathRemoveDirectory(arg0: Int, arg1: Int, arg2: Int): Int
+    external fun wasip1LibGeneratedPathRemoveDirectory(arg0: Int, arg1: Int, arg2: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedPathRename(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int): Int
+    external fun wasip1LibGeneratedPathRename(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedPathSymlink(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int): Int
+    external fun wasip1LibGeneratedPathSymlink(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedPathUnlinkFile(arg0: Int, arg1: Int, arg2: Int): Int
+    external fun wasip1LibGeneratedPathUnlinkFile(arg0: Int, arg1: Int, arg2: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedPollOneoff(arg0: Int, arg1: Int, arg2: Int, arg3: Int): Int
+    external fun wasip1LibGeneratedPollOneoff(arg0: Int, arg1: Int, arg2: Int, arg3: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedProcExit(arg0: Int)
+    external fun wasip1LibGeneratedProcExit(arg0: Int)
 
     @JvmStatic
-    external fun rustlangLibGeneratedProcRaise(arg0: Int): Int
+    external fun wasip1LibGeneratedProcRaise(arg0: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedSchedYield(): Int
+    external fun wasip1LibGeneratedSchedYield(): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedRandomGet(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedRandomGet(arg0: Int, arg1: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedSockAccept(arg0: Int, arg1: Int, arg2: Int): Int
+    external fun wasip1LibGeneratedSockAccept(arg0: Int, arg1: Int, arg2: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedSockRecv(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int): Int
+    external fun wasip1LibGeneratedSockRecv(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedSockSend(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int): Int
+    external fun wasip1LibGeneratedSockSend(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int): Int
 
     @JvmStatic
-    external fun rustlangLibGeneratedSockShutdown(arg0: Int, arg1: Int): Int
+    external fun wasip1LibGeneratedSockShutdown(arg0: Int, arg1: Int): Int
 }
 
 public actual fun argsGet(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedArgsGet(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedArgsGet(arg0, arg1)
 
 public actual fun argsSizesGet(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedArgsSizesGet(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedArgsSizesGet(arg0, arg1)
 
 public actual fun environGet(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedEnvironGet(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedEnvironGet(arg0, arg1)
 
 public actual fun environSizesGet(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedEnvironSizesGet(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedEnvironSizesGet(arg0, arg1)
 
 public actual fun clockResGet(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedClockResGet(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedClockResGet(arg0, arg1)
 
 public actual fun clockTimeGet(arg0: Int, arg1: Long, arg2: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedClockTimeGet(arg0, arg1, arg2)
+    LibGeneratedJniBridge.wasip1LibGeneratedClockTimeGet(arg0, arg1, arg2)
 
 public actual fun fdAdvise(arg0: Int, arg1: Long, arg2: Long, arg3: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdAdvise(arg0, arg1, arg2, arg3)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdAdvise(arg0, arg1, arg2, arg3)
 
 public actual fun fdAllocate(arg0: Int, arg1: Long, arg2: Long): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdAllocate(arg0, arg1, arg2)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdAllocate(arg0, arg1, arg2)
 
 public actual fun fdClose(arg0: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdClose(arg0)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdClose(arg0)
 
 public actual fun fdDatasync(arg0: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdDatasync(arg0)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdDatasync(arg0)
 
 public actual fun fdFdstatGet(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdFdstatGet(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdFdstatGet(arg0, arg1)
 
 public actual fun fdFdstatSetFlags(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdFdstatSetFlags(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdFdstatSetFlags(arg0, arg1)
 
 public actual fun fdFdstatSetRights(arg0: Int, arg1: Long, arg2: Long): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdFdstatSetRights(arg0, arg1, arg2)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdFdstatSetRights(arg0, arg1, arg2)
 
 public actual fun fdFilestatGet(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdFilestatGet(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdFilestatGet(arg0, arg1)
 
 public actual fun fdFilestatSetSize(arg0: Int, arg1: Long): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdFilestatSetSize(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdFilestatSetSize(arg0, arg1)
 
 public actual fun fdFilestatSetTimes(arg0: Int, arg1: Long, arg2: Long, arg3: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdFilestatSetTimes(arg0, arg1, arg2, arg3)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdFilestatSetTimes(arg0, arg1, arg2, arg3)
 
 public actual fun fdPread(arg0: Int, arg1: Int, arg2: Int, arg3: Long, arg4: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdPread(arg0, arg1, arg2, arg3, arg4)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdPread(arg0, arg1, arg2, arg3, arg4)
 
 public actual fun fdPrestatGet(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdPrestatGet(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdPrestatGet(arg0, arg1)
 
 public actual fun fdPrestatDirName(arg0: Int, arg1: Int, arg2: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdPrestatDirName(arg0, arg1, arg2)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdPrestatDirName(arg0, arg1, arg2)
 
 public actual fun fdPwrite(arg0: Int, arg1: Int, arg2: Int, arg3: Long, arg4: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdPwrite(arg0, arg1, arg2, arg3, arg4)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdPwrite(arg0, arg1, arg2, arg3, arg4)
 
 public actual fun fdRead(arg0: Int, arg1: Int, arg2: Int, arg3: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdRead(arg0, arg1, arg2, arg3)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdRead(arg0, arg1, arg2, arg3)
 
 public actual fun fdReaddir(arg0: Int, arg1: Int, arg2: Int, arg3: Long, arg4: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdReaddir(arg0, arg1, arg2, arg3, arg4)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdReaddir(arg0, arg1, arg2, arg3, arg4)
 
 public actual fun fdRenumber(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdRenumber(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdRenumber(arg0, arg1)
 
 public actual fun fdSeek(arg0: Int, arg1: Long, arg2: Int, arg3: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdSeek(arg0, arg1, arg2, arg3)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdSeek(arg0, arg1, arg2, arg3)
 
 public actual fun fdSync(arg0: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdSync(arg0)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdSync(arg0)
 
 public actual fun fdTell(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdTell(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdTell(arg0, arg1)
 
 public actual fun fdWrite(arg0: Int, arg1: Int, arg2: Int, arg3: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedFdWrite(arg0, arg1, arg2, arg3)
+    LibGeneratedJniBridge.wasip1LibGeneratedFdWrite(arg0, arg1, arg2, arg3)
 
 public actual fun pathCreateDirectory(arg0: Int, arg1: Int, arg2: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedPathCreateDirectory(arg0, arg1, arg2)
+    LibGeneratedJniBridge.wasip1LibGeneratedPathCreateDirectory(arg0, arg1, arg2)
 
 public actual fun pathFilestatGet(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedPathFilestatGet(arg0, arg1, arg2, arg3, arg4)
+    LibGeneratedJniBridge.wasip1LibGeneratedPathFilestatGet(arg0, arg1, arg2, arg3, arg4)
 
 public actual fun pathFilestatSetTimes(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Long, arg5: Long, arg6: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedPathFilestatSetTimes(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+    LibGeneratedJniBridge.wasip1LibGeneratedPathFilestatSetTimes(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
 
 public actual fun pathLink(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int, arg6: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedPathLink(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+    LibGeneratedJniBridge.wasip1LibGeneratedPathLink(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
 
 public actual fun pathOpen(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Long, arg6: Long, arg7: Int, arg8: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedPathOpen(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
+    LibGeneratedJniBridge.wasip1LibGeneratedPathOpen(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
 
 public actual fun pathReadlink(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedPathReadlink(arg0, arg1, arg2, arg3, arg4, arg5)
+    LibGeneratedJniBridge.wasip1LibGeneratedPathReadlink(arg0, arg1, arg2, arg3, arg4, arg5)
 
 public actual fun pathRemoveDirectory(arg0: Int, arg1: Int, arg2: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedPathRemoveDirectory(arg0, arg1, arg2)
+    LibGeneratedJniBridge.wasip1LibGeneratedPathRemoveDirectory(arg0, arg1, arg2)
 
 public actual fun pathRename(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedPathRename(arg0, arg1, arg2, arg3, arg4, arg5)
+    LibGeneratedJniBridge.wasip1LibGeneratedPathRename(arg0, arg1, arg2, arg3, arg4, arg5)
 
 public actual fun pathSymlink(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedPathSymlink(arg0, arg1, arg2, arg3, arg4)
+    LibGeneratedJniBridge.wasip1LibGeneratedPathSymlink(arg0, arg1, arg2, arg3, arg4)
 
 public actual fun pathUnlinkFile(arg0: Int, arg1: Int, arg2: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedPathUnlinkFile(arg0, arg1, arg2)
+    LibGeneratedJniBridge.wasip1LibGeneratedPathUnlinkFile(arg0, arg1, arg2)
 
 public actual fun pollOneoff(arg0: Int, arg1: Int, arg2: Int, arg3: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedPollOneoff(arg0, arg1, arg2, arg3)
+    LibGeneratedJniBridge.wasip1LibGeneratedPollOneoff(arg0, arg1, arg2, arg3)
 
 public actual fun procExit(arg0: Int): Nothing {
-    LibGeneratedJniBridge.rustlangLibGeneratedProcExit(arg0)
+    LibGeneratedJniBridge.wasip1LibGeneratedProcExit(arg0)
     error("Unreachable noreturn C function procExit")
 }
 
 public actual fun procRaise(arg0: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedProcRaise(arg0)
+    LibGeneratedJniBridge.wasip1LibGeneratedProcRaise(arg0)
 
 public actual fun schedYield(): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedSchedYield()
+    LibGeneratedJniBridge.wasip1LibGeneratedSchedYield()
 
 public actual fun randomGet(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedRandomGet(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedRandomGet(arg0, arg1)
 
 public actual fun sockAccept(arg0: Int, arg1: Int, arg2: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedSockAccept(arg0, arg1, arg2)
+    LibGeneratedJniBridge.wasip1LibGeneratedSockAccept(arg0, arg1, arg2)
 
 public actual fun sockRecv(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int, arg5: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedSockRecv(arg0, arg1, arg2, arg3, arg4, arg5)
+    LibGeneratedJniBridge.wasip1LibGeneratedSockRecv(arg0, arg1, arg2, arg3, arg4, arg5)
 
 public actual fun sockSend(arg0: Int, arg1: Int, arg2: Int, arg3: Int, arg4: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedSockSend(arg0, arg1, arg2, arg3, arg4)
+    LibGeneratedJniBridge.wasip1LibGeneratedSockSend(arg0, arg1, arg2, arg3, arg4)
 
 public actual fun sockShutdown(arg0: Int, arg1: Int): Int =
-    LibGeneratedJniBridge.rustlangLibGeneratedSockShutdown(arg0, arg1)
+    LibGeneratedJniBridge.wasip1LibGeneratedSockShutdown(arg0, arg1)

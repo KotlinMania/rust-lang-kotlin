@@ -1,39 +1,39 @@
 // port-lint: source mem/maybe_uninit.rs
 package io.github.kotlinmania.rustlang.core.mem.maybeuninit
 
-import io.github.kotlinmania.rustlang.clone.TrivialClone
-import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.marker.Forget
+import io.github.kotlinmania.rustlang.core.marker.Freeze
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteNeo
 import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.fromRef
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.marker.Forget
-import io.github.kotlinmania.rustlang.marker.Freeze
-import io.github.kotlinmania.rustlang.mem.sizeOf
-import io.github.kotlinmania.rustlang.mem.sizeOfVal
-import io.github.kotlinmania.rustlang.mem.transmuteNeo
-import io.github.kotlinmania.rustlang.option.Option
-import io.github.kotlinmania.rustlang.panicking.assertFailed
-import io.github.kotlinmania.rustlang.ptr.dropInPlace
-import io.github.kotlinmania.rustlang.ptr.fromRef
-import io.github.kotlinmania.rustlang.ptr.read
 
 // Lang item so we can wrap other types in it. This is useful for coroutines.
 
@@ -142,15 +142,15 @@ import io.github.kotlinmania.rustlang.ptr.read
  * unnecessary moves.
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  * import std.mem.MaybeUninit
  *
  * fun makeVec(out: MutPtr) {
  *     // `write` does not drop the old contents, which is important.
  *     run {
- *         (ObjectSlotLayout<List<Int>>()).writeNative((out).rawAddress, mutableListOf(1, 2, 3))
+ *         (UnresolvedTypeLayout<List<Int>>()).writeNative((out).rawAddress, mutableListOf(1, 2, 3))
  *     }
  * }
  * var v = MaybeUninit.uninit(PrimitiveLayouts.U8)
@@ -168,13 +168,13 @@ import io.github.kotlinmania.rustlang.ptr.read
  * `MaybeUninit<T>` can be used to initialize a large array element-by-element:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.reinterpret
  * import std.mem.MaybeUninit
  *
  * val data1 = run {
  *     // Create an uninitialized array of `MaybeUninit`.
- *     var data: List<MaybeUninit<List<UInt>>> = List(1000) { MaybeUninit.uninit(ObjectSlotLayout<List<UInt>>()) }
+ *     var data: List<MaybeUninit<List<UInt>>> = List(1000) { MaybeUninit.uninit(UnresolvedTypeLayout<List<UInt>>()) }
  *     // Dropping a `MaybeUninit` does nothing, so if there is a panic during this loop,
  *     // we have a memory leak, but there is no memory safety issue.
  *     for (elem in data) {
@@ -191,11 +191,11 @@ import io.github.kotlinmania.rustlang.ptr.read
  * be found in low-level datastructures.
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.mem.MaybeUninit
  *
  * // Create an uninitialized array of `MaybeUninit`.
- * var data: List<MaybeUninit<String>> = List(1000) { MaybeUninit.uninit(ObjectSlotLayout<String>()) }
+ * var data: List<MaybeUninit<String>> = List(1000) { MaybeUninit.uninit(UnresolvedTypeLayout<String>()) }
  * // Count the number of elements we have assigned.
  * var dataLen: Int = 0
  * for (elem in ((data).subList(0, 500))) {
@@ -215,12 +215,12 @@ import io.github.kotlinmania.rustlang.ptr.read
  * You can use `MaybeUninit<T>` and the [raw.mut] syntax to initialize structs field by field:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.mem.MaybeUninit
  *
  * open class Foo(public var name: String, public var list: List<UByte>)
  * val foo = run {
- *     var uninit: MaybeUninit<Foo> = MaybeUninit.uninit(ObjectSlotLayout<Foo>())
+ *     var uninit: MaybeUninit<Foo> = MaybeUninit.uninit(UnresolvedTypeLayout<Foo>())
  *     val ptr = uninit.asMutPtr()
  *     // Initializing the `name` field
  *     // Using `write` instead of assignment via `=` to not call `drop` on the
@@ -251,12 +251,12 @@ import io.github.kotlinmania.rustlang.ptr.read
  * `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as `T`:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.mem.MaybeUninit
  *
- * check(sizeOf<MaybeUninit<ULong>>(typeLayoutT = ObjectSlotLayout<MaybeUninit<ULong>>()) == sizeOf<ULong>(typeLayoutT = PrimitiveLayouts.U64))
- * check(alignOf<MaybeUninit<ULong>>(typeLayoutT = ObjectSlotLayout<MaybeUninit<ULong>>()) == alignOf<ULong>(typeLayoutT = PrimitiveLayouts.U64))
+ * check(sizeOf<MaybeUninit<ULong>>(typeLayoutT = UnresolvedTypeLayout<MaybeUninit<ULong>>()) == sizeOf<ULong>(typeLayoutT = PrimitiveLayouts.U64))
+ * check(alignOf<MaybeUninit<ULong>>(typeLayoutT = UnresolvedTypeLayout<MaybeUninit<ULong>>()) == alignOf<ULong>(typeLayoutT = PrimitiveLayouts.U64))
  * ```
  *
  * However remember that a type *containing* a `MaybeUninit<T>` is not necessarily the same
@@ -266,11 +266,11 @@ import io.github.kotlinmania.rustlang.ptr.read
  * optimizations, potentially resulting in a larger size:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
  *
- * check(sizeOf<Boolean?>(typeLayoutT = ObjectSlotLayout<Boolean?>()) == 1)
- * check(sizeOf<MaybeUninit<Boolean>?>(typeLayoutT = ObjectSlotLayout<MaybeUninit<Boolean>?>()) == 2)
+ * check(sizeOf<Boolean?>(typeLayoutT = UnresolvedTypeLayout<Boolean?>()) == 1)
+ * check(sizeOf<MaybeUninit<Boolean>?>(typeLayoutT = UnresolvedTypeLayout<MaybeUninit<Boolean>?>()) == 2)
  * ```
  *
  * If `T` is FFI-safe, then so is `MaybeUninit<T>`.
@@ -293,9 +293,9 @@ import io.github.kotlinmania.rustlang.ptr.read
  * ```kotlin
  * import core.mem.MaybeUninit
  * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.reinterpret
  *
  * fun <T> unsoundTransmute(value: T): MaybeUninit<T> {
@@ -306,7 +306,7 @@ import io.github.kotlinmania.rustlang.ptr.read
  *     val code by localStorageL10C4
  *     val code1 = RustMutableReference(localStorageL10C4.asMutPtr(), localStorageL10C4.layout)
  *     val code2 = unsoundTransmute(code1)
- *     code2 = MaybeUninit.uninit(ObjectSlotLayout<T>())
+ *     code2 = MaybeUninit.uninit(UnresolvedTypeLayout<T>())
  *     exit(code1)
  *     // UB! Accessing uninitialized memory.
  * }
@@ -447,7 +447,10 @@ public open class MaybeUninit<T>(
         // NB: there is no `.padFmt` so we can't use a simpler `formatArgs("MaybeUninit<{..}>").
         val fullName = "MaybeUninit"
         val prefixLen = (fullName.indexOf("MaybeUninit").takeIf { it >= 0 })!!
-        return run { f.append(fullName.substring(prefixLen)); Result.Ok(Unit) }
+        return run {
+            f.append(fullName.substring(prefixLen))
+            Result.Ok(Unit)
+        }
     }
 
     /**
@@ -475,10 +478,10 @@ public open class MaybeUninit<T>(
      * Correct usage of this method:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.mem.MaybeUninit
      *
-     * var x = MaybeUninit.uninit(ObjectSlotLayout<List<UByte>>())
+     * var x = MaybeUninit.uninit(UnresolvedTypeLayout<List<UByte>>())
      * run {
      *     val hello = x.write(("Hello, world!".encodeToByteArray()).toVec())
      *     // Setting hello does not leak prior allocations, but drops them
@@ -493,10 +496,10 @@ public open class MaybeUninit<T>(
      * This usage of the method causes a leak:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.mem.MaybeUninit
      *
-     * var x = MaybeUninit.uninit(ObjectSlotLayout<String>())
+     * var x = MaybeUninit.uninit(UnresolvedTypeLayout<String>())
      * x.write("Hello".toString())
      * // This leaks the contained string:
      * x.write("hello".toString())
@@ -530,7 +533,7 @@ public open class MaybeUninit<T>(
      * ```
      */
     public open fun write(value: T): T {
-        this = MaybeUninit.new(value, ObjectSlotLayout<T>())
+        this = MaybeUninit.new(value, UnresolvedTypeLayout<T>())
         // SAFETY: We just initialized this value.
         return this.assumeInitMut()
     }
@@ -546,10 +549,10 @@ public open class MaybeUninit<T>(
      * Correct usage of this method:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.mem.MaybeUninit
      *
-     * var x = MaybeUninit.uninit(ObjectSlotLayout<List<UInt>>())
+     * var x = MaybeUninit.uninit(UnresolvedTypeLayout<List<UInt>>())
      * x.write(mutableListOf(0, 1, 2))
      * // Create a reference into the `MaybeUninit<T>`. This is okay because we initialized it.
      * val xVec = x.asPtr()
@@ -559,10 +562,10 @@ public open class MaybeUninit<T>(
      * *Incorrect* usage of this method:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.mem.MaybeUninit
      *
-     * val x = MaybeUninit.uninit(ObjectSlotLayout<List<UInt>>())
+     * val x = MaybeUninit.uninit(UnresolvedTypeLayout<List<UInt>>())
      * val xVec = x.asPtr()
      * // We have created a reference to an uninitialized vector! This is undefined behavior. ⚠️
      * ```
@@ -584,10 +587,10 @@ public open class MaybeUninit<T>(
      * Correct usage of this method:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.mem.MaybeUninit
      *
-     * var x = MaybeUninit.uninit(ObjectSlotLayout<List<UInt>>())
+     * var x = MaybeUninit.uninit(UnresolvedTypeLayout<List<UInt>>())
      * x.write(mutableListOf(0, 1, 2))
      * // Create a reference into the `MaybeUninit<List<UInt>>`.
      * // This is okay because we initialized it.
@@ -599,10 +602,10 @@ public open class MaybeUninit<T>(
      * *Incorrect* usage of this method:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.mem.MaybeUninit
      *
-     * var x = MaybeUninit.uninit(ObjectSlotLayout<List<UInt>>())
+     * var x = MaybeUninit.uninit(UnresolvedTypeLayout<List<UInt>>())
      * val xVec = x.asMutPtr()
      * // We have created a reference to an uninitialized vector! This is undefined behavior. ⚠️
      * ```
@@ -711,8 +714,8 @@ public open class MaybeUninit<T>(
      * Correct usage of this method:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
      * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.mem.MaybeUninit
      *
      * var x = MaybeUninit.uninit(PrimitiveLayouts.U32)
@@ -721,7 +724,7 @@ public open class MaybeUninit<T>(
      * // `UInt` is `Copy`, so we may read multiple times.
      * val x2 = x.assumeInitRead()
      * check(x1 == x2)
-     * var x1 = MaybeUninit.uninit(ObjectSlotLayout<List<UInt>?>())
+     * var x1 = MaybeUninit.uninit(UnresolvedTypeLayout<List<UInt>?>())
      * x1.write(null)
      * val x11 = x1.assumeInitRead()
      * // Duplicating a `None` value is okay, so we may read multiple times.
@@ -732,10 +735,10 @@ public open class MaybeUninit<T>(
      * *Incorrect* usage of this method:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.mem.MaybeUninit
      *
-     * var x = MaybeUninit.uninit(ObjectSlotLayout<List<UInt>?>())
+     * var x = MaybeUninit.uninit(UnresolvedTypeLayout<List<UInt>?>())
      * x.write(mutableListOf(0, 1, 2))
      * val x1 = x.assumeInitRead()
      * val x2 = x.assumeInitRead()
@@ -799,10 +802,10 @@ public open class MaybeUninit<T>(
      * ### Correct usage of this method:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.mem.MaybeUninit
      *
-     * var x = MaybeUninit.uninit(ObjectSlotLayout<List<UInt>>())
+     * var x = MaybeUninit.uninit(UnresolvedTypeLayout<List<UInt>>())
      * // Initialize `x`:
      * x.write(mutableListOf(1, 2, 3))
      * // Now that our `MaybeUninit<_>` is known to be initialized, it is okay to
@@ -814,20 +817,20 @@ public open class MaybeUninit<T>(
      * ### *Incorrect* usages of this method:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.mem.MaybeUninit
      *
-     * val x = MaybeUninit.uninit(ObjectSlotLayout<List<UInt>>())
+     * val x = MaybeUninit.uninit(UnresolvedTypeLayout<List<UInt>>())
      * val xVec: List<UInt> = x.assumeInitRef()
      * // We have created a reference to an uninitialized vector! This is undefined behavior. ⚠️
      * ```
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.cell.Cell
      * import std.mem.MaybeUninit
      *
-     * val b = MaybeUninit.uninit(ObjectSlotLayout<Cell<Boolean>>())
+     * val b = MaybeUninit.uninit(UnresolvedTypeLayout<Cell<Boolean>>())
      * // Initialize the `MaybeUninit` using `Cell.set`:
      * run {
      *     b.assumeInitRef().set(true)
@@ -864,7 +867,7 @@ public open class MaybeUninit<T>(
      * ```kotlin
      * @file:OptIn(ExperimentalUnsignedTypes.cls)
      *
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
      * import std.mem.MaybeUninit
      *
@@ -873,7 +876,7 @@ public open class MaybeUninit<T>(
      *      * Initializes *all* the bytes of the input buffer.
      *      * /
      *     fun initializeBuffer(buf: MutPtr) {}
-     *     var buf = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+     *     var buf = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
      *     // Initialize `buf`:
      *     run {
      *         initializeBuffer(buf.asMutPtr())
@@ -912,13 +915,13 @@ public open class MaybeUninit<T>(
      * ```kotlin
      * @file:OptIn(ExperimentalUnsignedTypes.cls)
      *
-     * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import std.io
      * import std.mem.MaybeUninit
      *
      * public fun doctestEntry(): Result<Unit> {
      *     fun readChunk(reader: io.Read): io.Result<UByteArray> {
-     *         var buffer = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+     *         var buffer = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
      *         reader.readExact(buffer.assumeInitMut()).getOrElse { return Result.failure(it) }
      *         // ^^^^^^^^^^^^^^^^^^^^^^^^
      *         // (mutable) reference to uninitialized memory!
@@ -989,7 +992,7 @@ public open class MaybeUninit<T>(
      */
     public open fun asBytes(): List<MaybeUninit<UByte>> {
         // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
-        return rawSliceList(this.asPtr().cast(), sizeOf<T>().toInt(), PrimitiveLayouts.U8)
+        return linearSliceView(this.asPtr().cast(), sizeOf<T>().toInt(), PrimitiveLayouts.U8)
     }
 
     /**
@@ -1022,7 +1025,7 @@ public open class MaybeUninit<T>(
      */
     public open fun asBytesMut(): MutableList<MaybeUninit<UByte>> {
         // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
-        return rawMutSliceList(this.asMutPtr().cast(), sizeOf<T>().toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.asMutPtr().cast(), sizeOf<T>().toInt(), PrimitiveLayouts.U8)
     }
 
     public companion object {
@@ -1036,10 +1039,10 @@ public open class MaybeUninit<T>(
          * # Example
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+         * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
          * import std.mem.MaybeUninit
          *
-         * val v: MaybeUninit<List<UByte>> = MaybeUninit.new(mutableListOf(42), ObjectSlotLayout<List<UByte>>())
+         * val v: MaybeUninit<List<UByte>> = MaybeUninit.new(mutableListOf(42), UnresolvedTypeLayout<List<UByte>>())
          * ```
          *
          * [assumeInit]: MaybeUninit.assumeInit
@@ -1057,10 +1060,10 @@ public open class MaybeUninit<T>(
          * # Example
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+         * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
          * import std.mem.MaybeUninit
          *
-         * val v: MaybeUninit<String> = MaybeUninit.uninit(ObjectSlotLayout<String>())
+         * val v: MaybeUninit<String> = MaybeUninit.uninit(UnresolvedTypeLayout<String>())
          * ```
          */
         public fun <T> uninit(): MaybeUninit<T> = MaybeUninit(uninit = Unit)
@@ -1085,10 +1088,10 @@ public open class MaybeUninit<T>(
          * fields of the struct can hold the bit-pattern 0 as a valid value.
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+         * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
          * import std.mem.MaybeUninit
          *
-         * val x = MaybeUninit.zeroed(ObjectSlotLayout<Pair<UByte, Boolean>>())
+         * val x = MaybeUninit.zeroed(UnresolvedTypeLayout<Pair<UByte, Boolean>>())
          * val x1 = x.assumeInit()
          * check(x1 == Pair(0, false))
          * ```
@@ -1100,21 +1103,21 @@ public open class MaybeUninit<T>(
          * when `0` is not a valid bit-pattern for the type:
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+         * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
          * import std.mem.MaybeUninit
          *
          * sealed class NotZero(public val value: Int) {
          *     public data object One : NotZero(1)
          *     public data object Two : NotZero(2)
          * }
-         * val x = MaybeUninit.zeroed(ObjectSlotLayout<Pair<UByte, NotZero>>())
+         * val x = MaybeUninit.zeroed(UnresolvedTypeLayout<Pair<UByte, NotZero>>())
          * val x1 = x.assumeInit()
          * // Inside a pair, we create a `NotZero` that does not have a valid discriminant.
          * // This is undefined behavior. ⚠️
          * ```
          */
         public fun <T> zeroed(): MaybeUninit<T> {
-            val u = MaybeUninit.uninit(ObjectSlotLayout<T>())
+            val u = MaybeUninit.uninit(UnresolvedTypeLayout<T>())
             // SAFETY: `u.asMutPtr()` points to allocated memory.
             u.asMutPtr().writeBytes(0u.toUByte(), 1)
             return u
@@ -1153,7 +1156,7 @@ public open class MaybeUninit<T>(
             // * `MaybeUninit` does not drop, so there are no double-frees
             // And thus the conversion is safe
             return run {
-                transmuteWithLayouts(array, ObjectSlotLayout<List<MaybeUninit<T>>>(), ObjectSlotLayout<List<T>>())
+                transmuteWithLayouts(array, UnresolvedTypeLayout<List<MaybeUninit<T>>>(), UnresolvedTypeLayout<List<T>>())
             }
         }
 
@@ -1231,7 +1234,11 @@ public open class MaybeUninit<T>(
 public fun <T> List<MaybeUninit<T>>.writeCopyOfSlice(src: List<T>): MutableList<T> {
     // SAFETY: &[T] and &[MaybeUninit<T>] have the same layout
     val uninitSrc: List<MaybeUninit<T>> = transmute(src)
-    run { val dstTmp0 = this; val srcTmp0 = uninitSrc; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
+    run {
+        val dstTmp0 = this
+        val srcTmp0 = uninitSrc
+        for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
+    }
     // SAFETY: Valid elements have just been copied into `self` so it is initialized
     return this.assumeInitMut()
 }
@@ -1408,82 +1415,82 @@ public fun <T> List<MaybeUninit<T>>.writeDefault(defaultTFn: () -> T, writeDefau
     fun <T> defaultSpecWriteDefaultT(buf: MutableList<MaybeUninit<T>>, defaultTFn: () -> T): MutableList<T> = buf.writeWith({ defaultTFn() })
     fun defaultSpecWriteDefaultBoolean(buf: MutableList<MaybeUninit<Boolean>>): MutableList<Boolean> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<Boolean>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<Boolean>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultChar(buf: MutableList<MaybeUninit<Char>>): MutableList<Char> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<Char>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<Char>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultByte(buf: MutableList<MaybeUninit<Byte>>): MutableList<Byte> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<Byte>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<Byte>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultUByte(buf: MutableList<MaybeUninit<UByte>>): MutableList<UByte> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<UByte>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<UByte>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultShort(buf: MutableList<MaybeUninit<Short>>): MutableList<Short> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<Short>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<Short>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultUShort(buf: MutableList<MaybeUninit<UShort>>): MutableList<UShort> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<UShort>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<UShort>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultInt(buf: MutableList<MaybeUninit<Int>>): MutableList<Int> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<Int>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<Int>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultUInt(buf: MutableList<MaybeUninit<UInt>>): MutableList<UInt> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<UInt>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<UInt>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultLong(buf: MutableList<MaybeUninit<Long>>): MutableList<Long> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<Long>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<Long>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultULong(buf: MutableList<MaybeUninit<ULong>>): MutableList<ULong> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<ULong>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<ULong>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultI128(buf: MutableList<MaybeUninit<I128>>): MutableList<I128> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<I128>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<I128>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultU128(buf: MutableList<MaybeUninit<U128>>): MutableList<U128> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<U128>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<U128>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultF16(buf: MutableList<MaybeUninit<F16>>): MutableList<F16> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<F16>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<F16>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultFloat(buf: MutableList<MaybeUninit<kotlin.Float>>): MutableList<kotlin.Float> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<kotlin.Float>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<kotlin.Float>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultDouble(buf: MutableList<MaybeUninit<Double>>): MutableList<Double> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<Double>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<Double>>()).sizeBytes)
             buf.assumeInitMut()
         }
     fun defaultSpecWriteDefaultF128(buf: MutableList<MaybeUninit<F128>>): MutableList<F128> =
         run {
-            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (ObjectSlotLayout<MaybeUninit<F128>>()).sizeBytes)
+            kmWriteBytes((buf.asMutPtr()).rawAddress, (0).toUByte(), (buf.size).toLong() * (UnresolvedTypeLayout<MaybeUninit<F128>>()).sizeBytes)
             buf.assumeInitMut()
         }
     return writeDefaultTFn(this)
@@ -1600,7 +1607,7 @@ public fun <T, I> List<MaybeUninit<T>>.writeIter(it: I): Pair<MutableList<T>, Mu
  */
 public fun <T> List<MaybeUninit<T>>.asBytes(): List<MaybeUninit<UByte>> where T : Freeze {
     // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
-    return rawSliceList(ConstPtr((this.asPtr()).rawAddress), sizeOfVal(this).toInt(), ObjectSlotLayout<MaybeUninit<UByte>>())
+    return linearSliceView(ConstPtr((this.asPtr()).rawAddress), sizeOfVal(this).toInt(), UnresolvedTypeLayout<MaybeUninit<UByte>>())
 }
 
 /**
@@ -1634,7 +1641,7 @@ public fun <T> List<MaybeUninit<T>>.asBytes(): List<MaybeUninit<UByte>> where T 
  */
 public fun <T> List<MaybeUninit<T>>.asBytesMut(): MutableList<MaybeUninit<UByte>> {
     // SAFETY: MaybeUninit<u8> is always valid, even for padding bytes
-    return rawMutSliceList((this.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOfVal(this).toInt(), ObjectSlotLayout<MaybeUninit<UByte>>())
+    return linearMutSliceView((this.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOfVal(this).toInt(), UnresolvedTypeLayout<MaybeUninit<UByte>>())
 }
 
 /**
@@ -1678,7 +1685,7 @@ public fun <T> List<MaybeUninit<T>>.assumeInitRef(typeLayoutT: TypeLayout<T>): L
     // `slice` is initialized, and `MaybeUninit` is guaranteed to have the same layout as `T`.
     // The pointer obtained is valid since it refers to memory owned by `slice` which is a
     // reference and thus guaranteed to be valid for reads.
-    return (ObjectSlotLayout<List<T>>()).readNative((((constPtrFromRustCast(this)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+    return (UnresolvedTypeLayout<List<T>>()).readNative((((constPtrFromRustCast(this)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 }
 
 /**
@@ -1694,7 +1701,7 @@ public fun <T> List<MaybeUninit<T>>.assumeInitRef(typeLayoutT: TypeLayout<T>): L
 public fun <T> List<MaybeUninit<T>>.assumeInitMut(typeLayoutT: TypeLayout<T>): MutableList<T> {
     // SAFETY: similar to safety notes for `sliceGetRef`, but we have a
     // mutable reference which is also guaranteed to be valid for writes.
-    return RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<T>>())
+    return RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<T>>())
 }
 
 /**
@@ -1797,5 +1804,5 @@ public fun <T : TrivialClone<T>> List<MaybeUninit<T>>.specFill(value: T) {
     // `T.clone` for every element. Notably, `TrivialClone` also implies
     // that the `clone` implementation will not panic, so we can avoid
     // initialization guards and such.
-    this.fillWith({ MaybeUninit.new(read(value, typeLayoutT = ObjectSlotLayout<T>()), ObjectSlotLayout<T>()) })
+    this.fillWith({ MaybeUninit.new(read(value, typeLayoutT = UnresolvedTypeLayout<T>()), UnresolvedTypeLayout<T>()) })
 }

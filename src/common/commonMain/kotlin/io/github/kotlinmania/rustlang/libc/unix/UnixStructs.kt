@@ -2,19 +2,22 @@
 
 package io.github.kotlinmania.rustlang.libc.unix
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
+import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.ClockT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.RlimT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.SusecondsT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.ClockT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.RlimT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.SusecondsT
 
 // Note(1.0): We want to remove these directives and instead expect that no-std users add their
 // own link configuration when required, rather than unconditionally linking everything that may
@@ -32,18 +35,20 @@ import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.Susec
  * representation when available.
  * </div>
  */
-public data class DIR(
-    public var data: Unit = Unit,
-    public var marker: Unit = Unit,
+public open class DIR(
+    public var data: Unit,
+    public var marker: Unit,
 ) {
+    public open fun clone(): DIR = DIR(data, marker)
+
     // Deprecated impls: see #5296
 }
 
 // Note(exhaustive): review for 1.0
-public class Group internal constructor(
+public open class Group internal constructor(
     grNameCtorArg: MutPtr,
     grPasswdCtorArg: MutPtr,
-    public var grGid: io.github.kotlinmania.rustlang.unix.GidT,
+    public var grGid: GidT,
     grMemCtorArg: MutPtr,
 ) {
     public var grName: MutPtr = grNameCtorArg
@@ -55,42 +60,7 @@ public class Group internal constructor(
     public var grMem: MutPtr = grMemCtorArg
         internal set
 
-    public constructor() : this(
-        grNameCtorArg = MutPtr(0L),
-        grPasswdCtorArg = MutPtr(0L),
-        grGid = 0,
-        grMemCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): MutPtr = this.grName
-
-    public operator fun component2(): MutPtr = this.grPasswd
-
-    public operator fun component3(): io.github.kotlinmania.rustlang.unix.GidT = this.grGid
-
-    public operator fun component4(): MutPtr = this.grMem
-
-    public fun copy(grName: MutPtr = this.grName, grPasswd: MutPtr = this.grPasswd, grGid: io.github.kotlinmania.rustlang.unix.GidT = this.grGid, grMem: MutPtr = this.grMem): Group = Group(grNameCtorArg = grName, grPasswdCtorArg = grPasswd, grGid = grGid, grMemCtorArg = grMem)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Group) return false
-        if (this.grName != other.grName) return false
-        if (this.grPasswd != other.grPasswd) return false
-        if (this.grGid != other.grGid) return false
-        if (this.grMem != other.grMem) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.grName.hashCode()
-        result = 31 * result + this.grPasswd.hashCode()
-        result = 31 * result + this.grGid.hashCode()
-        result = 31 * result + this.grMem.hashCode()
-        return result
-    }
-
-    public fun clone(): Group = Group(grName, grPasswd, grGid, grMem)
+    public open fun clone(): Group = Group(grName, grPasswd, grGid, grMem)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Group> =
@@ -126,24 +96,28 @@ public class Group internal constructor(
             }
 
         public operator fun invoke(
-            grName: MutPtr = MutPtr(0L),
-            grPasswd: MutPtr = MutPtr(0L),
-            grGid: io.github.kotlinmania.rustlang.unix.GidT = 0,
-            grMem: MutPtr = MutPtr(0L),
+            grName: MutPtr,
+            grPasswd: MutPtr,
+            grGid: GidT,
+            grMem: MutPtr,
         ): Group = Group(
             grNameCtorArg = grName,
             grPasswdCtorArg = grPasswd,
             grGid = grGid,
             grMemCtorArg = grMem,
         )
+
+        public fun default(): Group = Group(grName = MutPtr(0L), grPasswd = MutPtr(0L), grGid = Default.default(), grMem = MutPtr(0L))
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Utimbuf(
-    public var actime: TimeT = 0L,
-    public var modtime: TimeT = 0L,
+public open class Utimbuf(
+    public var actime: TimeT,
+    public var modtime: TimeT,
 ) {
+    public open fun clone(): Utimbuf = Utimbuf(actime, modtime)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Utimbuf> =
             object : TypeLayout<Utimbuf> {
@@ -168,14 +142,18 @@ public data class Utimbuf(
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 8, value.modtime)
                 }
             }
+
+        public fun default(): Utimbuf = Utimbuf(actime = Default.default(), modtime = Default.default())
     }
 }
 
 // This one is not likely to ever change
-public data class Timeval(
-    public var tvSec: TimeT = 0L,
-    public var tvUsec: SusecondsT = 0L,
+public open class Timeval(
+    public var tvSec: TimeT,
+    public var tvUsec: SusecondsT,
 ) {
+    public open fun clone(): Timeval = Timeval(tvSec, tvUsec)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Timeval> =
             object : TypeLayout<Timeval> {
@@ -200,14 +178,18 @@ public data class Timeval(
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 8, value.tvUsec)
                 }
             }
+
+        public fun default(): Timeval = Timeval(tvSec = Default.default(), tvUsec = Default.default())
     }
 }
 
-public data class Timespec(
-    public var tvSec: TimeT = 0L,
-    public var tvNsec: CLong = 0L,
-    public var pad0: UInt = 0u,
+public open class Timespec(
+    public var tvSec: TimeT,
+    public var tvNsec: CLong,
+    public var pad0: UInt,
 ) {
+    public open fun clone(): Timespec = Timespec(tvSec, tvNsec, pad0)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Timespec> =
             object : TypeLayout<Timespec> {
@@ -236,14 +218,18 @@ public data class Timespec(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 16, value.pad0)
                 }
             }
+
+        public fun default(): Timespec = Timespec(tvSec = Default.default(), pad0 = Default.default(), tvNsec = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Rlimit(
-    public var rlimCur: RlimT = 0uL,
-    public var rlimMax: RlimT = 0uL,
+public open class Rlimit(
+    public var rlimCur: RlimT,
+    public var rlimMax: RlimT,
 ) {
+    public open fun clone(): Rlimit = Rlimit(rlimCur, rlimMax)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Rlimit> =
             object : TypeLayout<Rlimit> {
@@ -268,30 +254,32 @@ public data class Rlimit(
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.rlimMax)
                 }
             }
+
+        public fun default(): Rlimit = Rlimit(rlimCur = Default.default(), rlimMax = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class Rusage(
-    public var ruUtime: Timeval = Timeval(),
-    public var ruStime: Timeval = Timeval(),
-    public var ruMaxrss: CLong = 0L,
-    public var ruIxrss: CLong = 0L,
-    public var ruIdrss: CLong = 0L,
-    public var ruIsrss: CLong = 0L,
-    public var ruMinflt: CLong = 0L,
-    public var ruMajflt: CLong = 0L,
-    public var ruNswap: CLong = 0L,
-    public var ruInblock: CLong = 0L,
-    public var ruOublock: CLong = 0L,
-    public var ruMsgsnd: CLong = 0L,
-    public var ruMsgrcv: CLong = 0L,
-    public var ruNsignals: CLong = 0L,
-    public var ruNvcsw: CLong = 0L,
-    public var ruNivcsw: CLong = 0L,
-    public var reserved: LongArray = LongArray(16),
+public open class Rusage(
+    public var ruUtime: Timeval,
+    public var ruStime: Timeval,
+    public var ruMaxrss: CLong,
+    public var ruIxrss: CLong,
+    public var ruIdrss: CLong,
+    public var ruIsrss: CLong,
+    public var ruMinflt: CLong,
+    public var ruMajflt: CLong,
+    public var ruNswap: CLong,
+    public var ruInblock: CLong,
+    public var ruOublock: CLong,
+    public var ruMsgsnd: CLong,
+    public var ruMsgrcv: CLong,
+    public var ruNsignals: CLong,
+    public var ruNvcsw: CLong,
+    public var ruNivcsw: CLong,
+    public var reserved: LongArray,
 ) {
-    public fun clone(): Rusage = Rusage(ruUtime, ruStime, ruMaxrss, ruIxrss, ruIdrss, ruIsrss, ruMinflt, ruMajflt, ruNswap, ruInblock, ruOublock, ruMsgsnd, ruMsgrcv, ruNsignals, ruNvcsw, ruNivcsw, reserved)
+    public open fun clone(): Rusage = Rusage(ruUtime, ruStime, ruMaxrss, ruIxrss, ruIdrss, ruIsrss, ruMinflt, ruMajflt, ruNswap, ruInblock, ruOublock, ruMsgsnd, ruMsgrcv, ruNsignals, ruNvcsw, ruNivcsw, reserved)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Rusage> =
@@ -377,41 +365,23 @@ public class Rusage(
                     (PrimitiveArrayLayouts.longArray(16)).writeBytes(buf, offset + 144, value.reserved)
                 }
             }
+
+        public fun default(): Rusage = Rusage(ruUtime = Default.default(), ruStime = Default.default(), ruMaxrss = Default.default(), pad1 = Default.default(), ruIxrss = Default.default(), pad2 = Default.default(), ruIdrss = Default.default(), pad3 = Default.default(), ruIsrss = Default.default(), pad4 = Default.default(), ruMinflt = Default.default(), pad5 = Default.default(), ruMajflt = Default.default(), pad6 = Default.default(), ruNswap = Default.default(), pad7 = Default.default(), ruInblock = Default.default(), pad8 = Default.default(), ruOublock = Default.default(), pad9 = Default.default(), ruMsgsnd = Default.default(), pad10 = Default.default(), ruMsgrcv = Default.default(), pad11 = Default.default(), ruNsignals = Default.default(), pad12 = Default.default(), ruNvcsw = Default.default(), pad13 = Default.default(), ruNivcsw = Default.default(), pad14 = Default.default(), reserved = Default.default())
     }
 }
 
-public data class Ipv6Mreq(
-    public var ipv6mrMultiaddr: In6Addr = In6Addr(),
-    public var ipv6mrInterface: CInt = 0,
+public open class Ipv6Mreq(
+    public var ipv6mrMultiaddr: In6Addr,
+    public var ipv6mrInterface: CInt,
 ) {
+    public open fun clone(): Ipv6Mreq = Ipv6Mreq(ipv6mrMultiaddr, ipv6mrInterface)
+
     public companion object {
-        public fun typeLayout(): TypeLayout<Ipv6Mreq> =
-            object : TypeLayout<Ipv6Mreq> {
-                override val alignBytes: Long = 4L
-                override val sizeBytes: Long = 20L
-                override fun readNative(addr: Long): Ipv6Mreq =
-                    Ipv6Mreq(
-                        (In6Addr.typeLayout()).readNative(addr),
-                        (PrimitiveLayouts.I32).readNative(addr + 16L),
-                    )
-                override fun writeNative(addr: Long, value: Ipv6Mreq) {
-                    (In6Addr.typeLayout()).writeNative(addr, value.ipv6mrMultiaddr)
-                    (PrimitiveLayouts.I32).writeNative(addr + 16L, value.ipv6mrInterface)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Ipv6Mreq =
-                    Ipv6Mreq(
-                        (In6Addr.typeLayout()).readBytes(buf, offset),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 16),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Ipv6Mreq) {
-                    (In6Addr.typeLayout()).writeBytes(buf, offset, value.ipv6mrMultiaddr)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 16, value.ipv6mrInterface)
-                }
-            }
+        public fun default(): Ipv6Mreq = Ipv6Mreq(ipv6mrMultiaddr = Default.default(), ipv6mrInterface = Default.default())
     }
 }
 
-public class Hostent internal constructor(
+public open class Hostent internal constructor(
     hNameCtorArg: MutPtr,
     hAliasesCtorArg: MutPtr,
     public var hAddrtype: CInt,
@@ -427,47 +397,7 @@ public class Hostent internal constructor(
     public var hAddrList: MutPtr = hAddrListCtorArg
         internal set
 
-    public constructor() : this(
-        hNameCtorArg = MutPtr(0L),
-        hAliasesCtorArg = MutPtr(0L),
-        hAddrtype = 0,
-        hLength = 0,
-        hAddrListCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): MutPtr = this.hName
-
-    public operator fun component2(): MutPtr = this.hAliases
-
-    public operator fun component3(): CInt = this.hAddrtype
-
-    public operator fun component4(): CInt = this.hLength
-
-    public operator fun component5(): MutPtr = this.hAddrList
-
-    public fun copy(hName: MutPtr = this.hName, hAliases: MutPtr = this.hAliases, hAddrtype: CInt = this.hAddrtype, hLength: CInt = this.hLength, hAddrList: MutPtr = this.hAddrList): Hostent = Hostent(hNameCtorArg = hName, hAliasesCtorArg = hAliases, hAddrtype = hAddrtype, hLength = hLength, hAddrListCtorArg = hAddrList)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Hostent) return false
-        if (this.hName != other.hName) return false
-        if (this.hAliases != other.hAliases) return false
-        if (this.hAddrtype != other.hAddrtype) return false
-        if (this.hLength != other.hLength) return false
-        if (this.hAddrList != other.hAddrList) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.hName.hashCode()
-        result = 31 * result + this.hAliases.hashCode()
-        result = 31 * result + this.hAddrtype.hashCode()
-        result = 31 * result + this.hLength.hashCode()
-        result = 31 * result + this.hAddrList.hashCode()
-        return result
-    }
-
-    public fun clone(): Hostent = Hostent(hName, hAliases, hAddrtype, hLength, hAddrList)
+    public open fun clone(): Hostent = Hostent(hName, hAliases, hAddrtype, hLength, hAddrList)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Hostent> =
@@ -507,11 +437,11 @@ public class Hostent internal constructor(
             }
 
         public operator fun invoke(
-            hName: MutPtr = MutPtr(0L),
-            hAliases: MutPtr = MutPtr(0L),
-            hAddrtype: CInt = 0,
-            hLength: CInt = 0,
-            hAddrList: MutPtr = MutPtr(0L),
+            hName: MutPtr,
+            hAliases: MutPtr,
+            hAddrtype: CInt,
+            hLength: CInt,
+            hAddrList: MutPtr,
         ): Hostent = Hostent(
             hNameCtorArg = hName,
             hAliasesCtorArg = hAliases,
@@ -519,43 +449,20 @@ public class Hostent internal constructor(
             hLength = hLength,
             hAddrListCtorArg = hAddrList,
         )
+
+        public fun default(): Hostent = Hostent(hName = MutPtr(0L), hAliases = MutPtr(0L), hAddrtype = Default.default(), hLength = Default.default(), hAddrList = MutPtr(0L))
     }
 }
 
 // Shouldn't ever change
-public class Iovec internal constructor(
+public open class Iovec internal constructor(
     iovBaseCtorArg: MutPtr,
     public var iovLen: SizeT,
 ) {
     public var iovBase: MutPtr = iovBaseCtorArg
         internal set
 
-    public constructor() : this(
-        iovBaseCtorArg = MutPtr(0L),
-        iovLen = 0uL,
-    )
-
-    public operator fun component1(): MutPtr = this.iovBase
-
-    public operator fun component2(): SizeT = this.iovLen
-
-    public fun copy(iovBase: MutPtr = this.iovBase, iovLen: SizeT = this.iovLen): Iovec = Iovec(iovBaseCtorArg = iovBase, iovLen = iovLen)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Iovec) return false
-        if (this.iovBase != other.iovBase) return false
-        if (this.iovLen != other.iovLen) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.iovBase.hashCode()
-        result = 31 * result + this.iovLen.hashCode()
-        return result
-    }
-
-    public fun clone(): Iovec = Iovec(iovBase, iovLen)
+    public open fun clone(): Iovec = Iovec(iovBase, iovLen)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Iovec> =
@@ -583,20 +490,24 @@ public class Iovec internal constructor(
             }
 
         public operator fun invoke(
-            iovBase: MutPtr = MutPtr(0L),
-            iovLen: SizeT = 0uL,
+            iovBase: MutPtr,
+            iovLen: SizeT,
         ): Iovec = Iovec(
             iovBaseCtorArg = iovBase,
             iovLen = iovLen,
         )
+
+        public fun default(): Iovec = Iovec(iovBase = MutPtr(0L), iovLen = Default.default())
     }
 }
 
-public data class Pollfd(
-    public var fd: CInt = 0,
-    public var events: CShort = 0,
-    public var revents: CShort = 0,
+public open class Pollfd(
+    public var fd: CInt,
+    public var events: CShort,
+    public var revents: CShort,
 ) {
+    public open fun clone(): Pollfd = Pollfd(fd, events, revents)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Pollfd> =
             object : TypeLayout<Pollfd> {
@@ -625,16 +536,20 @@ public data class Pollfd(
                     (PrimitiveLayouts.I16).writeBytes(buf, offset + 6, value.revents)
                 }
             }
+
+        public fun default(): Pollfd = Pollfd(fd = Default.default(), events = Default.default(), revents = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Winsize(
-    public var wsRow: CUshort = 0u,
-    public var wsCol: CUshort = 0u,
-    public var wsXpixel: CUshort = 0u,
-    public var wsYpixel: CUshort = 0u,
+public open class Winsize(
+    public var wsRow: CUshort,
+    public var wsCol: CUshort,
+    public var wsXpixel: CUshort,
+    public var wsYpixel: CUshort,
 ) {
+    public open fun clone(): Winsize = Winsize(wsRow, wsCol, wsXpixel, wsYpixel)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Winsize> =
             object : TypeLayout<Winsize> {
@@ -667,13 +582,17 @@ public data class Winsize(
                     (PrimitiveLayouts.U16).writeBytes(buf, offset + 6, value.wsYpixel)
                 }
             }
+
+        public fun default(): Winsize = Winsize(wsRow = Default.default(), wsCol = Default.default(), wsXpixel = Default.default(), wsYpixel = Default.default())
     }
 }
 
-public data class Linger(
-    public var lOnoff: CInt = 0,
-    public var lLinger: CInt = 0,
+public open class Linger(
+    public var lOnoff: CInt,
+    public var lLinger: CInt,
 ) {
+    public open fun clone(): Linger = Linger(lOnoff, lLinger)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Linger> =
             object : TypeLayout<Linger> {
@@ -698,34 +617,19 @@ public data class Linger(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 4, value.lLinger)
                 }
             }
+
+        public fun default(): Linger = Linger(lOnoff = Default.default(), lLinger = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class Sigval internal constructor(
+public open class Sigval internal constructor(
     sivalPtrCtorArg: MutPtr,
 ) {
     public var sivalPtr: MutPtr = sivalPtrCtorArg
         internal set
 
-    public constructor() : this(
-        sivalPtrCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): MutPtr = this.sivalPtr
-
-    public fun copy(sivalPtr: MutPtr = this.sivalPtr): Sigval = Sigval(sivalPtrCtorArg = sivalPtr)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Sigval) return false
-        if (this.sivalPtr != other.sivalPtr) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.sivalPtr.hashCode()
-
-    public fun clone(): Sigval = Sigval(sivalPtr)
+    public open fun clone(): Sigval = Sigval(sivalPtr)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Sigval> =
@@ -749,18 +653,22 @@ public class Sigval internal constructor(
             }
 
         public operator fun invoke(
-            sivalPtr: MutPtr = MutPtr(0L),
+            sivalPtr: MutPtr,
         ): Sigval = Sigval(
             sivalPtrCtorArg = sivalPtr,
         )
+
+        public fun default(): Sigval = Sigval(sivalPtr = MutPtr(0L))
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Itimerval(
-    public var itInterval: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval(),
-    public var itValue: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval(),
+public open class Itimerval(
+    public var itInterval: Timeval,
+    public var itValue: Timeval,
 ) {
+    public open fun clone(): Itimerval = Itimerval(itInterval, itValue)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Itimerval> =
             object : TypeLayout<Itimerval> {
@@ -785,16 +693,20 @@ public data class Itimerval(
                     (Timeval.typeLayout()).writeBytes(buf, offset + 16, value.itValue)
                 }
             }
+
+        public fun default(): Itimerval = Itimerval(itInterval = Default.default(), itValue = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public data class Tms(
-    public var tmsUtime: ClockT = 0L,
-    public var tmsStime: ClockT = 0L,
-    public var tmsCutime: ClockT = 0L,
-    public var tmsCstime: ClockT = 0L,
+public open class Tms(
+    public var tmsUtime: ClockT,
+    public var tmsStime: ClockT,
+    public var tmsCutime: ClockT,
+    public var tmsCstime: ClockT,
 ) {
+    public open fun clone(): Tms = Tms(tmsUtime, tmsStime, tmsCutime, tmsCstime)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Tms> =
             object : TypeLayout<Tms> {
@@ -827,11 +739,13 @@ public data class Tms(
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 24, value.tmsCstime)
                 }
             }
+
+        public fun default(): Tms = Tms(tmsUtime = Default.default(), tmsStime = Default.default(), tmsCutime = Default.default(), tmsCstime = Default.default())
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class Servent internal constructor(
+public open class Servent internal constructor(
     sNameCtorArg: MutPtr,
     sAliasesCtorArg: MutPtr,
     public var sPort: CInt,
@@ -846,42 +760,7 @@ public class Servent internal constructor(
     public var sProto: MutPtr = sProtoCtorArg
         internal set
 
-    public constructor() : this(
-        sNameCtorArg = MutPtr(0L),
-        sAliasesCtorArg = MutPtr(0L),
-        sPort = 0,
-        sProtoCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): MutPtr = this.sName
-
-    public operator fun component2(): MutPtr = this.sAliases
-
-    public operator fun component3(): CInt = this.sPort
-
-    public operator fun component4(): MutPtr = this.sProto
-
-    public fun copy(sName: MutPtr = this.sName, sAliases: MutPtr = this.sAliases, sPort: CInt = this.sPort, sProto: MutPtr = this.sProto): Servent = Servent(sNameCtorArg = sName, sAliasesCtorArg = sAliases, sPort = sPort, sProtoCtorArg = sProto)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Servent) return false
-        if (this.sName != other.sName) return false
-        if (this.sAliases != other.sAliases) return false
-        if (this.sPort != other.sPort) return false
-        if (this.sProto != other.sProto) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.sName.hashCode()
-        result = 31 * result + this.sAliases.hashCode()
-        result = 31 * result + this.sPort.hashCode()
-        result = 31 * result + this.sProto.hashCode()
-        return result
-    }
-
-    public fun clone(): Servent = Servent(sName, sAliases, sPort, sProto)
+    public open fun clone(): Servent = Servent(sName, sAliases, sPort, sProto)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Servent> =
@@ -917,21 +796,23 @@ public class Servent internal constructor(
             }
 
         public operator fun invoke(
-            sName: MutPtr = MutPtr(0L),
-            sAliases: MutPtr = MutPtr(0L),
-            sPort: CInt = 0,
-            sProto: MutPtr = MutPtr(0L),
+            sName: MutPtr,
+            sAliases: MutPtr,
+            sPort: CInt,
+            sProto: MutPtr,
         ): Servent = Servent(
             sNameCtorArg = sName,
             sAliasesCtorArg = sAliases,
             sPort = sPort,
             sProtoCtorArg = sProto,
         )
+
+        public fun default(): Servent = Servent(sName = MutPtr(0L), sAliases = MutPtr(0L), sPort = Default.default(), sProto = MutPtr(0L))
     }
 }
 
 // Note(exhaustive): review for 1.0
-public class Protoent internal constructor(
+public open class Protoent internal constructor(
     pNameCtorArg: MutPtr,
     pAliasesCtorArg: MutPtr,
     public var pProto: CInt,
@@ -942,37 +823,7 @@ public class Protoent internal constructor(
     public var pAliases: MutPtr = pAliasesCtorArg
         internal set
 
-    public constructor() : this(
-        pNameCtorArg = MutPtr(0L),
-        pAliasesCtorArg = MutPtr(0L),
-        pProto = 0,
-    )
-
-    public operator fun component1(): MutPtr = this.pName
-
-    public operator fun component2(): MutPtr = this.pAliases
-
-    public operator fun component3(): CInt = this.pProto
-
-    public fun copy(pName: MutPtr = this.pName, pAliases: MutPtr = this.pAliases, pProto: CInt = this.pProto): Protoent = Protoent(pNameCtorArg = pName, pAliasesCtorArg = pAliases, pProto = pProto)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Protoent) return false
-        if (this.pName != other.pName) return false
-        if (this.pAliases != other.pAliases) return false
-        if (this.pProto != other.pProto) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.pName.hashCode()
-        result = 31 * result + this.pAliases.hashCode()
-        result = 31 * result + this.pProto.hashCode()
-        return result
-    }
-
-    public fun clone(): Protoent = Protoent(pName, pAliases, pProto)
+    public open fun clone(): Protoent = Protoent(pName, pAliases, pProto)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Protoent> =
@@ -1004,49 +855,39 @@ public class Protoent internal constructor(
             }
 
         public operator fun invoke(
-            pName: MutPtr = MutPtr(0L),
-            pAliases: MutPtr = MutPtr(0L),
-            pProto: CInt = 0,
+            pName: MutPtr,
+            pAliases: MutPtr,
+            pProto: CInt,
         ): Protoent = Protoent(
             pNameCtorArg = pName,
             pAliasesCtorArg = pAliases,
             pProto = pProto,
         )
+
+        public fun default(): Protoent = Protoent(pName = MutPtr(0L), pAliases = MutPtr(0L), pProto = Default.default())
     }
 }
 
-public data class In6Addr(
-    public var s6Addr: UByteArray = UByteArray(16),
+public open class In6Addr internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<UByteArray>,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is In6Addr) return false
-        if (!this.s6Addr.contentEquals(other.s6Addr)) return false
-        return true
-    }
+    public var s6Addr: UByteArray
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    override fun hashCode(): Int = this.s6Addr.contentHashCode()
+    internal constructor(s6Addr: UByteArray, fieldLayout: TypeLayout<UByteArray>) : this(allocateNativeCell(s6Addr, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
+
+    public fun pointerLayout(): TypeLayout<In6Addr> = TransparentTypeLayout(fieldLayout, { ptr, layout -> In6Addr(ptr, layout) }, { it.s6Addr })
+
+    public open fun clone(): In6Addr = In6Addr(s6Addr, fieldLayout)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<In6Addr> =
-            object : TypeLayout<In6Addr> {
-                override val alignBytes: Long = 4L
-                override val sizeBytes: Long = 16L
-                override fun readNative(addr: Long): In6Addr =
-                    In6Addr(
-                        (PrimitiveArrayLayouts.uByteArray(16)).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: In6Addr) {
-                    (PrimitiveArrayLayouts.uByteArray(16)).writeNative(addr, value.s6Addr)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): In6Addr =
-                    In6Addr(
-                        (PrimitiveArrayLayouts.uByteArray(16)).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: In6Addr) {
-                    (PrimitiveArrayLayouts.uByteArray(16)).writeBytes(buf, offset, value.s6Addr)
-                }
-            }
+        public operator fun invoke(s6Addr: UByteArray, fieldLayout: TypeLayout<UByteArray>): In6Addr = In6Addr(s6Addr, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray>): In6Addr = In6Addr(fieldStorage, fieldLayout)
+
+        public fun default(fieldLayout: TypeLayout<UByteArray>): In6Addr = In6Addr(s6Addr = Default.default(), fieldLayout = PrimitiveArrayLayouts.uByteArray((16).toInt()))
     }
 }
 
@@ -1062,10 +903,12 @@ public data class In6Addr(
  * representation when available.
  * </div>
  */
-public data class FposT(
-    public var data: Unit = Unit,
-    public var marker: Unit = Unit,
-)
+public open class FposT(
+    public var data: Unit,
+    public var marker: Unit,
+) {
+    public open fun clone(): FposT = FposT(data, marker)
+}
 
 /**
  * This is an extern type ("opaque" or "incomplete" type in C).
@@ -1079,7 +922,9 @@ public data class FposT(
  * representation when available.
  * </div>
  */
-public data class FILE(
-    public var data: Unit = Unit,
-    public var marker: Unit = Unit,
-)
+public open class FILE(
+    public var data: Unit,
+    public var marker: Unit,
+) {
+    public open fun clone(): FILE = FILE(data, marker)
+}

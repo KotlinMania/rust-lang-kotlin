@@ -1,26 +1,26 @@
 // port-lint: source ffi/c_str.rs
 package io.github.kotlinmania.rustlang.core.ffi.cstr
 
-import io.github.kotlinmania.rustlang.bytestr.ByteStr
-import io.github.kotlinmania.rustlang.cmp.Ordering
-import io.github.kotlinmania.rustlang.convert.AsRef
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.convert.AsRef
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
+import io.github.kotlinmania.rustlang.core.num.nichetypes.UsizeNoHighBitMinusOne
+import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.ffi.primitives.CChar
-import io.github.kotlinmania.rustlang.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.num.nichetypes.UsizeNoHighBitMinusOne
-import io.github.kotlinmania.rustlang.ops.range.RangeFrom
-import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.slice.memchr.memchr
+import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 
 // [CStr] and its related types.
 
@@ -110,7 +110,9 @@ public open class CStr internal constructor(
 ) : AsRef<CStr> {
     public var inner: List<CChar>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
@@ -120,7 +122,11 @@ public open class CStr internal constructor(
      * Shows the underlying bytes as a normal string, with invalid UTF-8
      * presented as hex escape sequences.
      */
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((ByteStr.fromBytes(this.toBytes())).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append((ByteStr.fromBytes(this.toBytes())).toString())
+            Result.Ok(Unit)
+        }
 
     /**
      * Returns the inner pointer to this C string.
@@ -222,7 +228,7 @@ public open class CStr internal constructor(
         // SAFETY: We know there is at least one byte; for empty strings it
         // is the NUL terminator.
         // Note(const-Note): use getUnchecked
-        return (ObjectSlotLayout<CChar>()).readNative((this.inner.asPtr()).rawAddress) == 0u.toUByte()
+        return (UnresolvedTypeLayout<CChar>()).readNative((this.inner.asPtr()).rawAddress) == 0u.toUByte()
     }
 
     /**
@@ -245,7 +251,7 @@ public open class CStr internal constructor(
         val bytes = this.toBytesWithNul()
         // Note(const-Note) replace with range index
         // SAFETY: toBytesWithNul returns slice with length at least 1
-        return rawSliceList(bytes.asPtr(), (bytes.size - 1).toInt(), PrimitiveLayouts.U8)
+        return linearSliceView(bytes.asPtr(), (bytes.size - 1).toInt(), PrimitiveLayouts.U8)
     }
 
     /**
@@ -267,7 +273,7 @@ public open class CStr internal constructor(
     public open fun toBytesWithNul(): List<UByte> {
         // SAFETY: Transmuting a slice of `cChar`s to a slice of `UByte`s
         // is safe on all supported targets.
-        val bytes = (ObjectSlotLayout<List<UByte>>()).readNative(((((addrOf(this.inner))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+        val bytes = (UnresolvedTypeLayout<List<UByte>>()).readNative(((((addrOf(this.inner))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
         // SAFETY: A valid `CStr` always contains at least its trailing nul byte.
         assertUnchecked(!bytes.isEmpty())
         return bytes
@@ -305,7 +311,7 @@ public open class CStr internal constructor(
      * check("foo".toStr() == Result.success("foo"))
      * ```
      */
-    public open fun toStr(): Result<String, str.Utf8Error> {
+    public open fun toStr(): Result<String, Utf8Error> {
         // N.B., when `CStr` is changed to perform the length check in `.toBytes()`
         // instead of in `fromPtr()`, it may be worth considering if this should
         // be rewritten to do the UTF-8 check inline with the length calculation
@@ -451,7 +457,7 @@ public open class CStr internal constructor(
             // means the call to `fromBytesWithNulUnchecked` is correct.
             //
             // The cast from cChar to u8 is ok because a cChar is always one byte.
-            return CStr.fromBytesWithNulUnchecked(rawSliceList(ConstPtr((ptr).rawAddress), (len.asInner() + 1).toInt(), PrimitiveLayouts.U8))
+            return CStr.fromBytesWithNulUnchecked(linearSliceView(ConstPtr((ptr).rawAddress), (len.asInner() + 1).toInt(), PrimitiveLayouts.U8))
         }
 
         /**
@@ -500,7 +506,7 @@ public open class CStr internal constructor(
                     val nulPos1 = nulPos
                     // Note(const-Note) replace with range index
                     // SAFETY: nulPos + 1 <= bytes.len()
-                    val subslice = rawSliceList(bytes.asPtr(), (nulPos1 + 1).toInt(), PrimitiveLayouts.U8)
+                    val subslice = linearSliceView(bytes.asPtr(), (nulPos1 + 1).toInt(), PrimitiveLayouts.U8)
                     // SAFETY: We know there is a nul byte at nulPos, so this slice
                     // (ending at the nul byte) is a well-formed C string.
                     Result.Ok(CStr.fromBytesWithNulUnchecked(subslice))
@@ -588,7 +594,7 @@ public open class CStr internal constructor(
         public fun fromBytesWithNulUnchecked(bytes: List<UByte>): CStr =
             run {
                 check(!bytes.isEmpty() && bytes[bytes.size - 1] == 0u.toUByte())
-                (ObjectSlotLayout<CStr>()).readNative((((constPtrFromRustCast(bytes)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+                (UnresolvedTypeLayout<CStr>()).readNative((((constPtrFromRustCast(bytes)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
             }
     }
 }
@@ -615,7 +621,10 @@ public sealed class FromBytesWithNulError {
     /**
      * Data provided contains an interior nul byte at byte `position`.
      */
-    public data class InteriorNul(public var position: Int) : FromBytesWithNulError()
+    public data class InteriorNul(
+        public var position: Int,
+    ) : FromBytesWithNulError()
+
     /**
      * Data provided is not nul terminated.
      */
@@ -710,14 +719,15 @@ public open class Bytes internal constructor(
     public var ptr: NonNull = ptrCtorArg
         internal set
 
-    override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
-        override fun computeNext() {
-            when (val v = this@Bytes.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<UByte> =
+        object : AbstractIterator<UByte>() {
+            override fun computeNext() {
+                when (val v = this@Bytes.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Bytes = Bytes(ptr, phantom)
 
@@ -762,10 +772,11 @@ public open class Bytes internal constructor(
         public operator fun invoke(
             ptr: NonNull,
             phantom: Unit,
-        ): Bytes = Bytes(
-            ptrCtorArg = ptr,
-            phantom = phantom,
-        )
+        ): Bytes =
+            Bytes(
+                ptrCtorArg = ptr,
+                phantom = phantom,
+            )
 
         public fun new(s: CStr): Bytes = Bytes(ptr = s.asNonNullPtr().cast(), phantom = Unit)
     }
@@ -793,7 +804,15 @@ public open class Bytes internal constructor(
 public open class Display(
     public var cStr: CStr,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.cStr).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append((this.cStr).toString())
+            Result.Ok(Unit)
+        }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = run { f.append((ByteStr.fromBytes(this.cStr.toBytes())).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append((ByteStr.fromBytes(this.cStr.toBytes())).toString())
+            Result.Ok(Unit)
+        }
 }

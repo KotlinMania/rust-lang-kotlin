@@ -4,16 +4,17 @@ package io.github.kotlinmania.rustlang.core.mem.alignment
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignOfVal
+import io.github.kotlinmania.rustlang.core.mem.alignOfValRaw
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
+import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.mem.alignOfVal
-import io.github.kotlinmania.rustlang.mem.alignOfValRaw
-import io.github.kotlinmania.rustlang.num.error.IntErrorKind
-import io.github.kotlinmania.rustlang.num.error.TryFromIntError
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
 
 /**
  * A type storing a `Int` which is a power of two, and thus
@@ -28,7 +29,9 @@ public open class Alignment internal constructor(
 ) {
     public var innerReprTrick: AlignmentEnum
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(innerReprTrick: AlignmentEnum, fieldLayout: TypeLayout<AlignmentEnum>) : this(allocateNativeCell(innerReprTrick, fieldLayout), fieldLayout)
 
@@ -161,9 +164,9 @@ public open class Alignment internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, TryFromIntError> = f.writeFmt("${this.asNonzeroUsize()} (1 << ${this.log2()})")
 
-    public open fun cmp(other: Alignment): Ordering = this.asNonzeroUsize().cmp(other.asNonzeroUsize())
+    public open fun cmp(other: Alignment): cmp.Ordering = this.asNonzeroUsize().cmp(other.asNonzeroUsize())
 
-    public open fun partialCmp(other: Alignment): Ordering? = this.cmp(other)
+    public open fun partialCmp(other: Alignment): cmp.Ordering? = this.cmp(other)
 
     public override fun hashCode(): Int {
         var state = 0
@@ -238,7 +241,7 @@ public open class Alignment internal constructor(
          * [type-layout]: ../../reference/type-layout.html#r-layout.primitive
          */
         public fun <T> ofVal(value: T): Alignment {
-            val align = alignOfVal(value)
+            val align = alignOfVal(value, typeLayoutT = UnresolvedTypeLayout<T>())
             // SAFETY: `alignOfVal` returns valid alignment
             return Alignment.newUnchecked(align)
         }

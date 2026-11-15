@@ -2,15 +2,15 @@
 package io.github.kotlinmania.rustlang.core.array.drain
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.conjureZst
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.ops.function.FnMut
+import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.mem.conjureZst
-import io.github.kotlinmania.rustlang.ops.function.FnMut
-import io.github.kotlinmania.rustlang.ops.function.FnOnce
-import io.github.kotlinmania.rustlang.ptr.dropInPlace
-import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.ptr.withoutProvenanceMut
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 
 /**
  * See [Drain.new]; this is our fake iterator.
@@ -32,7 +32,8 @@ public open class Drain<T, F>(
     public var endOrLen: MutPtr,
     public var f: F,
     public var l: Unit,
-) : FnOnce<Int<Drain<T, F>>, U>, FnMut<Int<Drain<T, F>>> {
+) : FnOnce<Int<Drain<T, F>>, U>,
+    FnMut<Int<Drain<T, F>>> {
     /**
      * This implementation is useless.
      */
@@ -61,10 +62,10 @@ public open class Drain<T, F>(
     public open fun drop() {
         val slice =
             if (T.IS_ZST) {
-                rawMutSliceList(this.ptr.asPtr(), (transmuteWithLayouts(this.endOrLen, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)).toInt(), PrimitiveLayouts.U8)
+                linearMutSliceView(this.ptr.asPtr(), (transmuteWithLayouts(this.endOrLen, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)).toInt(), PrimitiveLayouts.U8)
             } else {
                 // SAFETY: we cant read more than N elements
-                rawMutSliceList(this.ptr.asPtr(), this.endOrLen.offsetFromUnsigned(this.ptr.asPtr()).toInt(), PrimitiveLayouts.U8)
+                linearMutSliceView(this.ptr.asPtr(), this.endOrLen.offsetFromUnsigned(this.ptr.asPtr()).toInt(), PrimitiveLayouts.U8)
             }
         // SAFETY: By the type invariant, we're allowed to drop all these. (we own it, after all)
         dropInPlace(slice)

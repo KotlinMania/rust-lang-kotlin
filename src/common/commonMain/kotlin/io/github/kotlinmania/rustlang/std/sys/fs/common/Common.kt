@@ -5,20 +5,20 @@ import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.fs.createDir
-import io.github.kotlinmania.rustlang.fs.metadata
-import io.github.kotlinmania.rustlang.fs.readDir
-import io.github.kotlinmania.rustlang.fs.removeDir
-import io.github.kotlinmania.rustlang.fs.removeFile
-import io.github.kotlinmania.rustlang.fs.rename
-import io.github.kotlinmania.rustlang.fs.symlinkMetadata
-import io.github.kotlinmania.rustlang.io.constError
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.path.PathBuf
-import io.github.kotlinmania.rustlang.sys.fs.unix.File
-import io.github.kotlinmania.rustlang.sys.fs.unix.OpenOptions
-import io.github.kotlinmania.rustlang.sys.fs.unsupported.FileAttr
-import io.github.kotlinmania.rustlang.sys.helpers.ignoreNotfound
+import io.github.kotlinmania.rustlang.std.fs.createDir
+import io.github.kotlinmania.rustlang.std.fs.metadata
+import io.github.kotlinmania.rustlang.std.fs.readDir
+import io.github.kotlinmania.rustlang.std.fs.removeDir
+import io.github.kotlinmania.rustlang.std.fs.removeFile
+import io.github.kotlinmania.rustlang.std.fs.rename
+import io.github.kotlinmania.rustlang.std.fs.symlinkMetadata
+import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
+import io.github.kotlinmania.rustlang.std.sys.fs.unsupported.FileAttr
+import io.github.kotlinmania.rustlang.std.sys.helpers.ignoreNotfound
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -55,7 +55,7 @@ public fun copy(from: Path, to: Path): Result<ULong, Error> {
     }
     val writer = when (val tryResult = File.create(to)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     val perm = metadata.permissions()
-    val ret = when (val tryResult = io.github.kotlinmania.rustlang.io.copy(reader, writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val ret = when (val tryResult = io.github.kotlinmania.rustlang.std.io.copy(reader, writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     when (val tryResult = writer.setPermissions(perm)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(ret)
 }
@@ -109,11 +109,11 @@ public open class Dir(
 ) {
     public open fun duplicate(): Result<Dir, Error> = Result.Ok(Dir(path = this.path.clone()))
 
-    public open fun openFile(path: Path, opts: OpenOptions): Result<io.github.kotlinmania.rustlang.sys.fs.unix.File, Error> = File.open(this.path.join(path), opts)
+    public open fun openFile(path: Path, opts: OpenOptions): Result<io.github.kotlinmania.rustlang.std.sys.fs.unix.File, Error> = File.open(this.path.join(path), opts)
 
     public open fun selfMetadata(): Result<FileAttr, Error> = this.path.metadata().map({ m -> m.intoInner() })
 
-    public open fun removeFile(path: Path): Result<Unit, Error> = removeFile(this.path.join(path))
+    public open fun removeFile(path: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.removeFile(this.path.join(path))
 
     public open fun rename(from: Path, toDir: Dir, to: Path): Result<Unit, Error> = rename(this.path.join(from), toDir.path.join(to))
 
@@ -121,7 +121,7 @@ public open class Dir(
 
     public open fun openDir(path: Path, opts: OpenOptions): Result<Dir, Error> = Dir.open(this.path.join(path), opts)
 
-    public open fun removeDir(path: Path): Result<Unit, Error> = removeDir(this.path.join(path))
+    public open fun removeDir(path: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.removeDir(this.path.join(path))
 
     public open fun metadata(path: Path): Result<FileAttr, Error> = this.path.join(path).metadata().map({ m -> m.intoInner() })
 

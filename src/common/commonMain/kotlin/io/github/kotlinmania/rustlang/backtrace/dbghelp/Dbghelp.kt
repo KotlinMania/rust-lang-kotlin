@@ -3,34 +3,32 @@
 
 package io.github.kotlinmania.rustlang.backtrace.dbghelp
 
+import io.github.kotlinmania.rustlang.backtrace.lock.LOCK
+import io.github.kotlinmania.rustlang.backtrace.windowssys.Bool
+import io.github.kotlinmania.rustlang.backtrace.windowssys.FALSE
+import io.github.kotlinmania.rustlang.backtrace.windowssys.Handle
+import io.github.kotlinmania.rustlang.backtrace.windowssys.Hinstance
+import io.github.kotlinmania.rustlang.backtrace.windowssys.INFINITE
+import io.github.kotlinmania.rustlang.backtrace.windowssys.Pcwstr
+import io.github.kotlinmania.rustlang.backtrace.windowssys.PenumloadedModulesCallbackw64
+import io.github.kotlinmania.rustlang.backtrace.windowssys.PfunctionTableAccessRoutine64
+import io.github.kotlinmania.rustlang.backtrace.windowssys.PgetModuleBaseRoutine64
+import io.github.kotlinmania.rustlang.backtrace.windowssys.PreadProcessMemoryRoutine64
+import io.github.kotlinmania.rustlang.backtrace.windowssys.PtranslateAddressRoutine64
+import io.github.kotlinmania.rustlang.backtrace.windowssys.Pwstr
+import io.github.kotlinmania.rustlang.backtrace.windowssys.SYMOPT_DEFERRED_LOADS
+import io.github.kotlinmania.rustlang.backtrace.windowssys.TRUE
+import io.github.kotlinmania.rustlang.backtrace.windowssys.lstrlenW
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
-import io.github.kotlinmania.rustlang.lock.LOCK
-import io.github.kotlinmania.rustlang.windowssys.Bool
-import io.github.kotlinmania.rustlang.windowssys.FALSE
-import io.github.kotlinmania.rustlang.windowssys.Handle
-import io.github.kotlinmania.rustlang.windowssys.Hinstance
-import io.github.kotlinmania.rustlang.windowssys.INFINITE
-import io.github.kotlinmania.rustlang.windowssys.Pcwstr
-import io.github.kotlinmania.rustlang.windowssys.PenumloadedModulesCallbackw64
-import io.github.kotlinmania.rustlang.windowssys.PfunctionTableAccessRoutine64
-import io.github.kotlinmania.rustlang.windowssys.PgetModuleBaseRoutine64
-import io.github.kotlinmania.rustlang.windowssys.PreadProcessMemoryRoutine64
-import io.github.kotlinmania.rustlang.windowssys.PtranslateAddressRoutine64
-import io.github.kotlinmania.rustlang.windowssys.Pwstr
-import io.github.kotlinmania.rustlang.windowssys.SYMOPT_DEFERRED_LOADS
-import io.github.kotlinmania.rustlang.windowssys.TRUE
-import io.github.kotlinmania.rustlang.windowssys.lstrlenW
 
 // A module to assist in managing dbghelp bindings on Windows
 //
@@ -343,25 +341,26 @@ public open class Dbghelp internal constructor(
             symGetLineFromInlineContextW: Int,
             symAddrIncludeInlineTrace: Int,
             symQueryInlineTrace: Int,
-        ): Dbghelp = Dbghelp(
-            dllCtorArg = dll,
-            symGetOptions = symGetOptions,
-            symSetOptions = symSetOptions,
-            symInitializeW = symInitializeW,
-            symGetSearchPathW = symGetSearchPathW,
-            symSetSearchPathW = symSetSearchPathW,
-            enumerateLoadedModulesW64 = enumerateLoadedModulesW64,
-            stackWalk64 = stackWalk64,
-            symFunctionTableAccess64 = symFunctionTableAccess64,
-            symGetModuleBase64 = symGetModuleBase64,
-            symFromAddrW = symFromAddrW,
-            symGetLineFromAddrW64 = symGetLineFromAddrW64,
-            stackWalkEx = stackWalkEx,
-            symFromInlineContextW = symFromInlineContextW,
-            symGetLineFromInlineContextW = symGetLineFromInlineContextW,
-            symAddrIncludeInlineTrace = symAddrIncludeInlineTrace,
-            symQueryInlineTrace = symQueryInlineTrace,
-        )
+        ): Dbghelp =
+            Dbghelp(
+                dllCtorArg = dll,
+                symGetOptions = symGetOptions,
+                symSetOptions = symSetOptions,
+                symInitializeW = symInitializeW,
+                symGetSearchPathW = symGetSearchPathW,
+                symSetSearchPathW = symSetSearchPathW,
+                enumerateLoadedModulesW64 = enumerateLoadedModulesW64,
+                stackWalk64 = stackWalk64,
+                symFunctionTableAccess64 = symFunctionTableAccess64,
+                symGetModuleBase64 = symGetModuleBase64,
+                symFromAddrW = symFromAddrW,
+                symGetLineFromAddrW64 = symGetLineFromAddrW64,
+                stackWalkEx = stackWalkEx,
+                symFromInlineContextW = symFromInlineContextW,
+                symGetLineFromInlineContextW = symGetLineFromInlineContextW,
+                symAddrIncludeInlineTrace = symAddrIncludeInlineTrace,
+                symQueryInlineTrace = symQueryInlineTrace,
+            )
     }
 }
 
@@ -481,9 +480,10 @@ public open class Init internal constructor(
     public companion object {
         public operator fun invoke(
             lock: Handle,
-        ): Init = Init(
-            lockCtorArg = lock,
-        )
+        ): Init =
+            Init(
+                lockCtorArg = lock,
+            )
     }
 }
 
@@ -498,21 +498,22 @@ public open class Init internal constructor(
 public fun init(): Result<Init, Unit> {
     // Helper function for generating a name that's unique to the process.
     fun mutexName(): UByteArray {
-        val name: UByteArray  = "Local\\RustBacktraceMutex00000000\u0000".encodeToByteArray().toUByteArray()
+        val name: UByteArray = "Local\\RustBacktraceMutex00000000\u0000".encodeToByteArray().toUByteArray()
         var id = GetCurrentProcessId()
         // Quick and dirty no alloc u32 to hex.
         var index = name.size - 1
         while (id > 0u) {
-            name[index - 1] = when (val matchVal = (id and 0xFu).toUByte()) {
-                in 0..9 -> {
-                    val h = matchVal
-                    48u + h
+            name[index - 1] =
+                when (val matchVal = (id and 0xFu).toUByte()) {
+                    in 0..9 -> {
+                        val h = matchVal
+                        48u + h
+                    }
+                    else -> {
+                        val h1 = matchVal
+                        65u + (h1 - 10u)
+                    }
                 }
-                else -> {
-                    val h1 = matchVal
-                    65u + (h1 - 10u)
-                }
-            }
             id = id shr 4
             index -= 1
         }
@@ -553,7 +554,7 @@ public fun init(): Result<Init, Unit> {
         //
         // After we've actually go the lock we simply acquire it, and our `Init`
         // handle we hand out will be responsible for dropping it eventually.
-        val LOCK: AtomicPtr  = AtomicPtr.new(MutPtr(0L))
+        val LOCK: AtomicPtr = AtomicPtr.new(MutPtr(0L))
         var INITIALIZED: Boolean = false
         var lock = LOCK.load(SeqCst)
         if (lock.isNull()) {
@@ -589,7 +590,10 @@ public fun init(): Result<Init, Unit> {
         // once, though, so we've got a global boolean indicating whether we're
         // done yet or not.
         // Note: https://github.com/rust-lang/backtrace-rs/issues/678
-        when (val tryResult = DBGHELP.ensureOpen()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = DBGHELP.ensureOpen()) {
+            is Result.Ok<*, *> -> tryResult.value
+            is Result.Err<*, *> -> return Result.Err(tryResult.error)
+        }
         if (INITIALIZED.inv()) {
             setOptionalOptions(ret.dbghelp())
             INITIALIZED = true
@@ -600,11 +604,11 @@ public fun init(): Result<Init, Unit> {
 
 public fun setOptionalOptions(dbghelp: MutPtr): Unit? {
     run {
-        val orig = ((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symGetOptions() ?: return null)()
+        val orig = ((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symGetOptions() ?: return null)()
         // Ensure that the `SYMOPT_DEFERRED_LOADS` flag is set, because
         // according to MSVC's own docs about this: "This is the fastest, most
         // efficient way to use the symbol handler.", so let's do that!
-        ((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symSetOptions() ?: return null)(orig or SYMOPT_DEFERRED_LOADS)
+        ((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symSetOptions() ?: return null)(orig or SYMOPT_DEFERRED_LOADS)
         // Actually initialize symbols with MSVC. Note that this can fail, but we
         // ignore it. There's not a ton of prior art for this per se, but LLVM
         // internally seems to ignore the return value here and one of the
@@ -617,7 +621,7 @@ public fun setOptionalOptions(dbghelp: MutPtr): Unit? {
         // the time, but now that it's using this crate it means that someone will
         // get to initialization first and the other will pick up that
         // initialization.
-        ((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symInitializeW() ?: return null)(GetCurrentProcess(), MutPtr(0L), TRUE)
+        ((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symInitializeW() ?: return null)(GetCurrentProcess(), MutPtr(0L), TRUE)
         // The default search path for dbghelp will only look in the current working
         // directory and (possibly) `_NT_SYMBOL_PATH` and `_NT_ALT_SYMBOL_PATH`.
         // However, we also want to look in the directory of the executable
@@ -629,7 +633,7 @@ public fun setOptionalOptions(dbghelp: MutPtr): Unit? {
         val searchPathBuf = mutableListOf<UShort>()
         searchPathBuf.resize(1024, 0)
         // Prefill the buffer with the current search path.
-        if (((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symGetSearchPathW() ?: return null)(GetCurrentProcess(), searchPathBuf.asMutPtr(), null) == TRUE) {
+        if (((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symGetSearchPathW() ?: return null)(GetCurrentProcess(), searchPathBuf.asMutPtr(), null) == TRUE) {
             // Trim the buffer to the actual length of the string.
             val len = lstrlenW(searchPathBuf.asMutPtr())
             check(len >= 0)
@@ -640,13 +644,13 @@ public fun setOptionalOptions(dbghelp: MutPtr): Unit? {
             searchPathBuf.add(utf16Char('.'))
             searchPathBuf.add(utf16Char(';'))
         }
-        val localStorageL374C8 = AddressableLocal(SearchPath.new(searchPathBuf), ObjectSlotLayout<SearchPath>())
+        val localStorageL374C8 = AddressableLocal(SearchPath.new(searchPathBuf), UnresolvedTypeLayout<SearchPath>())
         val searchPath by localStorageL374C8
         // Update the search path to include the directory of the executable and each DLL.
-        ((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).enumerateLoadedModulesW64() ?: return null)(GetCurrentProcess(), ::enumLoadedModulesCallback, ((MutPtr(localStorageL374C8.asMutPtr().rawAddress))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
+        ((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).enumerateLoadedModulesW64() ?: return null)(GetCurrentProcess(), ::enumLoadedModulesCallback, ((MutPtr(localStorageL374C8.asMutPtr().rawAddress))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
         val newSearchPath = searchPath.finalize()
         // Set the new search path.
-        ((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symSetSearchPathW() ?: return null)(GetCurrentProcess(), newSearchPath.asPtr())
+        ((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symSetSearchPathW() ?: return null)(GetCurrentProcess(), newSearchPath.asPtr())
     }
     return Unit
 }
@@ -696,13 +700,14 @@ public fun enumLoadedModulesCallback(moduleName: Pcwstr, arg1: ULong, arg2: UInt
         // This should not happen, but if it does, we can just ignore it.
         return TRUE
     }
-    val moduleName1 = rawSliceList(moduleName, len.toInt(), PrimitiveLayouts.U8)
+    val moduleName1 = Slice.fromRawParts(moduleName, len)
     val pathSep = utf16Char('\\')
     val altPathSep = utf16Char('/')
-    val endOfDirectory = moduleName1.iter().indexOfLast({ c -> c == pathSep || c == altPathSep }).takeIf { it >= 0 } ?: // `moduleName` being an absolute path, it should always contain at least one
+    val endOfDirectory =
+        moduleName1.iter().indexOfLast({ c -> c == pathSep || c == altPathSep }).takeIf { it >= 0 } ?: // `moduleName` being an absolute path, it should always contain at least one
 // path separator. If not, there is nothing we can do.
-return TRUE
-    val searchPath = RustMutableReference(MutPtr(((MutPtr(userContext.rawAddress, userContext.rawMeta))).rawAddress), ObjectSlotLayout<SearchPath>())
+            return TRUE
+    val searchPath = RustMutableReference(MutPtr(((MutPtr(userContext.rawAddress, userContext.rawMeta))).rawAddress), UnresolvedTypeLayout<SearchPath>())
     searchPath.add(moduleName1[0 until endOfDirectory])
     return TRUE
 }

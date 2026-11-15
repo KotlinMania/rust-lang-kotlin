@@ -9,13 +9,13 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.ERROR_CALL_NOT_IMPLEMENTED
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.KERNEL32
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.E_NOTIMPL
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.Handle
-import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.Hresult
-import io.github.kotlinmania.rustlang.sys.pal.windows.compat.Module
-import io.github.kotlinmania.rustlang.sys.pal.windows.compat.constCstrFromBytes
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_CALL_NOT_IMPLEMENTED
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.KERNEL32
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.E_NOTIMPL
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Handle
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Hresult
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.compat.Module
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.compat.constCstrFromBytes
 
 // Functions that aren't available on every version of Windows that we support,
 // but we still use them and just provide some form of a fallback implementation.

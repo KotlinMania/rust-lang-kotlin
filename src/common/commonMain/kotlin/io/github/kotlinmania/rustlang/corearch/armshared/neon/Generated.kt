@@ -3,606 +3,39 @@
 
 package io.github.kotlinmania.rustlang.corearch.armshared.neon
 
-import io.github.kotlinmania.rustlang.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.aarch64.neon.vld1P64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld1S64
-import io.github.kotlinmania.rustlang.aarch64.neon.vld1U64
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x8T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Float16x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Float32x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x8T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int16x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int32x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x1T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x1x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x1x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x1x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int64x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x16T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x16x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x16x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x16x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x8T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Int8x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.P128
-import io.github.kotlinmania.rustlang.armshared.neon.P16
-import io.github.kotlinmania.rustlang.armshared.neon.P64
-import io.github.kotlinmania.rustlang.armshared.neon.P8
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x8T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly16x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x1T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x1x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x1x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x1x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly64x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x16T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x16x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x16x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x16x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x8T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Poly8x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x8T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint16x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x4x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x4x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint32x4x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x1T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x1x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x1x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x1x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x2x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x2x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint64x2x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x16T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x16x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x16x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x16x4T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x8T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x8x2T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x8x3T
-import io.github.kotlinmania.rustlang.armshared.neon.Uint8x8x4T
-import io.github.kotlinmania.rustlang.armshared.neon.crc32b
-import io.github.kotlinmania.rustlang.armshared.neon.crc32cb
-import io.github.kotlinmania.rustlang.armshared.neon.crc32ch
-import io.github.kotlinmania.rustlang.armshared.neon.crc32cw
-import io.github.kotlinmania.rustlang.armshared.neon.crc32h
-import io.github.kotlinmania.rustlang.armshared.neon.crc32w
-import io.github.kotlinmania.rustlang.armshared.neon.vabdF16
-import io.github.kotlinmania.rustlang.armshared.neon.vabdF32
-import io.github.kotlinmania.rustlang.armshared.neon.vabdS16
-import io.github.kotlinmania.rustlang.armshared.neon.vabdS32
-import io.github.kotlinmania.rustlang.armshared.neon.vabdS8
-import io.github.kotlinmania.rustlang.armshared.neon.vabdU16
-import io.github.kotlinmania.rustlang.armshared.neon.vabdU32
-import io.github.kotlinmania.rustlang.armshared.neon.vabdU8
-import io.github.kotlinmania.rustlang.armshared.neon.vabdqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vabdqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vabdqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vabdqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vabdqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vabdqU16
-import io.github.kotlinmania.rustlang.armshared.neon.vabdqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vabdqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vaesdqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vaeseqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vaesimcqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vaesmcqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vcageF16
-import io.github.kotlinmania.rustlang.armshared.neon.vcageF32
-import io.github.kotlinmania.rustlang.armshared.neon.vcageqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vcageqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vcagtF16
-import io.github.kotlinmania.rustlang.armshared.neon.vcagtF32
-import io.github.kotlinmania.rustlang.armshared.neon.vcagtqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vcagtqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vclsS16
-import io.github.kotlinmania.rustlang.armshared.neon.vclsS32
-import io.github.kotlinmania.rustlang.armshared.neon.vclsS8
-import io.github.kotlinmania.rustlang.armshared.neon.vclsqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vclsqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vclsqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtNF16S16
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtNF16U16
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtNF32S32
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtNF32U32
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtNS16F16
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtNS32F32
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtNU16F16
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtNU32F32
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtS32F32
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtU32F32
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtqNF16S16
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtqNF16U16
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtqNF32S32
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtqNF32U32
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtqNS16F16
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtqNS32F32
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtqNU16F16
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtqNU32F32
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtqS32F32
-import io.github.kotlinmania.rustlang.armshared.neon.vcvtqU32F32
-import io.github.kotlinmania.rustlang.armshared.neon.vdotS32
-import io.github.kotlinmania.rustlang.armshared.neon.vdotU32
-import io.github.kotlinmania.rustlang.armshared.neon.vdotqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vdotqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddS16
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddS32
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddS8
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddU16
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddU32
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddU8
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddqU16
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vhaddqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubS16
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubS32
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubS8
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubU16
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubU32
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubU8
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubqU16
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vhsubqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vld2DupF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2DupF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2DupS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2DupS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2DupS64
-import io.github.kotlinmania.rustlang.armshared.neon.vld2DupS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld2F16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2F32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2LaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2LaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2LaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2LaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2LaneS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld2S16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2S32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2S64
-import io.github.kotlinmania.rustlang.armshared.neon.vld2S8
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qDupF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qDupF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qDupS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qDupS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qDupS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qLaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qLaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qLaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qLaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld2qS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld3DupF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3DupF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3DupS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3DupS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3DupS64
-import io.github.kotlinmania.rustlang.armshared.neon.vld3DupS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld3LaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3LaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3LaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3LaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3LaneS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qDupF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qDupF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qDupS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qDupS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qDupS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qLaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qLaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qLaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld3qLaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4DupF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4DupF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4DupS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4DupS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4DupS64
-import io.github.kotlinmania.rustlang.armshared.neon.vld4DupS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld4LaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4LaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4LaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4LaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4LaneS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qDupF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qDupF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qDupS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qDupS32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qDupS8
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qLaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qLaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qLaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vld4qLaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vmaxF16
-import io.github.kotlinmania.rustlang.armshared.neon.vmaxF32
-import io.github.kotlinmania.rustlang.armshared.neon.vmaxnmF16
-import io.github.kotlinmania.rustlang.armshared.neon.vmaxnmF32
-import io.github.kotlinmania.rustlang.armshared.neon.vmaxnmqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vmaxnmqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vmaxqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vmaxqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vminF16
-import io.github.kotlinmania.rustlang.armshared.neon.vminF32
-import io.github.kotlinmania.rustlang.armshared.neon.vminnmF16
-import io.github.kotlinmania.rustlang.armshared.neon.vminnmF32
-import io.github.kotlinmania.rustlang.armshared.neon.vminnmqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vminnmqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vminqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vminqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vmmlaqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vmmlaqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vmulP8
-import io.github.kotlinmania.rustlang.armshared.neon.vmullP8
-import io.github.kotlinmania.rustlang.armshared.neon.vmulqP8
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddF16
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddF32
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddS16
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddS32
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddS8
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlS16
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlS32
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlS8
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlU16
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlU32
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlU8
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlqU16
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vpaddlqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vpmaxF32
-import io.github.kotlinmania.rustlang.armshared.neon.vpmaxS16
-import io.github.kotlinmania.rustlang.armshared.neon.vpmaxS32
-import io.github.kotlinmania.rustlang.armshared.neon.vpmaxS8
-import io.github.kotlinmania.rustlang.armshared.neon.vpmaxU16
-import io.github.kotlinmania.rustlang.armshared.neon.vpmaxU32
-import io.github.kotlinmania.rustlang.armshared.neon.vpmaxU8
-import io.github.kotlinmania.rustlang.armshared.neon.vpminF32
-import io.github.kotlinmania.rustlang.armshared.neon.vpminS16
-import io.github.kotlinmania.rustlang.armshared.neon.vpminS32
-import io.github.kotlinmania.rustlang.armshared.neon.vpminS8
-import io.github.kotlinmania.rustlang.armshared.neon.vpminU16
-import io.github.kotlinmania.rustlang.armshared.neon.vpminU32
-import io.github.kotlinmania.rustlang.armshared.neon.vpminU8
-import io.github.kotlinmania.rustlang.armshared.neon.vqabsS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqabsS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqabsS8
-import io.github.kotlinmania.rustlang.armshared.neon.vqabsqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqabsqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqabsqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vqdmulhS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqdmulhS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqdmulhqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqdmulhqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqdmullS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqdmullS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqmovnS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqmovnS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqmovnS64
-import io.github.kotlinmania.rustlang.armshared.neon.vqmovnU16
-import io.github.kotlinmania.rustlang.armshared.neon.vqmovnU32
-import io.github.kotlinmania.rustlang.armshared.neon.vqmovnU64
-import io.github.kotlinmania.rustlang.armshared.neon.vqmovunS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqmovunS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqmovunS64
-import io.github.kotlinmania.rustlang.armshared.neon.vqnegS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqnegS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqnegS8
-import io.github.kotlinmania.rustlang.armshared.neon.vqnegqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqnegqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqnegqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vqrdmulhS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqrdmulhS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqrdmulhqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqrdmulhqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlS64
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlS8
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlU16
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlU32
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlU64
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlU8
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlqS64
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlqU16
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlqU64
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshlqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshrnNS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshrnNS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshrnNS64
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshrnNU16
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshrnNU32
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshrnNU64
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshrunNS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshrunNS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqrshrunNS64
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlS64
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlS8
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlU16
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlU32
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlU64
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlU8
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlqS64
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlqU16
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlqU64
-import io.github.kotlinmania.rustlang.armshared.neon.vqshlqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vqshluNS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqshluNS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqshluNS64
-import io.github.kotlinmania.rustlang.armshared.neon.vqshluNS8
-import io.github.kotlinmania.rustlang.armshared.neon.vqshluqNS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqshluqNS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqshluqNS64
-import io.github.kotlinmania.rustlang.armshared.neon.vqshluqNS8
-import io.github.kotlinmania.rustlang.armshared.neon.vqshrnNS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqshrnNS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqshrnNS64
-import io.github.kotlinmania.rustlang.armshared.neon.vqshrnNU16
-import io.github.kotlinmania.rustlang.armshared.neon.vqshrnNU32
-import io.github.kotlinmania.rustlang.armshared.neon.vqshrnNU64
-import io.github.kotlinmania.rustlang.armshared.neon.vqshrunNS16
-import io.github.kotlinmania.rustlang.armshared.neon.vqshrunNS32
-import io.github.kotlinmania.rustlang.armshared.neon.vqshrunNS64
-import io.github.kotlinmania.rustlang.armshared.neon.vraddhnS16
-import io.github.kotlinmania.rustlang.armshared.neon.vraddhnS32
-import io.github.kotlinmania.rustlang.armshared.neon.vraddhnS64
-import io.github.kotlinmania.rustlang.armshared.neon.vrecpeF16
-import io.github.kotlinmania.rustlang.armshared.neon.vrecpeF32
-import io.github.kotlinmania.rustlang.armshared.neon.vrecpeU32
-import io.github.kotlinmania.rustlang.armshared.neon.vrecpeqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vrecpeqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vrecpeqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vrecpsF16
-import io.github.kotlinmania.rustlang.armshared.neon.vrecpsF32
-import io.github.kotlinmania.rustlang.armshared.neon.vrecpsqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vrecpsqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddS16
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddS32
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddS8
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddU16
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddU32
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddU8
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddqU16
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vrhaddqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vrndnF16
-import io.github.kotlinmania.rustlang.armshared.neon.vrndnF32
-import io.github.kotlinmania.rustlang.armshared.neon.vrndnqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vrndnqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlS16
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlS32
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlS64
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlS8
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlU16
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlU32
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlU64
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlU8
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlqS64
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlqU16
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlqU64
-import io.github.kotlinmania.rustlang.armshared.neon.vrshlqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vrshrnNS16
-import io.github.kotlinmania.rustlang.armshared.neon.vrshrnNS32
-import io.github.kotlinmania.rustlang.armshared.neon.vrshrnNS64
-import io.github.kotlinmania.rustlang.armshared.neon.vrsqrteF16
-import io.github.kotlinmania.rustlang.armshared.neon.vrsqrteF32
-import io.github.kotlinmania.rustlang.armshared.neon.vrsqrteU32
-import io.github.kotlinmania.rustlang.armshared.neon.vrsqrteqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vrsqrteqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vrsqrteqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vrsqrtsF16
-import io.github.kotlinmania.rustlang.armshared.neon.vrsqrtsF32
-import io.github.kotlinmania.rustlang.armshared.neon.vrsqrtsqF16
-import io.github.kotlinmania.rustlang.armshared.neon.vrsqrtsqF32
-import io.github.kotlinmania.rustlang.armshared.neon.vrsubhnS16
-import io.github.kotlinmania.rustlang.armshared.neon.vrsubhnS32
-import io.github.kotlinmania.rustlang.armshared.neon.vrsubhnS64
-import io.github.kotlinmania.rustlang.armshared.neon.vsha1cqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vsha1hU32
-import io.github.kotlinmania.rustlang.armshared.neon.vsha1mqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vsha1pqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vsha1su0qU32
-import io.github.kotlinmania.rustlang.armshared.neon.vsha1su1qU32
-import io.github.kotlinmania.rustlang.armshared.neon.vsha256h2qU32
-import io.github.kotlinmania.rustlang.armshared.neon.vsha256hqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vsha256su0qU32
-import io.github.kotlinmania.rustlang.armshared.neon.vsha256su1qU32
-import io.github.kotlinmania.rustlang.armshared.neon.vshlS16
-import io.github.kotlinmania.rustlang.armshared.neon.vshlS32
-import io.github.kotlinmania.rustlang.armshared.neon.vshlS64
-import io.github.kotlinmania.rustlang.armshared.neon.vshlS8
-import io.github.kotlinmania.rustlang.armshared.neon.vshlU16
-import io.github.kotlinmania.rustlang.armshared.neon.vshlU32
-import io.github.kotlinmania.rustlang.armshared.neon.vshlU64
-import io.github.kotlinmania.rustlang.armshared.neon.vshlU8
-import io.github.kotlinmania.rustlang.armshared.neon.vshlqS16
-import io.github.kotlinmania.rustlang.armshared.neon.vshlqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vshlqS64
-import io.github.kotlinmania.rustlang.armshared.neon.vshlqS8
-import io.github.kotlinmania.rustlang.armshared.neon.vshlqU16
-import io.github.kotlinmania.rustlang.armshared.neon.vshlqU32
-import io.github.kotlinmania.rustlang.armshared.neon.vshlqU64
-import io.github.kotlinmania.rustlang.armshared.neon.vshlqU8
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1F32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1S8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qF32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS16X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS16X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS16X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS32X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS32X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS32X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS64X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS64X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS64X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS8X2
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS8X3
-import io.github.kotlinmania.rustlang.armshared.neon.vst1qS8X4
-import io.github.kotlinmania.rustlang.armshared.neon.vst2F16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2LaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2LaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vst2LaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2LaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vst2LaneS8
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qLaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qLaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qLaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vst2qLaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vst3F16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3LaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3LaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vst3LaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3LaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vst3LaneS8
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qLaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qLaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qLaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vst3qLaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vst4F16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4LaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4LaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vst4LaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4LaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vst4LaneS8
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qLaneF16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qLaneF32
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qLaneS16
-import io.github.kotlinmania.rustlang.armshared.neon.vst4qLaneS32
-import io.github.kotlinmania.rustlang.armshared.neon.vusdotS32
-import io.github.kotlinmania.rustlang.armshared.neon.vusdotqS32
-import io.github.kotlinmania.rustlang.armshared.neon.vusmmlaqS32
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.deinterleaveMask
-import io.github.kotlinmania.rustlang.identity
-import io.github.kotlinmania.rustlang.interleaveMask
-import io.github.kotlinmania.rustlang.simd.F16x4
-import io.github.kotlinmania.rustlang.simd.F16x8
-import io.github.kotlinmania.rustlang.simd.I16x4
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x2
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.I8x8
-import io.github.kotlinmania.rustlang.simd.Simd
-import io.github.kotlinmania.rustlang.simd.U16x4
-import io.github.kotlinmania.rustlang.simd.U16x8
-import io.github.kotlinmania.rustlang.simd.U32x2
-import io.github.kotlinmania.rustlang.simd.U32x4
-import io.github.kotlinmania.rustlang.simd.U64x2
-import io.github.kotlinmania.rustlang.simd.U8x16
-import io.github.kotlinmania.rustlang.simd.U8x8
-import io.github.kotlinmania.rustlang.simdShuffle
+import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.corearch.aarch64.neon.vld1P64
+import io.github.kotlinmania.rustlang.corearch.aarch64.neon.vld1S64
+import io.github.kotlinmania.rustlang.corearch.aarch64.neon.vld1U64
+import io.github.kotlinmania.rustlang.corearch.deinterleaveMask
+import io.github.kotlinmania.rustlang.corearch.identity
+import io.github.kotlinmania.rustlang.corearch.interleaveMask
+import io.github.kotlinmania.rustlang.corearch.simd.F16x4
+import io.github.kotlinmania.rustlang.corearch.simd.F16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I16x4
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x2
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.I8x8
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
+import io.github.kotlinmania.rustlang.corearch.simd.U16x4
+import io.github.kotlinmania.rustlang.corearch.simd.U16x8
+import io.github.kotlinmania.rustlang.corearch.simd.U32x2
+import io.github.kotlinmania.rustlang.corearch.simd.U32x4
+import io.github.kotlinmania.rustlang.corearch.simd.U64x2
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U8x8
+import io.github.kotlinmania.rustlang.corearch.simdShuffle
 
 public typealias V = Simd<F16>
 
@@ -5433,7 +4866,7 @@ public fun vld1DupF32(ptr: ConstPtr): Float32x2T = transmute(f32x2.splat(readUna
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmute(u16x4.splat(readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P16>())))
+public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmute(u16x4.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>())))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -5441,7 +4874,7 @@ public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmute(u16x4.splat(readUnal
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupP8(ptr: ConstPtr): Poly8x8T = transmute(u8x8.splat(readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P8>())))
+public fun vld1DupP8(ptr: ConstPtr): Poly8x8T = transmute(u8x8.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>())))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -5505,7 +4938,7 @@ public fun vld1qDupF32(ptr: ConstPtr): Float32x4T = transmute(f32x4.splat(readUn
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmute(u16x8.splat(readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P16>())))
+public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmute(u16x8.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>())))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -5513,7 +4946,7 @@ public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmute(u16x8.splat(readUna
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupP8(ptr: ConstPtr): Poly8x16T = transmute(u8x16.splat(readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P8>())))
+public fun vld1qDupP8(ptr: ConstPtr): Poly8x16T = transmute(u8x16.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>())))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -5766,7 +5199,7 @@ public fun vld1LaneP16(ptr: ConstPtr, src: Poly16x4T, lane: Int): Poly16x4T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P16>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>()); _simdArg0 }
 }
 
 /**
@@ -5779,7 +5212,7 @@ public fun vld1LaneP8(ptr: ConstPtr, src: Poly8x8T, lane: Int): Poly8x8T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P8>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>()); _simdArg0 }
 }
 
 /**
@@ -5909,7 +5342,7 @@ public fun vld1qLaneP16(ptr: ConstPtr, src: Poly16x8T, lane: Int): Poly16x8T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P16>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>()); _simdArg0 }
 }
 
 /**
@@ -5922,7 +5355,7 @@ public fun vld1qLaneP8(ptr: ConstPtr, src: Poly8x16T, lane: Int): Poly8x16T {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P8>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>()); _simdArg0 }
 }
 
 /**
@@ -6039,7 +5472,7 @@ public fun vld1LaneP64(ptr: ConstPtr, src: Poly64x1T, lane: Int): Poly64x1T {
     run {
         check(lane == 0)
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P64>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P64>()); _simdArg0 }
 }
 
 /**
@@ -6052,7 +5485,7 @@ public fun vld1qLaneP64(ptr: ConstPtr, src: Poly64x2T, lane: Int): Poly64x2T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P64>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P64>()); _simdArg0 }
 }
 
 /**
@@ -8194,7 +7627,7 @@ public fun vld4qDupP16(a: ConstPtr): Poly16x8x4T = transmute(vld4qDupS16(transmu
  */
 public fun vld4F16(a: ConstPtr): Float16x4x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
@@ -8210,7 +7643,7 @@ public fun vld4F16(a: ConstPtr): Float16x4x4T =
  */
 public fun vld4qF16(a: ConstPtr): Float16x8x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 2 > Unit)
@@ -8226,7 +7659,7 @@ public fun vld4qF16(a: ConstPtr): Float16x8x4T =
  */
 public fun vld4F32(a: ConstPtr): Float32x2x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 2 > Unit)
@@ -8242,7 +7675,7 @@ public fun vld4F32(a: ConstPtr): Float32x2x4T =
  */
 public fun vld4qF32(a: ConstPtr): Float32x4x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
@@ -8258,7 +7691,7 @@ public fun vld4qF32(a: ConstPtr): Float32x4x4T =
  */
 public fun vld4S8(a: ConstPtr): Int8x8x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 2 > Unit)
@@ -8274,7 +7707,7 @@ public fun vld4S8(a: ConstPtr): Int8x8x4T =
  */
 public fun vld4qS8(a: ConstPtr): Int8x16x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 16, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 16, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 16, 4, 2 > Unit)
@@ -8290,7 +7723,7 @@ public fun vld4qS8(a: ConstPtr): Int8x16x4T =
  */
 public fun vld4S16(a: ConstPtr): Int16x4x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
@@ -8306,7 +7739,7 @@ public fun vld4S16(a: ConstPtr): Int16x4x4T =
  */
 public fun vld4qS16(a: ConstPtr): Int16x8x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 2 > Unit)
@@ -8322,7 +7755,7 @@ public fun vld4qS16(a: ConstPtr): Int16x8x4T =
  */
 public fun vld4S32(a: ConstPtr): Int32x2x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 2 > Unit)
@@ -8338,7 +7771,7 @@ public fun vld4S32(a: ConstPtr): Int32x2x4T =
  */
 public fun vld4qS32(a: ConstPtr): Int32x4x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
@@ -8686,7 +8119,7 @@ public fun vld4qP16(a: ConstPtr): Poly16x8x4T = transmute(vld4qS16(transmute(a))
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vldrqP128(a: ConstPtr): P128 = (ObjectSlotLayout<P128>()).readNative((a).rawAddress)
+public fun vldrqP128(a: ConstPtr): P128 = (UnresolvedTypeLayout<P128>()).readNative((a).rawAddress)
 
 /**
  * Maximum (vector)
@@ -18229,7 +17662,7 @@ public fun vst1LaneP8(a: MutPtr, b: Poly8x8T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P8>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P8>())
 }
 
 /**
@@ -18242,7 +17675,7 @@ public fun vst1qLaneP8(a: MutPtr, b: Poly8x16T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P8>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P8>())
 }
 
 /**
@@ -18255,7 +17688,7 @@ public fun vst1LaneP16(a: MutPtr, b: Poly16x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P16>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P16>())
 }
 
 /**
@@ -18268,7 +17701,7 @@ public fun vst1qLaneP16(a: MutPtr, b: Poly16x8T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P16>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P16>())
 }
 
 /**
@@ -18281,7 +17714,7 @@ public fun vst1LaneP64(a: MutPtr, b: Poly64x1T, lane: Int) {
     run {
         check(lane == 0)
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P64>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P64>())
 }
 
 /**
@@ -19004,7 +18437,7 @@ public fun vst1qLaneP64(a: MutPtr, b: Poly64x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P64>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P64>())
 }
 
 /**
@@ -19038,7 +18471,7 @@ public fun vst2qF16(a: MutPtr, b: Float16x8x2T) {
 public fun vst2F32(a: MutPtr, b: Float32x2x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 2, 2, 2, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19051,7 +18484,7 @@ public fun vst2F32(a: MutPtr, b: Float32x2x2T) {
 public fun vst2qF32(a: MutPtr, b: Float32x4x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 4, 2, 4, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19064,7 +18497,7 @@ public fun vst2qF32(a: MutPtr, b: Float32x4x2T) {
 public fun vst2S8(a: MutPtr, b: Int8x8x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 8, 2, 8, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19077,7 +18510,7 @@ public fun vst2S8(a: MutPtr, b: Int8x8x2T) {
 public fun vst2qS8(a: MutPtr, b: Int8x16x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 16, 2, 16, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19090,7 +18523,7 @@ public fun vst2qS8(a: MutPtr, b: Int8x16x2T) {
 public fun vst2S16(a: MutPtr, b: Int16x4x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 4, 2, 4, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19103,7 +18536,7 @@ public fun vst2S16(a: MutPtr, b: Int16x4x2T) {
 public fun vst2qS16(a: MutPtr, b: Int16x8x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 8, 2, 8, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19116,7 +18549,7 @@ public fun vst2qS16(a: MutPtr, b: Int16x8x2T) {
 public fun vst2S32(a: MutPtr, b: Int32x2x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 2, 2, 2, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19129,7 +18562,7 @@ public fun vst2S32(a: MutPtr, b: Int32x2x2T) {
 public fun vst2qS32(a: MutPtr, b: Int32x4x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 4, 2, 4, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -20036,7 +19469,7 @@ public fun vst4F32(a: MutPtr, b: Float32x2x4T) {
         val v0v1: Simd<Float> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val v2v3: Simd<Float> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 2, 4, 2, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -20051,7 +19484,7 @@ public fun vst4qF32(a: MutPtr, b: Float32x4x4T) {
         val v0v1: Simd<Float> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v3: Simd<Float> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 4, 4, 4, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -20066,7 +19499,7 @@ public fun vst4S8(a: MutPtr, b: Int8x8x4T) {
         val v0v1: Simd<Byte> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val v2v3: Simd<Byte> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 8, 4, 8, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -20081,7 +19514,7 @@ public fun vst4qS8(a: MutPtr, b: Int8x16x4T) {
         val v0v1: Simd<Byte> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(16 * 2)); _simdArg0 }
         val v2v3: Simd<Byte> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(16 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 16, 4, 16, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -20096,7 +19529,7 @@ public fun vst4S16(a: MutPtr, b: Int16x4x4T) {
         val v0v1: Simd<Short> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v3: Simd<Short> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 4, 4, 4, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -20111,7 +19544,7 @@ public fun vst4qS16(a: MutPtr, b: Int16x8x4T) {
         val v0v1: Simd<Short> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val v2v3: Simd<Short> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 8, 4, 8, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -20126,7 +19559,7 @@ public fun vst4S32(a: MutPtr, b: Int32x2x4T) {
         val v0v1: Simd<Int> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val v2v3: Simd<Int> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 2, 4, 2, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -20141,7 +19574,7 @@ public fun vst4qS32(a: MutPtr, b: Int32x4x4T) {
         val v0v1: Simd<Int> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v3: Simd<Int> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 4, 4, 4, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -20513,7 +19946,7 @@ public fun vst4qP16(a: MutPtr, b: Poly16x8x4T) {
  */
 public fun vstrqP128(a: MutPtr, b: P128) {
     val a1 = a
-    (ObjectSlotLayout<P128>()).writeNative((a1).rawAddress, b)
+    (UnresolvedTypeLayout<P128>()).writeNative((a1).rawAddress, b)
 }
 
 /**

@@ -2,23 +2,22 @@ package io.github.kotlinmania.rustlang.core.intrinsics
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
+import io.github.kotlinmania.rustlang.core.ffi.valist.VaList
+import io.github.kotlinmania.rustlang.core.intrinsics.bounds.FloatPrimitive
+import io.github.kotlinmania.rustlang.core.intrinsics.bounds.IntegerPrimitive
+import io.github.kotlinmania.rustlang.core.intrinsics.fallback.CarryingMulAdd
+import io.github.kotlinmania.rustlang.core.intrinsics.fallback.CarrylessMul
+import io.github.kotlinmania.rustlang.core.intrinsics.fallback.DisjointBitOr
+import io.github.kotlinmania.rustlang.core.intrinsics.fallback.FunnelShift
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
-import io.github.kotlinmania.rustlang.core.num.rustIsSignPositive
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.num.f16.isSignNegative
+import io.github.kotlinmania.rustlang.core.num.f16.isSignPositive
+import io.github.kotlinmania.rustlang.core.panicking.panicNounwind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.ffi.valist.VaList
-import io.github.kotlinmania.rustlang.intrinsics.bounds.FloatPrimitive
-import io.github.kotlinmania.rustlang.intrinsics.bounds.IntegerPrimitive
-import io.github.kotlinmania.rustlang.intrinsics.constEvalSelect
-import io.github.kotlinmania.rustlang.intrinsics.fallback.CarryingMulAdd
-import io.github.kotlinmania.rustlang.intrinsics.fallback.CarrylessMul
-import io.github.kotlinmania.rustlang.intrinsics.fallback.DisjointBitOr
-import io.github.kotlinmania.rustlang.intrinsics.fallback.FunnelShift
-import io.github.kotlinmania.rustlang.mem.sizeOf
-import io.github.kotlinmania.rustlang.panicking.panicNounwind
-import io.github.kotlinmania.rustlang.ptr.swapNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 
 /**
  * The `prefetch` intrinsic is a hint to the code generator to insert a prefetch instruction
@@ -220,7 +219,7 @@ public fun <UInt, T : FloatPrimitive<T, Any?>> fmuladd(a: T, b: T, c: T): T = a 
  * Stabilized as [u16.min] and [i64.min] and similar.
  */
 public fun <T : IntegerPrimitive<T>> integerMin(a: T, b: T): T =
-    if ((compareNaturalOrder(a, b) < 0)) {
+    if ((kmCompareValues(a, b) < 0)) {
         a
     } else {
         b
@@ -235,7 +234,7 @@ public fun <T : IntegerPrimitive<T>> integerMin(a: T, b: T): T =
  * Stabilized as [u16.max] and [i64.max] and similar.
  */
 public fun <T : IntegerPrimitive<T>> integerMax(a: T, b: T): T =
-    if ((compareNaturalOrder(a, b) < 0)) {
+    if ((kmCompareValues(a, b) < 0)) {
         b
     } else {
         a
@@ -753,7 +752,7 @@ public fun minimumf32(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     } else if (y < x) {
         y
     } else if (x == y) {
-        if (rustIsSignNegative(x) && rustIsSignPositive(y)) {
+        if (x.isSignNegative() && y.isSignPositive()) {
             x
         } else {
             y
@@ -781,7 +780,7 @@ public fun minimumf64(x: Double, y: Double): Double =
     } else if (y < x) {
         y
     } else if (x == y) {
-        if (rustIsSignNegative(x) && rustIsSignPositive(y)) {
+        if (x.isSignNegative() && y.isSignPositive()) {
             x
         } else {
             y
@@ -960,7 +959,7 @@ public fun maximumf32(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     } else if (y > x) {
         y
     } else if (x == y) {
-        if (rustIsSignPositive(x) && rustIsSignNegative(y)) {
+        if (x.isSignPositive() && y.isSignNegative()) {
             x
         } else {
             y
@@ -987,7 +986,7 @@ public fun maximumf64(x: Double, y: Double): Double =
     } else if (y > x) {
         y
     } else if (x == y) {
-        if (rustIsSignPositive(x) && rustIsSignNegative(y)) {
+        if (x.isSignPositive() && y.isSignNegative()) {
             x
         } else {
             y

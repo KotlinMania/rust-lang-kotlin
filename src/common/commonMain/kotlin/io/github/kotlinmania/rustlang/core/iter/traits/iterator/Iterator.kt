@@ -1,56 +1,56 @@
 // port-lint: source iter/traits/iterator.rs
 package io.github.kotlinmania.rustlang.core.iter.traits.iterator
 
-import io.github.kotlinmania.rustlang.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.array.iterNextChunk
-import io.github.kotlinmania.rustlang.cmp.KeyAndValue
-import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
+import io.github.kotlinmania.rustlang.core.array.iterNextChunk
+import io.github.kotlinmania.rustlang.core.cmp.KeyAndValue
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.iter.adapters.arraychunks.ArrayChunks
+import io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized.ByRefSized
+import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
+import io.github.kotlinmania.rustlang.core.iter.adapters.cloned.Cloned
+import io.github.kotlinmania.rustlang.core.iter.adapters.copied.Copied
+import io.github.kotlinmania.rustlang.core.iter.adapters.cycle.Cycle
+import io.github.kotlinmania.rustlang.core.iter.adapters.enumerate.Enumerate
+import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
+import io.github.kotlinmania.rustlang.core.iter.adapters.filtermap.FilterMap
+import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.FlatMap
+import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.Flatten
+import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.Fuse
+import io.github.kotlinmania.rustlang.core.iter.adapters.inspect.Inspect
+import io.github.kotlinmania.rustlang.core.iter.adapters.intersperse.Intersperse
+import io.github.kotlinmania.rustlang.core.iter.adapters.intersperse.IntersperseWith
+import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
+import io.github.kotlinmania.rustlang.core.iter.adapters.mapwhile.MapWhile
+import io.github.kotlinmania.rustlang.core.iter.adapters.mapwindows.MapWindows
+import io.github.kotlinmania.rustlang.core.iter.adapters.peekable.Peekable
+import io.github.kotlinmania.rustlang.core.iter.adapters.rev.Rev
+import io.github.kotlinmania.rustlang.core.iter.adapters.scan.Scan
+import io.github.kotlinmania.rustlang.core.iter.adapters.skip.Skip
+import io.github.kotlinmania.rustlang.core.iter.adapters.skipwhile.SkipWhile
+import io.github.kotlinmania.rustlang.core.iter.adapters.stepby.StepBy
+import io.github.kotlinmania.rustlang.core.iter.adapters.take.Take
+import io.github.kotlinmania.rustlang.core.iter.adapters.takewhile.TakeWhile
+import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.Zip
+import io.github.kotlinmania.rustlang.core.iter.traits.accum.Product
+import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.swap
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
+import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
+import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.adapters.arraychunks.ArrayChunks
-import io.github.kotlinmania.rustlang.iter.adapters.byrefsized.ByRefSized
-import io.github.kotlinmania.rustlang.iter.adapters.chain.Chain
-import io.github.kotlinmania.rustlang.iter.adapters.cloned.Cloned
-import io.github.kotlinmania.rustlang.iter.adapters.copied.Copied
-import io.github.kotlinmania.rustlang.iter.adapters.cycle.Cycle
-import io.github.kotlinmania.rustlang.iter.adapters.enumerate.Enumerate
-import io.github.kotlinmania.rustlang.iter.adapters.filter.Filter
-import io.github.kotlinmania.rustlang.iter.adapters.filtermap.FilterMap
-import io.github.kotlinmania.rustlang.iter.adapters.flatten.FlatMap
-import io.github.kotlinmania.rustlang.iter.adapters.flatten.Flatten
-import io.github.kotlinmania.rustlang.iter.adapters.fuse.Fuse
-import io.github.kotlinmania.rustlang.iter.adapters.inspect.Inspect
-import io.github.kotlinmania.rustlang.iter.adapters.intersperse.Intersperse
-import io.github.kotlinmania.rustlang.iter.adapters.intersperse.IntersperseWith
-import io.github.kotlinmania.rustlang.iter.adapters.map.Map
-import io.github.kotlinmania.rustlang.iter.adapters.mapwhile.MapWhile
-import io.github.kotlinmania.rustlang.iter.adapters.mapwindows.MapWindows
-import io.github.kotlinmania.rustlang.iter.adapters.peekable.Peekable
-import io.github.kotlinmania.rustlang.iter.adapters.rev.Rev
-import io.github.kotlinmania.rustlang.iter.adapters.scan.Scan
-import io.github.kotlinmania.rustlang.iter.adapters.skip.Skip
-import io.github.kotlinmania.rustlang.iter.adapters.skipwhile.SkipWhile
-import io.github.kotlinmania.rustlang.iter.adapters.stepby.StepBy
-import io.github.kotlinmania.rustlang.iter.adapters.take.Take
-import io.github.kotlinmania.rustlang.iter.adapters.takewhile.TakeWhile
-import io.github.kotlinmania.rustlang.iter.adapters.tryProcess
-import io.github.kotlinmania.rustlang.iter.adapters.zip.Zip
-import io.github.kotlinmania.rustlang.iter.traits.accum.Product
-import io.github.kotlinmania.rustlang.iter.traits.accum.Sum
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.mem.swap
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.ops.trytrait.ChangeOutputType
-import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public fun assertIsDynCompatible(arg0: Iterator<Unit>) {}
 
@@ -1958,7 +1958,11 @@ public interface Iterator<SelfType, Item> {
             val trueCount1 = trueCount
             return { x ->
                 val p = predicate1(x)
-                (trueCount1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (p.toInt()); targetPlace.write(currentValue) }
+                (trueCount1).let { targetPlace ->
+                    var currentValue = targetPlace.read()
+                    currentValue += (p.toInt())
+                    targetPlace.write(currentValue)
+                }
                 !p
             }
         }
@@ -2098,7 +2102,11 @@ public interface Iterator<SelfType, Item> {
             val matchVal = this.next()
             if (matchVal == null) break
             val x = matchVal
-            accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            accum =
+                when (val tryResult = f(accum, x)) {
+                    is Result.Ok<*, *> -> tryResult.value
+                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                }
         }
         return accum
     }
@@ -2531,13 +2539,15 @@ public interface Iterator<SelfType, Item> {
      */
     public fun <B> findMap(f: (Item) -> B?): B? {
         fun <T, B> check(f1: (T) -> B?): (Unit, T) -> ControlFlow<B> =
-            { x -> when (val matchVal = f1(x)) {
-                null -> ControlFlow.Continue()
-                else -> {
-                    val x1 = matchVal
-                    ControlFlow.Break(x1)
+            { x ->
+                when (val matchVal = f1(x)) {
+                    null -> ControlFlow.Continue()
+                    else -> {
+                        val x1 = matchVal
+                        ControlFlow.Break(x1)
+                    }
                 }
-            } }
+            }
         return this.tryFold(check(f)).breakValue()
     }
 
@@ -2641,7 +2651,11 @@ public interface Iterator<SelfType, Item> {
                 if (predicate1(x)) {
                     ControlFlow.Break((acc1).read())
                 } else {
-                    (acc1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (1); targetPlace.write(currentValue) }
+                    (acc1).let { targetPlace ->
+                        var currentValue = targetPlace.read()
+                        currentValue += (1)
+                        targetPlace.write(currentValue)
+                    }
                     ControlFlow.Continue()
                 }
             }
@@ -3105,13 +3119,15 @@ public interface Iterator<SelfType, Item> {
      */
     public fun <Item, IntoIter, I> cmpBy(other: I, cmp: (Item, I.Item) -> Ordering): Ordering {
         fun <X, Y> compare(cmp1: (Item, I.Item) -> Ordering): (X, Y) -> ControlFlow<Ordering> =
-            { x, y -> when (val matchVal = cmp1(x, y)) {
-                Ordering.Equal -> ControlFlow.Continue()
-                else -> {
-                    val nonEq = matchVal
-                    ControlFlow.Break(nonEq)
+            { x, y ->
+                when (val matchVal = cmp1(x, y)) {
+                    Ordering.Equal -> ControlFlow.Continue()
+                    else -> {
+                        val nonEq = matchVal
+                        ControlFlow.Break(nonEq)
+                    }
                 }
-            } }
+            }
         return when (val matchVal = iterCompare(this, other.iterator(), compare(cmp))) {
             is ControlFlow.Continue -> {
                 val (ord) = matchVal
@@ -3180,13 +3196,15 @@ public interface Iterator<SelfType, Item> {
      */
     public fun <Item, IntoIter, I> partialCmpBy(other: I, partialCmp: (Item, I.Item) -> Ordering?): Ordering? {
         fun <X, Y> compare(partialCmp1: (Item, I.Item) -> Ordering?): (X, Y) -> ControlFlow<Ordering?> =
-            { x, y -> when (val matchVal = partialCmp1(x, y)) {
-                Ordering.Equal -> ControlFlow.Continue()
-                else -> {
-                    val nonEq = matchVal
-                    ControlFlow.Break(nonEq)
+            { x, y ->
+                when (val matchVal = partialCmp1(x, y)) {
+                    Ordering.Equal -> ControlFlow.Continue()
+                    else -> {
+                        val nonEq = matchVal
+                        ControlFlow.Break(nonEq)
+                    }
                 }
-            } }
+            }
         return when (val matchVal = iterCompare(this, other.iterator(), compare(partialCmp))) {
             is ControlFlow.Continue -> {
                 val (ord) = matchVal
@@ -3372,7 +3390,9 @@ public interface Iterator<SelfType, Item> {
         }
         var last =
             when (val matchVal = this.next()) {
-                null -> { return true }
+                null -> {
+                    return true
+                }
                 else -> {
                     val e = matchVal
                     e
@@ -3428,7 +3448,9 @@ public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit>
             // ... or both of them are longer than `Int.MAX` (i.e. have an unknown length).
             matchVal.first.second == null && matchVal.second.second == null -> {}
             // otherwise, we can ascertain that they are unequal without actually comparing items
-            else -> { return false }
+            else -> {
+                return false
+            }
         }
     }
     return iterEq(this, b, f)
@@ -3448,18 +3470,23 @@ public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit>
  */
 public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<T>): ControlFlow<T, Ordering> where A : Iterator<A, Any?>, B : Iterator<B, Any?> {
     fun <Item, B, X, T> compare(b1: B, f1: (X, Item) -> ControlFlow<T>): (X) -> ControlFlow<ControlFlow<T, Ordering>> where B : Iterator<B, Any?> =
-        { x -> when (val matchVal = b1.next()) {
-            null -> ControlFlow.Break(ControlFlow.Continue(Ordering.Greater))
-            else -> {
-                val y = matchVal
-                f1(x, y).mapBreak(ControlFlow.Break)
+        { x ->
+            when (val matchVal = b1.next()) {
+                null -> ControlFlow.Break(ControlFlow.Continue(Ordering.Greater))
+                else -> {
+                    val y = matchVal
+                    f1(x, y).mapBreak(ControlFlow.Break)
+                }
             }
-        } }
+        }
     return when (val matchVal = a.tryForEach(compare(b, f))) {
-        is ControlFlow.Continue -> ControlFlow.Continue(when (val matchVal1 = b.next()) {
-            null -> Ordering.Equal
-            else -> Ordering.Less
-        })
+        is ControlFlow.Continue ->
+            ControlFlow.Continue(
+                when (val matchVal1 = b.next()) {
+                    null -> Ordering.Equal
+                    else -> Ordering.Less
+                },
+            )
         is ControlFlow.Break -> {
             val (x) = matchVal
             x
@@ -3495,7 +3522,11 @@ public fun <Item, I : Iterator<I, Any?>, B, R> I.specTryFold(init: B, f: (B, Ite
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        accum =
+            when (val tryResult = f(accum, x)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
     }
     return accum
 }

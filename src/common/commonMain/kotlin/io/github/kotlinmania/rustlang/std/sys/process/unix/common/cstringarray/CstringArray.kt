@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.path.Iter
+import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 
 /**
  * Helper type to manage ownership of the strings within a C-style array.
@@ -26,7 +26,7 @@ public open class CStringArray internal constructor(
     public open fun write(index: Int, item: CString) {
         val argc = this.ptrs.size - 1
         val ptr = ((this.ptrs).subList(0, argc))[index]
-        val old = mem.replace(ptr, item.intoRaw())
+        val old = replace(ptr, item.intoRaw())
         // SAFETY:
         // `CStringArray` owns all of its strings, and they were all transformed
         // into pointers using `CString.intoRaw`. Also, this is not the null

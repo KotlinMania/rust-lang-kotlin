@@ -1,15 +1,6 @@
 // port-lint: tests x86/avx512bitalg.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.x86.mm256SetEpi16
-import io.github.kotlinmania.rustlang.x86.mm256SetEpi8
-import io.github.kotlinmania.rustlang.x86.mm256SetrEpi64x
-import io.github.kotlinmania.rustlang.x86.mm512SetEpi16
-import io.github.kotlinmania.rustlang.x86.mm512SetEpi8
-import io.github.kotlinmania.rustlang.x86.mm512SetrEpi64
-import io.github.kotlinmania.rustlang.x86.mmSetEpi16
-import io.github.kotlinmania.rustlang.x86.mmSetEpi8
-
 // Bit-oriented Algorithms (BITALG)
 //
 // The intrinsics here correspond to those in the `immintrin.h` C header.

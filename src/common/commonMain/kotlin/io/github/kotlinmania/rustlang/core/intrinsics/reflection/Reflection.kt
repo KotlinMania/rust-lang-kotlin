@@ -1,7 +1,7 @@
 // port-lint: source intrinsics/reflection.rs
 package io.github.kotlinmania.rustlang.core.intrinsics.reflection
 
-import io.github.kotlinmania.rustlang.any.TypeId
+import io.github.kotlinmania.rustlang.core.any.TypeId
 import io.github.kotlinmania.rustlang.core.mem.transmute
 
 // Intrinsics for compile time reflection

@@ -2,8 +2,8 @@ package io.github.kotlinmania.rustlang.core.array
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
 
 /**
  * The error type returned when a conversion from a slice to an array fails.

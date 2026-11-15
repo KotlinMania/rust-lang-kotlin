@@ -2,53 +2,54 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.aarch64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.GidT
-import io.github.kotlinmania.rustlang.unix.UidT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.DevT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.Off64T
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SigsetT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.InoT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.NlinkT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.StackT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.DevT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.InoT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.NlinkT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.StackT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.TimeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SigsetT
 
-public class Stat(
-    public var stDev: DevT = 0uL,
-    public var stIno: InoT = 0uL,
-    public var stMode: CUint = 0u,
-    public var stNlink: NlinkT = 0u,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var stRdev: DevT = 0uL,
-    public var pad1: CUlong = 0uL,
-    public var stSize: Off64T = 0L,
-    public var stBlksize: CInt = 0,
-    public var pad2: CInt = 0,
-    public var stBlocks: CLong = 0L,
-    public var stAtime: TimeT = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: TimeT = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: TimeT = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var unused4: CUint = 0u,
-    public var unused5: CUint = 0u,
+public open class Stat(
+    public var stDev: DevT,
+    public var stIno: InoT,
+    public var stMode: CUint,
+    public var stNlink: NlinkT,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var stRdev: DevT,
+    public var pad1: CUlong,
+    public var stSize: Off64T,
+    public var stBlksize: CInt,
+    public var pad2: CInt,
+    public var stBlocks: CLong,
+    public var stAtime: TimeT,
+    public var stAtimeNsec: CLong,
+    public var stMtime: TimeT,
+    public var stMtimeNsec: CLong,
+    public var stCtime: TimeT,
+    public var stCtimeNsec: CLong,
+    public var unused4: CUint,
+    public var unused5: CUint,
 ) {
-    public fun clone(): Stat = Stat(stDev, stIno, stMode, stNlink, stUid, stGid, stRdev, pad1, stSize, stBlksize, pad2, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused4, unused5)
+    public open fun clone(): Stat = Stat(stDev, stIno, stMode, stNlink, stUid, stGid, stRdev, pad1, stSize, stBlksize, pad2, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused4, unused5)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat> =
@@ -150,29 +151,29 @@ public class Stat(
 }
 
 // Note(1.0,deprecate): lfs binding to be removed
-public class Stat64(
-    public var stDev: DevT = 0uL,
-    public var stIno: InoT = 0uL,
-    public var stMode: CUint = 0u,
-    public var stNlink: NlinkT = 0u,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var stRdev: DevT = 0uL,
-    public var pad1: CUlong = 0uL,
-    public var stSize: Off64T = 0L,
-    public var stBlksize: CInt = 0,
-    public var pad2: CInt = 0,
-    public var stBlocks: CLong = 0L,
-    public var stAtime: TimeT = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: TimeT = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: TimeT = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var unused4: CUint = 0u,
-    public var unused5: CUint = 0u,
+public open class Stat64(
+    public var stDev: DevT,
+    public var stIno: InoT,
+    public var stMode: CUint,
+    public var stNlink: NlinkT,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var stRdev: DevT,
+    public var pad1: CUlong,
+    public var stSize: Off64T,
+    public var stBlksize: CInt,
+    public var pad2: CInt,
+    public var stBlocks: CLong,
+    public var stAtime: TimeT,
+    public var stAtimeNsec: CLong,
+    public var stMtime: TimeT,
+    public var stMtimeNsec: CLong,
+    public var stCtime: TimeT,
+    public var stCtimeNsec: CLong,
+    public var unused4: CUint,
+    public var unused5: CUint,
 ) {
-    public fun clone(): Stat64 = Stat64(stDev, stIno, stMode, stNlink, stUid, stGid, stRdev, pad1, stSize, stBlksize, pad2, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused4, unused5)
+    public open fun clone(): Stat64 = Stat64(stDev, stIno, stMode, stNlink, stUid, stGid, stRdev, pad1, stSize, stBlksize, pad2, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused4, unused5)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat64> =
@@ -273,29 +274,13 @@ public class Stat64(
     }
 }
 
-public data class UserRegsStruct(
-    public var regs: ULongArray = ULongArray(31),
-    public var sp: ULong = 0uL,
-    public var pc: ULong = 0uL,
-    public var pstate: ULong = 0uL,
+public open class UserRegsStruct(
+    public var regs: ULongArray,
+    public var sp: ULong,
+    public var pc: ULong,
+    public var pstate: ULong,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is UserRegsStruct) return false
-        if (!this.regs.contentEquals(other.regs)) return false
-        if (this.sp != other.sp) return false
-        if (this.pc != other.pc) return false
-        if (this.pstate != other.pstate) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.regs.contentHashCode()
-        result = 31 * result + this.sp.hashCode()
-        result = 31 * result + this.pc.hashCode()
-        result = 31 * result + this.pstate.hashCode()
-        return result
-    }
+    public open fun clone(): UserRegsStruct = UserRegsStruct(regs, sp, pc, pstate)
 
     public companion object {
         public fun typeLayout(): TypeLayout<UserRegsStruct> =
@@ -332,7 +317,7 @@ public data class UserRegsStruct(
     }
 }
 
-public class UcontextT internal constructor(
+public open class UcontextT internal constructor(
     public var ucFlags: CUlong,
     ucLinkCtorArg: MutPtr,
     public var ucStack: StackT,
@@ -348,61 +333,16 @@ public class UcontextT internal constructor(
     public var ucMcontext: McontextT = ucMcontextCtorArg
         internal set
 
-    public constructor() : this(
-        ucFlags = 0uL,
-        ucLinkCtorArg = MutPtr(0L),
-        ucStack = StackT(),
-        ucSigmask = SigsetT(),
-        padding = UByteArray((128 - sizeOf<SigsetT>(typeLayoutT = ObjectSlotLayout<SigsetT>())).toInt()),
-        ucMcontextCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): CUlong = this.ucFlags
-
-    public operator fun component2(): MutPtr = this.ucLink
-
-    public operator fun component3(): StackT = this.ucStack
-
-    public operator fun component4(): SigsetT = this.ucSigmask
-
-    public operator fun component5(): UByteArray = this.padding
-
-    public operator fun component6(): McontextT = this.ucMcontext
-
-    public fun copy(ucFlags: CUlong = this.ucFlags, ucLink: MutPtr = this.ucLink, ucStack: StackT = this.ucStack, ucSigmask: SigsetT = this.ucSigmask, padding: UByteArray = this.padding, ucMcontext: McontextT = this.ucMcontext): UcontextT = UcontextT(ucFlags = ucFlags, ucLinkCtorArg = ucLink, ucStack = ucStack, ucSigmask = ucSigmask, padding = padding, ucMcontextCtorArg = ucMcontext)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is UcontextT) return false
-        if (this.ucFlags != other.ucFlags) return false
-        if (this.ucLink != other.ucLink) return false
-        if (this.ucStack != other.ucStack) return false
-        if (this.ucSigmask != other.ucSigmask) return false
-        if (!this.padding.contentEquals(other.padding)) return false
-        if (this.ucMcontext != other.ucMcontext) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ucFlags.hashCode()
-        result = 31 * result + this.ucLink.hashCode()
-        result = 31 * result + this.ucStack.hashCode()
-        result = 31 * result + this.ucSigmask.hashCode()
-        result = 31 * result + this.padding.contentHashCode()
-        result = 31 * result + this.ucMcontext.hashCode()
-        return result
-    }
-
-    public fun clone(): UcontextT = UcontextT(ucFlags, ucLink, ucStack, ucSigmask, padding, ucMcontext)
+    public open fun clone(): UcontextT = UcontextT(ucFlags, ucLink, ucStack, ucSigmask, padding, ucMcontext)
 
     public companion object {
         public operator fun invoke(
-            ucFlags: CUlong = 0uL,
-            ucLink: MutPtr = MutPtr(0L),
-            ucStack: StackT = StackT(),
-            ucSigmask: SigsetT = SigsetT(),
-            padding: UByteArray = UByteArray((128 - sizeOf<SigsetT>(typeLayoutT = ObjectSlotLayout<SigsetT>())).toInt()),
-            ucMcontext: McontextT = MutPtr(0L),
+            ucFlags: CUlong,
+            ucLink: MutPtr,
+            ucStack: StackT,
+            ucSigmask: SigsetT,
+            padding: UByteArray,
+            ucMcontext: McontextT,
         ): UcontextT = UcontextT(
             ucFlags = ucFlags,
             ucLinkCtorArg = ucLink,
@@ -414,35 +354,15 @@ public class UcontextT internal constructor(
     }
 }
 
-public data class McontextT(
-    public var faultAddress: CUlonglong = 0uL,
-    public var regs: ULongArray = ULongArray(31),
-    public var sp: CUlonglong = 0uL,
-    public var pc: CUlonglong = 0uL,
-    public var pstate: CUlonglong = 0uL,
-    public var reserved: ULongArray = ULongArray(512),
+public open class McontextT(
+    public var faultAddress: CUlonglong,
+    public var regs: ULongArray,
+    public var sp: CUlonglong,
+    public var pc: CUlonglong,
+    public var pstate: CUlonglong,
+    public var reserved: ULongArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is McontextT) return false
-        if (this.faultAddress != other.faultAddress) return false
-        if (!this.regs.contentEquals(other.regs)) return false
-        if (this.sp != other.sp) return false
-        if (this.pc != other.pc) return false
-        if (this.pstate != other.pstate) return false
-        if (!this.reserved.contentEquals(other.reserved)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.faultAddress.hashCode()
-        result = 31 * result + this.regs.contentHashCode()
-        result = 31 * result + this.sp.hashCode()
-        result = 31 * result + this.pc.hashCode()
-        result = 31 * result + this.pstate.hashCode()
-        result = 31 * result + this.reserved.contentHashCode()
-        return result
-    }
+    public open fun clone(): McontextT = McontextT(faultAddress, regs, sp, pc, pstate, reserved)
 
     public companion object {
         public fun typeLayout(): TypeLayout<McontextT> =
@@ -487,11 +407,13 @@ public data class McontextT(
     }
 }
 
-public data class UserFpsimdStruct(
-    public var vregs: List<U128> = List(32) { U128() },
-    public var fpsr: UInt = 0u,
-    public var fpcr: UInt = 0u,
+public open class UserFpsimdStruct(
+    public var vregs: List<U128>,
+    public var fpsr: UInt,
+    public var fpcr: UInt,
 ) {
+    public open fun clone(): UserFpsimdStruct = UserFpsimdStruct(vregs, fpsr, fpcr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<UserFpsimdStruct> =
             object : TypeLayout<UserFpsimdStruct> {
@@ -523,37 +445,23 @@ public data class UserFpsimdStruct(
     }
 }
 
-public data class MaxAlignT(
-    public var priv: FloatArray = FloatArray(8),
+public open class MaxAlignT internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<FloatArray>,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is MaxAlignT) return false
-        if (!this.priv.contentEquals(other.priv)) return false
-        return true
-    }
+    public var priv: FloatArray
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    override fun hashCode(): Int = this.priv.contentHashCode()
+    internal constructor(priv: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(priv, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+
+    public fun pointerLayout(): TypeLayout<MaxAlignT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MaxAlignT(ptr, layout) }, { it.priv })
+
+    public open fun clone(): MaxAlignT = MaxAlignT(priv, fieldLayout)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<MaxAlignT> =
-            object : TypeLayout<MaxAlignT> {
-                override val alignBytes: Long = 16L
-                override val sizeBytes: Long = 32L
-                override fun readNative(addr: Long): MaxAlignT =
-                    MaxAlignT(
-                        (PrimitiveArrayLayouts.floatArray(8)).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: MaxAlignT) {
-                    (PrimitiveArrayLayouts.floatArray(8)).writeNative(addr, value.priv)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): MaxAlignT =
-                    MaxAlignT(
-                        (PrimitiveArrayLayouts.floatArray(8)).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: MaxAlignT) {
-                    (PrimitiveArrayLayouts.floatArray(8)).writeBytes(buf, offset, value.priv)
-                }
-            }
+        public operator fun invoke(priv: FloatArray, fieldLayout: TypeLayout<FloatArray>): MaxAlignT = MaxAlignT(priv, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FloatArray>): MaxAlignT = MaxAlignT(fieldStorage, fieldLayout)
     }
 }

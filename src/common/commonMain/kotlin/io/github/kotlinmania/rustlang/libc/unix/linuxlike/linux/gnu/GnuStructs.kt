@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
@@ -12,30 +11,31 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S16
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S32
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S64
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U16
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U64
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U8
-import io.github.kotlinmania.rustlang.unix.CcT
-import io.github.kotlinmania.rustlang.unix.PidT
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.SsizeT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.Sigevent
-import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
-import io.github.kotlinmania.rustlang.unix.linuxlike.Elf32Word
-import io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Word
-import io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Xword
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.ETH_ALEN
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.FanotifyEventInfoHeader
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Off64T
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.SocklenT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.NCCS
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S16
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S32
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S64
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U8
+import io.github.kotlinmania.rustlang.libc.unix.CcT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Elf32Word
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Elf64Word
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Elf64Xword
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Sigevent
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TcflagT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.ETH_ALEN
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.FanotifyEventInfoHeader
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.NCCS
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -62,7 +62,7 @@ public class DebugStruct(
     }
 }
 
-public class Aiocb internal constructor(
+public open class Aiocb internal constructor(
     public var aioFildes: CInt,
     public var aioLioOpcode: CInt,
     public var aioReqprio: CInt,
@@ -83,103 +83,23 @@ public class Aiocb internal constructor(
     public var nextPrio: MutPtr = nextPrioCtorArg
         internal set
 
-    public constructor() : this(
-        aioFildes = 0,
-        aioLioOpcode = 0,
-        aioReqprio = 0,
-        aioBufCtorArg = MutPtr(0L),
-        aioNbytes = 0uL,
-        aioSigevent = Sigevent(),
-        nextPrioCtorArg = MutPtr(0L),
-        absPrio = 0,
-        policy = 0,
-        errorCode = 0,
-        returnValue = 0L,
-        aioOffset = 0L,
-        glibcReserved = UByteArray(32),
-    )
-
-    public operator fun component1(): CInt = this.aioFildes
-
-    public operator fun component2(): CInt = this.aioLioOpcode
-
-    public operator fun component3(): CInt = this.aioReqprio
-
-    public operator fun component4(): MutPtr = this.aioBuf
-
-    public operator fun component5(): SizeT = this.aioNbytes
-
-    public operator fun component6(): Sigevent = this.aioSigevent
-
-    public operator fun component7(): MutPtr = this.nextPrio
-
-    public operator fun component8(): CInt = this.absPrio
-
-    public operator fun component9(): CInt = this.policy
-
-    public operator fun component10(): CInt = this.errorCode
-
-    public operator fun component11(): SsizeT = this.returnValue
-
-    public operator fun component12(): OffT = this.aioOffset
-
-    public operator fun component13(): UByteArray = this.glibcReserved
-
-    public fun copy(aioFildes: CInt = this.aioFildes, aioLioOpcode: CInt = this.aioLioOpcode, aioReqprio: CInt = this.aioReqprio, aioBuf: MutPtr = this.aioBuf, aioNbytes: SizeT = this.aioNbytes, aioSigevent: Sigevent = this.aioSigevent, nextPrio: MutPtr = this.nextPrio, absPrio: CInt = this.absPrio, policy: CInt = this.policy, errorCode: CInt = this.errorCode, returnValue: SsizeT = this.returnValue, aioOffset: OffT = this.aioOffset, glibcReserved: UByteArray = this.glibcReserved): Aiocb = Aiocb(aioFildes = aioFildes, aioLioOpcode = aioLioOpcode, aioReqprio = aioReqprio, aioBufCtorArg = aioBuf, aioNbytes = aioNbytes, aioSigevent = aioSigevent, nextPrioCtorArg = nextPrio, absPrio = absPrio, policy = policy, errorCode = errorCode, returnValue = returnValue, aioOffset = aioOffset, glibcReserved = glibcReserved)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Aiocb) return false
-        if (this.aioFildes != other.aioFildes) return false
-        if (this.aioLioOpcode != other.aioLioOpcode) return false
-        if (this.aioReqprio != other.aioReqprio) return false
-        if (this.aioBuf != other.aioBuf) return false
-        if (this.aioNbytes != other.aioNbytes) return false
-        if (this.aioSigevent != other.aioSigevent) return false
-        if (this.nextPrio != other.nextPrio) return false
-        if (this.absPrio != other.absPrio) return false
-        if (this.policy != other.policy) return false
-        if (this.errorCode != other.errorCode) return false
-        if (this.returnValue != other.returnValue) return false
-        if (this.aioOffset != other.aioOffset) return false
-        if (!this.glibcReserved.contentEquals(other.glibcReserved)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.aioFildes.hashCode()
-        result = 31 * result + this.aioLioOpcode.hashCode()
-        result = 31 * result + this.aioReqprio.hashCode()
-        result = 31 * result + this.aioBuf.hashCode()
-        result = 31 * result + this.aioNbytes.hashCode()
-        result = 31 * result + this.aioSigevent.hashCode()
-        result = 31 * result + this.nextPrio.hashCode()
-        result = 31 * result + this.absPrio.hashCode()
-        result = 31 * result + this.policy.hashCode()
-        result = 31 * result + this.errorCode.hashCode()
-        result = 31 * result + this.returnValue.hashCode()
-        result = 31 * result + this.aioOffset.hashCode()
-        result = 31 * result + this.glibcReserved.contentHashCode()
-        return result
-    }
-
-    public fun clone(): Aiocb = Aiocb(aioFildes, aioLioOpcode, aioReqprio, aioBuf, aioNbytes, aioSigevent, nextPrio, absPrio, policy, errorCode, returnValue, aioOffset, glibcReserved)
+    public open fun clone(): Aiocb = Aiocb(aioFildes, aioLioOpcode, aioReqprio, aioBuf, aioNbytes, aioSigevent, nextPrio, absPrio, policy, errorCode, returnValue, aioOffset, glibcReserved)
 
     public companion object {
         public operator fun invoke(
-            aioFildes: CInt = 0,
-            aioLioOpcode: CInt = 0,
-            aioReqprio: CInt = 0,
-            aioBuf: MutPtr = MutPtr(0L),
-            aioNbytes: SizeT = 0uL,
-            aioSigevent: Sigevent = Sigevent(),
-            nextPrio: MutPtr = MutPtr(0L),
-            absPrio: CInt = 0,
-            policy: CInt = 0,
-            errorCode: CInt = 0,
-            returnValue: SsizeT = 0L,
-            aioOffset: OffT = 0L,
-            glibcReserved: UByteArray = UByteArray(32),
+            aioFildes: CInt,
+            aioLioOpcode: CInt,
+            aioReqprio: CInt,
+            aioBuf: MutPtr,
+            aioNbytes: SizeT,
+            aioSigevent: Sigevent,
+            nextPrio: MutPtr,
+            absPrio: CInt,
+            policy: CInt,
+            errorCode: CInt,
+            returnValue: SsizeT,
+            aioOffset: OffT,
+            glibcReserved: UByteArray,
         ): Aiocb = Aiocb(
             aioFildes = aioFildes,
             aioLioOpcode = aioLioOpcode,
@@ -198,10 +118,12 @@ public class Aiocb internal constructor(
     }
 }
 
-public data class ExitStatus(
-    public var eTermination: CShort = 0,
-    public var eExit: CShort = 0,
+public open class ExitStatus(
+    public var eTermination: CShort,
+    public var eExit: CShort,
 ) {
+    public open fun clone(): ExitStatus = ExitStatus(eTermination, eExit)
+
     public companion object {
         public fun typeLayout(): TypeLayout<ExitStatus> =
             object : TypeLayout<ExitStatus> {
@@ -229,10 +151,12 @@ public data class ExitStatus(
     }
 }
 
-public data class Timeval(
-    public var tvSec: Int = 0,
-    public var tvUsec: Int = 0,
+public open class Timeval(
+    public var tvSec: Int,
+    public var tvUsec: Int,
 ) {
+    public open fun clone(): Timeval = Timeval(tvSec, tvUsec)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Timeval> =
             object : TypeLayout<Timeval> {
@@ -260,7 +184,7 @@ public data class Timeval(
     }
 }
 
-public class Glob64T internal constructor(
+public open class Glob64T internal constructor(
     public var glPathc: SizeT,
     glPathvCtorArg: MutPtr,
     public var glOffs: SizeT,
@@ -289,67 +213,7 @@ public class Glob64T internal constructor(
     public var unused5: MutPtr = unused5CtorArg
         internal set
 
-    public constructor() : this(
-        glPathc = 0uL,
-        glPathvCtorArg = MutPtr(0L),
-        glOffs = 0uL,
-        glFlags = 0,
-        unused1CtorArg = MutPtr(0L),
-        unused2CtorArg = MutPtr(0L),
-        unused3CtorArg = MutPtr(0L),
-        unused4CtorArg = MutPtr(0L),
-        unused5CtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): SizeT = this.glPathc
-
-    public operator fun component2(): MutPtr = this.glPathv
-
-    public operator fun component3(): SizeT = this.glOffs
-
-    public operator fun component4(): CInt = this.glFlags
-
-    public operator fun component5(): MutPtr = this.unused1
-
-    public operator fun component6(): MutPtr = this.unused2
-
-    public operator fun component7(): MutPtr = this.unused3
-
-    public operator fun component8(): MutPtr = this.unused4
-
-    public operator fun component9(): MutPtr = this.unused5
-
-    public fun copy(glPathc: SizeT = this.glPathc, glPathv: MutPtr = this.glPathv, glOffs: SizeT = this.glOffs, glFlags: CInt = this.glFlags, unused1: MutPtr = this.unused1, unused2: MutPtr = this.unused2, unused3: MutPtr = this.unused3, unused4: MutPtr = this.unused4, unused5: MutPtr = this.unused5): Glob64T = Glob64T(glPathc = glPathc, glPathvCtorArg = glPathv, glOffs = glOffs, glFlags = glFlags, unused1CtorArg = unused1, unused2CtorArg = unused2, unused3CtorArg = unused3, unused4CtorArg = unused4, unused5CtorArg = unused5)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Glob64T) return false
-        if (this.glPathc != other.glPathc) return false
-        if (this.glPathv != other.glPathv) return false
-        if (this.glOffs != other.glOffs) return false
-        if (this.glFlags != other.glFlags) return false
-        if (this.unused1 != other.unused1) return false
-        if (this.unused2 != other.unused2) return false
-        if (this.unused3 != other.unused3) return false
-        if (this.unused4 != other.unused4) return false
-        if (this.unused5 != other.unused5) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.glPathc.hashCode()
-        result = 31 * result + this.glPathv.hashCode()
-        result = 31 * result + this.glOffs.hashCode()
-        result = 31 * result + this.glFlags.hashCode()
-        result = 31 * result + this.unused1.hashCode()
-        result = 31 * result + this.unused2.hashCode()
-        result = 31 * result + this.unused3.hashCode()
-        result = 31 * result + this.unused4.hashCode()
-        result = 31 * result + this.unused5.hashCode()
-        return result
-    }
-
-    public fun clone(): Glob64T = Glob64T(glPathc, glPathv, glOffs, glFlags, unused1, unused2, unused3, unused4, unused5)
+    public open fun clone(): Glob64T = Glob64T(glPathc, glPathv, glOffs, glFlags, unused1, unused2, unused3, unused4, unused5)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Glob64T> =
@@ -405,15 +269,15 @@ public class Glob64T internal constructor(
             }
 
         public operator fun invoke(
-            glPathc: SizeT = 0uL,
-            glPathv: MutPtr = MutPtr(0L),
-            glOffs: SizeT = 0uL,
-            glFlags: CInt = 0,
-            unused1: MutPtr = MutPtr(0L),
-            unused2: MutPtr = MutPtr(0L),
-            unused3: MutPtr = MutPtr(0L),
-            unused4: MutPtr = MutPtr(0L),
-            unused5: MutPtr = MutPtr(0L),
+            glPathc: SizeT,
+            glPathv: MutPtr,
+            glOffs: SizeT,
+            glFlags: CInt,
+            unused1: MutPtr,
+            unused2: MutPtr,
+            unused3: MutPtr,
+            unused4: MutPtr,
+            unused5: MutPtr,
         ): Glob64T = Glob64T(
             glPathc = glPathc,
             glPathvCtorArg = glPathv,
@@ -428,7 +292,7 @@ public class Glob64T internal constructor(
     }
 }
 
-public class Msghdr internal constructor(
+public open class Msghdr internal constructor(
     msgNameCtorArg: MutPtr,
     public var msgNamelen: SocklenT,
     msgIovCtorArg: MutPtr,
@@ -446,57 +310,7 @@ public class Msghdr internal constructor(
     public var msgControl: MutPtr = msgControlCtorArg
         internal set
 
-    public constructor() : this(
-        msgNameCtorArg = MutPtr(0L),
-        msgNamelen = 0u,
-        msgIovCtorArg = MutPtr(0L),
-        msgIovlen = 0uL,
-        msgControlCtorArg = MutPtr(0L),
-        msgControllen = 0uL,
-        msgFlags = 0,
-    )
-
-    public operator fun component1(): MutPtr = this.msgName
-
-    public operator fun component2(): SocklenT = this.msgNamelen
-
-    public operator fun component3(): MutPtr = this.msgIov
-
-    public operator fun component4(): SizeT = this.msgIovlen
-
-    public operator fun component5(): MutPtr = this.msgControl
-
-    public operator fun component6(): SizeT = this.msgControllen
-
-    public operator fun component7(): CInt = this.msgFlags
-
-    public fun copy(msgName: MutPtr = this.msgName, msgNamelen: SocklenT = this.msgNamelen, msgIov: MutPtr = this.msgIov, msgIovlen: SizeT = this.msgIovlen, msgControl: MutPtr = this.msgControl, msgControllen: SizeT = this.msgControllen, msgFlags: CInt = this.msgFlags): Msghdr = Msghdr(msgNameCtorArg = msgName, msgNamelen = msgNamelen, msgIovCtorArg = msgIov, msgIovlen = msgIovlen, msgControlCtorArg = msgControl, msgControllen = msgControllen, msgFlags = msgFlags)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Msghdr) return false
-        if (this.msgName != other.msgName) return false
-        if (this.msgNamelen != other.msgNamelen) return false
-        if (this.msgIov != other.msgIov) return false
-        if (this.msgIovlen != other.msgIovlen) return false
-        if (this.msgControl != other.msgControl) return false
-        if (this.msgControllen != other.msgControllen) return false
-        if (this.msgFlags != other.msgFlags) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.msgName.hashCode()
-        result = 31 * result + this.msgNamelen.hashCode()
-        result = 31 * result + this.msgIov.hashCode()
-        result = 31 * result + this.msgIovlen.hashCode()
-        result = 31 * result + this.msgControl.hashCode()
-        result = 31 * result + this.msgControllen.hashCode()
-        result = 31 * result + this.msgFlags.hashCode()
-        return result
-    }
-
-    public fun clone(): Msghdr = Msghdr(msgName, msgNamelen, msgIov, msgIovlen, msgControl, msgControllen, msgFlags)
+    public open fun clone(): Msghdr = Msghdr(msgName, msgNamelen, msgIov, msgIovlen, msgControl, msgControllen, msgFlags)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Msghdr> =
@@ -544,13 +358,13 @@ public class Msghdr internal constructor(
             }
 
         public operator fun invoke(
-            msgName: MutPtr = MutPtr(0L),
-            msgNamelen: SocklenT = 0u,
-            msgIov: MutPtr = MutPtr(0L),
-            msgIovlen: SizeT = 0uL,
-            msgControl: MutPtr = MutPtr(0L),
-            msgControllen: SizeT = 0uL,
-            msgFlags: CInt = 0,
+            msgName: MutPtr,
+            msgNamelen: SocklenT,
+            msgIov: MutPtr,
+            msgIovlen: SizeT,
+            msgControl: MutPtr,
+            msgControllen: SizeT,
+            msgFlags: CInt,
         ): Msghdr = Msghdr(
             msgNameCtorArg = msgName,
             msgNamelen = msgNamelen,
@@ -563,11 +377,13 @@ public class Msghdr internal constructor(
     }
 }
 
-public data class Cmsghdr(
-    public var cmsgLen: SizeT = 0uL,
-    public var cmsgLevel: CInt = 0,
-    public var cmsgType: CInt = 0,
+public open class Cmsghdr(
+    public var cmsgLen: SizeT,
+    public var cmsgLevel: CInt,
+    public var cmsgType: CInt,
 ) {
+    public open fun clone(): Cmsghdr = Cmsghdr(cmsgLen, cmsgLevel, cmsgType)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Cmsghdr> =
             object : TypeLayout<Cmsghdr> {
@@ -599,107 +415,85 @@ public data class Cmsghdr(
     }
 }
 
-public data class Termios(
-    public var cIflag: TcflagT = 0uL,
-    public var cOflag: TcflagT = 0uL,
-    public var cCflag: TcflagT = 0uL,
-    public var cLflag: TcflagT = 0uL,
-    public var cLine: CcT = 0u,
-    public var cCc: UByteArray = UByteArray(NCCS),
-    public var cIspeed: SpeedT = 0uL,
-    public var cOspeed: SpeedT = 0uL,
+public open class Termios(
+    public var cIflag: TcflagT,
+    public var cOflag: TcflagT,
+    public var cCflag: TcflagT,
+    public var cLflag: TcflagT,
+    public var cLine: CcT,
+    public var cCc: UByteArray,
+    public var cIspeed: SpeedT,
+    public var cOspeed: SpeedT,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Termios) return false
-        if (this.cIflag != other.cIflag) return false
-        if (this.cOflag != other.cOflag) return false
-        if (this.cCflag != other.cCflag) return false
-        if (this.cLflag != other.cLflag) return false
-        if (this.cLine != other.cLine) return false
-        if (!this.cCc.contentEquals(other.cCc)) return false
-        if (this.cIspeed != other.cIspeed) return false
-        if (this.cOspeed != other.cOspeed) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.cIflag.hashCode()
-        result = 31 * result + this.cOflag.hashCode()
-        result = 31 * result + this.cCflag.hashCode()
-        result = 31 * result + this.cLflag.hashCode()
-        result = 31 * result + this.cLine.hashCode()
-        result = 31 * result + this.cCc.contentHashCode()
-        result = 31 * result + this.cIspeed.hashCode()
-        result = 31 * result + this.cOspeed.hashCode()
-        return result
-    }
+    public open fun clone(): Termios = Termios(cIflag, cOflag, cCflag, cLflag, cLine, cCc, cIspeed, cOspeed)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Termios> =
             object : TypeLayout<Termios> {
-                override val alignBytes: Long = 8L
-                private val off6: Long = alignUpBytes((33L + ((NCCS).toLong() * (PrimitiveLayouts.U8).strideBytes)), 8L)
-                private val off7: Long = alignUpBytes((off6 + 8L), 8L)
-                override val sizeBytes: Long = alignUpBytes((off7 + 8L), 8L)
+                override val alignBytes: Long = 4L
+                private val off6: Long = alignUpBytes((17L + ((NCCS).toLong() * (PrimitiveLayouts.U8).strideBytes)), 4L)
+                private val off7: Long = alignUpBytes((off6 + 4L), 4L)
+                override val sizeBytes: Long = alignUpBytes((off7 + 4L), 4L)
                 override fun readNative(addr: Long): Termios =
                     Termios(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U64).readNative(addr + 16L),
-                        (PrimitiveLayouts.U64).readNative(addr + 24L),
-                        (PrimitiveLayouts.U8).readNative(addr + 32L),
-                        (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).readNative(addr + 33L),
-                        (PrimitiveLayouts.U64).readNative(addr + off6),
-                        (PrimitiveLayouts.U64).readNative(addr + off7),
+                        (PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr + 4L),
+                        (PrimitiveLayouts.U32).readNative(addr + 8L),
+                        (PrimitiveLayouts.U32).readNative(addr + 12L),
+                        (PrimitiveLayouts.U8).readNative(addr + 16L),
+                        (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).readNative(addr + 17L),
+                        (PrimitiveLayouts.U32).readNative(addr + off6),
+                        (PrimitiveLayouts.U32).readNative(addr + off7),
                     )
                 override fun writeNative(addr: Long, value: Termios) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.cIflag)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.cOflag)
-                    (PrimitiveLayouts.U64).writeNative(addr + 16L, value.cCflag)
-                    (PrimitiveLayouts.U64).writeNative(addr + 24L, value.cLflag)
-                    (PrimitiveLayouts.U8).writeNative(addr + 32L, value.cLine)
-                    (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).writeNative(addr + 33L, value.cCc)
-                    (PrimitiveLayouts.U64).writeNative(addr + off6, value.cIspeed)
-                    (PrimitiveLayouts.U64).writeNative(addr + off7, value.cOspeed)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.cIflag)
+                    (PrimitiveLayouts.U32).writeNative(addr + 4L, value.cOflag)
+                    (PrimitiveLayouts.U32).writeNative(addr + 8L, value.cCflag)
+                    (PrimitiveLayouts.U32).writeNative(addr + 12L, value.cLflag)
+                    (PrimitiveLayouts.U8).writeNative(addr + 16L, value.cLine)
+                    (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).writeNative(addr + 17L, value.cCc)
+                    (PrimitiveLayouts.U32).writeNative(addr + off6, value.cIspeed)
+                    (PrimitiveLayouts.U32).writeNative(addr + off7, value.cOspeed)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Termios =
                     Termios(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 24),
-                        (PrimitiveLayouts.U8).readBytes(buf, offset + 32),
-                        (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).readBytes(buf, offset + 33),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + off6.toInt()),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + off7.toInt()),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 12),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset + 16),
+                        (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).readBytes(buf, offset + 17),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + off6.toInt()),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + off7.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Termios) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.cIflag)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.cOflag)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.cCflag)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 24, value.cLflag)
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset + 32, value.cLine)
-                    (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).writeBytes(buf, offset + 33, value.cCc)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + off6.toInt(), value.cIspeed)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + off7.toInt(), value.cOspeed)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.cIflag)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.cOflag)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 8, value.cCflag)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 12, value.cLflag)
+                    (PrimitiveLayouts.U8).writeBytes(buf, offset + 16, value.cLine)
+                    (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).writeBytes(buf, offset + 17, value.cCc)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + off6.toInt(), value.cIspeed)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + off7.toInt(), value.cOspeed)
                 }
             }
     }
 }
 
-public data class Mallinfo(
-    public var arena: CInt = 0,
-    public var ordblks: CInt = 0,
-    public var smblks: CInt = 0,
-    public var hblks: CInt = 0,
-    public var hblkhd: CInt = 0,
-    public var usmblks: CInt = 0,
-    public var fsmblks: CInt = 0,
-    public var uordblks: CInt = 0,
-    public var fordblks: CInt = 0,
-    public var keepcost: CInt = 0,
+public open class Mallinfo(
+    public var arena: CInt,
+    public var ordblks: CInt,
+    public var smblks: CInt,
+    public var hblks: CInt,
+    public var hblkhd: CInt,
+    public var usmblks: CInt,
+    public var fsmblks: CInt,
+    public var uordblks: CInt,
+    public var fordblks: CInt,
+    public var keepcost: CInt,
 ) {
+    public open fun clone(): Mallinfo = Mallinfo(arena, ordblks, smblks, hblks, hblkhd, usmblks, fsmblks, uordblks, fordblks, keepcost)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Mallinfo> =
             object : TypeLayout<Mallinfo> {
@@ -759,18 +553,20 @@ public data class Mallinfo(
     }
 }
 
-public data class Mallinfo2(
-    public var arena: SizeT = 0uL,
-    public var ordblks: SizeT = 0uL,
-    public var smblks: SizeT = 0uL,
-    public var hblks: SizeT = 0uL,
-    public var hblkhd: SizeT = 0uL,
-    public var usmblks: SizeT = 0uL,
-    public var fsmblks: SizeT = 0uL,
-    public var uordblks: SizeT = 0uL,
-    public var fordblks: SizeT = 0uL,
-    public var keepcost: SizeT = 0uL,
+public open class Mallinfo2(
+    public var arena: SizeT,
+    public var ordblks: SizeT,
+    public var smblks: SizeT,
+    public var hblks: SizeT,
+    public var hblkhd: SizeT,
+    public var usmblks: SizeT,
+    public var fsmblks: SizeT,
+    public var uordblks: SizeT,
+    public var fordblks: SizeT,
+    public var keepcost: SizeT,
 ) {
+    public open fun clone(): Mallinfo2 = Mallinfo2(arena, ordblks, smblks, hblks, hblkhd, usmblks, fsmblks, uordblks, fordblks, keepcost)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Mallinfo2> =
             object : TypeLayout<Mallinfo2> {
@@ -830,16 +626,18 @@ public data class Mallinfo2(
     }
 }
 
-public data class Ntptimeval(
-    public var time: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval(),
-    public var maxerror: CLong = 0L,
-    public var esterror: CLong = 0L,
-    public var tai: CLong = 0L,
-    public var glibcReserved1: CLong = 0L,
-    public var glibcReserved2: CLong = 0L,
-    public var glibcReserved3: CLong = 0L,
-    public var glibcReserved4: CLong = 0L,
+public open class Ntptimeval(
+    public var time: Timeval,
+    public var maxerror: CLong,
+    public var esterror: CLong,
+    public var tai: CLong,
+    public var glibcReserved1: CLong,
+    public var glibcReserved2: CLong,
+    public var glibcReserved3: CLong,
+    public var glibcReserved4: CLong,
 ) {
+    public open fun clone(): Ntptimeval = Ntptimeval(time, maxerror, esterror, tai, glibcReserved1, glibcReserved2, glibcReserved3, glibcReserved4)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Ntptimeval> =
             object : TypeLayout<Ntptimeval> {
@@ -891,7 +689,7 @@ public data class Ntptimeval(
     }
 }
 
-public class RegexT internal constructor(
+public open class RegexT internal constructor(
     bufferCtorArg: MutPtr,
     public var allocated: SizeT,
     public var used: SizeT,
@@ -910,62 +708,7 @@ public class RegexT internal constructor(
     public var translate: MutPtr = translateCtorArg
         internal set
 
-    public constructor() : this(
-        bufferCtorArg = MutPtr(0L),
-        allocated = 0uL,
-        used = 0uL,
-        syntax = 0uL,
-        fastmapCtorArg = MutPtr(0L),
-        translateCtorArg = MutPtr(0L),
-        reNsub = 0uL,
-        bitfield = 0u,
-    )
-
-    public operator fun component1(): MutPtr = this.buffer
-
-    public operator fun component2(): SizeT = this.allocated
-
-    public operator fun component3(): SizeT = this.used
-
-    public operator fun component4(): CUlong = this.syntax
-
-    public operator fun component5(): MutPtr = this.fastmap
-
-    public operator fun component6(): MutPtr = this.translate
-
-    public operator fun component7(): SizeT = this.reNsub
-
-    public operator fun component8(): UByte = this.bitfield
-
-    public fun copy(buffer: MutPtr = this.buffer, allocated: SizeT = this.allocated, used: SizeT = this.used, syntax: CUlong = this.syntax, fastmap: MutPtr = this.fastmap, translate: MutPtr = this.translate, reNsub: SizeT = this.reNsub, bitfield: UByte = this.bitfield): RegexT = RegexT(bufferCtorArg = buffer, allocated = allocated, used = used, syntax = syntax, fastmapCtorArg = fastmap, translateCtorArg = translate, reNsub = reNsub, bitfield = bitfield)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is RegexT) return false
-        if (this.buffer != other.buffer) return false
-        if (this.allocated != other.allocated) return false
-        if (this.used != other.used) return false
-        if (this.syntax != other.syntax) return false
-        if (this.fastmap != other.fastmap) return false
-        if (this.translate != other.translate) return false
-        if (this.reNsub != other.reNsub) return false
-        if (this.bitfield != other.bitfield) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.buffer.hashCode()
-        result = 31 * result + this.allocated.hashCode()
-        result = 31 * result + this.used.hashCode()
-        result = 31 * result + this.syntax.hashCode()
-        result = 31 * result + this.fastmap.hashCode()
-        result = 31 * result + this.translate.hashCode()
-        result = 31 * result + this.reNsub.hashCode()
-        result = 31 * result + this.bitfield.hashCode()
-        return result
-    }
-
-    public fun clone(): RegexT = RegexT(buffer, allocated, used, syntax, fastmap, translate, reNsub, bitfield)
+    public open fun clone(): RegexT = RegexT(buffer, allocated, used, syntax, fastmap, translate, reNsub, bitfield)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RegexT> =
@@ -1017,14 +760,14 @@ public class RegexT internal constructor(
             }
 
         public operator fun invoke(
-            buffer: MutPtr = MutPtr(0L),
-            allocated: SizeT = 0uL,
-            used: SizeT = 0uL,
-            syntax: CUlong = 0uL,
-            fastmap: MutPtr = MutPtr(0L),
-            translate: MutPtr = MutPtr(0L),
-            reNsub: SizeT = 0uL,
-            bitfield: UByte = 0u,
+            buffer: MutPtr,
+            allocated: SizeT,
+            used: SizeT,
+            syntax: CUlong,
+            fastmap: MutPtr,
+            translate: MutPtr,
+            reNsub: SizeT,
+            bitfield: UByte,
         ): RegexT = RegexT(
             bufferCtorArg = buffer,
             allocated = allocated,
@@ -1038,12 +781,14 @@ public class RegexT internal constructor(
     }
 }
 
-public data class Elf64Chdr(
-    public var chType: Elf64Word = 0u,
-    public var chReserved: Elf64Word = 0u,
-    public var chSize: Elf64Xword = 0uL,
-    public var chAddralign: Elf64Xword = 0uL,
+public open class Elf64Chdr(
+    public var chType: Elf64Word,
+    public var chReserved: Elf64Word,
+    public var chSize: Elf64Xword,
+    public var chAddralign: Elf64Xword,
 ) {
+    public open fun clone(): Elf64Chdr = Elf64Chdr(chType, chReserved, chSize, chAddralign)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Elf64Chdr> =
             object : TypeLayout<Elf64Chdr> {
@@ -1079,11 +824,13 @@ public data class Elf64Chdr(
     }
 }
 
-public data class Elf32Chdr(
-    public var chType: Elf32Word = 0u,
-    public var chSize: Elf32Word = 0u,
-    public var chAddralign: Elf32Word = 0u,
+public open class Elf32Chdr(
+    public var chType: Elf32Word,
+    public var chSize: Elf32Word,
+    public var chAddralign: Elf32Word,
 ) {
+    public open fun clone(): Elf32Chdr = Elf32Chdr(chType, chSize, chAddralign)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Elf32Chdr> =
             object : TypeLayout<Elf32Chdr> {
@@ -1115,18 +862,20 @@ public data class Elf32Chdr(
     }
 }
 
-public data class Seminfo(
-    public var semmap: CInt = 0,
-    public var semmni: CInt = 0,
-    public var semmns: CInt = 0,
-    public var semmnu: CInt = 0,
-    public var semmsl: CInt = 0,
-    public var semopm: CInt = 0,
-    public var semume: CInt = 0,
-    public var semusz: CInt = 0,
-    public var semvmx: CInt = 0,
-    public var semaem: CInt = 0,
+public open class Seminfo(
+    public var semmap: CInt,
+    public var semmni: CInt,
+    public var semmns: CInt,
+    public var semmnu: CInt,
+    public var semmsl: CInt,
+    public var semopm: CInt,
+    public var semume: CInt,
+    public var semusz: CInt,
+    public var semvmx: CInt,
+    public var semaem: CInt,
 ) {
+    public open fun clone(): Seminfo = Seminfo(semmap, semmni, semmns, semmnu, semmsl, semopm, semume, semusz, semvmx, semaem)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Seminfo> =
             object : TypeLayout<Seminfo> {
@@ -1186,11 +935,13 @@ public data class Seminfo(
     }
 }
 
-public data class PtracePeeksiginfoArgs(
-    public var off: U64 = 0uL,
-    public var flags: U32 = 0u,
-    public var nr: S32 = 0,
+public open class PtracePeeksiginfoArgs(
+    public var off: U64,
+    public var flags: U32,
+    public var nr: S32,
 ) {
+    public open fun clone(): PtracePeeksiginfoArgs = PtracePeeksiginfoArgs(off, flags, nr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<PtracePeeksiginfoArgs> =
             object : TypeLayout<PtracePeeksiginfoArgs> {
@@ -1222,23 +973,11 @@ public data class PtracePeeksiginfoArgs(
     }
 }
 
-public data class CAnonymousPtraceSyscallInfoEntry(
-    public var nr: U64 = 0uL,
-    public var args: ULongArray = ULongArray(6),
+public open class CAnonymousPtraceSyscallInfoEntry(
+    public var nr: U64,
+    public var args: ULongArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousPtraceSyscallInfoEntry) return false
-        if (this.nr != other.nr) return false
-        if (!this.args.contentEquals(other.args)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.nr.hashCode()
-        result = 31 * result + this.args.contentHashCode()
-        return result
-    }
+    public open fun clone(): CAnonymousPtraceSyscallInfoEntry = CAnonymousPtraceSyscallInfoEntry(nr, args)
 
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousPtraceSyscallInfoEntry> =
@@ -1267,10 +1006,12 @@ public data class CAnonymousPtraceSyscallInfoEntry(
     }
 }
 
-public data class CAnonymousPtraceSyscallInfoExit(
-    public var sval: S64 = 0L,
-    public var isError: U8 = 0u,
+public open class CAnonymousPtraceSyscallInfoExit(
+    public var sval: S64,
+    public var isError: U8,
 ) {
+    public open fun clone(): CAnonymousPtraceSyscallInfoExit = CAnonymousPtraceSyscallInfoExit(sval, isError)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousPtraceSyscallInfoExit> =
             object : TypeLayout<CAnonymousPtraceSyscallInfoExit> {
@@ -1298,29 +1039,13 @@ public data class CAnonymousPtraceSyscallInfoExit(
     }
 }
 
-public data class CAnonymousPtraceSyscallInfoSeccomp(
-    public var nr: U64 = 0uL,
-    public var args: ULongArray = ULongArray(6),
-    public var retData: U32 = 0u,
-    public var reserved2: U32 = 0u,
+public open class CAnonymousPtraceSyscallInfoSeccomp(
+    public var nr: U64,
+    public var args: ULongArray,
+    public var retData: U32,
+    public var reserved2: U32,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousPtraceSyscallInfoSeccomp) return false
-        if (this.nr != other.nr) return false
-        if (!this.args.contentEquals(other.args)) return false
-        if (this.retData != other.retData) return false
-        if (this.reserved2 != other.reserved2) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.nr.hashCode()
-        result = 31 * result + this.args.contentHashCode()
-        result = 31 * result + this.retData.hashCode()
-        result = 31 * result + this.reserved2.hashCode()
-        return result
-    }
+    public open fun clone(): CAnonymousPtraceSyscallInfoSeccomp = CAnonymousPtraceSyscallInfoSeccomp(nr, args, retData, reserved2)
 
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousPtraceSyscallInfoSeccomp> =
@@ -1357,22 +1082,26 @@ public data class CAnonymousPtraceSyscallInfoSeccomp(
     }
 }
 
-public data class PtraceSyscallInfo(
-    public var op: U8 = 0u,
-    public var reserved: U8 = 0u,
-    public var flags: U16 = 0u,
-    public var arch: U32 = 0u,
-    public var instructionPointer: U64 = 0uL,
-    public var stackPointer: U64 = 0uL,
-    public var u: CAnonymousPtraceSyscallInfoData = CAnonymousPtraceSyscallInfoData(),
-)
-
-public data class PtraceSudConfig(
-    public var mode: U64 = 0uL,
-    public var selector: U64 = 0uL,
-    public var offset: U64 = 0uL,
-    public var len: U64 = 0uL,
+public open class PtraceSyscallInfo(
+    public var op: U8,
+    public var reserved: U8,
+    public var flags: U16,
+    public var arch: U32,
+    public var instructionPointer: U64,
+    public var stackPointer: U64,
+    public var u: CAnonymousPtraceSyscallInfoData,
 ) {
+    public open fun clone(): PtraceSyscallInfo = PtraceSyscallInfo(op, reserved, flags, arch, instructionPointer, stackPointer, u)
+}
+
+public open class PtraceSudConfig(
+    public var mode: U64,
+    public var selector: U64,
+    public var offset: U64,
+    public var len: U64,
+) {
+    public open fun clone(): PtraceSudConfig = PtraceSudConfig(mode, selector, offset, len)
+
     public companion object {
         public fun typeLayout(): TypeLayout<PtraceSudConfig> =
             object : TypeLayout<PtraceSudConfig> {
@@ -1408,20 +1137,22 @@ public data class PtraceSudConfig(
     }
 }
 
-public data class Iocb(
-    public var aioData: U64 = 0uL,
-    public var aioKey: U32 = 0u,
-    public var aioRwFlags: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.KernelRwfT = 0,
-    public var aioLioOpcode: U16 = 0u,
-    public var aioReqprio: S16 = 0,
-    public var aioFildes: U32 = 0u,
-    public var aioBuf: U64 = 0uL,
-    public var aioNbytes: U64 = 0uL,
-    public var aioOffset: S64 = 0L,
-    public var aioReserved2: U64 = 0uL,
-    public var aioFlags: U32 = 0u,
-    public var aioResfd: U32 = 0u,
+public open class Iocb(
+    public var aioData: U64,
+    public var aioKey: U32,
+    public var aioRwFlags: KernelRwfT,
+    public var aioLioOpcode: U16,
+    public var aioReqprio: S16,
+    public var aioFildes: U32,
+    public var aioBuf: U64,
+    public var aioNbytes: U64,
+    public var aioOffset: S64,
+    public var aioReserved2: U64,
+    public var aioFlags: U32,
+    public var aioResfd: U32,
 ) {
+    public open fun clone(): Iocb = Iocb(aioData, aioKey, aioRwFlags, aioLioOpcode, aioReqprio, aioFildes, aioBuf, aioNbytes, aioOffset, aioReserved2, aioFlags, aioResfd)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Iocb> =
             object : TypeLayout<Iocb> {
@@ -1490,144 +1221,80 @@ public data class Iocb(
 }
 
 // netinet/tcp.h
-public class TcpInfo {
-    public var tcpiState: UByte = 0u
-
-    public var tcpiCaState: UByte = 0u
-
-    public var tcpiRetransmits: UByte = 0u
-
-    public var tcpiProbes: UByte = 0u
-
-    public var tcpiBackoff: UByte = 0u
-
-    public var tcpiOptions: UByte = 0u
-
+public open class TcpInfo(
+    public var tcpiState: UByte,
+    public var tcpiCaState: UByte,
+    public var tcpiRetransmits: UByte,
+    public var tcpiProbes: UByte,
+    public var tcpiBackoff: UByte,
+    public var tcpiOptions: UByte,
     /**
      * This contains the bitfields `tcpiSndWscale` and `tcpiRcvWscale`.
      * Each is 4 bits.
      */
-    public var tcpiSndRcvWscale: UByte = 0u
-
-    public var tcpiRto: UInt = 0u
-
-    public var tcpiAto: UInt = 0u
-
-    public var tcpiSndMss: UInt = 0u
-
-    public var tcpiRcvMss: UInt = 0u
-
-    public var tcpiUnacked: UInt = 0u
-
-    public var tcpiSacked: UInt = 0u
-
-    public var tcpiLost: UInt = 0u
-
-    public var tcpiRetrans: UInt = 0u
-
-    public var tcpiFackets: UInt = 0u
-
-    public var tcpiLastDataSent: UInt = 0u
-
-    public var tcpiLastAckSent: UInt = 0u
-
-    public var tcpiLastDataRecv: UInt = 0u
-
-    public var tcpiLastAckRecv: UInt = 0u
-
-    public var tcpiPmtu: UInt = 0u
-
-    public var tcpiRcvSsthresh: UInt = 0u
-
-    public var tcpiRtt: UInt = 0u
-
-    public var tcpiRttvar: UInt = 0u
-
-    public var tcpiSndSsthresh: UInt = 0u
-
-    public var tcpiSndCwnd: UInt = 0u
-
-    public var tcpiAdvmss: UInt = 0u
-
-    public var tcpiReordering: UInt = 0u
-
-    public var tcpiRcvRtt: UInt = 0u
-
-    public var tcpiRcvSpace: UInt = 0u
-
-    public var tcpiTotalRetrans: UInt = 0u
-
-    public var tcpiPacingRate: ULong = 0uL
-
-    public var tcpiMaxPacingRate: ULong = 0uL
-
-    public var tcpiBytesAcked: ULong = 0uL
-
-    public var tcpiBytesReceived: ULong = 0uL
-
-    public var tcpiSegsOut: UInt = 0u
-
-    public var tcpiSegsIn: UInt = 0u
-
-    public var tcpiNotsentBytes: UInt = 0u
-
-    public var tcpiMinRtt: UInt = 0u
-
-    public var tcpiDataSegsIn: UInt = 0u
-
-    public var tcpiDataSegsOut: UInt = 0u
-
-    public var tcpiDeliveryRate: ULong = 0uL
-
-    public var tcpiBusyTime: ULong = 0uL
-
-    public var tcpiRwndLimited: ULong = 0uL
-
-    public var tcpiSndbufLimited: ULong = 0uL
-
-    public var tcpiDelivered: UInt = 0u
-
-    public var tcpiDeliveredCe: UInt = 0u
-
-    public var tcpiBytesSent: ULong = 0uL
-
-    public var tcpiBytesRetrans: ULong = 0uL
-
-    public var tcpiDsackDups: UInt = 0u
-
-    public var tcpiReordSeen: UInt = 0u
-
-    public var tcpiRcvOoopack: UInt = 0u
-
-    public var tcpiSndWnd: UInt = 0u
-
-    public var tcpiRcvWnd: UInt = 0u
-
-    public var tcpiRehash: UInt = 0u
-
-    public var tcpiTotalRto: UShort = 0u
-
-    public var tcpiTotalRtoRecoveries: UShort = 0u
-
-    public var tcpiTotalRtoTime: UInt = 0u
-
-    public var tcpiReceivedCe: UInt = 0u
-
-    public var tcpiDeliveredE1Bytes: UInt = 0u
-
-    public var tcpiDeliveredE0Bytes: UInt = 0u
-
-    public var tcpiDeliveredCeBytes: UInt = 0u
-
-    public var tcpiReceivedE1Bytes: UInt = 0u
-
-    public var tcpiReceivedE0Bytes: UInt = 0u
-
-    public var tcpiReceivedCeBytes: UInt = 0u
-
-    public var tcpiAccecnFailMode: UShort = 0u
-
-    public var tcpiAccecnOptSeen: UShort = 0u
+    public var tcpiSndRcvWscale: UByte,
+    public var tcpiRto: UInt,
+    public var tcpiAto: UInt,
+    public var tcpiSndMss: UInt,
+    public var tcpiRcvMss: UInt,
+    public var tcpiUnacked: UInt,
+    public var tcpiSacked: UInt,
+    public var tcpiLost: UInt,
+    public var tcpiRetrans: UInt,
+    public var tcpiFackets: UInt,
+    public var tcpiLastDataSent: UInt,
+    public var tcpiLastAckSent: UInt,
+    public var tcpiLastDataRecv: UInt,
+    public var tcpiLastAckRecv: UInt,
+    public var tcpiPmtu: UInt,
+    public var tcpiRcvSsthresh: UInt,
+    public var tcpiRtt: UInt,
+    public var tcpiRttvar: UInt,
+    public var tcpiSndSsthresh: UInt,
+    public var tcpiSndCwnd: UInt,
+    public var tcpiAdvmss: UInt,
+    public var tcpiReordering: UInt,
+    public var tcpiRcvRtt: UInt,
+    public var tcpiRcvSpace: UInt,
+    public var tcpiTotalRetrans: UInt,
+    public var tcpiPacingRate: ULong,
+    public var tcpiMaxPacingRate: ULong,
+    public var tcpiBytesAcked: ULong,
+    public var tcpiBytesReceived: ULong,
+    public var tcpiSegsOut: UInt,
+    public var tcpiSegsIn: UInt,
+    public var tcpiNotsentBytes: UInt,
+    public var tcpiMinRtt: UInt,
+    public var tcpiDataSegsIn: UInt,
+    public var tcpiDataSegsOut: UInt,
+    public var tcpiDeliveryRate: ULong,
+    public var tcpiBusyTime: ULong,
+    public var tcpiRwndLimited: ULong,
+    public var tcpiSndbufLimited: ULong,
+    public var tcpiDelivered: UInt,
+    public var tcpiDeliveredCe: UInt,
+    public var tcpiBytesSent: ULong,
+    public var tcpiBytesRetrans: ULong,
+    public var tcpiDsackDups: UInt,
+    public var tcpiReordSeen: UInt,
+    public var tcpiRcvOoopack: UInt,
+    public var tcpiSndWnd: UInt,
+    public var tcpiRcvWnd: UInt,
+    public var tcpiRehash: UInt,
+    public var tcpiTotalRto: UShort,
+    public var tcpiTotalRtoRecoveries: UShort,
+    public var tcpiTotalRtoTime: UInt,
+    public var tcpiReceivedCe: UInt,
+    public var tcpiDeliveredE1Bytes: UInt,
+    public var tcpiDeliveredE0Bytes: UInt,
+    public var tcpiDeliveredCeBytes: UInt,
+    public var tcpiReceivedE1Bytes: UInt,
+    public var tcpiReceivedE0Bytes: UInt,
+    public var tcpiReceivedCeBytes: UInt,
+    public var tcpiAccecnFailMode: UShort,
+    public var tcpiAccecnOptSeen: UShort,
+) {
+    public open fun clone(): TcpInfo = TcpInfo(tcpiState, tcpiCaState, tcpiRetransmits, tcpiProbes, tcpiBackoff, tcpiOptions, tcpiSndRcvWscale, tcpiRto, tcpiAto, tcpiSndMss, tcpiRcvMss, tcpiUnacked, tcpiSacked, tcpiLost, tcpiRetrans, tcpiFackets, tcpiLastDataSent, tcpiLastAckSent, tcpiLastDataRecv, tcpiLastAckRecv, tcpiPmtu, tcpiRcvSsthresh, tcpiRtt, tcpiRttvar, tcpiSndSsthresh, tcpiSndCwnd, tcpiAdvmss, tcpiReordering, tcpiRcvRtt, tcpiRcvSpace, tcpiTotalRetrans, tcpiPacingRate, tcpiMaxPacingRate, tcpiBytesAcked, tcpiBytesReceived, tcpiSegsOut, tcpiSegsIn, tcpiNotsentBytes, tcpiMinRtt, tcpiDataSegsIn, tcpiDataSegsOut, tcpiDeliveryRate, tcpiBusyTime, tcpiRwndLimited, tcpiSndbufLimited, tcpiDelivered, tcpiDeliveredCe, tcpiBytesSent, tcpiBytesRetrans, tcpiDsackDups, tcpiReordSeen, tcpiRcvOoopack, tcpiSndWnd, tcpiRcvWnd, tcpiRehash, tcpiTotalRto, tcpiTotalRtoRecoveries, tcpiTotalRtoTime, tcpiReceivedCe, tcpiDeliveredE1Bytes, tcpiDeliveredE0Bytes, tcpiDeliveredCeBytes, tcpiReceivedE1Bytes, tcpiReceivedE0Bytes, tcpiReceivedCeBytes, tcpiAccecnFailMode, tcpiAccecnOptSeen)
 
     public companion object {
         public fun typeLayout(): TypeLayout<TcpInfo> =
@@ -1635,75 +1302,75 @@ public class TcpInfo {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 280L
                 override fun readNative(addr: Long): TcpInfo =
-                    TcpInfo().apply {
-                        this.tcpiState = (PrimitiveLayouts.U8).readNative(addr)
-                        this.tcpiCaState = (PrimitiveLayouts.U8).readNative(addr + 1L)
-                        this.tcpiRetransmits = (PrimitiveLayouts.U8).readNative(addr + 2L)
-                        this.tcpiProbes = (PrimitiveLayouts.U8).readNative(addr + 3L)
-                        this.tcpiBackoff = (PrimitiveLayouts.U8).readNative(addr + 4L)
-                        this.tcpiOptions = (PrimitiveLayouts.U8).readNative(addr + 5L)
-                        this.tcpiSndRcvWscale = (PrimitiveLayouts.U8).readNative(addr + 6L)
-                        this.tcpiRto = (PrimitiveLayouts.U32).readNative(addr + 8L)
-                        this.tcpiAto = (PrimitiveLayouts.U32).readNative(addr + 12L)
-                        this.tcpiSndMss = (PrimitiveLayouts.U32).readNative(addr + 16L)
-                        this.tcpiRcvMss = (PrimitiveLayouts.U32).readNative(addr + 20L)
-                        this.tcpiUnacked = (PrimitiveLayouts.U32).readNative(addr + 24L)
-                        this.tcpiSacked = (PrimitiveLayouts.U32).readNative(addr + 28L)
-                        this.tcpiLost = (PrimitiveLayouts.U32).readNative(addr + 32L)
-                        this.tcpiRetrans = (PrimitiveLayouts.U32).readNative(addr + 36L)
-                        this.tcpiFackets = (PrimitiveLayouts.U32).readNative(addr + 40L)
-                        this.tcpiLastDataSent = (PrimitiveLayouts.U32).readNative(addr + 44L)
-                        this.tcpiLastAckSent = (PrimitiveLayouts.U32).readNative(addr + 48L)
-                        this.tcpiLastDataRecv = (PrimitiveLayouts.U32).readNative(addr + 52L)
-                        this.tcpiLastAckRecv = (PrimitiveLayouts.U32).readNative(addr + 56L)
-                        this.tcpiPmtu = (PrimitiveLayouts.U32).readNative(addr + 60L)
-                        this.tcpiRcvSsthresh = (PrimitiveLayouts.U32).readNative(addr + 64L)
-                        this.tcpiRtt = (PrimitiveLayouts.U32).readNative(addr + 68L)
-                        this.tcpiRttvar = (PrimitiveLayouts.U32).readNative(addr + 72L)
-                        this.tcpiSndSsthresh = (PrimitiveLayouts.U32).readNative(addr + 76L)
-                        this.tcpiSndCwnd = (PrimitiveLayouts.U32).readNative(addr + 80L)
-                        this.tcpiAdvmss = (PrimitiveLayouts.U32).readNative(addr + 84L)
-                        this.tcpiReordering = (PrimitiveLayouts.U32).readNative(addr + 88L)
-                        this.tcpiRcvRtt = (PrimitiveLayouts.U32).readNative(addr + 92L)
-                        this.tcpiRcvSpace = (PrimitiveLayouts.U32).readNative(addr + 96L)
-                        this.tcpiTotalRetrans = (PrimitiveLayouts.U32).readNative(addr + 100L)
-                        this.tcpiPacingRate = (PrimitiveLayouts.U64).readNative(addr + 104L)
-                        this.tcpiMaxPacingRate = (PrimitiveLayouts.U64).readNative(addr + 112L)
-                        this.tcpiBytesAcked = (PrimitiveLayouts.U64).readNative(addr + 120L)
-                        this.tcpiBytesReceived = (PrimitiveLayouts.U64).readNative(addr + 128L)
-                        this.tcpiSegsOut = (PrimitiveLayouts.U32).readNative(addr + 136L)
-                        this.tcpiSegsIn = (PrimitiveLayouts.U32).readNative(addr + 140L)
-                        this.tcpiNotsentBytes = (PrimitiveLayouts.U32).readNative(addr + 144L)
-                        this.tcpiMinRtt = (PrimitiveLayouts.U32).readNative(addr + 148L)
-                        this.tcpiDataSegsIn = (PrimitiveLayouts.U32).readNative(addr + 152L)
-                        this.tcpiDataSegsOut = (PrimitiveLayouts.U32).readNative(addr + 156L)
-                        this.tcpiDeliveryRate = (PrimitiveLayouts.U64).readNative(addr + 160L)
-                        this.tcpiBusyTime = (PrimitiveLayouts.U64).readNative(addr + 168L)
-                        this.tcpiRwndLimited = (PrimitiveLayouts.U64).readNative(addr + 176L)
-                        this.tcpiSndbufLimited = (PrimitiveLayouts.U64).readNative(addr + 184L)
-                        this.tcpiDelivered = (PrimitiveLayouts.U32).readNative(addr + 192L)
-                        this.tcpiDeliveredCe = (PrimitiveLayouts.U32).readNative(addr + 196L)
-                        this.tcpiBytesSent = (PrimitiveLayouts.U64).readNative(addr + 200L)
-                        this.tcpiBytesRetrans = (PrimitiveLayouts.U64).readNative(addr + 208L)
-                        this.tcpiDsackDups = (PrimitiveLayouts.U32).readNative(addr + 216L)
-                        this.tcpiReordSeen = (PrimitiveLayouts.U32).readNative(addr + 220L)
-                        this.tcpiRcvOoopack = (PrimitiveLayouts.U32).readNative(addr + 224L)
-                        this.tcpiSndWnd = (PrimitiveLayouts.U32).readNative(addr + 228L)
-                        this.tcpiRcvWnd = (PrimitiveLayouts.U32).readNative(addr + 232L)
-                        this.tcpiRehash = (PrimitiveLayouts.U32).readNative(addr + 236L)
-                        this.tcpiTotalRto = (PrimitiveLayouts.U16).readNative(addr + 240L)
-                        this.tcpiTotalRtoRecoveries = (PrimitiveLayouts.U16).readNative(addr + 242L)
-                        this.tcpiTotalRtoTime = (PrimitiveLayouts.U32).readNative(addr + 244L)
-                        this.tcpiReceivedCe = (PrimitiveLayouts.U32).readNative(addr + 248L)
-                        this.tcpiDeliveredE1Bytes = (PrimitiveLayouts.U32).readNative(addr + 252L)
-                        this.tcpiDeliveredE0Bytes = (PrimitiveLayouts.U32).readNative(addr + 256L)
-                        this.tcpiDeliveredCeBytes = (PrimitiveLayouts.U32).readNative(addr + 260L)
-                        this.tcpiReceivedE1Bytes = (PrimitiveLayouts.U32).readNative(addr + 264L)
-                        this.tcpiReceivedE0Bytes = (PrimitiveLayouts.U32).readNative(addr + 268L)
-                        this.tcpiReceivedCeBytes = (PrimitiveLayouts.U32).readNative(addr + 272L)
-                        this.tcpiAccecnFailMode = (PrimitiveLayouts.U16).readNative(addr + 276L)
-                        this.tcpiAccecnOptSeen = (PrimitiveLayouts.U16).readNative(addr + 278L)
-                    }
+                    TcpInfo(
+                        (PrimitiveLayouts.U8).readNative(addr),
+                        (PrimitiveLayouts.U8).readNative(addr + 1L),
+                        (PrimitiveLayouts.U8).readNative(addr + 2L),
+                        (PrimitiveLayouts.U8).readNative(addr + 3L),
+                        (PrimitiveLayouts.U8).readNative(addr + 4L),
+                        (PrimitiveLayouts.U8).readNative(addr + 5L),
+                        (PrimitiveLayouts.U8).readNative(addr + 6L),
+                        (PrimitiveLayouts.U32).readNative(addr + 8L),
+                        (PrimitiveLayouts.U32).readNative(addr + 12L),
+                        (PrimitiveLayouts.U32).readNative(addr + 16L),
+                        (PrimitiveLayouts.U32).readNative(addr + 20L),
+                        (PrimitiveLayouts.U32).readNative(addr + 24L),
+                        (PrimitiveLayouts.U32).readNative(addr + 28L),
+                        (PrimitiveLayouts.U32).readNative(addr + 32L),
+                        (PrimitiveLayouts.U32).readNative(addr + 36L),
+                        (PrimitiveLayouts.U32).readNative(addr + 40L),
+                        (PrimitiveLayouts.U32).readNative(addr + 44L),
+                        (PrimitiveLayouts.U32).readNative(addr + 48L),
+                        (PrimitiveLayouts.U32).readNative(addr + 52L),
+                        (PrimitiveLayouts.U32).readNative(addr + 56L),
+                        (PrimitiveLayouts.U32).readNative(addr + 60L),
+                        (PrimitiveLayouts.U32).readNative(addr + 64L),
+                        (PrimitiveLayouts.U32).readNative(addr + 68L),
+                        (PrimitiveLayouts.U32).readNative(addr + 72L),
+                        (PrimitiveLayouts.U32).readNative(addr + 76L),
+                        (PrimitiveLayouts.U32).readNative(addr + 80L),
+                        (PrimitiveLayouts.U32).readNative(addr + 84L),
+                        (PrimitiveLayouts.U32).readNative(addr + 88L),
+                        (PrimitiveLayouts.U32).readNative(addr + 92L),
+                        (PrimitiveLayouts.U32).readNative(addr + 96L),
+                        (PrimitiveLayouts.U32).readNative(addr + 100L),
+                        (PrimitiveLayouts.U64).readNative(addr + 104L),
+                        (PrimitiveLayouts.U64).readNative(addr + 112L),
+                        (PrimitiveLayouts.U64).readNative(addr + 120L),
+                        (PrimitiveLayouts.U64).readNative(addr + 128L),
+                        (PrimitiveLayouts.U32).readNative(addr + 136L),
+                        (PrimitiveLayouts.U32).readNative(addr + 140L),
+                        (PrimitiveLayouts.U32).readNative(addr + 144L),
+                        (PrimitiveLayouts.U32).readNative(addr + 148L),
+                        (PrimitiveLayouts.U32).readNative(addr + 152L),
+                        (PrimitiveLayouts.U32).readNative(addr + 156L),
+                        (PrimitiveLayouts.U64).readNative(addr + 160L),
+                        (PrimitiveLayouts.U64).readNative(addr + 168L),
+                        (PrimitiveLayouts.U64).readNative(addr + 176L),
+                        (PrimitiveLayouts.U64).readNative(addr + 184L),
+                        (PrimitiveLayouts.U32).readNative(addr + 192L),
+                        (PrimitiveLayouts.U32).readNative(addr + 196L),
+                        (PrimitiveLayouts.U64).readNative(addr + 200L),
+                        (PrimitiveLayouts.U64).readNative(addr + 208L),
+                        (PrimitiveLayouts.U32).readNative(addr + 216L),
+                        (PrimitiveLayouts.U32).readNative(addr + 220L),
+                        (PrimitiveLayouts.U32).readNative(addr + 224L),
+                        (PrimitiveLayouts.U32).readNative(addr + 228L),
+                        (PrimitiveLayouts.U32).readNative(addr + 232L),
+                        (PrimitiveLayouts.U32).readNative(addr + 236L),
+                        (PrimitiveLayouts.U16).readNative(addr + 240L),
+                        (PrimitiveLayouts.U16).readNative(addr + 242L),
+                        (PrimitiveLayouts.U32).readNative(addr + 244L),
+                        (PrimitiveLayouts.U32).readNative(addr + 248L),
+                        (PrimitiveLayouts.U32).readNative(addr + 252L),
+                        (PrimitiveLayouts.U32).readNative(addr + 256L),
+                        (PrimitiveLayouts.U32).readNative(addr + 260L),
+                        (PrimitiveLayouts.U32).readNative(addr + 264L),
+                        (PrimitiveLayouts.U32).readNative(addr + 268L),
+                        (PrimitiveLayouts.U32).readNative(addr + 272L),
+                        (PrimitiveLayouts.U16).readNative(addr + 276L),
+                        (PrimitiveLayouts.U16).readNative(addr + 278L),
+                    )
                 override fun writeNative(addr: Long, value: TcpInfo) {
                     (PrimitiveLayouts.U8).writeNative(addr, value.tcpiState)
                     (PrimitiveLayouts.U8).writeNative(addr + 1L, value.tcpiCaState)
@@ -1774,75 +1441,75 @@ public class TcpInfo {
                     (PrimitiveLayouts.U16).writeNative(addr + 278L, value.tcpiAccecnOptSeen)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TcpInfo =
-                    TcpInfo().apply {
-                        this.tcpiState = (PrimitiveLayouts.U8).readBytes(buf, offset)
-                        this.tcpiCaState = (PrimitiveLayouts.U8).readBytes(buf, offset + 1)
-                        this.tcpiRetransmits = (PrimitiveLayouts.U8).readBytes(buf, offset + 2)
-                        this.tcpiProbes = (PrimitiveLayouts.U8).readBytes(buf, offset + 3)
-                        this.tcpiBackoff = (PrimitiveLayouts.U8).readBytes(buf, offset + 4)
-                        this.tcpiOptions = (PrimitiveLayouts.U8).readBytes(buf, offset + 5)
-                        this.tcpiSndRcvWscale = (PrimitiveLayouts.U8).readBytes(buf, offset + 6)
-                        this.tcpiRto = (PrimitiveLayouts.U32).readBytes(buf, offset + 8)
-                        this.tcpiAto = (PrimitiveLayouts.U32).readBytes(buf, offset + 12)
-                        this.tcpiSndMss = (PrimitiveLayouts.U32).readBytes(buf, offset + 16)
-                        this.tcpiRcvMss = (PrimitiveLayouts.U32).readBytes(buf, offset + 20)
-                        this.tcpiUnacked = (PrimitiveLayouts.U32).readBytes(buf, offset + 24)
-                        this.tcpiSacked = (PrimitiveLayouts.U32).readBytes(buf, offset + 28)
-                        this.tcpiLost = (PrimitiveLayouts.U32).readBytes(buf, offset + 32)
-                        this.tcpiRetrans = (PrimitiveLayouts.U32).readBytes(buf, offset + 36)
-                        this.tcpiFackets = (PrimitiveLayouts.U32).readBytes(buf, offset + 40)
-                        this.tcpiLastDataSent = (PrimitiveLayouts.U32).readBytes(buf, offset + 44)
-                        this.tcpiLastAckSent = (PrimitiveLayouts.U32).readBytes(buf, offset + 48)
-                        this.tcpiLastDataRecv = (PrimitiveLayouts.U32).readBytes(buf, offset + 52)
-                        this.tcpiLastAckRecv = (PrimitiveLayouts.U32).readBytes(buf, offset + 56)
-                        this.tcpiPmtu = (PrimitiveLayouts.U32).readBytes(buf, offset + 60)
-                        this.tcpiRcvSsthresh = (PrimitiveLayouts.U32).readBytes(buf, offset + 64)
-                        this.tcpiRtt = (PrimitiveLayouts.U32).readBytes(buf, offset + 68)
-                        this.tcpiRttvar = (PrimitiveLayouts.U32).readBytes(buf, offset + 72)
-                        this.tcpiSndSsthresh = (PrimitiveLayouts.U32).readBytes(buf, offset + 76)
-                        this.tcpiSndCwnd = (PrimitiveLayouts.U32).readBytes(buf, offset + 80)
-                        this.tcpiAdvmss = (PrimitiveLayouts.U32).readBytes(buf, offset + 84)
-                        this.tcpiReordering = (PrimitiveLayouts.U32).readBytes(buf, offset + 88)
-                        this.tcpiRcvRtt = (PrimitiveLayouts.U32).readBytes(buf, offset + 92)
-                        this.tcpiRcvSpace = (PrimitiveLayouts.U32).readBytes(buf, offset + 96)
-                        this.tcpiTotalRetrans = (PrimitiveLayouts.U32).readBytes(buf, offset + 100)
-                        this.tcpiPacingRate = (PrimitiveLayouts.U64).readBytes(buf, offset + 104)
-                        this.tcpiMaxPacingRate = (PrimitiveLayouts.U64).readBytes(buf, offset + 112)
-                        this.tcpiBytesAcked = (PrimitiveLayouts.U64).readBytes(buf, offset + 120)
-                        this.tcpiBytesReceived = (PrimitiveLayouts.U64).readBytes(buf, offset + 128)
-                        this.tcpiSegsOut = (PrimitiveLayouts.U32).readBytes(buf, offset + 136)
-                        this.tcpiSegsIn = (PrimitiveLayouts.U32).readBytes(buf, offset + 140)
-                        this.tcpiNotsentBytes = (PrimitiveLayouts.U32).readBytes(buf, offset + 144)
-                        this.tcpiMinRtt = (PrimitiveLayouts.U32).readBytes(buf, offset + 148)
-                        this.tcpiDataSegsIn = (PrimitiveLayouts.U32).readBytes(buf, offset + 152)
-                        this.tcpiDataSegsOut = (PrimitiveLayouts.U32).readBytes(buf, offset + 156)
-                        this.tcpiDeliveryRate = (PrimitiveLayouts.U64).readBytes(buf, offset + 160)
-                        this.tcpiBusyTime = (PrimitiveLayouts.U64).readBytes(buf, offset + 168)
-                        this.tcpiRwndLimited = (PrimitiveLayouts.U64).readBytes(buf, offset + 176)
-                        this.tcpiSndbufLimited = (PrimitiveLayouts.U64).readBytes(buf, offset + 184)
-                        this.tcpiDelivered = (PrimitiveLayouts.U32).readBytes(buf, offset + 192)
-                        this.tcpiDeliveredCe = (PrimitiveLayouts.U32).readBytes(buf, offset + 196)
-                        this.tcpiBytesSent = (PrimitiveLayouts.U64).readBytes(buf, offset + 200)
-                        this.tcpiBytesRetrans = (PrimitiveLayouts.U64).readBytes(buf, offset + 208)
-                        this.tcpiDsackDups = (PrimitiveLayouts.U32).readBytes(buf, offset + 216)
-                        this.tcpiReordSeen = (PrimitiveLayouts.U32).readBytes(buf, offset + 220)
-                        this.tcpiRcvOoopack = (PrimitiveLayouts.U32).readBytes(buf, offset + 224)
-                        this.tcpiSndWnd = (PrimitiveLayouts.U32).readBytes(buf, offset + 228)
-                        this.tcpiRcvWnd = (PrimitiveLayouts.U32).readBytes(buf, offset + 232)
-                        this.tcpiRehash = (PrimitiveLayouts.U32).readBytes(buf, offset + 236)
-                        this.tcpiTotalRto = (PrimitiveLayouts.U16).readBytes(buf, offset + 240)
-                        this.tcpiTotalRtoRecoveries = (PrimitiveLayouts.U16).readBytes(buf, offset + 242)
-                        this.tcpiTotalRtoTime = (PrimitiveLayouts.U32).readBytes(buf, offset + 244)
-                        this.tcpiReceivedCe = (PrimitiveLayouts.U32).readBytes(buf, offset + 248)
-                        this.tcpiDeliveredE1Bytes = (PrimitiveLayouts.U32).readBytes(buf, offset + 252)
-                        this.tcpiDeliveredE0Bytes = (PrimitiveLayouts.U32).readBytes(buf, offset + 256)
-                        this.tcpiDeliveredCeBytes = (PrimitiveLayouts.U32).readBytes(buf, offset + 260)
-                        this.tcpiReceivedE1Bytes = (PrimitiveLayouts.U32).readBytes(buf, offset + 264)
-                        this.tcpiReceivedE0Bytes = (PrimitiveLayouts.U32).readBytes(buf, offset + 268)
-                        this.tcpiReceivedCeBytes = (PrimitiveLayouts.U32).readBytes(buf, offset + 272)
-                        this.tcpiAccecnFailMode = (PrimitiveLayouts.U16).readBytes(buf, offset + 276)
-                        this.tcpiAccecnOptSeen = (PrimitiveLayouts.U16).readBytes(buf, offset + 278)
-                    }
+                    TcpInfo(
+                        (PrimitiveLayouts.U8).readBytes(buf, offset),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset + 1),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset + 2),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset + 3),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset + 5),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset + 6),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 12),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 20),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 28),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 32),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 36),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 40),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 44),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 48),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 52),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 56),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 60),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 64),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 68),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 72),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 76),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 80),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 84),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 88),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 92),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 96),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 100),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 104),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 112),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 120),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 128),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 136),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 140),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 144),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 148),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 152),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 156),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 160),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 168),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 176),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 184),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 192),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 196),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 200),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 208),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 216),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 220),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 224),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 228),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 232),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 236),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset + 240),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset + 242),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 244),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 248),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 252),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 256),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 260),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 264),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 268),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 272),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset + 276),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset + 278),
+                    )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TcpInfo) {
                     (PrimitiveLayouts.U8).writeBytes(buf, offset, value.tcpiState)
                     (PrimitiveLayouts.U8).writeBytes(buf, offset + 1, value.tcpiCaState)
@@ -1916,28 +1583,25 @@ public class TcpInfo {
     }
 }
 
-public data class FanotifyEventInfoPidfd(
-    public var hdr: FanotifyEventInfoHeader = FanotifyEventInfoHeader(),
-    public var pidfd: S32 = 0,
-)
-
-public data class FanotifyEventInfoError(
-    public var hdr: FanotifyEventInfoHeader = FanotifyEventInfoHeader(),
-    public var error: S32 = 0,
-    public var errorCount: U32 = 0u,
-)
-
-public data class SemT(
-    public var size: UByteArray = UByteArray(32),
+public open class FanotifyEventInfoPidfd(
+    public var hdr: FanotifyEventInfoHeader,
+    public var pidfd: S32,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SemT) return false
-        if (!this.size.contentEquals(other.size)) return false
-        return true
-    }
+    public open fun clone(): FanotifyEventInfoPidfd = FanotifyEventInfoPidfd(hdr, pidfd)
+}
 
-    override fun hashCode(): Int = this.size.contentHashCode()
+public open class FanotifyEventInfoError(
+    public var hdr: FanotifyEventInfoHeader,
+    public var error: S32,
+    public var errorCount: U32,
+) {
+    public open fun clone(): FanotifyEventInfoError = FanotifyEventInfoError(hdr, error, errorCount)
+}
+
+public open class SemT(
+    public var size: UByteArray,
+) {
+    public open fun clone(): SemT = SemT(size)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SemT> =
@@ -1962,23 +1626,11 @@ public data class SemT(
     }
 }
 
-public data class MbstateT(
-    public var count: CInt = 0,
-    public var wchb: UByteArray = UByteArray(4),
+public open class MbstateT(
+    public var count: CInt,
+    public var wchb: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is MbstateT) return false
-        if (this.count != other.count) return false
-        if (!this.wchb.contentEquals(other.wchb)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.count.hashCode()
-        result = 31 * result + this.wchb.contentHashCode()
-        return result
-    }
+    public open fun clone(): MbstateT = MbstateT(count, wchb)
 
     public companion object {
         public fun typeLayout(): TypeLayout<MbstateT> =
@@ -2007,10 +1659,12 @@ public data class MbstateT(
     }
 }
 
-public data class Fpos64T(
-    public var pos: Off64T = 0L,
-    public var state: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.MbstateT = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.MbstateT(),
+public open class Fpos64T(
+    public var pos: Off64T,
+    public var state: MbstateT,
 ) {
+    public open fun clone(): Fpos64T = Fpos64T(pos, state)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Fpos64T> =
             object : TypeLayout<Fpos64T> {
@@ -2038,10 +1692,12 @@ public data class Fpos64T(
     }
 }
 
-public data class FposT(
-    public var pos: OffT = 0L,
-    public var state: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.MbstateT = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.MbstateT(),
+public open class FposT(
+    public var pos: OffT,
+    public var state: MbstateT,
 ) {
+    public open fun clone(): FposT = FposT(pos, state)
+
     public companion object {
         public fun typeLayout(): TypeLayout<FposT> =
             object : TypeLayout<FposT> {
@@ -2069,11 +1725,13 @@ public data class FposT(
     }
 }
 
-public data class Timespec(
-    public var tvSec: TimeT = 0L,
-    public var tvNsec: CLong = 0L,
-    public var pad: Int = 0,
+public open class Timespec(
+    public var tvSec: TimeT,
+    public var tvNsec: CLong,
+    public var pad: Int,
 ) {
+    public open fun clone(): Timespec = Timespec(tvSec, tvNsec, pad)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Timespec> =
             object : TypeLayout<Timespec> {
@@ -2105,50 +1763,20 @@ public data class Timespec(
     }
 }
 
-public data class Utmpx(
-    public var utType: CShort = 0,
-    public var utPid: PidT = 0,
-    public var utLine: UByteArray = UByteArray(UT_LINESIZE),
-    public var utId: UByteArray = UByteArray(4),
-    public var utUser: UByteArray = UByteArray(UT_NAMESIZE),
-    public var utHost: UByteArray = UByteArray(UT_HOSTSIZE),
-    public var utExit: ExitStatus = ExitStatus(),
-    public var utSession: CLong = 0L,
-    public var utTv: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval(),
-    public var utAddrV6: IntArray = IntArray(4),
-    public var glibcReserved: UByteArray = UByteArray(20),
+public open class Utmpx(
+    public var utType: CShort,
+    public var utPid: PidT,
+    public var utLine: UByteArray,
+    public var utId: UByteArray,
+    public var utUser: UByteArray,
+    public var utHost: UByteArray,
+    public var utExit: ExitStatus,
+    public var utSession: CLong,
+    public var utTv: Timeval,
+    public var utAddrV6: IntArray,
+    public var glibcReserved: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Utmpx) return false
-        if (this.utType != other.utType) return false
-        if (this.utPid != other.utPid) return false
-        if (!this.utLine.contentEquals(other.utLine)) return false
-        if (!this.utId.contentEquals(other.utId)) return false
-        if (!this.utUser.contentEquals(other.utUser)) return false
-        if (!this.utHost.contentEquals(other.utHost)) return false
-        if (this.utExit != other.utExit) return false
-        if (this.utSession != other.utSession) return false
-        if (this.utTv != other.utTv) return false
-        if (!this.utAddrV6.contentEquals(other.utAddrV6)) return false
-        if (!this.glibcReserved.contentEquals(other.glibcReserved)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.utType.hashCode()
-        result = 31 * result + this.utPid.hashCode()
-        result = 31 * result + this.utLine.contentHashCode()
-        result = 31 * result + this.utId.contentHashCode()
-        result = 31 * result + this.utUser.contentHashCode()
-        result = 31 * result + this.utHost.contentHashCode()
-        result = 31 * result + this.utExit.hashCode()
-        result = 31 * result + this.utSession.hashCode()
-        result = 31 * result + this.utTv.hashCode()
-        result = 31 * result + this.utAddrV6.contentHashCode()
-        result = 31 * result + this.glibcReserved.contentHashCode()
-        return result
-    }
+    public open fun clone(): Utmpx = Utmpx(utType, utPid, utLine, utId, utUser, utHost, utExit, utSession, utTv, utAddrV6, glibcReserved)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Utmpx> =
@@ -2221,26 +1849,12 @@ public data class Utmpx(
     }
 }
 
-public data class Ethhdr(
-    public var hDest: UByteArray = UByteArray(ETH_ALEN),
-    public var hSource: UByteArray = UByteArray(ETH_ALEN),
-    public var hProto: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Be16 = 0u,
+public open class Ethhdr(
+    public var hDest: UByteArray,
+    public var hSource: UByteArray,
+    public var hProto: Be16,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Ethhdr) return false
-        if (!this.hDest.contentEquals(other.hDest)) return false
-        if (!this.hSource.contentEquals(other.hSource)) return false
-        if (this.hProto != other.hProto) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.hDest.contentHashCode()
-        result = 31 * result + this.hSource.contentHashCode()
-        result = 31 * result + this.hProto.hashCode()
-        return result
-    }
+    public open fun clone(): Ethhdr = Ethhdr(hDest, hSource, hProto)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Ethhdr> =
@@ -2275,16 +1889,16 @@ public data class Ethhdr(
     }
 }
 
-public data class CAnonymousPtraceSyscallInfoData(
-    public var entry: CAnonymousPtraceSyscallInfoEntry = CAnonymousPtraceSyscallInfoEntry(),
-    public var exit: CAnonymousPtraceSyscallInfoExit = CAnonymousPtraceSyscallInfoExit(),
-    public var seccomp: CAnonymousPtraceSyscallInfoSeccomp = CAnonymousPtraceSyscallInfoSeccomp(),
+public open class CAnonymousPtraceSyscallInfoData(
+    public var entry: CAnonymousPtraceSyscallInfoEntry? = null,
+    public var exit: CAnonymousPtraceSyscallInfoExit? = null,
+    public var seccomp: CAnonymousPtraceSyscallInfoSeccomp? = null,
 ) {
-    public fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "__c_anonymous_ptrace_syscall_info_data").finishNonExhaustive()
     }
 
-    public fun eq(other: CAnonymousPtraceSyscallInfoData): Boolean = this.entry == other.entry || this.exit == other.exit || this.seccomp == other.seccomp
+    public open fun eq(other: CAnonymousPtraceSyscallInfoData): Boolean = this.entry == other.entry || this.exit == other.exit || this.seccomp == other.seccomp
 
     public override fun hashCode(): Int {
         var state = 0

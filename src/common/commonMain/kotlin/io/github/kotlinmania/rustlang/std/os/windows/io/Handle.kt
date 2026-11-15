@@ -1,38 +1,38 @@
 // port-lint: source os/windows/io/handle.rs
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
-import io.github.kotlinmania.rustlang.Rc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.fs.File
-import io.github.kotlinmania.rustlang.io.pipe.PipeReader
-import io.github.kotlinmania.rustlang.io.pipe.PipeWriter
-import io.github.kotlinmania.rustlang.io.stdio.IsTerminal
-import io.github.kotlinmania.rustlang.io.stdio.Stderr
-import io.github.kotlinmania.rustlang.io.stdio.StderrLock
-import io.github.kotlinmania.rustlang.io.stdio.Stdin
-import io.github.kotlinmania.rustlang.io.stdio.StdinLock
-import io.github.kotlinmania.rustlang.io.stdio.Stdout
-import io.github.kotlinmania.rustlang.io.stdio.StdoutLock
-import io.github.kotlinmania.rustlang.process.ChildStderr
-import io.github.kotlinmania.rustlang.process.ChildStdin
-import io.github.kotlinmania.rustlang.process.ChildStdout
+import io.github.kotlinmania.rustlang.std.Rc
+import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
+import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
+import io.github.kotlinmania.rustlang.std.io.stdio.IsTerminal
+import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
+import io.github.kotlinmania.rustlang.std.io.stdio.StderrLock
+import io.github.kotlinmania.rustlang.std.io.stdio.Stdin
+import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
+import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
+import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
 import io.github.kotlinmania.rustlang.std.os.windows.raw.AsRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.raw.FromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.raw.IntoRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.raw.RawHandle
-import io.github.kotlinmania.rustlang.sync.Arc
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.thread.joinhandle.JoinHandle
+import io.github.kotlinmania.rustlang.std.process.ChildStderr
+import io.github.kotlinmania.rustlang.std.process.ChildStdin
+import io.github.kotlinmania.rustlang.std.process.ChildStdout
+import io.github.kotlinmania.rustlang.std.sync.Arc
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
 
 // Owned and borrowed OS handles.
 
@@ -123,14 +123,14 @@ public open class BorrowedHandle internal constructor(
         // if we passed it a null handle, but we can treat null as a valid
         // handle which doesn't do any I/O, and allow it to be duplicated.
         if (handle.isNull()) {
-            return Result.Ok(OwnedHandle.fromRawHandle(handle, fieldLayout = ObjectSlotLayout<RawHandle>()))
+            return Result.Ok(OwnedHandle.fromRawHandle(handle, fieldLayout = UnresolvedTypeLayout<RawHandle>()))
         }
         val ret = MutPtr(0L)
         when (val tryResult = cvt(run {
             val curProc = C.GetCurrentProcess()
             C.DuplicateHandle(curProc, handle, curProc, ret, access, inherit.toInt(), options)
         })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        return Result.Ok(OwnedHandle.fromRawHandle(ret, fieldLayout = ObjectSlotLayout<RawHandle>()))
+        return Result.Ok(OwnedHandle.fromRawHandle(ret, fieldLayout = UnresolvedTypeLayout<RawHandle>()))
     }
 
     public override fun asRawHandle(): RawHandle = this.handle
@@ -139,15 +139,15 @@ public open class BorrowedHandle internal constructor(
         DebugStruct(f, "BorrowedHandle").field("handle", this.handle).finish()
     }
 
-    public override fun isTerminal(): Boolean = IsTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public override fun asHandle(): BorrowedHandle = this
 
     public open fun asRef(): File {
         fun <T : AsHandle> typeCheck() {}
         run {
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<File>(typeLayoutT = ObjectSlotLayout<File>()))
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<File>(typeLayoutT = UnresolvedTypeLayout<File>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = UnresolvedTypeLayout<BorrowedHandle>()))
         }
         typeCheck<File>()
         return transmute(this)
@@ -156,8 +156,8 @@ public open class BorrowedHandle internal constructor(
     public open fun asRefPipeWriter(): PipeWriter {
         fun <T : AsHandle> typeCheck() {}
         run {
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<PipeWriter>(typeLayoutT = ObjectSlotLayout<PipeWriter>()))
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<PipeWriter>(typeLayoutT = UnresolvedTypeLayout<PipeWriter>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = UnresolvedTypeLayout<BorrowedHandle>()))
         }
         typeCheck<PipeWriter>()
         return transmute(this)
@@ -166,8 +166,8 @@ public open class BorrowedHandle internal constructor(
     public open fun asRefPipeReader(): PipeReader {
         fun <T : AsHandle> typeCheck() {}
         run {
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<PipeReader>(typeLayoutT = ObjectSlotLayout<PipeReader>()))
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<PipeReader>(typeLayoutT = UnresolvedTypeLayout<PipeReader>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = UnresolvedTypeLayout<BorrowedHandle>()))
         }
         typeCheck<PipeReader>()
         return transmute(this)
@@ -263,7 +263,7 @@ public open class OwnedHandle internal constructor(
         DebugStruct(f, "OwnedHandle").field("handle", this.handle).finish()
     }
 
-    public override fun isTerminal(): Boolean = IsTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public override fun asHandle(): BorrowedHandle {
         // Safety: `OwnedHandle` and `BorrowedHandle` have the same validity

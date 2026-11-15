@@ -61,7 +61,10 @@ public open class InPlaceDstDataSrcBufDrop<Src, Dest>(
     public open fun drop() {
         // ignore-tidy-undocumented-unchecked
         run {
-            this.ptr.asPtr().castSlice(this.len).dropInPlace()
+            this.ptr
+                .asPtr()
+                .castSlice(this.len)
+                .dropInPlace()
         }
     }
 }

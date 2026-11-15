@@ -4,8 +4,8 @@
 package io.github.kotlinmania.rustlang.core.unicode.unicodedata.defaultignorablecodepoint
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.unicode.unicodedata.ShortOffsetRunHeader
-import io.github.kotlinmania.rustlang.unicode.unicodedata.skipSearch
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.ShortOffsetRunHeader
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.skipSearch
 
 public var SHORT_OFFSET_RUNS: List<ShortOffsetRunHeader> = listOf(ShortOffsetRunHeader.new(0, 847), ShortOffsetRunHeader.new(3, 1564), ShortOffsetRunHeader.new(5, 4447), ShortOffsetRunHeader.new(7, 6068), ShortOffsetRunHeader.new(9, 8203), ShortOffsetRunHeader.new(13, 12644), ShortOffsetRunHeader.new(19, 65024), ShortOffsetRunHeader.new(21, 113824), ShortOffsetRunHeader.new(29, 119155), ShortOffsetRunHeader.new(31, 917504), ShortOffsetRunHeader.new(33, 921600), ShortOffsetRunHeader.new(34, 2035712))
 

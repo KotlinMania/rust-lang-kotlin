@@ -15,13 +15,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.fs.File
-import io.github.kotlinmania.rustlang.fs.Metadata
-import io.github.kotlinmania.rustlang.io.pipe.PipeReader
-import io.github.kotlinmania.rustlang.io.pipe.PipeWriter
-import io.github.kotlinmania.rustlang.io.stdio.StderrLock
-import io.github.kotlinmania.rustlang.io.stdio.StdinLock
-import io.github.kotlinmania.rustlang.io.stdio.StdoutLock
 import io.github.kotlinmania.rustlang.libc.Splice
 import io.github.kotlinmania.rustlang.libc.wasi.EBADF
 import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
@@ -30,16 +23,23 @@ import io.github.kotlinmania.rustlang.libc.wasi.EOPNOTSUPP
 import io.github.kotlinmania.rustlang.libc.wasi.EOVERFLOW
 import io.github.kotlinmania.rustlang.libc.wasi.EPERM
 import io.github.kotlinmania.rustlang.libc.wasi.EXDEV
-import io.github.kotlinmania.rustlang.net.tcp.TcpStream
-import io.github.kotlinmania.rustlang.os.fd.AsRawFd
-import io.github.kotlinmania.rustlang.os.fd.RawFd
-import io.github.kotlinmania.rustlang.os.unix.net.UnixStream
-import io.github.kotlinmania.rustlang.process.ChildStderr
-import io.github.kotlinmania.rustlang.process.ChildStdin
-import io.github.kotlinmania.rustlang.process.ChildStdout
-import io.github.kotlinmania.rustlang.sys.fs.unix.CachedFileMetadata
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.sys.weak.syscall
+import io.github.kotlinmania.rustlang.std.fs.File
+import io.github.kotlinmania.rustlang.std.fs.Metadata
+import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
+import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
+import io.github.kotlinmania.rustlang.std.io.stdio.StderrLock
+import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
+import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
+import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
+import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
+import io.github.kotlinmania.rustlang.std.process.ChildStderr
+import io.github.kotlinmania.rustlang.std.process.ChildStdin
+import io.github.kotlinmania.rustlang.std.process.ChildStdout
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.CachedFileMetadata
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.weak.syscall
 import io.github.kotlinmania.rustlang.libc.sendfile as sendfile64
 
 // This module contains specializations that can offload `io.copy()` operations on file descriptor

@@ -1,16 +1,16 @@
 // port-lint: source external_trait_impls/rayon/map.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map
 
-import io.github.kotlinmania.rustlang.HashMap
-import io.github.kotlinmania.rustlang.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
-import io.github.kotlinmania.rustlang.externaltraitimpls.rayon.helpers.collect
+import io.github.kotlinmania.rustlang.hashbrown.HashMap
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.helpers.collect
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawIntoParIter
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawParDrain
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawParIter
-import io.github.kotlinmania.rustlang.rayon.iter.IntoParallelIterator
-import io.github.kotlinmania.rustlang.rayon.iter.ParallelIterator
-import io.github.kotlinmania.rustlang.rayon.iter.plumbing.UnindexedConsumer
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.IntoParallelIterator
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.ParallelIterator
+import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.plumbing.UnindexedConsumer
 
 // Rayon extensions for `HashMap`.
 

@@ -1,11 +1,11 @@
 // port-lint: source bridge/panic_message.rs
 package io.github.kotlinmania.rustlang.procmacro.bridge.panicmessage
 
-import io.github.kotlinmania.rustlang.bridge.Decode
-import io.github.kotlinmania.rustlang.bridge.Encode
-import io.github.kotlinmania.rustlang.bridge.buffer.Buffer
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.procmacro.bridge.Decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.Encode
+import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 
 /**
  * Simplified version of panic payloads, ignoring

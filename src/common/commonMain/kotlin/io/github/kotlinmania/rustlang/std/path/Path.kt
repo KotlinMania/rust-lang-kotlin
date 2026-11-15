@@ -9,42 +9,40 @@ import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.error.Error
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.rustRotateRight
+import io.github.kotlinmania.rustlang.core.num.rotateRight
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.or
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.slice.get
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.fs.Metadata
-import io.github.kotlinmania.rustlang.fs.ReadDir
-import io.github.kotlinmania.rustlang.fs.exists
-import io.github.kotlinmania.rustlang.fs.metadata
-import io.github.kotlinmania.rustlang.fs.symlinkMetadata
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.io.constError
-import io.github.kotlinmania.rustlang.path.SEPARATORS
-import io.github.kotlinmania.rustlang.path.SEPARATORS_STR
-import io.github.kotlinmania.rustlang.rc.Rc
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.fs.Metadata
+import io.github.kotlinmania.rustlang.std.fs.ReadDir
+import io.github.kotlinmania.rustlang.std.fs.exists
+import io.github.kotlinmania.rustlang.std.fs.metadata
+import io.github.kotlinmania.rustlang.std.fs.symlinkMetadata
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Prefix.*
-import io.github.kotlinmania.rustlang.sync.Arc
-import io.github.kotlinmania.rustlang.sys.args.unix.init
-import io.github.kotlinmania.rustlang.sys.path.isSepByte
-import io.github.kotlinmania.rustlang.sys.path.unix.HAS_PREFIXES
-import io.github.kotlinmania.rustlang.sys.path.unix.isVerbatimSep
-import io.github.kotlinmania.rustlang.sys.path.unix.parsePrefix
+import io.github.kotlinmania.rustlang.std.rc.Rc
+import io.github.kotlinmania.rustlang.std.sync.Arc
+import io.github.kotlinmania.rustlang.std.sys.args.unix.init
+import io.github.kotlinmania.rustlang.std.sys.path.isSepByte
+import io.github.kotlinmania.rustlang.std.sys.path.unix.HAS_PREFIXES
+import io.github.kotlinmania.rustlang.std.sys.path.unix.isVerbatimSep
+import io.github.kotlinmania.rustlang.std.sys.path.unix.parsePrefix
 
 // Cross-platform path manipulation.
 //
@@ -541,9 +539,9 @@ public open class PrefixComponent(
 
     public open fun eq(other: PrefixComponent): Boolean = (this.parsed == other.parsed).toUByte()
 
-    public open fun partialCmp(other: PrefixComponent): cmp.Ordering? = PartialOrd.partialCmp(this.parsed, other.parsed)
+    public open fun partialCmp(other: PrefixComponent): Ordering? = PartialOrd.partialCmp(this.parsed, other.parsed)
 
-    public open fun cmp(other: PrefixComponent): cmp.Ordering = Ord.cmp(this.parsed, other.parsed)
+    public open fun cmp(other: PrefixComponent): Ordering = Ord.cmp(this.parsed, other.parsed)
 
     public override fun hashCode(): Int {
         var h = 0
@@ -1003,9 +1001,9 @@ public open class Components(
         return Iterator.eq(this.clone().rev(), other.clone().rev())
     }
 
-    public open fun partialCmp(other: Components): cmp.Ordering? = compareComponents(this.clone(), other.clone())
+    public open fun partialCmp(other: Components): Ordering? = compareComponents(this.clone(), other.clone())
 
-    public open fun cmp(other: Components): cmp.Ordering = compareComponents(this.clone(), other.clone())
+    public open fun cmp(other: Components): Ordering = compareComponents(this.clone(), other.clone())
 }
 
 /**
@@ -1072,7 +1070,7 @@ public open class Iter(
     public open fun nextBack(): OsStr? = this.inner.nextBack()?.let({ it.asOsStr() })
 }
 
-public fun compareComponents(left: Components, right: Components): cmp.Ordering {
+public fun compareComponents(left: Components, right: Components): Ordering {
     // Fast path for long shared prefixes
     //
     // - compare raw bytes to find first mismatch
@@ -1088,7 +1086,7 @@ public fun compareComponents(left: Components, right: Components): cmp.Ordering 
             run {
                 val matchVal = (left.path.zip(right.path)).indexOfFirst({ (a, b) -> a != b }).takeIf { it >= 0 }
                 when {
-                    matchVal == null && left.path.size == right.path.size -> { return cmp.Ordering.Equal }
+                    matchVal == null && left.path.size == right.path.size -> { return Ordering.Equal }
                     matchVal == null -> left.path.size.min(right.path.size)
                     else -> {
                         val diff = matchVal
@@ -1735,9 +1733,9 @@ public open class PathBuf(
         return h
     }
 
-    public open fun partialCmp(other: PathBuf): cmp.Ordering? = compareComponents(this.components(), other.components())
+    public open fun partialCmp(other: PathBuf): Ordering? = compareComponents(this.components(), other.components())
 
-    public open fun cmp(other: PathBuf): cmp.Ordering = compareComponents(this.components(), other.components())
+    public open fun cmp(other: PathBuf): Ordering = compareComponents(this.components(), other.components())
 
     public open fun asRef(): OsStr = this.inner
 
@@ -1747,31 +1745,31 @@ public open class PathBuf(
 
     public open fun eq(other: Path): Boolean = Path.eq(this, other)
 
-    public open fun partialCmp(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
+    public open fun partialCmp(other: Path): Ordering? = Path.partialCmp(this, other)
 
     public open fun eqPath(other: Path): Boolean = Path.eq(this, other)
 
-    public open fun partialCmpPath(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
+    public open fun partialCmpPath(other: Path): Ordering? = Path.partialCmp(this, other)
 
     public open fun eqCowPath(other: Path): Boolean = Path.eq(this, other)
 
-    public open fun partialCmpCowPath(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
+    public open fun partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(this, other)
 
     public open fun eq(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmp(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmp(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eqOsStr(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmpOsStr(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmpOsStr(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eqCowOsStr(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmpCowOsStr(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmpCowOsStr(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eq(other: OsString): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmp(other: OsString): cmp.Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmp(other: OsString): Ordering? = Path.partialCmp(this, other.asRef())
 
     public companion object {
         /**
@@ -2103,7 +2101,7 @@ public open class Path internal constructor(
      *
      * [hasRoot]: Path.hasRoot
      */
-    public open fun isAbsolute(): Boolean = io.github.kotlinmania.rustlang.sys.path.unix.isAbsolute(this)
+    public open fun isAbsolute(): Boolean = io.github.kotlinmania.rustlang.std.sys.path.unix.isAbsolute(this)
 
     /**
      * Returns `true` if the `Path` is relative, i.e., not absolute.
@@ -2785,7 +2783,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun metadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.fs.metadata(this)
+    public open fun metadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.std.fs.metadata(this)
 
     /**
      * Queries the metadata about a file without following symlinks.
@@ -2802,7 +2800,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun symlinkMetadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.fs.symlinkMetadata(this)
+    public open fun symlinkMetadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.std.fs.symlinkMetadata(this)
 
     /**
      * Returns the canonical, absolute form of the path with all intermediate
@@ -2828,7 +2826,7 @@ public open class Path internal constructor(
      * check(path.canonicalize().unwrap() == PathBuf.from("/foo/test/bar.rs"))
      * ```
      */
-    public open fun canonicalize(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.fs.canonicalize(this)
+    public open fun canonicalize(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.std.fs.canonicalize(this)
 
     /**
      * Makes the path absolute without accessing the filesystem.
@@ -2950,7 +2948,7 @@ public open class Path internal constructor(
      * val pathLink = path.readLink().expect("the path should be an existing symbolic link")
      * ```
      */
-    public open fun readLink(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.fs.readLink(this)
+    public open fun readLink(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.std.fs.readLink(this)
 
     /**
      * Returns an iterator over the entries within a directory.
@@ -2974,7 +2972,7 @@ public open class Path internal constructor(
      * }
      * ```
      */
-    public open fun readDir(): Result<ReadDir, Error> = io.github.kotlinmania.rustlang.fs.readDir(this)
+    public open fun readDir(): Result<ReadDir, Error> = io.github.kotlinmania.rustlang.std.fs.readDir(this)
 
     /**
      * Returns `true` if the path points at an existing entity.
@@ -3184,7 +3182,7 @@ public open class Path internal constructor(
                 if (i > componentStart) {
                     val toHash = bytes1[componentStart until i]
                     chunkBits = (chunkBits + toHash.len().toInt())
-                    chunkBits = rustRotateRight(chunkBits, 2u)
+                    chunkBits = chunkBits.rotateRight(2u)
                     h.write(toHash)
                 }
                 // skip over separator and optionally a following CurDir item
@@ -3207,16 +3205,16 @@ public open class Path internal constructor(
         if (componentStart < bytes1.len()) {
             val toHash1 = bytes1[componentStart until bytes1.size]
             chunkBits = (chunkBits + toHash1.len().toInt())
-            chunkBits = rustRotateRight(chunkBits, 2u)
+            chunkBits = chunkBits.rotateRight(2u)
             h.write(toHash1)
         }
         h.writeUsize(chunkBits)
         return h
     }
 
-    public open fun partialCmp(other: Path): cmp.Ordering? = compareComponents(this.components(), other.components())
+    public open fun partialCmp(other: Path): Ordering? = compareComponents(this.components(), other.components())
 
-    public open fun cmp(other: Path): cmp.Ordering = compareComponents(this.components(), other.components())
+    public open fun cmp(other: Path): Ordering = compareComponents(this.components(), other.components())
 
     public open fun asRefPath(): Path = this
 
@@ -3224,27 +3222,27 @@ public open class Path internal constructor(
 
     public open fun eq(other: PathBuf): Boolean = Path.eq(this, other)
 
-    public open fun partialCmp(other: PathBuf): cmp.Ordering? = Path.partialCmp(this, other)
+    public open fun partialCmp(other: PathBuf): Ordering? = Path.partialCmp(this, other)
 
     public open fun eqCowPath(other: Path): Boolean = Path.eq(this, other)
 
-    public open fun partialCmpCowPath(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
+    public open fun partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(this, other)
 
     public open fun eq(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmp(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmp(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eqOsStr(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmpOsStr(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmpOsStr(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eqCowOsStr(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmpCowOsStr(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmpCowOsStr(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eq(other: OsString): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmp(other: OsString): cmp.Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmp(other: OsString): Ordering? = Path.partialCmp(this, other.asRef())
 
     public companion object {
         public operator fun invoke(inner: OsStr, fieldLayout: TypeLayout<OsStr>): Path = Path(inner, fieldLayout)
@@ -3318,12 +3316,12 @@ public open class Path internal constructor(
          * check(fromString == fromPath)
          * ```
          */
-        public fun new(s: OsStr): Path = (ObjectSlotLayout<Path>()).readNative((((constPtrFromRustCast(s.asRef())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+        public fun new(s: OsStr): Path = (UnresolvedTypeLayout<Path>()).readNative((((constPtrFromRustCast(s.asRef())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
         public fun fromInnerMut(inner: OsStr): RustMutableReference<Path> {
             // SAFETY: Path is just a wrapper around OsStr,
             // therefore converting OsStr to Path is safe.
-            return RustMutableReference(MutPtr((((mutPtrFromRustCast(inner)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<Path>())
+            return RustMutableReference(MutPtr((((mutPtrFromRustCast(inner)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<Path>())
         }
     }
 }
@@ -3448,63 +3446,63 @@ public fun String.asRefPath(): Path = Path.new(this)
 
 public fun Path.eq(other: Path): Boolean = Path.eq(this, other)
 
-public fun Path.partialCmp(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
+public fun Path.partialCmp(other: Path): Ordering? = Path.partialCmp(this, other)
 
 public fun Path.eqPath(other: Path): Boolean = Path.eq(this, other)
 
-public fun Path.partialCmpPath(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
+public fun Path.partialCmpPath(other: Path): Ordering? = Path.partialCmp(this, other)
 
 public fun Path.eq(other: PathBuf): Boolean = Path.eq(this, other)
 
-public fun Path.partialCmp(other: PathBuf): cmp.Ordering? = Path.partialCmp(this, other)
+public fun Path.partialCmp(other: PathBuf): Ordering? = Path.partialCmp(this, other)
 
 public fun OsStr.eq(other: PathBuf): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsStr.partialCmp(other: PathBuf): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsStr.partialCmp(other: PathBuf): Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsStr.eqPathBuf(other: PathBuf): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsStr.partialCmpPathBuf(other: PathBuf): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsStr.partialCmpPathBuf(other: PathBuf): Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsString.eq(other: PathBuf): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsString.partialCmp(other: PathBuf): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsString.partialCmp(other: PathBuf): Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsStr.eq(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsStr.partialCmp(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsStr.partialCmp(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsStr.eqPath(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsStr.partialCmpPath(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsStr.partialCmpPath(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsString.eq(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsString.partialCmp(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsString.partialCmp(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsString.eqPath(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsString.partialCmpPath(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsString.partialCmpPath(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun Path.eq(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
 public fun OsStr.eqCowPath(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun Path.partialCmp(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
+public fun Path.partialCmp(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
 
-public fun OsStr.partialCmpCowPath(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsStr.partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun Path.eqOsStr(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-public fun Path.partialCmpOsStr(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
+public fun Path.partialCmpOsStr(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
 
 public fun Path.eq(other: OsString): Boolean = Path.eq(this, other.asRef())
 
 public fun OsString.eqCowPath(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun Path.partialCmp(other: OsString): cmp.Ordering? = Path.partialCmp(this, other.asRef())
+public fun Path.partialCmp(other: OsString): Ordering? = Path.partialCmp(this, other.asRef())
 
-public fun OsString.partialCmpCowPath(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsString.partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
 
 /**
  * Makes the path absolute without accessing the filesystem.
@@ -3588,6 +3586,6 @@ public fun absolute(path: Path): Result<PathBuf, Error> {
     return if (path1.asOsStr().isEmpty()) {
         Result.Err(constError(ErrorKind.InvalidInput, "cannot make an empty path absolute"))
     } else {
-        io.github.kotlinmania.rustlang.sys.path.unix.absolute(path1)
+        io.github.kotlinmania.rustlang.std.sys.path.unix.absolute(path1)
     }
 }

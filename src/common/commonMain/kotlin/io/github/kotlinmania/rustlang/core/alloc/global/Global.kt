@@ -1,17 +1,17 @@
 // port-lint: source alloc/global.rs
 package io.github.kotlinmania.rustlang.core.alloc.global
 
-import io.github.kotlinmania.rustlang.alloc.AllocError
-import io.github.kotlinmania.rustlang.alloc.GlobalAllocator
-import io.github.kotlinmania.rustlang.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.alloc.AllocError
+import io.github.kotlinmania.rustlang.core.alloc.GlobalAllocator
+import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.ptr.writeBytes
 
 /**
  * A memory allocator that can be registered as the standard library’s default

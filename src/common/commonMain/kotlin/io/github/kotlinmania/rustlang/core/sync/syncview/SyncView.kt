@@ -1,31 +1,31 @@
 // port-lint: source sync/sync_view.rs
 package io.github.kotlinmania.rustlang.core.sync.syncview
 
-import io.github.kotlinmania.rustlang.clone.TrivialClone
-import io.github.kotlinmania.rustlang.cmp.Ordering
-import io.github.kotlinmania.rustlang.convert.AsMut
-import io.github.kotlinmania.rustlang.convert.AsRef
+import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.convert.AsMut
+import io.github.kotlinmania.rustlang.core.convert.AsRef
+import io.github.kotlinmania.rustlang.core.future.future.Future
+import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
+import io.github.kotlinmania.rustlang.core.marker.Tuple
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFn
+import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFnMut
+import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFnOnce
+import io.github.kotlinmania.rustlang.core.ops.coroutine.Coroutine
+import io.github.kotlinmania.rustlang.core.ops.coroutine.CoroutineState
+import io.github.kotlinmania.rustlang.core.ops.function.Fn
+import io.github.kotlinmania.rustlang.core.ops.function.FnMut
+import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
+import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.future.future.Future
-import io.github.kotlinmania.rustlang.marker.StructuralPartialEq
-import io.github.kotlinmania.rustlang.marker.Tuple
-import io.github.kotlinmania.rustlang.ops.asyncfunction.AsyncFn
-import io.github.kotlinmania.rustlang.ops.asyncfunction.AsyncFnMut
-import io.github.kotlinmania.rustlang.ops.asyncfunction.AsyncFnOnce
-import io.github.kotlinmania.rustlang.ops.coroutine.Coroutine
-import io.github.kotlinmania.rustlang.ops.coroutine.CoroutineState
-import io.github.kotlinmania.rustlang.ops.function.Fn
-import io.github.kotlinmania.rustlang.ops.function.FnMut
-import io.github.kotlinmania.rustlang.ops.function.FnOnce
-import io.github.kotlinmania.rustlang.pin.Pin
-import io.github.kotlinmania.rustlang.task.poll.Poll
-import io.github.kotlinmania.rustlang.task.wake.Context
+import io.github.kotlinmania.rustlang.core.task.poll.Poll
+import io.github.kotlinmania.rustlang.core.task.wake.Context
 
 // Defines [SyncView].
 
@@ -150,10 +150,16 @@ public typealias Return<G> = G.Return
 public open class SyncView<T>(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<T>,
-) : Future<Output>, AsRef<T>, AsMut<T>, TrivialClone<SyncView<T>>, StructuralPartialEq {
+) : Future<Output>,
+    AsRef<T>,
+    AsMut<T>,
+    TrivialClone<SyncView<T>>,
+    StructuralPartialEq {
     public var inner: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(inner: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 

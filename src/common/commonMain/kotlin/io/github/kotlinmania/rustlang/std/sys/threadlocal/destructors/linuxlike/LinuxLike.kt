@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.os.raw.CInt
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 
 // Destructor registration for Linux-like systems.
 //
@@ -61,7 +61,7 @@ public fun register(t: MutPtr, dtor: RegisterDtorCallback) {
         }
     } else {
         run {
-            io.github.kotlinmania.rustlang.sys.threadlocal.destructors.linuxlike.register(t, dtor)
+            io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.list.register(t, dtor)
         }
     }
 }

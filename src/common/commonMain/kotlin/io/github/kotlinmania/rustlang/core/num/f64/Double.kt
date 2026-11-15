@@ -3,30 +3,27 @@
 
 package io.github.kotlinmania.rustlang.core.num.f64
 
-import io.github.kotlinmania.rustlang.cmp.Ordering
-import io.github.kotlinmania.rustlang.cmp.clamp.ClampBounds
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFmaf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMaxnumf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMinnumf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmPowif64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundTiesEvenf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf64
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.num.rustClassifyDouble
-import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
-import io.github.kotlinmania.rustlang.intrinsics.copysignf64
-import io.github.kotlinmania.rustlang.intrinsics.fabs
-import io.github.kotlinmania.rustlang.intrinsics.faddAlgebraic
-import io.github.kotlinmania.rustlang.intrinsics.fdivAlgebraic
-import io.github.kotlinmania.rustlang.intrinsics.fma
-import io.github.kotlinmania.rustlang.intrinsics.fmulAlgebraic
-import io.github.kotlinmania.rustlang.intrinsics.fmuladd
-import io.github.kotlinmania.rustlang.intrinsics.fremAlgebraic
-import io.github.kotlinmania.rustlang.intrinsics.fsubAlgebraic
-import io.github.kotlinmania.rustlang.intrinsics.maximumNumberNszF64
-import io.github.kotlinmania.rustlang.intrinsics.maximumf64
-import io.github.kotlinmania.rustlang.intrinsics.minimumNumberNszF64
-import io.github.kotlinmania.rustlang.intrinsics.minimumf64
-import io.github.kotlinmania.rustlang.num.FpCategory
-import io.github.kotlinmania.rustlang.num.imp.libm.fdim
-import io.github.kotlinmania.rustlang.panic.constAssert
-import kotlin.math.abs
+import io.github.kotlinmania.rustlang.core.num.FpCategory
+import io.github.kotlinmania.rustlang.core.num.imp.libm.fdim
+import io.github.kotlinmania.rustlang.core.panic.constAssert
 
 // Constants for the `Double` double-precision floating point type.
 //
@@ -445,7 +442,7 @@ public fun Double.isInfinite(): Boolean {
 public fun Double.isFinite(): Boolean {
     // There's no need to handle NaN separately: if self is NaN,
     // the comparison is not true, exactly as desired.
-    return abs(this) < Double.POSITIVE_INFINITY
+    return kmFabsf64(this) < Double.POSITIVE_INFINITY
 }
 
 /**
@@ -468,7 +465,7 @@ public fun Double.isFinite(): Boolean {
  * [subnormal]: https://en.wikipedia.org/wiki/DenormalNumber
  */
 public fun Double.isSubnormal(): Boolean =
-    when (rustClassifyDouble(this)) {
+    when (this.classify()) {
         FpCategory.Subnormal -> true
         else -> false
     }
@@ -494,7 +491,7 @@ public fun Double.isSubnormal(): Boolean =
  * [subnormal]: https://en.wikipedia.org/wiki/DenormalNumber
  */
 public fun Double.isNormal(): Boolean =
-    when (rustClassifyDouble(this)) {
+    when (this.classify()) {
         FpCategory.Normal -> true
         else -> false
     }
@@ -550,7 +547,7 @@ public fun Double.classify(): FpCategory {
  * check(!g.isSignPositive())
  * ```
  */
-public fun Double.isSignPositive(): Boolean = !rustIsSignNegative(this)
+public fun Double.isSignPositive(): Boolean = !this.isSignNegative()
 
 /**
  * Returns `true` if `self` has a negative sign, including `- 0.0`, NaNs with
@@ -753,7 +750,7 @@ public fun Double.toRadians(): Double {
  * check(x.max(Double.NaN) == x)
  * ```
  */
-public fun Double.max(other: Double): Double = maximumNumberNszF64(this, other)
+public fun Double.max(other: Double): Double = kmMaxnumf64(this, other)
 
 /**
  * Returns the minimum of the two numbers, ignoring NaN.
@@ -775,7 +772,7 @@ public fun Double.max(other: Double): Double = maximumNumberNszF64(this, other)
  * check(x.min(Double.NaN) == x)
  * ```
  */
-public fun Double.min(other: Double): Double = minimumNumberNszF64(this, other)
+public fun Double.min(other: Double): Double = kmMinnumf64(this, other)
 
 /**
  * Returns the maximum of the two numbers, propagating NaN.
@@ -800,7 +797,7 @@ public fun Double.min(other: Double): Double = minimumNumberNszF64(this, other)
  * }
  * ```
  */
-public fun Double.maximum(other: Double): Double = maximumf64(this, other)
+public fun Double.maximum(other: Double): Double = floatBinaryWithLayout("maximum", this, other, PrimitiveLayouts.F64)
 
 /**
  * Returns the minimum of the two numbers, propagating NaN.
@@ -825,7 +822,7 @@ public fun Double.maximum(other: Double): Double = maximumf64(this, other)
  * }
  * ```
  */
-public fun Double.minimum(other: Double): Double = minimumf64(this, other)
+public fun Double.minimum(other: Double): Double = floatBinaryWithLayout("minimum", this, other, PrimitiveLayouts.F64)
 
 /**
  * Calculates the midpoint (average) between `self` and `rhs`.
@@ -843,8 +840,8 @@ public fun Double.minimum(other: Double): Double = minimumf64(this, other)
 public fun Double.midpoint(other: Double): Double {
     val HI: Double = Double.MAX_VALUE * 0.5
     val (a, b) = Pair(this, other)
-    val absA = abs(a)
-    val absB = abs(b)
+    val absA = kmFabsf64(a)
+    val absB = kmFabsf64(b)
     return if (absA <= HI && absB <= HI) {
         // Overflow is impossible
         (a + b) * 0.5
@@ -1033,7 +1030,11 @@ public fun Double.Companion.fromBits(v: ULong): Double {
  * }
  * ```
  */
-public fun Double.toBeBytes(): UByteArray = run { val rawBits = this.toRawBits().toULong(); ubyteArrayOf((rawBits shr 56).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte()) }
+public fun Double.toBeBytes(): UByteArray =
+    run {
+        val rawBits = this.toRawBits().toULong()
+        ubyteArrayOf((rawBits shr 56).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte())
+    }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -1053,7 +1054,11 @@ public fun Double.toBeBytes(): UByteArray = run { val rawBits = this.toRawBits()
  * }
  * ```
  */
-public fun Double.toLeBytes(): UByteArray = run { val rawBits = this.toRawBits().toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
+public fun Double.toLeBytes(): UByteArray =
+    run {
+        val rawBits = this.toRawBits().toULong()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
+    }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -1083,7 +1088,11 @@ public fun Double.toLeBytes(): UByteArray = run { val rawBits = this.toRawBits()
  * }
  * ```
  */
-public fun Double.toNeBytes(): UByteArray = run { val rawBits = this.toRawBits().toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
+public fun Double.toNeBytes(): UByteArray =
+    run {
+        val rawBits = this.toRawBits().toULong()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
+    }
 
 /**
  * Creates a floating point value from its representation as a byte array in big endian.
@@ -1102,7 +1111,13 @@ public fun Double.toNeBytes(): UByteArray = run { val rawBits = this.toRawBits()
  * }
  * ```
  */
-public fun Double.Companion.fromBeBytes(bytes: UByteArray): Double = Double.fromBits(run { val bytesTmp0 = bytes; ((bytesTmp0[0].toULong() shl 56) or (bytesTmp0[1].toULong() shl 48) or (bytesTmp0[2].toULong() shl 40) or (bytesTmp0[3].toULong() shl 32) or (bytesTmp0[4].toULong() shl 24) or (bytesTmp0[5].toULong() shl 16) or (bytesTmp0[6].toULong() shl 8) or bytesTmp0[7].toULong()) })
+public fun Double.Companion.fromBeBytes(bytes: UByteArray): Double =
+    Double.fromBits(
+        run {
+            val bytesTmp0 = bytes
+            ((bytesTmp0[0].toULong() shl 56) or (bytesTmp0[1].toULong() shl 48) or (bytesTmp0[2].toULong() shl 40) or (bytesTmp0[3].toULong() shl 32) or (bytesTmp0[4].toULong() shl 24) or (bytesTmp0[5].toULong() shl 16) or (bytesTmp0[6].toULong() shl 8) or bytesTmp0[7].toULong())
+        },
+    )
 
 /**
  * Creates a floating point value from its representation as a byte array in little endian.
@@ -1121,7 +1136,13 @@ public fun Double.Companion.fromBeBytes(bytes: UByteArray): Double = Double.from
  * }
  * ```
  */
-public fun Double.Companion.fromLeBytes(bytes: UByteArray): Double = Double.fromBits(run { val bytesTmp1 = bytes; ((bytesTmp1[7].toULong() shl 56) or (bytesTmp1[6].toULong() shl 48) or (bytesTmp1[5].toULong() shl 40) or (bytesTmp1[4].toULong() shl 32) or (bytesTmp1[3].toULong() shl 24) or (bytesTmp1[2].toULong() shl 16) or (bytesTmp1[1].toULong() shl 8) or bytesTmp1[0].toULong()) })
+public fun Double.Companion.fromLeBytes(bytes: UByteArray): Double =
+    Double.fromBits(
+        run {
+            val bytesTmp1 = bytes
+            ((bytesTmp1[7].toULong() shl 56) or (bytesTmp1[6].toULong() shl 48) or (bytesTmp1[5].toULong() shl 40) or (bytesTmp1[4].toULong() shl 32) or (bytesTmp1[3].toULong() shl 24) or (bytesTmp1[2].toULong() shl 16) or (bytesTmp1[1].toULong() shl 8) or bytesTmp1[0].toULong())
+        },
+    )
 
 /**
  * Creates a floating point value from its representation as a byte array in native endian.
@@ -1151,7 +1172,13 @@ public fun Double.Companion.fromLeBytes(bytes: UByteArray): Double = Double.from
  * }
  * ```
  */
-public fun Double.Companion.fromNeBytes(bytes: UByteArray): Double = Double.fromBits(run { val bytesTmp2 = bytes; ((bytesTmp2[7].toULong() shl 56) or (bytesTmp2[6].toULong() shl 48) or (bytesTmp2[5].toULong() shl 40) or (bytesTmp2[4].toULong() shl 32) or (bytesTmp2[3].toULong() shl 24) or (bytesTmp2[2].toULong() shl 16) or (bytesTmp2[1].toULong() shl 8) or bytesTmp2[0].toULong()) })
+public fun Double.Companion.fromNeBytes(bytes: UByteArray): Double =
+    Double.fromBits(
+        run {
+            val bytesTmp2 = bytes
+            ((bytesTmp2[7].toULong() shl 56) or (bytesTmp2[6].toULong() shl 48) or (bytesTmp2[5].toULong() shl 40) or (bytesTmp2[4].toULong() shl 32) or (bytesTmp2[3].toULong() shl 24) or (bytesTmp2[2].toULong() shl 16) or (bytesTmp2[1].toULong() shl 8) or bytesTmp2[0].toULong())
+        },
+    )
 
 /**
  * Returns the ordering between `self` and `other`.
@@ -1292,7 +1319,7 @@ public fun Double.clamp(min: Double, max: Double): Double {
  */
 public fun Double.clampMagnitude(limit: Double): Double {
     check(limit >= 0.0) { "limit must be non-negative and not NaN" }
-    val limit1 = abs(limit)
+    val limit1 = kmFabsf64(limit)
     // Canonicalises -0.0 to 0.0
     return this.clamp(-limit1, limit1)
 }
@@ -1343,7 +1370,7 @@ public fun <R> Double.clampTo(range: R): Double where R : ClampBounds<Double> = 
  * check(Double.NaN.abs().isNan())
  * ```
  */
-public fun Double.abs(): Double = fabs(this)
+public fun Double.abs(): Double = kmFabsf64(this)
 
 /**
  * Returns a number that represents the sign of `self`.
@@ -1365,7 +1392,7 @@ public fun Double.signum(): Double =
     if (this.isNaN()) {
         Double.NaN
     } else {
-        1.0.copysign(this)
+        kmCopysignf64(1.0, this)
     }
 
 /**
@@ -1394,42 +1421,42 @@ public fun Double.signum(): Double =
  * check(Double.NaN.copysign(1.0).isNan())
  * ```
  */
-public fun Double.copysign(sign: Double): Double = copysignf64(this, sign)
+public fun Double.copysign(sign: Double): Double = kmCopysignf64(this, sign)
 
 /**
  * Float addition that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun Double.algebraicAdd(rhs: Double): Double = faddAlgebraic(this, rhs)
+public fun Double.algebraicAdd(rhs: Double): Double = ((this) + (rhs))
 
 /**
  * Float subtraction that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun Double.algebraicSub(rhs: Double): Double = fsubAlgebraic(this, rhs)
+public fun Double.algebraicSub(rhs: Double): Double = ((this) - (rhs))
 
 /**
  * Float multiplication that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun Double.algebraicMul(rhs: Double): Double = fmulAlgebraic(this, rhs)
+public fun Double.algebraicMul(rhs: Double): Double = ((this) * (rhs))
 
 /**
  * Float division that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun Double.algebraicDiv(rhs: Double): Double = fdivAlgebraic(this, rhs)
+public fun Double.algebraicDiv(rhs: Double): Double = ((this) / (rhs))
 
 /**
  * Float remainder that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun Double.algebraicRem(rhs: Double): Double = fremAlgebraic(this, rhs)
+public fun Double.algebraicRem(rhs: Double): Double = ((this) % (rhs))
 
 /**
  * Computes `(self * a) + b` with nondeterministic rounding.
@@ -1467,7 +1494,7 @@ public fun Double.algebraicRem(rhs: Double): Double = fremAlgebraic(this, rhs)
  *
  * [mulAdd]: ../std/primitive.f64.html#method.mulAdd
  */
-public fun Double.mulAddRelaxed(a: Double, b: Double): Double = fmuladd(this, a, b)
+public fun Double.mulAddRelaxed(a: Double, b: Double): Double = kmFmaf64(this, a, b)
 
 /**
  * Returns `self` if the value is not NaN, otherwise returns `replacement`
@@ -1516,7 +1543,7 @@ public fun Double.nanTo(replacement: Double): Double =
  *
  * [f64.floor]: ../../../std/primitive.f64.html#method.floor
  */
-public fun floor(x: Double): Double = io.github.kotlinmania.rustlang.intrinsics.floor(x)
+public fun floor(x: Double): Double = kmFloorf64(x)
 
 /**
  * Experimental version of `ceil` in `core`. See [f64.ceil] for details.
@@ -1538,7 +1565,7 @@ public fun floor(x: Double): Double = io.github.kotlinmania.rustlang.intrinsics.
  *
  * [f64.ceil]: ../../../std/primitive.f64.html#method.ceil
  */
-public fun ceil(x: Double): Double = io.github.kotlinmania.rustlang.intrinsics.ceil(x)
+public fun ceil(x: Double): Double = kmCeilf64(x)
 
 /**
  * Experimental version of `round` in `core`. See [f64.round] for details.
@@ -1566,7 +1593,7 @@ public fun ceil(x: Double): Double = io.github.kotlinmania.rustlang.intrinsics.c
  *
  * [f64.round]: ../../../std/primitive.f64.html#method.round
  */
-public fun round(x: Double): Double = io.github.kotlinmania.rustlang.intrinsics.round(x)
+public fun round(x: Double): Double = kmRoundf64(x)
 
 /**
  * Experimental version of `roundTiesEven` in `core`. See [f64.roundTiesEven] for
@@ -1593,7 +1620,7 @@ public fun round(x: Double): Double = io.github.kotlinmania.rustlang.intrinsics.
  *
  * [f64.roundTiesEven]: ../../../std/primitive.f64.html#method.roundTiesEven
  */
-public fun roundTiesEven(x: Double): Double = io.github.kotlinmania.rustlang.intrinsics.roundTiesEven(x)
+public fun roundTiesEven(x: Double): Double = kmRoundTiesEvenf64(x)
 
 /**
  * Experimental version of `trunc` in `core`. See [f64.trunc] for details.
@@ -1617,7 +1644,7 @@ public fun roundTiesEven(x: Double): Double = io.github.kotlinmania.rustlang.int
  *
  * [f64.trunc]: ../../../std/primitive.f64.html#method.trunc
  */
-public fun trunc(x: Double): Double = io.github.kotlinmania.rustlang.intrinsics.trunc(x)
+public fun trunc(x: Double): Double = kmTruncf64(x)
 
 /**
  * Experimental version of `fract` in `core`. See [f64.fract] for details.
@@ -1671,7 +1698,7 @@ public fun fract(x: Double): Double = x - trunc(x)
  *
  * [f64.mulAdd]: ../../../std/primitive.f64.html#method.mulAdd
  */
-public fun mulAdd(x: Double, a: Double, b: Double): Double = fma(x, a, b)
+public fun mulAdd(x: Double, a: Double, b: Double): Double = kmFmaf64(x, a, b)
 
 /**
  * Experimental version of `divEuclid` in `core`. See [f64.divEuclid] for details.
@@ -1738,7 +1765,7 @@ public fun divEuclid(x: Double, rhs: Double): Double {
 public fun remEuclid(x: Double, rhs: Double): Double {
     val r = x % rhs
     return if (r < 0.0) {
-        r + abs(rhs)
+        r + kmFabsf64(rhs)
     } else {
         r
     }
@@ -1764,7 +1791,7 @@ public fun remEuclid(x: Double, rhs: Double): Double {
  *
  * [f64.powi]: ../../../std/primitive.f64.html#method.powi
  */
-public fun powi(x: Double, n: Int): Double = io.github.kotlinmania.rustlang.intrinsics.powi(x, n)
+public fun powi(x: Double, n: Int): Double = kmPowif64(x, n)
 
 /**
  * Experimental version of `sqrt` in `core`. See [f64.sqrt] for details.
@@ -1788,7 +1815,7 @@ public fun powi(x: Double, n: Int): Double = io.github.kotlinmania.rustlang.intr
  *
  * [f64.sqrt]: ../../../std/primitive.f64.html#method.sqrt
  */
-public fun sqrt(x: Double): Double = io.github.kotlinmania.rustlang.intrinsics.sqrt(x)
+public fun sqrt(x: Double): Double = kmSqrtf64(x)
 
 /**
  * Experimental version of `absSub` in `core`. See [f64.absSub] for details.
@@ -1834,4 +1861,6 @@ public fun absSub(x: Double, other: Double): Double = fdim(x, other)
  *
  * [f64.cbrt]: ../../../std/primitive.f64.html#method.cbrt
  */
-public fun cbrt(x: Double): Double = io.github.kotlinmania.rustlang.num.imp.libm.cbrt(x)
+public fun cbrt(x: Double): Double =
+    io.github.kotlinmania.rustlang.core.num.imp.libm
+        .cbrt(x)

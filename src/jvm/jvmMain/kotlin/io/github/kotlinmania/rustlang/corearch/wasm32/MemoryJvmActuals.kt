@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
-private object CorearchWasm32MemoryJniBridge {
+private object Wasm32MemoryJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,11 +38,14 @@ private object CorearchWasm32MemoryJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchWasm32MemoryJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = Wasm32MemoryJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,14 +59,14 @@ private object CorearchWasm32MemoryJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchWasm32MemoryLlvmMemoryGrow(mem: Int, pages: Long): Long
+    external fun corearchWasm32MemoryLlvmMemoryGrow(mem: Int, pages: Long): Long
 
     @JvmStatic
-    external fun rustlangCorearchWasm32MemoryLlvmMemorySize(mem: Int): Long
+    external fun corearchWasm32MemoryLlvmMemorySize(mem: Int): Long
 }
 
 public actual fun llvmMemoryGrow(mem: UInt, pages: ULong): ULong =
-    CorearchWasm32MemoryJniBridge.rustlangCorearchWasm32MemoryLlvmMemoryGrow(mem.toInt(), pages.toLong()).toULong()
+    Wasm32MemoryJniBridge.corearchWasm32MemoryLlvmMemoryGrow(mem.toInt(), pages.toLong()).toULong()
 
 public actual fun llvmMemorySize(mem: UInt): ULong =
-    CorearchWasm32MemoryJniBridge.rustlangCorearchWasm32MemoryLlvmMemorySize(mem.toInt()).toULong()
+    Wasm32MemoryJniBridge.corearchWasm32MemoryLlvmMemorySize(mem.toInt()).toULong()

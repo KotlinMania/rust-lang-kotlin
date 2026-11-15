@@ -1,10 +1,10 @@
 // port-lint: source simd/ptr/mut_ptr.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.ptr.mutptr
 
-import io.github.kotlinmania.rustlang.Simd
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.coresimd.Simd
 
 public typealias Usize = Simd<Int, N>
 
@@ -88,8 +88,8 @@ public interface SimdMutPtr<SelfType, Usize, Isize, out CastPtr, out ConstPtr, o
 public fun Simd<MutPtr, N>.isNull(n: Int): Mask<Int> = Simd.splat(MutPtr(0L)).simdEq(this)
 
 public fun Simd<MutPtr, N>.cast(n: Int): Simd<MutPtr> {
-    check(sizeOf<Metadata>(typeLayoutT = ObjectSlotLayout<Metadata>()) == 0)
-    check(sizeOf<Metadata>(typeLayoutT = ObjectSlotLayout<Metadata>()) == 0)
+    check(sizeOf<Metadata>(typeLayoutT = UnresolvedTypeLayout<Metadata>()) == 0)
+    check(sizeOf<Metadata>(typeLayoutT = UnresolvedTypeLayout<Metadata>()) == 0)
     // Safety: pointers can be cast
     return run { val _simdArg0 = this; _simdArg0 }
 }

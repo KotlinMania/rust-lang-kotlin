@@ -3,9 +3,6 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.x86.M128
-import io.github.kotlinmania.rustlang.x86.M128bh
-import io.github.kotlinmania.rustlang.x86.M256
 
 /**
  * Convert scalar BF16 (16-bit) floating point element stored at memory locations starting at location

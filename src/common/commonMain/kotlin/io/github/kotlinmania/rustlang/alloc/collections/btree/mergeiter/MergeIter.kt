@@ -43,7 +43,11 @@ public open class MergeIterInner<I> internal constructor(
     public open fun clone(): MergeIterInner<I> = MergeIterInner(a = this.a.clone(), b = this.b.clone(), peeked = this.peeked)
 
     public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "MergeIterInner").field(this.a).field(this.b).field(this.peeked).finish()
+        DebugTuple(f, "MergeIterInner")
+            .field(this.a)
+            .field(this.b)
+            .field(this.peeked)
+            .finish()
     }
 
     /**
@@ -101,11 +105,12 @@ public open class MergeIterInner<I> internal constructor(
             a: I,
             b: I,
             peeked: Peeked<I>?,
-        ): MergeIterInner<I> = MergeIterInner<I>(
-            a = a,
-            b = b,
-            peekedCtorArg = peeked,
-        )
+        ): MergeIterInner<I> =
+            MergeIterInner<I>(
+                a = a,
+                b = b,
+                peekedCtorArg = peeked,
+            )
 
         /**
          * Creates a new core for an iterator merging a pair of sources.
@@ -119,6 +124,10 @@ public open class MergeIterInner<I> internal constructor(
  * probably because we can afford to impose a FusedIterator bound.
  */
 public sealed class Peeked<I> {
-    public data class A<I>(public var value: Item) : Peeked<I>()
-    public data class B<I>(public var value: Item) : Peeked<I>()
+    public data class A<I>(
+        public var value: Item,
+    ) : Peeked<I>()
+    public data class B<I>(
+        public var value: Item,
+    ) : Peeked<I>()
 }

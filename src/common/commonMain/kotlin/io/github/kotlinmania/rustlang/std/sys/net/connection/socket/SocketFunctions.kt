@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.std.sys.net.connection.socket
 
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
@@ -18,13 +18,13 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.io.constError
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.helpers.smallcstring.runWithCstr
-import io.github.kotlinmania.rustlang.sys.net.connection.socket.unix.Socket
-import io.github.kotlinmania.rustlang.sys.net.connection.socket.unix.cvtGai
-import io.github.kotlinmania.rustlang.sys.net.connection.socket.unix.init
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runWithCstr
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.cvtGai
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.init
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 // ///////////////////////////////////////////////////////////////////////////
 // address conversions
@@ -54,12 +54,12 @@ public fun socketAddrToC(addr: SocketAddr): Pair<SocketAddrCRepr, c.SocklenT> =
         is SocketAddr.V4 -> {
             val (a) = addr
             val sockaddr = SocketAddrCRepr(v4 = socketAddrV4ToC(a))
-            Pair(sockaddr, sizeOf<c.SockaddrIn>(typeLayoutT = ObjectSlotLayout<c.SockaddrIn>()))
+            Pair(sockaddr, sizeOf<c.SockaddrIn>(typeLayoutT = UnresolvedTypeLayout<c.SockaddrIn>()))
         }
         is SocketAddr.V6 -> {
             val (a1) = addr
             val sockaddr1 = SocketAddrCRepr(v6 = socketAddrV6ToC(a1))
-            Pair(sockaddr1, sizeOf<c.SockaddrIn6>(typeLayoutT = ObjectSlotLayout<c.SockaddrIn6>()))
+            Pair(sockaddr1, sizeOf<c.SockaddrIn6>(typeLayoutT = UnresolvedTypeLayout<c.SockaddrIn6>()))
         }
     }
 
@@ -77,14 +77,14 @@ public fun addrFamily(addr: SocketAddr): CInt =
  *   than `len`.
  */
 public fun socketAddrFromC(storage: ConstPtr, len: Int): Result<SocketAddr, Error> =
-    when (((ObjectSlotLayout<c.SockaddrStorage>()).readNative((storage).rawAddress).ssFamily).toInt()) {
+    when (((UnresolvedTypeLayout<c.SockaddrStorage>()).readNative((storage).rawAddress).ssFamily).toInt()) {
         c.afInet -> {
-            check(len >= sizeOf<c.SockaddrIn>(typeLayoutT = ObjectSlotLayout<c.SockaddrIn>()))
-            Result.Ok(SocketAddr.v4(socketAddrV4FromC((ObjectSlotLayout<c.SockaddrIn>()).readNative((((storage).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress))))
+            check(len >= sizeOf<c.SockaddrIn>(typeLayoutT = UnresolvedTypeLayout<c.SockaddrIn>()))
+            Result.Ok(SocketAddr.v4(socketAddrV4FromC((UnresolvedTypeLayout<c.SockaddrIn>()).readNative((((storage).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress))))
         }
         c.afInet6 -> {
-            check(len >= sizeOf<c.SockaddrIn6>(typeLayoutT = ObjectSlotLayout<c.SockaddrIn6>()))
-            Result.Ok(SocketAddr.v6(socketAddrV6FromC((ObjectSlotLayout<c.SockaddrIn6>()).readNative((((storage).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress))))
+            check(len >= sizeOf<c.SockaddrIn6>(typeLayoutT = UnresolvedTypeLayout<c.SockaddrIn6>()))
+            Result.Ok(SocketAddr.v6(socketAddrV6FromC((UnresolvedTypeLayout<c.SockaddrIn6>()).readNative((((storage).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress))))
         }
         else -> Result.Err(constError(ErrorKind.InvalidInput, "invalid argument"))
     }
@@ -141,8 +141,8 @@ public fun <T> getsockopt(sock: Socket, level: CInt, optionName: CInt, typeLayou
  *   to the second argument.
  */
 public fun sockname(f: (MutPtr, MutPtr) -> CInt): Result<SocketAddr, Error> {
-    val storage = MaybeUninit.zeroed(ObjectSlotLayout<c.SockaddrStorage>())
-    val len = sizeOf<c.SockaddrStorage>(typeLayoutT = ObjectSlotLayout<c.SockaddrStorage>())
+    val storage = MaybeUninit.zeroed(UnresolvedTypeLayout<c.SockaddrStorage>())
+    val len = sizeOf<c.SockaddrStorage>(typeLayoutT = UnresolvedTypeLayout<c.SockaddrStorage>())
     when (val tryResult = cvt(f(storage.asMutPtr().cast(), len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // SAFETY:
     // The caller guarantees that the storage has been successfully initialized
@@ -155,7 +155,7 @@ public fun toIpv6mrInterface(value: UInt): CInt = value.toInt()
 public fun lookupHost(host: String, port: UShort): Result<LookupHost, Error> {
     init()
     return runWithCstr(host.encodeToByteArray().map { it.toUByte() }, { cHost ->
-        var hints: c.Addrinfo = MaybeUninit.zeroed(ObjectSlotLayout<c.Addrinfo>()).assumeInit()
+        var hints: c.Addrinfo = MaybeUninit.zeroed(UnresolvedTypeLayout<c.Addrinfo>()).assumeInit()
         hints.aiSocktype = c.SOCK_STREAM
         var res = MutPtr(0L)
         cvtGai(c.getaddrinfo(cHost.asPtr(), ConstPtr(0L), hints, res)).map({ LookupHost(original = res, cur = res, port = port) })

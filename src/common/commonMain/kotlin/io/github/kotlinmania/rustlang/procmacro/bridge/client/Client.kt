@@ -1,26 +1,31 @@
 // port-lint: source bridge/client.rs
 package io.github.kotlinmania.rustlang.procmacro.bridge.client
 
-import io.github.kotlinmania.rustlang.bridge.ApiTags
-import io.github.kotlinmania.rustlang.bridge.BridgeConfig
-import io.github.kotlinmania.rustlang.bridge.Decode
-import io.github.kotlinmania.rustlang.bridge.Diagnostic
-import io.github.kotlinmania.rustlang.bridge.Encode
-import io.github.kotlinmania.rustlang.bridge.ExpnGlobals
-import io.github.kotlinmania.rustlang.bridge.Literal
-import io.github.kotlinmania.rustlang.bridge.Methods
-import io.github.kotlinmania.rustlang.bridge.TokenTree
-import io.github.kotlinmania.rustlang.bridge.buffer.Buffer
-import io.github.kotlinmania.rustlang.bridge.closure.Closure
-import io.github.kotlinmania.rustlang.bridge.handle.Handle
-import io.github.kotlinmania.rustlang.bridge.panicmessage.PanicMessage
-import io.github.kotlinmania.rustlang.bridge.selflessreify.reifyToExternCFnHrtBridge
 import io.github.kotlinmania.rustlang.core.cell.RefCell
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
+import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.procmacro.bridge.ApiTags
+import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
+import io.github.kotlinmania.rustlang.procmacro.bridge.Decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic
+import io.github.kotlinmania.rustlang.procmacro.bridge.Encode
+import io.github.kotlinmania.rustlang.procmacro.bridge.ExpnGlobals
+import io.github.kotlinmania.rustlang.procmacro.bridge.Literal
+import io.github.kotlinmania.rustlang.procmacro.bridge.Methods
+import io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree
+import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
+import io.github.kotlinmania.rustlang.procmacro.bridge.closure.Closure
+import io.github.kotlinmania.rustlang.procmacro.bridge.handle.Handle
+import io.github.kotlinmania.rustlang.procmacro.bridge.panicmessage.PanicMessage
+import io.github.kotlinmania.rustlang.procmacro.bridge.selflessreify.reifyToExternCFnHrtBridge
 import io.github.kotlinmania.rustlang.procmacro.bridge.symbol.Symbol
+import io.github.kotlinmania.rustlang.std.panic.catchUnwind
+import io.github.kotlinmania.rustlang.std.panic.resumeUnwind
+import io.github.kotlinmania.rustlang.std.panicking.setHook
+import io.github.kotlinmania.rustlang.std.panicking.takeHook
 import io.github.kotlinmania.rustlang.std.sync.once.Once
 
 // Client-side types.
@@ -48,11 +53,11 @@ public open class TokenStream(
     }
 }
 
-public fun io.github.kotlinmania.rustlang.TokenStream.encode(w: Buffer, s: Unit) {
+public fun TokenStream.encode(w: Buffer, s: Unit) {
     this.value.encode(w, s)
 }
 
-public fun decodeTokenStream(r: List<UByte>, s: Unit): io.github.kotlinmania.rustlang.TokenStream = io.github.kotlinmania.rustlang.TokenStream(Decode.decode(r, s))
+public fun decodeTokenStream(r: List<UByte>, s: Unit): TokenStream = TokenStream(Decode.decode(r, s))
 
 public open class Span(
     public var handle: Handle,
@@ -545,12 +550,12 @@ public open class Client(
     public open fun clone(): Client = Client(run)
 
     public companion object {
-        public fun expand1(f: (io.github.kotlinmania.rustlang.TokenStream) -> io.github.kotlinmania.rustlang.TokenStream): Client =
+        public fun expand1(f: (TokenStream) -> TokenStream): Client =
             Client(run = reifyToExternCFnHrtBridge({ bridge ->
                 runClient(bridge, f)
             }))
 
-        public fun expand2(f: (io.github.kotlinmania.rustlang.TokenStream, io.github.kotlinmania.rustlang.TokenStream) -> io.github.kotlinmania.rustlang.TokenStream): Client =
+        public fun expand2(f: (TokenStream, TokenStream) -> TokenStream): Client =
             Client(run = reifyToExternCFnHrtBridge({ bridge ->
                 runClient(bridge, { (input, input2) -> f(input, input2) })
             }))
@@ -579,7 +584,7 @@ public fun maybeInstallPanicHook(forceShowPanics: Boolean) {
  * Client-side helper for handling client panics, entering the bridge,
  * deserializing input and serializing output.
  */
-public fun <A : Decode<Unit, A>> runClient(config: BridgeConfig, f: (A) -> io.github.kotlinmania.rustlang.TokenStream): Buffer {
+public fun <A : Decode<Unit, A>> runClient(config: BridgeConfig, f: (A) -> TokenStream): Buffer {
     var buf = config.input
     val dispatch = config.dispatch
     val forceShowPanics = config.forceShowPanics

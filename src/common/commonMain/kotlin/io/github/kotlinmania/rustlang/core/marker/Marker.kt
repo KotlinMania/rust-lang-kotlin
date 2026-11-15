@@ -1,7 +1,7 @@
 // port-lint: source marker.rs
 package io.github.kotlinmania.rustlang.core.marker
 
-import io.github.kotlinmania.rustlang.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -487,12 +487,12 @@ public interface Sync
  * `PhantomData` for the field `phantom`:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * fun <T> borrowVec(vec: List<T>): Slice<T> {
  *     val ptr = vec.asPtr()
- *     return Slice(start = ptr, end = ConstPtr((ptr).rawAddress + ((vec.size).toLong() * (ObjectSlotLayout<T>()).strideBytes)), phantom = Unit)
+ *     return Slice(start = ptr, end = ConstPtr((ptr).rawAddress + ((vec.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), phantom = Unit)
  * }
  * ```
  *
@@ -541,14 +541,20 @@ public interface Sync
  *
  * [drop check]: Drop#drop-check
  */
-public open class PhantomData<T> : Copy<PhantomData<T>>, TrivialClone<PhantomData<T>>, StructuralPartialEq, Freeze, UnsafeUnpin, Move {
+public open class PhantomData<T> :
+    Copy<PhantomData<T>>,
+    TrivialClone<PhantomData<T>>,
+    StructuralPartialEq,
+    Freeze,
+    UnsafeUnpin,
+    Move {
     public override fun hashCode(): Int = 0
 
     public open fun eq(other: PhantomData<T>): Boolean = true
 
-    public open fun partialCmp(other: PhantomData<T>): Ordering? = Option.Some(Ordering.Equal)
+    public open fun partialCmp(other: PhantomData<T>): cmp.Ordering? = Option.Some(cmp.Ordering.Equal)
 
-    public open fun cmp(other: PhantomData<T>): Ordering = Ordering.Equal
+    public open fun cmp(other: PhantomData<T>): cmp.Ordering = cmp.Ordering.Equal
 
     public override fun clone(): PhantomData<T> = PhantomData()
 

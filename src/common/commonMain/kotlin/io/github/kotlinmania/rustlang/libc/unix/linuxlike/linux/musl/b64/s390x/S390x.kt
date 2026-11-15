@@ -3,7 +3,6 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.s390x
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
@@ -15,23 +14,24 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.GidT
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.UidT
-import io.github.kotlinmania.rustlang.unix.bsd.FsidT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.KeyT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.DevT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.BlkcntT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.FsblkcntT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.FsfilcntT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.InoT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.SigsetT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.FsidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.KeyT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TcflagT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.DevT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.ModeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.BlkcntT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.FsblkcntT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.FsfilcntT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.InoT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.OffT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.TimeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.SigsetT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.StackT
 
 public typealias BlksizeT = Long
 
@@ -44,18 +44,20 @@ public typealias GregT = ULong
 // Note(1.0,deprecate): lfs binding to be removed
 public typealias Statfs64 = Statfs
 
-public data class IpcPerm(
-    public var key: KeyT = 0,
-    public var ipcPermKey: KeyT = 0,
-    public var uid: UidT = 0,
-    public var gid: GidT = 0,
-    public var cuid: UidT = 0,
-    public var cgid: GidT = 0,
-    public var mode: ModeT = 0u,
-    public var seq: CInt = 0,
-    public var pad1: CLong = 0L,
-    public var pad2: CLong = 0L,
+public open class IpcPerm(
+    public var key: KeyT,
+    public var ipcPermKey: KeyT,
+    public var uid: UidT,
+    public var gid: GidT,
+    public var cuid: UidT,
+    public var cgid: GidT,
+    public var mode: ModeT,
+    public var seq: CInt,
+    public var pad1: CLong,
+    public var pad2: CLong,
 ) {
+    public open fun clone(): IpcPerm = IpcPerm(key, ipcPermKey, uid, gid, cuid, cgid, mode, seq, pad1, pad2)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IpcPerm> =
             object : TypeLayout<IpcPerm> {
@@ -115,26 +117,26 @@ public data class IpcPerm(
     }
 }
 
-public class Stat(
-    public var stDev: DevT = 0uL,
-    public var stIno: InoT = 0uL,
-    public var stNlink: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.s390x.NlinkT = 0uL,
-    public var stMode: ModeT = 0u,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var stRdev: DevT = 0uL,
-    public var stSize: OffT = 0L,
-    public var stAtime: TimeT = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: TimeT = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: TimeT = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var stBlksize: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.s390x.BlksizeT = 0L,
-    public var stBlocks: BlkcntT = 0L,
-    public var unused: LongArray = LongArray(3),
+public open class Stat(
+    public var stDev: DevT,
+    public var stIno: InoT,
+    public var stNlink: NlinkT,
+    public var stMode: ModeT,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var stRdev: DevT,
+    public var stSize: OffT,
+    public var stAtime: TimeT,
+    public var stAtimeNsec: CLong,
+    public var stMtime: TimeT,
+    public var stMtimeNsec: CLong,
+    public var stCtime: TimeT,
+    public var stCtimeNsec: CLong,
+    public var stBlksize: BlksizeT,
+    public var stBlocks: BlkcntT,
+    public var unused: LongArray,
 ) {
-    public fun clone(): Stat = Stat(stDev, stIno, stNlink, stMode, stUid, stGid, stRdev, stSize, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, stBlksize, stBlocks, unused)
+    public open fun clone(): Stat = Stat(stDev, stIno, stNlink, stMode, stUid, stGid, stRdev, stSize, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, stBlksize, stBlocks, unused)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat> =
@@ -223,59 +225,29 @@ public class Stat(
     }
 }
 
-public data class Statfs(
-    public var fType: CUint = 0u,
-    public var fBsize: CUint = 0u,
-    public var fBlocks: FsblkcntT = 0uL,
-    public var fBfree: FsblkcntT = 0uL,
-    public var fBavail: FsblkcntT = 0uL,
-    public var fFiles: FsfilcntT = 0uL,
-    public var fFfree: FsfilcntT = 0uL,
-    public var fFsid: FsidT = FsidT(),
-    public var fNamelen: CUint = 0u,
-    public var fFrsize: CUint = 0u,
-    public var fFlags: CUint = 0u,
-    public var fSpare: UIntArray = UIntArray(4),
+public open class Statfs(
+    public var fType: CUint,
+    public var fBsize: CUint,
+    public var fBlocks: FsblkcntT,
+    public var fBfree: FsblkcntT,
+    public var fBavail: FsblkcntT,
+    public var fFiles: FsfilcntT,
+    public var fFfree: FsfilcntT,
+    public var fFsid: FsidT,
+    public var fNamelen: CUint,
+    public var fFrsize: CUint,
+    public var fFlags: CUint,
+    public var fSpare: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Statfs) return false
-        if (this.fType != other.fType) return false
-        if (this.fBsize != other.fBsize) return false
-        if (this.fBlocks != other.fBlocks) return false
-        if (this.fBfree != other.fBfree) return false
-        if (this.fBavail != other.fBavail) return false
-        if (this.fFiles != other.fFiles) return false
-        if (this.fFfree != other.fFfree) return false
-        if (this.fFsid != other.fFsid) return false
-        if (this.fNamelen != other.fNamelen) return false
-        if (this.fFrsize != other.fFrsize) return false
-        if (this.fFlags != other.fFlags) return false
-        if (!this.fSpare.contentEquals(other.fSpare)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.fType.hashCode()
-        result = 31 * result + this.fBsize.hashCode()
-        result = 31 * result + this.fBlocks.hashCode()
-        result = 31 * result + this.fBfree.hashCode()
-        result = 31 * result + this.fBavail.hashCode()
-        result = 31 * result + this.fFiles.hashCode()
-        result = 31 * result + this.fFfree.hashCode()
-        result = 31 * result + this.fFsid.hashCode()
-        result = 31 * result + this.fNamelen.hashCode()
-        result = 31 * result + this.fFrsize.hashCode()
-        result = 31 * result + this.fFlags.hashCode()
-        result = 31 * result + this.fSpare.contentHashCode()
-        return result
-    }
+    public open fun clone(): Statfs = Statfs(fType, fBsize, fBlocks, fBfree, fBavail, fFiles, fFfree, fFsid, fNamelen, fFrsize, fFlags, fSpare)
 }
 
-public data class PswT(
-    public var mask: CUlong = 0uL,
-    public var addr: CUlong = 0uL,
+public open class PswT(
+    public var mask: CUlong,
+    public var addr: CUlong,
 ) {
+    public open fun clone(): PswT = PswT(mask, addr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<PswT> =
             object : TypeLayout<PswT> {
@@ -303,37 +275,23 @@ public data class PswT(
     }
 }
 
-public data class FpregsetT(
-    public var fpc: CUint = 0u,
-    public var fprs: List<FpregT> = List(16) { FpregT() },
-)
-
-public data class McontextT(
-    public var psw: PswT = PswT(),
-    public var gregs: ULongArray = ULongArray(16),
-    public var aregs: UIntArray = UIntArray(16),
-    public var fpregs: FpregsetT = ULongArray(0),
+public open class FpregsetT(
+    public var fpc: CUint,
+    public var fprs: List<FpregT>,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is McontextT) return false
-        if (this.psw != other.psw) return false
-        if (!this.gregs.contentEquals(other.gregs)) return false
-        if (!this.aregs.contentEquals(other.aregs)) return false
-        if (this.fpregs != other.fpregs) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.psw.hashCode()
-        result = 31 * result + this.gregs.contentHashCode()
-        result = 31 * result + this.aregs.contentHashCode()
-        result = 31 * result + this.fpregs.hashCode()
-        return result
-    }
+    public open fun clone(): FpregsetT = FpregsetT(fpc, fprs)
 }
 
-public class UcontextT internal constructor(
+public open class McontextT(
+    public var psw: PswT,
+    public var gregs: ULongArray,
+    public var aregs: UIntArray,
+    public var fpregs: FpregsetT,
+) {
+    public open fun clone(): McontextT = McontextT(psw, gregs, aregs, fpregs)
+}
+
+public open class UcontextT internal constructor(
     public var ucFlags: CUlong,
     ucLinkCtorArg: MutPtr,
     public var ucStack: StackT,
@@ -346,55 +304,15 @@ public class UcontextT internal constructor(
     public var ucMcontext: McontextT = ucMcontextCtorArg
         internal set
 
-    public constructor() : this(
-        ucFlags = 0uL,
-        ucLinkCtorArg = MutPtr(0L),
-        ucStack = StackT(),
-        ucMcontextCtorArg = MutPtr(0L),
-        ucSigmask = SigsetT(),
-    )
-
-    public operator fun component1(): CUlong = this.ucFlags
-
-    public operator fun component2(): MutPtr = this.ucLink
-
-    public operator fun component3(): StackT = this.ucStack
-
-    public operator fun component4(): McontextT = this.ucMcontext
-
-    public operator fun component5(): SigsetT = this.ucSigmask
-
-    public fun copy(ucFlags: CUlong = this.ucFlags, ucLink: MutPtr = this.ucLink, ucStack: StackT = this.ucStack, ucMcontext: McontextT = this.ucMcontext, ucSigmask: SigsetT = this.ucSigmask): UcontextT = UcontextT(ucFlags = ucFlags, ucLinkCtorArg = ucLink, ucStack = ucStack, ucMcontextCtorArg = ucMcontext, ucSigmask = ucSigmask)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is UcontextT) return false
-        if (this.ucFlags != other.ucFlags) return false
-        if (this.ucLink != other.ucLink) return false
-        if (this.ucStack != other.ucStack) return false
-        if (this.ucMcontext != other.ucMcontext) return false
-        if (this.ucSigmask != other.ucSigmask) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ucFlags.hashCode()
-        result = 31 * result + this.ucLink.hashCode()
-        result = 31 * result + this.ucStack.hashCode()
-        result = 31 * result + this.ucMcontext.hashCode()
-        result = 31 * result + this.ucSigmask.hashCode()
-        return result
-    }
-
-    public fun clone(): UcontextT = UcontextT(ucFlags, ucLink, ucStack, ucMcontext, ucSigmask)
+    public open fun clone(): UcontextT = UcontextT(ucFlags, ucLink, ucStack, ucMcontext, ucSigmask)
 
     public companion object {
         public operator fun invoke(
-            ucFlags: CUlong = 0uL,
-            ucLink: MutPtr = MutPtr(0L),
-            ucStack: StackT = StackT(),
-            ucMcontext: McontextT = MutPtr(0L),
-            ucSigmask: SigsetT = SigsetT(),
+            ucFlags: CUlong,
+            ucLink: MutPtr,
+            ucStack: StackT,
+            ucMcontext: McontextT,
+            ucSigmask: SigsetT,
         ): UcontextT = UcontextT(
             ucFlags = ucFlags,
             ucLinkCtorArg = ucLink,
@@ -405,11 +323,11 @@ public class UcontextT internal constructor(
     }
 }
 
-public data class FpregT(
-    public var d: CDouble = 0.0,
-    public var f: CFloat = 0.0f,
+public open class FpregT(
+    public var d: CDouble? = null,
+    public var f: CFloat? = null,
 ) {
-    public fun eq(other: FpregT): Boolean {
+    public open fun eq(other: FpregT): Boolean {
         error("traits")
     }
 
@@ -706,13 +624,13 @@ public val VEOL2: Int = 16
 
 public val VMIN: Int = 6
 
-public val IEXTEN: TcflagT = 0x00008000uL
+public val IEXTEN: TcflagT = 0x00008000u
 
-public val TOSTOP: TcflagT = 0x00000100uL
+public val TOSTOP: TcflagT = 0x00000100u
 
-public val FLUSHO: TcflagT = 0x00001000uL
+public val FLUSHO: TcflagT = 0x00001000u
 
-public val EXTPROC: TcflagT = 0x00010000uL
+public val EXTPROC: TcflagT = 0x00010000u
 
 public val MCL_CURRENT: CInt = 0x0001
 
@@ -746,125 +664,125 @@ public val VDISCARD: Int = 13
 
 public val VWERASE: Int = 14
 
-public val OLCUC: TcflagT = 2uL
+public val OLCUC: TcflagT = 2u
 
-public val ONLCR: TcflagT = 4uL
+public val ONLCR: TcflagT = 4u
 
-public val NLDLY: TcflagT = 256uL
+public val NLDLY: TcflagT = 256u
 
-public val CRDLY: TcflagT = 1536uL
+public val CRDLY: TcflagT = 1536u
 
-public val CR1: TcflagT = 0x00000200uL
+public val CR1: TcflagT = 0x00000200u
 
-public val CR2: TcflagT = 0x00000400uL
+public val CR2: TcflagT = 0x00000400u
 
-public val CR3: TcflagT = 0x00000600uL
+public val CR3: TcflagT = 0x00000600u
 
-public val TABDLY: TcflagT = 6144uL
+public val TABDLY: TcflagT = 6144u
 
-public val TAB1: TcflagT = 0x00000800uL
+public val TAB1: TcflagT = 0x00000800u
 
-public val TAB2: TcflagT = 0x00001000uL
+public val TAB2: TcflagT = 0x00001000u
 
-public val TAB3: TcflagT = 0x00001800uL
+public val TAB3: TcflagT = 0x00001800u
 
-public val BSDLY: TcflagT = 8192uL
+public val BSDLY: TcflagT = 8192u
 
-public val BS1: TcflagT = 0x00002000uL
+public val BS1: TcflagT = 0x00002000u
 
-public val FFDLY: TcflagT = 32768uL
+public val FFDLY: TcflagT = 32768u
 
-public val FF1: TcflagT = 0x00008000uL
+public val FF1: TcflagT = 0x00008000u
 
-public val VTDLY: TcflagT = 16384uL
+public val VTDLY: TcflagT = 16384u
 
-public val VT1: TcflagT = 0x00004000uL
+public val VT1: TcflagT = 0x00004000u
 
-public val XTABS: TcflagT = 6144uL
+public val XTABS: TcflagT = 6144u
 
-public val CBAUD: SpeedT = 4111uL
+public val CBAUD: SpeedT = 4111u
 
-public val CSIZE: TcflagT = 48uL
+public val CSIZE: TcflagT = 48u
 
-public val CS6: TcflagT = 16uL
+public val CS6: TcflagT = 16u
 
-public val CS7: TcflagT = 32uL
+public val CS7: TcflagT = 32u
 
-public val CS8: TcflagT = 48uL
+public val CS8: TcflagT = 48u
 
-public val CSTOPB: TcflagT = 64uL
+public val CSTOPB: TcflagT = 64u
 
-public val CREAD: TcflagT = 128uL
+public val CREAD: TcflagT = 128u
 
-public val PARENB: TcflagT = 256uL
+public val PARENB: TcflagT = 256u
 
-public val PARODD: TcflagT = 512uL
+public val PARODD: TcflagT = 512u
 
-public val HUPCL: TcflagT = 1024uL
+public val HUPCL: TcflagT = 1024u
 
-public val CLOCAL: TcflagT = 2048uL
+public val CLOCAL: TcflagT = 2048u
 
-public val CBAUDEX: TcflagT = 4096uL
+public val CBAUDEX: TcflagT = 4096u
 
-public val B57600: SpeedT = 4097uL
+public val B57600: SpeedT = 4097u
 
-public val B115200: SpeedT = 4098uL
+public val B115200: SpeedT = 4098u
 
-public val B230400: SpeedT = 4099uL
+public val B230400: SpeedT = 4099u
 
-public val B460800: SpeedT = 4100uL
+public val B460800: SpeedT = 4100u
 
-public val B500000: SpeedT = 4101uL
+public val B500000: SpeedT = 4101u
 
-public val B576000: SpeedT = 4102uL
+public val B576000: SpeedT = 4102u
 
-public val B921600: SpeedT = 4103uL
+public val B921600: SpeedT = 4103u
 
-public val B1000000: SpeedT = 4104uL
+public val B1000000: SpeedT = 4104u
 
-public val B1152000: SpeedT = 4105uL
+public val B1152000: SpeedT = 4105u
 
-public val B1500000: SpeedT = 4106uL
+public val B1500000: SpeedT = 4106u
 
-public val B2000000: SpeedT = 4107uL
+public val B2000000: SpeedT = 4107u
 
-public val B2500000: SpeedT = 4108uL
+public val B2500000: SpeedT = 4108u
 
-public val B3000000: SpeedT = 4109uL
+public val B3000000: SpeedT = 4109u
 
-public val B3500000: SpeedT = 4110uL
+public val B3500000: SpeedT = 4110u
 
-public val B4000000: SpeedT = 4111uL
+public val B4000000: SpeedT = 4111u
 
-public val CIBAUD: TcflagT = 269418496uL
+public val CIBAUD: TcflagT = 269418496u
 
-public val ISIG: TcflagT = 1uL
+public val ISIG: TcflagT = 1u
 
-public val ICANON: TcflagT = 2uL
+public val ICANON: TcflagT = 2u
 
-public val ECHOE: TcflagT = 16uL
+public val ECHOE: TcflagT = 16u
 
-public val ECHOK: TcflagT = 32uL
+public val ECHOK: TcflagT = 32u
 
-public val ECHONL: TcflagT = 64uL
+public val ECHONL: TcflagT = 64u
 
-public val NOFLSH: TcflagT = 128uL
+public val NOFLSH: TcflagT = 128u
 
-public val ECHOCTL: TcflagT = 512uL
+public val ECHOCTL: TcflagT = 512u
 
-public val ECHOPRT: TcflagT = 1024uL
+public val ECHOPRT: TcflagT = 1024u
 
-public val ECHOKE: TcflagT = 2048uL
+public val ECHOKE: TcflagT = 2048u
 
-public val PENDIN: TcflagT = 16384uL
+public val PENDIN: TcflagT = 16384u
 
 public val POLLWRNORM: CShort = 0x100
 
 public val POLLWRBAND: CShort = 0x200
 
-public val IXON: TcflagT = 1024uL
+public val IXON: TcflagT = 1024u
 
-public val IXOFF: TcflagT = 4096uL
+public val IXOFF: TcflagT = 4096u
 
 public val SYS_EXIT: CLong = 1L
 

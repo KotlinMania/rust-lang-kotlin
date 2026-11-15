@@ -1,8 +1,8 @@
 // port-lint: source sys/helpers/c_opaque.rs
 package io.github.kotlinmania.rustlang.std.sys.helpers.copaque
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.pin.unsafepinned.UnsafePinned
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -113,6 +113,6 @@ public open class COpaque<T> internal constructor(
          * let var = pin(COpaque.new(T_INITIALIZER));
          * ```
          */
-        public fun <T> new(initializer: T): COpaque<T> = COpaque(inner = UnsafePinned.new(MaybeUninit.new(initializer, ObjectSlotLayout<T>())))
+        public fun <T> new(initializer: T): COpaque<T> = COpaque(inner = UnsafePinned.new(MaybeUninit.new(initializer, UnresolvedTypeLayout<T>())))
     }
 }

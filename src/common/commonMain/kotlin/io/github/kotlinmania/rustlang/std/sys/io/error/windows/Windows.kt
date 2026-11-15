@@ -8,10 +8,10 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.sync.nonpoison.WouldBlock
-import io.github.kotlinmania.rustlang.sys.pal.api
-import io.github.kotlinmania.rustlang.sys.pal.c
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.WouldBlock
+import io.github.kotlinmania.rustlang.std.sys.pal.api
+import io.github.kotlinmania.rustlang.std.sys.pal.c
 
 public fun errno(): Int = api.getLastError().code
 

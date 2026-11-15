@@ -8,16 +8,16 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.term.Terminal
-import io.github.kotlinmania.rustlang.term.color.BLACK
-import io.github.kotlinmania.rustlang.term.color.BLUE
-import io.github.kotlinmania.rustlang.term.color.CYAN
-import io.github.kotlinmania.rustlang.term.color.Color
-import io.github.kotlinmania.rustlang.term.color.GREEN
-import io.github.kotlinmania.rustlang.term.color.MAGENTA
-import io.github.kotlinmania.rustlang.term.color.RED
-import io.github.kotlinmania.rustlang.term.color.WHITE
-import io.github.kotlinmania.rustlang.term.color.YELLOW
+import io.github.kotlinmania.rustlang.test.term.Terminal
+import io.github.kotlinmania.rustlang.test.term.color.BLACK
+import io.github.kotlinmania.rustlang.test.term.color.BLUE
+import io.github.kotlinmania.rustlang.test.term.color.CYAN
+import io.github.kotlinmania.rustlang.test.term.color.Color
+import io.github.kotlinmania.rustlang.test.term.color.GREEN
+import io.github.kotlinmania.rustlang.test.term.color.MAGENTA
+import io.github.kotlinmania.rustlang.test.term.color.RED
+import io.github.kotlinmania.rustlang.test.term.color.WHITE
+import io.github.kotlinmania.rustlang.test.term.color.YELLOW
 
 // Windows console handling
 

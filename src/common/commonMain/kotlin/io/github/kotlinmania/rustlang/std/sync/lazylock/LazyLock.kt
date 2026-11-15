@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.std.sync.lazylock
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
-import io.github.kotlinmania.rustlang.sync.once.Once
 
 public class DebugTuple(
     private val out: StringBuilder,

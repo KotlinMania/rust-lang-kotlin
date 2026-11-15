@@ -2,14 +2,14 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.introspection
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadKeyT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadKeyT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
 
-private object LibcNewAppleLibpthreadPthreadIntrospectionJniBridge {
+private object NewAppleLibpthreadPthreadIntrospectionJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -45,11 +45,14 @@ private object LibcNewAppleLibpthreadPthreadIntrospectionJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = LibcNewAppleLibpthreadPthreadIntrospectionJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = NewAppleLibpthreadPthreadIntrospectionJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -63,20 +66,20 @@ private object LibcNewAppleLibpthreadPthreadIntrospectionJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangLibcNewAppleLibpthreadPthreadIntrospectionPthreadIntrospectionHookInstall(hook: Long): Long
+    external fun libcNewAppleLibpthreadPthreadIntrospectionPthreadIntrospectionHookInstall(hook: Long): Long
 
     @JvmStatic
-    external fun rustlangLibcNewAppleLibpthreadPthreadIntrospectionPthreadIntrospectionSetspecificNp(thread: Long, key: Long, value: Long): Int
+    external fun libcNewAppleLibpthreadPthreadIntrospectionPthreadIntrospectionSetspecificNp(thread: Long, key: Long, value: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcNewAppleLibpthreadPthreadIntrospectionPthreadIntrospectionGetspecificNp(thread: Long, key: Long): Long
+    external fun libcNewAppleLibpthreadPthreadIntrospectionPthreadIntrospectionGetspecificNp(thread: Long, key: Long): Long
 }
 
 public actual fun pthreadIntrospectionHookInstall(hook: PthreadIntrospectionHookT): PthreadIntrospectionHookT =
     PthreadIntrospectionHookT { _, _, _, _ -> }
 
 public actual fun pthreadIntrospectionSetspecificNp(thread: PthreadT, key: PthreadKeyT, value: ConstPtr): CInt =
-    LibcNewAppleLibpthreadPthreadIntrospectionJniBridge.rustlangLibcNewAppleLibpthreadPthreadIntrospectionPthreadIntrospectionSetspecificNp(thread.toLong(), key.toLong(), value.rawAddress)
+    NewAppleLibpthreadPthreadIntrospectionJniBridge.libcNewAppleLibpthreadPthreadIntrospectionPthreadIntrospectionSetspecificNp(thread.toLong(), key.toLong(), value.rawAddress)
 
 public actual fun pthreadIntrospectionGetspecificNp(thread: PthreadT, key: PthreadKeyT): MutPtr =
-    MutPtr(LibcNewAppleLibpthreadPthreadIntrospectionJniBridge.rustlangLibcNewAppleLibpthreadPthreadIntrospectionPthreadIntrospectionGetspecificNp(thread.toLong(), key.toLong()))
+    MutPtr(NewAppleLibpthreadPthreadIntrospectionJniBridge.libcNewAppleLibpthreadPthreadIntrospectionPthreadIntrospectionGetspecificNp(thread.toLong(), key.toLong()))

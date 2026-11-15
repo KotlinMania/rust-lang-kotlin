@@ -3,10 +3,6 @@
 
 package io.github.kotlinmania.rustlang.coresimd
 
-import io.github.kotlinmania.rustlang.Mask
-import io.github.kotlinmania.rustlang.MaskElement
-import io.github.kotlinmania.rustlang.Simd
-
 /**
  * Creates a vector from the elements of another vector.
  */

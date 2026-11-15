@@ -1,8 +1,8 @@
 // port-lint: source new/apple/xnu/netinet/tcp.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.netinet.tcp
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `netinet / tcp.h`
 //

@@ -3,51 +3,32 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.netinet6.in6var
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
-import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.iow
-import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.iowr
-import io.github.kotlinmania.rustlang.unix.IFNAMSIZ
-import io.github.kotlinmania.rustlang.unix.bsd.SockaddrIn6
-import io.github.kotlinmania.rustlang.unix.bsd.apple.In6Addrlifetime
-import io.github.kotlinmania.rustlang.unix.bsd.apple.In6Ifreq
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.iow
+import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.iowr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SockaddrIn6
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.In6Addrlifetime
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.In6Ifreq
 
 // Header: `netinet6 / in6Var.h`
 //
 // <https://github.com/apple-oss-distributions/xnu/blob/main/bsd/netinet6/in6Var.h>
 
-public data class In6Aliasreq(
-    public var ifraName: UByteArray = UByteArray(IFNAMSIZ.toInt()),
-    public var ifraAddr: SockaddrIn6 = SockaddrIn6(),
-    public var ifraDstaddr: SockaddrIn6 = SockaddrIn6(),
-    public var ifraPrefixmask: SockaddrIn6 = SockaddrIn6(),
-    public var ifraFlags: CInt = 0,
-    public var ifraLifetime: In6Addrlifetime = In6Addrlifetime(),
-    public var nonExhaustive: Unit = Unit,
+public open class In6Aliasreq(
+    public var ifraName: UByteArray,
+    public var ifraAddr: SockaddrIn6,
+    public var ifraDstaddr: SockaddrIn6,
+    public var ifraPrefixmask: SockaddrIn6,
+    public var ifraFlags: CInt,
+    public var ifraLifetime: In6Addrlifetime,
+    public var nonExhaustive: Unit,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is In6Aliasreq) return false
-        if (!this.ifraName.contentEquals(other.ifraName)) return false
-        if (this.ifraAddr != other.ifraAddr) return false
-        if (this.ifraDstaddr != other.ifraDstaddr) return false
-        if (this.ifraPrefixmask != other.ifraPrefixmask) return false
-        if (this.ifraFlags != other.ifraFlags) return false
-        if (this.ifraLifetime != other.ifraLifetime) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
+    public open fun clone(): In6Aliasreq = In6Aliasreq(ifraName, ifraAddr, ifraDstaddr, ifraPrefixmask, ifraFlags, ifraLifetime, nonExhaustive)
 
-    override fun hashCode(): Int {
-        var result = this.ifraName.contentHashCode()
-        result = 31 * result + this.ifraAddr.hashCode()
-        result = 31 * result + this.ifraDstaddr.hashCode()
-        result = 31 * result + this.ifraPrefixmask.hashCode()
-        result = 31 * result + this.ifraFlags.hashCode()
-        result = 31 * result + this.ifraLifetime.hashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
+    public companion object {
+        public fun default(): In6Aliasreq = In6Aliasreq(ifraName = Default.default(), ifraAddr = Default.default(), ifraDstaddr = Default.default(), ifraPrefixmask = Default.default(), ifraFlags = Default.default(), ifraLifetime = Default.default(), nonExhaustive = Unit)
     }
 }
 

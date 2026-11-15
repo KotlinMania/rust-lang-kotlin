@@ -3,40 +3,48 @@
 
 package io.github.kotlinmania.rustlang.hashbrown.raw
 
-import io.github.kotlinmania.rustlang.Guard
-import io.github.kotlinmania.rustlang.TryReserveError
-import io.github.kotlinmania.rustlang.alloc.Allocator
-import io.github.kotlinmania.rustlang.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
-import io.github.kotlinmania.rustlang.alloc.doAlloc
-import io.github.kotlinmania.rustlang.control.bitmask.BitMaskIter
-import io.github.kotlinmania.rustlang.control.group.generic.Group
-import io.github.kotlinmania.rustlang.control.tag.Tag
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.array.fromFn
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopy
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
+import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
+import io.github.kotlinmania.rustlang.core.mem.swap
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.get
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.scopeguard.ScopeGuard
-import io.github.kotlinmania.rustlang.util.invalidMut
-import io.github.kotlinmania.rustlang.util.likely
-import io.github.kotlinmania.rustlang.util.unlikely
+import io.github.kotlinmania.rustlang.hashbrown.Guard
+import io.github.kotlinmania.rustlang.hashbrown.TryReserveError
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.doAlloc
+import io.github.kotlinmania.rustlang.hashbrown.control.bitmask.BitMaskIter
+import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.Group
+import io.github.kotlinmania.rustlang.hashbrown.control.tag.Tag
+import io.github.kotlinmania.rustlang.hashbrown.scopeguard.ScopeGuard
+import io.github.kotlinmania.rustlang.hashbrown.util.invalidMut
+import io.github.kotlinmania.rustlang.hashbrown.util.likely
+import io.github.kotlinmania.rustlang.hashbrown.util.unlikely
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: MutPtr)
@@ -72,7 +80,7 @@ public sealed class Fallibility {
 
 public interface SizedTypeProperties {
     public val IS_ZERO_SIZED: Boolean
-        get() = sizeOf<SizedTypeProperties>(typeLayoutT = ObjectSlotLayout<SizedTypeProperties>()) == 0
+        get() = sizeOf<SizedTypeProperties>(typeLayoutT = UnresolvedTypeLayout<SizedTypeProperties>()) == 0
 
     public val NEEDS_DROP: Boolean
         get() = needsDrop<SizedTypeProperties>()
@@ -203,7 +211,7 @@ public fun capacityToBuckets(cap: Int, tableLayout: TableLayout): Int? {
     //
     // Be careful when modifying this, calculateLayout relies on the
     // overflow check here.
-    val adjustedCap = (rustCheckedMul(cap, 8) ?: return null) / 7
+    val adjustedCap = (cap.checkedMul(8) ?: return null) / 7
     // Any overflows will have been caught by the checkedMul. Also, any
     // rounding errors from the division above will be cleaned up by
     // nextPowerOfTwo (which can't overflow because of the previous division).
@@ -219,7 +227,7 @@ public fun capacityToBuckets(cap: Int, tableLayout: TableLayout): Int? {
 // selection or growth policy changes, revisit `maximumBucketsIn`.
 public fun ensureBucketBytesAtLeastCtrlAlign(tableLayout: TableLayout, buckets: Int) {
     if (tableLayout.size != 0) {
-        val prod = rustSaturatingMul(tableLayout.size, buckets)
+        val prod = tableLayout.size.saturatingMul(buckets)
         check(prod >= tableLayout.ctrlAlign)
     }
 }
@@ -253,8 +261,8 @@ public open class TableLayout(
         val size = this.size
         val ctrlAlign = this.ctrlAlign
         // Manual layout calculation since Layout methods are not yet stable.
-        val ctrlOffset = ((rustCheckedMul(size, buckets) ?: return null).checkedAdd(ctrlAlign - 1) ?: return null) and (ctrlAlign - 1).inv()
-        val len = (rustCheckedAdd(ctrlOffset, buckets + Group.WIDTH) ?: return null)
+        val ctrlOffset = ((size.checkedMul(buckets) ?: return null).checkedAdd(ctrlAlign - 1) ?: return null) and (ctrlAlign - 1).inv()
+        val len = (ctrlOffset.checkedAdd(buckets + Group.WIDTH) ?: return null)
         // We need an additional check to ensure that the allocation doesn't
         // exceed `Long.MAX` (https://github.com/rust-lang/rust/pull/95295).
         if (len > Int.MAX_VALUE - (ctrlAlign - 1)) {
@@ -780,7 +788,7 @@ public open class RawTable<T, A : Allocator>(
     public open fun removeTagged(item: Bucket<T>): Triple<T, Int, Tag> =
         run {
             val index = this.bucketIndex(item)
-            val tag = (ObjectSlotLayout<Tag>()).readNative((this.table.ctrl(index)).rawAddress)
+            val tag = (UnresolvedTypeLayout<Tag>()).readNative((this.table.ctrl(index)).rawAddress)
             this.table.erase(index)
             Triple(item.read(), index, tag)
         }
@@ -916,7 +924,7 @@ public open class RawTable<T, A : Allocator>(
      */
     public open fun reserveRehash(additional: Int, hasher: (T) -> ULong, fallibility: Fallibility): Result<Unit, TryReserveError> =
         this.table.reserveRehashInner(this.alloc, additional, { table, index -> hasher(table.bucket<T>(index).asRef()) }, fallibility, RawTable.TABLE_LAYOUT, if (T.NEEDS_DROP) {
-            { ptr -> ptr.dropInPlace(ptr.cast()) }
+            { ptr -> dropInPlace(ptr.cast()) }
         } else {
             null
         })
@@ -970,7 +978,7 @@ public open class RawTable<T, A : Allocator>(
             // a tombstone. This works since the number of EMPTY slots does not change in this case.
             //
             // SAFETY: The function is guaranteed to return an index in the range `0 ..= self.numBuckets()`.
-            val oldCtrl = (ObjectSlotLayout<Tag>()).readNative((this.table.ctrl(index)).rawAddress)
+            val oldCtrl = (UnresolvedTypeLayout<Tag>()).readNative((this.table.ctrl(index)).rawAddress)
             if (unlikely(this.table.growthLeft == 0 && oldCtrl.specialIsEmpty())) {
                 this.reserve(1, hasher)
                 // SAFETY: We know for sure that `RawTableInner` has control bytes
@@ -1018,7 +1026,7 @@ public open class RawTable<T, A : Allocator>(
     public open fun replaceBucketWith(bucket: Bucket<T>, f: (T) -> T?): Tag? =
         run {
             val index = this.bucketIndex(bucket)
-            val oldCtrl = (ObjectSlotLayout<Tag>()).readNative((this.table.ctrl(index)).rawAddress)
+            val oldCtrl = (UnresolvedTypeLayout<Tag>()).readNative((this.table.ctrl(index)).rawAddress)
             check(this.isBucketFull(index))
             val oldGrowthLeft = this.table.growthLeft
             val item = this.remove(bucket).first
@@ -1083,7 +1091,7 @@ public open class RawTable<T, A : Allocator>(
      */
     public open fun insertTaggedAtIndex(tag: Tag, index: Int, value: T): Bucket<T> =
         run {
-            val oldCtrl = (ObjectSlotLayout<Tag>()).readNative((this.table.ctrl(index)).rawAddress)
+            val oldCtrl = (UnresolvedTypeLayout<Tag>()).readNative((this.table.ctrl(index)).rawAddress)
             this.table.recordItemInsertAt(index, oldCtrl, tag)
             val bucket = this.bucket(index)
             bucket.write(value)
@@ -1337,7 +1345,7 @@ public open class RawTable<T, A : Allocator>(
                     val option = RawTable.TABLE_LAYOUT.calculateLayoutFor(this.table.numBuckets())
                     option.unwrapUnchecked()
                 }
-                Triple(NonNull.newUnchecked(this.table.ctrl.asPtr().sub(ctrlOffset).cast()), layout, ptr.read(addrOf(this.alloc)))
+                Triple(NonNull.newUnchecked(this.table.ctrl.asPtr().sub(ctrlOffset).cast()), layout, read(addrOf(this.alloc)))
             }
         forget(this)
         return alloc
@@ -1433,7 +1441,7 @@ public open class RawTable<T, A : Allocator>(
 
     public open fun cloneFromSpecRawTableClone(source: RawTable<T, A>) {
         run {
-            kmCopyNonoverlapping((source.table.ctrl(0)).rawAddress, (this.table.ctrl(0)).rawAddress, (this.table.numCtrlBytes()).toLong() * (ObjectSlotLayout<Tag>()).sizeBytes)
+            kmCopyNonoverlapping((source.table.ctrl(0)).rawAddress, (this.table.ctrl(0)).rawAddress, (this.table.numCtrlBytes()).toLong() * (UnresolvedTypeLayout<Tag>()).sizeBytes)
             source.dataStart().asPtr().copyToNonoverlapping(this.dataStart().asPtr(), this.table.numBuckets())
         }
         this.table.items = source.table.items
@@ -1449,7 +1457,7 @@ public open class RawTable<T, A : Allocator>(
     public open fun cloneFromImpl(source: RawTable<T, A>) {
         // Copy the control bytes unchanged. We do this in a single pass
         run {
-            kmCopyNonoverlapping((source.table.ctrl(0)).rawAddress, (this.table.ctrl(0)).rawAddress, (this.table.numCtrlBytes()).toLong() * (ObjectSlotLayout<Tag>()).sizeBytes)
+            kmCopyNonoverlapping((source.table.ctrl(0)).rawAddress, (this.table.ctrl(0)).rawAddress, (this.table.numCtrlBytes()).toLong() * (UnresolvedTypeLayout<Tag>()).sizeBytes)
         }
         // The cloning of elements may panic, in which case we need
         // to make sure we drop only the elements that have been
@@ -1787,7 +1795,7 @@ public open class RawTableInner internal constructor(
             // returns if it cannot find an empty or deleted slot.
             // 2. The caller of this function guarantees that the table has already been
             // allocated
-            val oldCtrl = (ObjectSlotLayout<Tag>()).readNative((this.ctrl(index)).rawAddress)
+            val oldCtrl = (UnresolvedTypeLayout<Tag>()).readNative((this.ctrl(index)).rawAddress)
             this.setCtrlHash(index, hash)
             Pair(index, oldCtrl)
         }
@@ -1969,14 +1977,14 @@ public open class RawTableInner internal constructor(
             // so copying `self.numBuckets() == self.bucketMask + 1` bytes with offset equal to
             // `Group.WIDTH` is safe
             run {
-                kmCopy((this.ctrl(0)).rawAddress, (this.ctrl(Group.WIDTH)).rawAddress, (this.numBuckets()).toLong() * (ObjectSlotLayout<Tag>()).sizeBytes)
+                kmCopy((this.ctrl(0)).rawAddress, (this.ctrl(Group.WIDTH)).rawAddress, (this.numBuckets()).toLong() * (UnresolvedTypeLayout<Tag>()).sizeBytes)
             }
         } else {
             // SAFETY: We have `self.bucketMask + 1 + Group.WIDTH` number of
             // control bytes,so copying `Group.WIDTH` bytes with offset equal
             // to `self.numBuckets() == self.bucketMask + 1` is safe
             run {
-                kmCopy((this.ctrl(0)).rawAddress, (this.ctrl(this.numBuckets())).rawAddress, (Group.WIDTH).toLong() * (ObjectSlotLayout<Tag>()).sizeBytes)
+                kmCopy((this.ctrl(0)).rawAddress, (this.ctrl(this.numBuckets())).rawAddress, (Group.WIDTH).toLong() * (UnresolvedTypeLayout<Tag>()).sizeBytes)
             }
         }
     }
@@ -2389,7 +2397,7 @@ public open class RawTableInner internal constructor(
     public open fun replaceCtrlHash(index: Int, hash: ULong): Tag =
         run {
             // SAFETY: The caller must uphold the safety rules for the [RawTableInner.replaceCtrlHash]
-            val prevCtrl = (ObjectSlotLayout<Tag>()).readNative((this.ctrl(index)).rawAddress)
+            val prevCtrl = (UnresolvedTypeLayout<Tag>()).readNative((this.ctrl(index)).rawAddress)
             this.setCtrlHash(index, hash)
             prevCtrl
         }
@@ -2445,8 +2453,8 @@ public open class RawTableInner internal constructor(
         val index2 = (((index - (Group.WIDTH.toInt()))) and this.bucketMask) + Group.WIDTH
         // SAFETY: The caller must uphold the safety rules for the [RawTableInner.setCtrl]
         run {
-            (ObjectSlotLayout<Tag>()).writeNative((this.ctrl(index)).rawAddress, ctrl)
-            (ObjectSlotLayout<Tag>()).writeNative((this.ctrl(index2)).rawAddress, ctrl)
+            (UnresolvedTypeLayout<Tag>()).writeNative((this.ctrl(index)).rawAddress, ctrl)
+            (UnresolvedTypeLayout<Tag>()).writeNative((this.ctrl(index2)).rawAddress, ctrl)
         }
     }
 
@@ -2485,7 +2493,7 @@ public open class RawTableInner internal constructor(
      */
     public open fun ctrlSlice(): MutableList<MaybeUninit<Tag>> {
         // SAFETY: We have the correct number of control bytes.
-        return rawMutSliceList(this.ctrl.asPtr().cast(), this.numCtrlBytes().toInt(), PrimitiveLayouts.U8)
+        return Slice.fromRawPartsMut(this.ctrl.asPtr().cast(), this.numCtrlBytes())
     }
 
     public open fun numBuckets(): Int = this.bucketMask + 1
@@ -2499,7 +2507,7 @@ public open class RawTableInner internal constructor(
      */
     public open fun isBucketFull(index: Int): Boolean {
         check(index < this.numBuckets())
-        return (ObjectSlotLayout<Tag>()).readNative((this.ctrl(index)).rawAddress).isFull()
+        return (UnresolvedTypeLayout<Tag>()).readNative((this.ctrl(index)).rawAddress).isFull()
     }
 
     public open fun numCtrlBytes(): Int = this.bucketMask + 1 + Group.WIDTH
@@ -2577,7 +2585,7 @@ public open class RawTableInner internal constructor(
      */
     public open fun <A> reserveRehashInner(alloc: A, additional: Int, hasher: (RawTableInner, Int) -> ULong, fallibility: Fallibility, layout: TableLayout, drop: FnCallback?): Result<Unit, TryReserveError> where A : Allocator {
         // Avoid `Option.okOrElse` because it bloats LLVM IR.
-        val newItems = rustCheckedAdd(this.items, additional) ?: return Result.Err(fallibility.capacityOverflow())
+        val newItems = this.items.checkedAdd(additional) ?: return Result.Err(fallibility.capacityOverflow())
         val fullCapacity = bucketMaskToCapacity(this.bucketMask)
         return if (newItems <= fullCapacity / 2) {
             // Rehash in-place without re-allocating if we have plenty of spare
@@ -2726,7 +2734,7 @@ public open class RawTableInner internal constructor(
             // * Both `src` and `dst` are properly aligned.
             //
             // * Both `src` and `dst` point to different region of memory.
-            ptr.copyNonoverlapping(this.bucketPtr(fullByteIndex, layout.size), newTable.bucketPtr(newIndex, layout.size), layout.size)
+            copyNonoverlapping(this.bucketPtr(fullByteIndex, layout.size), newTable.bucketPtr(newIndex, layout.size), layout.size)
         }
         // The hash function didn't panic, so we can safely set the
         // `growthLeft` and `items` fields of the new table.
@@ -2823,7 +2831,7 @@ public open class RawTableInner internal constructor(
                     // element into the new slot and clear the old control
                     // byte.
                     run {
-                        ptr.copyNonoverlapping(iP, newIP, sizeOf)
+                        copyNonoverlapping(iP, newIP, sizeOf)
                     }
                     continue
                 }
@@ -2832,7 +2840,7 @@ public open class RawTableInner internal constructor(
                 // swapped into the old slot.
                 check(prevCtrl == Tag.DELETED)
                 run {
-                    ptr.swapNonoverlapping(iP, newIP, sizeOf)
+                    swapNonoverlapping(iP, newIP, sizeOf)
                 }
             }
         }
@@ -3178,7 +3186,7 @@ public fun <T> RawTable.Companion.withCapacity(capacity: Int): RawTable<T, Globa
  */
 public fun prevPow2(z: Int): Int {
     val shift = sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64) * 8 - 1
-    return 1 shl (shift - (rustLeadingZeros(z).toInt()))
+    return 1 shl (shift - (z.leadingZeros().toInt()))
 }
 
 /**

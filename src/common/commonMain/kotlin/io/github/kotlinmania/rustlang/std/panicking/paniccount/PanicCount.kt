@@ -5,8 +5,8 @@ import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.thread.LocalKey
-import io.github.kotlinmania.rustlang.thread.localimpl.threadLocalInner
+import io.github.kotlinmania.rustlang.std.thread.LocalKey
+import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
 
 public val ALWAYS_ABORT_FLAG: Int = 1 shl (32u - 1u).toInt()
 

@@ -3,18 +3,18 @@
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
 @JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
-private external fun initCorearchWasm32MemoryNapiAddon(): Boolean
+private external fun initWasm32MemoryNapiAddon(): Boolean
 
-private val corearchWasm32MemoryNapiAvailable: Boolean = initCorearchWasm32MemoryNapiAddon()
+private val wasm32MemoryNapiAvailable: Boolean = initWasm32MemoryNapiAddon()
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangCorearchWasm32MemoryLlvmMemoryGrow(p0, p1)")
-private external fun wasmRustlangCorearchWasm32MemoryLlvmMemoryGrow(p0: Int, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchWasm32MemoryLlvmMemoryGrow(p0, p1)")
+private external fun wasmCorearchWasm32MemoryLlvmMemoryGrow(p0: Int, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangCorearchWasm32MemoryLlvmMemorySize(p0)")
-private external fun wasmRustlangCorearchWasm32MemoryLlvmMemorySize(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchWasm32MemoryLlvmMemorySize(p0)")
+private external fun wasmCorearchWasm32MemoryLlvmMemorySize(p0: Int): String
 
 public actual fun llvmMemoryGrow(mem: UInt, pages: ULong): ULong =
-    if (corearchWasm32MemoryNapiAvailable) wasmRustlangCorearchWasm32MemoryLlvmMemoryGrow(mem.toInt(), pages.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (wasm32MemoryNapiAvailable) wasmCorearchWasm32MemoryLlvmMemoryGrow(mem.toInt(), pages.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun llvmMemorySize(mem: UInt): ULong =
-    if (corearchWasm32MemoryNapiAvailable) wasmRustlangCorearchWasm32MemoryLlvmMemorySize(mem.toInt()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (wasm32MemoryNapiAvailable) wasmCorearchWasm32MemoryLlvmMemorySize(mem.toInt()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")

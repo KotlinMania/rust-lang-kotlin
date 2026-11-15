@@ -1,17 +1,18 @@
 // port-lint: source v0.rs
 package io.github.kotlinmania.rustlang.rustcdemangle.v0
 
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
+import io.github.kotlinmania.rustlang.core.array.fromFn
+import io.github.kotlinmania.rustlang.core.char.methods.toDigit
+import io.github.kotlinmania.rustlang.core.mem.get
+import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.core.slice.get
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.core.str.rustToDigit
+import io.github.kotlinmania.rustlang.core.str.chars
 
 // Mark the parser as errored (with `ParseError.Invalid`), print the
 // appropriate message (see `ParseError.message`) and return early.
@@ -168,7 +169,7 @@ public open class Ident(
         }
         var len = 0
         // Populate initial output from ASCII fragment.
-        for (c in this.ascii.rustStrChars()) {
+        for (c in this.ascii.chars()) {
             when (val tryResult = insert(len, c)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             len += 1
         }
@@ -188,7 +189,7 @@ public open class Ident(
             var k: Int = 0
             while (true) {
                 k += base
-                val t = minOf(max(rustSaturatingSub(k, bias.toInt()), tMin), tMax)
+                val t = minOf(max(k.saturatingSub(bias.toInt()), tMin), tMax)
                 val d2 =
                     when (val matchVal = punycodeBytes.next()) {
                         in 97u..122u -> {
@@ -202,7 +203,7 @@ public open class Ident(
                         else -> { return Result.Err(Unit) }
                     }
                 val d3 = d2.toInt()
-                delta = when (val tryResult = rustCheckedAdd(delta, (when (val tryResult = rustCheckedMul(d3, w.toInt()).okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }).toInt()).okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                delta = when (val tryResult = delta.checkedAdd((when (val tryResult = d3.checkedMul(w.toInt()).okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }).toInt()).okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 if (d3 < t) {
                     break
                 }
@@ -210,8 +211,8 @@ public open class Ident(
             }
             // Compute the new insert position and character.
             len += 1
-            i = when (val tryResult = rustCheckedAdd(i, delta).okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-            n = when (val tryResult = rustCheckedAdd(n, i / len).okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            i = when (val tryResult = i.checkedAdd(delta).okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            n = when (val tryResult = n.checkedAdd(i / len).okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             i %= len
             val nU32 = n.toUInt()
             val c1 =
@@ -308,11 +309,11 @@ public open class HexNibbles(
                 }
                 else -> error("unreachable")
             } }).map({ param0 ->
-                val half = { nibble: UByte -> (nibble.toInt().toChar()).rustToDigit(16u)!!.toUByte() }
+                val half = { nibble: UByte -> (nibble.toInt().toChar()).toDigit(16u)!!.toUByte() }
                 (half(hi) shl 4) or half(lo)
             })
         val chars =
-            iter.fromFn({
+            fromFn({
                 // As long as there are any bytes left, there's at least one more
                 // UTF-8-encoded `char` to decode (or the possibility of error).
                 bytes.next()?.let(closure3@{ firstByte ->
@@ -479,10 +480,10 @@ public open class Parser(
         var x: ULong = 0uL
         while (!this.eat(95u)) {
             val d = (when (val tryResult = this.digit62()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }).toULong()
-            x = when (val tryResult = (rustCheckedMul(x, 62uL)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-            x = when (val tryResult = (rustCheckedAdd(x, d)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            x = when (val tryResult = (x.checkedMul(62uL)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            x = when (val tryResult = (x.checkedAdd(d)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         }
-        return (rustCheckedAdd(x, 1uL)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))
+        return (x.checkedAdd(1uL)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))
     }
 
     public open fun optInteger62(tag: UByte): Result<ULong, ParseError> {
@@ -526,14 +527,14 @@ public open class Parser(
                 val matchVal = this.digit10()
                 if (matchVal !is Result.Ok<*, *>) break
                 val d = (matchVal as Result.Ok<*, *>).value
-                len = when (val tryResult = (rustCheckedMul(len, 10)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                len = when (val tryResult = (rustCheckedAdd(len, d.toInt())?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                len = when (val tryResult = (len.checkedMul(10)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                len = when (val tryResult = (len.checkedAdd(d.toInt())?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
         }
         // Skip past the optional `_` separator.
         this.eat(95u)
         val start = this.next
-        this.next = when (val tryResult = (rustCheckedAdd(this.next, len)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        this.next = when (val tryResult = (this.next.checkedAdd(len)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         if (this.next > this.sym.length) {
             return Result.Err(ParseError.Invalid)
         }
@@ -706,7 +707,7 @@ public open class Printer internal constructor(
         if (lt == 0uL) {
             return this.print("_")
         }
-        when (val matchVal = rustCheckedSub((this.boundLifetimeDepth.toULong()), lt)) {
+        when (val matchVal = (this.boundLifetimeDepth.toULong()).checkedSub(lt)) {
             null -> {
                 val err = ParseError.Invalid
                 this.print(err.message())

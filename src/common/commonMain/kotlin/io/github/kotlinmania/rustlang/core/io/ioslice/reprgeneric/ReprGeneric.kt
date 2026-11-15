@@ -1,7 +1,7 @@
 // port-lint: source io/io_slice/repr_generic.rs
 package io.github.kotlinmania.rustlang.core.io.ioslice.reprgeneric
 
-import io.github.kotlinmania.rustlang.mem.replace
+import io.github.kotlinmania.rustlang.core.mem.replace
 
 public open class IoSlice(
     public var value: List<UByte>,

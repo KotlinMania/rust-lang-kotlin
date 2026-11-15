@@ -7,8 +7,11 @@ import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hash.random.RandomState
+import io.github.kotlinmania.rustlang.hashbrown.rustcentry.RustcEntry
+import io.github.kotlinmania.rustlang.hashbrown.rustcentry.RustcOccupiedEntry
+import io.github.kotlinmania.rustlang.hashbrown.rustcentry.RustcVacantEntry
 import io.github.kotlinmania.rustlang.std.collections.hash.map.Entry.*
+import io.github.kotlinmania.rustlang.std.hash.random.RandomState
 import io.github.kotlinmania.rustlang.hashbrown.hashMap as base
 
 public class DebugStruct(
@@ -236,9 +239,9 @@ public class DebugTuple(
  * ```
  */
 public open class HashMap<K, V, S, A : Allocator> internal constructor(
-    baseCtorArg: HashMap<K, V, S, A>,
+    baseCtorArg: io.github.kotlinmania.rustlang.hashbrown.HashMap<K, V, S, A>,
 ) : Iterable<Pair<K, V>> {
-    public var base: HashMap<K, V, S, A> = baseCtorArg
+    public var base: io.github.kotlinmania.rustlang.hashbrown.HashMap<K, V, S, A> = baseCtorArg
         internal set
 
     override fun iterator(): Iterator<Pair<K, V>> = this.intoIter().iterator()
@@ -843,7 +846,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      * check(map[1] == "b")
      * ```
      */
-    public open fun <Q> getMut(k: Q): V? = this.base.get(k)
+    public open fun <Q> getMut(k: Q): V? = this.base.getMut(k)
 
     /**
      * Inserts a key-value pair into the map.
@@ -866,7 +869,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      * check(map[37] == "c")
      * ```
      */
-    public open fun insert(k: K, v: V): V? = this.base.put(k, v)
+    public open fun insert(k: K, v: V): V? = this.base.insert(k, v)
 
     /**
      * Tries to insert a key-value pair into the map, and returns
@@ -944,7 +947,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      */
     public open fun <Q> removeEntry(k: Q): Pair<K, V>? = this.base.removeEntry(k)
 
-    public open fun clone(): HashMap<K, V, S, A> = HashMap(base = this.base.toMutableMap())
+    public open fun clone(): HashMap<K, V, S, A> = HashMap(base = this.base.clone())
 
     public open fun cloneFrom(source: HashMap<K, V, S, A>) {
         this.base = source.base
@@ -996,7 +999,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOne(tupleArg0: Pair<K, V>) {
-        this.base.put(k, v)
+        this.base.insert(k, v)
     }
 
     public open fun extendReserve(additional: Int) {
@@ -1008,7 +1011,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOneKV(tupleArg0: Pair<K, V>) {
-        this.base.put(k, v)
+        this.base.insert(k, v)
     }
 
     public open fun extendReserveKV(additional: Int) {
@@ -1017,7 +1020,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, V, S, A : Allocator> invoke(
-            base: HashMap<K, V, S, A>,
+            base: io.github.kotlinmania.rustlang.hashbrown.HashMap<K, V, S, A>,
         ): HashMap<K, V, S, A> = HashMap<K, V, S, A>(
             baseCtorArg = base,
         )
@@ -1049,7 +1052,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
          * }
          * ```
          */
-        public fun <K, V, S, A : Allocator> withHasherIn(hashBuilder: S, alloc: A): HashMap<K, V, S, A> = HashMap(base = HashMap.withHasherIn(hashBuilder, alloc))
+        public fun <K, V, S, A : Allocator> withHasherIn(hashBuilder: S, alloc: A): HashMap<K, V, S, A> = HashMap(base = io.github.kotlinmania.rustlang.hashbrown.HashMap.withHasherIn(hashBuilder, alloc))
 
         /**
          * Creates an empty `HashMap` with at least the specified capacity, using
@@ -1080,7 +1083,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
          * }
          * ```
          */
-        public fun <K, V, S, A : Allocator> withCapacityAndHasherIn(capacity: Int, hashBuilder: S, alloc: A): HashMap<K, V, S, A> = HashMap(base = HashMap.withCapacityAndHasherIn(capacity, hashBuilder, alloc))
+        public fun <K, V, S, A : Allocator> withCapacityAndHasherIn(capacity: Int, hashBuilder: S, alloc: A): HashMap<K, V, S, A> = HashMap(base = io.github.kotlinmania.rustlang.hashbrown.HashMap.withCapacityAndHasherIn(capacity, hashBuilder, alloc))
     }
 }
 
@@ -1171,7 +1174,7 @@ public fun <K, V, A : Allocator> HashMap.Companion.withCapacityIn(capacity: Int,
  * map.insert(1, 2)
  * ```
  */
-public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V, S> = HashMap(base = HashMap.withHasher(hashBuilder))
+public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V, S> = HashMap(base = io.github.kotlinmania.rustlang.hashbrown.HashMap.withHasher(hashBuilder))
 
 /**
  * Creates an empty `HashMap` with at least the specified capacity, using
@@ -1199,7 +1202,7 @@ public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V,
  * map.insert(1, 2)
  * ```
  */
-public fun <K, V, S> HashMap.Companion.withCapacityAndHasher(capacity: Int, hasher: S): HashMap<K, V, S> = HashMap(base = HashMap.withCapacityAndHasher(capacity, hasher))
+public fun <K, V, S> HashMap.Companion.withCapacityAndHasher(capacity: Int, hasher: S): HashMap<K, V, S> = HashMap(base = io.github.kotlinmania.rustlang.hashbrown.HashMap.withCapacityAndHasher(capacity, hasher))
 
 /**
  * Creates an empty `HashMap<K, V, S>`, with the `Default` value for the hasher.
@@ -1251,7 +1254,7 @@ public fun <K, V> fromHashMapKVRandomState(arr: List<Pair<K, V>>, n: Int): HashM
  * ```
  */
 public open class Iter<K, V>(
-    public var base: Iter<K, V>,
+    public var base: io.github.kotlinmania.rustlang.hashbrown.Iter<K, V>,
 ) : Iterable<Pair<K, V>> {
     override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
@@ -1300,7 +1303,7 @@ public open class Iter<K, V>(
  * ```
  */
 public open class IterMut<K, V>(
-    public var base: IterMut<K, V>,
+    public var base: io.github.kotlinmania.rustlang.hashbrown.IterMut<K, V>,
 ) : Iterable<Pair<K, V>> {
     override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
@@ -1351,9 +1354,9 @@ public open class IterMut<K, V>(
  * ```
  */
 public open class IntoIter<K, V, A : Allocator> internal constructor(
-    baseCtorArg: IntoIter<K, V, A>,
+    baseCtorArg: io.github.kotlinmania.rustlang.hashbrown.IntoIter<K, V, A>,
 ) : Iterable<Pair<K, V>> {
-    public var base: IntoIter<K, V, A> = baseCtorArg
+    public var base: io.github.kotlinmania.rustlang.hashbrown.IntoIter<K, V, A> = baseCtorArg
         internal set
 
     override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
@@ -1386,7 +1389,7 @@ public open class IntoIter<K, V, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
-            base: IntoIter<K, V, A>,
+            base: io.github.kotlinmania.rustlang.hashbrown.IntoIter<K, V, A>,
         ): IntoIter<K, V, A> = IntoIter<K, V, A>(
             baseCtorArg = base,
         )
@@ -1509,9 +1512,9 @@ public open class Values<K, V>(
  * ```
  */
 public open class Drain<K, V, A : Allocator> internal constructor(
-    baseCtorArg: Drain<K, V, A>,
+    baseCtorArg: io.github.kotlinmania.rustlang.hashbrown.Drain<K, V, A>,
 ) : Iterable<Pair<K, V>> {
-    public var base: Drain<K, V, A> = baseCtorArg
+    public var base: io.github.kotlinmania.rustlang.hashbrown.Drain<K, V, A> = baseCtorArg
         internal set
 
     override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
@@ -1542,7 +1545,7 @@ public open class Drain<K, V, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
-            base: Drain<K, V, A>,
+            base: io.github.kotlinmania.rustlang.hashbrown.Drain<K, V, A>,
         ): Drain<K, V, A> = Drain<K, V, A>(
             baseCtorArg = base,
         )
@@ -1564,9 +1567,9 @@ public open class Drain<K, V, A : Allocator> internal constructor(
  * ```
  */
 public open class ExtractIf<K, V, F, A : Allocator> internal constructor(
-    baseCtorArg: ExtractIf<K, V, F, A>,
+    baseCtorArg: io.github.kotlinmania.rustlang.hashbrown.ExtractIf<K, V, F, A>,
 ) : Iterable<Pair<K, V>> {
-    public var base: ExtractIf<K, V, F, A> = baseCtorArg
+    public var base: io.github.kotlinmania.rustlang.hashbrown.ExtractIf<K, V, F, A> = baseCtorArg
         internal set
 
     override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
@@ -1588,7 +1591,7 @@ public open class ExtractIf<K, V, F, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, V, F, A : Allocator> invoke(
-            base: ExtractIf<K, V, F, A>,
+            base: io.github.kotlinmania.rustlang.hashbrown.ExtractIf<K, V, F, A>,
         ): ExtractIf<K, V, F, A> = ExtractIf<K, V, F, A>(
             baseCtorArg = base,
         )

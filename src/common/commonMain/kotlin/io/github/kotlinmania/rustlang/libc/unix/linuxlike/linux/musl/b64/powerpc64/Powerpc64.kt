@@ -3,7 +3,6 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.powerpc64
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
@@ -12,21 +11,22 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.unix.CcT
-import io.github.kotlinmania.rustlang.unix.GidT
-import io.github.kotlinmania.rustlang.unix.PidT
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.UidT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.KeyT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.DevT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.BlkcntT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.InoT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.powerpc64.NCCS
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.CcT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.KeyT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TcflagT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.DevT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.ModeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.BlkcntT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.InoT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.NCCS
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.OffT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.TimeT
 
 public typealias WcharT = Int
 
@@ -34,117 +34,93 @@ public typealias NlinkT = ULong
 
 public typealias BlksizeT = CLong
 
-public data class Termios(
-    public var cIflag: TcflagT = 0uL,
-    public var cOflag: TcflagT = 0uL,
-    public var cCflag: TcflagT = 0uL,
-    public var cLflag: TcflagT = 0uL,
-    public var cCc: UByteArray = UByteArray(NCCS),
-    public var cLine: CcT = 0u,
-    public var cIspeed: SpeedT = 0uL,
-    public var cOspeed: SpeedT = 0uL,
+public open class Termios(
+    public var cIflag: TcflagT,
+    public var cOflag: TcflagT,
+    public var cCflag: TcflagT,
+    public var cLflag: TcflagT,
+    public var cCc: UByteArray,
+    public var cLine: CcT,
+    public var cIspeed: SpeedT,
+    public var cOspeed: SpeedT,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Termios) return false
-        if (this.cIflag != other.cIflag) return false
-        if (this.cOflag != other.cOflag) return false
-        if (this.cCflag != other.cCflag) return false
-        if (this.cLflag != other.cLflag) return false
-        if (!this.cCc.contentEquals(other.cCc)) return false
-        if (this.cLine != other.cLine) return false
-        if (this.cIspeed != other.cIspeed) return false
-        if (this.cOspeed != other.cOspeed) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.cIflag.hashCode()
-        result = 31 * result + this.cOflag.hashCode()
-        result = 31 * result + this.cCflag.hashCode()
-        result = 31 * result + this.cLflag.hashCode()
-        result = 31 * result + this.cCc.contentHashCode()
-        result = 31 * result + this.cLine.hashCode()
-        result = 31 * result + this.cIspeed.hashCode()
-        result = 31 * result + this.cOspeed.hashCode()
-        return result
-    }
+    public open fun clone(): Termios = Termios(cIflag, cOflag, cCflag, cLflag, cCc, cLine, cIspeed, cOspeed)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Termios> =
             object : TypeLayout<Termios> {
-                override val alignBytes: Long = 8L
-                private val off5: Long = alignUpBytes((32L + ((NCCS).toLong() * (PrimitiveLayouts.U8).strideBytes)), 1L)
-                private val off6: Long = alignUpBytes((off5 + 1L), 8L)
-                private val off7: Long = alignUpBytes((off6 + 8L), 8L)
-                override val sizeBytes: Long = alignUpBytes((off7 + 8L), 8L)
+                override val alignBytes: Long = 4L
+                private val off5: Long = alignUpBytes((16L + ((NCCS).toLong() * (PrimitiveLayouts.U8).strideBytes)), 1L)
+                private val off6: Long = alignUpBytes((off5 + 1L), 4L)
+                private val off7: Long = alignUpBytes((off6 + 4L), 4L)
+                override val sizeBytes: Long = alignUpBytes((off7 + 4L), 4L)
                 override fun readNative(addr: Long): Termios =
                     Termios(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U64).readNative(addr + 16L),
-                        (PrimitiveLayouts.U64).readNative(addr + 24L),
-                        (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).readNative(addr + 32L),
+                        (PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr + 4L),
+                        (PrimitiveLayouts.U32).readNative(addr + 8L),
+                        (PrimitiveLayouts.U32).readNative(addr + 12L),
+                        (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).readNative(addr + 16L),
                         (PrimitiveLayouts.U8).readNative(addr + off5),
-                        (PrimitiveLayouts.U64).readNative(addr + off6),
-                        (PrimitiveLayouts.U64).readNative(addr + off7),
+                        (PrimitiveLayouts.U32).readNative(addr + off6),
+                        (PrimitiveLayouts.U32).readNative(addr + off7),
                     )
                 override fun writeNative(addr: Long, value: Termios) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.cIflag)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.cOflag)
-                    (PrimitiveLayouts.U64).writeNative(addr + 16L, value.cCflag)
-                    (PrimitiveLayouts.U64).writeNative(addr + 24L, value.cLflag)
-                    (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).writeNative(addr + 32L, value.cCc)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.cIflag)
+                    (PrimitiveLayouts.U32).writeNative(addr + 4L, value.cOflag)
+                    (PrimitiveLayouts.U32).writeNative(addr + 8L, value.cCflag)
+                    (PrimitiveLayouts.U32).writeNative(addr + 12L, value.cLflag)
+                    (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).writeNative(addr + 16L, value.cCc)
                     (PrimitiveLayouts.U8).writeNative(addr + off5, value.cLine)
-                    (PrimitiveLayouts.U64).writeNative(addr + off6, value.cIspeed)
-                    (PrimitiveLayouts.U64).writeNative(addr + off7, value.cOspeed)
+                    (PrimitiveLayouts.U32).writeNative(addr + off6, value.cIspeed)
+                    (PrimitiveLayouts.U32).writeNative(addr + off7, value.cOspeed)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Termios =
                     Termios(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 24),
-                        (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).readBytes(buf, offset + 32),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 12),
+                        (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).readBytes(buf, offset + 16),
                         (PrimitiveLayouts.U8).readBytes(buf, offset + off5.toInt()),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + off6.toInt()),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + off7.toInt()),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + off6.toInt()),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + off7.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Termios) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.cIflag)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.cOflag)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.cCflag)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 24, value.cLflag)
-                    (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).writeBytes(buf, offset + 32, value.cCc)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.cIflag)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.cOflag)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 8, value.cCflag)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 12, value.cLflag)
+                    (PrimitiveArrayLayouts.uByteArray((NCCS).toInt())).writeBytes(buf, offset + 16, value.cCc)
                     (PrimitiveLayouts.U8).writeBytes(buf, offset + off5.toInt(), value.cLine)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + off6.toInt(), value.cIspeed)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + off7.toInt(), value.cOspeed)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + off6.toInt(), value.cIspeed)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + off7.toInt(), value.cOspeed)
                 }
             }
     }
 }
 
-public class Stat(
-    public var stDev: DevT = 0uL,
-    public var stIno: InoT = 0uL,
-    public var stNlink: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.powerpc64.NlinkT = 0uL,
-    public var stMode: ModeT = 0u,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var pad0: CInt = 0,
-    public var stRdev: DevT = 0uL,
-    public var stSize: OffT = 0L,
-    public var stBlksize: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.powerpc64.BlksizeT = 0L,
-    public var stBlocks: BlkcntT = 0L,
-    public var stAtime: TimeT = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: TimeT = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: TimeT = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var unused: LongArray = LongArray(3),
+public open class Stat(
+    public var stDev: DevT,
+    public var stIno: InoT,
+    public var stNlink: NlinkT,
+    public var stMode: ModeT,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var pad0: CInt,
+    public var stRdev: DevT,
+    public var stSize: OffT,
+    public var stBlksize: BlksizeT,
+    public var stBlocks: BlkcntT,
+    public var stAtime: TimeT,
+    public var stAtimeNsec: CLong,
+    public var stMtime: TimeT,
+    public var stMtimeNsec: CLong,
+    public var stCtime: TimeT,
+    public var stCtimeNsec: CLong,
+    public var unused: LongArray,
 ) {
-    public fun clone(): Stat = Stat(stDev, stIno, stNlink, stMode, stUid, stGid, pad0, stRdev, stSize, stBlksize, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused)
+    public open fun clone(): Stat = Stat(stDev, stIno, stNlink, stMode, stUid, stGid, pad0, stRdev, stSize, stBlksize, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat> =
@@ -237,44 +213,18 @@ public class Stat(
     }
 }
 
-public data class ShmidDs(
-    public var shmPerm: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.powerpc64.IpcPerm = io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.powerpc64.IpcPerm(),
-    public var shmAtime: TimeT = 0L,
-    public var shmDtime: TimeT = 0L,
-    public var shmCtime: TimeT = 0L,
-    public var shmSegsz: SizeT = 0uL,
-    public var shmCpid: PidT = 0,
-    public var shmLpid: PidT = 0,
-    public var shmNattch: CUlong = 0uL,
-    public var unused: ULongArray = ULongArray(2),
+public open class ShmidDs(
+    public var shmPerm: IpcPerm,
+    public var shmAtime: TimeT,
+    public var shmDtime: TimeT,
+    public var shmCtime: TimeT,
+    public var shmSegsz: SizeT,
+    public var shmCpid: PidT,
+    public var shmLpid: PidT,
+    public var shmNattch: CUlong,
+    public var unused: ULongArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ShmidDs) return false
-        if (this.shmPerm != other.shmPerm) return false
-        if (this.shmAtime != other.shmAtime) return false
-        if (this.shmDtime != other.shmDtime) return false
-        if (this.shmCtime != other.shmCtime) return false
-        if (this.shmSegsz != other.shmSegsz) return false
-        if (this.shmCpid != other.shmCpid) return false
-        if (this.shmLpid != other.shmLpid) return false
-        if (this.shmNattch != other.shmNattch) return false
-        if (!this.unused.contentEquals(other.unused)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.shmPerm.hashCode()
-        result = 31 * result + this.shmAtime.hashCode()
-        result = 31 * result + this.shmDtime.hashCode()
-        result = 31 * result + this.shmCtime.hashCode()
-        result = 31 * result + this.shmSegsz.hashCode()
-        result = 31 * result + this.shmCpid.hashCode()
-        result = 31 * result + this.shmLpid.hashCode()
-        result = 31 * result + this.shmNattch.hashCode()
-        result = 31 * result + this.unused.contentHashCode()
-        return result
-    }
+    public open fun clone(): ShmidDs = ShmidDs(shmPerm, shmAtime, shmDtime, shmCtime, shmSegsz, shmCpid, shmLpid, shmNattch, unused)
 
     public companion object {
         public fun typeLayout(): TypeLayout<ShmidDs> =
@@ -331,18 +281,20 @@ public data class ShmidDs(
     }
 }
 
-public data class IpcPerm(
-    public var key: KeyT = 0,
-    public var ipcPermKey: KeyT = 0,
-    public var uid: UidT = 0,
-    public var gid: GidT = 0,
-    public var cuid: UidT = 0,
-    public var cgid: GidT = 0,
-    public var mode: ModeT = 0u,
-    public var seq: CInt = 0,
-    public var unused1: CLong = 0L,
-    public var unused2: CLong = 0L,
+public open class IpcPerm(
+    public var key: KeyT,
+    public var ipcPermKey: KeyT,
+    public var uid: UidT,
+    public var gid: GidT,
+    public var cuid: UidT,
+    public var cgid: GidT,
+    public var mode: ModeT,
+    public var seq: CInt,
+    public var unused1: CLong,
+    public var unused2: CLong,
 ) {
+    public open fun clone(): IpcPerm = IpcPerm(key, ipcPermKey, uid, gid, cuid, cgid, mode, seq, unused1, unused2)
+
     public companion object {
         public fun typeLayout(): TypeLayout<IpcPerm> =
             object : TypeLayout<IpcPerm> {
@@ -1508,7 +1460,7 @@ public val EDEADLK: CInt = 35
 
 public val EDEADLOCK: CInt = 58
 
-public val EXTPROC: TcflagT = 0x10000000uL
+public val EXTPROC: TcflagT = 0x10000000u
 
 public val VEOL: Int = 6
 
@@ -1516,11 +1468,11 @@ public val VEOL2: Int = 8
 
 public val VMIN: Int = 5
 
-public val IEXTEN: TcflagT = 0x00000400uL
+public val IEXTEN: TcflagT = 0x00000400u
 
-public val TOSTOP: TcflagT = 0x00400000uL
+public val TOSTOP: TcflagT = 0x00400000u
 
-public val FLUSHO: TcflagT = 0x00800000uL
+public val FLUSHO: TcflagT = 0x00800000u
 
 public val MCL_CURRENT: CInt = 0x2000
 
@@ -1528,7 +1480,7 @@ public val MCL_FUTURE: CInt = 0x4000
 
 public val MCL_ONFAULT: CInt = 0x8000
 
-public val CBAUD: TcflagT = 0xffuL
+public val CBAUD: TcflagT = 0xffu
 
 public val TAB1: CInt = 0x400
 
@@ -1562,100 +1514,100 @@ public val VDISCARD: Int = 16
 
 public val VTIME: Int = 7
 
-public val IXON: TcflagT = 0x00000200uL
+public val IXON: TcflagT = 0x00000200u
 
-public val IXOFF: TcflagT = 0x00000400uL
+public val IXOFF: TcflagT = 0x00000400u
 
-public val ONLCR: TcflagT = 0x2uL
+public val ONLCR: TcflagT = 0x2u
 
-public val CSIZE: TcflagT = 0x00000300uL
+public val CSIZE: TcflagT = 0x00000300u
 
-public val CS6: TcflagT = 0x00000100uL
+public val CS6: TcflagT = 0x00000100u
 
-public val CS7: TcflagT = 0x00000200uL
+public val CS7: TcflagT = 0x00000200u
 
-public val CS8: TcflagT = 0x00000300uL
+public val CS8: TcflagT = 0x00000300u
 
-public val CSTOPB: TcflagT = 0x00000400uL
+public val CSTOPB: TcflagT = 0x00000400u
 
-public val CREAD: TcflagT = 0x00000800uL
+public val CREAD: TcflagT = 0x00000800u
 
-public val PARENB: TcflagT = 0x00001000uL
+public val PARENB: TcflagT = 0x00001000u
 
-public val PARODD: TcflagT = 0x00002000uL
+public val PARODD: TcflagT = 0x00002000u
 
-public val HUPCL: TcflagT = 0x00004000uL
+public val HUPCL: TcflagT = 0x00004000u
 
-public val CLOCAL: TcflagT = 0x00008000uL
+public val CLOCAL: TcflagT = 0x00008000u
 
-public val ECHOKE: TcflagT = 0x00000001uL
+public val ECHOKE: TcflagT = 0x00000001u
 
-public val ECHOE: TcflagT = 0x00000002uL
+public val ECHOE: TcflagT = 0x00000002u
 
-public val ECHOK: TcflagT = 0x00000004uL
+public val ECHOK: TcflagT = 0x00000004u
 
-public val ECHONL: TcflagT = 0x00000010uL
+public val ECHONL: TcflagT = 0x00000010u
 
-public val ECHOPRT: TcflagT = 0x00000020uL
+public val ECHOPRT: TcflagT = 0x00000020u
 
-public val ECHOCTL: TcflagT = 0x00000040uL
+public val ECHOCTL: TcflagT = 0x00000040u
 
-public val ISIG: TcflagT = 0x00000080uL
+public val ISIG: TcflagT = 0x00000080u
 
-public val ICANON: TcflagT = 0x00000100uL
+public val ICANON: TcflagT = 0x00000100u
 
-public val PENDIN: TcflagT = 0x20000000uL
+public val PENDIN: TcflagT = 0x20000000u
 
-public val NOFLSH: TcflagT = 0x80000000uL
+public val NOFLSH: TcflagT = 0x80000000u
 
-public val CIBAUD: TcflagT = 16711680uL
+public val CIBAUD: TcflagT = 16711680u
 
-public val CBAUDEX: TcflagT = 16uL
+public val CBAUDEX: TcflagT = 16u
 
 public val VSWTC: Int = 9
 
-public val OLCUC: TcflagT = 4uL
+public val OLCUC: TcflagT = 4u
 
-public val NLDLY: TcflagT = 768uL
+public val NLDLY: TcflagT = 768u
 
-public val CRDLY: TcflagT = 12288uL
+public val CRDLY: TcflagT = 12288u
 
-public val TABDLY: TcflagT = 3072uL
+public val TABDLY: TcflagT = 3072u
 
-public val BSDLY: TcflagT = 32768uL
+public val BSDLY: TcflagT = 32768u
 
-public val FFDLY: TcflagT = 16384uL
+public val FFDLY: TcflagT = 16384u
 
-public val VTDLY: TcflagT = 65536uL
+public val VTDLY: TcflagT = 65536u
 
-public val XTABS: TcflagT = 3072uL
+public val XTABS: TcflagT = 3072u
 
-public val B57600: SpeedT = 16uL
+public val B57600: SpeedT = 16u
 
-public val B115200: SpeedT = 17uL
+public val B115200: SpeedT = 17u
 
-public val B230400: SpeedT = 18uL
+public val B230400: SpeedT = 18u
 
-public val B460800: SpeedT = 19uL
+public val B460800: SpeedT = 19u
 
-public val B500000: SpeedT = 20uL
+public val B500000: SpeedT = 20u
 
-public val B576000: SpeedT = 21uL
+public val B576000: SpeedT = 21u
 
-public val B921600: SpeedT = 22uL
+public val B921600: SpeedT = 22u
 
-public val B1000000: SpeedT = 23uL
+public val B1000000: SpeedT = 23u
 
-public val B1152000: SpeedT = 24uL
+public val B1152000: SpeedT = 24u
 
-public val B1500000: SpeedT = 25uL
+public val B1500000: SpeedT = 25u
 
-public val B2000000: SpeedT = 26uL
+public val B2000000: SpeedT = 26u
 
-public val B2500000: SpeedT = 27uL
+public val B2500000: SpeedT = 27u
 
-public val B3000000: SpeedT = 28uL
+public val B3000000: SpeedT = 28u
 
-public val B3500000: SpeedT = 29uL
+public val B3500000: SpeedT = 29u
 
-public val B4000000: SpeedT = 30uL
+public val B4000000: SpeedT = 30u

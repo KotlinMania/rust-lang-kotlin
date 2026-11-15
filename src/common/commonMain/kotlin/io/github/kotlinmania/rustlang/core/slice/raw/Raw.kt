@@ -3,13 +3,13 @@ package io.github.kotlinmania.rustlang.core.slice.raw
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.ops.range.Range
-import io.github.kotlinmania.rustlang.ptr.sliceFromRawParts
-import io.github.kotlinmania.rustlang.ptr.sliceFromRawPartsMut
+import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
+import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
 
 // Free functions to create `[T]` and `[T]`.
 
@@ -71,12 +71,12 @@ import io.github.kotlinmania.rustlang.ptr.sliceFromRawPartsMut
  * The following `joinSlices` function is **unsound** ⚠️
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  * import std.slice
  *
  * fun <T> joinSlices(fst: List<T>, snd: List<T>): List<T> {
- *     val fstEnd = ConstPtr((fst.asPtr()).rawAddress + ((fst.size).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+ *     val fstEnd = ConstPtr((fst.asPtr()).rawAddress + ((fst.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
  *     val sndStart = snd.asPtr()
  *     check(fstEnd == sndStart)
  *     return slice.fromRawParts(fst.asPtr(), fst.size + snd.size)
@@ -180,12 +180,16 @@ public fun <T> fromRawPartsMut(data: MutPtr, len: Int): MutableList<T> {
 /**
  * Converts a reference to T into a slice of length 1 (without copying).
  */
-public fun <T> fromRef(s: T): List<T> = io.github.kotlinmania.rustlang.array.fromRef(s)
+public fun <T> fromRef(s: T): List<T> =
+    io.github.kotlinmania.rustlang.core.array
+        .fromRef(s)
 
 /**
  * Converts a reference to T into a slice of length 1 (without copying).
  */
-public fun <T> fromMut(s: T): MutableList<T> = io.github.kotlinmania.rustlang.array.fromMut(s)
+public fun <T> fromMut(s: T): MutableList<T> =
+    io.github.kotlinmania.rustlang.core.array
+        .fromMut(s)
 
 /**
  * Forms a slice from a pointer range.
@@ -250,7 +254,7 @@ public fun <T> fromMut(s: T): MutableList<T> = io.github.kotlinmania.rustlang.ar
  */
 public fun <T> fromPtrRange(range: Range<ConstPtr>): List<T> {
     // SAFETY: the caller must uphold the safety contract for `fromPtrRange`.
-    return rawSliceList(range.start, range.end.offsetFromUnsigned(range.start).toInt(), PrimitiveLayouts.U8)
+    return linearSliceView(range.start, range.end.offsetFromUnsigned(range.start).toInt(), PrimitiveLayouts.U8)
 }
 
 /**
@@ -320,5 +324,5 @@ public fun <T> fromPtrRange(range: Range<ConstPtr>): List<T> {
  */
 public fun <T> fromMutPtrRange(range: Range<MutPtr>): MutableList<T> {
     // SAFETY: the caller must uphold the safety contract for `fromMutPtrRange`.
-    return rawMutSliceList(range.start, range.end.offsetFromUnsigned(range.start).toInt(), PrimitiveLayouts.U8)
+    return linearMutSliceView(range.start, range.end.offsetFromUnsigned(range.start).toInt(), PrimitiveLayouts.U8)
 }

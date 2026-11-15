@@ -1,22 +1,22 @@
 package io.github.kotlinmania.rustlang.core.fmt
 
-import io.github.kotlinmania.rustlang.cell.Cell
-import io.github.kotlinmania.rustlang.cell.Ref
-import io.github.kotlinmania.rustlang.cell.RefCell
-import io.github.kotlinmania.rustlang.cell.RefMut
-import io.github.kotlinmania.rustlang.cell.SyncUnsafeCell
-import io.github.kotlinmania.rustlang.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.char.methods.EscapeDebugExtArgs
+import io.github.kotlinmania.rustlang.core.cell.Cell
+import io.github.kotlinmania.rustlang.core.cell.Ref
+import io.github.kotlinmania.rustlang.core.cell.RefCell
+import io.github.kotlinmania.rustlang.core.cell.RefMut
+import io.github.kotlinmania.rustlang.core.cell.SyncUnsafeCell
+import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugStruct
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugTuple
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public class DebugStruct(
@@ -123,7 +123,7 @@ public fun write(output: Write, fmt: Arguments): Result {
             // SAFETY: We can assume the strings in the template are valid.
             val s2 =
                 run {
-                    val s1 = rawSliceList(template.asPtr(), n1.toInt(), PrimitiveLayouts.U8)
+                    val s1 = linearSliceView(template.asPtr(), n1.toInt(), PrimitiveLayouts.U8)
                     template = template.add(n1.toInt())
                     s1
                 }
@@ -133,9 +133,15 @@ public fun write(output: Write, fmt: Arguments): Result {
             // SAFETY: We can assume the strings in the template are valid.
             val s4 =
                 run {
-                    val len = Int.from(run { val bytesTmp1 = template.castArray().read(); ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
+                    val len =
+                        Int.from(
+                            run {
+                                val bytesTmp1 = template.castArray().read()
+                                ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort()
+                            },
+                        )
                     template = template.add(2)
-                    val s3 = rawSliceList(template.asPtr(), len.toInt(), PrimitiveLayouts.U8)
+                    val s3 = linearSliceView(template.asPtr(), len.toInt(), PrimitiveLayouts.U8)
                     template = template.add(len)
                     s3
                 }
@@ -146,7 +152,10 @@ public fun write(output: Write, fmt: Arguments): Result {
             // Having this as a separate case improves performance for the common case.
             // SAFETY: We can assume the template only refers to arguments that exist.
             run {
-                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, FormattingOptions.new()))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, FormattingOptions.new()))) {
+                    is RustResult.Ok<*, *> -> tryResult.value
+                    is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
+                }
             }
             argIndex += 1
         } else {
@@ -157,19 +166,37 @@ public fun write(output: Write, fmt: Arguments): Result {
             // SAFETY: We can assume the template is valid.
             run {
                 if (n1 and 1 != 0) {
-                    opt.flags = run { val bytesTmp2 = template.castArray().read(); ((bytesTmp2[3].toUInt() shl 24) or (bytesTmp2[2].toUInt() shl 16) or (bytesTmp2[1].toUInt() shl 8) or bytesTmp2[0].toUInt()) }
+                    opt.flags =
+                        run {
+                            val bytesTmp2 = template.castArray().read()
+                            ((bytesTmp2[3].toUInt() shl 24) or (bytesTmp2[2].toUInt() shl 16) or (bytesTmp2[1].toUInt() shl 8) or bytesTmp2[0].toUInt())
+                        }
                     template = template.add(4)
                 }
                 if (n1 and 2 != 0) {
-                    opt.width = run { val bytesTmp3 = template.castArray().read(); ((bytesTmp3[1].toInt() shl 8) or bytesTmp3[0].toInt()).toUShort() }
+                    opt.width =
+                        run {
+                            val bytesTmp3 = template.castArray().read()
+                            ((bytesTmp3[1].toInt() shl 8) or bytesTmp3[0].toInt()).toUShort()
+                        }
                     template = template.add(2)
                 }
                 if (n1 and 4 != 0) {
-                    opt.precision = run { val bytesTmp4 = template.castArray().read(); ((bytesTmp4[1].toInt() shl 8) or bytesTmp4[0].toInt()).toUShort() }
+                    opt.precision =
+                        run {
+                            val bytesTmp4 = template.castArray().read()
+                            ((bytesTmp4[1].toInt() shl 8) or bytesTmp4[0].toInt()).toUShort()
+                        }
                     template = template.add(2)
                 }
                 if (n1 and 8 != 0) {
-                    argIndex = Int.from(run { val bytesTmp6 = template.castArray().read(); ((bytesTmp6[1].toInt() shl 8) or bytesTmp6[0].toInt()).toUShort() })
+                    argIndex =
+                        Int.from(
+                            run {
+                                val bytesTmp6 = template.castArray().read()
+                                ((bytesTmp6[1].toInt() shl 8) or bytesTmp6[0].toInt()).toUShort()
+                            },
+                        )
                     template = template.add(2)
                 }
             }
@@ -177,19 +204,32 @@ public fun write(output: Write, fmt: Arguments): Result {
                 // Dynamic width from a Int argument.
                 // SAFETY: We can assume the template only refers to arguments that exist.
                 run {
-                    opt.width = args.add(opt.width.toInt()).asRef().asU16().unwrapUnchecked()
+                    opt.width =
+                        args
+                            .add(opt.width.toInt())
+                            .asRef()
+                            .asU16()
+                            .unwrapUnchecked()
                 }
             }
             if (n1 and 32 != 0) {
                 // Dynamic precision from a Int argument.
                 // SAFETY: We can assume the template only refers to arguments that exist.
                 run {
-                    opt.precision = args.add(opt.precision.toInt()).asRef().asU16().unwrapUnchecked()
+                    opt.precision =
+                        args
+                            .add(opt.precision.toInt())
+                            .asRef()
+                            .asU16()
+                            .unwrapUnchecked()
                 }
             }
             // SAFETY: We can assume the template only refers to arguments that exist.
             run {
-                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, opt))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, opt))) {
+                    is RustResult.Ok<*, *> -> tryResult.value
+                    is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
+                }
             }
             argIndex += 1
         }
@@ -199,7 +239,12 @@ public fun write(output: Write, fmt: Arguments): Result {
 /**
  * Like `.split(' ')`, but doesn't bloat binary size
  */
-public fun splitStrBySpace(s: String): Any = s.encodeToByteArray().map { it.toUByte() }.split({ b -> b == 32u }).map({ bytes -> String.fromUtf8Unchecked(bytes) })
+public fun splitStrBySpace(s: String): Any =
+    s
+        .encodeToByteArray()
+        .map { it.toUByte() }
+        .split({ b -> b == 32u })
+        .map({ bytes -> String.fromUtf8Unchecked(bytes) })
 
 /**
  * Formats an address in `fmt.Pointer` style.
@@ -245,15 +290,16 @@ public fun String.fmt(f: Formatter): Result {
     // other chars (unicode, or ASCII that needs escaping) are then handled per-`char`.
     var rest = this
     while (!rest.isEmpty()) {
-        val nonPrintableStart = (rest.encodeToByteArray().map { it.toUByte() }).indexOfFirst({ b -> needsEscape(b) }).takeIf { it >= 0 } ?: run {
-            printableRange.end += rest.length
-            break
-        }
+        val nonPrintableStart =
+            (rest.encodeToByteArray().map { it.toUByte() }).indexOfFirst({ b -> needsEscape(b) }).takeIf { it >= 0 } ?: run {
+                printableRange.end += rest.length
+                break
+            }
         printableRange.end += nonPrintableStart
         // SAFETY: the position was derived from an iterator, so is known to be within bounds, and at a char boundary
         rest = rest.getUnchecked(nonPrintableStart until Int.MAX_VALUE)
-        val chars = rest.rustStrChars()
-        when (val matchVal = chars.nextCodeOrNull()?.toChar()) {
+        val chars = rest.chars()
+        when (val matchVal = chars.next()) {
             null -> {}
             else -> {
                 val c = matchVal
@@ -443,7 +489,15 @@ public fun <U : Debug, T : Debug> Pair<U, T>.fmt(f: Formatter): Result {
     return builder.finish()
 }
 
-public fun <T : Debug> List<T>.fmtFromTSlice(f: Formatter): Result = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+public fun <T : Debug> List<T>.fmtFromTSlice(f: Formatter): Result =
+    object {
+        val entries = mutableListOf<Any?>()
+        fun entry(v: Any?) = apply { entries.add(v) }
+        fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }
+        fun finish() {
+            f.append(entries.joinToString(", ", "[", "]"))
+        }
+    }.entries(this.iter()).finish()
 
 public fun Unit.fmt(f: Formatter): Result = f.append("()")
 
@@ -453,12 +507,15 @@ public fun <T : Debug> RefCell<T>.fmt(f: Formatter): Result {
     val d = DebugStruct(f, "RefCell")
     run {
         val matchVal = this.tryBorrow()
-        when (matchVal) { is RustResult.Ok<*, *> -> {
-            val borrow = matchVal.value
-            d.field("value", borrow)
-        }; is RustResult.Err<*, *> -> {
-            d.field("value", "<borrowed>")
-        } }
+        when (matchVal) {
+            is RustResult.Ok<*, *> -> {
+                val borrow = matchVal.value
+                d.field("value", borrow)
+            }
+            is RustResult.Err<*, *> -> {
+                d.field("value", "<borrowed>")
+            }
+        }
     }
     return d.finish()
 }

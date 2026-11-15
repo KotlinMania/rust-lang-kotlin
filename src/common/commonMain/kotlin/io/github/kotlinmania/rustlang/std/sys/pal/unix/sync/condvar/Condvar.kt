@@ -23,11 +23,11 @@ import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
 import io.github.kotlinmania.rustlang.libc.wasi.PTHREAD_COND_INITIALIZER
 import io.github.kotlinmania.rustlang.libc.wasi.PthreadCondT
 import io.github.kotlinmania.rustlang.libc.wasi.PthreadCondattrT
-import io.github.kotlinmania.rustlang.sys.helpers.copaque.COpaque
-import io.github.kotlinmania.rustlang.sys.pal.unix.sync.mutex.AttrGuard
-import io.github.kotlinmania.rustlang.sys.pal.unix.sync.mutex.Mutex
-import io.github.kotlinmania.rustlang.sys.pal.unix.time.TIMESPEC_MAX_CAPPED
-import io.github.kotlinmania.rustlang.sys.pal.unix.time.Timespec
+import io.github.kotlinmania.rustlang.std.sys.helpers.copaque.COpaque
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.AttrGuard
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.Mutex
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.TIMESPEC_MAX_CAPPED
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
 
 public open class Condvar internal constructor(
     innerCtorArg: COpaque<PthreadCondT>,

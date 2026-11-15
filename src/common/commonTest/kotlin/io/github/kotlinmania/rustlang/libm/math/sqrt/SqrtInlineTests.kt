@@ -4,13 +4,13 @@ package io.github.kotlinmania.rustlang.libm.math.sqrt
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.libm.math.Generic
-import io.github.kotlinmania.rustlang.math.generic.sqrt.SqrtHelper
-import io.github.kotlinmania.rustlang.math.support.env.Round
-import io.github.kotlinmania.rustlang.math.support.env.Status
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
-import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
+import io.github.kotlinmania.rustlang.libm.math.generic.sqrt.SqrtHelper
+import io.github.kotlinmania.rustlang.libm.math.generic.sqrt.sqrtRound
+import io.github.kotlinmania.rustlang.libm.math.support.env.Round
+import io.github.kotlinmania.rustlang.libm.math.support.env.Status
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 
 /**
  * Test behavior specified in IEEE 754 `squareRoot`.
@@ -21,14 +21,14 @@ public fun <Int, SignedInt, ISet1, ISet2, D, F> specTest() where F : Float<F, An
     // Values that return unaltered
     val roundtrip = listOf(F.ZERO, F.NEG_ZERO, F.INFINITY)
     for (x in nan) {
-        val structVal = Generic.sqrtRound(x, Round.Nearest)
+        val structVal = sqrtRound(x, Round.Nearest)
         val value = structVal.value
         val status = structVal.status
         check(value.isNan())
         check(status == Status.INVALID)
     }
     for (x1 in roundtrip) {
-        val structVal1 = Generic.sqrtRound(x1, Round.Nearest)
+        val structVal1 = sqrtRound(x1, Round.Nearest)
         val value1 = structVal1.value
         val status1 = structVal1.status
         run {

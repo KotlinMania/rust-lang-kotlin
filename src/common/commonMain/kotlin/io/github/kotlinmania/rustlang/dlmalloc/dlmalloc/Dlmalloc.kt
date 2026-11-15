@@ -1,7 +1,6 @@
 // port-lint: source dlmalloc.rs
 package io.github.kotlinmania.rustlang.dlmalloc.dlmalloc
 
-import io.github.kotlinmania.rustlang.Allocator
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
@@ -9,10 +8,13 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.trailingZeros
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.dlmalloc.Allocator
 
 public open class Dlmalloc<A> internal constructor(
     public var smallmap: UInt,
@@ -157,7 +159,7 @@ public open class Dlmalloc<A> internal constructor(
                 if (smallbits != 0u) {
                     val leftbits = (smallbits shl idx.toInt()) and leftBits(1u shl idx.toInt())
                     val leastbit = leastBit(leftbits)
-                    val i = rustTrailingZeros(leastbit)
+                    val i = leastbit.trailingZeros()
                     val b1 = this.smallbinAt(i)
                     val p1 = b1.prev
                     if (false) {
@@ -324,7 +326,7 @@ public open class Dlmalloc<A> internal constructor(
         val ptr = this.malloc(bytes)
         if (!ptr.isNull()) {
             val oc = Chunk.size(oldp) - this.overheadFor(oldp)
-            ptr.copyNonoverlapping(oldmem, ptr, minOf(oc, bytes), typeLayoutT = PrimitiveLayouts.U8)
+            copyNonoverlapping(oldmem, ptr, minOf(oc, bytes), typeLayoutT = PrimitiveLayouts.U8)
             this.free(oldmem)
         }
         return ptr
@@ -700,7 +702,7 @@ public open class Dlmalloc<A> internal constructor(
 
     public open fun tmallocSmall(size: Int): MutPtr {
         val leastbit = leastBit(this.treemap)
-        val i = rustTrailingZeros(leastbit)
+        val i = leastbit.trailingZeros()
         var v = this.treebinAt(i)
         var t = v
         var rsize = Chunk.size(TreeChunk.Chunk(t)) - size
@@ -771,7 +773,7 @@ public open class Dlmalloc<A> internal constructor(
             val leftbits = leftBits(1u shl idx.toInt()) and this.treemap
             if (leftbits != 0u) {
                 val leastbit = leastBit(leftbits)
-                val i = rustTrailingZeros(leastbit)
+                val i = leastbit.trailingZeros()
                 t = this.treebinAt(i)
             }
         }
@@ -827,7 +829,7 @@ public open class Dlmalloc<A> internal constructor(
         } else if (x > 0xffff) {
             NTREEBINS_U32 - 1u
         } else {
-            val k = sizeOfVal(x) * 8 - 1 - (rustLeadingZeros(x).toInt())
+            val k = sizeOfVal(x) * 8 - 1 - (x.leadingZeros().toInt())
             ((k shl 1) + (size shr (k + TREEBIN_SHIFT - 1) and 1)).toUInt()
         }
     }

@@ -3,6 +3,9 @@ package io.github.kotlinmania.rustlang.backtrace.types
 
 import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString.*
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.path.PathBuf
 
 // Platform dependent types.
 
@@ -15,11 +18,16 @@ public sealed class BytesOrWideString {
     /**
      * A slice, typically provided on Unix platforms.
      */
-    public data class Bytes(public var value: List<UByte>) : BytesOrWideString()
+    public data class Bytes(
+        public var value: List<UByte>,
+    ) : BytesOrWideString()
+
     /**
      * Wide strings typically from Windows.
      */
-    public data class Wide(public var value: List<UShort>) : BytesOrWideString()
+    public data class Wide(
+        public var value: List<UShort>,
+    ) : BytesOrWideString()
 
     /**
      * Lossy converts to a `Cow<String>`, will allocate if `Bytes` is not valid

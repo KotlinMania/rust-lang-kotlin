@@ -3,9 +3,6 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.x86.M128
-import io.github.kotlinmania.rustlang.x86.M128bh
-import io.github.kotlinmania.rustlang.x86.M256
 
 public actual fun bcstnebf162ps128(a: ConstPtr): M128 =
     M128()

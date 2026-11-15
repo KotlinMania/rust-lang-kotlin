@@ -3,18 +3,19 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.nothreads
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.process.abort
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 // On some targets like wasm there's no threads, so no need to generate
 // thread locals and we can instead just use plain statics!
@@ -97,7 +98,7 @@ public open class LazyStorage<T> internal constructor(
             }
         }
         run {
-            this.value.get().write(MaybeUninit.new(value, ObjectSlotLayout<Any>()))
+            this.value.get().write(MaybeUninit.new(value, UnresolvedTypeLayout<Any>()))
         }
         this.state.set(State.Alive)
         return constPtrFromRustCast(this.value.get())

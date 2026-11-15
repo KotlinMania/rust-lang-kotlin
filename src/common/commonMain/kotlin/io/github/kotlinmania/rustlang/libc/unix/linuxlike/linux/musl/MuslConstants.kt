@@ -1,20 +1,20 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.types.cstr
-import io.github.kotlinmania.rustlang.types.u32CastInt
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.SocklenT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.aarch64.MAP_ANON
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.aarch64.O_DIRECTORY
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.aarch64.O_NONBLOCK
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.types.cstr
+import io.github.kotlinmania.rustlang.libc.types.u32CastInt
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.aarch64.MAP_ANON
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.aarch64.O_DIRECTORY
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.aarch64.O_NONBLOCK
 
 // include/sys/mman.h
 //
@@ -255,39 +255,39 @@ public val RTLD_GLOBAL: CInt = 0x100
 
 public val RTLD_NOLOAD: CInt = 0x4
 
-public val CLOCK_SGI_CYCLE: ClockidT = 10u
+public val CLOCK_SGI_CYCLE: ClockidT = 10
 
-public val B0: SpeedT = 0uL
+public val B0: SpeedT = 0u
 
-public val B50: SpeedT = 1uL
+public val B50: SpeedT = 1u
 
-public val B75: SpeedT = 2uL
+public val B75: SpeedT = 2u
 
-public val B110: SpeedT = 3uL
+public val B110: SpeedT = 3u
 
-public val B134: SpeedT = 4uL
+public val B134: SpeedT = 4u
 
-public val B150: SpeedT = 5uL
+public val B150: SpeedT = 5u
 
-public val B200: SpeedT = 6uL
+public val B200: SpeedT = 6u
 
-public val B300: SpeedT = 7uL
+public val B300: SpeedT = 7u
 
-public val B600: SpeedT = 8uL
+public val B600: SpeedT = 8u
 
-public val B1200: SpeedT = 9uL
+public val B1200: SpeedT = 9u
 
-public val B1800: SpeedT = 10uL
+public val B1800: SpeedT = 10u
 
-public val B2400: SpeedT = 11uL
+public val B2400: SpeedT = 11u
 
-public val B4800: SpeedT = 12uL
+public val B4800: SpeedT = 12u
 
-public val B9600: SpeedT = 13uL
+public val B9600: SpeedT = 13u
 
-public val B19200: SpeedT = 14uL
+public val B19200: SpeedT = 14u
 
-public val B38400: SpeedT = 15uL
+public val B38400: SpeedT = 15u
 
 public val EXTA: SpeedT = B19200
 

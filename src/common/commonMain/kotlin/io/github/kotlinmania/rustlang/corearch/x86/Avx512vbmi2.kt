@@ -4,31 +4,12 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.simd.I16x16
-import io.github.kotlinmania.rustlang.simd.I16x32
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.I8x32
-import io.github.kotlinmania.rustlang.simd.I8x64
-import io.github.kotlinmania.rustlang.x86.M128i
-import io.github.kotlinmania.rustlang.x86.M256i
-import io.github.kotlinmania.rustlang.x86.M512i
-import io.github.kotlinmania.rustlang.x86.Mmask16
-import io.github.kotlinmania.rustlang.x86.Mmask32
-import io.github.kotlinmania.rustlang.x86.Mmask64
-import io.github.kotlinmania.rustlang.x86.Mmask8
-import io.github.kotlinmania.rustlang.x86.mm256Set1Epi16
-import io.github.kotlinmania.rustlang.x86.mm256Set1Epi32
-import io.github.kotlinmania.rustlang.x86.mm256Set1Epi64x
-import io.github.kotlinmania.rustlang.x86.mm256SetzeroSi256
-import io.github.kotlinmania.rustlang.x86.mm512Set1Epi16
-import io.github.kotlinmania.rustlang.x86.mm512Set1Epi32
-import io.github.kotlinmania.rustlang.x86.mm512Set1Epi64
-import io.github.kotlinmania.rustlang.x86.mm512SetzeroSi512
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi16
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi32
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
-import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
+import io.github.kotlinmania.rustlang.corearch.simd.I16x16
+import io.github.kotlinmania.rustlang.corearch.simd.I16x32
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.I8x32
+import io.github.kotlinmania.rustlang.corearch.simd.I8x64
 
 /**
  * Load contiguous active 16-bit integers from unaligned memory at memAddr (those with their respective bit set in mask k), and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).

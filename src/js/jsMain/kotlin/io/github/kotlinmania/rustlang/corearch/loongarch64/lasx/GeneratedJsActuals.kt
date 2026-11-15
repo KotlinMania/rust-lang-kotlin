@@ -4,19 +4,9 @@ package io.github.kotlinmania.rustlang.corearch.loongarch64.lasx
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.loongarch64.lasx.V16i16
-import io.github.kotlinmania.rustlang.loongarch64.lasx.V16u16
-import io.github.kotlinmania.rustlang.loongarch64.lasx.V32i8
-import io.github.kotlinmania.rustlang.loongarch64.lasx.V32u8
-import io.github.kotlinmania.rustlang.loongarch64.lasx.V4f64
-import io.github.kotlinmania.rustlang.loongarch64.lasx.V4i64
-import io.github.kotlinmania.rustlang.loongarch64.lasx.V4u64
-import io.github.kotlinmania.rustlang.loongarch64.lasx.V8f32
-import io.github.kotlinmania.rustlang.loongarch64.lasx.V8i32
-import io.github.kotlinmania.rustlang.loongarch64.lasx.V8u32
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V2f64
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V2i64
-import io.github.kotlinmania.rustlang.loongarch64.lsx.V4f32
+import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V2f64
+import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V2i64
+import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V4f32
 
 public actual fun lasxXvsrarB(a: V32i8, b: V32i8): V32i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
@@ -624,21 +614,13 @@ public actual fun lasxXvfrintrneS(a: V8f32): V8f32 =
 public actual fun lasxXvfrintrneD(a: V4f64): V4f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun lasxXvstelmB(a: V32i8, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun lasxXvstelmB(a: V32i8, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun lasxXvstelmH(a: V16i16, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun lasxXvstelmH(a: V16i16, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun lasxXvstelmW(a: V8i32, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun lasxXvstelmW(a: V8i32, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun lasxXvstelmD(a: V4i64, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("Native FFI addon is not available")
-}
+public actual fun lasxXvstelmD(a: V4i64, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lasxXvinsve0W(a: V8i32, b: V8i32, c: UInt): V8i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")

@@ -2,9 +2,9 @@
 package io.github.kotlinmania.rustlang.std.sync.mpmc.array
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpmc.context.Context
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
@@ -19,11 +20,10 @@ import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Token
 import io.github.kotlinmania.rustlang.std.sync.mpmc.utils.Backoff
 import io.github.kotlinmania.rustlang.std.sync.mpmc.utils.CachePadded
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.SyncWaker
-import io.github.kotlinmania.rustlang.sync.mpmc.SendTimeoutError
-import io.github.kotlinmania.rustlang.sync.mpsc.RecvTimeoutError
-import io.github.kotlinmania.rustlang.sync.mpsc.TryRecvError
-import io.github.kotlinmania.rustlang.sync.mpsc.TrySendError
-import io.github.kotlinmania.rustlang.time.Instant
+import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvTimeoutError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.TryRecvError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.TrySendError
+import io.github.kotlinmania.rustlang.std.time.Instant
 
 // Bounded channel based on a preallocated array.
 //
@@ -220,7 +220,7 @@ public open class Channel<T> internal constructor(
                     } }
                 }
             } else if (stamp.wrappingAdd(this.oneLap) == tail + 1) {
-                fence(Ordering.SeqCst)
+                atomic.fence(Ordering.SeqCst)
                 val head = this.head.load(Ordering.Relaxed)
                 // If the head lags one lap behind the tail as well...
                 if (head.wrappingAdd(this.oneLap) == tail) {
@@ -247,7 +247,7 @@ public open class Channel<T> internal constructor(
         }
         // Write the message into the slot and update the stamp.
         run {
-            val slot: Slot<T> = (ObjectSlotLayout<Slot<T>>()).readNative((((token.array.slot).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+            val slot: Slot<T> = (UnresolvedTypeLayout<Slot<T>>()).readNative((((token.array.slot).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
             slot.msg.get().write(MaybeUninit.new(msg, typeLayoutT))
             slot.stamp.store(token.array.stamp, Ordering.Release)
         }
@@ -296,7 +296,7 @@ public open class Channel<T> internal constructor(
                     } }
                 }
             } else if (stamp == head) {
-                fence(Ordering.SeqCst)
+                atomic.fence(Ordering.SeqCst)
                 val tail = this.tail.load(Ordering.Relaxed)
                 // If the tail equals the head, that means the channel is empty.
                 if ((tail and this.markBit.inv()) == head) {
@@ -332,7 +332,7 @@ public open class Channel<T> internal constructor(
         // Read the message from the slot and update the stamp.
         val msg1 =
             run {
-                val slot: Slot<T> = (ObjectSlotLayout<Slot<T>>()).readNative((((token.array.slot).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+                val slot: Slot<T> = (UnresolvedTypeLayout<Slot<T>>()).readNative((((token.array.slot).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
                 val msg = slot.msg.get().read().assumeInit()
                 slot.stamp.store(token.array.stamp, Ordering.Release)
                 msg

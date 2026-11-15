@@ -3,14 +3,17 @@
 
 package io.github.kotlinmania.rustlang.hashbrown.control.group.generic
 
-import io.github.kotlinmania.rustlang.control.bitmask.BitMask
-import io.github.kotlinmania.rustlang.control.tag.Tag
+import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
+import io.github.kotlinmania.rustlang.hashbrown.control.bitmask.BitMask
+import io.github.kotlinmania.rustlang.hashbrown.control.tag.Tag
 
 // Use the native word size as the group size. Using a 64-bit group size on
 // a 32-bit architecture will just end up being more expensive because
@@ -64,7 +67,7 @@ public open class Group(
     public open fun storeAligned(ptr: MutPtr) {
         check(ptr.alignOffset(alignOf<Group>(typeLayoutT = Group.typeLayout())) == 0)
         run {
-            ptr.write(ptr, this.value)
+            write(ptr, this.value)
         }
     }
 
@@ -174,7 +177,7 @@ public open class Group(
         /**
          * Loads a group of tags starting at the given address.
          */
-        public fun load(ptr: ConstPtr): Group = Group(ptr.readUnaligned(ptr))
+        public fun load(ptr: ConstPtr): Group = Group(readUnaligned(ptr))
 
         /**
          * Loads a group of tags starting at the given address, which must be
@@ -182,7 +185,7 @@ public open class Group(
          */
         public fun loadAligned(ptr: ConstPtr): Group {
             check(ptr.alignOffset(alignOf<Group>(typeLayoutT = Group.typeLayout())) == 0)
-            return Group(ptr.read(ptr))
+            return Group(read(ptr))
         }
     }
 }

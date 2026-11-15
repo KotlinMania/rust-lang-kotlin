@@ -1,7 +1,7 @@
 // port-lint: tests io/pipe/tests.rs
 package io.github.kotlinmania.rustlang.std.io.pipe.tests
 
-import io.github.kotlinmania.rustlang.io.pipe.pipe
+import io.github.kotlinmania.rustlang.std.io.pipe.pipe
 
 public class TestsInlineTests {
     @kotlin.test.Test

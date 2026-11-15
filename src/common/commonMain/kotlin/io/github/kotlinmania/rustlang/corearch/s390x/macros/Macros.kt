@@ -1,15 +1,6 @@
 // port-lint: source s390x/macros.rs
 package io.github.kotlinmania.rustlang.corearch.s390x.macros
 
-import io.github.kotlinmania.rustlang.s390x.macros.implVecTrait
-import io.github.kotlinmania.rustlang.s390x.macros.lTT
-import io.github.kotlinmania.rustlang.s390x.macros.sTL
-import io.github.kotlinmania.rustlang.s390x.macros.tB
-import io.github.kotlinmania.rustlang.s390x.macros.tTL
-import io.github.kotlinmania.rustlang.s390x.macros.tTS
-import io.github.kotlinmania.rustlang.s390x.macros.tU
-import io.github.kotlinmania.rustlang.s390x.macros.testImpl
-
 private const val TEST_IMPL_TEMPLATE: String = "public unsafe fun \$fn(\$(\$v: \$ty),*)-> \$r {\$call(\$(\$v),*)}"
 
 private const val TEST_IMPL_TEMPLATE_1: String = "public unsafe fun \$fn(\$(\$v: \$ty),*)-> \$r {transmute(\$call(\$(\$v),*))}"

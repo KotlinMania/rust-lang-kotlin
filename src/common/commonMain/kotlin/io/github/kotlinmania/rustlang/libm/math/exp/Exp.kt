@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.libm.math.exp
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.math.arch.i586.expall.x87Exp
-import io.github.kotlinmania.rustlang.math.scalbn.scalbn
+import io.github.kotlinmania.rustlang.libm.math.arch.x87Exp
+import io.github.kotlinmania.rustlang.libm.math.scalbn.scalbn
 
 public val HALF: DoubleArray = doubleArrayOf(0.5, -0.5)
 

@@ -10,16 +10,16 @@ import io.github.kotlinmania.rustlang.libc.CInt
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun open(pathname: ConstPtr, flags: CInt, vararg variadicArgs: Long): CInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangStdSysFsUnixOpen")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysFsUnixOpen")
 
 public actual fun read(fd: CInt, buf: MutPtr, count: CSizeT): CSsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangStdSysFsUnixRead")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysFsUnixRead")
 
 public actual fun write(fd: CInt, buf: ConstPtr, count: CSizeT): CSsizeT =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangStdSysFsUnixWrite")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysFsUnixWrite")
 
-@kotlin.wasm.WasmImport("kmcore", "rustlangStdSysFsUnixClose")
-private external fun wasiRustlangStdSysFsUnixClose(fd: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "stdSysFsUnixClose")
+private external fun wasiStdSysFsUnixClose(fd: Int): Int
 
 public actual fun close(fd: CInt): CInt =
-    wasiRustlangStdSysFsUnixClose(fd).toInt()
+    wasiStdSysFsUnixClose(fd).toInt()

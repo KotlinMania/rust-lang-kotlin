@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.panicabort.android
 
 import io.github.kotlinmania.rustlang.alloc.panicking.PanicPayload
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -10,9 +10,9 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.libc.CChar
+import io.github.kotlinmania.rustlang.libc.RTLD_DEFAULT
 import io.github.kotlinmania.rustlang.libc.dlsym
 import io.github.kotlinmania.rustlang.libc.malloc
-import io.github.kotlinmania.rustlang.libc.unix.bsd.RTLD_DEFAULT
 
 public val ANDROID_SET_ABORT_MESSAGE: List<UByte> = "android_set_abort_message\u0000".encodeToByteArray().map { it.toUByte() }
 
@@ -61,7 +61,7 @@ public fun androidSetAbortMessage(payload: PanicPayload) {
     }
     run {
         copyNonoverlapping(msg2.asPtr(), MutPtr(buf.rawAddress, buf.rawMeta), msg2.len())
-        (ObjectSlotLayout<CChar>()).writeNative((MutPtr((buf).rawAddress + ((msg2.len()).toLong() * (ObjectSlotLayout<CChar>()).strideBytes))).rawAddress, 0)
+        (UnresolvedTypeLayout<CChar>()).writeNative((MutPtr((buf).rawAddress + ((msg2.len()).toLong() * (UnresolvedTypeLayout<CChar>()).strideBytes))).rawAddress, 0)
         val func = transmute(funcAddr)
         func(buf)
     }

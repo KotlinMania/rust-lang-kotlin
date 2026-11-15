@@ -8,19 +8,19 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
-import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
+import io.github.kotlinmania.rustlang.core.num.saturatingMul
+import io.github.kotlinmania.rustlang.core.num.trailingZeros
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.math.exp.exp
-import io.github.kotlinmania.rustlang.math.exp2m1.T1
-import io.github.kotlinmania.rustlang.math.exp2m1.T2
-import io.github.kotlinmania.rustlang.math.lgammar.T3
-import io.github.kotlinmania.rustlang.math.support.env.Round
-import io.github.kotlinmania.rustlang.math.support.env.Status
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.math.support.floattraits.f32FromBits
-import io.github.kotlinmania.rustlang.math.support.floattraits.f64FromBits
-import io.github.kotlinmania.rustlang.math.support.macros.cfgSelectNofmt
+import io.github.kotlinmania.rustlang.libm.math.exp.exp
+import io.github.kotlinmania.rustlang.libm.math.exp2m1.T1
+import io.github.kotlinmania.rustlang.libm.math.exp2m1.T2
+import io.github.kotlinmania.rustlang.libm.math.lgammar.T3
+import io.github.kotlinmania.rustlang.libm.math.support.env.Round
+import io.github.kotlinmania.rustlang.libm.math.support.env.Status
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.f32FromBits
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.f64FromBits
+import io.github.kotlinmania.rustlang.libm.math.support.macros.cfgSelectNofmt
 
 // Utilities for working with hex float formats.
 
@@ -255,7 +255,7 @@ public fun parseFinite(b: List<UByte>, bits: UInt, sigBits: UInt, roundingMode: 
  */
 public fun shrOddRounding(x: U128, k: UInt): U128 =
     if (k < 128u) {
-        val inexact = rustTrailingZeros(x) < k
+        val inexact = x.trailingZeros() < k
         (x shr k.toInt()) or (U128.fromLong(inexact.toLong()))
     } else {
         (if (x != U128(0x0uL, 0x0uL)) U128.ONE else U128.ZERO)
@@ -397,7 +397,7 @@ public fun parseHex(b: List<UByte>): Result<Parsed, HexFloatParseError> {
                 }
             }
         someDigits = true
-        pexp = rustSaturatingMul(pexp, 10u)
+        pexp = pexp.saturatingMul(10u)
         pexp += digit1.toUInt()
     }
     if (!someDigits) {
@@ -530,43 +530,43 @@ public fun <Int, SignedInt, F : Float<F, Any?, Any?>> F.fmt(f: StringBuilder) {
 }
 
 public fun Byte.fmt(f: StringBuilder) {
-    f.append("$this")
+    f.append("${this}")
 }
 
 public fun Short.fmt(f: StringBuilder) {
-    f.append("$this")
+    f.append("${this}")
 }
 
 public fun Int.fmt(f: StringBuilder) {
-    f.append("$this")
+    f.append("${this}")
 }
 
 public fun Long.fmt(f: StringBuilder) {
-    f.append("$this")
+    f.append("${this}")
 }
 
 public fun I128.fmt(f: StringBuilder) {
-    f.append("$this")
+    f.append("${this}")
 }
 
 public fun UByte.fmt(f: StringBuilder) {
-    f.append("$this")
+    f.append("${this}")
 }
 
 public fun UShort.fmt(f: StringBuilder) {
-    f.append("$this")
+    f.append("${this}")
 }
 
 public fun UInt.fmt(f: StringBuilder) {
-    f.append("$this")
+    f.append("${this}")
 }
 
 public fun ULong.fmt(f: StringBuilder) {
-    f.append("$this")
+    f.append("${this}")
 }
 
 public fun U128.fmt(f: StringBuilder) {
-    f.append("$this")
+    f.append("${this}")
 }
 
 // Not really a meaningful impl, but makes some generics easier.

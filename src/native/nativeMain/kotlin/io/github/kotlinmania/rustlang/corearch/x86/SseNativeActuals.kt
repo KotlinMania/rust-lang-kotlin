@@ -4,11 +4,10 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.rustlangCorearchX86SseLdmxcsr
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.rustlangCorearchX86SsePrefetch
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.rustlangCorearchX86SseSfence
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.rustlangCorearchX86SseStmxcsr
-import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86SseLdmxcsr
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86SsePrefetch
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86SseSfence
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86SseStmxcsr
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
@@ -83,19 +82,19 @@ public actual fun cvttss2si(a: M128): Int =
     0
 
 public actual fun sfence() {
-    rustlangCorearchX86SseSfence()
+    corearchX86SseSfence()
 }
 
 public actual fun stmxcsr(p: MutPtr) {
-    rustlangCorearchX86SseStmxcsr(p.rawAddress.toCPointer<ByteVar>())
+    corearchX86SseStmxcsr(p.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun ldmxcsr(p: ConstPtr) {
-    rustlangCorearchX86SseLdmxcsr(p.rawAddress.toCPointer<ByteVar>())
+    corearchX86SseLdmxcsr(p.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun prefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int) {
-    rustlangCorearchX86SsePrefetch(p.rawAddress.toCPointer<ByteVar>(), rw, loc, ty)
+    corearchX86SsePrefetch(p.rawAddress.toCPointer<ByteVar>(), rw, loc, ty)
 }
 
 public actual fun cmpss(a: M128, b: M128, imm8: Byte): M128 =

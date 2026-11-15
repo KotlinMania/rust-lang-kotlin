@@ -1,21 +1,21 @@
 // port-lint: source new/apple/xnu/sys/ttycom.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ttycom
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
-import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.IOC_OUT
-import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.io
-import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.ioc
-import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.ior
-import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.iow
-import io.github.kotlinmania.rustlang.types.ulongCastInt
-import io.github.kotlinmania.rustlang.types.ulongCastUint
-import io.github.kotlinmania.rustlang.unix.Winsize
-import io.github.kotlinmania.rustlang.unix.bsd.apple.Termios
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.IOC_OUT
+import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.io
+import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.ioc
+import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.ior
+import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.iow
+import io.github.kotlinmania.rustlang.libc.types.ulongCastInt
+import io.github.kotlinmania.rustlang.libc.types.ulongCastUint
+import io.github.kotlinmania.rustlang.libc.unix.Winsize
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.Termios
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Timeval
 
 // Header: `sys / ttycom.h`
 //

@@ -1,14 +1,14 @@
 // port-lint: source iter/adapters/inspect.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.inspect
 
+import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -50,15 +50,19 @@ public typealias Source<I> = I.Source
 public open class Inspect<I, F>(
     public var iter: I,
     public var f: F,
-) : TrustedFused, SourceIter<Source>, InPlaceIterable, Iterable<Item> {
-    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
-        override fun computeNext() {
-            when (val v = this@Inspect.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedFused,
+    SourceIter<Source>,
+    InPlaceIterable,
+    Iterable<Item> {
+    override fun iterator(): Iterator<Item> =
+        object : AbstractIterator<Item>() {
+            override fun computeNext() {
+                when (val v = this@Inspect.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Inspect<I, F> = Inspect(iter, f)
 

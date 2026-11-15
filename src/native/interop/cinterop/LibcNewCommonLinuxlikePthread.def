@@ -1,6 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop
-headers = libc_new_common_linuxlike_pthread_wrapper.h
-headerFilter = libc_new_common_linuxlike_pthread_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = libc_new_common_linuxlike_pthread_wrapper.a
-noStringConversion = rustlangLibcNewCommonLinuxlikePthreadPthreadSetnameNp

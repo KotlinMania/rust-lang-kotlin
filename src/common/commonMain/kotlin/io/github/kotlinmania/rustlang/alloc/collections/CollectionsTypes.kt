@@ -12,10 +12,14 @@ public sealed class TryReserveErrorKind {
      * (usually `Long.MAX` bytes).
      */
     public data object CapacityOverflow : TryReserveErrorKind()
+
     /**
      * The memory allocator returned an error
      */
-    public data class AllocError(public var layout: Layout, public var nonExhaustive: Unit) : TryReserveErrorKind()
+    public data class AllocError(
+        public var layout: Layout,
+        public var nonExhaustive: Unit,
+    ) : TryReserveErrorKind()
 
     public fun rustEquals(other: TryReserveErrorKind): Boolean = this == other
 

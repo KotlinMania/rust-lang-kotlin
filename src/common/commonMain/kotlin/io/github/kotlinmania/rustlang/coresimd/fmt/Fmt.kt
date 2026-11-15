@@ -1,7 +1,7 @@
 // port-lint: source fmt.rs
 package io.github.kotlinmania.rustlang.coresimd.fmt
 
-import io.github.kotlinmania.rustlang.Simd
+import io.github.kotlinmania.rustlang.coresimd.Simd
 
 /**
  * A `Simd<T, N>` has a debug format like the one for `[T]`:

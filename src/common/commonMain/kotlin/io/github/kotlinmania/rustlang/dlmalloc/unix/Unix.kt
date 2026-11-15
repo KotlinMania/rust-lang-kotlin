@@ -1,10 +1,10 @@
 // port-lint: source unix.rs
 package io.github.kotlinmania.rustlang.dlmalloc.unix
 
-import io.github.kotlinmania.rustlang.Allocator
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.dlmalloc.Allocator
 import io.github.kotlinmania.rustlang.libc.mmap
 import io.github.kotlinmania.rustlang.libc.mremap
 import io.github.kotlinmania.rustlang.libc.munmap

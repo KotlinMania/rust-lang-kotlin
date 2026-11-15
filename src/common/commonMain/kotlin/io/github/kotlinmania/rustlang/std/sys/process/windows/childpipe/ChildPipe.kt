@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -15,14 +15,15 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.os.windows.raw.Handle
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.sys.FromInner
-import io.github.kotlinmania.rustlang.sys.IntoInner
-import io.github.kotlinmania.rustlang.sys.api
-import io.github.kotlinmania.rustlang.thread.functions.spawn
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.api
+import io.github.kotlinmania.rustlang.std.sys.c
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
+import io.github.kotlinmania.rustlang.std.thread.functions.spawn
 
 public open class ChildPipe internal constructor(
     innerCtorArg: Handle,
@@ -36,7 +37,7 @@ public open class ChildPipe internal constructor(
 
     public open fun intoHandle(): Handle = this.inner
 
-    public open fun tryClone(): Result<ChildPipe, Error> = this.inner.duplicate(0, false, DUPLICATE_SAME_ACCESS).map({ inner -> ChildPipe(inner = inner) })
+    public open fun tryClone(): Result<ChildPipe, Error> = this.inner.duplicate(0, false, c.DUPLICATE_SAME_ACCESS).map({ inner -> ChildPipe(inner = inner) })
 
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> {
         val result =
@@ -44,7 +45,7 @@ public open class ChildPipe internal constructor(
                 val len = minOf(buf.size, UInt.MAX_VALUE.toInt()).toUInt()
                 val ptr = MutPtr((buf.asMutPtr()).rawAddress)
                 this.alertableIoInternal({ overlapped, callback ->
-                    ReadFileEx(this.inner.asRawHandle(), ptr, len, overlapped, callback)
+                    c.ReadFileEx(this.inner.asRawHandle(), ptr, len, overlapped, callback)
                 })
             }
         return when {
@@ -66,7 +67,7 @@ public open class ChildPipe internal constructor(
                 val len = minOf(buf.capacity(), UInt.MAX_VALUE.toInt()).toUInt()
                 val ptr = buf.asMut().asMutPtr().cast()
                 this.alertableIoInternal({ overlapped, callback ->
-                    ReadFileEx(this.inner.asRawHandle(), ptr, len, overlapped, callback)
+                    c.ReadFileEx(this.inner.asRawHandle(), ptr, len, overlapped, callback)
                 })
             }
         return when {
@@ -102,7 +103,7 @@ public open class ChildPipe internal constructor(
         run {
             val len = minOf(buf.size, UInt.MAX_VALUE.toInt()).toUInt()
             this.alertableIoInternal({ overlapped, callback ->
-                WriteFileEx(this.inner.asRawHandle(), ConstPtr((buf.asPtr()).rawAddress), len, overlapped, callback)
+                c.WriteFileEx(this.inner.asRawHandle(), ConstPtr((buf.asPtr()).rawAddress), len, overlapped, callback)
             })
         }
 
@@ -127,7 +128,7 @@ public open class ChildPipe internal constructor(
      * [WriteFileEx]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefileex
      * [Asynchronous Procedure Call]: https://docs.microsoft.com/en-us/windows/win32/sync/asynchronous-procedure-calls
      */
-    public open fun alertableIoInternal(io: (Overlapped, LpoverlappedCompletionRoutine) -> Bool): Result<Int, Error> {
+    public open fun alertableIoInternal(io: (c.Overlapped, c.LpoverlappedCompletionRoutine) -> c.Bool): Result<Int, Error> {
         open class AsyncResult(
             public var error: UInt,
             public var transferred: UInt,
@@ -140,7 +141,7 @@ public open class ChildPipe internal constructor(
             // except for our `hEvent` field which we set to a valid AsyncResult pointer (see below)
             run {
                 val result = AsyncResult(error = error, transferred = transferred)
-                (ObjectSlotLayout<Overlapped>()).readNative((overlapped).rawAddress).hEvent.cast() = result
+                (UnresolvedTypeLayout<c.Overlapped>()).readNative((overlapped).rawAddress).hEvent.cast() = result
             }
         }
         // Use "alertable I/O" to synchronize the pipe I/O.
@@ -165,27 +166,27 @@ public open class ChildPipe internal constructor(
         // and can simply return it. Note that we must not return earlier,
         // while the I/O is still in progress.
         // The result that will be set from the asynchronous callback.
-        val localStorageL367C8 = AddressableLocal(null, ObjectSlotLayout<AsyncResult?>())
+        val localStorageL367C8 = AddressableLocal(null, UnresolvedTypeLayout<AsyncResult?>())
         val asyncResult by localStorageL367C8
         // STEP 1: Start the I/O operation.
-        val overlapped: Overlapped  = Overlapped()
+        val overlapped: c.Overlapped  = c.Overlapped()
         // `hEvent` is unused by `ReadFileEx` and `WriteFileEx`.
         // Therefore the documentation suggests using it to smuggle a pointer to the callback.
         overlapped.hEvent = (localStorageL367C8.asMutPtr())
         // Asynchronous read of the pipe.
         // If successful, `callback` will be called once it completes.
         val result = io(overlapped, ::callback)
-        if (result == FALSE) {
+        if (result == c.FALSE) {
             // We can return here because the call failed.
             // After this we must not return until the I/O completes.
-            return Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
+            return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
         }
         // Wait indefinitely for the result.
         val result2 =
             while (true) {
                 // STEP 2: Enter an alertable state.
                 // The second parameter of `SleepEx` is used to make this sleep alertable.
-                SleepEx(INFINITE, TRUE)
+                c.SleepEx(c.INFINITE, c.TRUE)
                 if (asyncResult != null) {
                     break
                 }
@@ -193,10 +194,10 @@ public open class ChildPipe internal constructor(
         // STEP 4: Return the result.
         // `asyncResult` is always `Some` at this point
         return when (val matchVal = result2.error) {
-            errorSuccess -> Result.Ok(result2.transferred.toInt())
+            c.errorSuccess -> Result.Ok(result2.transferred.toInt())
             else -> {
                 val error = matchVal
-                Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
+                Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
             }
         }
     }
@@ -281,10 +282,10 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
         // We cache the handle once so we can reuse it without needing to reopen it each time.
         // NOTE: this means the handle may appear to be leaked but that's fine because
         // it's only one handle and the OS will clean it up when the process exits.
-        val PIPE_FS: Atomic<Handle>  = Atomic.new(MutPtr(0L))
-        val ioStatus = IoStatusBlock.default()
-        val objectAttributes = ObjectAttributes.default()
-        objectAttributes.length = sizeOf<ObjectAttributes>(typeLayoutT = ObjectSlotLayout<ObjectAttributes>()).toUInt()
+        val PIPE_FS: Atomic<c.Handle>  = Atomic.new(MutPtr(0L))
+        val ioStatus = c.IoStatusBlock.default()
+        val objectAttributes = c.ObjectAttributes.default()
+        objectAttributes.length = sizeOf<c.ObjectAttributes>(typeLayoutT = UnresolvedTypeLayout<c.ObjectAttributes>()).toUInt()
         val pipeFs1 =
             if (PIPE_FS.load(Relaxed) != null && !handle.isNull()) {
                 handle
@@ -292,20 +293,20 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
                 val path = api.unicodeStr("\\Device\\NamedPipe\\")
                 objectAttributes.objectName = path.asPtr().castMut()
                 val pipeFs = MutPtr(0L)
-                val status = NtOpenFile(pipeFs, SYNCHRONIZE or GENERIC_READ, objectAttributes, ioStatus, FILE_SHARE_READ or FILE_SHARE_WRITE, FILE_SYNCHRONOUS_IO_NONALERT)
-                if (ntSuccess(status)) {
+                val status = c.NtOpenFile(pipeFs, c.SYNCHRONIZE or c.GENERIC_READ, objectAttributes, ioStatus, c.FILE_SHARE_READ or c.FILE_SHARE_WRITE, c.FILE_SYNCHRONOUS_IO_NONALERT)
+                if (c.ntSuccess(status)) {
                     run {
                         val matchVal = PIPE_FS.compareExchange(MutPtr(0L), pipeFs, Relaxed, Relaxed)
                         when (matchVal) { is Result.Ok<*, *> -> {
                             pipeFs
                         }; is Result.Err<*, *> -> {
                             val existing = matchVal.error
-                            CloseHandle(pipeFs)
+                            c.CloseHandle(pipeFs)
                             existing
                         } }
                     }
                 } else {
-                    return Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(RtlNtStatusToDosError(status).toInt()))
+                    return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status).toInt()))
                 }
             }
         // From now on we're using handles instead of paths to create and open pipes.
@@ -314,7 +315,7 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
         // for empty.Buffer instead of unicodeStr("").
         // There's no difference to the OS itself but it's possible that third party
         // DLLs which hook in to processes could be relying on the exact form of this string.
-        val localStorageL118C8 = AddressableLocal(UnicodeString.default(), ObjectSlotLayout<Any?>())
+        val localStorageL118C8 = AddressableLocal(c.UnicodeString.default(), UnresolvedTypeLayout<Any?>())
         objectAttributes.objectName = MutPtr(((localStorageL118C8.asConstPtr())).rawAddress)
         // Create our side of the pipe for async access.
         val ours1 = run {
@@ -328,20 +329,20 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
             val timeout = (50L * 10000L).neg().toULong()
             val ours = MutPtr(0L)
             val status1 =
-                NtCreateNamedPipeFile(ours, SYNCHRONIZE or
+                c.NtCreateNamedPipeFile(ours, c.SYNCHRONIZE or
                     if (oursReadable) {
-                        GENERIC_READ
+                        c.GENERIC_READ
                     } else {
-                        GENERIC_WRITE
+                        c.GENERIC_WRITE
                     }, objectAttributes, ioStatus, if (oursReadable) {
-                    FILE_SHARE_WRITE
+                    c.FILE_SHARE_WRITE
                 } else {
-                    FILE_SHARE_READ
-                }, FILE_CREATE, 0, FILE_PIPE_BYTE_STREAM_TYPE, FILE_PIPE_BYTE_STREAM_MODE, FILE_PIPE_QUEUE_OPERATION, 1, PIPE_BUFFER_CAPACITY, PIPE_BUFFER_CAPACITY, timeout)
-            if (ntSuccess(status1)) {
+                    c.FILE_SHARE_READ
+                }, c.FILE_CREATE, 0, c.FILE_PIPE_BYTE_STREAM_TYPE, c.FILE_PIPE_BYTE_STREAM_MODE, c.FILE_PIPE_QUEUE_OPERATION, 1, PIPE_BUFFER_CAPACITY, PIPE_BUFFER_CAPACITY, timeout)
+            if (c.ntSuccess(status1)) {
                 Handle.fromRawHandle(ours)
             } else {
-                return Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(RtlNtStatusToDosError(status1).toInt()))
+                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status1).toInt()))
             }
         }
         // Open their side of the pipe for synchronous access.
@@ -350,20 +351,20 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
             // RootDirectory to the pipe handle and not setting a path name,
             objectAttributes.rootDirectory = ours1.asRawHandle()
             if (theirHandleInheritable) {
-                objectAttributes.attributes = objectAttributes.attributes or OBJ_INHERIT
+                objectAttributes.attributes = objectAttributes.attributes or c.OBJ_INHERIT
             }
             val theirs = MutPtr(0L)
             val status2 =
-                NtOpenFile(theirs, SYNCHRONIZE or
+                c.NtOpenFile(theirs, c.SYNCHRONIZE or
                     if (oursReadable) {
-                        GENERIC_WRITE or FILE_READ_ATTRIBUTES
+                        c.GENERIC_WRITE or c.FILE_READ_ATTRIBUTES
                     } else {
-                        GENERIC_READ
-                    }, objectAttributes, ioStatus, 0, FILE_NON_DIRECTORY_FILE or FILE_SYNCHRONOUS_IO_NONALERT)
-            if (ntSuccess(status2)) {
+                        c.GENERIC_READ
+                    }, objectAttributes, ioStatus, 0, c.FILE_NON_DIRECTORY_FILE or c.FILE_SYNCHRONOUS_IO_NONALERT)
+            if (c.ntSuccess(status2)) {
                 Handle.fromRawHandle(theirs)
             } else {
-                return Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(RtlNtStatusToDosError(status2).toInt()))
+                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status2).toInt()))
             }
         }
         Result.Ok(Pipes(ours = ChildPipe(inner = ours1), theirs = ChildPipe(inner = theirs1)))
@@ -433,17 +434,17 @@ public fun readOutput(p1: ChildPipe, v1: List<UByte>, p2: ChildPipe, v2: List<UB
     // duration of the I/O operation (where tons of operations can also fail).
     // The destructor for `AsyncPipe` ends up taking care of most of this.
     while (true) {
-        val res = WaitForMultipleObjects(2, objs.asPtr(), FALSE, INFINITE)
-        if (res == WAIT_OBJECT_0) {
+        val res = c.WaitForMultipleObjects(2, objs.asPtr(), c.FALSE, c.INFINITE)
+        if (res == c.WAIT_OBJECT_0) {
             if (!when (val tryResult = p12.result()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) } || !when (val tryResult = p12.scheduleRead()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }) {
                 return p22.finish()
             }
-        } else if (res == WAIT_OBJECT_0 + 1u) {
+        } else if (res == c.WAIT_OBJECT_0 + 1u) {
             if (!when (val tryResult = p22.result()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) } || !when (val tryResult = p22.scheduleRead()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }) {
                 return p12.finish()
             }
         } else {
-            return Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
+            return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
         }
     }
 }
@@ -451,7 +452,7 @@ public fun readOutput(p1: ChildPipe, v1: List<UByte>, p2: ChildPipe, v2: List<UB
 public open class AsyncPipe internal constructor(
     pipeCtorArg: Handle,
     eventCtorArg: Handle,
-    public var overlapped: Overlapped,
+    public var overlapped: c.Overlapped,
     // needs a stable address
     public var dst: List<UByte>,
     public var state: State,
@@ -559,10 +560,10 @@ public open class AsyncPipe internal constructor(
         // If anything here fails, there's not really much we can do, so we leak
         // the buffer/OVERLAPPED pointers to ensure we're at least memory safe.
         if (this.pipe.cancelIo().isErr() || this.result().isErr()) {
-            val buf = mem.take(this.dst)
+            val buf = take(this.dst)
             val overlapped = null
-            val overlapped1 = mem.replace(this.overlapped, overlapped)
-            mem.forget(Pair(buf, overlapped1))
+            val overlapped1 = replace(this.overlapped, overlapped)
+            forget(Pair(buf, overlapped1))
         }
     }
 
@@ -570,7 +571,7 @@ public open class AsyncPipe internal constructor(
         public operator fun invoke(
             pipe: Handle,
             event: Handle,
-            overlapped: Overlapped,
+            overlapped: c.Overlapped,
             dst: List<UByte>,
             state: State,
         ): AsyncPipe = AsyncPipe(
@@ -593,7 +594,7 @@ public open class AsyncPipe internal constructor(
             // and the only time an even will go back to "unset" will be once an
             // I/O operation is successfully scheduled (what we want).
             val event = when (val tryResult = Handle.newEvent(true, true)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-            var overlapped: Overlapped = Overlapped()
+            var overlapped: c.Overlapped = c.Overlapped()
             overlapped.hEvent = event.asRawHandle()
             return Result.Ok(AsyncPipe(pipe = pipe, overlapped = overlapped, event = event, dst = dst, state = State.NotReading))
         }

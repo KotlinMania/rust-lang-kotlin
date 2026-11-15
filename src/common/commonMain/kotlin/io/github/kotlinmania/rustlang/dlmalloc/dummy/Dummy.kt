@@ -1,10 +1,10 @@
 // port-lint: source dummy.rs
 package io.github.kotlinmania.rustlang.dlmalloc.dummy
 
-import io.github.kotlinmania.rustlang.Allocator
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.dlmalloc.Allocator
 
 public open class System(
     public var priv: Unit,

@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.loongarch32
 
-private object CorearchLoongarch32JniBridge {
+private object Loongarch32JniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,11 +38,14 @@ private object CorearchLoongarch32JniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchLoongarch32JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = Loongarch32JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,27 +59,27 @@ private object CorearchLoongarch32JniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchLoongarch32Cacop(a: Int, b: Int, c: Int)
+    external fun corearchLoongarch32Cacop(a: Int, b: Int, c: Int)
 
     @JvmStatic
-    external fun rustlangCorearchLoongarch32Csrrd(a: Int): Int
+    external fun corearchLoongarch32Csrrd(a: Int): Int
 
     @JvmStatic
-    external fun rustlangCorearchLoongarch32Csrwr(a: Int, b: Int): Int
+    external fun corearchLoongarch32Csrwr(a: Int, b: Int): Int
 
     @JvmStatic
-    external fun rustlangCorearchLoongarch32Csrxchg(a: Int, b: Int, c: Int): Int
+    external fun corearchLoongarch32Csrxchg(a: Int, b: Int, c: Int): Int
 }
 
 public actual fun cacop(a: Int, b: Int, c: Int) {
-    CorearchLoongarch32JniBridge.rustlangCorearchLoongarch32Cacop(a, b, c)
+    Loongarch32JniBridge.corearchLoongarch32Cacop(a, b, c)
 }
 
 public actual fun csrrd(a: Int): Int =
-    CorearchLoongarch32JniBridge.rustlangCorearchLoongarch32Csrrd(a)
+    Loongarch32JniBridge.corearchLoongarch32Csrrd(a)
 
 public actual fun csrwr(a: Int, b: Int): Int =
-    CorearchLoongarch32JniBridge.rustlangCorearchLoongarch32Csrwr(a, b)
+    Loongarch32JniBridge.corearchLoongarch32Csrwr(a, b)
 
 public actual fun csrxchg(a: Int, b: Int, c: Int): Int =
-    CorearchLoongarch32JniBridge.rustlangCorearchLoongarch32Csrxchg(a, b, c)
+    Loongarch32JniBridge.corearchLoongarch32Csrxchg(a, b, c)

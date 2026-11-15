@@ -2,10 +2,6 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.x86.M128i
-import io.github.kotlinmania.rustlang.x86.M256i
-import io.github.kotlinmania.rustlang.x86.M512i
-
 public actual fun vpmadd52luq128(z: M128i, x: M128i, y: M128i): M128i =
     M128i()
 

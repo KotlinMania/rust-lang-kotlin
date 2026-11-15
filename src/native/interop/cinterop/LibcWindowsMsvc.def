@@ -1,6 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.windows.msvc.cinterop
-headers = libc_windows_msvc_wrapper.h
-headerFilter = libc_windows_msvc_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = libc_windows_msvc_wrapper.a
-noStringConversion = rustlangLibcWindowsMsvcStricmp rustlangLibcWindowsMsvcStrnicmp

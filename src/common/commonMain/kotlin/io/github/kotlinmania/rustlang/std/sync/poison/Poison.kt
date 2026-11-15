@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.sys.thread.unix.Thread
+import io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread
 
 // Synchronization objects that employ poisoning.
 //

@@ -1,10 +1,13 @@
 // port-lint: source collections/vec_deque/drain.rs
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.drain
 
+import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.index.WrappedIndex
-import io.github.kotlinmania.rustlang.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 
 public class DebugTuple(
@@ -54,14 +57,15 @@ public open class Drain<T, A : Allocator> internal constructor(
     public var deque: NonNull = dequeCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Drain.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@Drain.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     // Only returns pointers to the slices, as that's all we need
     // to drop them. May only be called if `self.remaining != 0`.
@@ -82,7 +86,12 @@ public open class Drain<T, A : Allocator> internal constructor(
     }
 
     public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Drain").field(this.drainLen).field(this.idx).field(this.tailLen).field(this.remaining).finish()
+        DebugTuple(f, "Drain")
+            .field(this.drainLen)
+            .field(this.idx)
+            .field(this.tailLen)
+            .field(this.remaining)
+            .finish()
     }
 
     public open fun drop() {
@@ -101,8 +110,8 @@ public open class Drain<T, A : Allocator> internal constructor(
                     // SAFETY: We just checked that `self.remaining != 0`.
                     run {
                         val (front, back) = this.value.asSlices()
-                        ptr.dropInPlace(front)
-                        ptr.dropInPlace(back)
+                        dropInPlace(front)
+                        dropInPlace(back)
                     }
                 }
                 // ignore-tidy-undocumented-unchecked
@@ -212,10 +221,10 @@ public open class Drain<T, A : Allocator> internal constructor(
             guard.first.remaining -= front.len()
             // SAFETY: This can't have been dropped before since
             // `idx` & `remaining` track what's been dropped.
-            ptr.dropInPlace(front)
+            dropInPlace(front)
             guard.first.remaining = 0
             // SAFETY: Ditto.
-            ptr.dropInPlace(back)
+            dropInPlace(back)
         }
     }
 
@@ -254,14 +263,15 @@ public open class Drain<T, A : Allocator> internal constructor(
             tailLen: Int,
             remaining: Int,
             marker: Unit,
-        ): Drain<T, A> = Drain<T, A>(
-            dequeCtorArg = deque,
-            drainLen = drainLen,
-            idx = idx,
-            tailLen = tailLen,
-            remaining = remaining,
-            marker = marker,
-        )
+        ): Drain<T, A> =
+            Drain<T, A>(
+                dequeCtorArg = deque,
+                drainLen = drainLen,
+                idx = idx,
+                tailLen = tailLen,
+                remaining = remaining,
+                marker = marker,
+            )
 
         public fun <T, A : Allocator> new(deque: VecDeque<T, A>, drainStart: Int, drainLen: Int): Drain<T, A> {
             val origLen = replace(deque.len, drainStart)

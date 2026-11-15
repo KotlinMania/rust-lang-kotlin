@@ -1,8 +1,10 @@
 // port-lint: source term/terminfo/parser/compiled.rs
 package io.github.kotlinmania.rustlang.test.term.terminfo.parser.compiled
 
+import io.github.kotlinmania.rustlang.alloc.io.read.Read
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.term.terminfo.TermInfo
+import io.github.kotlinmania.rustlang.test.term.terminfo.TermInfo
 
 // ncurses-compatible compiled terminfo format parsing (term(5))
 

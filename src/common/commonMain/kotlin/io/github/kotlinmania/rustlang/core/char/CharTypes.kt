@@ -18,10 +18,12 @@ public sealed class CharCase(
      * Lowercase. Corresponds to the `Lowercase` Unicode property.
      */
     public data object Lower : CharCase(0x0)
+
     /**
      * Titlecase. Corresponds to the `TitlecaseLetter` Unicode general category.
      */
     public data object Title : CharCase(0x2)
+
     /**
      * Uppercase. Corresponds to the `Uppercase` Unicode property.
      */

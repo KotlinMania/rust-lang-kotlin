@@ -8,10 +8,10 @@ import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV4
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV6
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.path.Iter
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.net.connection.lookupHostString
-import io.github.kotlinmania.rustlang.sys.net.connection.socket.lookupHost
+import io.github.kotlinmania.rustlang.std.path.Iter
+import io.github.kotlinmania.rustlang.std.sys.net.connection.lookupHostString
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.lookupHost
 
 /**
  * A trait for objects which can be converted or resolved to one or more

@@ -4,9 +4,9 @@ package io.github.kotlinmania.rustlang.unwind.libunwind
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.types.UnwindExceptionClass
-import io.github.kotlinmania.rustlang.types.UnwindReasonCode
-import io.github.kotlinmania.rustlang.types.UnwindWord
+import io.github.kotlinmania.rustlang.unwind.types.UnwindExceptionClass
+import io.github.kotlinmania.rustlang.unwind.types.UnwindReasonCode
+import io.github.kotlinmania.rustlang.unwind.types.UnwindWord
 
 public fun interface FnCallback {
     public operator fun invoke(version: CInt, actions: UnwindAction, exceptionClass: UnwindExceptionClass, exceptionObject: MutPtr, context: MutPtr): UnwindReasonCode

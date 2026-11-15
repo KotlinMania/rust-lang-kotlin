@@ -2,16 +2,16 @@
 package io.github.kotlinmania.rustlang.core.pin
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
+import io.github.kotlinmania.rustlang.core.ops.deref.LegacyReceiver
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.ops.deref.DerefPure
-import io.github.kotlinmania.rustlang.ops.deref.LegacyReceiver
 
 // Types that pin data to a location in memory.
 //
@@ -1027,10 +1027,14 @@ import io.github.kotlinmania.rustlang.ops.deref.LegacyReceiver
 public open class Pin<Ptr>(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Ptr>,
-) : DerefPure, LegacyReceiver, Pointer {
+) : DerefPure,
+    LegacyReceiver,
+    fmt.Pointer {
     public var pointer: Ptr
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(pointer: Ptr, fieldLayout: TypeLayout<Ptr>) : this(allocateNativeCell(pointer, fieldLayout), fieldLayout)
 
@@ -1048,7 +1052,7 @@ public open class Pin<Ptr>(
 
     public open fun ne(other: Pin<Q>): Boolean = Ptr.Target.ne(this, other)
 
-    public open fun partialCmp(other: Pin<Q>): Ordering? = Ptr.Target.partialCmp(this, other)
+    public open fun partialCmp(other: Pin<Q>): cmp.Ordering? = Ptr.Target.partialCmp(this, other)
 
     public open fun lt(other: Pin<Q>): Boolean = Ptr.Target.lt(this, other)
 
@@ -1058,7 +1062,7 @@ public open class Pin<Ptr>(
 
     public open fun ge(other: Pin<Q>): Boolean = Ptr.Target.ge(this, other)
 
-    public open fun cmp(other: Pin<Ptr>): Ordering = Ptr.Target.cmp(this, other)
+    public open fun cmp(other: Pin<Ptr>): cmp.Ordering = Ptr.Target.cmp(this, other)
 
     public override fun hashCode(): Int {
         var state = 0
@@ -1199,9 +1203,17 @@ public open class Pin<Ptr>(
     // The following implementations allow untrusted trait implementations to access
     // `self.pointer`, which is only sound because these traits are mentioned in
     // the safety requirements of `PinSafePointer`.
-    public override fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok(Unit) }
+    public override fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append((this.pointer).toString())
+            Result.Ok(Unit)
+        }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append((this.pointer).toString())
+            Result.Ok(Unit)
+        }
 
     public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = this.pointer.fmt(f)
 
@@ -1444,7 +1456,7 @@ public fun <T, U> Pin<T>.mapUnchecked(func: (T) -> U): Pin<U> {
     val newPointer = func(pointer)
     // SAFETY: the safety contract for `newUnchecked` must be
     // upheld by the caller.
-    return Pin.newUnchecked(newPointer, fieldLayout = ObjectSlotLayout<T>())
+    return Pin.newUnchecked(newPointer, fieldLayout = UnresolvedTypeLayout<T>())
 }
 
 /**
@@ -1524,7 +1536,7 @@ public fun <T, U> Pin<T>.mapUncheckedMut(func: (T) -> U): Pin<U> {
     val newPointer = func(pointer)
     // SAFETY: as the value of `this` is guaranteed to not have
     // been moved out, this call to `newUnchecked` is safe.
-    return Pin.newUnchecked(newPointer, fieldLayout = ObjectSlotLayout<T>())
+    return Pin.newUnchecked(newPointer, fieldLayout = UnresolvedTypeLayout<T>())
 }
 
 /**
@@ -1577,7 +1589,9 @@ public open class PinHelper<Ptr>(
 ) : PinDerefMutHelper<Target> {
     public var pointer: Ptr
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(pointer: Ptr, fieldLayout: TypeLayout<Ptr>) : this(allocateNativeCell(pointer, fieldLayout), fieldLayout)
 
@@ -1764,5 +1778,5 @@ public open class PinMacroHelper<T>(
  */
 public fun <T> pinNewUncheckedInHelper(pinned: PinMacroHelper<T>): Pin<T> {
     // SAFETY: Ensured by the caller.
-    return Pin.newUnchecked(pinned.value, fieldLayout = ObjectSlotLayout<Ptr>())
+    return Pin.newUnchecked(pinned.value, fieldLayout = UnresolvedTypeLayout<Ptr>())
 }

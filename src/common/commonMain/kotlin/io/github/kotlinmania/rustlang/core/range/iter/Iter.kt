@@ -1,17 +1,17 @@
 // port-lint: source range/iter.rs
 package io.github.kotlinmania.rustlang.core.range.iter
 
+import io.github.kotlinmania.rustlang.core.iter.range.Step
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.range.Range
+import io.github.kotlinmania.rustlang.core.range.RangeFrom
+import io.github.kotlinmania.rustlang.core.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.range.Step
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.mem.replace
-import io.github.kotlinmania.rustlang.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.range.Range
-import io.github.kotlinmania.rustlang.range.RangeFrom
-import io.github.kotlinmania.rustlang.range.RangeInclusive
 
 // Safety: This macro must only be used on types that are `Copy` and result in ranges
 // which have an exact `sizeHint()` where the upper bound must not be `None`.
@@ -21,21 +21,23 @@ import io.github.kotlinmania.rustlang.range.RangeInclusive
  */
 public open class RangeIter<A>(
     public var value: Range<A>,
-) : TrustedLen<RangeIter<A>>, Iterable<A> {
+) : TrustedLen<RangeIter<A>>,
+    Iterable<A> {
     public var field0: Range<A>
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@RangeIter.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<A> =
+        object : AbstractIterator<A>() {
+            override fun computeNext() {
+                when (val v = this@RangeIter.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): RangeIter<A> = RangeIter(value)
 
@@ -57,7 +59,7 @@ public open class RangeIter<A>(
      * }
      * ```
      */
-    public open fun remainder(): io.github.kotlinmania.rustlang.range.Range<A> = Range(start = this.value.start, end = this.value.end)
+    public open fun remainder(): io.github.kotlinmania.rustlang.core.range.Range<A> = Range(start = this.value.start, end = this.value.end)
 
     public override fun next(): A? = this.value.next()
 
@@ -112,28 +114,30 @@ public val MAY_HAVE_SIDE_EFFECT8: Boolean = false
 
 public val MAY_HAVE_SIDE_EFFECT9: Boolean = false
 
-public fun <A : Step<A>> io.github.kotlinmania.rustlang.range.Range<A>.intoIter(): RangeIter<A> = RangeIter(this.into())
+public fun <A : Step<A>> io.github.kotlinmania.rustlang.core.range.Range<A>.intoIter(): RangeIter<A> = RangeIter(this.into())
 
 /**
  * By-value [RangeInclusive] iterator.
  */
 public open class RangeInclusiveIter<A>(
-    public var value: io.github.kotlinmania.rustlang.range.legacy.RangeInclusive<A>,
-) : TrustedLen<RangeInclusiveIter<A>>, Iterable<A> {
-    public var field0: io.github.kotlinmania.rustlang.range.legacy.RangeInclusive<A>
+    public var value: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>,
+) : TrustedLen<RangeInclusiveIter<A>>,
+    Iterable<A> {
+    public var field0: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@RangeInclusiveIter.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<A> =
+        object : AbstractIterator<A>() {
+            override fun computeNext() {
+                when (val v = this@RangeInclusiveIter.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): RangeInclusiveIter<A> = RangeInclusiveIter(value)
 
@@ -201,15 +205,17 @@ public open class RangeFromIter<A>(
      * Only used when overflow checks are enabled.
      */
     public var exhausted: Boolean,
-) : TrustedLen<RangeFromIter<A>>, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@RangeFromIter.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<RangeFromIter<A>>,
+    Iterable<A> {
+    override fun iterator(): Iterator<A> =
+        object : AbstractIterator<A>() {
+            override fun computeNext() {
+                when (val v = this@RangeFromIter.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): RangeFromIter<A> = RangeFromIter(start, exhausted)
 
@@ -258,10 +264,11 @@ public open class RangeFromIter<A>(
             this.exhausted = false
         }
         if (false) {
-            val n = Step.forwardChecked(this.start.clone(), 1) ?: run {
-                this.exhausted = true
-                return this.start.clone()
-            }
+            val n =
+                Step.forwardChecked(this.start.clone(), 1) ?: run {
+                    this.exhausted = true
+                    return this.start.clone()
+                }
             return replace(this.start, n)
         }
         val n1 = Step.forward(this.start.clone(), 1)

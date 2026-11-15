@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlernon
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.sys.pal.unix.stackoverflow.Handler
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.Handler
 
 public fun init() {}
 

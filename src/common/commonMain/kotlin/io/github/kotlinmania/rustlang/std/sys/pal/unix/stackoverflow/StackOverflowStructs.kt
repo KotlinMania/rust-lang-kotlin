@@ -4,7 +4,8 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlerSignal as imp
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlernone.dropHandler
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlernone.makeHandler
 
 public open class Handler internal constructor(
     dataCtorArg: MutPtr,
@@ -18,7 +19,7 @@ public open class Handler internal constructor(
         if (false) {
             return
         }
-        imp.dropHandler(this.data)
+        dropHandler(this.data)
     }
 
     public companion object {
@@ -54,7 +55,7 @@ public open class Handler internal constructor(
             if (false) {
                 return ConstPtr(0L)
             }
-            return imp.makeHandler(false)
+            return makeHandler(false)
         }
 
         public fun nullVal(): Handler = Handler(data = MutPtr(0L))

@@ -4,10 +4,11 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.itermut
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iteratorGetUnchecked as underlyingIteratorGetUnchecked
+import io.github.kotlinmania.rustlang.alloc.iteratorGetUnchecked as underlyingIteratorGetUnchecked
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -40,15 +41,19 @@ public class DebugTuple(
 public open class IterMut<T>(
     public var i1: ArrayDeque<T>,
     public var i2: ArrayDeque<T>,
-) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<T> {
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@IterMut.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen,
+    TrustedRandomAccess,
+    TrustedRandomAccessNoCoerce,
+    Iterable<T> {
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@IterMut.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     /**
      * Views the underlying data as a pair of subslices of the original data.
@@ -169,13 +174,16 @@ public open class IterMut<T>(
     public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> =
         run {
             val matchVal = this.i1.advanceBy(n)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                Result.Ok(Unit)
-            }; is Result.Err<*, *> -> {
-                val remaining = matchVal.error
-                swap(this.i1, this.i2)
-                this.i1.advanceBy(remaining.get())
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    Result.Ok(Unit)
+                }
+                is Result.Err<*, *> -> {
+                    val remaining = matchVal.error
+                    swap(this.i1, this.i2)
+                    this.i1.advanceBy(remaining.get())
+                }
+            }
         }
 
     public open fun sizeHint(): Pair<Int, Int?> {
@@ -189,7 +197,11 @@ public open class IterMut<T>(
     }
 
     public open fun <B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<B> {
-        val acc = when (val tryResult = this.i1.tryFold(init, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val acc =
+            when (val tryResult = this.i1.tryFold(init, f)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         return this.i2.tryFold(acc, f)
     }
 
@@ -228,13 +240,16 @@ public open class IterMut<T>(
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> =
         run {
             val matchVal = this.i2.advanceBackBy(n)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                Result.Ok(Unit)
-            }; is Result.Err<*, *> -> {
-                val remaining = matchVal.error
-                swap(this.i1, this.i2)
-                this.i2.advanceBackBy(remaining.get())
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    Result.Ok(Unit)
+                }
+                is Result.Err<*, *> -> {
+                    val remaining = matchVal.error
+                    swap(this.i1, this.i2)
+                    this.i2.advanceBackBy(remaining.get())
+                }
+            }
         }
 
     public open fun <Acc> rfold(accum: Acc, f: (Acc, T) -> Acc): Acc {
@@ -243,7 +258,11 @@ public open class IterMut<T>(
     }
 
     public open fun <B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<B> {
-        val acc = when (val tryResult = this.i2.tryRfold(init, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val acc =
+            when (val tryResult = this.i2.tryRfold(init, f)) {
+                is Result.Ok<*, *> -> tryResult.value
+                is Result.Err<*, *> -> return Result.Err(tryResult.error)
+            }
         return this.i1.tryRfold(acc, f)
     }
 

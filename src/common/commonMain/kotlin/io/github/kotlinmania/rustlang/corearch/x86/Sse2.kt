@@ -3,11 +3,10 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -15,21 +14,19 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.num.f32.sqrt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.simd.F32x2
-import io.github.kotlinmania.rustlang.simd.F32x4
-import io.github.kotlinmania.rustlang.simd.F64x2
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.U16x8
-import io.github.kotlinmania.rustlang.simd.U64x2
-import io.github.kotlinmania.rustlang.simd.U8x16
-import io.github.kotlinmania.rustlang.simd.simdImax
-import io.github.kotlinmania.rustlang.simd.simdImin
-import io.github.kotlinmania.rustlang.x86.M128
-import io.github.kotlinmania.rustlang.x86.M128d
-import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.corearch.simd.F32x2
+import io.github.kotlinmania.rustlang.corearch.simd.F32x4
+import io.github.kotlinmania.rustlang.corearch.simd.F64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U16x8
+import io.github.kotlinmania.rustlang.corearch.simd.U64x2
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.corearch.simd.simdImax
+import io.github.kotlinmania.rustlang.corearch.simd.simdImin
 
 // Streaming SIMD Extensions 2 (SSE2)
 
@@ -727,7 +724,7 @@ public fun mmCvtsi32Sd(a: M128d, b: Int): M128d = run { val _simdArg0 = a; val _
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtepi32_ps)
  */
-public fun mmCvtepi32Ps(a: M128i): M128 = transmute(run { val _simdArg0 = a.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<F32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<F32x4>()).alignBytes)); val res = (ObjectSlotLayout<F32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<F32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<F32x4>()).alignBytes)); res } })
+public fun mmCvtepi32Ps(a: M128i): M128 = transmute(run { val _simdArg0 = a.asI32x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<F32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<F32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<F32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<F32x4>()).alignBytes)); res } })
 
 /**
  * Converts packed single-precision (32-bit) floating-point elements in `a`
@@ -864,7 +861,7 @@ public fun mmSetzeroSi128(): M128i = M128i()
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadl_epi64)
  */
-public fun mmLoadlEpi64(memAddr: ConstPtr): M128i = mmSetEpi64x(0L, ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I64))
+public fun mmLoadlEpi64(memAddr: ConstPtr): M128i = mmSetEpi64x(0L, readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I64))
 
 /**
  * Loads 128-bits of integer data from memory into a new vector.
@@ -873,7 +870,7 @@ public fun mmLoadlEpi64(memAddr: ConstPtr): M128i = mmSetEpi64x(0L, ptr.readUnal
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_load_si128)
  */
-public fun mmLoadSi128(memAddr: ConstPtr): M128i = (ObjectSlotLayout<M128i>()).readNative((memAddr).rawAddress)
+public fun mmLoadSi128(memAddr: ConstPtr): M128i = (UnresolvedTypeLayout<M128i>()).readNative((memAddr).rawAddress)
 
 /**
  * Loads 128-bits of integer data from memory into a new vector.
@@ -884,7 +881,7 @@ public fun mmLoadSi128(memAddr: ConstPtr): M128i = (ObjectSlotLayout<M128i>()).r
  */
 public fun mmLoaduSi128(memAddr: ConstPtr): M128i {
     val dst: M128i  = mmUndefinedSi128()
-    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M128i>(typeLayoutT = ObjectSlotLayout<M128i>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M128i>(typeLayoutT = UnresolvedTypeLayout<M128i>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -923,7 +920,7 @@ public fun mmMaskmoveuSi128(a: M128i, mask: M128i, memAddr: MutPtr) {
  */
 public fun mmStoreSi128(memAddr: MutPtr, a: M128i) {
     val memAddr1 = memAddr
-    (ObjectSlotLayout<M128i>()).writeNative((memAddr1).rawAddress, a)
+    (UnresolvedTypeLayout<M128i>()).writeNative((memAddr1).rawAddress, a)
 }
 
 // Note movdqu expected
@@ -936,7 +933,7 @@ public fun mmStoreSi128(memAddr: MutPtr, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_si128)
  */
 public fun mmStoreuSi128(memAddr: MutPtr, a: M128i) {
-    (ObjectSlotLayout<M128i>()).writeNative((memAddr).rawAddress, a)
+    (UnresolvedTypeLayout<M128i>()).writeNative((memAddr).rawAddress, a)
 }
 
 /**
@@ -947,7 +944,7 @@ public fun mmStoreuSi128(memAddr: MutPtr, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storel_epi64)
  */
 public fun mmStorelEpi64(memAddr: MutPtr, a: M128i) {
-    ptr.copyNonoverlapping(constPtrFromRustCast(addrOf(a)), MutPtr(memAddr.rawAddress, memAddr.rawMeta), 8, typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(constPtrFromRustCast(addrOf(a)), MutPtr(memAddr.rawAddress, memAddr.rawMeta), 8, typeLayoutT = PrimitiveLayouts.U8)
 }
 
 /**
@@ -1622,7 +1619,7 @@ public fun mmUcomineqSd(a: M128d, b: M128d): Int = ucomineqsd(a, b)
  */
 public fun mmCvtpdPs(a: M128d): M128 =
     run {
-        val r = run { val _simdArg0 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<F32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<F32x2>()).alignBytes)); val res = (ObjectSlotLayout<F32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<F32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<F32x2>()).alignBytes)); res } }
+        val r = run { val _simdArg0 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<F32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<F32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<F32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<F32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<F32x2>()).alignBytes)); res } }
         val zero = f32x2.ZERO
         transmute(run { val _simdArg0 = r; val _simdArg1 = zero; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 })
     }
@@ -1637,7 +1634,7 @@ public fun mmCvtpdPs(a: M128d): M128 =
 public fun mmCvtpsPd(a: M128): M128d =
     run {
         val a1 = a.asF32x4()
-        transmute(run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<F64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<F64x2>()).alignBytes)); val res = (ObjectSlotLayout<F64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<F64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<F64x2>()).alignBytes)); res } })
+        transmute(run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<F64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<F64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<F64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<F64x2>()).alignBytes)); res } })
     }
 
 /**
@@ -1784,7 +1781,7 @@ public fun mmMovemaskPd(a: M128d): Int {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_load_pd)
  */
-public fun mmLoadPd(memAddr: ConstPtr): M128d = (ObjectSlotLayout<M128d>()).readNative(((ConstPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress)
+public fun mmLoadPd(memAddr: ConstPtr): M128d = (UnresolvedTypeLayout<M128d>()).readNative(((ConstPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress)
 
 /**
  * Loads a 64-bit double-precision value to the low element of a
@@ -1853,7 +1850,7 @@ public fun mmStoreSd(memAddr: MutPtr, a: M128d) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_store_pd)
  */
 public fun mmStorePd(memAddr: MutPtr, a: M128d) {
-    (ObjectSlotLayout<M128d>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, a)
+    (UnresolvedTypeLayout<M128d>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, a)
 }
 
 // Note movupd expected
@@ -1866,7 +1863,7 @@ public fun mmStorePd(memAddr: MutPtr, a: M128d) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_pd)
  */
 public fun mmStoreuPd(memAddr: MutPtr, a: M128d) {
-    (ObjectSlotLayout<M128d>()).writeNative((MutPtr((memAddr).rawAddress)).rawAddress, a)
+    (UnresolvedTypeLayout<M128d>()).writeNative((MutPtr((memAddr).rawAddress)).rawAddress, a)
 }
 
 /**
@@ -1877,7 +1874,7 @@ public fun mmStoreuPd(memAddr: MutPtr, a: M128d) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_si16)
  */
 public fun mmStoreuSi16(memAddr: MutPtr, a: M128i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), run { val _simdArg0 = a.asI16x8(); val _simdArg1 = 0; _simdArg0 }, typeLayoutT = PrimitiveLayouts.I16)
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), run { val _simdArg0 = a.asI16x8(); val _simdArg1 = 0; _simdArg0 }, typeLayoutT = PrimitiveLayouts.I16)
 }
 
 /**
@@ -1888,7 +1885,7 @@ public fun mmStoreuSi16(memAddr: MutPtr, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_si32)
  */
 public fun mmStoreuSi32(memAddr: MutPtr, a: M128i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), run { val _simdArg0 = a.asI32x4(); val _simdArg1 = 0; _simdArg0 }, typeLayoutT = PrimitiveLayouts.I32)
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), run { val _simdArg0 = a.asI32x4(); val _simdArg1 = 0; _simdArg0 }, typeLayoutT = PrimitiveLayouts.I32)
 }
 
 /**
@@ -1899,7 +1896,7 @@ public fun mmStoreuSi32(memAddr: MutPtr, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_si64)
  */
 public fun mmStoreuSi64(memAddr: MutPtr, a: M128i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), run { val _simdArg0 = a.asI64x2(); val _simdArg1 = 0; _simdArg0 }, typeLayoutT = PrimitiveLayouts.I64)
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), run { val _simdArg0 = a.asI64x2(); val _simdArg1 = 0; _simdArg0 }, typeLayoutT = PrimitiveLayouts.I64)
 }
 
 /**
@@ -1911,7 +1908,7 @@ public fun mmStoreuSi64(memAddr: MutPtr, a: M128i) {
  */
 public fun mmStore1Pd(memAddr: MutPtr, a: M128d) {
     val b: M128d = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 0)); M128d() }
-    (ObjectSlotLayout<M128d>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, b)
+    (UnresolvedTypeLayout<M128d>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, b)
 }
 
 /**
@@ -1923,7 +1920,7 @@ public fun mmStore1Pd(memAddr: MutPtr, a: M128d) {
  */
 public fun mmStorePd1(memAddr: MutPtr, a: M128d) {
     val b: M128d = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 0)); M128d() }
-    (ObjectSlotLayout<M128d>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, b)
+    (UnresolvedTypeLayout<M128d>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, b)
 }
 
 /**
@@ -1936,7 +1933,7 @@ public fun mmStorePd1(memAddr: MutPtr, a: M128d) {
  */
 public fun mmStorerPd(memAddr: MutPtr, a: M128d) {
     val b: M128d = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 0)); M128d() }
-    (ObjectSlotLayout<M128d>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, b)
+    (UnresolvedTypeLayout<M128d>()).writeNative(((MutPtr(memAddr.rawAddress, memAddr.rawMeta))).rawAddress, b)
 }
 
 /**
@@ -2005,7 +2002,7 @@ public fun mmLoadrPd(memAddr: ConstPtr): M128d {
  */
 public fun mmLoaduPd(memAddr: ConstPtr): M128d {
     val dst = mmUndefinedPd()
-    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M128d>(typeLayoutT = ObjectSlotLayout<M128d>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M128d>(typeLayoutT = UnresolvedTypeLayout<M128d>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -2016,7 +2013,7 @@ public fun mmLoaduPd(memAddr: ConstPtr): M128d {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_si16)
  */
-public fun mmLoaduSi16(memAddr: ConstPtr): M128i = transmute(i16x8.new(ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I16), 0, 0, 0, 0, 0, 0, 0))
+public fun mmLoaduSi16(memAddr: ConstPtr): M128i = transmute(i16x8.new(readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I16), 0, 0, 0, 0, 0, 0, 0))
 
 /**
  * Loads unaligned 32-bits of integer data from memory into new vector.
@@ -2025,7 +2022,7 @@ public fun mmLoaduSi16(memAddr: ConstPtr): M128i = transmute(i16x8.new(ptr.readU
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_si32)
  */
-public fun mmLoaduSi32(memAddr: ConstPtr): M128i = transmute(i32x4.new(ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I32), 0, 0, 0))
+public fun mmLoaduSi32(memAddr: ConstPtr): M128i = transmute(i32x4.new(readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I32), 0, 0, 0))
 
 /**
  * Loads unaligned 64-bits of integer data from memory into new vector.
@@ -2034,7 +2031,7 @@ public fun mmLoaduSi32(memAddr: ConstPtr): M128i = transmute(i32x4.new(ptr.readU
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_si64)
  */
-public fun mmLoaduSi64(memAddr: ConstPtr): M128i = transmute(i64x2.new(ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I64), 0))
+public fun mmLoaduSi64(memAddr: ConstPtr): M128i = transmute(i64x2.new(readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I64), 0))
 
 /**
  * Constructs a 128-bit floating-point vector of `[2 x double]` from two

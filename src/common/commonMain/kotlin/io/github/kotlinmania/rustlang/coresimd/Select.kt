@@ -1,11 +1,6 @@
 // port-lint: source select.rs
 package io.github.kotlinmania.rustlang.coresimd
 
-import io.github.kotlinmania.rustlang.FixEndianness
-import io.github.kotlinmania.rustlang.Mask
-import io.github.kotlinmania.rustlang.MaskElement
-import io.github.kotlinmania.rustlang.Simd
-
 /**
  * Choose elements from two vectors using a mask.
  *

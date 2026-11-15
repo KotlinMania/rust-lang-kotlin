@@ -1,19 +1,24 @@
 package io.github.kotlinmania.rustlang.core.str
 
-import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.constEvalSelect
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Mut
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
@@ -48,11 +53,6 @@ import io.github.kotlinmania.rustlang.core.str.iter.SplitWhitespace
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
-import io.github.kotlinmania.rustlang.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.intrinsics.constEvalSelect
-import io.github.kotlinmania.rustlang.option.Option
-import io.github.kotlinmania.rustlang.panicking.assertFailed
-import io.github.kotlinmania.rustlang.slice.index.SliceIndex
 
 public fun sliceErrorFail(s: String, begin: Int, end: Int): Nothing = constEvalSelect(Triple(s, begin, end), ::sliceErrorFailCt, ::sliceErrorFailRt)
 
@@ -79,7 +79,7 @@ public fun sliceErrorFailRt(s: String, begin: Int, end: Int): Nothing {
         val floor = s.floorCharBoundary(begin)
         val ceil = s.ceilCharBoundary(begin)
         val range = floor until ceil
-        val ch = s.substring(floor until ceil).chars().nextCodeOrNull()?.toChar()!!
+        val ch = s.substring(floor until ceil).chars().next()!!
         error("start byte index $begin is not a char boundary; it is inside $ch (bytes $range of string)")
     }
     // 5. end is inside a character.
@@ -202,7 +202,9 @@ public fun String.isEmpty(): Boolean = this.length == 0
  * check("💖" == sparkleHeart1)
  * ```
  */
-public fun String.Companion.fromUtf8(v: List<UByte>): Result<String, Utf8Error> = io.github.kotlinmania.rustlang.str.converts.fromUtf8(v)
+public fun String.Companion.fromUtf8(v: List<UByte>): Result<String, Utf8Error> =
+    io.github.kotlinmania.rustlang.core.str.converts
+        .fromUtf8(v)
 
 /**
  * Converts a mutable slice of bytes to a mutable string slice.
@@ -229,7 +231,9 @@ public fun String.Companion.fromUtf8(v: List<UByte>): Result<String, Utf8Error> 
  * See the docs for [Utf8Error] for more details on the kinds of
  * errors that can be returned.
  */
-public fun String.Companion.fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> = io.github.kotlinmania.rustlang.str.converts.fromUtf8Mut(v)
+public fun String.Companion.fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> =
+    io.github.kotlinmania.rustlang.core.str.converts
+        .fromUtf8Mut(v)
 
 /**
  * Converts a slice of bytes to a string slice without checking
@@ -254,7 +258,8 @@ public fun String.Companion.fromUtf8Mut(v: MutableList<UByte>): Result<String, U
  */
 public fun String.Companion.fromUtf8Unchecked(v: List<UByte>): String {
     // SAFETY: converts.fromUtf8Unchecked has the same safety requirements as this function.
-    return io.github.kotlinmania.rustlang.str.converts.fromUtf8Unchecked(v)
+    return io.github.kotlinmania.rustlang.core.str.converts
+        .fromUtf8Unchecked(v)
 }
 
 /**
@@ -277,7 +282,8 @@ public fun String.Companion.fromUtf8Unchecked(v: List<UByte>): String {
  */
 public fun String.Companion.fromUtf8UncheckedMut(v: MutableList<UByte>): String {
     // SAFETY: converts.fromUtf8UncheckedMut has the same safety requirements as this function.
-    return io.github.kotlinmania.rustlang.str.converts.fromUtf8UncheckedMut(v)
+    return io.github.kotlinmania.rustlang.core.str.converts
+        .fromUtf8UncheckedMut(v)
 }
 
 /**
@@ -472,7 +478,7 @@ public fun String.asBytesMut(): MutableList<UByte> {
     // has the same layout as `[UByte]` (only std can make this guarantee).
     // The pointer dereference is safe since it comes from a mutable reference which
     // is guaranteed to be valid for writes.
-    return RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<UByte>>())
+    return RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<UByte>>())
 }
 
 /**
@@ -878,7 +884,7 @@ public fun String.splitAtUnchecked(mid: Int): Pair<String, String> {
     val ptr = this.asPtr()
     Unit
     // SAFETY: caller guarantees `mid` is on a char boundary.
-    return Pair(fromUtf8Unchecked(rawSliceList(ptr, mid.toInt(), PrimitiveLayouts.U8)), fromUtf8Unchecked(rawSliceList(ConstPtr((ptr).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes)), (len - mid).toInt(), PrimitiveLayouts.U8)))
+    return Pair(fromUtf8Unchecked(linearSliceView(ptr, mid.toInt(), PrimitiveLayouts.U8)), fromUtf8Unchecked(linearSliceView(ConstPtr((ptr).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes)), (len - mid).toInt(), PrimitiveLayouts.U8)))
 }
 
 /**
@@ -894,7 +900,7 @@ public fun String.splitAtMutUnchecked(mid: Int): Pair<String, String> {
     val ptr = this.asMutPtr()
     Unit
     // SAFETY: caller guarantees `mid` is on a char boundary.
-    return Pair(fromUtf8UncheckedMut(rawMutSliceList(ptr, mid.toInt(), PrimitiveLayouts.U8)), fromUtf8UncheckedMut(rawMutSliceList(MutPtr((ptr).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes)), (len - mid).toInt(), PrimitiveLayouts.U8)))
+    return Pair(fromUtf8UncheckedMut(linearMutSliceView(ptr, mid.toInt(), PrimitiveLayouts.U8)), fromUtf8UncheckedMut(linearMutSliceView(MutPtr((ptr).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes)), (len - mid).toInt(), PrimitiveLayouts.U8)))
 }
 
 /**
@@ -1007,7 +1013,14 @@ public fun String.charIndices(): CharIndices = CharIndices(frontOffset = 0, iter
  * check(null == bytes.next())
  * ```
  */
-public fun String.bytes(): Bytes = Bytes(this.encodeToByteArray().map { it.toUByte() }.iter().copied())
+public fun String.bytes(): Bytes =
+    Bytes(
+        this
+            .encodeToByteArray()
+            .map { it.toUByte() }
+            .iter()
+            .copied(),
+    )
 
 /**
  * Splits a string slice by whitespace.
@@ -1099,7 +1112,13 @@ public fun String.splitWhitespace(): SplitWhitespace = SplitWhitespace(inner = t
  * ```
  */
 public fun String.splitAsciiWhitespace(): SplitAsciiWhitespace {
-    val inner = this.encodeToByteArray().map { it.toUByte() }.splitAsciiWhitespace().inner.map(UnsafeBytesToStr())
+    val inner =
+        this
+            .encodeToByteArray()
+            .map { it.toUByte() }
+            .splitAsciiWhitespace()
+            .inner
+            .map(UnsafeBytesToStr())
     return SplitAsciiWhitespace(inner = inner)
 }
 
@@ -2420,7 +2439,7 @@ public fun String.isAscii(): Boolean {
  * If this string slice [`isAscii`](Self.isAscii), returns it as a slice
  * of [ASCII characters](`ascii.Char`), otherwise returns `None`.
  */
-public fun String.asAscii(): List<io.github.kotlinmania.rustlang.ascii.Char>? {
+public fun String.asAscii(): List<io.github.kotlinmania.rustlang.core.ascii.Char>? {
     // Like in `isAscii`, we can work on the bytes directly.
     return this.encodeToByteArray().map { it.toUByte() }.asAscii()
 }
@@ -2433,7 +2452,7 @@ public fun String.asAscii(): List<io.github.kotlinmania.rustlang.ascii.Char>? {
  *
  * Every character in this string must be ASCII, or else this is UB.
  */
-public fun String.asAsciiUnchecked(): List<io.github.kotlinmania.rustlang.ascii.Char> {
+public fun String.asAsciiUnchecked(): List<io.github.kotlinmania.rustlang.core.ascii.Char> {
     Unit
     // SAFETY: the caller promised that every byte of this string slice
     // is ASCII.
@@ -2617,7 +2636,11 @@ public fun String.copyFromStr(src: String) {
     // SAFETY: `copyFromSlice` panics unless the lengths are equal, and copying same-length
     // UTF-8 into a `String` keeps it valid UTF-8.
     val me = this.asBytesMut()
-    run { val dstTmp0 = me; val srcTmp0 = (src.encodeToByteArray().map { it.toUByte() }); for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
+    run {
+        val dstTmp0 = me
+        val srcTmp0 = (src.encodeToByteArray().map { it.toUByte() })
+        for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
+    }
 }
 
 /**

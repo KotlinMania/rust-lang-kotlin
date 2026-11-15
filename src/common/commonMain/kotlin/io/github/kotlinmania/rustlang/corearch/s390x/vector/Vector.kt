@@ -3,7 +3,6 @@
 
 package io.github.kotlinmania.rustlang.corearch.s390x.vector
 
-import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
@@ -16,124 +15,23 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.num.rustOverflowingAdd
-import io.github.kotlinmania.rustlang.core.num.rustOverflowingSub
-import io.github.kotlinmania.rustlang.core.num.rustWrappingAdd
-import io.github.kotlinmania.rustlang.core.num.rustWrappingShl
-import io.github.kotlinmania.rustlang.core.num.rustWrappingSub
+import io.github.kotlinmania.rustlang.core.num.overflowingAdd
+import io.github.kotlinmania.rustlang.core.num.overflowingSub
+import io.github.kotlinmania.rustlang.core.num.wrappingAdd
+import io.github.kotlinmania.rustlang.core.num.wrappingShl
+import io.github.kotlinmania.rustlang.core.num.wrappingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.s390x.vector.CountBits
-import io.github.kotlinmania.rustlang.s390x.vector.VectorAbs
-import io.github.kotlinmania.rustlang.s390x.vector.VectorAdd
-import io.github.kotlinmania.rustlang.s390x.vector.VectorAnd
-import io.github.kotlinmania.rustlang.s390x.vector.VectorAndc
-import io.github.kotlinmania.rustlang.s390x.vector.VectorAvg
-import io.github.kotlinmania.rustlang.s390x.vector.VectorCeil
-import io.github.kotlinmania.rustlang.s390x.vector.VectorCompare
-import io.github.kotlinmania.rustlang.s390x.vector.VectorComparePredicate
-import io.github.kotlinmania.rustlang.s390x.vector.VectorCompareRange
-import io.github.kotlinmania.rustlang.s390x.vector.VectorCopyUntilZero
-import io.github.kotlinmania.rustlang.s390x.vector.VectorCopyUntilZeroCC
-import io.github.kotlinmania.rustlang.s390x.vector.VectorEquality
-import io.github.kotlinmania.rustlang.s390x.vector.VectorEqualityIdx
-import io.github.kotlinmania.rustlang.s390x.vector.VectorEqv
-import io.github.kotlinmania.rustlang.s390x.vector.VectorExtendSigned64
-import io.github.kotlinmania.rustlang.s390x.vector.VectorExtract
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyEq
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyEqCC
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyEqIdx
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyEqIdxCC
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyEqOrZeroIdx
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyEqOrZeroIdxCC
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyNe
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyNeCC
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyNeIdx
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyNeIdxCC
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyNeOrZeroIdx
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFindAnyNeOrZeroIdxCC
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFloor
-import io.github.kotlinmania.rustlang.s390x.vector.VectorFpTestDataClass
-import io.github.kotlinmania.rustlang.s390x.vector.VectorGatherElement
-import io.github.kotlinmania.rustlang.s390x.vector.VectorGfmsum
-import io.github.kotlinmania.rustlang.s390x.vector.VectorGfmsumAccum
-import io.github.kotlinmania.rustlang.s390x.vector.VectorInsert
-import io.github.kotlinmania.rustlang.s390x.vector.VectorInsertAndZero
-import io.github.kotlinmania.rustlang.s390x.vector.VectorLoad
-import io.github.kotlinmania.rustlang.s390x.vector.VectorLoadPair
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMadd
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMax
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMeadd
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMergeh
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMergel
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMhadd
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMin
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMladd
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMoadd
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMul
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMule
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMulh
-import io.github.kotlinmania.rustlang.s390x.vector.VectorMulo
-import io.github.kotlinmania.rustlang.s390x.vector.VectorNabs
-import io.github.kotlinmania.rustlang.s390x.vector.VectorNand
-import io.github.kotlinmania.rustlang.s390x.vector.VectorNeg
-import io.github.kotlinmania.rustlang.s390x.vector.VectorNmadd
-import io.github.kotlinmania.rustlang.s390x.vector.VectorNmsub
-import io.github.kotlinmania.rustlang.s390x.vector.VectorNor
-import io.github.kotlinmania.rustlang.s390x.vector.VectorOr
-import io.github.kotlinmania.rustlang.s390x.vector.VectorOrc
-import io.github.kotlinmania.rustlang.s390x.vector.VectorPack
-import io.github.kotlinmania.rustlang.s390x.vector.VectorPacks
-import io.github.kotlinmania.rustlang.s390x.vector.VectorPacksCC
-import io.github.kotlinmania.rustlang.s390x.vector.VectorPacksu
-import io.github.kotlinmania.rustlang.s390x.vector.VectorPacksuCC
-import io.github.kotlinmania.rustlang.s390x.vector.VectorPerm
-import io.github.kotlinmania.rustlang.s390x.vector.VectorPromote
-import io.github.kotlinmania.rustlang.s390x.vector.VectorRevb
-import io.github.kotlinmania.rustlang.s390x.vector.VectorReve
-import io.github.kotlinmania.rustlang.s390x.vector.VectorRint
-import io.github.kotlinmania.rustlang.s390x.vector.VectorRl
-import io.github.kotlinmania.rustlang.s390x.vector.VectorRli
-import io.github.kotlinmania.rustlang.s390x.vector.VectorRound
-import io.github.kotlinmania.rustlang.s390x.vector.VectorRoundc
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSearchString
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSel
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSigned
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSl
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSlb
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSld
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSll
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSplat
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSplats
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSqrt
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSr
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSra
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSrab
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSral
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSrb
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSrdb
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSrl
-import io.github.kotlinmania.rustlang.s390x.vector.VectorStore
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSub
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSubc
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSum2
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSum4
-import io.github.kotlinmania.rustlang.s390x.vector.VectorSumU128
-import io.github.kotlinmania.rustlang.s390x.vector.VectorTestMask
-import io.github.kotlinmania.rustlang.s390x.vector.VectorTrunc
-import io.github.kotlinmania.rustlang.s390x.vector.VectorUnpackh
-import io.github.kotlinmania.rustlang.s390x.vector.VectorUnpackl
-import io.github.kotlinmania.rustlang.s390x.vector.VectorUnsigned
-import io.github.kotlinmania.rustlang.s390x.vector.VectorXor
-import io.github.kotlinmania.rustlang.simd.F32x2
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.M16x8
-import io.github.kotlinmania.rustlang.simd.M32x4
-import io.github.kotlinmania.rustlang.simd.M8x16
-import io.github.kotlinmania.rustlang.simd.Simd
-import io.github.kotlinmania.rustlang.simd.debugSimdFinish
+import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.corearch.simd.F32x2
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.M16x8
+import io.github.kotlinmania.rustlang.corearch.simd.M32x4
+import io.github.kotlinmania.rustlang.corearch.simd.M8x16
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
+import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 
 // s390x vector intrinsics.
 //
@@ -1485,7 +1383,7 @@ public fun genmasks(bitWidth: UInt, a: UByte, b: UByte): ULong {
     // of course these indices start from the left
     val a2 = (bitWidth1 - 1u) - a1
     val b3 = (bitWidth1 - 1u) - b2
-    return ((rustWrappingShl(1uL, a2.toUInt() + 1u)) - 1uL) and ((rustWrappingShl(1uL, b3.toUInt())) - 1uL).inv()
+    return ((1uL.wrappingShl(a2.toUInt() + 1u)) - 1uL) and ((1uL.wrappingShl(b3.toUInt())) - 1uL).inv()
 }
 
 public fun validateBlockBoundary(blockBoundary: UShort): UInt {
@@ -1935,7 +1833,7 @@ public fun <T : VectorSum4<T>> vecSum4(a: T, b: T): VectorUnsignedInt = a.vecSum
 public fun vecAddU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
     val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
     val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts(rustWrappingAdd(a1, b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    return transmuteWithLayouts(a1.wrappingAdd(b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -1948,7 +1846,7 @@ public fun vecAddU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsig
 public fun vecSubU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
     val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
     val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts(rustWrappingSub(a1, b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    return transmuteWithLayouts(a1.wrappingSub(b1), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -1970,7 +1868,7 @@ public fun <T : VectorSubc<U, Any?>, U> vecSubc(a: T, b: U): Result = a.vecSubc(
 public fun vecSubcU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
     val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
     val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts((if (!rustOverflowingSub(a1, b1).second) U128.ONE else U128.ZERO), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    return transmuteWithLayouts((if (!a1.overflowingSub(b1).second) U128.ONE else U128.ZERO), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -1979,7 +1877,7 @@ public fun vecSubcU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsi
 public fun vecAddcU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
     val a1: U128 = transmuteWithLayouts(a, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
     val b1: U128 = transmuteWithLayouts(b, VectorUnsignedChar.typeLayout(), VectorUnsignedChar.typeLayout())
-    return transmuteWithLayouts(U128.fromLong((rustOverflowingAdd(a1, b1).second).toLong()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    return transmuteWithLayouts(U128.fromLong((a1.overflowingAdd(b1).second).toLong()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -2373,12 +2271,12 @@ public fun vecFloate(a: VectorDouble): VectorFloat {
 /**
  * Vector Convert from int to float
  */
-public fun vecFloat(a: io.github.kotlinmania.rustlang.s390x.vector.VectorFloat): VectorFloat = a.vecFloat()
+public fun vecFloat(a: VectorFloat): VectorFloat = a.vecFloat()
 
 /**
  * Vector Convert from long long to double
  */
-public fun vecDouble(a: io.github.kotlinmania.rustlang.s390x.vector.VectorDouble): VectorDouble = a.vecDouble()
+public fun vecDouble(a: VectorDouble): VectorDouble = a.vecDouble()
 
 /**
  * Vector Sign Extend to Doubleword
@@ -2715,12 +2613,12 @@ public fun <T : VectorCompare<T>> vecAnyNge(a: T, b: T): Int = vecAnyLt(a, b)
 /**
  * Vector Extract
  */
-public fun <Scalar, T : VectorExtract<T, Any?>> vecExtract(a: T, b: Int, vecExtractTFn: (T) -> Scalar): ElementType = vecExtractTFn(a, b)
+public fun <ElementType, T : VectorExtract<T, Any?>> vecExtract(a: T, b: Int, vecExtractTFn: (T, Int) -> ElementType): ElementType = vecExtractTFn(a, b)
 
 /**
  * Vector Insert
  */
-public fun <Scalar, T : VectorInsert<T, Any?>> vecInsert(a: ElementType, b: T, c: Int, vecInsertTFn: (T, Scalar) -> T): T = vecInsertTFn(a, b, c)
+public fun <ElementType, T : VectorInsert<T, Any?>> vecInsert(a: ElementType, b: T, c: Int, vecInsertTFn: (ElementType, T, Int) -> T): T = vecInsertTFn(a, b, c)
 
 /**
  * Vector Insert and Zero

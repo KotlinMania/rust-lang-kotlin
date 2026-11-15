@@ -4,12 +4,6 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.x86.mm256SetEpi32
-import io.github.kotlinmania.rustlang.x86.mm256SetEpi64x
-import io.github.kotlinmania.rustlang.x86.mm512SetEpi32
-import io.github.kotlinmania.rustlang.x86.mm512SetEpi64
-import io.github.kotlinmania.rustlang.x86.mmSetEpi32
-import io.github.kotlinmania.rustlang.x86.mmSetEpi64x
 
 // Vector Pair Intersection to a Pair of Mask Registers (VP2INTERSECT)
 

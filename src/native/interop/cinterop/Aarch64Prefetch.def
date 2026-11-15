@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.corearch.aarch64.cinterop
+headers = aarch64_prefetch_wrapper.h
+headerFilter = aarch64_prefetch_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = aarch64_prefetch_wrapper.a

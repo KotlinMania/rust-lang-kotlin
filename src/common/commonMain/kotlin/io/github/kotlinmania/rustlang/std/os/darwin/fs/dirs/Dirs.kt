@@ -8,9 +8,6 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.fs.dirs.HomeDirs
-import io.github.kotlinmania.rustlang.fs.dirs.MediaDirs
-import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.sysdirGetNextSearchPathEnumeration
 import io.github.kotlinmania.rustlang.libc.sysdirStartSearchPathEnumeration
 import io.github.kotlinmania.rustlang.libc.sysdirsearchpathdirectoryt.*
@@ -19,9 +16,13 @@ import io.github.kotlinmania.rustlang.libc.unix.bsd.PATH_MAX
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathDirectoryT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathDomainMaskT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathEnumerationState
-import io.github.kotlinmania.rustlang.path.Path
-import io.github.kotlinmania.rustlang.path.PathBuf
+import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
+import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 
 /**
  * Darwin-specific extensions to [`fs.HomeDirs`](HomeDirs).
@@ -235,7 +236,7 @@ public interface MediaDirsExt<T> {
     }
 }
 
-public fun userHome(): Result<PathBuf, Error> = env.homeDir().filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "home path not absolute"))
+public fun userHome(): Result<PathBuf, Error> = Env.homeDir().filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "home path not absolute"))
 
 public fun homeDirsExtSysdirHomeDirs(): Result<HomeDirs, Error> {
     val dirs = HomeDirs.empty()

@@ -4,9 +4,9 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.ffi.CInt
+import io.github.kotlinmania.rustlang.std.ffi.CInt
 
-private object StdSysThreadlocalKeyUnixJniBridge {
+private object SysThreadlocalKeyUnixJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -42,8 +42,8 @@ private object StdSysThreadlocalKeyUnixJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = StdSysThreadlocalKeyUnixJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/std/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = SysThreadlocalKeyUnixJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -60,26 +60,26 @@ private object StdSysThreadlocalKeyUnixJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangStdSysThreadlocalKeyUnixPthreadKeyCreate(key: Long, destructor: Long): Int
+    external fun stdSysThreadlocalKeyUnixPthreadKeyCreate(key: Long, destructor: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysThreadlocalKeyUnixPthreadGetspecific(key: Int): Long
+    external fun stdSysThreadlocalKeyUnixPthreadGetspecific(key: Int): Long
 
     @JvmStatic
-    external fun rustlangStdSysThreadlocalKeyUnixPthreadSetspecific(key: Int, value: Long): Int
+    external fun stdSysThreadlocalKeyUnixPthreadSetspecific(key: Int, value: Long): Int
 
     @JvmStatic
-    external fun rustlangStdSysThreadlocalKeyUnixPthreadKeyDelete(key: Int): Int
+    external fun stdSysThreadlocalKeyUnixPthreadKeyDelete(key: Int): Int
 }
 
 public actual fun pthreadKeyCreate(key: MutPtr, destructor: PthreadKeyCreateDestructorCallback): CInt =
-    StdSysThreadlocalKeyUnixJniBridge.rustlangStdSysThreadlocalKeyUnixPthreadKeyCreate(key.rawAddress, 0L)
+    SysThreadlocalKeyUnixJniBridge.stdSysThreadlocalKeyUnixPthreadKeyCreate(key.rawAddress, 0L)
 
 public actual fun pthreadGetspecific(key: PthreadKeyT): MutPtr =
-    MutPtr(StdSysThreadlocalKeyUnixJniBridge.rustlangStdSysThreadlocalKeyUnixPthreadGetspecific(key.toInt()))
+    MutPtr(SysThreadlocalKeyUnixJniBridge.stdSysThreadlocalKeyUnixPthreadGetspecific(key.toInt()))
 
 public actual fun pthreadSetspecific(key: PthreadKeyT, value: ConstPtr): CInt =
-    StdSysThreadlocalKeyUnixJniBridge.rustlangStdSysThreadlocalKeyUnixPthreadSetspecific(key.toInt(), value.rawAddress)
+    SysThreadlocalKeyUnixJniBridge.stdSysThreadlocalKeyUnixPthreadSetspecific(key.toInt(), value.rawAddress)
 
 public actual fun pthreadKeyDelete(key: PthreadKeyT): CInt =
-    StdSysThreadlocalKeyUnixJniBridge.rustlangStdSysThreadlocalKeyUnixPthreadKeyDelete(key.toInt())
+    SysThreadlocalKeyUnixJniBridge.stdSysThreadlocalKeyUnixPthreadKeyDelete(key.toInt())

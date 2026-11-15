@@ -1,13 +1,13 @@
 // port-lint: source hint.rs
 package io.github.kotlinmania.rustlang.core.hint
 
-import io.github.kotlinmania.rustlang.X8664
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.X8664
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.mem.forget
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
 
 // Hints to compiler that affects how code should be emitted or optimized.
 //
@@ -713,8 +713,8 @@ public fun <T> selectUnpredictable(condition: Boolean, trueVal: T, falseVal: T):
     }
     // Note(https://github.com/rust-lang/unchecked-code-guidelines/issues/245):
     // Change this to use ManuallyDrop instead.
-    val trueVal1 = MaybeUninit.new(trueVal, ObjectSlotLayout<T>())
-    val falseVal1 = MaybeUninit.new(falseVal, ObjectSlotLayout<T>())
+    val trueVal1 = MaybeUninit.new(trueVal, UnresolvedTypeLayout<T>())
+    val falseVal1 = MaybeUninit.new(falseVal, UnresolvedTypeLayout<T>())
     val truePtr = trueVal1.asMutPtr()
     val falsePtr = falseVal1.asMutPtr()
     // SAFETY: The value that is not selected is dropped, and the selected one
@@ -725,8 +725,8 @@ public fun <T> selectUnpredictable(condition: Boolean, trueVal: T, falseVal: T):
         // value panics. We construct a temporary by-pointer guard around the selected value while
         // dropping the unselected value. Arguments overlap here, so we can not use mutable
         // reference for these arguments.
-        val guard = io.github.kotlinmania.rustlang.intrinsics.selectUnpredictable(condition, truePtr, falsePtr)
-        val drop = io.github.kotlinmania.rustlang.intrinsics.selectUnpredictable(condition, falsePtr, truePtr)
+        val guard = if (condition) truePtr else falsePtr
+        val drop = if (condition) falsePtr else truePtr
         // SAFETY: both pointers are well-aligned and point to initialized values inside a
         // `MaybeUninit` each. In both possible values for `condition` the pointer `guard` and
         // `drop` do not alias (even though the two argument pairs we have selected from did alias
@@ -737,7 +737,7 @@ public fun <T> selectUnpredictable(condition: Boolean, trueVal: T, falseVal: T):
         // Note that it is important to use the values here. Reading from the pointer we got makes
         // LLVM forget the !unpredictable annotation sometimes (in tests, integer sized values in
         // particular seemed to confuse it, also observed in llvm/llvm-project #82340).
-        io.github.kotlinmania.rustlang.intrinsics.selectUnpredictable(condition, trueVal1, falseVal1).assumeInit()
+        if (condition) trueVal1 else falseVal1.assumeInit()
     }
 }
 
@@ -758,12 +758,14 @@ public sealed class Locality {
      * Typically prefetches into L3 cache (if the CPU supports it).
      */
     public data object L3 : Locality()
+
     /**
      * Data is expected to be reused in the near future.
      *
      * Typically prefetches into L2 cache.
      */
     public data object L2 : Locality()
+
     /**
      * Data is expected to be reused very soon.
      *
@@ -798,7 +800,7 @@ public sealed class Locality {
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  * import std.hint.Locality
  * import std.hint.prefetchRead
@@ -809,8 +811,8 @@ public sealed class Locality {
  *     // Prefetch all of `slice` into the L1 cache.
  *     fun <T> prefetchSlice(slice: List<T>) {
  *         // On most systems the cache line size is 64 bytes.
- *         for (offset in (0 until sizeOfVal(slice)).stepBy(64)) {
- *             prefetchRead(ConstPtr((slice.asPtr()).rawAddress + ((offset).toLong() * (ObjectSlotLayout<T>()).strideBytes)), Locality.L1)
+ *         for (offset in (0 until sizeOfVal(slice, typeLayoutT = UnresolvedTypeLayout<List<T>>())).stepBy(64)) {
+ *             prefetchRead(ConstPtr((slice.asPtr()).rawAddress + ((offset).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), Locality.L1)
  *         }
  *     }
  * }

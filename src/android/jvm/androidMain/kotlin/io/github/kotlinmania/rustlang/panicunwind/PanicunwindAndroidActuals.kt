@@ -8,18 +8,18 @@ private object PanicunwindJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangPanicunwindRustDropPanic()
+    external fun panicunwindRustDropPanic()
 
     @JvmStatic
-    external fun rustlangPanicunwindRustForeignException()
+    external fun panicunwindRustForeignException()
 }
 
 public actual fun rustDropPanic(): Nothing {
-    PanicunwindJniBridge.rustlangPanicunwindRustDropPanic()
+    PanicunwindJniBridge.panicunwindRustDropPanic()
     error("Unreachable noreturn C function rustDropPanic")
 }
 
 public actual fun rustForeignException(): Nothing {
-    PanicunwindJniBridge.rustlangPanicunwindRustForeignException()
+    PanicunwindJniBridge.panicunwindRustForeignException()
     error("Unreachable noreturn C function rustForeignException")
 }

@@ -65,7 +65,7 @@ public open class DlsymWeak<F> internal constructor(
                 // Note: use `reinterpret` once it stops complaining about generics.
                 else -> {
                     val func2 = matchVal
-                    mem.transmuteCopy<MutPtr, F>(func2)
+                    transmuteCopy<MutPtr, F>(func2)
                 }
             }
         }
@@ -83,7 +83,7 @@ public open class DlsymWeak<F> internal constructor(
         } else {
             // SAFETY: see the comment in `get`.
             // Note: use `reinterpret` once it stops complaining about generics.
-            mem.transmuteCopy<MutPtr, F>(value)
+            transmuteCopy<MutPtr, F>(value)
         }
     }
 

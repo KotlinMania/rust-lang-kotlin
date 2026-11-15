@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry
 
 import io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry.Entry.*
-import io.github.kotlinmania.rustlang.collections.btree.setval.SetValZST
+import io.github.kotlinmania.rustlang.alloc.collections.btree.setval.SetValZST
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 
 public class DebugStruct(
@@ -99,7 +99,9 @@ public sealed class Entry<T, A : AllocatorClone> {
      * }
      * ```
      */
-    public class Occupied<T, A : AllocatorClone> internal constructor(valueCtorArg: OccupiedEntry<T, A>) : Entry<T, A>() {
+    public class Occupied<T, A : AllocatorClone> internal constructor(
+        valueCtorArg: OccupiedEntry<T, A>,
+    ) : Entry<T, A>() {
         public var value: OccupiedEntry<T, A> = valueCtorArg
             internal set
 
@@ -119,11 +121,13 @@ public sealed class Entry<T, A : AllocatorClone> {
         public companion object {
             public operator fun <T, A : AllocatorClone> invoke(
                 value: OccupiedEntry<T, A>,
-            ): Occupied<T, A> = Occupied<T, A>(
-                valueCtorArg = value,
-            )
+            ): Occupied<T, A> =
+                Occupied<T, A>(
+                    valueCtorArg = value,
+                )
         }
     }
+
     /**
      * A vacant entry.
      *
@@ -142,7 +146,9 @@ public sealed class Entry<T, A : AllocatorClone> {
      * }
      * ```
      */
-    public class Vacant<T, A : AllocatorClone> internal constructor(valueCtorArg: VacantEntry<T, A>) : Entry<T, A>() {
+    public class Vacant<T, A : AllocatorClone> internal constructor(
+        valueCtorArg: VacantEntry<T, A>,
+    ) : Entry<T, A>() {
         public var value: VacantEntry<T, A> = valueCtorArg
             internal set
 
@@ -162,9 +168,10 @@ public sealed class Entry<T, A : AllocatorClone> {
         public companion object {
             public operator fun <T, A : AllocatorClone> invoke(
                 value: VacantEntry<T, A>,
-            ): Vacant<T, A> = Vacant<T, A>(
-                valueCtorArg = value,
-            )
+            ): Vacant<T, A> =
+                Vacant<T, A>(
+                    valueCtorArg = value,
+                )
         }
     }
 
@@ -362,9 +369,10 @@ public open class OccupiedEntry<T, A : AllocatorClone> internal constructor(
     public companion object {
         public operator fun <T, A : AllocatorClone> invoke(
             inner: OccupiedEntry<T, SetValZST, A>,
-        ): OccupiedEntry<T, A> = OccupiedEntry<T, A>(
-            innerCtorArg = inner,
-        )
+        ): OccupiedEntry<T, A> =
+            OccupiedEntry<T, A>(
+                innerCtorArg = inner,
+            )
     }
 }
 
@@ -481,8 +489,9 @@ public open class VacantEntry<T, A : AllocatorClone> internal constructor(
     public companion object {
         public operator fun <T, A : AllocatorClone> invoke(
             inner: VacantEntry<T, SetValZST, A>,
-        ): VacantEntry<T, A> = VacantEntry<T, A>(
-            innerCtorArg = inner,
-        )
+        ): VacantEntry<T, A> =
+            VacantEntry<T, A>(
+                innerCtorArg = inner,
+            )
     }
 }

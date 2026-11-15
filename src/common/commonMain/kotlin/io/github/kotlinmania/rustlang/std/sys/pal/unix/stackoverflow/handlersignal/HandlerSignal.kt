@@ -1,7 +1,8 @@
 // port-lint: source sys/pal/unix/stack_overflow/handler_signal.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlersignal
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.io.write.Write
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -12,7 +13,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.io.Error
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CVoid
 import io.github.kotlinmania.rustlang.libc.getauxval
@@ -42,13 +42,14 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_WRITE
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.MAP_STACK
 import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
-import io.github.kotlinmania.rustlang.process.abort
+import io.github.kotlinmania.rustlang.std.io.Error
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.conf.pageSize
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.Handler
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.deleteCurrentInfo
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.setCurrentInfo
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.withCurrentInfo
-import io.github.kotlinmania.rustlang.sys.pal.unix.conf.pageSize
-import io.github.kotlinmania.rustlang.sys.pal.unix.stackoverflow.Handler
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.libc.mmap as mmap64
 
 public fun interface FnCallback {
@@ -86,7 +87,7 @@ public fun interface FnCallback {
  */
 public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
     // SAFETY: this pointer is provided by the system and will always point to a valid `siginfoT`.
-    val faultAddr = (ObjectSlotLayout<SiginfoT>()).readNative((info).rawAddress).siAddr().addr()
+    val faultAddr = (UnresolvedTypeLayout<SiginfoT>()).readNative((info).rawAddress).siAddr().addr()
     // `withCurrentInfo` expects that the process aborts after it is
     // called. If the signal was not caused by a memory access, this might
     // not be true. We detect this by noticing that the `siAddr` field is
@@ -109,7 +110,7 @@ public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
                     null -> {}
                     else -> {
                         val out = matchVal
-                        io.Write.writeFmt(out, "\nthread '$name' ($tid) has overflowed its stack\n")
+                        Write.writeFmt(out, "\nthread '$name' ($tid) has overflowed its stack\n")
                     }
                 }
                 run {
@@ -120,7 +121,7 @@ public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
                         null -> {}
                         else -> {
                             val out1 = matchVal1
-                            io.Write.writeFmt(out1, "fatal runtime error: " + ("stack overflow").toString() + ", aborting\n")
+                            Write.writeFmt(out1, "fatal runtime error: " + ("stack overflow").toString() + ", aborting\n")
                         }
                     }
                     run {
@@ -133,7 +134,7 @@ public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
     }
     // Unregister ourselves by reverting back to the default behavior.
     // SAFETY: assuming all platforms define struct sigaction as "zero-initializable"
-    val action: Sigaction  = MaybeUninit.zeroed(ObjectSlotLayout<Sigaction>()).assumeInit()
+    val action: Sigaction  = MaybeUninit.zeroed(UnresolvedTypeLayout<Sigaction>()).assumeInit()
     action.saSigaction = SIG_DFL
     // SAFETY: pray this is a well-behaved POSIX implementation of fn sigaction
     Sigaction(signum, action, MutPtr(0L))
@@ -170,7 +171,7 @@ public fun init() {
         return
     }
     // SAFETY: C structures are always zero-initializable.
-    val action: Sigaction  = MaybeUninit.zeroed(ObjectSlotLayout<Sigaction>()).assumeInit()
+    val action: Sigaction  = MaybeUninit.zeroed(UnresolvedTypeLayout<Sigaction>()).assumeInit()
     for (signal in listOf(SIGSEGV, SIGBUS)) {
         // SAFETY: just fetches the current signal handler into action
         Sigaction(signal, MutPtr(0L), action)
@@ -184,7 +185,7 @@ public fun init() {
                 NEED_ALTSTACK.store(true, Ordering.Release)
                 val handler = makeHandler(true)
                 MAIN_ALTSTACK.store(handler.data, Ordering.Relaxed)
-                mem.forget(handler)
+                forget(handler)
                 when (val matchVal = guardPageRange.also { guardPageRange = null }) {
                     null -> {}
                     else -> {
@@ -296,7 +297,7 @@ public fun dropHandler(data: MutPtr) {
         // SAFETY:
         // This allocation was created by us in `getStack` and, as the
         // alternate signal stack is now disabled, is no longer in use.
-        munmap(MutPtr((data).rawAddress - ((pageSize).toLong() * (ObjectSlotLayout<CVoid>()).strideBytes)), sigstackSize + pageSize)
+        munmap(MutPtr((data).rawAddress - ((pageSize).toLong() * (UnresolvedTypeLayout<CVoid>()).strideBytes)), sigstackSize + pageSize)
     }
     deleteCurrentInfo()
 }

@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.args.unsupported
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 
 public open class Args : Iterable<OsString> {
     override fun iterator(): Iterator<OsString> = object : AbstractIterator<OsString>() {

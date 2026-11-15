@@ -1,20 +1,20 @@
 // port-lint: source io/error/repr_bitpacked.rs
 package io.github.kotlinmania.rustlang.core.io.error.reprbitpacked
 
-import io.github.kotlinmania.rustlang.cmp.Eq
+import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.io.error.Custom
+import io.github.kotlinmania.rustlang.core.io.error.CustomOwner
+import io.github.kotlinmania.rustlang.core.io.error.ErrorData
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.RawOsError
+import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.num.nonzero.NonZeroUsize
+import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.io.error.Custom
-import io.github.kotlinmania.rustlang.io.error.CustomOwner
-import io.github.kotlinmania.rustlang.io.error.ErrorData
-import io.github.kotlinmania.rustlang.io.error.ErrorKind
-import io.github.kotlinmania.rustlang.io.error.RawOsError
-import io.github.kotlinmania.rustlang.io.error.SimpleMessage
-import io.github.kotlinmania.rustlang.num.nonzero.NonZeroUsize
-import io.github.kotlinmania.rustlang.option.Option
-import io.github.kotlinmania.rustlang.panicking.assertFailed
-import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 // This is a densely packed error representation which is used on targets with
 // 64-bit pointers.
@@ -182,10 +182,11 @@ public open class Repr internal constructor(
         public operator fun invoke(
             field0: NonNull,
             field1: Unit,
-        ): Repr = Repr(
-            field0CtorArg = field0,
-            field1 = field1,
-        )
+        ): Repr =
+            Repr(
+                field0CtorArg = field0,
+                field1 = field1,
+            )
 
         public fun newCustom(b: CustomOwner): Repr {
             val p = b.intoRaw().asPtr().cast()
@@ -223,10 +224,12 @@ public open class Repr internal constructor(
             val ptr = NonNull.newUnchecked(tagged)
             val res = Repr(ptr, Unit)
             if (false) {
-                check(when (val matchVal1 = res.data()) {
-                    is ErrorData.Custom -> true
-                    else -> false
-                }) { "repr(custom) encoding failed" }
+                check(
+                    when (val matchVal1 = res.data()) {
+                        is ErrorData.Custom -> true
+                        else -> false
+                    },
+                ) { "repr(custom) encoding failed" }
             }
             return res
         }
@@ -237,16 +240,18 @@ public open class Repr internal constructor(
             val utagged1 = NonZeroUsize.newUnchecked(utagged)
             val res = Repr(NonNull.withoutProvenance(utagged1), Unit)
             if (false) {
-                check(run {
-                    val matchVal = res.data()
-                    when {
-                        matchVal is ErrorData.Os && (matchVal as ErrorData.Os).value == code -> {
-                            val (c) = matchVal
-                            true
+                check(
+                    run {
+                        val matchVal = res.data()
+                        when {
+                            matchVal is ErrorData.Os && (matchVal as ErrorData.Os).value == code -> {
+                                val (c) = matchVal
+                                true
+                            }
+                            else -> false
                         }
-                        else -> false
-                    }
-                }) { "repr(os) encoding failed for $code" }
+                    },
+                ) { "repr(os) encoding failed for $code" }
             }
             return res
         }
@@ -257,16 +262,18 @@ public open class Repr internal constructor(
             val utagged1 = NonZeroUsize.newUnchecked(utagged)
             val res = Repr(NonNull.withoutProvenance(utagged1), Unit)
             if (false) {
-                check(run {
-                    val matchVal = res.data()
-                    when {
-                        matchVal is ErrorData.Simple && (matchVal as ErrorData.Simple).value == kind -> {
-                            val (k) = matchVal
-                            true
+                check(
+                    run {
+                        val matchVal = res.data()
+                        when {
+                            matchVal is ErrorData.Simple && (matchVal as ErrorData.Simple).value == kind -> {
+                                val (k) = matchVal
+                                true
+                            }
+                            else -> false
                         }
-                        else -> false
-                    }
-                }) { "repr(simple) encoding failed $kind" }
+                    },
+                ) { "repr(simple) encoding failed $kind" }
             }
             return res
         }

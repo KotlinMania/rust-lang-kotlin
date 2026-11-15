@@ -3,10 +3,10 @@ package io.github.kotlinmania.rustlang.std.sync.oneshot
 
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.sync.mpmc.syncChannel
-import io.github.kotlinmania.rustlang.sync.mpsc.RecvError
-import io.github.kotlinmania.rustlang.sync.mpsc.SendError
-import io.github.kotlinmania.rustlang.time.Instant
+import io.github.kotlinmania.rustlang.std.sync.mpmc.syncChannel
+import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvError
+import io.github.kotlinmania.rustlang.std.sync.mpsc.SendError
+import io.github.kotlinmania.rustlang.std.time.Instant
 
 // A single-producer, single-consumer (oneshot) channel.
 //
@@ -134,7 +134,7 @@ public open class Sender<T>(
     /**
      * The `oneshot` channel is simply a wrapper around a `mpmc` channel.
      */
-    public var inner: io.github.kotlinmania.rustlang.sync.mpmc.Sender<T>,
+    public var inner: io.github.kotlinmania.rustlang.std.sync.mpmc.Sender<T>,
 ) {
     // SAFETY: Sending a value requires ownership of the sender. Shared references only inspect
     // channel state, so they cannot send a value of a non-`Send` type from another thread.
@@ -231,7 +231,7 @@ public open class Receiver<T>(
     /**
      * The `oneshot` channel is simply a wrapper around a `mpmc` channel.
      */
-    public var inner: io.github.kotlinmania.rustlang.sync.mpmc.Receiver<T>,
+    public var inner: io.github.kotlinmania.rustlang.std.sync.mpmc.Receiver<T>,
 ) {
     // SAFETY: Receiving a value requires ownership of the receiver. Shared references only inspect
     // channel state, so they cannot access a value of a non-`Send` type from another thread.
@@ -342,8 +342,8 @@ public open class Receiver<T>(
      */
     public open fun tryRecv(): Result<T, TryRecvError<T>> =
         this.inner.tryRecv().mapErr({ err -> when (err) {
-            io.github.kotlinmania.rustlang.sync.mpmc.TryRecvError.Empty -> TryRecvError.Empty(this)
-            io.github.kotlinmania.rustlang.sync.mpmc.TryRecvError.Disconnected -> TryRecvError.Disconnected
+            io.github.kotlinmania.rustlang.std.sync.mpmc.TryRecvError.Empty -> TryRecvError.Empty(this)
+            io.github.kotlinmania.rustlang.std.sync.mpmc.TryRecvError.Disconnected -> TryRecvError.Disconnected
         } })
 
     /**
@@ -381,8 +381,8 @@ public open class Receiver<T>(
      */
     public open fun recvTimeout(timeout: Duration): Result<T, RecvTimeoutError<T>> =
         this.inner.recvTimeout(timeout).mapErr({ err -> when (err) {
-            io.github.kotlinmania.rustlang.sync.mpmc.RecvTimeoutError.Timeout -> RecvTimeoutError.Timeout(this)
-            io.github.kotlinmania.rustlang.sync.mpmc.RecvTimeoutError.Disconnected -> RecvTimeoutError.Disconnected
+            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Timeout -> RecvTimeoutError.Timeout(this)
+            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Disconnected -> RecvTimeoutError.Disconnected
         } })
 
     /**
@@ -421,8 +421,8 @@ public open class Receiver<T>(
      */
     public open fun recvDeadline(deadline: Instant): Result<T, RecvTimeoutError<T>> =
         this.inner.recvDeadline(deadline).mapErr({ err -> when (err) {
-            io.github.kotlinmania.rustlang.sync.mpmc.RecvTimeoutError.Timeout -> RecvTimeoutError.Timeout(this)
-            io.github.kotlinmania.rustlang.sync.mpmc.RecvTimeoutError.Disconnected -> RecvTimeoutError.Disconnected
+            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Timeout -> RecvTimeoutError.Timeout(this)
+            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Disconnected -> RecvTimeoutError.Disconnected
         } })
 
     public open fun fmt(f: StringBuilder) {

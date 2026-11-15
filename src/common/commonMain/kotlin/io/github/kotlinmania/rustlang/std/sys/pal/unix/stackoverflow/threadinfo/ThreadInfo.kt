@@ -2,20 +2,21 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo
 
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.libc.pause
-import io.github.kotlinmania.rustlang.process.abort
-import io.github.kotlinmania.rustlang.sync.nonpoison.mutex.Mutex
-import io.github.kotlinmania.rustlang.sys.io.error.unix.errnoLocation
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.thread.current.currentOsId
-import io.github.kotlinmania.rustlang.thread.current.withCurrentName
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
+import io.github.kotlinmania.rustlang.std.sys.io.error.unix.errnoLocation
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.thread.current.currentOsId
+import io.github.kotlinmania.rustlang.std.thread.current.withCurrentName
 
 // TLS, but async-signal-safe.
 //
@@ -141,7 +142,7 @@ public fun <R> withCurrentInfo(f: (ThreadInfo?) -> R): R {
             }
         }
     // SAFETY: we own the spin lock, so `THREAD_INFO` cannot not be aliased.
-    val threadInfo = (ObjectSlotLayout<MutableMap<Int, ThreadInfo>>()).readNative(((addrOf(THREAD_INFO))).rawAddress)
+    val threadInfo = (UnresolvedTypeLayout<MutableMap<Int, ThreadInfo>>()).readNative(((addrOf(THREAD_INFO))).rawAddress)
     return f(threadInfo.get(thisRef))
 }
 
@@ -172,13 +173,13 @@ public fun setCurrentInfo(guardPageRange: IntRange) {
     val name = withCurrentName({ name -> name.map(Box::from) })
     val thisRef = (errnoLocation()).rawAddress.toInt()
     // SAFETY: we own the spin lock, so `THREAD_INFO` cannot be aliased.
-    val threadInfo = RustMutableReference(MutPtr(((addrOfMut(THREAD_INFO))).rawAddress), ObjectSlotLayout<MutableMap<Int, ThreadInfo>>())
+    val threadInfo = RustMutableReference(MutPtr(((addrOfMut(THREAD_INFO))).rawAddress), UnresolvedTypeLayout<MutableMap<Int, ThreadInfo>>())
     threadInfo.put(thisRef, ThreadInfo(tid = tid, name = name, guardPageRange = guardPageRange))
 }
 
 public fun deleteCurrentInfo() {
     val thisRef = (errnoLocation()).rawAddress.toInt()
     // SAFETY: we own the spin lock, so `THREAD_INFO` cannot not be aliased.
-    val threadInfo = RustMutableReference(MutPtr(((addrOfMut(THREAD_INFO))).rawAddress), ObjectSlotLayout<MutableMap<Int, ThreadInfo>>())
+    val threadInfo = RustMutableReference(MutPtr(((addrOfMut(THREAD_INFO))).rawAddress), UnresolvedTypeLayout<MutableMap<Int, ThreadInfo>>())
     threadInfo.remove(thisRef)
 }

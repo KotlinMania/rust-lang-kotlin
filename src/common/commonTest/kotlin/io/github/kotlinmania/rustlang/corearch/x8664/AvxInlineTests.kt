@@ -1,7 +1,7 @@
 // port-lint: tests x86_64/avx.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.x86.mm256SetrEpi64x
+import io.github.kotlinmania.rustlang.corearch.x86.mm256SetrEpi64x
 
 // Advanced Vector Extensions (AVX)
 //

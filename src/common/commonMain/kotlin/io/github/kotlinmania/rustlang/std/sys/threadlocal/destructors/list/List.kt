@@ -1,13 +1,14 @@
 // port-lint: source sys/thread_local/destructors/list.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.list
 
-import io.github.kotlinmania.rustlang.alloc.System
 import io.github.kotlinmania.rustlang.core.cell.RefCell
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.process.abort
-import io.github.kotlinmania.rustlang.sync.poison.Guard
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.alloc.System
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sync.poison.Guard
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: MutPtr)

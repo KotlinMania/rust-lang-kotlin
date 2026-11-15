@@ -4,20 +4,19 @@ package io.github.kotlinmania.rustlang.std.sys.paths.windows
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.env.varOs
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.os.windows.ffi.EncodeWide
-import io.github.kotlinmania.rustlang.os.windows.ffi.OsStringExt
-import io.github.kotlinmania.rustlang.path.PathBuf
+import io.github.kotlinmania.rustlang.std.env.varOs
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.pal.c
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.sys.pal.windows.api.WinError
-import io.github.kotlinmania.rustlang.sys.pal.windows.fillUtf16Buf
-import io.github.kotlinmania.rustlang.sys.pal.windows.os2path
+import io.github.kotlinmania.rustlang.std.os.windows.ffi.EncodeWide
+import io.github.kotlinmania.rustlang.std.os.windows.ffi.OsStringExt
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.pal.c
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.os2path
 
 // Implementation of `std.os` functionality for Windows.
 
@@ -164,4 +163,4 @@ public fun homeDirCrt(): PathBuf? =
         }, os2path).ok()
     }
 
-public fun homeDir(): PathBuf? = varOs("USERPROFILE").filter({ s -> !s.isEmpty() }).map(PathBuf::from).orElse(::homeDirCrt)
+public fun homeDir(): PathBuf? = (varOs("USERPROFILE").filter({ s -> !s.isEmpty() })?.let(PathBuf::from) ?: homeDirCrt())

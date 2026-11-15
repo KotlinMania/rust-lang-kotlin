@@ -1,11 +1,11 @@
 // port-lint: source math/exp2m1.rs
 package io.github.kotlinmania.rustlang.libm.math.exp2m1
 
+import io.github.kotlinmania.rustlang.libm.math.kcos.C2
+import io.github.kotlinmania.rustlang.libm.math.ldexp.ldexp
 import io.github.kotlinmania.rustlang.libm.math.support.Int
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath
-import io.github.kotlinmania.rustlang.math.kcos.C2
-import io.github.kotlinmania.rustlang.math.ldexp.ldexp
-import io.github.kotlinmania.rustlang.math.support.hexfloat.hf64
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
 
 public val LN2H: Double =
     run {

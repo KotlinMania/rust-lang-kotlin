@@ -1,12 +1,12 @@
 // port-lint: source int/udiv.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.int.udiv
 
+import io.github.kotlinmania.rustlang.compilerbuiltins.int.specializeddivrem.u128DivideSparc
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.int.specializeddivrem.u128DivideSparc
 
 public fun udivsi3(n: UInt, d: UInt): UInt {
     fun udivsi3(n1: UInt, d1: UInt): UInt = 0u

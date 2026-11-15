@@ -1,7 +1,7 @@
 package io.github.kotlinmania.rustlang.core.mem
 
-import io.github.kotlinmania.rustlang.clone.TrivialClone
-import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugTuple(
@@ -133,7 +133,7 @@ public open class DiscriminantOrd<T>(
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = DebugTuple(fmt, "DiscriminantOrd").field(this.value).finish()
 
-    public open fun partialCmp(other: DiscriminantOrd<T>): Ordering? = this.value.partialCmp(other.value)
+    public open fun partialCmp(other: DiscriminantOrd<T>): cmp.Ordering? = this.value.partialCmp(other.value)
 
-    public open fun cmp(other: DiscriminantOrd<T>): Ordering = this.value.cmp(other.value)
+    public open fun cmp(other: DiscriminantOrd<T>): cmp.Ordering = this.value.cmp(other.value)
 }

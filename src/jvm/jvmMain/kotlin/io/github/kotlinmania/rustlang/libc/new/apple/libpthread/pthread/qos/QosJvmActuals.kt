@@ -2,13 +2,13 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.qos
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.qos.QosClassT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.qos.QosClassT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
 
-private object LibcNewAppleLibpthreadPthreadQosJniBridge {
+private object NewAppleLibpthreadPthreadQosJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -44,11 +44,14 @@ private object LibcNewAppleLibpthreadPthreadQosJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = LibcNewAppleLibpthreadPthreadQosJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = NewAppleLibpthreadPthreadQosJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -62,20 +65,20 @@ private object LibcNewAppleLibpthreadPthreadQosJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangLibcNewAppleLibpthreadPthreadQosPthreadAttrGetQosClassNp(attr: Long, cls: Long, priority: Long): Int
+    external fun libcNewAppleLibpthreadPthreadQosPthreadAttrGetQosClassNp(attr: Long, cls: Long, priority: Long): Int
 
     @JvmStatic
-    external fun rustlangLibcNewAppleLibpthreadPthreadQosPthreadGetQosClassNp(thread: Long, cls: Long, priority: Long): Int
+    external fun libcNewAppleLibpthreadPthreadQosPthreadGetQosClassNp(thread: Long, cls: Long, priority: Long): Int
 }
 
 public actual fun pthreadAttrSetQosClassNp(attr: MutPtr, cls: QosClassT, priority: CInt): CInt =
     0
 
 public actual fun pthreadAttrGetQosClassNp(attr: MutPtr, cls: MutPtr, priority: MutPtr): CInt =
-    LibcNewAppleLibpthreadPthreadQosJniBridge.rustlangLibcNewAppleLibpthreadPthreadQosPthreadAttrGetQosClassNp(attr.rawAddress, cls.rawAddress, priority.rawAddress)
+    NewAppleLibpthreadPthreadQosJniBridge.libcNewAppleLibpthreadPthreadQosPthreadAttrGetQosClassNp(attr.rawAddress, cls.rawAddress, priority.rawAddress)
 
 public actual fun pthreadSetQosClassSelfNp(cls: QosClassT, priority: CInt): CInt =
     0
 
 public actual fun pthreadGetQosClassNp(thread: PthreadT, cls: MutPtr, priority: MutPtr): CInt =
-    LibcNewAppleLibpthreadPthreadQosJniBridge.rustlangLibcNewAppleLibpthreadPthreadQosPthreadGetQosClassNp(thread.toLong(), cls.rawAddress, priority.rawAddress)
+    NewAppleLibpthreadPthreadQosJniBridge.libcNewAppleLibpthreadPthreadQosPthreadGetQosClassNp(thread.toLong(), cls.rawAddress, priority.rawAddress)

@@ -3,14 +3,29 @@
 
 package io.github.kotlinmania.rustlang.backtrace.symbolize.dbghelp
 
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.Dbghelp
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymAddrIncludeInlineTrace
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymFromInlineContextW
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymGetLineFromInlineContextW
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymQueryInlineTrace
+import io.github.kotlinmania.rustlang.backtrace.symbolize.ResolveWhat
+import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
+import io.github.kotlinmania.rustlang.backtrace.symbolize.adjustIp
+import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
+import io.github.kotlinmania.rustlang.backtrace.windowssys.Bool
+import io.github.kotlinmania.rustlang.backtrace.windowssys.CP_UTF8
+import io.github.kotlinmania.rustlang.backtrace.windowssys.ImagehlpLinew64
+import io.github.kotlinmania.rustlang.backtrace.windowssys.MAX_SYM_NAME
+import io.github.kotlinmania.rustlang.backtrace.windowssys.TRUE
+import io.github.kotlinmania.rustlang.core.marker.PhantomData
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -19,21 +34,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.dbghelp.Dbghelp
-import io.github.kotlinmania.rustlang.dbghelp.SymAddrIncludeInlineTrace
-import io.github.kotlinmania.rustlang.dbghelp.SymFromInlineContextW
-import io.github.kotlinmania.rustlang.dbghelp.SymGetLineFromInlineContextW
-import io.github.kotlinmania.rustlang.dbghelp.SymQueryInlineTrace
-import io.github.kotlinmania.rustlang.symbolize.ResolveWhat
-import io.github.kotlinmania.rustlang.symbolize.SymbolName
-import io.github.kotlinmania.rustlang.symbolize.adjustIp
-import io.github.kotlinmania.rustlang.types.BytesOrWideString
-import io.github.kotlinmania.rustlang.windowssys.Bool
-import io.github.kotlinmania.rustlang.windowssys.CP_UTF8
-import io.github.kotlinmania.rustlang.windowssys.ImagehlpLinew64
-import io.github.kotlinmania.rustlang.windowssys.MAX_SYM_NAME
-import io.github.kotlinmania.rustlang.windowssys.TRUE
+import io.github.kotlinmania.rustlang.std.path.Path
 
 // Symbolication strategy using `dbghelp.dll` on Windows, only used for MSVC
 //
@@ -73,7 +74,7 @@ public open class Symbol internal constructor(
     public var filename: ConstPtr? = filenameCtorArg
         internal set
 
-    public open fun name(): SymbolName? = SymbolName.new((ObjectSlotLayout<List<UByte>>()).readNative((this.name).rawAddress))
+    public open fun name(): SymbolName? = SymbolName.new((UnresolvedTypeLayout<List<UByte>>()).readNative((this.name).rawAddress))
 
     public open fun addr(): MutPtr? = this.addr
 
@@ -93,14 +94,15 @@ public open class Symbol internal constructor(
             filename: ConstPtr?,
             filenameCache: OsString?,
             marker: Unit,
-        ): Symbol = Symbol(
-            nameCtorArg = name,
-            addrCtorArg = addr,
-            line = line,
-            filenameCtorArg = filename,
-            filenameCache = filenameCache,
-            marker = marker,
-        )
+        ): Symbol =
+            Symbol(
+                nameCtorArg = name,
+                addrCtorArg = addr,
+                line = line,
+                filenameCtorArg = filename,
+                filenameCache = filenameCache,
+                marker = marker,
+            )
     }
 }
 
@@ -116,24 +118,29 @@ public open class Aligned8<T>(
 
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 8L)), AlignedTypeLayout(fieldLayout, 8L))
 
     public fun pointerLayout(): TypeLayout<Aligned8<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Aligned8<T>(ptr, layout) }, { it.value })
 }
 
-public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.symbolize.dbghelp.Symbol) -> Unit) {
+public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit) {
     // Ensure this process's symbols are initialized
     val dbghelp1 =
         run {
             val matchVal = Dbghelp.init()
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val dbghelp = matchVal.value
-                dbghelp
-            }; is Result.Err<*, *> -> {
-                return
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val dbghelp = matchVal.value
+                    dbghelp
+                }
+                is Result.Err<*, *> -> {
+                    return
+                }
+            }
         }
     run {
         when (what) {
@@ -154,7 +161,7 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.symbol
  * Note that calling this function requires having dbghelp 6.2+ loaded - and
  * will panic otherwise.
  */
-public fun resolveWithInline(dbghelp: Init, addr: MutPtr, inlineContext: UInt?, cb: (io.github.kotlinmania.rustlang.symbolize.dbghelp.Symbol) -> Unit): Unit? {
+public fun resolveWithInline(dbghelp: Init, addr: MutPtr, inlineContext: UInt?, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit): Unit? {
     val inlineContext1 = inlineContext
     run {
         val currentProcess = GetCurrentProcess()
@@ -192,8 +199,8 @@ public fun resolveWithInline(dbghelp: Init, addr: MutPtr, inlineContext: UInt?, 
  * - `symFromAddr`: either `SymFromAddrW` or `SymFromInlineContextW`
  * - `getLineFromAddr`: `SymGetLineFromAddrW64` or `SymGetLineFromInlineContextW`
  */
-public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutableReference<ImagehlpLinew64>) -> Bool, cb: (io.github.kotlinmania.rustlang.symbolize.dbghelp.Symbol) -> Unit) {
-    val data = MaybeUninit.zeroed(ObjectSlotLayout<Aligned8<UByteArray>>())
+public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutableReference<ImagehlpLinew64>) -> Bool, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit) {
+    val data = MaybeUninit.zeroed(UnresolvedTypeLayout<Aligned8<UByteArray>>())
     val info = data.asMutPtr().cast()
     info.maxNameLen = MAX_SYM_NAME
     // the struct size in C.  the value is different to
@@ -225,7 +232,7 @@ public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutabl
     }
     val name = addrOf(((nameBuffer).sliceArray(0 until nameLen1)))
     var line = ImagehlpLinew64(sizeOfStruct = 0u, key = MutPtr(0L), lineNumber = 0u, fileName = MutPtr(0L), address = 0uL)
-    line.sizeOfStruct = sizeOf<ImagehlpLinew64>(typeLayoutT = ObjectSlotLayout<ImagehlpLinew64>()).toUInt()
+    line.sizeOfStruct = sizeOf<ImagehlpLinew64>(typeLayoutT = UnresolvedTypeLayout<ImagehlpLinew64>()).toUInt()
     var filename = null
     var lineno = null
     if (getLineFromAddr(line) == TRUE) {
@@ -237,10 +244,13 @@ public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutabl
         }
         val len1 = len.toInt()
         run {
-            filename = ptrFromRef(rawSliceList(base, len1.toInt(), PrimitiveLayouts.U8))
+            filename = ptrFromRef(Slice.fromRawParts(base, len1))
         }
     }
-    cb(io.github.kotlinmania.rustlang.symbolize.dbghelp.Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = marker.PhantomData)))
+    cb(
+        io.github.kotlinmania.rustlang.backtrace.symbolize
+            .Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = PhantomData)),
+    )
 }
 
 public fun cache(filename: ConstPtr?): OsString? = filename?.let({ f -> OsString.fromWide(f) })

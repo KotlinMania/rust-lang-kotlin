@@ -2,16 +2,16 @@
 
 package io.github.kotlinmania.rustlang.panicunwind
 
-import io.github.kotlinmania.rustlang.panicunwind.cinterop.rustlangPanicunwindRustDropPanic
-import io.github.kotlinmania.rustlang.panicunwind.cinterop.rustlangPanicunwindRustForeignException
+import io.github.kotlinmania.rustlang.panicunwind.cinterop.panicunwindRustDropPanic
+import io.github.kotlinmania.rustlang.panicunwind.cinterop.panicunwindRustForeignException
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun rustDropPanic(): Nothing {
-    rustlangPanicunwindRustDropPanic()
+    panicunwindRustDropPanic()
     error("Unreachable noreturn C function rustDropPanic")
 }
 
 public actual fun rustForeignException(): Nothing {
-    rustlangPanicunwindRustForeignException()
+    panicunwindRustForeignException()
     error("Unreachable noreturn C function rustForeignException")
 }

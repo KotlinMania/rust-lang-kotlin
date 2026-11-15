@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.core.slice.sort.stable
 
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 
 /**
  * Abstracts owned memory buffer, so that sort code can live in core where no allocation is

@@ -7,7 +7,7 @@ private val panicunwindNapiAddon: dynamic =
 
 public actual fun rustDropPanic(): Nothing {
     if (panicunwindNapiAddon != null) {
-        panicunwindNapiAddon.rustlangPanicunwindRustDropPanic()
+        panicunwindNapiAddon.panicunwindRustDropPanic()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
@@ -16,7 +16,7 @@ public actual fun rustDropPanic(): Nothing {
 
 public actual fun rustForeignException(): Nothing {
     if (panicunwindNapiAddon != null) {
-        panicunwindNapiAddon.rustlangPanicunwindRustForeignException()
+        panicunwindNapiAddon.panicunwindRustForeignException()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

@@ -1,21 +1,22 @@
 // port-lint: source thread/thread.rs
 package io.github.kotlinmania.rustlang.std.thread.thread
 
-import io.github.kotlinmania.rustlang.alloc.System
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.process.abort
-import io.github.kotlinmania.rustlang.std.thread.mainThread
-import io.github.kotlinmania.rustlang.sync.Arc
-import io.github.kotlinmania.rustlang.sync.oncelock.OnceLock
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.sys.sync.threadparking.darwin.Parker
-import io.github.kotlinmania.rustlang.sys.thread.unix.currentOsId
+import io.github.kotlinmania.rustlang.std.alloc.System
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sync.Arc
+import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.sync.threadparking.darwin.Parker
+import io.github.kotlinmania.rustlang.std.sys.thread.unix.currentOsId
+import io.github.kotlinmania.rustlang.std.thread.mainthread.get
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -314,7 +315,7 @@ public open class Thread internal constructor(
     public open fun name(): String? =
         when (val matchVal = this.inner.name) {
             null -> {
-                if (mainThread.get() == this.inner.id) {
+                if (get() == this.inner.id) {
                     "main"
                 } else {
                     null
@@ -358,7 +359,7 @@ public open class Thread internal constructor(
     public open fun cname(): CStr? =
         when (val matchVal = this.inner.name) {
             null -> {
-                if (mainThread.get() == this.inner.id) {
+                if (get() == this.inner.id) {
                     "main"
                 } else {
                     null

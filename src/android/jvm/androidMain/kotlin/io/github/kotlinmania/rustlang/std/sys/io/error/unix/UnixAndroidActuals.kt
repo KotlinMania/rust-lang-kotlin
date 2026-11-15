@@ -5,26 +5,26 @@ package io.github.kotlinmania.rustlang.std.sys.io.error.unix
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object StdSysIoErrorUnixJniBridge {
+private object SysIoErrorUnixJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun rustlangStdSysIoErrorUnixGetLIBCERRNO(): Int
+    external fun stdSysIoErrorUnixGetLIBCERRNO(): Int
 
     @JvmStatic
-    external fun rustlangStdSysIoErrorUnixSetLIBCERRNO(value: Int)
+    external fun stdSysIoErrorUnixSetLIBCERRNO(value: Int)
 
     @JvmStatic
-    external fun rustlangStdSysIoErrorUnixErrnoLocation(): Long
+    external fun stdSysIoErrorUnixErrnoLocation(): Long
 }
 
 public actual var LIBC_ERRNO: io.github.kotlinmania.rustlang.libc.CInt
-    get() = StdSysIoErrorUnixJniBridge.rustlangStdSysIoErrorUnixGetLIBCERRNO()
+    get() = SysIoErrorUnixJniBridge.stdSysIoErrorUnixGetLIBCERRNO()
     set(value) {
-        StdSysIoErrorUnixJniBridge.rustlangStdSysIoErrorUnixSetLIBCERRNO(value)
+        SysIoErrorUnixJniBridge.stdSysIoErrorUnixSetLIBCERRNO(value)
     }
 
 public actual fun errnoLocation(): MutPtr =
-    MutPtr(StdSysIoErrorUnixJniBridge.rustlangStdSysIoErrorUnixErrnoLocation())
+    MutPtr(SysIoErrorUnixJniBridge.stdSysIoErrorUnixErrnoLocation())

@@ -7,4 +7,6 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.int.sdiv.divsi3
 /**
  * Returns `n / d`
  */
-public fun divsi3(a: Int, b: Int): Int = io.github.kotlinmania.rustlang.int.sdiv.divsi3(a, b)
+public fun divsi3(a: Int, b: Int): Int =
+    io.github.kotlinmania.rustlang.compilerbuiltins.int.sdiv
+        .divsi3(a, b)

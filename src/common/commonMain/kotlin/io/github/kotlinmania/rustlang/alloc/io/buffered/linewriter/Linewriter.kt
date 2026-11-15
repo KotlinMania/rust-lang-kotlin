@@ -1,13 +1,13 @@
 // port-lint: source io/buffered/linewriter.rs
 package io.github.kotlinmania.rustlang.alloc.io.buffered.linewriter
 
+import io.github.kotlinmania.rustlang.alloc.fmt.Arguments
+import io.github.kotlinmania.rustlang.alloc.io.buffered.IntoInnerError
+import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
+import io.github.kotlinmania.rustlang.alloc.io.buffered.linewritershim.LineWriterShim
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.fmt.Arguments
-import io.github.kotlinmania.rustlang.io.buffered.IntoInnerError
-import io.github.kotlinmania.rustlang.io.buffered.bufwriter.BufWriter
-import io.github.kotlinmania.rustlang.io.buffered.linewritershim.LineWriterShim
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -176,9 +176,10 @@ public open class LineWriter<W : Write> internal constructor(
     public companion object {
         public operator fun <W : Write> invoke(
             inner: BufWriter<W>,
-        ): LineWriter<W> = LineWriter<W>(
-            innerCtorArg = inner,
-        )
+        ): LineWriter<W> =
+            LineWriter<W>(
+                innerCtorArg = inner,
+            )
 
         /**
          * Creates a new `LineWriter`.

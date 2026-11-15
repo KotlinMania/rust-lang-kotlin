@@ -3,12 +3,12 @@ package io.github.kotlinmania.rustlang.test.term.terminfo.parm
 
 import io.github.kotlinmania.rustlang.core.char.isAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.isAsciiUppercase
+import io.github.kotlinmania.rustlang.core.char.methods.toDigit
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.str.rustToDigit
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.Param.*
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.States.*
 
@@ -245,7 +245,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
             }
             PushParam -> {
                 // params are 1-indexed
-                stack.add(mparams[when (val matchVal8 = cur.rustToDigit(10u)) {
+                stack.add(mparams[when (val matchVal8 = cur.toDigit(10u)) {
                     null -> { return Result.Err("bad param number".toString()) }
                     else -> {
                         val d = matchVal8
@@ -305,13 +305,13 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                 if (cur == '}') {
                     stack.add(Number(i))
                     state = Nothing
-                } else when (val matchVal11 = cur.rustToDigit(10u)) {
+                } else when (val matchVal11 = cur.toDigit(10u)) {
                     null -> {
                         return Result.Err("bad int constant".toString())
                     }
                     else -> {
                         val digit = matchVal11
-                        when (val matchVal12 = rustCheckedMul(i, 10)?.let({ iTen -> iTen.checkedAdd(digit.toInt()) })) {
+                        when (val matchVal12 = i.checkedMul(10)?.let({ iTen -> iTen.checkedAdd(digit.toInt()) })) {
                             null -> { return Result.Err("int constant too large".toString()) }
                             else -> {
                                 val i1 = matchVal12

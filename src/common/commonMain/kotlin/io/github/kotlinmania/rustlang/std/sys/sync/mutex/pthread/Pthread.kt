@@ -3,8 +3,8 @@ package io.github.kotlinmania.rustlang.std.sys.sync.mutex.pthread
 
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.pin.Pin
-import io.github.kotlinmania.rustlang.sys.sync.oncebox.OnceBox
-import io.github.kotlinmania.rustlang.sys.pal.sync as pal
+import io.github.kotlinmania.rustlang.std.sys.sync.oncebox.OnceBox
+import io.github.kotlinmania.rustlang.std.sys.pal.sync as pal
 
 public open class Mutex internal constructor(
     palCtorArg: OnceBox<pal.Mutex>,

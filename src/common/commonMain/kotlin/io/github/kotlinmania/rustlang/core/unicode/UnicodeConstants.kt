@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.core.unicode
 
-import io.github.kotlinmania.rustlang.unicode.UNICODE_VERSION
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.UNICODE_VERSION
 
 /**
  * The version of [Unicode](https://www.unicode.org/) that the Unicode parts of

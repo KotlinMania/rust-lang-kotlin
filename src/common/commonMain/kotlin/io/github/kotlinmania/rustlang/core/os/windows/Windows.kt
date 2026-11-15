@@ -1,7 +1,7 @@
 // port-lint: source os/windows.rs
 package io.github.kotlinmania.rustlang.core.os.windows
 
-import io.github.kotlinmania.rustlang.intrinsics.CodeViewAnnotationArgs
+import io.github.kotlinmania.rustlang.core.intrinsics.CodeViewAnnotationArgs
 
 // Platform-specific extensions to `core` for Windows platforms.
 
@@ -32,5 +32,6 @@ import io.github.kotlinmania.rustlang.intrinsics.CodeViewAnnotationArgs
  * ```kotlin
  */
 public fun <T : CodeViewAnnotationArgs> codeviewAnnotation() {
-    io.github.kotlinmania.rustlang.intrinsics.codeviewAnnotation<T>()
+    io.github.kotlinmania.rustlang.core.intrinsics
+        .codeviewAnnotation<T>()
 }

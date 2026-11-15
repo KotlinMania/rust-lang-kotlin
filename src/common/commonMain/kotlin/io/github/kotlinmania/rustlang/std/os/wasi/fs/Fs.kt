@@ -5,20 +5,20 @@ import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.fs.DirEntry
-import io.github.kotlinmania.rustlang.fs.File
-import io.github.kotlinmania.rustlang.fs.FileType
-import io.github.kotlinmania.rustlang.fs.Metadata
-import io.github.kotlinmania.rustlang.fs.OpenOptions
-import io.github.kotlinmania.rustlang.io.ErrorKind
-import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.wasi.S_IFBLK
 import io.github.kotlinmania.rustlang.libc.wasi.S_IFCHR
 import io.github.kotlinmania.rustlang.libc.wasi.S_IFSOCK
-import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.fs.DirEntry
+import io.github.kotlinmania.rustlang.std.fs.File
+import io.github.kotlinmania.rustlang.std.fs.FileType
+import io.github.kotlinmania.rustlang.std.fs.Metadata
+import io.github.kotlinmania.rustlang.std.fs.OpenOptions
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.sys.pal.wasi.err2io
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.sys.pal.wasi.err2io
 import io.github.kotlinmania.rustlang.wasip1.ADVICE_DONTNEED
 import io.github.kotlinmania.rustlang.wasip1.ADVICE_NOREUSE
 import io.github.kotlinmania.rustlang.wasip1.ADVICE_NORMAL
@@ -136,7 +136,7 @@ public interface FileExt {
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(io.github.kotlinmania.rustlang.io.Error.READ_EXACT_EOF)
+            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
         } else {
             Result.Ok(Unit)
         }
@@ -208,7 +208,7 @@ public interface FileExt {
                 val matchVal = this.writeAt(buf1, offset1)
                 when {
                     matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
-                        return Result.Err(io.github.kotlinmania.rustlang.io.Error.WRITE_ALL_EOF)
+                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok<*, *> -> {
                         val n = (matchVal as Result.Ok<*, *>).value
@@ -464,6 +464,6 @@ public fun symlink(oldPath: Path, fd: File, newPath: Path): Result<Unit, Error> 
  * This is a convenience API similar to `std.os.unix.fs.symlink` and
  * `std.os.windows.fs.symlinkFile` and `std.os.windows.fs.symlinkDir`.
  */
-public fun symlinkPath(oldPath: Path, newPath: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.sys.fs.symlink(oldPath, newPath)
+public fun symlinkPath(oldPath: Path, newPath: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.symlink(oldPath, newPath)
 
 public fun osstr2str(f: OsStr): Result<String, Error> = f.toStr().okOrElse({ constError(ErrorKind.Uncategorized, "input must be utf-8") })

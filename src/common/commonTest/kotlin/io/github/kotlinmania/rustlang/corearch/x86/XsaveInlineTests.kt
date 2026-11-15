@@ -10,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.x86.cpuid
 
 // `i586`s `xsave` and `xsaveopt` target feature intrinsics
 
@@ -43,7 +42,9 @@ public open class AlignedArray internal constructor(
 
     public var value: UByteArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: UByteArray, fieldLayout: TypeLayout<UByteArray>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 

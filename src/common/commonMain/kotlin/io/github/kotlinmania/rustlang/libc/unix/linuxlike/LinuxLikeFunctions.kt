@@ -1,31 +1,31 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unix.GidT
-import io.github.kotlinmania.rustlang.unix.IntptrT
-import io.github.kotlinmania.rustlang.unix.LocaleT
-import io.github.kotlinmania.rustlang.unix.PidT
-import io.github.kotlinmania.rustlang.unix.SizeT
-import io.github.kotlinmania.rustlang.unix.SsizeT
-import io.github.kotlinmania.rustlang.unix.UidT
-import io.github.kotlinmania.rustlang.unix.bsd.IPTOS_ECN_MASK
-import io.github.kotlinmania.rustlang.unix.bsd.apple.DevT
-import io.github.kotlinmania.rustlang.unix.bsd.apple.IdtypeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.Off64T
-import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Cmsghdr
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Ioctl
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Msghdr
-import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.IntptrT
+import io.github.kotlinmania.rustlang.libc.unix.LocaleT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.DevT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.IdtypeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Cmsghdr
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Ioctl
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Msghdr
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 
 // intentionally not public, only used for fdSet
 // https://github.com/search?q=repo%3Atorvalds%2Flinux+%22%23define+_IOC_NONE%22&type=code
@@ -72,17 +72,17 @@ public expect fun ioctl(fd: CInt, request: Ioctl, vararg variadicArgs: Long): CI
 public fun cmsgAlign(len: Int): Int = (len + sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64) - 1) and (sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64) - 1).inv()
 
 public fun cmsgFirsthdr(mhdr: ConstPtr): MutPtr =
-    if (((ObjectSlotLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControllen).toInt() >= sizeOf<Cmsghdr>(typeLayoutT = ObjectSlotLayout<Cmsghdr>())) {
-        MutPtr(((ObjectSlotLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControl).rawAddress)
+    if (((UnresolvedTypeLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControllen).toInt() >= sizeOf<Cmsghdr>(typeLayoutT = UnresolvedTypeLayout<Cmsghdr>())) {
+        MutPtr(((UnresolvedTypeLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControl).rawAddress)
     } else {
         MutPtr(0L)
     }
 
-public fun cmsgData(cmsg: ConstPtr): MutPtr = (ConstPtr((cmsg).rawAddress + ((1).toLong() * (ObjectSlotLayout<Cmsghdr>()).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
+public fun cmsgData(cmsg: ConstPtr): MutPtr = (ConstPtr((cmsg).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<Cmsghdr>()).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
 
-public fun cmsgSpace(length: CUint): CUint = (cmsgAlign(length.toInt()) + cmsgAlign(sizeOf<Cmsghdr>(typeLayoutT = ObjectSlotLayout<Cmsghdr>()))).toUInt()
+public fun cmsgSpace(length: CUint): CUint = (cmsgAlign(length.toInt()) + cmsgAlign(sizeOf<Cmsghdr>(typeLayoutT = UnresolvedTypeLayout<Cmsghdr>()))).toUInt()
 
-public fun cmsgLen(length: CUint): CUint = cmsgAlign(sizeOf<Cmsghdr>(typeLayoutT = ObjectSlotLayout<Cmsghdr>())).toUInt() + length
+public fun cmsgLen(length: CUint): CUint = cmsgAlign(sizeOf<Cmsghdr>(typeLayoutT = UnresolvedTypeLayout<Cmsghdr>())).toUInt() + length
 
 public fun fdClr(fd: CInt, set: MutPtr) {
     val fd1 = fd
@@ -163,11 +163,11 @@ public expect fun fdatasync(fd: CInt): CInt
 
 public expect fun mincore(addr: MutPtr, len: SizeT, vec: MutPtr): CInt
 
-public expect fun clockGetres(clkId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: MutPtr): CInt
+public expect fun clockGetres(clkId: ClockidT, tp: MutPtr): CInt
 
-public expect fun clockGettime(clkId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: MutPtr): CInt
+public expect fun clockGettime(clkId: ClockidT, tp: MutPtr): CInt
 
-public expect fun clockSettime(clkId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: ConstPtr): CInt
+public expect fun clockSettime(clkId: ClockidT, tp: ConstPtr): CInt
 
 public expect fun clockGetcpuclockid(pid: PidT, clkId: MutPtr): CInt
 

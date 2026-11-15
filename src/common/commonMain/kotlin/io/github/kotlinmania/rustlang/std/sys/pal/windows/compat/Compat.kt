@@ -5,7 +5,8 @@ import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.sync.lazylock.LazyLock
+import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
+import io.github.kotlinmania.rustlang.std.sys.c
 
 // A "compatibility layer" for supporting older versions of Windows
 //
@@ -86,7 +87,7 @@ public open class Module internal constructor(
             // SAFETY:
             // `self.0` will always be a valid module.
             // A CStr is always null terminated.
-            val proc = GetProcAddress(this.value.asPtr(), name.asPtr().cast())
+            val proc = c.GetProcAddress(this.value.asPtr(), name.asPtr().cast())
             // SAFETY: `GetProcAddress` returns None on null.
             proc.map({ p -> NonNull.newUnchecked(mutPtrFromRustCast(p)) })
         }
@@ -109,7 +110,7 @@ public open class Module internal constructor(
         public fun new(name: CStr): Module? {
             // SAFETY: A CStr is always null terminated.
             return run {
-                val module = GetModuleHandleA(name.asPtr().cast())
+                val module = c.GetModuleHandleA(name.asPtr().cast())
                 NonNull.new(module).map({ Module(it) })
             }
         }
@@ -124,7 +125,7 @@ public open class Module internal constructor(
         public fun load(name: CStr): Module? {
             // SAFETY: A CStr is always null terminated.
             return run {
-                val module = LoadLibraryExA(name.asPtr().cast(), MutPtr(0L), LOAD_LIBRARY_SEARCH_SYSTEM32)
+                val module = c.LoadLibraryExA(name.asPtr().cast(), MutPtr(0L), c.LOAD_LIBRARY_SEARCH_SYSTEM32)
                 NonNull.new(module).map({ Module(it) })
             }
         }

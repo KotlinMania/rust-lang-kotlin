@@ -1,8 +1,8 @@
 // port-lint: source math/sinh.rs
 package io.github.kotlinmania.rustlang.libm.math.sinh
 
-import io.github.kotlinmania.rustlang.math.expm1.expm1
-import io.github.kotlinmania.rustlang.math.expo2.expo2
+import io.github.kotlinmania.rustlang.libm.math.expm1.expm1
+import io.github.kotlinmania.rustlang.libm.math.expo2.expo2
 
 // sinh(x) = (exp(x) - 1/exp(x))/2
 // = (exp(x)-1 + (exp(x)-1)/exp(x))/2

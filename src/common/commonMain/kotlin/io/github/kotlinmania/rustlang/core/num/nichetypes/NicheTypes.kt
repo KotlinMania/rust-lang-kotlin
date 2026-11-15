@@ -1,9 +1,10 @@
 // port-lint: source num/niche_types.rs
 package io.github.kotlinmania.rustlang.core.num.nichetypes
 
-import io.github.kotlinmania.rustlang.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -12,7 +13,6 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.marker.StructuralPartialEq
 
 public open class Nanoseconds internal constructor(
     public val fieldStorage: MutPtr,
@@ -26,7 +26,9 @@ public open class Nanoseconds internal constructor(
 
     public var value: UInt
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -95,7 +97,9 @@ public open class NonZeroU8Inner internal constructor(
 
     public var value: UByte
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: UByte, fieldLayout: TypeLayout<UByte>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -155,7 +159,9 @@ public open class NonZeroU16Inner internal constructor(
 
     public var value: UShort
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: UShort, fieldLayout: TypeLayout<UShort>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -215,7 +221,9 @@ public open class NonZeroU32Inner internal constructor(
 
     public var value: UInt
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -275,7 +283,9 @@ public open class NonZeroU64Inner internal constructor(
 
     public var value: ULong
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: ULong, fieldLayout: TypeLayout<ULong>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -335,7 +345,9 @@ public open class NonZeroU128Inner internal constructor(
 
     public var value: U128
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: U128, fieldLayout: TypeLayout<U128>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -395,7 +407,9 @@ public open class NonZeroI8Inner internal constructor(
 
     public var value: Byte
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Byte, fieldLayout: TypeLayout<Byte>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -455,7 +469,9 @@ public open class NonZeroI16Inner internal constructor(
 
     public var value: Short
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Short, fieldLayout: TypeLayout<Short>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -515,7 +531,9 @@ public open class NonZeroI32Inner internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -575,7 +593,9 @@ public open class NonZeroI64Inner internal constructor(
 
     public var value: Long
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Long, fieldLayout: TypeLayout<Long>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -635,7 +655,9 @@ public open class NonZeroI128Inner internal constructor(
 
     public var value: I128
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: I128, fieldLayout: TypeLayout<I128>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -695,7 +717,9 @@ public open class UsizeNoHighBit internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -755,7 +779,9 @@ public open class UsizeNoHighBitMinusOne internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -815,7 +841,9 @@ public open class NonZeroUsizeInner internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -875,7 +903,9 @@ public open class NonZeroIsizeInner internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -935,7 +965,9 @@ public open class U32NotAllOnes internal constructor(
 
     public var value: UInt
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -995,7 +1027,9 @@ public open class I32NotAllOnes internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -1055,7 +1089,9 @@ public open class U64NotAllOnes internal constructor(
 
     public var value: ULong
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: ULong, fieldLayout: TypeLayout<ULong>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -1115,7 +1151,9 @@ public open class I64NotAllOnes internal constructor(
 
     public var value: Long
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Long, fieldLayout: TypeLayout<Long>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -1175,7 +1213,9 @@ public open class NonZeroCharInner internal constructor(
 
     public var value: Char
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: Char, fieldLayout: TypeLayout<Char>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -1239,7 +1279,9 @@ public open class CodePointInner internal constructor(
 
     public var value: UInt
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     internal constructor(value: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 

@@ -1,7 +1,7 @@
 // port-lint: source math/tanhf.rs
 package io.github.kotlinmania.rustlang.libm.math.tanhf
 
-import io.github.kotlinmania.rustlang.math.expm1f.expm1f
+import io.github.kotlinmania.rustlang.libm.math.expm1f.expm1f
 
 /**
  * The hyperbolic tangent of `x` (f32).

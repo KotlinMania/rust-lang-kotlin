@@ -1,14 +1,15 @@
 // port-lint: source sys/sync/futex/windows.rs
 package io.github.kotlinmania.rustlang.std.sys.sync.futex.windows
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.sys.pal.windows.api.WinError
-import io.github.kotlinmania.rustlang.sys.pal.windows.dur2timeout
+import io.github.kotlinmania.rustlang.std.sys.c
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.dur2timeout
 
 /**
  * An atomic for use as a futex that is at least 32-bits but may be larger
@@ -39,27 +40,27 @@ public fun <Futex, W> waitOnAddress(address: Futex, compare: W, timeout: Duratio
         val addr = address.cast()
         val size = sizeOf<W>(typeLayoutT = typeLayoutW)
         val compareAddr = ConstPtr(((addrOf(compare))).rawAddress)
-        val timeout1 = (timeout?.let(dur2timeout) ?: INFINITE)
-        WaitOnAddress(addr, compareAddr, size, timeout1) == TRUE
+        val timeout1 = (timeout?.let(dur2timeout) ?: c.INFINITE)
+        c.WaitOnAddress(addr, compareAddr, size, timeout1) == c.TRUE
     }
 
 public fun <T : Futexable> wakeByAddressSingle(address: T) {
     run {
         val addr = address.cast()
-        WakeByAddressSingle(addr)
+        c.WakeByAddressSingle(addr)
     }
 }
 
 public fun <T : Futexable> wakeByAddressAll(address: T) {
     run {
         val addr = address.cast()
-        WakeByAddressAll(addr)
+        c.WakeByAddressAll(addr)
     }
 }
 
 public fun <Futex, W> futexWait(futex: Futex, expected: W, timeout: Duration?): Boolean {
     // return false only on timeout
-    return (waitOnAddress(futex, expected, timeout, typeLayoutW = ObjectSlotLayout<W>()) || api.getLastError() != WinError.TIMEOUT).toUByte()
+    return (waitOnAddress(futex, expected, timeout, typeLayoutW = UnresolvedTypeLayout<W>()) || api.getLastError() != WinError.TIMEOUT).toUByte()
 }
 
 public fun <T : Futexable> futexWake(futex: T): Boolean {

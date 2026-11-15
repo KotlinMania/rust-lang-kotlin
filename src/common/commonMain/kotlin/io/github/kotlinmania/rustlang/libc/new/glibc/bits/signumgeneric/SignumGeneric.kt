@@ -1,8 +1,8 @@
 // port-lint: source new/glibc/bits/signum_generic.rs
 package io.github.kotlinmania.rustlang.libc.new.glibc.bits.signumgeneric
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `bits / signum - generic.h`
 

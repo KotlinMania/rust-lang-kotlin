@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.sync.rwlock.queue
 
 import io.github.kotlinmania.rustlang.core.cell.once.OnceCell
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -12,13 +13,13 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
-import io.github.kotlinmania.rustlang.process.abort
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.AcqRel
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.thread.thread.Thread
+import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.AcqRel
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 
 // Efficient read-write locking without `pthreadRwlockT`.
 //
@@ -542,7 +543,7 @@ public open class RwLock internal constructor(
                 node.wait()
             }
             // The node was removed from the queue, disarm the guard.
-            mem.forget(guard)
+            forget(guard)
             // Reload the state and try again.
             state = this.state.load(Relaxed)
             count = 0

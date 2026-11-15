@@ -1,10 +1,10 @@
 // port-lint: source asserting.rs
 package io.github.kotlinmania.rustlang.core.asserting
 
+import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.fmt.Formatter
 
 // ***** TryCapture - Generic *****
 
@@ -41,7 +41,11 @@ public interface TryCaptureGeneric<E, M> {
 
 public fun <E> Wrapper<E>.tryCapture(arg0: Capture<E, TryCaptureWithoutDebug>) {}
 
-public fun <E> Capture<E, TryCaptureWithoutDebug>.fmt(f: Formatter): Result<Unit, Unit> = run { f.append("N/A"); Result.Ok(Unit) }
+public fun <E> Capture<E, TryCaptureWithoutDebug>.fmt(f: Formatter): Result<Unit, Unit> =
+    run {
+        f.append("N/A")
+        Result.Ok(Unit)
+    }
 
 // ***** TryCapture - Printable *****
 

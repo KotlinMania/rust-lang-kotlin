@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.raw
 
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.can.CAN_RAW
-import io.github.kotlinmania.rustlang.new.linuxuapi.linux.can.SOL_CAN_BASE
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.CAN_RAW
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.SOL_CAN_BASE
 
 // Header: `linux / can / raw.h`
 

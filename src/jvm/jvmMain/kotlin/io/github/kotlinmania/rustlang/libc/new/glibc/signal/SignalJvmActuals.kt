@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.libc.new.glibc.signal
 
-import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.*
 
-private object LibcNewGlibcSignalJniBridge {
+private object NewGlibcSignalJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -43,11 +43,14 @@ private object LibcNewGlibcSignalJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = LibcNewGlibcSignalJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = NewGlibcSignalJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -61,8 +64,8 @@ private object LibcNewGlibcSignalJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangLibcNewGlibcSignalSigaction(signum: Int, act: Long, oldact: Long): Int
+    external fun libcNewGlibcSignalSigaction(signum: Int, act: Long, oldact: Long): Int
 }
 
 public actual fun sigaction(signum: CInt, act: ConstPtr, oldact: MutPtr): CInt =
-    LibcNewGlibcSignalJniBridge.rustlangLibcNewGlibcSignalSigaction(signum, act.rawAddress, oldact.rawAddress)
+    NewGlibcSignalJniBridge.libcNewGlibcSignalSigaction(signum, act.rawAddress, oldact.rawAddress)

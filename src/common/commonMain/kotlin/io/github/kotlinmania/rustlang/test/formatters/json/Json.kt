@@ -1,18 +1,18 @@
 // port-lint: source formatters/json.rs
 package io.github.kotlinmania.rustlang.test.formatters.json
 
-import io.github.kotlinmania.rustlang.TestDesc
-import io.github.kotlinmania.rustlang.console.ConsoleTestDiscoveryState
-import io.github.kotlinmania.rustlang.console.ConsoleTestState
-import io.github.kotlinmania.rustlang.console.OutputLocation
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.get
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.formatters.OutputFormatter
-import io.github.kotlinmania.rustlang.testresult.TestResult
-import io.github.kotlinmania.rustlang.time.TestExecTime
+import io.github.kotlinmania.rustlang.core.str.chars
+import io.github.kotlinmania.rustlang.test.TestDesc
+import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
+import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
+import io.github.kotlinmania.rustlang.test.console.OutputLocation
+import io.github.kotlinmania.rustlang.test.formatters.OutputFormatter
+import io.github.kotlinmania.rustlang.test.testresult.TestResult
+import io.github.kotlinmania.rustlang.test.time.TestExecTime
 
 public open class JsonFormatter<T>(
     public var out: OutputLocation<T>,
@@ -21,7 +21,7 @@ public open class JsonFormatter<T>(
         // self.out will take a lock, but that lock is released when writeAll returns. This
         // results in a race condition and json output may not end with a new line. We avoid this
         // by issuing `writeAll` calls line-by-line.
-        check(s.rustStrChars().last() == '\n')
+        check(s.chars().last() == '\n')
         return this.out.writeAll(s)
     }
 

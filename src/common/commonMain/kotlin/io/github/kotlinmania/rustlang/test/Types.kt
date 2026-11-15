@@ -1,17 +1,16 @@
 // port-lint: source types.rs
 package io.github.kotlinmania.rustlang.test
 
-import io.github.kotlinmania.rustlang.bench.Bencher
-import io.github.kotlinmania.rustlang.bench.benchmark
-import io.github.kotlinmania.rustlang.bench.runOnce
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.event.CompletedTest
-import io.github.kotlinmania.rustlang.options.Options
-import io.github.kotlinmania.rustlang.rustBeginShortBacktrace
 import io.github.kotlinmania.rustlang.std.sync.mpsc.Sender
+import io.github.kotlinmania.rustlang.test.bench.Bencher
+import io.github.kotlinmania.rustlang.test.bench.benchmark
+import io.github.kotlinmania.rustlang.test.bench.runOnce
+import io.github.kotlinmania.rustlang.test.event.CompletedTest
+import io.github.kotlinmania.rustlang.test.options.Options
 
 // Common types used by `libtest`.
 
@@ -436,7 +435,7 @@ public open class TestDesc(
 
     public open fun paddedName(columnCount: Int, align: NamePadding): String {
         var name = this.name.asSlice()
-        val fill = rustSaturatingSub(columnCount, name.length)
+        val fill = columnCount.saturatingSub(name.length)
         val pad = " ".repeat(fill)
         return when (align) {
             PadNone -> name

@@ -9,8 +9,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI64
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.sys.pal.c
-import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.c
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public val NANOS_PER_SEC: ULong = 1000000000uL
 
@@ -25,7 +25,7 @@ public fun intervals2dur(intervals: ULong): Duration = Duration.new(intervals / 
 public fun now(): Long {
     val localStorageL28C8 = AddressableLocal(0L, PrimitiveLayouts.I64)
     val qpcValue by localStorageL28C8
-    cvt(QueryPerformanceCounter(RustMutableReference(localStorageL28C8.asMutPtr(), localStorageL28C8.layout))).unwrap()
+    cvt(c.QueryPerformanceCounter(RustMutableReference(localStorageL28C8.asMutPtr(), localStorageL28C8.layout))).unwrap()
     return qpcValue
 }
 
@@ -48,7 +48,7 @@ public fun frequencyInit(cache: AtomicI64): Long {
     val localStorageL51C8 = AddressableLocal(0, PrimitiveLayouts.I32)
     val frequency by localStorageL51C8
     run {
-        cvt(QueryPerformanceFrequency(RustMutableReference(localStorageL51C8.asMutPtr(), localStorageL51C8.layout))).unwrap()
+        cvt(c.QueryPerformanceFrequency(RustMutableReference(localStorageL51C8.asMutPtr(), localStorageL51C8.layout))).unwrap()
     }
     // SAFETY: According to the MSDN entry for `QueryPerformanceFrequency`,
     // a value of 0 will never be returned starting from Windows XP.

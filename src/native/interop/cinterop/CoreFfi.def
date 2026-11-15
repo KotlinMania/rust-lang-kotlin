@@ -1,6 +1,0 @@
-package = io.github.kotlinmania.rustlang.core.ffi.cinterop
-headers = core_ffi_wrapper.h
-headerFilter = core_ffi_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = core_ffi_wrapper.a
-noStringConversion = rustlangCoreFfiStrlen

@@ -1,8 +1,8 @@
 // port-lint: source math/generic/fmax.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.fmax
 
-import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
-import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 
 // IEEE 754-2011 `maxNum`. This has been superseded by IEEE 754-2019 `maximumNumber`.
 //
@@ -25,7 +25,7 @@ import io.github.kotlinmania.rustlang.math.support.floattraits.Float
 
 public fun <Int, SignedInt, F : Float<F, Any?, Any?>> fmax(x: F, y: F): F {
     val res =
-        if (x.isNan() || (compareNaturalOrder(x, y) < 0)) {
+        if (x.isNan() || (kmCompareValues(x, y) < 0)) {
             y
         } else {
             x

@@ -5,16 +5,16 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.detect.arch.Feature
-import io.github.kotlinmania.rustlang.detect.bit.test
-import io.github.kotlinmania.rustlang.detect.cache.Cache
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CLong
 import io.github.kotlinmania.rustlang.libc.CUint
-import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
+import io.github.kotlinmania.rustlang.libc.SizeT
 import io.github.kotlinmania.rustlang.libc.prctl
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec
+import io.github.kotlinmania.rustlang.libc.syscall
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 import io.github.kotlinmania.rustlang.stddetect.detect.os.riscv.implyFeatures
 
 // Run-time feature detection for RISC-V on Linux.
@@ -230,7 +230,7 @@ public fun detectFeatures(): Initializer {
     // The values are part of the platform-specific [asm/hwcap.h][hwcap]
     //
     // [hwcap]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/riscv/include/uapi/asm/hwcap.h?h=v6.16
-    val auxv = auxvec.auxv().expect("read auxvec")
+    val auxv = auxv().expect("read auxvec")
     // should not fail on RISC-V platform
     var hasI = test(auxv.hwcap, (105u - 97u).into())
     enableFeature(Feature::a, test(auxv.hwcap, (97u - 97u).into()))

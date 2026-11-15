@@ -1,7 +1,7 @@
 // port-lint: source math/rem_pio2.rs
 package io.github.kotlinmania.rustlang.libm.math.rempio2
 
-import io.github.kotlinmania.rustlang.math.rempio2large.remPio2Large
+import io.github.kotlinmania.rustlang.libm.math.rempio2large.remPio2Large
 
 // #if FLT_EVAL_METHOD==0 || FLT_EVAL_METHOD==1
 // #define EPS DBL_EPSILON

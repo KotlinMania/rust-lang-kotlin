@@ -1,9 +1,11 @@
 // port-lint: source collections/vec_deque/extract_if.rs
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.extractif
 
-import io.github.kotlinmania.rustlang.collections.vecdeque.VecDeque
+import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.core.ptr.read
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -74,14 +76,15 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
     public var vec: VecDeque<T, A> = vecCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@ExtractIf.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@ExtractIf.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     /**
      * Returns a reference to the underlying allocator.
@@ -110,7 +113,7 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
             if (drained) {
                 this.del += 1
                 // SAFETY: We never touch this element again after returning it.
-                return ptr.read(cur)
+                return read(cur)
             } else if (this.del > 0) {
                 val holeSlot = this.vec.toWrappedIndex(i - this.del)
                 // SAFETY: `self.del` > 0, so the hole slot must not overlap with current element.
@@ -162,18 +165,19 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
             del: Int,
             oldLen: Int,
             pred: F,
-        ): ExtractIf<T, F, A> = ExtractIf<T, F, A>(
-            vecCtorArg = vec,
-            idx = idx,
-            end = end,
-            del = del,
-            oldLen = oldLen,
-            pred = pred,
-        )
+        ): ExtractIf<T, F, A> =
+            ExtractIf<T, F, A>(
+                vecCtorArg = vec,
+                idx = idx,
+                end = end,
+                del = del,
+                oldLen = oldLen,
+                pred = pred,
+            )
 
         public fun <T, F, A : Allocator, R : RangeBounds<Int>> new(vec: VecDeque<T, A>, pred: F, range: R): ExtractIf<T, F, A> {
             val oldLen = vec.len()
-            val structVal = slice.range(range, 0 until oldLen)
+            val structVal = Range(range, 0 until oldLen)
             val start = structVal.start
             val end = structVal.end
             // Guard against the deque getting leaked (leak amplification)

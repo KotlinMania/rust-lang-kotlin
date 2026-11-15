@@ -3,55 +3,32 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.simd.I16x16
-import io.github.kotlinmania.rustlang.simd.I16x4
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I32x8
-import io.github.kotlinmania.rustlang.simd.I64x2
-import io.github.kotlinmania.rustlang.simd.I64x4
-import io.github.kotlinmania.rustlang.simd.I8x32
-import io.github.kotlinmania.rustlang.simd.I8x4
-import io.github.kotlinmania.rustlang.simd.I8x8
-import io.github.kotlinmania.rustlang.simd.U16x16
-import io.github.kotlinmania.rustlang.simd.U16x4
-import io.github.kotlinmania.rustlang.simd.U32x8
-import io.github.kotlinmania.rustlang.simd.U64x4
-import io.github.kotlinmania.rustlang.simd.U8x32
-import io.github.kotlinmania.rustlang.simd.U8x4
-import io.github.kotlinmania.rustlang.simd.U8x8
-import io.github.kotlinmania.rustlang.simd.simdImax
-import io.github.kotlinmania.rustlang.simd.simdImin
-import io.github.kotlinmania.rustlang.x86.M128
-import io.github.kotlinmania.rustlang.x86.M128d
-import io.github.kotlinmania.rustlang.x86.M128i
-import io.github.kotlinmania.rustlang.x86.M256
-import io.github.kotlinmania.rustlang.x86.M256d
-import io.github.kotlinmania.rustlang.x86.M256i
-import io.github.kotlinmania.rustlang.x86.mm256Castsi128Si256
-import io.github.kotlinmania.rustlang.x86.mm256Permute2f128Si256
-import io.github.kotlinmania.rustlang.x86.mm256Set1Epi32
-import io.github.kotlinmania.rustlang.x86.mm256Set1Epi64x
-import io.github.kotlinmania.rustlang.x86.mm256Set1Epi8
-import io.github.kotlinmania.rustlang.x86.mm256Set1Pd
-import io.github.kotlinmania.rustlang.x86.mm256Set1Ps
-import io.github.kotlinmania.rustlang.x86.mm256SetzeroPd
-import io.github.kotlinmania.rustlang.x86.mm256SetzeroPs
-import io.github.kotlinmania.rustlang.x86.mm256SetzeroSi256
-import io.github.kotlinmania.rustlang.x86.mm256UndefinedPd
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi32
-import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
-import io.github.kotlinmania.rustlang.x86.mmSet1Pd
-import io.github.kotlinmania.rustlang.x86.mmSet1Ps
-import io.github.kotlinmania.rustlang.x86.mmSetzeroPd
-import io.github.kotlinmania.rustlang.x86.mmSetzeroPs
+import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.corearch.simd.I16x16
+import io.github.kotlinmania.rustlang.corearch.simd.I16x4
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I32x8
+import io.github.kotlinmania.rustlang.corearch.simd.I64x2
+import io.github.kotlinmania.rustlang.corearch.simd.I64x4
+import io.github.kotlinmania.rustlang.corearch.simd.I8x32
+import io.github.kotlinmania.rustlang.corearch.simd.I8x4
+import io.github.kotlinmania.rustlang.corearch.simd.I8x8
+import io.github.kotlinmania.rustlang.corearch.simd.U16x16
+import io.github.kotlinmania.rustlang.corearch.simd.U16x4
+import io.github.kotlinmania.rustlang.corearch.simd.U32x8
+import io.github.kotlinmania.rustlang.corearch.simd.U64x4
+import io.github.kotlinmania.rustlang.corearch.simd.U8x32
+import io.github.kotlinmania.rustlang.corearch.simd.U8x4
+import io.github.kotlinmania.rustlang.corearch.simd.U8x8
+import io.github.kotlinmania.rustlang.corearch.simd.simdImax
+import io.github.kotlinmania.rustlang.corearch.simd.simdImin
 
 // Advanced Vector Extensions 2 (AVX)
 //
@@ -1625,8 +1602,8 @@ public fun mm256MpsadbwEpu8(a: M256i, b: M256i, imm8: Int): M256i {
  */
 public fun mm256MulEpi32(a: M256i, b: M256i): M256i =
     run {
-        val a1 = run { val _simdArg0 = run { val _simdArg0 = a.asI64x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); val res = (ObjectSlotLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x4>()).alignBytes)); val res = (ObjectSlotLayout<I64x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x4>()).alignBytes)); res } }
-        val b1 = run { val _simdArg0 = run { val _simdArg0 = b.asI64x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); val res = (ObjectSlotLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x4>()).alignBytes)); val res = (ObjectSlotLayout<I64x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x4>()).alignBytes)); res } }
+        val a1 = run { val _simdArg0 = run { val _simdArg0 = a.asI64x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I64x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I64x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I64x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x4>()).alignBytes)); res } }
+        val b1 = run { val _simdArg0 = run { val _simdArg0 = b.asI64x4(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I64x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I64x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I64x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x4>()).alignBytes)); res } }
         transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 

@@ -2,30 +2,30 @@
 package io.github.kotlinmania.rustlang.core.mem.typeinfo
 
 import io.github.kotlinmania.rustlang.core.RustTypeId
+import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeActualTypeId
+import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeName
+import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeOffset
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeId
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdArrayLen
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdElementTy
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdFieldRepresentingType
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdFields
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdFunctionPtr
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdGenerics
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdIsSigned
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdNonExhaustive
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdPointsMutably
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdPointsTo
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdReflectedAttrs
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdSizeOf
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdTypeOf
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariantName
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariantNonExhaustive
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariantReflectedAttrs
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariants
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ptr.metadata.DynMetadata
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.intrinsics.fieldRepresentingTypeActualTypeId
-import io.github.kotlinmania.rustlang.intrinsics.fieldRepresentingTypeName
-import io.github.kotlinmania.rustlang.intrinsics.fieldRepresentingTypeOffset
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeId
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdArrayLen
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdElementTy
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdFieldRepresentingType
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdFields
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdFunctionPtr
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdGenerics
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdIsSigned
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdNonExhaustive
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdPointsMutably
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdPointsTo
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdReflectedAttrs
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdSizeOf
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdTypeOf
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdVariantName
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdVariantNonExhaustive
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdVariantReflectedAttrs
-import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdVariants
-import io.github.kotlinmania.rustlang.ptr.metadata.DynMetadata
 
 // MVP for exposing compile-time information about types in a
 // runtime or const-eval processable way.
@@ -90,62 +90,81 @@ public sealed class TypeKind {
      * Tuples.
      */
     public data object Tuple : TypeKind()
+
     /**
      * Arrays.
      */
     public data object Array : TypeKind()
+
     /**
      * Slices.
      */
     public data object Slice : TypeKind()
+
     /**
      * Dynamic Traits.
      */
-    public data class DynTrait(public var value: DynTrait) : TypeKind()
+    public data class DynTrait(
+        public var value: DynTrait,
+    ) : TypeKind()
+
     /**
      * Structs.
      */
     public data object Struct : TypeKind()
+
     /**
      * Enums.
      */
     public data object Enum : TypeKind()
+
     /**
      * Unions.
      */
     public data object Union : TypeKind()
+
     /**
      * Primitive boolean type.
      */
     public data object Bool : TypeKind()
+
     /**
      * Primitive character type.
      */
     public data object Char : TypeKind()
+
     /**
      * Primitive signed and unsigned integer type.
      */
     public data object Int : TypeKind()
+
     /**
      * Primitive floating-point type.
      */
     public data object Float : TypeKind()
+
     /**
      * String slice type.
      */
-    public data class Str(public var value: Str) : TypeKind()
+    public data class Str(
+        public var value: Str,
+    ) : TypeKind()
+
     /**
      * References.
      */
     public data object Reference : TypeKind()
+
     /**
      * Pointers.
      */
     public data object Pointer : TypeKind()
+
     /**
      * Function pointers.
      */
     public data object FnPtr : TypeKind()
+
     /**
      * Note(#146922): add all the common types
      * non exhaustive list:
@@ -196,15 +215,23 @@ public sealed class Generic {
     /**
      * Scopes.
      */
-    public data class Lifetime(public var value: Lifetime) : Generic()
+    public data class Lifetime(
+        public var value: Lifetime,
+    ) : Generic()
+
     /**
      * Types.
      */
-    public data class Type(public var value: GenericType) : Generic()
+    public data class Type(
+        public var value: GenericType,
+    ) : Generic()
+
     /**
      * Const parameters.
      */
-    public data class Const(public var value: Const) : Generic()
+    public data class Const(
+        public var value: Const,
+    ) : Generic()
 }
 
 /**
@@ -332,11 +359,15 @@ public sealed class Abi {
     /**
      * Named abi, e.g. extern "custom", "stdcall" etc.
      */
-    public data class Named(public var value: String) : Abi()
+    public data class Named(
+        public var value: String,
+    ) : Abi()
+
     /**
      * Default
      */
     public data object ExternRust : Abi()
+
     /**
      * C-calling convention
      */

@@ -5,7 +5,9 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 public sealed class ResolveWhat {
-    public class Address internal constructor(valueCtorArg: MutPtr) : ResolveWhat() {
+    public class Address internal constructor(
+        valueCtorArg: MutPtr,
+    ) : ResolveWhat() {
         public var value: MutPtr = valueCtorArg
             internal set
 
@@ -25,12 +27,15 @@ public sealed class ResolveWhat {
         public companion object {
             public operator fun invoke(
                 value: MutPtr,
-            ): Address = Address(
-                valueCtorArg = value,
-            )
+            ): Address =
+                Address(
+                    valueCtorArg = value,
+                )
         }
     }
-    public data class Frame(public var value: Frame) : ResolveWhat()
+    public data class Frame(
+        public var value: Frame,
+    ) : ResolveWhat()
 
     public open fun addressOrIp(): MutPtr =
         when (this) {

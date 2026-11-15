@@ -1,10 +1,10 @@
 // port-lint: source vec/spec_extend.rs
 package io.github.kotlinmania.rustlang.alloc.vec.specextend
 
+import io.github.kotlinmania.rustlang.alloc.vec.intoiter.IntoIter
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.vec.intoiter.IntoIter
 
 // Specialization trait used for Vec.extend
 public interface SpecExtend<T, I> {

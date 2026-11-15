@@ -1,12 +1,12 @@
 // port-lint: source simd/num/float.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.num.float
 
-import io.github.kotlinmania.rustlang.Mask
-import io.github.kotlinmania.rustlang.Simd
-import io.github.kotlinmania.rustlang.SimdCast
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.coresimd.Mask
+import io.github.kotlinmania.rustlang.coresimd.Simd
+import io.github.kotlinmania.rustlang.coresimd.SimdCast
 
 /**
  * Operations on SIMD vectors of floats.
@@ -237,12 +237,12 @@ public fun <T : SimdCast> Simd<F16, N>.cast(n: Int): Simd<T> = run { val _simdAr
 public fun <I : SimdCast> Simd<F16, N>.toIntUnchecked(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
 
 public fun Simd<F16, N>.toBits(n: Int): Simd<UShort> {
-    check(sizeOf<Simd<F16, N>>(typeLayoutT = ObjectSlotLayout<Simd<F16, N>>()) == sizeOf<Simd<UShort>>(typeLayoutT = ObjectSlotLayout<Simd<UShort>>()))
+    check(sizeOf<Simd<F16, N>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16, N>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
     return transmuteCopy(this)
 }
 
 public fun simdFloatFromBitsSimdF16N(bits: Simd<UShort>, n: Int): Simd<F16, N> {
-    check(sizeOf<Simd<F16, N>>(typeLayoutT = ObjectSlotLayout<Simd<F16, N>>()) == sizeOf<Simd<UShort>>(typeLayoutT = ObjectSlotLayout<Simd<UShort>>()))
+    check(sizeOf<Simd<F16, N>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16, N>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
     return transmuteCopy(bits)
 }
 
@@ -313,11 +313,11 @@ public fun Simd<F16, N>.reduceMax(n: Int): F16 = this.asArray().iter().copied().
 public fun Simd<F16, N>.reduceMin(n: Int): F16 = this.asArray().iter().copied().fold(Simd.Scalar.NAN, Simd.Scalar::min)
 
 public fun simdFloatFromBitsSimdFloatN(bits: Simd<UInt>, n: Int): Simd<Float, N> {
-    check(sizeOf<Simd<Float, N>>(typeLayoutT = ObjectSlotLayout<Simd<Float, N>>()) == sizeOf<Simd<UInt>>(typeLayoutT = ObjectSlotLayout<Simd<UInt>>()))
+    check(sizeOf<Simd<Float, N>>(typeLayoutT = UnresolvedTypeLayout<Simd<Float, N>>()) == sizeOf<Simd<UInt>>(typeLayoutT = UnresolvedTypeLayout<Simd<UInt>>()))
     return transmuteCopy(bits)
 }
 
 public fun simdFloatFromBitsSimdDoubleN(bits: Simd<ULong>, n: Int): Simd<Double, N> {
-    check(sizeOf<Simd<Double, N>>(typeLayoutT = ObjectSlotLayout<Simd<Double, N>>()) == sizeOf<Simd<ULong>>(typeLayoutT = ObjectSlotLayout<Simd<ULong>>()))
+    check(sizeOf<Simd<Double, N>>(typeLayoutT = UnresolvedTypeLayout<Simd<Double, N>>()) == sizeOf<Simd<ULong>>(typeLayoutT = UnresolvedTypeLayout<Simd<ULong>>()))
     return transmuteCopy(bits)
 }

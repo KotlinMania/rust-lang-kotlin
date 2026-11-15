@@ -1,13 +1,13 @@
 // port-lint: source iter/adapters/peekable.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.peekable
 
+import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -27,15 +27,18 @@ public open class Peekable<I>(
      * Remember a peeked value, even if it was None.
      */
     public var peeked: Item?,
-) : TrustedLen<Peekable<I>>, SourceIter<Source>, Iterable<Item> {
-    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
-        override fun computeNext() {
-            when (val v = this@Peekable.next()) {
-                null -> done()
-                else -> setNext(v)
+) : TrustedLen<Peekable<I>>,
+    SourceIter<Source>,
+    Iterable<Item> {
+    override fun iterator(): Iterator<Item> =
+        object : AbstractIterator<Item>() {
+            override fun computeNext() {
+                when (val v = this@Peekable.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Peekable<I> = Peekable(iter, peeked)
 
@@ -78,7 +81,9 @@ public open class Peekable<I>(
             run {
                 val matchVal = this.peeked.also { this.peeked = null }
                 when {
-                    matchVal != null && matchVal == null -> { return null }
+                    matchVal != null && matchVal == null -> {
+                        return null
+                    }
                     matchVal != null -> {
                         val v = matchVal
                         v
@@ -92,7 +97,9 @@ public open class Peekable<I>(
     public override fun sizeHint(): Pair<Int, Int?> {
         val peekLen =
             when (val matchVal = this.peeked) {
-                null -> { return Pair(0, 0) }
+                null -> {
+                    return Pair(0, 0)
+                }
                 else -> 1
                 null -> 0
             }
@@ -112,10 +119,15 @@ public open class Peekable<I>(
     public override fun <B, R> tryFold(init: B, f: (B, I.Item) -> R): R where R : Try<R, B, Any?> {
         val acc =
             when (val matchVal = this.peeked.also { this.peeked = null }) {
-                null -> { return init }
+                null -> {
+                    return init
+                }
                 else -> {
                     val v = matchVal
-                    when (val tryResult = f(init, v)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = f(init, v)) {
+                        is Result.Ok<*, *> -> tryResult.value
+                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    }
                 }
                 null -> init
             }
@@ -125,7 +137,9 @@ public open class Peekable<I>(
     public override fun <Acc> fold(init: Acc, fold: (Acc, I.Item) -> Acc): Acc {
         val acc =
             when (val matchVal = this.peeked) {
-                null -> { return init }
+                null -> {
+                    return init
+                }
                 else -> {
                     val v = matchVal
                     fold(init, v)
@@ -416,13 +430,16 @@ public open class Peekable<I>(
                     val item = matchVal
                     run {
                         val matchVal1 = f(item)
-                        when (matchVal1) { is Result.Ok<*, *> -> {
-                            val result = matchVal1.value
-                            return result
-                        }; is Result.Err<*, *> -> {
-                            val item1 = matchVal1.error
-                            item1
-                        } }
+                        when (matchVal1) {
+                            is Result.Ok<*, *> -> {
+                                val result = matchVal1.value
+                                return result
+                            }
+                            is Result.Err<*, *> -> {
+                                val item1 = matchVal1.error
+                                item1
+                            }
+                        }
                     }
                 }
             }

@@ -3,11 +3,11 @@
 
 package io.github.kotlinmania.rustlang.corearch.powerpc
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -17,19 +17,15 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.powerpc.vecVcntlzb
-import io.github.kotlinmania.rustlang.powerpc.vecVcntlzh
-import io.github.kotlinmania.rustlang.powerpc.vecVcntlzw
-import io.github.kotlinmania.rustlang.powerpc.vecVrfin
-import io.github.kotlinmania.rustlang.simd.I16x8
-import io.github.kotlinmania.rustlang.simd.I32x4
-import io.github.kotlinmania.rustlang.simd.I8x16
-import io.github.kotlinmania.rustlang.simd.M16x8
-import io.github.kotlinmania.rustlang.simd.M32x4
-import io.github.kotlinmania.rustlang.simd.M8x16
-import io.github.kotlinmania.rustlang.simd.Simd
-import io.github.kotlinmania.rustlang.simd.U32x4
-import io.github.kotlinmania.rustlang.simd.debugSimdFinish
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.M16x8
+import io.github.kotlinmania.rustlang.corearch.simd.M32x4
+import io.github.kotlinmania.rustlang.corearch.simd.M8x16
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
+import io.github.kotlinmania.rustlang.corearch.simd.U32x4
+import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 
 // PowerPC AltiVec intrinsics.
 //
@@ -898,27 +894,27 @@ public interface VectorInsert<T, Scalar> {
     public fun vecInsert(s: Scalar, idx: UInt): T
 }
 
-public fun <T> idxInVec(idx: UInt, typeLayoutT: TypeLayout<T>): UInt = idx and (16u / mem.sizeOf<T>(typeLayoutT = typeLayoutT).toUInt())
+public fun <T> idxInVec(idx: UInt, typeLayoutT: TypeLayout<T>): UInt = idx and (16u / sizeOf<T>(typeLayoutT = typeLayoutT).toUInt())
 
-public fun TTL.vecInsert(s: Byte, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Byte>(idx, typeLayoutT = ObjectSlotLayout<Byte>()); val _simdArg2 = s; _simdArg0 }
+public fun TTL.vecInsert(s: Byte, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Byte>(idx, typeLayoutT = UnresolvedTypeLayout<Byte>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: UByte, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<UByte>(idx, typeLayoutT = ObjectSlotLayout<UByte>()); val _simdArg2 = s; _simdArg0 }
+public fun TTL.vecInsert(s: UByte, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<UByte>(idx, typeLayoutT = UnresolvedTypeLayout<UByte>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: Short, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Short>(idx, typeLayoutT = ObjectSlotLayout<Short>()); val _simdArg2 = s; _simdArg0 }
+public fun TTL.vecInsert(s: Short, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Short>(idx, typeLayoutT = UnresolvedTypeLayout<Short>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: UShort, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<UShort>(idx, typeLayoutT = ObjectSlotLayout<UShort>()); val _simdArg2 = s; _simdArg0 }
+public fun TTL.vecInsert(s: UShort, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<UShort>(idx, typeLayoutT = UnresolvedTypeLayout<UShort>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: Int, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Int>(idx, typeLayoutT = ObjectSlotLayout<Int>()); val _simdArg2 = s; _simdArg0 }
+public fun TTL.vecInsert(s: Int, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Int>(idx, typeLayoutT = UnresolvedTypeLayout<Int>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: UInt, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<UInt>(idx, typeLayoutT = ObjectSlotLayout<UInt>()); val _simdArg2 = s; _simdArg0 }
+public fun TTL.vecInsert(s: UInt, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<UInt>(idx, typeLayoutT = UnresolvedTypeLayout<UInt>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: Float, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Float>(idx, typeLayoutT = ObjectSlotLayout<Float>()); val _simdArg2 = s; _simdArg0 }
+public fun TTL.vecInsert(s: Float, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Float>(idx, typeLayoutT = UnresolvedTypeLayout<Float>()); val _simdArg2 = s; _simdArg0 }
 
 public interface VectorExtract<T, out Scalar> {
     public fun vecExtract(idx: UInt): Scalar
 }
 
-public fun TTL.vecExtract(idx: UInt): Byte = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Byte>(idx, typeLayoutT = ObjectSlotLayout<Byte>()); _simdArg0 }
+public fun TTL.vecExtract(idx: UInt): Byte = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Byte>(idx, typeLayoutT = UnresolvedTypeLayout<Byte>()); _simdArg0 }
 
 public interface VectorLd<out Result> {
     public fun vecLd(off: Int): Result
@@ -1210,8 +1206,8 @@ public interface VectorXl<out Result> {
 
 public fun vecXlI8(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    val r = MaybeUninit.uninit(UnresolvedTypeLayout<TTL>())
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
@@ -1219,8 +1215,8 @@ public fun ConstPtr.vecXl(a: Int): TTL = vecXlI8(a, this)
 
 public fun vecXlU8(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((b)).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    val r = MaybeUninit.uninit(UnresolvedTypeLayout<TTL>())
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
@@ -1228,8 +1224,8 @@ public fun ConstPtr.vecXlFromConstPtrUByte(a: Int): TTL = vecXlU8(a, this)
 
 public fun vecXlI16(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    val r = MaybeUninit.uninit(UnresolvedTypeLayout<TTL>())
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
@@ -1237,8 +1233,8 @@ public fun ConstPtr.vecXlFromConstPtrShort(a: Int): TTL = vecXlI16(a, this)
 
 public fun vecXlU16(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    val r = MaybeUninit.uninit(UnresolvedTypeLayout<TTL>())
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
@@ -1246,8 +1242,8 @@ public fun ConstPtr.vecXlFromConstPtrUShort(a: Int): TTL = vecXlU16(a, this)
 
 public fun vecXlI32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    val r = MaybeUninit.uninit(UnresolvedTypeLayout<TTL>())
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
@@ -1255,8 +1251,8 @@ public fun ConstPtr.vecXlFromConstPtrInt(a: Int): TTL = vecXlI32(a, this)
 
 public fun vecXlU32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    val r = MaybeUninit.uninit(UnresolvedTypeLayout<TTL>())
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
@@ -1264,8 +1260,8 @@ public fun ConstPtr.vecXlFromConstPtrUInt(a: Int): TTL = vecXlU32(a, this)
 
 public fun vecXlF32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    val r = MaybeUninit.uninit(UnresolvedTypeLayout<TTL>())
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
@@ -1277,7 +1273,7 @@ public interface VectorXst<Out> {
 
 public fun vecXstI8(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun TTL.vecXst(a: Int, b: MutPtr) {
@@ -1286,32 +1282,32 @@ public fun TTL.vecXst(a: Int, b: MutPtr) {
 
 public fun vecXstU8(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((b)).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstI16(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstU16(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstI32(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstU32(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstF32(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = UnresolvedTypeLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public interface VectorCmpGt<Other, out Result> {
@@ -2259,19 +2255,19 @@ public interface VectorSl<Other, out Result> {
 
 public fun vslb(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(mem.sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()); _simdArg0 }
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
 public fun vslh(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(mem.sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()); _simdArg0 }
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
 public fun vslw(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(mem.sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u); _simdArg0 }
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
@@ -2281,19 +2277,19 @@ public interface VectorSr<Other, out Result> {
 
 public fun vsrb(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(mem.sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()); _simdArg0 }
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
 public fun vsrh(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(mem.sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()); _simdArg0 }
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
 public fun vsrw(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(mem.sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u); _simdArg0 }
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 

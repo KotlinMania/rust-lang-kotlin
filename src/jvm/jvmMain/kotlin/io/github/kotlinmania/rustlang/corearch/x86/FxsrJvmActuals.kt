@@ -5,7 +5,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object CorearchX86FxsrJniBridge {
+private object X86FxsrJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -41,11 +41,14 @@ private object CorearchX86FxsrJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = CorearchX86FxsrJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = X86FxsrJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
+            val extracted =
+                java.nio.file.Files
+                    .createTempFile("kmcore_jni-", suffix)
+                    .toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -59,16 +62,16 @@ private object CorearchX86FxsrJniBridge {
     }
 
     @JvmStatic
-    external fun rustlangCorearchX86FxsrFxsave(p: Long)
+    external fun corearchX86FxsrFxsave(p: Long)
 
     @JvmStatic
-    external fun rustlangCorearchX86FxsrFxrstor(p: Long)
+    external fun corearchX86FxsrFxrstor(p: Long)
 }
 
 public actual fun fxsave(p: MutPtr) {
-    CorearchX86FxsrJniBridge.rustlangCorearchX86FxsrFxsave(p.rawAddress)
+    X86FxsrJniBridge.corearchX86FxsrFxsave(p.rawAddress)
 }
 
 public actual fun fxrstor(p: ConstPtr) {
-    CorearchX86FxsrJniBridge.rustlangCorearchX86FxsrFxrstor(p.rawAddress)
+    X86FxsrJniBridge.corearchX86FxsrFxrstor(p.rawAddress)
 }

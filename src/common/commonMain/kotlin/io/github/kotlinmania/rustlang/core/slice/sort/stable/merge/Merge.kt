@@ -1,14 +1,14 @@
 // port-lint: source slice/sort/stable/merge.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.stable.merge
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
 
 // This module contains logic for performing a merge of two sorted sub-slices.
 
@@ -40,8 +40,8 @@ public fun <T> merge(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>, mi
         // 2. Fills the remaining gap in `v` if the longer run gets consumed first.
         val buf = scratch.asMutPtr().castInit()
         val vBase = v.asMutPtr()
-        val vMid = MutPtr((vBase).rawAddress + ((mid).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-        val vEnd = MutPtr((vBase).rawAddress + ((len).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+        val vMid = MutPtr((vBase).rawAddress + ((mid).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+        val vEnd = MutPtr((vBase).rawAddress + ((len).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
         val leftLen = mid
         val rightLen = len - mid
         val leftIsShorter = leftLen <= rightLen
