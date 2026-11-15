@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-private object X86RtmJniBridge {
+private object CorearchX86RtmJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,8 +38,8 @@ private object X86RtmJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = X86RtmJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = CorearchX86RtmJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -56,28 +56,28 @@ private object X86RtmJniBridge {
     }
 
     @JvmStatic
-    external fun corearchX86RtmX86Xbegin(): Int
+    external fun rustlangCorearchX86RtmX86Xbegin(): Int
 
     @JvmStatic
-    external fun corearchX86RtmX86Xend()
+    external fun rustlangCorearchX86RtmX86Xend()
 
     @JvmStatic
-    external fun corearchX86RtmX86Xabort(imm8: Byte)
+    external fun rustlangCorearchX86RtmX86Xabort(imm8: Byte)
 
     @JvmStatic
-    external fun corearchX86RtmX86Xtest(): Int
+    external fun rustlangCorearchX86RtmX86Xtest(): Int
 }
 
 public actual fun x86Xbegin(): Int =
-    X86RtmJniBridge.corearchX86RtmX86Xbegin()
+    CorearchX86RtmJniBridge.rustlangCorearchX86RtmX86Xbegin()
 
 public actual fun x86Xend() {
-    X86RtmJniBridge.corearchX86RtmX86Xend()
+    CorearchX86RtmJniBridge.rustlangCorearchX86RtmX86Xend()
 }
 
 public actual fun x86Xabort(imm8: Byte) {
-    X86RtmJniBridge.corearchX86RtmX86Xabort(imm8)
+    CorearchX86RtmJniBridge.rustlangCorearchX86RtmX86Xabort(imm8)
 }
 
 public actual fun x86Xtest(): Int =
-    X86RtmJniBridge.corearchX86RtmX86Xtest()
+    CorearchX86RtmJniBridge.rustlangCorearchX86RtmX86Xtest()

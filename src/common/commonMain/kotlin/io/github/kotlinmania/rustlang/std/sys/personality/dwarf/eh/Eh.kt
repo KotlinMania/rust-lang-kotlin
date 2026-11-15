@@ -4,9 +4,8 @@ package io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.core.ptr.withExposedProvenance
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.DwarfReader
+import io.github.kotlinmania.rustlang.sys.personality.dwarf.DwarfReader
 
 // Parsing of GCC-style Language-Specific Data Area (LSDA)
 // For details see:
@@ -214,7 +213,7 @@ public fun findEhAction(lsda: ConstPtr, context: EHContext): Result<EHAction, Un
             val startEncoding = reader.read<UByte>()
             // base address for landing pad offsets
             if (startEncoding != DW_EH_PE_OMIT) {
-                when (val tryResult = readEncodedPointer(reader, context, startEncoding)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = readEncodedPointer(reader, context, startEncoding)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             } else {
                 funcStart
             }
@@ -239,9 +238,9 @@ public fun findEhAction(lsda: ConstPtr, context: EHContext): Result<EHAction, Un
         while (((reader.ptr).rawAddress.toULong() < (actionTable).rawAddress.toULong())) {
             run {
                 // these are offsets rather than pointers;
-                val csStart = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                val csLen = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                val csLpad = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val csStart = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                val csLen = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                val csLpad = when (val tryResult = readEncodedOffset(reader, callSiteEncoding)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 val csActionEntry = reader.readUleb128()
                 // Callsite table is sorted by csStart, so if we've passed the ip, we
                 // may stop searching.
@@ -278,7 +277,7 @@ public fun findEhAction(lsda: ConstPtr, context: EHContext): Result<EHAction, Un
                 // Can never have null landing pad for sjlj -- that would have
                 // been indicated by a -1 call site index.
                 // Note(strict provenance)
-                val lpad1 = withExposedProvenance((csLpad1 + 1uL).toInt())
+                val lpad1 = ptr.withExposedProvenance((csLpad1 + 1uL).toInt())
                 return Result.Ok(interpretCsAction(actionTable, csActionEntry1, lpad1))
             }
         }
@@ -393,7 +392,7 @@ public fun readEncodedPointer(reader: DwarfReader, context: EHContext, encoding:
             DW_EH_PE_DATAREL -> context.getDataStart()
             // aligned means the value is aligned to the size of a pointer
             DW_EH_PE_ALIGNED -> {
-                reader.ptr = ConstPtr((when (val tryResult = roundUp((reader.ptr).rawAddress.toInt(), sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }).toLong())
+                reader.ptr = ConstPtr((when (val tryResult = roundUp((reader.ptr).rawAddress.toInt(), sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }).toLong())
                 ConstPtr(0L)
             }
             else -> { return Result.Err(Unit) }
@@ -407,7 +406,7 @@ public fun readEncodedPointer(reader: DwarfReader, context: EHContext, encoding:
             }
             reader.read<ConstPtr>()
         } else {
-            val offset = when (val tryResult = readEncodedOffset(reader, encoding and 0x0Fu.toUByte())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val offset = when (val tryResult = readEncodedOffset(reader, encoding and 0x0Fu.toUByte())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             basePtr.wrappingAdd(offset)
         }
     if (encoding and DW_EH_PE_INDIRECT != 0u.toUByte()) {

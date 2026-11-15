@@ -1,10 +1,10 @@
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64
 
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libc.*
 
 // unlikely to change
 public data class Timeval32(
@@ -208,7 +208,7 @@ public class IfData(
 }
 
 public data class BpfHdr(
-    public var bhTstamp: io.github.kotlinmania.rustlang.libc.Timeval32 = io.github.kotlinmania.rustlang.libc.Timeval32(),
+    public var bhTstamp: io.github.kotlinmania.rustlang.unix.bsd.apple.b64.Timeval32 = io.github.kotlinmania.rustlang.unix.bsd.apple.b64.Timeval32(),
     public var bhCaplen: UInt = 0u,
     public var bhDatalen: UInt = 0u,
     public var bhHdrlen: CUshort = 0u,

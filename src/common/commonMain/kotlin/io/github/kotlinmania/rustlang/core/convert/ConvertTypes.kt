@@ -471,7 +471,7 @@ public interface TryInto<T, out Error> {
  * `TryFrom<T>` can be implemented as follows:
  *
  * ```kotlin
- * open class GreaterThanZero(public var value: Int) : TryFrom<Int, GreaterThanZero, Any?, String> {
+ * open class GreaterThanZero(public var value: Int) : TryFrom<Int, GreaterThanZero, String> {
  *     public var field0: Int
  *         get() = value
  *         set(v) {

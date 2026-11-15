@@ -3,21 +3,21 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.pthread
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.PthreadOnceT
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.pthreadimpl.PTHREAD_COND_SIG_INIT
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.pthreadimpl.PTHREAD_MUTEX_SIG_INIT
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.pthreadimpl.PTHREAD_ONCE_SIG_INIT
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.pthreadimpl.PTHREAD_RWLOCK_SIG_INIT
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes.PTHREAD_COND_SIZE
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes.PTHREAD_MUTEX_SIZE
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes.PTHREAD_ONCE_SIZE
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes.PTHREAD_RWLOCK_SIZE
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadCondT
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadMutexT
-import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadRwlockT
+import io.github.kotlinmania.rustlang.new.apple.libpthread.pthread.pthreadimpl.PTHREAD_COND_SIG_INIT
+import io.github.kotlinmania.rustlang.new.apple.libpthread.pthread.pthreadimpl.PTHREAD_MUTEX_SIG_INIT
+import io.github.kotlinmania.rustlang.new.apple.libpthread.pthread.pthreadimpl.PTHREAD_ONCE_SIG_INIT
+import io.github.kotlinmania.rustlang.new.apple.libpthread.pthread.pthreadimpl.PTHREAD_RWLOCK_SIG_INIT
+import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.pthread.pthreadtypes.PTHREAD_COND_SIZE
+import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.pthread.pthreadtypes.PTHREAD_MUTEX_SIZE
+import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.pthread.pthreadtypes.PTHREAD_ONCE_SIZE
+import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.pthread.pthreadtypes.PTHREAD_RWLOCK_SIZE
+import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadCondT
+import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadMutexT
+import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadOnceT
+import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadRwlockT
 
 // Header: `pthread.h` or `pthread / pthread.h`
 //

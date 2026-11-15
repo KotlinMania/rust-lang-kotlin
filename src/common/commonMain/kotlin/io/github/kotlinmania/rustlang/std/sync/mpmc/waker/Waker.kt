@@ -9,9 +9,9 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.sync.mpmc.context.Context
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
-import io.github.kotlinmania.rustlang.std.thread.LocalKey
-import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
+import io.github.kotlinmania.rustlang.sync.nonpoison.mutex.Mutex
+import io.github.kotlinmania.rustlang.thread.LocalKey
+import io.github.kotlinmania.rustlang.thread.localimpl.threadLocalInner
 
 // Waking mechanism for threads blocked on channel operations.
 

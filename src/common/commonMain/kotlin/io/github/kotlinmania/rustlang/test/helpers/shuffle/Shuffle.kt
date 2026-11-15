@@ -1,16 +1,16 @@
 // port-lint: source helpers/shuffle.rs
 package io.github.kotlinmania.rustlang.test.helpers.shuffle
 
+import io.github.kotlinmania.rustlang.TestDescAndFn
+import io.github.kotlinmania.rustlang.TestId
+import io.github.kotlinmania.rustlang.TestName
+import io.github.kotlinmania.rustlang.cli.TestOpts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.std.hash.random.DefaultHasher
 import io.github.kotlinmania.rustlang.std.time.SystemTime
 import io.github.kotlinmania.rustlang.std.time.UNIX_EPOCH
-import io.github.kotlinmania.rustlang.test.TestDescAndFn
-import io.github.kotlinmania.rustlang.test.TestId
-import io.github.kotlinmania.rustlang.test.TestName
-import io.github.kotlinmania.rustlang.test.cli.TestOpts
 
 public fun getShuffleSeed(opts: TestOpts): ULong? =
     opts.shuffleSeed.orElse({

@@ -3,13 +3,14 @@ package io.github.kotlinmania.rustlang.libm.math.fma
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.libm.math.fmaf16.fmaf16
-import io.github.kotlinmania.rustlang.libm.math.generic.fma.fmaRound
-import io.github.kotlinmania.rustlang.libm.math.support.env.Round
-import io.github.kotlinmania.rustlang.libm.math.support.env.Status
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
+import io.github.kotlinmania.rustlang.libm.math.Generic
+import io.github.kotlinmania.rustlang.math.fmaf16.fmaf16
+import io.github.kotlinmania.rustlang.math.support.env.Round
+import io.github.kotlinmania.rustlang.math.support.env.Status
+import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
+import io.github.kotlinmania.rustlang.math.support.hexfloat.hf64
 
 public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F, F, F) -> F, cases: List<List<Any?>>) {
     for ((x, y, z, expRes) in cases) {
@@ -17,7 +18,7 @@ public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F, F, F) -> F, c
         run {
             val l = value
             val r = expRes
-            check(l.biteq(r)) { ("fma($x, $y, $z) (${Hex(x)} ${Hex(y)} ${Hex(z)})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("fma($x, $y, $z) (${Hex(x)} ${Hex(y)} ${Hex(z)})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
     }
 }
@@ -33,7 +34,7 @@ public class FmaInlineTests {
         check<kotlin.Float>(::fmaf, listOf(listOf(0.0, 0.0, 0.0, 0.0), listOf(1.0, 1.0, 0.0, 1.0), listOf(1.0, 0.0, 1.0, 1.0), listOf(1.0, 1.0, 1.0, 2.0), listOf(1.0, 1.0, -1.0, 0.0), listOf(1.0, -1.0, 1.0, 0.0), listOf(1.0, -1.0, -1.0, -2.0), listOf(-1.0, 1.0, 1.0, 0.0), listOf(-1.0, 1.0, -1.0, -2.0), listOf(-1.0, -1.0, 1.0, 2.0), listOf(-1.0, -1.0, -1.0, 0.0), listOf(kotlin.Float.MAX_VALUE, 1.0, 0.0, kotlin.Float.MAX_VALUE), listOf(kotlin.Float.MAX_VALUE, kotlin.Float.MAX_VALUE, 1.0, kotlin.Float.POSITIVE_INFINITY), listOf(kotlin.Float.MAX_VALUE, 1.0, -kotlin.Float.MAX_VALUE, 0.0), listOf(-kotlin.Float.MAX_VALUE, 1.0, kotlin.Float.MAX_VALUE, 0.0), listOf(kotlin.Float.MIN_POSITIVE_NORMAL, 1.0, -kotlin.Float.MIN_POSITIVE_NORMAL, 0.0), listOf(-kotlin.Float.MIN_POSITIVE_NORMAL, 1.0, kotlin.Float.MIN_POSITIVE_NORMAL, 0.0), listOf(kotlin.Float.MIN_POSITIVE_SUBNORMAL, 1.0, -kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0), listOf(-kotlin.Float.MIN_POSITIVE_SUBNORMAL, 1.0, kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0), listOf(kotlin.Float.MAX_VALUE, 1.0, -kotlin.Float.MAX_VALUE, 0.0), listOf(kotlin.Float.MIN_POSITIVE_SUBNORMAL, kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, 0.0), listOf(kotlin.Float.MIN_POSITIVE_SUBNORMAL, -kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, -0.0), listOf(-kotlin.Float.MIN_POSITIVE_SUBNORMAL, kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, -0.0), listOf(-kotlin.Float.MIN_POSITIVE_SUBNORMAL, -kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, 0.0)))
         // Also do a small check that the non-widening version works for f32 (this should ideally
         // get tested some more).
-        check<kotlin.Float>({ x, y, z -> fmaRound(x, y, z, Round.Nearest).value }, listOf(listOf(0.0, 0.0, 0.0, 0.0), listOf(1.0, 1.0, 0.0, 1.0), listOf(1.0, 0.0, 1.0, 1.0), listOf(1.0, 1.0, 1.0, 2.0), listOf(1.0, 1.0, -1.0, 0.0), listOf(1.0, -1.0, 1.0, 0.0), listOf(1.0, -1.0, -1.0, -2.0), listOf(-1.0, 1.0, 1.0, 0.0), listOf(-1.0, 1.0, -1.0, -2.0), listOf(-1.0, -1.0, 1.0, 2.0), listOf(-1.0, -1.0, -1.0, 0.0), listOf(kotlin.Float.MAX_VALUE, 1.0, 0.0, kotlin.Float.MAX_VALUE), listOf(kotlin.Float.MAX_VALUE, kotlin.Float.MAX_VALUE, 1.0, kotlin.Float.POSITIVE_INFINITY), listOf(kotlin.Float.MAX_VALUE, 1.0, -kotlin.Float.MAX_VALUE, 0.0), listOf(-kotlin.Float.MAX_VALUE, 1.0, kotlin.Float.MAX_VALUE, 0.0), listOf(kotlin.Float.MIN_POSITIVE_NORMAL, 1.0, -kotlin.Float.MIN_POSITIVE_NORMAL, 0.0), listOf(-kotlin.Float.MIN_POSITIVE_NORMAL, 1.0, kotlin.Float.MIN_POSITIVE_NORMAL, 0.0), listOf(kotlin.Float.MIN_POSITIVE_SUBNORMAL, 1.0, -kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0), listOf(-kotlin.Float.MIN_POSITIVE_SUBNORMAL, 1.0, kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0), listOf(kotlin.Float.MAX_VALUE, 1.0, -kotlin.Float.MAX_VALUE, 0.0), listOf(kotlin.Float.MIN_POSITIVE_SUBNORMAL, kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, 0.0), listOf(kotlin.Float.MIN_POSITIVE_SUBNORMAL, -kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, -0.0), listOf(-kotlin.Float.MIN_POSITIVE_SUBNORMAL, kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, -0.0), listOf(-kotlin.Float.MIN_POSITIVE_SUBNORMAL, -kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, 0.0)))
+        check<kotlin.Float>({ x, y, z -> Generic.fmaRound(x, y, z, Round.Nearest).value }, listOf(listOf(0.0, 0.0, 0.0, 0.0), listOf(1.0, 1.0, 0.0, 1.0), listOf(1.0, 0.0, 1.0, 1.0), listOf(1.0, 1.0, 1.0, 2.0), listOf(1.0, 1.0, -1.0, 0.0), listOf(1.0, -1.0, 1.0, 0.0), listOf(1.0, -1.0, -1.0, -2.0), listOf(-1.0, 1.0, 1.0, 0.0), listOf(-1.0, 1.0, -1.0, -2.0), listOf(-1.0, -1.0, 1.0, 2.0), listOf(-1.0, -1.0, -1.0, 0.0), listOf(kotlin.Float.MAX_VALUE, 1.0, 0.0, kotlin.Float.MAX_VALUE), listOf(kotlin.Float.MAX_VALUE, kotlin.Float.MAX_VALUE, 1.0, kotlin.Float.POSITIVE_INFINITY), listOf(kotlin.Float.MAX_VALUE, 1.0, -kotlin.Float.MAX_VALUE, 0.0), listOf(-kotlin.Float.MAX_VALUE, 1.0, kotlin.Float.MAX_VALUE, 0.0), listOf(kotlin.Float.MIN_POSITIVE_NORMAL, 1.0, -kotlin.Float.MIN_POSITIVE_NORMAL, 0.0), listOf(-kotlin.Float.MIN_POSITIVE_NORMAL, 1.0, kotlin.Float.MIN_POSITIVE_NORMAL, 0.0), listOf(kotlin.Float.MIN_POSITIVE_SUBNORMAL, 1.0, -kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0), listOf(-kotlin.Float.MIN_POSITIVE_SUBNORMAL, 1.0, kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0), listOf(kotlin.Float.MAX_VALUE, 1.0, -kotlin.Float.MAX_VALUE, 0.0), listOf(kotlin.Float.MIN_POSITIVE_SUBNORMAL, kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, 0.0), listOf(kotlin.Float.MIN_POSITIVE_SUBNORMAL, -kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, -0.0), listOf(-kotlin.Float.MIN_POSITIVE_SUBNORMAL, kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, -0.0), listOf(-kotlin.Float.MIN_POSITIVE_SUBNORMAL, -kotlin.Float.MIN_POSITIVE_SUBNORMAL, 0.0, 0.0)))
     }
 
     @kotlin.test.Test
@@ -66,13 +67,13 @@ public class FmaInlineTests {
                 X
             }))
         for ((x, y, z, res) in expectUnderflow) {
-            val structVal = fmaRound(x, y, z, Round.Nearest)
+            val structVal = Generic.fmaRound(x, y, z, Round.Nearest)
             val value = structVal.value
             val status = structVal.status
             run {
                 val l = value
                 val r = res
-                check(l.biteq(r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+                check(biteq(l, r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
             }
             check(status == Status.UNDERFLOW)
         }

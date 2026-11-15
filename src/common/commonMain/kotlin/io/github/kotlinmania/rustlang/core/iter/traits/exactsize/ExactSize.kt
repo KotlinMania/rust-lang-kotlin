@@ -1,9 +1,9 @@
 // port-lint: source iter/traits/exact_size.rs
 package io.github.kotlinmania.rustlang.core.iter.traits.exactsize
 
-import io.github.kotlinmania.rustlang.core.cmp.Eq
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
+import io.github.kotlinmania.rustlang.cmp.Eq
+import io.github.kotlinmania.rustlang.option.Option
+import io.github.kotlinmania.rustlang.panicking.assertFailed
 
 /**
  * An iterator that knows its exact length.

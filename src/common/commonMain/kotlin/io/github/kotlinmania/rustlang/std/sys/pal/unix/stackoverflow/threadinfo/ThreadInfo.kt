@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo
 
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -11,12 +10,12 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.libc.pause
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
-import io.github.kotlinmania.rustlang.std.sys.io.error.unix.errnoLocation
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.thread.current.currentOsId
-import io.github.kotlinmania.rustlang.std.thread.current.withCurrentName
+import io.github.kotlinmania.rustlang.process.abort
+import io.github.kotlinmania.rustlang.sync.nonpoison.mutex.Mutex
+import io.github.kotlinmania.rustlang.sys.io.error.unix.errnoLocation
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.thread.current.currentOsId
+import io.github.kotlinmania.rustlang.thread.current.withCurrentName
 
 // TLS, but async-signal-safe.
 //
@@ -114,9 +113,9 @@ public fun <R> withCurrentInfo(f: (ThreadInfo?) -> R): R {
             run {
                 val matchVal1 = SPIN_LOCK.compareExchange(0, thisRef, Ordering.Acquire, Ordering.Relaxed)
                 when {
-                    matchVal1 is Result.Ok<*> -> { break }
-                    matchVal1 is Result.Err<*> && (matchVal1 as Result.Err<*>).error == thisRef -> {
-                        val owner = (matchVal1 as Result.Err<*>).error
+                    matchVal1 is Result.Ok<*, *> -> { break }
+                    matchVal1 is Result.Err<*, *> && (matchVal1 as Result.Err<*, *>).error == thisRef -> {
+                        val owner = (matchVal1 as Result.Err<*, *>).error
                         run {
                             when (val matchVal2 = panicOutput()) {
                                 null -> {}
@@ -151,9 +150,9 @@ public fun spinLockInSetup(thisRef: Int): UnlockOnDrop {
         run {
             val matchVal = SPIN_LOCK.compareExchange(0, thisRef, Ordering.Acquire, Ordering.Relaxed)
             when {
-                matchVal is Result.Ok<*> -> { return UnlockOnDrop() }
-                matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error == thisRef -> {
-                    val owner = (matchVal as Result.Err<*>).error
+                matchVal is Result.Ok<*, *> -> { return UnlockOnDrop() }
+                matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error == thisRef -> {
+                    val owner = (matchVal as Result.Err<*, *>).error
                     error("the thread info setup logic isn't recursive")
                 }
                 // This function is always called with the outer lock held,

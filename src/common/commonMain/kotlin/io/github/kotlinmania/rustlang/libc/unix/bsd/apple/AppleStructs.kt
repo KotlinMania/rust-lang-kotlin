@@ -2,14 +2,15 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple
 
-import io.github.kotlinmania.rustlang.core.ffi.CChar
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -18,32 +19,31 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.BlkcntT
-import io.github.kotlinmania.rustlang.libc.BooleanT
-import io.github.kotlinmania.rustlang.libc.FsidT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.In6Addr
-import io.github.kotlinmania.rustlang.libc.InAddrT
-import io.github.kotlinmania.rustlang.libc.InPortT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SaFamilyT
-import io.github.kotlinmania.rustlang.libc.SighandlerT
-import io.github.kotlinmania.rustlang.libc.Sigval
-import io.github.kotlinmania.rustlang.libc.Sockaddr
-import io.github.kotlinmania.rustlang.libc.SockaddrIn6
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.Timespec
-import io.github.kotlinmania.rustlang.libc.Timeval
-import io.github.kotlinmania.rustlang.libc.UidT
-import io.github.kotlinmania.rustlang.libc.UintptrT
-import io.github.kotlinmania.rustlang.libc.unix.IFNAMSIZ
-import io.github.kotlinmania.rustlang.libc.unix.IntptrT
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.bsd.NCCS
-import io.github.kotlinmania.rustlang.libc.unix.bsd.OffT
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.IfData
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.Timeval32
+import io.github.kotlinmania.rustlang.unix.GidT
+import io.github.kotlinmania.rustlang.unix.IFNAMSIZ
+import io.github.kotlinmania.rustlang.unix.In6Addr
+import io.github.kotlinmania.rustlang.unix.InAddrT
+import io.github.kotlinmania.rustlang.unix.InPortT
+import io.github.kotlinmania.rustlang.unix.IntptrT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SighandlerT
+import io.github.kotlinmania.rustlang.unix.Sigval
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.UintptrT
+import io.github.kotlinmania.rustlang.unix.bsd.FsidT
+import io.github.kotlinmania.rustlang.unix.bsd.SaFamilyT
+import io.github.kotlinmania.rustlang.unix.bsd.Sockaddr
+import io.github.kotlinmania.rustlang.unix.bsd.SockaddrIn6
+import io.github.kotlinmania.rustlang.unix.bsd.apple.b64.IfData
+import io.github.kotlinmania.rustlang.unix.bsd.apple.b64.Timeval32
+import io.github.kotlinmania.rustlang.unix.bsd.apple.b64.aarch64.BooleanT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timespec
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.BlkcntT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.NCCS
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -1150,7 +1150,7 @@ public class SiginfoT internal constructor(
 public data class Sigaction(
     // Note(union): this field is actually a union
     public var saSigaction: SighandlerT = 0uL,
-    public var saMask: SigsetT = 0u,
+    public var saMask: SigsetT = SigsetT(),
     public var saFlags: CInt = 0,
 ) {
     public companion object {
@@ -1468,12 +1468,12 @@ public data class Radvisory(
 public data class Statvfs(
     public var fBsize: CUlong = 0uL,
     public var fFrsize: CUlong = 0uL,
-    public var fBlocks: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fBfree: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fBavail: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fFiles: io.github.kotlinmania.rustlang.libc.FsfilcntT = 0u,
-    public var fFfree: io.github.kotlinmania.rustlang.libc.FsfilcntT = 0u,
-    public var fFavail: io.github.kotlinmania.rustlang.libc.FsfilcntT = 0u,
+    public var fBlocks: io.github.kotlinmania.rustlang.unix.bsd.apple.FsblkcntT = 0u,
+    public var fBfree: io.github.kotlinmania.rustlang.unix.bsd.apple.FsblkcntT = 0u,
+    public var fBavail: io.github.kotlinmania.rustlang.unix.bsd.apple.FsblkcntT = 0u,
+    public var fFiles: io.github.kotlinmania.rustlang.unix.bsd.apple.FsfilcntT = 0u,
+    public var fFfree: io.github.kotlinmania.rustlang.unix.bsd.apple.FsfilcntT = 0u,
+    public var fFavail: io.github.kotlinmania.rustlang.unix.bsd.apple.FsfilcntT = 0u,
     public var fFsid: CUlong = 0uL,
     public var fFlag: CUlong = 0uL,
     public var fNamemax: CUlong = 0uL,
@@ -1649,7 +1649,7 @@ public data class SockaddrIn(
     public var sinLen: UByte = 0u,
     public var sinFamily: SaFamilyT = 0u,
     public var sinPort: InPortT = 0u,
-    public var sinAddr: io.github.kotlinmania.rustlang.libc.InAddr = io.github.kotlinmania.rustlang.libc.InAddr(),
+    public var sinAddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
     public var sinZero: UByteArray = UByteArray(8),
 ) {
     override fun equals(other: Any?): Boolean {
@@ -2355,13 +2355,13 @@ public data class RtMsghdr2(
 
 // Note(exhaustive): review for 1.0
 public data class Termios(
-    public var cIflag: io.github.kotlinmania.rustlang.libc.TcflagT = 0uL,
-    public var cOflag: io.github.kotlinmania.rustlang.libc.TcflagT = 0uL,
-    public var cCflag: io.github.kotlinmania.rustlang.libc.TcflagT = 0uL,
-    public var cLflag: io.github.kotlinmania.rustlang.libc.TcflagT = 0uL,
+    public var cIflag: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0uL,
+    public var cOflag: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0uL,
+    public var cCflag: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0uL,
+    public var cLflag: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0uL,
     public var cCc: UByteArray = UByteArray(NCCS),
-    public var cIspeed: io.github.kotlinmania.rustlang.libc.SpeedT = 0uL,
-    public var cOspeed: io.github.kotlinmania.rustlang.libc.SpeedT = 0uL,
+    public var cIspeed: io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT = 0uL,
+    public var cOspeed: io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT = 0uL,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -3864,8 +3864,8 @@ public data class SockaddrInarp(
     public var sinLen: CUchar = 0u,
     public var sinFamily: CUchar = 0u,
     public var sinPort: CUshort = 0u,
-    public var sinAddr: io.github.kotlinmania.rustlang.libc.InAddr = io.github.kotlinmania.rustlang.libc.InAddr(),
-    public var sinSrcaddr: io.github.kotlinmania.rustlang.libc.InAddr = io.github.kotlinmania.rustlang.libc.InAddr(),
+    public var sinAddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
+    public var sinSrcaddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
     public var sinTos: CUshort = 0u,
     public var sinOther: CUshort = 0u,
 ) {
@@ -3992,8 +3992,8 @@ public data class SockaddrCtl(
 // Note(exhaustive): review for 1.0
 public data class InPktinfo(
     public var ipiIfindex: CUint = 0u,
-    public var ipiSpecDst: io.github.kotlinmania.rustlang.libc.InAddr = io.github.kotlinmania.rustlang.libc.InAddr(),
-    public var ipiAddr: io.github.kotlinmania.rustlang.libc.InAddr = io.github.kotlinmania.rustlang.libc.InAddr(),
+    public var ipiSpecDst: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
+    public var ipiAddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<InPktinfo> =
@@ -4040,7 +4040,7 @@ public data class IpcPerm(
     public var cgid: GidT = 0,
     public var mode: ModeT = 0u,
     public var seq: CUshort = 0u,
-    public var key: io.github.kotlinmania.rustlang.libc.KeyT = 0,
+    public var key: io.github.kotlinmania.rustlang.unix.bsd.apple.KeyT = 0,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<IpcPerm> =
@@ -4509,7 +4509,7 @@ public data class ThreadStandardPolicy(
 
 // Note(exhaustive): review for 1.0
 public data class ThreadExtendedPolicy(
-    public var timeshare: io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.aarch64.BooleanT = 0,
+    public var timeshare: BooleanT = 0,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadExtendedPolicy> =
@@ -4539,7 +4539,7 @@ public data class ThreadTimeConstraintPolicy(
     public var period: UInt = 0u,
     public var computation: UInt = 0u,
     public var constraint: UInt = 0u,
-    public var preemptible: io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.aarch64.BooleanT = 0,
+    public var preemptible: BooleanT = 0,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadTimeConstraintPolicy> =
@@ -4802,8 +4802,8 @@ public data class Mstats(
 
 // Note(exhaustive): review for 1.0
 public data class VmRangeT(
-    public var address: io.github.kotlinmania.rustlang.libc.VmAddressT = 0uL,
-    public var size: io.github.kotlinmania.rustlang.libc.VmSizeT = 0uL,
+    public var address: io.github.kotlinmania.rustlang.unix.bsd.apple.VmAddressT = 0uL,
+    public var size: io.github.kotlinmania.rustlang.unix.bsd.apple.VmSizeT = 0uL,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<VmRangeT> =
@@ -5815,7 +5815,7 @@ public class RusageInfoV4(
 
 // Note(exhaustive): review for 1.0
 public data class ImageOffset(
-    public var uuid: io.github.kotlinmania.rustlang.libc.UuidT = UByteArray(16),
+    public var uuid: io.github.kotlinmania.rustlang.unix.bsd.apple.UuidT = UByteArray(16),
     public var offset: UInt = 0u,
 ) {
     override fun equals(other: Any?): Boolean {
@@ -6338,31 +6338,31 @@ public data class In6Addrlifetime(
 }
 
 public class In6Ifstat(
-    public var ifs6InReceive: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InHdrerr: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InToobig: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InNoroute: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InAddrerr: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InProtounknown: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InTruncated: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InDiscard: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InDeliver: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutForward: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutRequest: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutDiscard: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutFragok: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutFragfail: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutFragcreat: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6ReassReqd: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6ReassOk: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6AtmfragRcvd: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6ReassFail: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InMcast: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutMcast: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6CantfowardIcmp6: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6AddrExpiryCnt: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6PfxExpiryCnt: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6DefrtrExpiryCnt: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
+    public var ifs6InReceive: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InHdrerr: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InToobig: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InNoroute: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InAddrerr: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InProtounknown: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InTruncated: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InDiscard: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InDeliver: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutForward: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutRequest: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutDiscard: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutFragok: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutFragfail: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutFragcreat: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6ReassReqd: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6ReassOk: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6AtmfragRcvd: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6ReassFail: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InMcast: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutMcast: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6CantfowardIcmp6: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6AddrExpiryCnt: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6PfxExpiryCnt: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6DefrtrExpiryCnt: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
 ) {
     public fun clone(): In6Ifstat = In6Ifstat(ifs6InReceive, ifs6InHdrerr, ifs6InToobig, ifs6InNoroute, ifs6InAddrerr, ifs6InProtounknown, ifs6InTruncated, ifs6InDiscard, ifs6InDeliver, ifs6OutForward, ifs6OutRequest, ifs6OutDiscard, ifs6OutFragok, ifs6OutFragfail, ifs6OutFragcreat, ifs6ReassReqd, ifs6ReassOk, ifs6AtmfragRcvd, ifs6ReassFail, ifs6InMcast, ifs6OutMcast, ifs6CantfowardIcmp6, ifs6AddrExpiryCnt, ifs6PfxExpiryCnt, ifs6DefrtrExpiryCnt)
 
@@ -6486,40 +6486,40 @@ public class In6Ifstat(
 }
 
 public class Icmp6Ifstat(
-    public var ifs6InMsg: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InError: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InDstunreach: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InAdminprohib: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InTimeexceed: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InParamprob: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InPkttoobig: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InEcho: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InEchoreply: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InRoutersolicit: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InRouteradvert: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InNeighborsolicit: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InNeighboradvert: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InRedirect: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InMldquery: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InMldreport: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6InMlddone: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutMsg: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutError: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutDstunreach: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutAdminprohib: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutTimeexceed: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutParamprob: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutPkttoobig: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutEcho: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutEchoreply: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutRoutersolicit: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutRouteradvert: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutNeighborsolicit: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutNeighboradvert: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutRedirect: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutMldquery: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutMldreport: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
-    public var ifs6OutMlddone: io.github.kotlinmania.rustlang.libc.UQuadT = 0uL,
+    public var ifs6InMsg: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InError: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InDstunreach: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InAdminprohib: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InTimeexceed: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InParamprob: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InPkttoobig: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InEcho: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InEchoreply: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InRoutersolicit: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InRouteradvert: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InNeighborsolicit: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InNeighboradvert: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InRedirect: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InMldquery: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InMldreport: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6InMlddone: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutMsg: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutError: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutDstunreach: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutAdminprohib: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutTimeexceed: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutParamprob: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutPkttoobig: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutEcho: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutEchoreply: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutRoutersolicit: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutRouteradvert: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutNeighborsolicit: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutNeighboradvert: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutRedirect: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutMldquery: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutMldreport: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
+    public var ifs6OutMlddone: io.github.kotlinmania.rustlang.unix.bsd.apple.UQuadT = 0uL,
 ) {
     public fun clone(): Icmp6Ifstat = Icmp6Ifstat(ifs6InMsg, ifs6InError, ifs6InDstunreach, ifs6InAdminprohib, ifs6InTimeexceed, ifs6InParamprob, ifs6InPkttoobig, ifs6InEcho, ifs6InEchoreply, ifs6InRoutersolicit, ifs6InRouteradvert, ifs6InNeighborsolicit, ifs6InNeighboradvert, ifs6InRedirect, ifs6InMldquery, ifs6InMldreport, ifs6InMlddone, ifs6OutMsg, ifs6OutError, ifs6OutDstunreach, ifs6OutAdminprohib, ifs6OutTimeexceed, ifs6OutParamprob, ifs6OutPkttoobig, ifs6OutEcho, ifs6OutEchoreply, ifs6OutRoutersolicit, ifs6OutRouteradvert, ifs6OutNeighborsolicit, ifs6OutNeighboradvert, ifs6OutRedirect, ifs6OutMldquery, ifs6OutMldreport, ifs6OutMlddone)
 
@@ -7116,9 +7116,9 @@ public data class SemidDs(
     public var semPerm: IpcPerm = IpcPerm(),
     public var semBase: Int = 0,
     public var semNsems: CUshort = 0u,
-    public var semOtime: io.github.kotlinmania.rustlang.libc.TimeT = 0L,
+    public var semOtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = 0L,
     public var semPad1: Int = 0,
-    public var semCtime: io.github.kotlinmania.rustlang.libc.TimeT = 0L,
+    public var semCtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = 0L,
     public var semPad2: Int = 0,
     public var semPad3: IntArray = IntArray(4),
 ) {
@@ -7204,12 +7204,12 @@ public class ShmidDs internal constructor(
     public var shmSegsz: SizeT,
     public var shmLpid: PidT,
     public var shmCpid: PidT,
-    public var shmNattch: io.github.kotlinmania.rustlang.libc.ShmattT,
-    public var shmAtime: io.github.kotlinmania.rustlang.libc.TimeT,
+    public var shmNattch: io.github.kotlinmania.rustlang.unix.bsd.apple.ShmattT,
+    public var shmAtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT,
     // Note(macos): 64-bit wrong align => wrong offset
-    public var shmDtime: io.github.kotlinmania.rustlang.libc.TimeT,
+    public var shmDtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT,
     // Note(macos): 64-bit wrong align => wrong offset
-    public var shmCtime: io.github.kotlinmania.rustlang.libc.TimeT,
+    public var shmCtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT,
     shmInternalCtorArg: MutPtr,
 ) {
     public var shmInternal: MutPtr = shmInternalCtorArg
@@ -7235,17 +7235,17 @@ public class ShmidDs internal constructor(
 
     public operator fun component4(): PidT = this.shmCpid
 
-    public operator fun component5(): io.github.kotlinmania.rustlang.libc.ShmattT = this.shmNattch
+    public operator fun component5(): io.github.kotlinmania.rustlang.unix.bsd.apple.ShmattT = this.shmNattch
 
-    public operator fun component6(): io.github.kotlinmania.rustlang.libc.TimeT = this.shmAtime
+    public operator fun component6(): io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmAtime
 
-    public operator fun component7(): io.github.kotlinmania.rustlang.libc.TimeT = this.shmDtime
+    public operator fun component7(): io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmDtime
 
-    public operator fun component8(): io.github.kotlinmania.rustlang.libc.TimeT = this.shmCtime
+    public operator fun component8(): io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmCtime
 
     public operator fun component9(): MutPtr = this.shmInternal
 
-    public fun copy(shmPerm: IpcPerm = this.shmPerm, shmSegsz: SizeT = this.shmSegsz, shmLpid: PidT = this.shmLpid, shmCpid: PidT = this.shmCpid, shmNattch: io.github.kotlinmania.rustlang.libc.ShmattT = this.shmNattch, shmAtime: io.github.kotlinmania.rustlang.libc.TimeT = this.shmAtime, shmDtime: io.github.kotlinmania.rustlang.libc.TimeT = this.shmDtime, shmCtime: io.github.kotlinmania.rustlang.libc.TimeT = this.shmCtime, shmInternal: MutPtr = this.shmInternal): ShmidDs = ShmidDs(shmPerm = shmPerm, shmSegsz = shmSegsz, shmLpid = shmLpid, shmCpid = shmCpid, shmNattch = shmNattch, shmAtime = shmAtime, shmDtime = shmDtime, shmCtime = shmCtime, shmInternalCtorArg = shmInternal)
+    public fun copy(shmPerm: IpcPerm = this.shmPerm, shmSegsz: SizeT = this.shmSegsz, shmLpid: PidT = this.shmLpid, shmCpid: PidT = this.shmCpid, shmNattch: io.github.kotlinmania.rustlang.unix.bsd.apple.ShmattT = this.shmNattch, shmAtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmAtime, shmDtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmDtime, shmCtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = this.shmCtime, shmInternal: MutPtr = this.shmInternal): ShmidDs = ShmidDs(shmPerm = shmPerm, shmSegsz = shmSegsz, shmLpid = shmLpid, shmCpid = shmCpid, shmNattch = shmNattch, shmAtime = shmAtime, shmDtime = shmDtime, shmCtime = shmCtime, shmInternalCtorArg = shmInternal)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -7335,10 +7335,10 @@ public class ShmidDs internal constructor(
             shmSegsz: SizeT = 0uL,
             shmLpid: PidT = 0,
             shmCpid: PidT = 0,
-            shmNattch: io.github.kotlinmania.rustlang.libc.ShmattT = 0u,
-            shmAtime: io.github.kotlinmania.rustlang.libc.TimeT = 0L,
-            shmDtime: io.github.kotlinmania.rustlang.libc.TimeT = 0L,
-            shmCtime: io.github.kotlinmania.rustlang.libc.TimeT = 0L,
+            shmNattch: io.github.kotlinmania.rustlang.unix.bsd.apple.ShmattT = 0u,
+            shmAtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = 0L,
+            shmDtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = 0L,
+            shmCtime: io.github.kotlinmania.rustlang.unix.bsd.apple.TimeT = 0L,
             shmInternal: MutPtr = MutPtr(0L),
         ): ShmidDs = ShmidDs(
             shmPerm = shmPerm,
@@ -7634,7 +7634,7 @@ public data class SockaddrStorage(
 
 public data class GroupReq(
     public var grInterface: UInt = 0u,
-    public var grGroup: io.github.kotlinmania.rustlang.libc.SockaddrStorage = io.github.kotlinmania.rustlang.libc.SockaddrStorage(),
+    public var grGroup: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<GroupReq> =
@@ -7665,8 +7665,8 @@ public data class GroupReq(
 
 public data class GroupSourceReq(
     public var gsrInterface: UInt = 0u,
-    public var gsrGroup: io.github.kotlinmania.rustlang.libc.SockaddrStorage = io.github.kotlinmania.rustlang.libc.SockaddrStorage(),
-    public var gsrSource: io.github.kotlinmania.rustlang.libc.SockaddrStorage = io.github.kotlinmania.rustlang.libc.SockaddrStorage(),
+    public var gsrGroup: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
+    public var gsrSource: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<GroupSourceReq> =
@@ -8012,12 +8012,12 @@ public data class TimeValueT(
 public data class ThreadBasicInfo(
     public var userTime: TimeValueT = TimeValueT(),
     public var systemTime: TimeValueT = TimeValueT(),
-    public var cpuUsage: io.github.kotlinmania.rustlang.libc.IntegerT = 0,
-    public var policy: io.github.kotlinmania.rustlang.libc.PolicyT = 0,
-    public var runState: io.github.kotlinmania.rustlang.libc.IntegerT = 0,
-    public var flags: io.github.kotlinmania.rustlang.libc.IntegerT = 0,
-    public var suspendCount: io.github.kotlinmania.rustlang.libc.IntegerT = 0,
-    public var sleepTime: io.github.kotlinmania.rustlang.libc.IntegerT = 0,
+    public var cpuUsage: io.github.kotlinmania.rustlang.unix.bsd.apple.IntegerT = 0,
+    public var policy: io.github.kotlinmania.rustlang.unix.bsd.apple.PolicyT = 0,
+    public var runState: io.github.kotlinmania.rustlang.unix.bsd.apple.IntegerT = 0,
+    public var flags: io.github.kotlinmania.rustlang.unix.bsd.apple.IntegerT = 0,
+    public var suspendCount: io.github.kotlinmania.rustlang.unix.bsd.apple.IntegerT = 0,
+    public var sleepTime: io.github.kotlinmania.rustlang.unix.bsd.apple.IntegerT = 0,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<ThreadBasicInfo> =
@@ -8266,7 +8266,7 @@ public data class MachTaskBasicInfo(
     public var residentSizeMax: MachVmSizeT = 0uL,
     public var userTime: TimeValueT = TimeValueT(),
     public var systemTime: TimeValueT = TimeValueT(),
-    public var policy: io.github.kotlinmania.rustlang.libc.PolicyT = 0,
+    public var policy: io.github.kotlinmania.rustlang.unix.bsd.apple.PolicyT = 0,
     public var suspendCount: IntegerT = 0,
 ) {
     public companion object {

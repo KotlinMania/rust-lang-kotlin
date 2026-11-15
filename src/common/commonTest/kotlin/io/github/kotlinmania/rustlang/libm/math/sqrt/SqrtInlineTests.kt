@@ -4,12 +4,13 @@ package io.github.kotlinmania.rustlang.libm.math.sqrt
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.libm.math.generic.sqrt.SqrtHelper
-import io.github.kotlinmania.rustlang.libm.math.generic.sqrt.sqrtRound
-import io.github.kotlinmania.rustlang.libm.math.support.env.Round
-import io.github.kotlinmania.rustlang.libm.math.support.env.Status
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex
+import io.github.kotlinmania.rustlang.libm.math.Generic
+import io.github.kotlinmania.rustlang.math.generic.sqrt.SqrtHelper
+import io.github.kotlinmania.rustlang.math.support.env.Round
+import io.github.kotlinmania.rustlang.math.support.env.Status
+import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
 
 /**
  * Test behavior specified in IEEE 754 `squareRoot`.
@@ -20,20 +21,20 @@ public fun <Int, SignedInt, ISet1, ISet2, D, F> specTest() where F : Float<F, An
     // Values that return unaltered
     val roundtrip = listOf(F.ZERO, F.NEG_ZERO, F.INFINITY)
     for (x in nan) {
-        val structVal = sqrtRound(x, Round.Nearest)
+        val structVal = Generic.sqrtRound(x, Round.Nearest)
         val value = structVal.value
         val status = structVal.status
         check(value.isNan())
         check(status == Status.INVALID)
     }
     for (x1 in roundtrip) {
-        val structVal1 = sqrtRound(x1, Round.Nearest)
+        val structVal1 = Generic.sqrtRound(x1, Round.Nearest)
         val value1 = structVal1.value
         val status1 = structVal1.status
         run {
             val l = value1
             val r = x1
-            check(l.biteq(r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
         check(status1 == Status.OK)
     }
@@ -45,12 +46,12 @@ public class SqrtInlineTests {
         run {
             val l = sqrtf16(F16.fromFloat(100.0f))
             val r = 10.0
-            check(l.biteq(r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
         run {
             val l1 = sqrtf16(F16.fromFloat(4.0f))
             val r1 = 2.0
-            check(l1.biteq(r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
+            check(biteq(l1, r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
         }
     }
 
@@ -66,7 +67,7 @@ public class SqrtInlineTests {
             run {
                 val l = sqrtf16(input)
                 val r = F16.fromBits(output.toUShort())
-                check(l.biteq(r)) { ("input: $input (${input.toBits()})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+                check(biteq(l, r)) { ("input: $input (${input.toBits()})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
             }
         }
     }
@@ -76,12 +77,12 @@ public class SqrtInlineTests {
         run {
             val l = sqrtf(100.0f)
             val r = 10.0
-            check(l.biteq(r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toUInt()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toUInt()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
         run {
             val l1 = sqrtf(4.0f)
             val r1 = 2.0
-            check(l1.biteq(r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toRawBits().toUInt()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
+            check(biteq(l1, r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toRawBits().toUInt()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
         }
     }
 
@@ -97,7 +98,7 @@ public class SqrtInlineTests {
             run {
                 val l = sqrtf(input)
                 val r = kotlin.Float.fromBits(output.toInt())
-                check(l.biteq(r)) { ("input: $input (${input.toBits()})").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toUInt()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toRawBits().toUInt()).toString() + " " + (Hex(r)).toString() + ")" }
+                check(biteq(l, r)) { ("input: $input (${input.toBits()})").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toUInt()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toRawBits().toUInt()).toString() + " " + (Hex(r)).toString() + ")" }
             }
         }
     }
@@ -107,12 +108,12 @@ public class SqrtInlineTests {
         run {
             val l = sqrt(100.0)
             val r = 10.0
-            check(l.biteq(r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toULong()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toULong()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
         run {
             val l1 = sqrt(4.0)
             val r1 = 2.0
-            check(l1.biteq(r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toRawBits().toULong()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
+            check(biteq(l1, r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toRawBits().toULong()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
         }
     }
 
@@ -128,7 +129,7 @@ public class SqrtInlineTests {
             run {
                 val l = sqrt(input)
                 val r = Double.fromBits(output.toLong())
-                check(l.biteq(r)) { ("input: $input (${input.toBits()})").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toULong()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toRawBits().toULong()).toString() + " " + (Hex(r)).toString() + ")" }
+                check(biteq(l, r)) { ("input: $input (${input.toBits()})").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toULong()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toRawBits().toULong()).toString() + " " + (Hex(r)).toString() + ")" }
             }
         }
     }
@@ -138,12 +139,12 @@ public class SqrtInlineTests {
         run {
             val l = sqrtf128(F128.fromDouble(100.0))
             val r = 10.0
-            check(l.biteq(r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
         run {
             val l1 = sqrtf128(F128.fromDouble(4.0))
             val r1 = 2.0
-            check(l1.biteq(r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
+            check(biteq(l1, r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
         }
     }
 
@@ -159,7 +160,7 @@ public class SqrtInlineTests {
             run {
                 val l = sqrtf128(input)
                 val r = F128.fromBits(output)
-                check(l.biteq(r)) { ("input: $input (${input.toBits()})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+                check(biteq(l, r)) { ("input: $input (${input.toBits()})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
             }
         }
     }

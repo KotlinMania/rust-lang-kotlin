@@ -1,13 +1,13 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.arch.powerpc
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.RlimT
-import io.github.kotlinmania.rustlang.libc.SpeedT
-import io.github.kotlinmania.rustlang.libc.TcflagT
-import io.github.kotlinmania.rustlang.libc.types.u32CastIoctl
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Ioctl
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.RlimitResourceT
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.types.u32CastIoctl
+import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Ioctl
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.RlimT
 
 // Ioctl Constants
 // RLIMIT Constants

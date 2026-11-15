@@ -4,15 +4,17 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.U16x8
-import io.github.kotlinmania.rustlang.corearch.simd.U64x2
-import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.simd.I16x8
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.U16x8
+import io.github.kotlinmania.rustlang.simd.U64x2
+import io.github.kotlinmania.rustlang.simd.U8x16
+import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.x86.M128d
 
-private object X86Sse2JniBridge {
+private object CorearchX86Sse2JniBridge {
     init {
         loadNativeLibrary()
     }
@@ -48,8 +50,8 @@ private object X86Sse2JniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = X86Sse2JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = CorearchX86Sse2JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -66,32 +68,32 @@ private object X86Sse2JniBridge {
     }
 
     @JvmStatic
-    external fun corearchX86Sse2Pause()
+    external fun rustlangCorearchX86Sse2Pause()
 
     @JvmStatic
-    external fun corearchX86Sse2Clflush(p: Long)
+    external fun rustlangCorearchX86Sse2Clflush(p: Long)
 
     @JvmStatic
-    external fun corearchX86Sse2Lfence()
+    external fun rustlangCorearchX86Sse2Lfence()
 
     @JvmStatic
-    external fun corearchX86Sse2Mfence()
+    external fun rustlangCorearchX86Sse2Mfence()
 }
 
 public actual fun pause() {
-    X86Sse2JniBridge.corearchX86Sse2Pause()
+    CorearchX86Sse2JniBridge.rustlangCorearchX86Sse2Pause()
 }
 
 public actual fun clflush(p: ConstPtr) {
-    X86Sse2JniBridge.corearchX86Sse2Clflush(p.rawAddress)
+    CorearchX86Sse2JniBridge.rustlangCorearchX86Sse2Clflush(p.rawAddress)
 }
 
 public actual fun lfence() {
-    X86Sse2JniBridge.corearchX86Sse2Lfence()
+    CorearchX86Sse2JniBridge.rustlangCorearchX86Sse2Lfence()
 }
 
 public actual fun mfence() {
-    X86Sse2JniBridge.corearchX86Sse2Mfence()
+    CorearchX86Sse2JniBridge.rustlangCorearchX86Sse2Mfence()
 }
 
 public actual fun pavgb(a: U8x16, b: U8x16): U8x16 =

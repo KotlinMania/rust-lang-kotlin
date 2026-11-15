@@ -6,11 +6,11 @@ package io.github.kotlinmania.rustlang.core.random
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
-import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.AssertKind
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
-import io.github.kotlinmania.rustlang.core.range.RangeInclusive
+import io.github.kotlinmania.rustlang.ops.range.RangeFull
+import io.github.kotlinmania.rustlang.option.Option
+import io.github.kotlinmania.rustlang.panicking.AssertKind
+import io.github.kotlinmania.rustlang.panicking.assertFailed
+import io.github.kotlinmania.rustlang.range.RangeInclusive
 
 // Random value generation.
 

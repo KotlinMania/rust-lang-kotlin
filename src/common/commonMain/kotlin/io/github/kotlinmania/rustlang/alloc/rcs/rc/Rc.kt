@@ -1,13 +1,11 @@
 // port-lint: source rcs/rc.rs
 package io.github.kotlinmania.rustlang.alloc.rcs.rc
 
-import io.github.kotlinmania.rustlang.alloc.alloc.Global
-import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
-import io.github.kotlinmania.rustlang.alloc.borrow.Cow
-import io.github.kotlinmania.rustlang.alloc.borrow.ToOwned
-import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.string.String
-import io.github.kotlinmania.rustlang.alloc.vec.Vec
+import io.github.kotlinmania.rustlang.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.handleAllocError
+import io.github.kotlinmania.rustlang.borrow.Cow
+import io.github.kotlinmania.rustlang.borrow.ToOwned
+import io.github.kotlinmania.rustlang.boxed.Box
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
@@ -15,41 +13,35 @@ import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorNightly
 import io.github.kotlinmania.rustlang.core.alloc.StaticAllocator
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
-import io.github.kotlinmania.rustlang.core.borrow.BorrowMut
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.clone.Share
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.fmt.Pointer
-import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZeroUsize
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.addrEq
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
-import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
+import io.github.kotlinmania.rustlang.vec.Vec
 
 // Single-threaded reference-counting pointers. 'Rc' stands for Reference
 // Counted'.
@@ -288,7 +280,7 @@ public open class Rc<T, A : Allocator> internal constructor(
     ptrCtorArg: NonNull,
     public var phantom: Unit,
     public var alloc: A,
-) : PinSafePointer, DerefPure, UseCloned, Share, RcEqIdent<T, A>, Pointer, AsRef<T>, Allocator, AllocatorNightly, AllocatorClone {
+) : PinSafePointer, DerefPure, UseCloned, Share, RcEqIdent<T, A>, fmt.Pointer, AsRef<T>, Allocator, AllocatorNightly, AllocatorClone {
     public var ptr: NonNull = ptrCtorArg
         internal set
 
@@ -394,7 +386,7 @@ public open class Rc<T, A : Allocator> internal constructor(
      *
      * We can only do this when `T: Eq` as a `PartialEq` might be deliberately irreflexive.
      */
-    public open fun eqTA(other: Rc<T, A>): Boolean = io.github.kotlinmania.rustlang.core.ptr.eq(this.ptr.asPtr(), other.ptr.asPtr()) || this == other
+    public open fun eqTA(other: Rc<T, A>): Boolean = eq(this.ptr.asPtr(), other.ptr.asPtr()) || this == other
 
     public open fun neTA(other: Rc<T, A>): Boolean = !eq(this.ptr.asPtr(), other.ptr.asPtr()) && this != other
 
@@ -538,7 +530,7 @@ public open class Rc<T, A : Allocator> internal constructor(
     }
 
     public open fun fmtPointer(f: StringBuilder) {
-        Pointer.fmt((this), f)
+        fmt.Pointer.fmt((this), f)
     }
 
     public open fun borrow(): T = this
@@ -616,10 +608,10 @@ public open class Rc<T, A : Allocator> internal constructor(
             // That would make code size bigger.
             return run {
                 val matchVal = Rc.tryNewIn(value, alloc)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val m = matchVal.value
                     m
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     handleAllocError(Layout.new<RcInner<T>>(typeLayoutT = ObjectSlotLayout<RcInner<T>>()))
                 } }
             }
@@ -758,7 +750,7 @@ public open class Rc<T, A : Allocator> internal constructor(
             // pointers, which ensures that the weak destructor never frees
             // the allocation while the strong destructor is running, even
             // if the weak pointer is stored inside the strong one.
-            val (ptr, alloc1) = Box.intoNonNullWithAllocator(when (val tryResult = Box.tryNewIn(RcInner(strong = Cell.new(1), weak = Cell.new(1), value = value), alloc)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+            val (ptr, alloc1) = Box.intoNonNullWithAllocator(when (val tryResult = Box.tryNewIn(RcInner(strong = Cell.new(1), weak = Cell.new(1), value = value), alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
             // SAFETY: Pointer is valid.
             return Result.Ok(Rc.fromInnerIn(ptr, alloc1))
         }
@@ -788,7 +780,7 @@ public open class Rc<T, A : Allocator> internal constructor(
          */
         public fun <T, A : Allocator> tryNewUninitIn(alloc: A, typeLayoutT: TypeLayout<T>): Result<Rc<MaybeUninit<T>, A>, AllocError> {
             // ignore-tidy-undocumented-unchecked
-            return Result.Ok(Rc.fromPtrIn(when (val tryResult = Rc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> alloc.allocate(layout) }, MutPtr.cast)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, alloc))
+            return Result.Ok(Rc.fromPtrIn(when (val tryResult = Rc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> alloc.allocate(layout) }, MutPtr.cast)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, alloc))
         }
 
         /**
@@ -817,7 +809,7 @@ public open class Rc<T, A : Allocator> internal constructor(
          */
         public fun <T, A : Allocator> tryNewZeroedIn(alloc: A, typeLayoutT: TypeLayout<T>): Result<Rc<MaybeUninit<T>, A>, AllocError> {
             // ignore-tidy-undocumented-unchecked
-            return Result.Ok(Rc.fromPtrIn(when (val tryResult = Rc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> alloc.allocateZeroed(layout) }, MutPtr.cast)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, alloc))
+            return Result.Ok(Rc.fromPtrIn(when (val tryResult = Rc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> alloc.allocateZeroed(layout) }, MutPtr.cast)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, alloc))
         }
 
         /**
@@ -952,18 +944,18 @@ public open class Rc<T, A : Allocator> internal constructor(
          * }
          * ```
          */
-        public fun <T, A : Allocator, R> tryMap(thisRef: Rc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T>): TryType where R : Try {
+        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: Rc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T>): TryType where R : Try<Any?, Any?> {
             return if (sizeOf<T>(typeLayoutT = typeLayoutT) == sizeOf<Output>(typeLayoutT = ObjectSlotLayout<Output>()) && alignOf<T>(typeLayoutT = typeLayoutT) == alignOf<Output>(typeLayoutT = ObjectSlotLayout<Output>()) && Rc.isUnique(thisRef)) {
                 // ignore-tidy-undocumented-unchecked
                 run {
                     val (ptr, alloc) = Rc.intoRawWithAllocator(thisRef)
                     val value = ptr.read()
                     val allocation = Rc.fromRawIn(ptr.cast(), alloc)
-                    Rc.getMutUnchecked(allocation).write(when (val tryResult = f(value)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+                    Rc.getMutUnchecked(allocation).write(when (val tryResult = f(value)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
                     allocation.assumeInit()
                 }
             } else {
-                val output = when (val tryResult = f(thisRef)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val output = when (val tryResult = f(thisRef)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 val (ptr1, alloc1) = Rc.intoRawWithAllocator(thisRef)
                 // ignore-tidy-undocumented-unchecked
                 Rc.decrementStrongCountIn(ptr1, alloc1)
@@ -1021,7 +1013,7 @@ public open class Rc<T, A : Allocator> internal constructor(
          */
         public fun <T, A : Allocator> tryCloneFromRefIn(value: T, alloc: A): Result<Rc<T, A>, AllocError> {
             // `inProgress` drops the allocation if we panic before finishing initializing it.
-            val inProgress: UniqueRcUninit<T, A>  = when (val tryResult = UniqueRcUninit.tryNew(value, alloc)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val inProgress: UniqueRcUninit<T, A>  = when (val tryResult = UniqueRcUninit.tryNew(value, alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             // Initialize with clone of value.
             // ignore-tidy-undocumented-unchecked
             val initializedClone =
@@ -1754,7 +1746,7 @@ public fun <T> Rc.Companion.tryNew(value: T): Result<Rc<T>, AllocError> {
     // pointers, which ensures that the weak destructor never frees
     // the allocation while the strong destructor is running, even
     // if the weak pointer is stored inside the strong one.
-    return Result.Ok(Rc.fromInner(Box.intoNonNull(when (val tryResult = Box.tryNew(RcInner(strong = Cell.new(1), weak = Cell.new(1), value = value))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })))
+    return Result.Ok(Rc.fromInner(Box.intoNonNull(when (val tryResult = Box.tryNew(RcInner(strong = Cell.new(1), weak = Cell.new(1), value = value))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })))
 }
 
 /**
@@ -1776,7 +1768,7 @@ public fun <T> Rc.Companion.tryNew(value: T): Result<Rc<T>, AllocError> {
  */
 public fun <T> Rc.Companion.tryNewUninit(typeLayoutT: TypeLayout<T>): Result<Rc<MaybeUninit<T>>, AllocError> {
     // ignore-tidy-undocumented-unchecked
-    return Result.Ok(Rc.fromPtr(when (val tryResult = Rc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> Global.allocate(layout) }, MutPtr.cast)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(Rc.fromPtr(when (val tryResult = Rc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> Global.allocate(layout) }, MutPtr.cast)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
 }
 
 /**
@@ -1802,7 +1794,7 @@ public fun <T> Rc.Companion.tryNewUninit(typeLayoutT: TypeLayout<T>): Result<Rc<
  */
 public fun <T> Rc.Companion.tryNewZeroed(typeLayoutT: TypeLayout<T>): Result<Rc<MaybeUninit<T>>, AllocError> {
     // ignore-tidy-undocumented-unchecked
-    return Result.Ok(Rc.fromPtr(when (val tryResult = Rc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> Global.allocateZeroed(layout) }, MutPtr.cast)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(Rc.fromPtr(when (val tryResult = Rc.tryAllocateForLayout(Layout.new<T>(typeLayoutT = typeLayoutT), { layout -> Global.allocateZeroed(layout) }, MutPtr.cast)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
 }
 
 /**
@@ -2281,7 +2273,7 @@ public fun Rc.Companion.allocateForLayout(valueLayout: Layout, allocate: (Layout
 public fun Rc.Companion.tryAllocateForLayout(valueLayout: Layout, allocate: (Layout) -> Result<NonNull, AllocError>, memToRcInner: (MutPtr) -> MutPtr): Result<MutPtr, AllocError> {
     val layout = rcInnerLayoutForValueLayout(valueLayout)
     // Allocate for the layout.
-    val ptr = when (val tryResult = allocate(layout)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val ptr = when (val tryResult = allocate(layout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // Initialize the RcInner
     val inner = memToRcInner(ptr.asNonNullPtr().asPtr())
     // ignore-tidy-undocumented-unchecked
@@ -3314,7 +3306,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
     // references exist, we already have a form of shared mutability!
     public var marker2: Unit,
     public var alloc: A,
-) : PinSafePointer, DerefPure, Pointer, BorrowMut<T>, AsRef<T>, AsMut<T> {
+) : PinSafePointer, DerefPure, fmt.Pointer, borrow.BorrowMut<T>, AsRef<T>, AsMut<T> {
     public var ptr: NonNull = ptrCtorArg
         internal set
 
@@ -3339,7 +3331,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
     }
 
     public open fun fmtPointer(f: StringBuilder) {
-        Pointer.fmt((this), f)
+        fmt.Pointer.fmt((this), f)
     }
 
     public open fun borrow(): T = this
@@ -3575,7 +3567,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
          * fails, instead of calling [handleAllocError].
          */
         public fun <T, A : Allocator> tryNewIn(value: T, alloc: A): Result<UniqueRc<T, A>, AllocError> {
-            val (ptr, alloc1) = Box.intoNonNullWithAllocator(when (val tryResult = Box.tryNewIn(RcInner(strong = Cell.new(0), weak = Cell.new(1), value = value), alloc)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+            val (ptr, alloc1) = Box.intoNonNullWithAllocator(when (val tryResult = Box.tryNewIn(RcInner(strong = Cell.new(0), weak = Cell.new(1), value = value), alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
             return Result.Ok(UniqueRc(ptr = ptr, marker = Unit, marker2 = Unit, alloc = alloc1))
         }
 
@@ -3661,18 +3653,18 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
          * }
          * ```
          */
-        public fun <T, A : Allocator, R> tryMap(thisRef: UniqueRc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T>): TryType where R : Try {
+        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: UniqueRc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T>): TryType where R : Try<Any?, Any?> {
             return if (sizeOf<T>(typeLayoutT = typeLayoutT) == sizeOf<Output>(typeLayoutT = ObjectSlotLayout<Output>()) && alignOf<T>(typeLayoutT = typeLayoutT) == alignOf<Output>(typeLayoutT = ObjectSlotLayout<Output>()) && UniqueRc.weakCount(thisRef) == 0) {
                 // ignore-tidy-undocumented-unchecked
                 run {
                     val (ptr, alloc) = UniqueRc.intoRawWithAllocator(thisRef)
                     val value = ptr.read()
                     val allocation = UniqueRc.fromRawWithAllocator(ptr.cast(), alloc)
-                    UniqueRc.write(allocation, when (val tryResult = f(value)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+                    UniqueRc.write(allocation, when (val tryResult = f(value)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
                 }
             } else {
                 val (value, alloc1) = UniqueRc.unwrapWithAllocator(thisRef)
-                UniqueRc.newIn(when (val tryResult = f(value)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, alloc1)
+                UniqueRc.newIn(when (val tryResult = f(value)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, alloc1)
             }
         }
 
@@ -3882,7 +3874,7 @@ public open class UniqueRcUninit<T, A : Allocator> internal constructor(
         public fun <T, A : Allocator> tryNew(forValue: T, alloc: A): Result<UniqueRcUninit<T, A>, AllocError> {
             val layout = Layout.forValue(forValue)
             // ignore-tidy-undocumented-unchecked
-            val ptr = when (val tryResult = Rc.tryAllocateForLayout(layout, { layoutForRcInner -> alloc.allocate(layoutForRcInner) }, { mem -> mem.withMetadataOf(constPtrFromRustCast(forValue)) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val ptr = when (val tryResult = Rc.tryAllocateForLayout(layout, { layoutForRcInner -> alloc.allocate(layoutForRcInner) }, { mem -> mem.withMetadataOf(constPtrFromRustCast(forValue)) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             return Result.Ok(UniqueRcUninit(ptr = NonNull.new(ptr).unwrap(), layoutForValue = layout, alloc = alloc))
         }
     }

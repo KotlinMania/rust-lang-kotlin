@@ -5,8 +5,8 @@ import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.TryLockResult
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.WouldBlock
+import io.github.kotlinmania.rustlang.sync.nonpoison.TryLockResult
+import io.github.kotlinmania.rustlang.sync.nonpoison.WouldBlock
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -70,7 +70,7 @@ public class DebugStruct(
  * ```
  */
 public open class Mutex<T>(
-    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex,
+    public var inner: io.github.kotlinmania.rustlang.sys.sync.mutex.futex.Mutex,
     public var data: UnsafeCell<T>,
 ) {
     /**
@@ -138,7 +138,7 @@ public open class Mutex<T>(
      * ```
      */
     public open fun set(value: T) {
-        if (needsDrop<T>()) {
+        if (mem.needsDrop<T>()) {
             // If the contained value has a non-trivial destructor, we
             // call that destructor after the lock has been released.
             (this.replace(value)).let { }
@@ -168,7 +168,7 @@ public open class Mutex<T>(
      */
     public open fun replace(value: T): T {
         val guard = this.lock()
-        return replace(guard, value)
+        return mem.replace(guard, value)
     }
 
     /**
@@ -335,12 +335,12 @@ public open class Mutex<T>(
         run {
             val matchVal = this.tryLock()
             when {
-                matchVal is Result.Ok<*> -> {
-                    val guard = (matchVal as Result.Ok<*>).value
+                matchVal is Result.Ok<*, *> -> {
+                    val guard = (matchVal as Result.Ok<*, *>).value
                     d.field("data", guard)
                 }
                 else -> {
-                    val WouldBlock = (matchVal as Result.Err<*>).error
+                    val WouldBlock = (matchVal as Result.Err<*, *>).error
                     d.field("data", "<locked>")
                 }
             }
@@ -363,7 +363,7 @@ public open class Mutex<T>(
          * }
          * ```
          */
-        public fun <T> new(t: T): Mutex<T> = Mutex(inner = io.github.kotlinmania.rustlang.std.sys.sync.mutex.new(), data = UnsafeCell.new(t))
+        public fun <T> new(t: T): Mutex<T> = Mutex(inner = io.github.kotlinmania.rustlang.sys.sync.mutex.new(), data = UnsafeCell.new(t))
 
         /**
          * Creates a new mutex in an unlocked state ready for use.
@@ -508,7 +508,7 @@ public open class MappedMutexGuard<T>(
     // `NonNull` is covariant over `T`, so we add a `PhantomData<T>` field
     // below for the correct variance over `T` (invariance).
     public var data: NonNull,
-    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex,
+    public var inner: io.github.kotlinmania.rustlang.sys.sync.mutex.futex.Mutex,
     public var variance: Unit,
 ) {
     // @unstable(feature = "nonpoisonMutex", issue = "134645")
@@ -590,4 +590,4 @@ public open class MappedMutexGuard<T>(
 /**
  * For use in [`nonpoison.condvar`](condvar).
  */
-public fun <T> guardLock(guard: MutexGuard<T>): io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex = guard.lock.inner
+public fun <T> guardLock(guard: MutexGuard<T>): io.github.kotlinmania.rustlang.sys.sync.mutex.futex.Mutex = guard.lock.inner

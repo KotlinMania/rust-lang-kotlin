@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.std.sys.sync.once.queue
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -12,14 +11,13 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.AcqRel
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
-import io.github.kotlinmania.rustlang.std.thread.thread.Thread
+import io.github.kotlinmania.rustlang.process.abort
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.AcqRel
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.sync.once.OnceExclusiveState
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.thread.thread.Thread
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -72,9 +70,9 @@ public open class Once internal constructor(
 
     public open fun setState(newState: OnceExclusiveState) {
         this.stateAndQueue.getMut() = when (newState) {
-            OnceExclusiveState.Incomplete -> withoutProvenanceMut(INCOMPLETE)
-            OnceExclusiveState.Poisoned -> withoutProvenanceMut(POISONED)
-            OnceExclusiveState.Complete -> withoutProvenanceMut(COMPLETE)
+            OnceExclusiveState.Incomplete -> ptr.withoutProvenanceMut(INCOMPLETE)
+            OnceExclusiveState.Poisoned -> ptr.withoutProvenanceMut(POISONED)
+            OnceExclusiveState.Complete -> ptr.withoutProvenanceMut(COMPLETE)
         }
     }
 
@@ -106,7 +104,7 @@ public open class Once internal constructor(
     // Finally, this takes an `FnMut` instead of a `FnOnce` because there's
     // currently no way to take an `FnOnce` and call it via virtual dispatch
     // without some allocation overhead.
-    public open fun call(ignorePoisoning: Boolean, init: (io.github.kotlinmania.rustlang.std.sync.once.OnceState) -> Unit) {
+    public open fun call(ignorePoisoning: Boolean, init: (io.github.kotlinmania.rustlang.sync.once.OnceState) -> Unit) {
         var current = this.stateAndQueue.load(Acquire)
         while (true) {
             val state = toState(current)
@@ -128,10 +126,10 @@ public open class Once internal constructor(
                     }
                     // `waiterQueue` will manage other waiting threads, and
                     // wake them up on drop.
-                    val waiterQueue = WaiterQueue(stateAndQueue = this.stateAndQueue, setStateOnDropTo = withoutProvenanceMut(POISONED))
+                    val waiterQueue = WaiterQueue(stateAndQueue = this.stateAndQueue, setStateOnDropTo = ptr.withoutProvenanceMut(POISONED))
                     // Run the initialization function, letting it know if we're
                     // poisoned or not.
-                    val initState = io.github.kotlinmania.rustlang.std.sync.once.OnceState(inner = OnceState(poisoned = (state == POISONED).toUByte(), setStateOnDropTo = Cell.new(withoutProvenanceMut(COMPLETE))))
+                    val initState = io.github.kotlinmania.rustlang.sync.once.OnceState(inner = OnceState(poisoned = (state == POISONED).toUByte(), setStateOnDropTo = Cell.new(ptr.withoutProvenanceMut(COMPLETE))))
                     init(initState)
                     waiterQueue.setStateOnDropTo = initState.inner.setStateOnDropTo.get()
                     return
@@ -157,9 +155,9 @@ public open class Once internal constructor(
             stateAndQueueCtorArg = stateAndQueue,
         )
 
-        public fun new(): Once = Once(stateAndQueue = AtomicPtr.new(withoutProvenanceMut(INCOMPLETE)))
+        public fun new(): Once = Once(stateAndQueue = AtomicPtr.new(ptr.withoutProvenanceMut(INCOMPLETE)))
 
-        public fun newComplete(): Once = Once(stateAndQueue = AtomicPtr.new(withoutProvenanceMut(COMPLETE)))
+        public fun newComplete(): Once = Once(stateAndQueue = AtomicPtr.new(ptr.withoutProvenanceMut(COMPLETE)))
     }
 }
 
@@ -173,7 +171,7 @@ public open class OnceState internal constructor(
     public open fun isPoisoned(): Boolean = this.poisoned
 
     public open fun poison() {
-        this.setStateOnDropTo.set(withoutProvenanceMut(POISONED))
+        this.setStateOnDropTo.set(ptr.withoutProvenanceMut(POISONED))
     }
 
     public companion object {
@@ -325,7 +323,7 @@ public open class PanicGuard {
 
 public fun wait(stateAndQueue: Atomic<MutPtr>, current: StateAndQueue, returnOnPoisoned: Boolean): StateAndQueue {
     var current1 = current
-    val node = Waiter(thread = currentOrUnnamed(), signaled = AtomicBool.new(false), next = Cell.new(ConstPtr(0L)))
+    val node = Waiter(thread = thread.currentOrUnnamed(), signaled = AtomicBool.new(false), next = Cell.new(ConstPtr(0L)))
     while (true) {
         val state = toState(current1)
         val queue = toQueue(current1)
@@ -363,7 +361,7 @@ public fun wait(stateAndQueue: Atomic<MutPtr>, current: StateAndQueue, returnOnP
             node.thread.park()
         }
         // The node was removed from the queue, disarm the guard.
-        forget(guard)
+        mem.forget(guard)
         return stateAndQueue.load(Acquire)
     }
 }

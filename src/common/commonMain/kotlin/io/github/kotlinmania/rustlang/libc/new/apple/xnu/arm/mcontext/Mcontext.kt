@@ -2,9 +2,9 @@
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.arm.mcontext
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.mach.arm.structs.DarwinArmExceptionState64
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.mach.arm.structs.DarwinArmNeonState64
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.mach.arm.structs.DarwinArmThreadState64
+import io.github.kotlinmania.rustlang.new.apple.xnu.mach.arm.structs.DarwinArmExceptionState64
+import io.github.kotlinmania.rustlang.new.apple.xnu.mach.arm.structs.DarwinArmNeonState64
+import io.github.kotlinmania.rustlang.new.apple.xnu.mach.arm.structs.DarwinArmThreadState64
 
 // Header: `arm / _mcontext.h`
 //

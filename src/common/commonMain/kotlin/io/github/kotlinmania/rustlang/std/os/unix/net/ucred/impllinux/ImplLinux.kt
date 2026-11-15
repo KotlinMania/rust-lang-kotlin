@@ -11,9 +11,9 @@ import io.github.kotlinmania.rustlang.libc.getsockopt
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Ucred
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.SO_PEERCRED
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
+import io.github.kotlinmania.rustlang.os.unix.net.UnixStream
+import io.github.kotlinmania.rustlang.os.unix.net.ucred.UCred
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
-import io.github.kotlinmania.rustlang.std.os.unix.net.ucred.UCred
 
 public fun peerCred(socket: UnixStream): Result<UCred, Error> {
     val ucredSize = sizeOf<Ucred>(typeLayoutT = ObjectSlotLayout<Ucred>())
@@ -28,7 +28,7 @@ public fun peerCred(socket: UnixStream): Result<UCred, Error> {
         if (ret == 0 && ucredSize1 == sizeOf(ucred, typeLayoutT = ObjectSlotLayout<Ucred>())) {
             Result.Ok(UCred(uid = ucred.uid, gid = ucred.gid, pid = ucred.pid))
         } else {
-            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+            Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
         }
     }
 }

@@ -1,5 +1,5 @@
-#ifndef PANICUNWIND_DUMMY_DUMMY_WRAPPER_H
-#define PANICUNWIND_DUMMY_DUMMY_WRAPPER_H
+#ifndef RUSTLANG_DUMMY_DUMMY_WRAPPER_H
+#define RUSTLANG_DUMMY_DUMMY_WRAPPER_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -9,10 +9,10 @@
 extern "C" {
 #endif
 
-void panicunwindDummyRustAbort(void);
+void rustlangDummyRustAbort(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* PANICUNWIND_DUMMY_DUMMY_WRAPPER_H */
+#endif /* RUSTLANG_DUMMY_DUMMY_WRAPPER_H */

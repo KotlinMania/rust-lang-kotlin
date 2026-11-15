@@ -1,6 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.new.helenos.vfs.vfs.cinterop
-headers = new_helenos_vfs_vfs_wrapper.h
-headerFilter = new_helenos_vfs_vfs_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = new_helenos_vfs_vfs_wrapper.a
-noStringConversion = libcNewHelenosVfsVfsVfsLinkPath libcNewHelenosVfsVfsVfsUnlinkPath libcNewHelenosVfsVfsVfsRenamePath libcNewHelenosVfsVfsVfsStatPath

@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.wasi.cabirealloc
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.sys.pal.wasi.abortInternal
+import io.github.kotlinmania.rustlang.sys.pal.wasi.abortInternal
 
 // This module contains a canonical definition of the `cabiRealloc` function
 // for the component model.
@@ -38,21 +38,21 @@ public fun cabiRealloc(oldPtr: MutPtr, oldLen: Int, align: Int, newLen: Int): Mu
     val ptr =
         if (oldLen == 0) {
             if (newLen == 0) {
-                return withoutProvenanceMut(align)
+                return ptr.withoutProvenanceMut(align)
             }
             layout = Layout.fromSizeAlignUnchecked(newLen, align)
-            alloc(layout)
+            alloc.alloc(layout)
         } else {
             check(newLen != 0)
             layout = Layout.fromSizeAlignUnchecked(oldLen, align)
-            realloc(oldPtr, layout, newLen)
+            alloc.realloc(oldPtr, layout, newLen)
         }
     if (ptr.isNull()) {
         // Print a nice message in debug mode, but in release mode don't
         // pull in so many dependencies related to printing so just emit an
         // `unreachable` instruction.
         if (false) {
-            handleAllocError(layout)
+            alloc.handleAllocError(layout)
         } else {
             abortInternal()
         }

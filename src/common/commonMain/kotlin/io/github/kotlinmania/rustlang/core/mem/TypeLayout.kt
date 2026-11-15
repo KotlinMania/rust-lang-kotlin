@@ -49,6 +49,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmVolatileStoreU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmVolatileStoreU8
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.slice.flushMutableSliceWriteBacks
 
 public fun alignUpBytes(offset: Long, align: Long): Long {
     if (align <= 1L) return offset
@@ -202,7 +203,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 1L
             override val alignBytes: Long = 1L
             override fun readNative(addr: Long): Boolean = kmLoadU8(addr) != 0u.toUByte()
-            override fun writeNative(addr: Long, value: Boolean): Unit = kmStoreU8(addr, if (value) 1u else 0u)
+            override fun writeNative(addr: Long, value: Boolean) {
+                kmStoreU8(addr, if (value) 1u else 0u)
+                flushMutableSliceWriteBacks(addr, 1L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Boolean = buf[offset] != 0.toByte()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Boolean) {
                 buf[offset] = if (value) 1 else 0
@@ -218,7 +222,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 1L
             override val alignBytes: Long = 1L
             override fun readNative(addr: Long): Byte = kmLoadU8(addr).toByte()
-            override fun writeNative(addr: Long, value: Byte): Unit = kmStoreU8(addr, value.toUByte())
+            override fun writeNative(addr: Long, value: Byte) {
+                kmStoreU8(addr, value.toUByte())
+                flushMutableSliceWriteBacks(addr, 1L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Byte = buf[offset]
             override fun writeBytes(buf: ByteArray, offset: Int, value: Byte) {
                 buf[offset] = value
@@ -234,7 +241,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 1L
             override val alignBytes: Long = 1L
             override fun readNative(addr: Long): UByte = kmLoadU8(addr)
-            override fun writeNative(addr: Long, value: UByte): Unit = kmStoreU8(addr, value)
+            override fun writeNative(addr: Long, value: UByte) {
+                kmStoreU8(addr, value)
+                flushMutableSliceWriteBacks(addr, 1L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): UByte = buf[offset].toUByte()
             override fun writeBytes(buf: ByteArray, offset: Int, value: UByte) {
                 buf[offset] = value.toByte()
@@ -250,7 +260,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 2L
             override val alignBytes: Long = 2L
             override fun readNative(addr: Long): Short = kmLoadU16(addr).toShort()
-            override fun writeNative(addr: Long, value: Short): Unit = kmStoreU16(addr, value.toUShort())
+            override fun writeNative(addr: Long, value: Short) {
+                kmStoreU16(addr, value.toUShort())
+                flushMutableSliceWriteBacks(addr, 2L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Short = kmBytesLoadU16Le(buf, offset).toShort()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Short): Unit =
                 kmBytesStoreU16Le(buf, offset, value.toUShort())
@@ -265,7 +278,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 2L
             override val alignBytes: Long = 2L
             override fun readNative(addr: Long): UShort = kmLoadU16(addr)
-            override fun writeNative(addr: Long, value: UShort): Unit = kmStoreU16(addr, value)
+            override fun writeNative(addr: Long, value: UShort) {
+                kmStoreU16(addr, value)
+                flushMutableSliceWriteBacks(addr, 2L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): UShort = kmBytesLoadU16Le(buf, offset)
             override fun writeBytes(buf: ByteArray, offset: Int, value: UShort): Unit =
                 kmBytesStoreU16Le(buf, offset, value)
@@ -280,7 +296,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 4L
             override val alignBytes: Long = 4L
             override fun readNative(addr: Long): Int = kmLoadU32(addr).toInt()
-            override fun writeNative(addr: Long, value: Int): Unit = kmStoreU32(addr, value.toUInt())
+            override fun writeNative(addr: Long, value: Int) {
+                kmStoreU32(addr, value.toUInt())
+                flushMutableSliceWriteBacks(addr, 4L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Int = kmBytesLoadU32Le(buf, offset).toInt()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Int): Unit =
                 kmBytesStoreU32Le(buf, offset, value.toUInt())
@@ -295,7 +314,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 4L
             override val alignBytes: Long = 4L
             override fun readNative(addr: Long): UInt = kmLoadU32(addr)
-            override fun writeNative(addr: Long, value: UInt): Unit = kmStoreU32(addr, value)
+            override fun writeNative(addr: Long, value: UInt) {
+                kmStoreU32(addr, value)
+                flushMutableSliceWriteBacks(addr, 4L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): UInt = kmBytesLoadU32Le(buf, offset)
             override fun writeBytes(buf: ByteArray, offset: Int, value: UInt): Unit =
                 kmBytesStoreU32Le(buf, offset, value)
@@ -310,7 +332,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 4L
             override val alignBytes: Long = 4L
             override fun readNative(addr: Long): Char = kmLoadU32(addr).toInt().toChar()
-            override fun writeNative(addr: Long, value: Char): Unit = kmStoreU32(addr, value.code.toUInt())
+            override fun writeNative(addr: Long, value: Char) {
+                kmStoreU32(addr, value.code.toUInt())
+                flushMutableSliceWriteBacks(addr, 4L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Char = kmBytesLoadU32Le(buf, offset).toInt().toChar()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Char): Unit =
                 kmBytesStoreU32Le(buf, offset, value.code.toUInt())
@@ -325,7 +350,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 4L
             override val alignBytes: Long = 4L
             override fun readNative(addr: Long): Float = kmLoadF32(addr)
-            override fun writeNative(addr: Long, value: Float): Unit = kmStoreF32(addr, value)
+            override fun writeNative(addr: Long, value: Float) {
+                kmStoreF32(addr, value)
+                flushMutableSliceWriteBacks(addr, 4L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Float = Float.fromBits(kmBytesLoadU32Le(buf, offset).toInt())
             override fun writeBytes(buf: ByteArray, offset: Int, value: Float): Unit =
                 kmBytesStoreU32Le(buf, offset, value.toRawBits().toUInt())
@@ -340,7 +368,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 8L
             override val alignBytes: Long = 8L
             override fun readNative(addr: Long): Long = kmLoadU64(addr).toLong()
-            override fun writeNative(addr: Long, value: Long): Unit = kmStoreU64(addr, value.toULong())
+            override fun writeNative(addr: Long, value: Long) {
+                kmStoreU64(addr, value.toULong())
+                flushMutableSliceWriteBacks(addr, 8L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Long = kmBytesLoadU64Le(buf, offset).toLong()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Long): Unit =
                 kmBytesStoreU64Le(buf, offset, value.toULong())
@@ -355,7 +386,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 8L
             override val alignBytes: Long = 8L
             override fun readNative(addr: Long): ULong = kmLoadU64(addr)
-            override fun writeNative(addr: Long, value: ULong): Unit = kmStoreU64(addr, value)
+            override fun writeNative(addr: Long, value: ULong) {
+                kmStoreU64(addr, value)
+                flushMutableSliceWriteBacks(addr, 8L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): ULong = kmBytesLoadU64Le(buf, offset)
             override fun writeBytes(buf: ByteArray, offset: Int, value: ULong): Unit =
                 kmBytesStoreU64Le(buf, offset, value)
@@ -370,7 +404,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 8L
             override val alignBytes: Long = 8L
             override fun readNative(addr: Long): Double = kmLoadF64(addr)
-            override fun writeNative(addr: Long, value: Double): Unit = kmStoreF64(addr, value)
+            override fun writeNative(addr: Long, value: Double) {
+                kmStoreF64(addr, value)
+                flushMutableSliceWriteBacks(addr, 8L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Double = Double.fromBits(kmBytesLoadU64Le(buf, offset).toLong())
             override fun writeBytes(buf: ByteArray, offset: Int, value: Double): Unit =
                 kmBytesStoreU64Le(buf, offset, value.toRawBits().toULong())
@@ -385,7 +422,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 2L
             override val alignBytes: Long = 2L
             override fun readNative(addr: Long): F16 = F16.fromBits(kmLoadU16(addr))
-            override fun writeNative(addr: Long, value: F16): Unit = kmStoreU16(addr, value.toBits())
+            override fun writeNative(addr: Long, value: F16) {
+                kmStoreU16(addr, value.toBits())
+                flushMutableSliceWriteBacks(addr, 2L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): F16 = F16.fromBits(kmBytesLoadU16Le(buf, offset))
             override fun writeBytes(buf: ByteArray, offset: Int, value: F16): Unit =
                 kmBytesStoreU16Le(buf, offset, value.toBits())
@@ -402,7 +442,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 8L
             override val alignBytes: Long = 8L
             override fun readNative(addr: Long): Int = kmLoadU64(addr).toLong().toInt()
-            override fun writeNative(addr: Long, value: Int): Unit = kmStoreU64(addr, value.toLong().toULong())
+            override fun writeNative(addr: Long, value: Int) {
+                kmStoreU64(addr, value.toLong().toULong())
+                flushMutableSliceWriteBacks(addr, 8L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Int = kmBytesLoadU64Le(buf, offset).toLong().toInt()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Int): Unit =
                 kmBytesStoreU64Le(buf, offset, value.toLong().toULong())
@@ -417,7 +460,10 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 8L
             override val alignBytes: Long = 8L
             override fun readNative(addr: Long): Int = kmLoadU64(addr).toInt()
-            override fun writeNative(addr: Long, value: Int): Unit = kmStoreU64(addr, value.toUInt().toULong())
+            override fun writeNative(addr: Long, value: Int) {
+                kmStoreU64(addr, value.toUInt().toULong())
+                flushMutableSliceWriteBacks(addr, 8L)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Int = kmBytesLoadU64Le(buf, offset).toInt()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Int): Unit =
                 kmBytesStoreU64Le(buf, offset, value.toUInt().toULong())
@@ -546,6 +592,7 @@ public object PrimitiveLayouts {
             override fun writeNative(addr: Long, value: T) {
                 kmStoreU64(addr, lowOf(value))
                 kmStoreU64(addr + 8L, highOf(value))
+                flushMutableSliceWriteBacks(addr, 16L)
             }
             override fun readBytes(buf: ByteArray, offset: Int): T {
                 val lo = kmBytesLoadU64Le(buf, offset)
@@ -574,6 +621,7 @@ public object PrimitiveLayouts {
             override fun writeNative(addr: Long, value: T) {
                 kmStoreU64(addr, lowOf(value))
                 kmStoreU64(addr + 8L, highOf(value).toULong())
+                flushMutableSliceWriteBacks(addr, 16L)
             }
             override fun readBytes(buf: ByteArray, offset: Int): T {
                 val lo = kmBytesLoadU64Le(buf, offset)
@@ -1355,13 +1403,27 @@ public fun <Src, Dst> transmuteWithLayouts(
     return out
 }
 
+public fun <Src, Dst> transmute(
+    value: Src,
+    srcLayout: TypeLayout<Src> = ObjectSlotLayout(),
+    dstLayout: TypeLayout<Dst> = ObjectSlotLayout(),
+): Dst = transmuteWithLayouts(value, srcLayout, dstLayout)
+
+public fun <Src, Dst> transmuteUnchecked(
+    value: Src,
+    srcLayout: TypeLayout<Src> = ObjectSlotLayout(),
+    dstLayout: TypeLayout<Dst> = ObjectSlotLayout(),
+): Dst = transmuteWithLayouts(value, srcLayout, dstLayout)
+
 public fun <T> copyMemoryValues(
     src: ConstPtr,
     dst: MutPtr,
     count: Long,
     layout: TypeLayout<T>,
 ) {
-    kmCopyNonoverlapping(dst.rawAddress, src.rawAddress, count * layout.sizeBytes)
+    val bytes = count * layout.sizeBytes
+    kmCopyNonoverlapping(dst.rawAddress, src.rawAddress, bytes)
+    flushMutableSliceWriteBacks(dst.rawAddress, bytes)
 }
 
 public fun <T> copyOverlappingMemoryValues(
@@ -1370,7 +1432,9 @@ public fun <T> copyOverlappingMemoryValues(
     count: Long,
     layout: TypeLayout<T>,
 ) {
-    kmCopy(dst.rawAddress, src.rawAddress, count * layout.sizeBytes)
+    val bytes = count * layout.sizeBytes
+    kmCopy(dst.rawAddress, src.rawAddress, bytes)
+    flushMutableSliceWriteBacks(dst.rawAddress, bytes)
 }
 
 public fun <T> atomicLoadWithLayout(

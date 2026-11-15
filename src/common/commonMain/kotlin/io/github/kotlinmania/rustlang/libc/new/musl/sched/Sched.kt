@@ -1,13 +1,13 @@
 // port-lint: source new/musl/sched.rs
 package io.github.kotlinmania.rustlang.libc.new.musl.sched
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.TimeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.TimeT
 
 public data class CAnonSchedParamReserved2(
     public var reserved1: TimeT = 0L,

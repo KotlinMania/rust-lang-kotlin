@@ -8,14 +8,15 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.Error
-import io.github.kotlinmania.rustlang.std.os.windows.ffi.OsStringExt
-import io.github.kotlinmania.rustlang.std.sys.pal.c
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.io.Error
+import io.github.kotlinmania.rustlang.os.windows.ffi.OsStringExt
+import io.github.kotlinmania.rustlang.sys.osstr.bytes.Slice
+import io.github.kotlinmania.rustlang.sys.pal.c
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.sys.pal.windows.fillUtf16Buf
+import io.github.kotlinmania.rustlang.sys.pal.windows.toU16s
 
 public open class Env internal constructor(
     baseCtorArg: MutPtr,
@@ -134,14 +135,14 @@ public open class EnvIterator internal constructor(
                 // this point (because the empty string terminates the array of
                 // environment variables), we can safely slice.
                 val pos =
-                    when (val matchVal = (((s).slice(1 until s.size)).indexOfFirst({ u -> u == 61u.toUShort() }).takeIf { it >= 0 })?.let({ p1 -> p1 + 1 })) {
+                    when (val matchVal = (((s).subList(1, (s).size)).indexOfFirst({ u -> u == 61u.toUShort() }).takeIf { it >= 0 })?.let({ p1 -> p1 + 1 })) {
                         null -> { continue }
                         else -> {
                             val p1 = matchVal
                             p1
                         }
                     }
-                return Pair(OsStringExt.fromWide(((s).slice(0 until pos))), OsStringExt.fromWide(((s).slice(pos + 1 until s.size))))
+                return Pair(OsStringExt.fromWide(((s).subList(0, pos))), OsStringExt.fromWide(((s).subList(pos + 1, (s).size))))
             }
         }
     }
@@ -192,8 +193,8 @@ public fun getenv(k: OsStr): OsString? {
 public fun setenv(k: OsStr, v: OsStr): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
     // SAFETY: We ensure that k and v are null-terminated wide strings.
     return run {
-        val k1 = when (val tryResult = toU16s(k)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        val v1 = when (val tryResult = toU16s(v)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val k1 = when (val tryResult = toU16s(k)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val v1 = when (val tryResult = toU16s(v)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         cvt(c.SetEnvironmentVariableW(k1.asPtr(), v1.asPtr())).map({ Unit })
     }
 }
@@ -201,7 +202,7 @@ public fun setenv(k: OsStr, v: OsStr): Result<Unit, io.github.kotlinmania.rustla
 public fun unsetenv(n: OsStr): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
     // SAFETY: We ensure that v is a null-terminated wide strings.
     return run {
-        val v = when (val tryResult = toU16s(n)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val v = when (val tryResult = toU16s(n)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         cvt(c.SetEnvironmentVariableW(v.asPtr(), ConstPtr(0L))).map({ Unit })
     }
 }

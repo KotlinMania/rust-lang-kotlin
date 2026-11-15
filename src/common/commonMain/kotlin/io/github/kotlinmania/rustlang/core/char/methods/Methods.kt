@@ -1,18 +1,22 @@
 // port-lint: source char/methods.rs
 package io.github.kotlinmania.rustlang.core.char.methods
 
-import io.github.kotlinmania.rustlang.core.char.CharCase
-import io.github.kotlinmania.rustlang.core.char.EscapeDebug
-import io.github.kotlinmania.rustlang.core.char.EscapeDefault
-import io.github.kotlinmania.rustlang.core.char.EscapeUnicode
-import io.github.kotlinmania.rustlang.core.char.MAX_ONE_B
-import io.github.kotlinmania.rustlang.core.char.MAX_THREE_B
-import io.github.kotlinmania.rustlang.core.char.MAX_TWO_B
-import io.github.kotlinmania.rustlang.core.char.TAG_CONT
-import io.github.kotlinmania.rustlang.core.char.TAG_FOUR_B
-import io.github.kotlinmania.rustlang.core.char.TAG_THREE_B
-import io.github.kotlinmania.rustlang.core.char.TAG_TWO_B
-import io.github.kotlinmania.rustlang.core.char.decode.DecodeUtf16
+import io.github.kotlinmania.rustlang.char.CharCase
+import io.github.kotlinmania.rustlang.char.EscapeDebug
+import io.github.kotlinmania.rustlang.char.EscapeDefault
+import io.github.kotlinmania.rustlang.char.EscapeUnicode
+import io.github.kotlinmania.rustlang.char.MAX_ONE_B
+import io.github.kotlinmania.rustlang.char.MAX_THREE_B
+import io.github.kotlinmania.rustlang.char.MAX_TWO_B
+import io.github.kotlinmania.rustlang.char.TAG_CONT
+import io.github.kotlinmania.rustlang.char.TAG_FOUR_B
+import io.github.kotlinmania.rustlang.char.TAG_THREE_B
+import io.github.kotlinmania.rustlang.char.TAG_TWO_B
+import io.github.kotlinmania.rustlang.char.ToCasefold
+import io.github.kotlinmania.rustlang.char.ToLowercase
+import io.github.kotlinmania.rustlang.char.ToTitlecase
+import io.github.kotlinmania.rustlang.char.ToUppercase
+import io.github.kotlinmania.rustlang.char.decode.DecodeUtf16
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphanumeric
@@ -28,27 +32,25 @@ import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8UncheckedMut
 import io.github.kotlinmania.rustlang.core.str.rustToDigit
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
-import io.github.kotlinmania.rustlang.core.unicode.Alphabetic
-import io.github.kotlinmania.rustlang.core.unicode.CaseIgnorable
-import io.github.kotlinmania.rustlang.core.unicode.Cf
-import io.github.kotlinmania.rustlang.core.unicode.CnPlanes03
-import io.github.kotlinmania.rustlang.core.unicode.DefaultIgnorableCodePoint
-import io.github.kotlinmania.rustlang.core.unicode.GraphemeExtend
-import io.github.kotlinmania.rustlang.core.unicode.Lowercase
-import io.github.kotlinmania.rustlang.core.unicode.Lt
-import io.github.kotlinmania.rustlang.core.unicode.UNICODE_VERSION
-import io.github.kotlinmania.rustlang.core.unicode.Uppercase
-import io.github.kotlinmania.rustlang.core.unicode.WhiteSpace
-import io.github.kotlinmania.rustlang.core.unicode.XidContinue
-import io.github.kotlinmania.rustlang.core.unicode.XidStart
-import io.github.kotlinmania.rustlang.core.unicode.conversions
+import io.github.kotlinmania.rustlang.panic.constPanic
+import io.github.kotlinmania.rustlang.str.converts.fromUtf8UncheckedMut
+import io.github.kotlinmania.rustlang.unicode.Alphabetic
+import io.github.kotlinmania.rustlang.unicode.CaseIgnorable
+import io.github.kotlinmania.rustlang.unicode.Cf
+import io.github.kotlinmania.rustlang.unicode.CnPlanes03
+import io.github.kotlinmania.rustlang.unicode.DefaultIgnorableCodePoint
+import io.github.kotlinmania.rustlang.unicode.GraphemeExtend
+import io.github.kotlinmania.rustlang.unicode.Lowercase
+import io.github.kotlinmania.rustlang.unicode.Lt
+import io.github.kotlinmania.rustlang.unicode.UNICODE_VERSION
+import io.github.kotlinmania.rustlang.unicode.Uppercase
+import io.github.kotlinmania.rustlang.unicode.WhiteSpace
+import io.github.kotlinmania.rustlang.unicode.XidContinue
+import io.github.kotlinmania.rustlang.unicode.XidStart
 
 // impl char {}
 
@@ -214,7 +216,7 @@ public fun <I : Iterable<UShort>> Char.Companion.decodeUtf16(iter: I): DecodeUtf
  * check(null == c)
  * ```
  */
-public fun Char.Companion.fromU32(i: UInt): Char? = io.github.kotlinmania.rustlang.core.char.convert.fromU32(i)
+public fun Char.Companion.fromU32(i: UInt): Char? = io.github.kotlinmania.rustlang.char.fromU32(i)
 
 /**
  * Converts a `UInt` to a `char`, ignoring validity.
@@ -251,7 +253,7 @@ public fun Char.Companion.fromU32(i: UInt): Char? = io.github.kotlinmania.rustla
  */
 public fun Char.Companion.fromU32Unchecked(i: UInt): Char {
     // SAFETY: the safety contract must be upheld by the caller.
-    return io.github.kotlinmania.rustlang.core.char.convert.fromU32Unchecked(i)
+    return io.github.kotlinmania.rustlang.char.fromU32Unchecked(i)
 }
 
 /**
@@ -295,7 +297,7 @@ public fun Char.Companion.fromU32Unchecked(i: UInt): Char {
  * val c = Char.fromDigit(1, 37)
  * ```
  */
-public fun Char.Companion.fromDigit(num: UInt, radix: UInt): Char? = io.github.kotlinmania.rustlang.core.char.convert.fromDigit(num, radix)
+public fun Char.Companion.fromDigit(num: UInt, radix: UInt): Char? = io.github.kotlinmania.rustlang.char.fromDigit(num, radix)
 
 /**
  * Checks if a `char` is a digit in the given radix.
@@ -1407,7 +1409,7 @@ public fun Char.isCaseIgnorable(): Boolean =
  *
  * [SpecialCasing.txt]: https://www.unicode.org/Public/UCD/latest/ucd/SpecialCasing.txt
  */
-public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(conversions.toLower(this)))
+public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(toLower(this)))
 
 /**
  * Returns an iterator that yields the titlecase mapping of this `char` as one or more
@@ -1590,7 +1592,7 @@ public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(con
  *
  * [toUppercase]: Self.toUppercase()
  */
-public fun Char.toTitlecase(): ToTitlecase = ToTitlecase(CaseMappingIter.new(conversions.toTitle(this)))
+public fun Char.toTitlecase(): ToTitlecase = ToTitlecase(CaseMappingIter.new(toTitle(this)))
 
 /**
  * Returns an iterator that yields the uppercase mapping of this `char` as one or more
@@ -1693,7 +1695,7 @@ public fun Char.toTitlecase(): ToTitlecase = ToTitlecase(CaseMappingIter.new(con
  *
  * [toTitlecase]: Self.toTitlecase()
  */
-public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(conversions.toUpper(this)))
+public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(toUpper(this)))
 
 /**
  * Returns an iterator that yields the case folding of this `char` as one or more
@@ -1799,7 +1801,7 @@ public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(con
  *
  * [normalization]: https://www.unicode.org/faq/normalization.html
  */
-public fun Char.toCasefoldUnnormalized(): ToCasefold = ToCasefold(CaseMappingIter.new(conversions.toCasefold(this)))
+public fun Char.toCasefoldUnnormalized(): ToCasefold = ToCasefold(CaseMappingIter.new(toCasefold(this)))
 
 /**
  * Returns the code point value as a `UInt`.
@@ -1840,7 +1842,7 @@ public fun Char.isAscii(): Boolean = this.toUInt() <= 0x7Fu
  * along to something else that can take [ascii.Char] rather than
  * needing to check again for itself whether the value is in ASCII.
  */
-public fun Char.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? =
+public fun Char.asAscii(): io.github.kotlinmania.rustlang.ascii.Char? =
     if (this.isAscii()) {
         // SAFETY: Just checked that this is ASCII.
         Char.fromU8Unchecked(this.toUByte())
@@ -1856,8 +1858,8 @@ public fun Char.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? =
  *
  * This char must be within the ASCII range, or else this is UB.
  */
-public fun Char.asAsciiUnchecked(): io.github.kotlinmania.rustlang.core.ascii.Char {
-    assertUnsafePrecondition(checkLibraryUb, "as_ascii_unchecked requires that the char is valid ASCII", it, this, it, isAscii)
+public fun Char.asAsciiUnchecked(): io.github.kotlinmania.rustlang.ascii.Char {
+    Unit
     // SAFETY: the caller promised that this char is ASCII.
     return Char.fromU8Unchecked(this.toUByte())
 }

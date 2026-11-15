@@ -2,418 +2,418 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.IdT
-import io.github.kotlinmania.rustlang.libc.MqdT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.Sigval
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Off64T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuAdjtimex
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuAsctimeR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuBacktrace
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuBacktraceSymbols
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuBacktraceSymbolsFd
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuClockAdjtime
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuCloseRange
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuCtermid
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuCtimeR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuDirname
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuDladdr1
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuDlinfo
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuDlmopen
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuDlvsym
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuEaccess
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuEndutxent
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuEpollPwait2
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuEuidaccess
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuExecveat
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuExplicitBzero
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuFanotifyMark
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuFgetgrentR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuFgetpwentR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuFgetspentR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetENVIRON
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetauxval
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetentropy
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetgrentR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetmntentR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetnetbyaddrR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetnetbynameR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetnetentR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetpriority
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetpt
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetpwentR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetrandom
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetrlimit
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetrlimit64
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetspentR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGettimeofday
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetutxent
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetutxid
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGetutxline
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGlob64
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGlobfree64
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGnuBasename
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGnuGetLibcRelease
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuGnuGetLibcVersion
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuMallocInfo
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuMallocStats
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuMallocTrim
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuMallocUsableSize
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuMallopt
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuMemfdCreate
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuMempcpy
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuMlock2
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuMqNotify
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuNtpAdjtime
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuNtpGettime
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPosixBasename
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddchdirNp
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddclosefromNp
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddfchdirNp
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddtcsetpgrpNp
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPreadv2
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPreadv64v2
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPrlimit
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPrlimit64
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPthreadAttrGetaffinityNp
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPthreadAttrSetaffinityNp
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPthreadRwlockattrGetkindNp
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPthreadRwlockattrSetkindNp
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPthreadTimedjoinNp
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPthreadTryjoinNp
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPtrace
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPutgrent
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPutpwent
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPututxline
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPwritev2
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuPwritev64v2
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuQsortR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuReallocarray
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuRecvmmsg
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuRenameat2
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuSendmmsg
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuSetENVIRON
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuSethostid
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuSetpriority
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuSetrlimit
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuSetrlimit64
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuSetutxent
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuSgetspentR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuTgkill
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuUtmpname
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.libcUnixLinuxlikeLinuxGnuUtmpxname
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuAdjtimex
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuAsctimeR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuBacktrace
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuBacktraceSymbols
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuBacktraceSymbolsFd
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuClockAdjtime
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuCloseRange
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuCtermid
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuCtimeR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuDirname
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuDladdr1
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuDlinfo
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuDlmopen
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuDlvsym
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuEaccess
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuEndutxent
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuEpollPwait2
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuEuidaccess
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuExecveat
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuExplicitBzero
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuFanotifyMark
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuFgetgrentR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuFgetpwentR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuFgetspentR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetENVIRON
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetauxval
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetentropy
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetgrentR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetmntentR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetnetbyaddrR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetnetbynameR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetnetentR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetpriority
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetpt
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetpwentR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetrandom
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetrlimit
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetrlimit64
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetspentR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGettimeofday
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetutxent
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetutxid
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGetutxline
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGlob64
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGlobfree64
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGnuBasename
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGnuGetLibcRelease
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuGnuGetLibcVersion
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuMallocInfo
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuMallocStats
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuMallocTrim
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuMallocUsableSize
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuMallopt
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuMemfdCreate
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuMempcpy
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuMlock2
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuMqNotify
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuNtpAdjtime
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuNtpGettime
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPosixBasename
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddchdirNp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddclosefromNp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddfchdirNp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddtcsetpgrpNp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPreadv2
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPreadv64v2
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPrlimit
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPrlimit64
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPthreadAttrGetaffinityNp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPthreadAttrSetaffinityNp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPthreadRwlockattrGetkindNp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPthreadRwlockattrSetkindNp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPthreadTimedjoinNp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPthreadTryjoinNp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPtrace
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPutgrent
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPutpwent
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPututxline
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPwritev2
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuPwritev64v2
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuQsortR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuReallocarray
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuRecvmmsg
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuRenameat2
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuSendmmsg
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuSetENVIRON
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuSethostid
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuSetpriority
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuSetrlimit
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuSetrlimit64
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuSetutxent
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuSgetspentR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuTgkill
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuUtmpname
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.cinterop.rustlangLibcUnixLinuxlikeLinuxGnuUtmpxname
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.Sigval
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.IdT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.MqdT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Off64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toLong
 
 public actual var ENVIRON: MutPtr
-    get() = MutPtr(libcUnixLinuxlikeLinuxGnuGetENVIRON()?.toLong() ?: 0L)
+    get() = MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuGetENVIRON()?.toLong() ?: 0L)
     set(value) {
-        libcUnixLinuxlikeLinuxGnuSetENVIRON(value.rawAddress.toCPointer<ByteVar>())
+        rustlangLibcUnixLinuxlikeLinuxGnuSetENVIRON(value.rawAddress.toCPointer<ByteVar>())
     }
 
 public actual fun fgetspentR(fp: MutPtr, spbuf: MutPtr, buf: MutPtr, buflen: SizeT, spbufp: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuFgetspentR(fp.rawAddress.toCPointer<ByteVar>(), spbuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, spbufp.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuFgetspentR(fp.rawAddress.toCPointer<ByteVar>(), spbuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, spbufp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun sgetspentR(s: ConstPtr, spbuf: MutPtr, buf: MutPtr, buflen: SizeT, spbufp: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuSgetspentR(s.rawAddress.toCPointer<ByteVar>(), spbuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, spbufp.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuSgetspentR(s.rawAddress.toCPointer<ByteVar>(), spbuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, spbufp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getspentR(spbuf: MutPtr, buf: MutPtr, buflen: SizeT, spbufp: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuGetspentR(spbuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, spbufp.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuGetspentR(spbuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, spbufp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun qsortR(base: MutPtr, num: SizeT, size: SizeT, compar: QsortRComparCallback?, arg: MutPtr) {
-    libcUnixLinuxlikeLinuxGnuQsortR(base.rawAddress.toCPointer<ByteVar>(), num, size, 0L.toCPointer<ByteVar>(), arg.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuQsortR(base.rawAddress.toCPointer<ByteVar>(), num, size, 0L.toCPointer<ByteVar>(), arg.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun sendmmsg(sockfd: CInt, msgvec: MutPtr, vlen: CUint, flags: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuSendmmsg(sockfd, msgvec.rawAddress.toCPointer<ByteVar>(), vlen, flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuSendmmsg(sockfd, msgvec.rawAddress.toCPointer<ByteVar>(), vlen, flags)
 
 public actual fun recvmmsg(sockfd: CInt, msgvec: MutPtr, vlen: CUint, flags: CInt, timeout: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuRecvmmsg(sockfd, msgvec.rawAddress.toCPointer<ByteVar>(), vlen, flags, timeout.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuRecvmmsg(sockfd, msgvec.rawAddress.toCPointer<ByteVar>(), vlen, flags, timeout.rawAddress.toCPointer<ByteVar>())
 
-public actual fun getrlimit64(resource: RlimitResourceT, rlim: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuGetrlimit64(resource, rlim.rawAddress.toCPointer<ByteVar>())
+public actual fun getrlimit64(resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, rlim: MutPtr): CInt =
+    rustlangLibcUnixLinuxlikeLinuxGnuGetrlimit64(resource, rlim.rawAddress.toCPointer<ByteVar>())
 
-public actual fun setrlimit64(resource: RlimitResourceT, rlim: ConstPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuSetrlimit64(resource, rlim.rawAddress.toCPointer<ByteVar>())
+public actual fun setrlimit64(resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, rlim: ConstPtr): CInt =
+    rustlangLibcUnixLinuxlikeLinuxGnuSetrlimit64(resource, rlim.rawAddress.toCPointer<ByteVar>())
 
-public actual fun getrlimit(resource: RlimitResourceT, rlim: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuGetrlimit(resource, rlim.rawAddress.toCPointer<ByteVar>())
+public actual fun getrlimit(resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, rlim: MutPtr): CInt =
+    rustlangLibcUnixLinuxlikeLinuxGnuGetrlimit(resource, rlim.rawAddress.toCPointer<ByteVar>())
 
-public actual fun setrlimit(resource: RlimitResourceT, rlim: ConstPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuSetrlimit(resource, rlim.rawAddress.toCPointer<ByteVar>())
+public actual fun setrlimit(resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, rlim: ConstPtr): CInt =
+    rustlangLibcUnixLinuxlikeLinuxGnuSetrlimit(resource, rlim.rawAddress.toCPointer<ByteVar>())
 
-public actual fun prlimit(pid: PidT, resource: RlimitResourceT, newLimit: ConstPtr, oldLimit: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuPrlimit(pid, resource, newLimit.rawAddress.toCPointer<ByteVar>(), oldLimit.rawAddress.toCPointer<ByteVar>())
+public actual fun prlimit(pid: PidT, resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, newLimit: ConstPtr, oldLimit: MutPtr): CInt =
+    rustlangLibcUnixLinuxlikeLinuxGnuPrlimit(pid, resource, newLimit.rawAddress.toCPointer<ByteVar>(), oldLimit.rawAddress.toCPointer<ByteVar>())
 
-public actual fun prlimit64(pid: PidT, resource: RlimitResourceT, newLimit: ConstPtr, oldLimit: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuPrlimit64(pid, resource, newLimit.rawAddress.toCPointer<ByteVar>(), oldLimit.rawAddress.toCPointer<ByteVar>())
+public actual fun prlimit64(pid: PidT, resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, newLimit: ConstPtr, oldLimit: MutPtr): CInt =
+    rustlangLibcUnixLinuxlikeLinuxGnuPrlimit64(pid, resource, newLimit.rawAddress.toCPointer<ByteVar>(), oldLimit.rawAddress.toCPointer<ByteVar>())
 
 public actual fun utmpname(file: ConstPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuUtmpname(file.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuUtmpname(file.rawAddress.toCPointer<ByteVar>())
 
 public actual fun utmpxname(file: ConstPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuUtmpxname(file.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuUtmpxname(file.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getutxent(): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuGetutxent()?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuGetutxent()?.toLong() ?: 0L)
 
 public actual fun getutxid(ut: ConstPtr): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuGetutxid(ut.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuGetutxid(ut.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun getutxline(ut: ConstPtr): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuGetutxline(ut.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuGetutxline(ut.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun pututxline(ut: ConstPtr): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuPututxline(ut.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuPututxline(ut.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun setutxent() {
-    libcUnixLinuxlikeLinuxGnuSetutxent()
+    rustlangLibcUnixLinuxlikeLinuxGnuSetutxent()
 }
 
 public actual fun endutxent() {
-    libcUnixLinuxlikeLinuxGnuEndutxent()
+    rustlangLibcUnixLinuxlikeLinuxGnuEndutxent()
 }
 
 public actual fun getpt(): CInt =
-    libcUnixLinuxlikeLinuxGnuGetpt()
+    rustlangLibcUnixLinuxlikeLinuxGnuGetpt()
 
 public actual fun mallopt(param: CInt, value: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuMallopt(param, value)
+    rustlangLibcUnixLinuxlikeLinuxGnuMallopt(param, value)
 
 public actual fun gettimeofday(tp: MutPtr, tz: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuGettimeofday(tp.rawAddress.toCPointer<ByteVar>(), tz.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuGettimeofday(tp.rawAddress.toCPointer<ByteVar>(), tz.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getentropy(buf: MutPtr, buflen: SizeT): CInt =
-    libcUnixLinuxlikeLinuxGnuGetentropy(buf.rawAddress.toCPointer<ByteVar>(), buflen)
+    rustlangLibcUnixLinuxlikeLinuxGnuGetentropy(buf.rawAddress.toCPointer<ByteVar>(), buflen)
 
 public actual fun getrandom(buf: MutPtr, buflen: SizeT, flags: CUint): SsizeT =
-    libcUnixLinuxlikeLinuxGnuGetrandom(buf.rawAddress.toCPointer<ByteVar>(), buflen, flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuGetrandom(buf.rawAddress.toCPointer<ByteVar>(), buflen, flags)
 
 public actual fun getauxval(type: CUlong): CUlong =
-    libcUnixLinuxlikeLinuxGnuGetauxval(type)
+    rustlangLibcUnixLinuxlikeLinuxGnuGetauxval(type)
 
 public actual fun adjtimex(buf: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuAdjtimex(buf.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuAdjtimex(buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun ntpAdjtime(buf: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuNtpAdjtime(buf.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuNtpAdjtime(buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun ntpGettime(buf: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuNtpGettime(buf.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuNtpGettime(buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun clockAdjtime(clkId: ClockidT, buf: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuClockAdjtime(clkId.toInt(), buf.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuClockAdjtime(clkId, buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fanotifyMark(fd: CInt, flags: CUint, mask: ULong, dirfd: CInt, path: ConstPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuFanotifyMark(fd, flags, mask, dirfd, path.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuFanotifyMark(fd, flags, mask, dirfd, path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun preadv2(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT, flags: CInt): SsizeT =
-    libcUnixLinuxlikeLinuxGnuPreadv2(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset, flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuPreadv2(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset, flags)
 
 public actual fun pwritev2(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT, flags: CInt): SsizeT =
-    libcUnixLinuxlikeLinuxGnuPwritev2(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset, flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuPwritev2(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset, flags)
 
 public actual fun preadv64v2(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: Off64T, flags: CInt): SsizeT =
-    libcUnixLinuxlikeLinuxGnuPreadv64v2(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset, flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuPreadv64v2(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset, flags)
 
 public actual fun pwritev64v2(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: Off64T, flags: CInt): SsizeT =
-    libcUnixLinuxlikeLinuxGnuPwritev64v2(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset, flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuPwritev64v2(fd, iov.rawAddress.toCPointer<ByteVar>(), iovcnt, offset, flags)
 
 public actual fun renameat2(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CUint): CInt =
-    libcUnixLinuxlikeLinuxGnuRenameat2(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>(), flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuRenameat2(olddirfd, oldpath.rawAddress.toCPointer<ByteVar>(), newdirfd, newpath.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun explicitBzero(s: MutPtr, len: SizeT) {
-    libcUnixLinuxlikeLinuxGnuExplicitBzero(s.rawAddress.toCPointer<ByteVar>(), len)
+    rustlangLibcUnixLinuxlikeLinuxGnuExplicitBzero(s.rawAddress.toCPointer<ByteVar>(), len)
 }
 
 public actual fun reallocarray(ptr: MutPtr, nmemb: SizeT, size: SizeT): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuReallocarray(ptr.rawAddress.toCPointer<ByteVar>(), nmemb, size)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuReallocarray(ptr.rawAddress.toCPointer<ByteVar>(), nmemb, size)?.toLong() ?: 0L)
 
 public actual fun ctermid(s: MutPtr): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuCtermid(s.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuCtermid(s.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun backtrace(buf: MutPtr, sz: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuBacktrace(buf.rawAddress.toCPointer<ByteVar>(), sz)
+    rustlangLibcUnixLinuxlikeLinuxGnuBacktrace(buf.rawAddress.toCPointer<ByteVar>(), sz)
 
 public actual fun backtraceSymbols(buffer: ConstPtr, len: CInt): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuBacktraceSymbols(buffer.rawAddress.toCPointer<ByteVar>(), len)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuBacktraceSymbols(buffer.rawAddress.toCPointer<ByteVar>(), len)?.toLong() ?: 0L)
 
 public actual fun backtraceSymbolsFd(buffer: ConstPtr, len: CInt, fd: CInt) {
-    libcUnixLinuxlikeLinuxGnuBacktraceSymbolsFd(buffer.rawAddress.toCPointer<ByteVar>(), len, fd)
+    rustlangLibcUnixLinuxlikeLinuxGnuBacktraceSymbolsFd(buffer.rawAddress.toCPointer<ByteVar>(), len, fd)
 }
 
 public actual fun glob64(pattern: ConstPtr, flags: CInt, errfunc: Glob64ErrfuncCallback?, pglob: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuGlob64(pattern.rawAddress.toCPointer<ByteVar>(), flags, 0L.toCPointer<ByteVar>(), pglob.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuGlob64(pattern.rawAddress.toCPointer<ByteVar>(), flags, 0L.toCPointer<ByteVar>(), pglob.rawAddress.toCPointer<ByteVar>())
 
 public actual fun globfree64(pglob: MutPtr) {
-    libcUnixLinuxlikeLinuxGnuGlobfree64(pglob.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuGlobfree64(pglob.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun ptrace(request: CUint, vararg variadicArgs: Long): CLong =
-    libcUnixLinuxlikeLinuxGnuPtrace(request, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    rustlangLibcUnixLinuxlikeLinuxGnuPtrace(request, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun pthreadAttrGetaffinityNp(attr: ConstPtr, cpusetsize: SizeT, cpuset: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuPthreadAttrGetaffinityNp(attr.rawAddress.toCPointer<ByteVar>(), cpusetsize, cpuset.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuPthreadAttrGetaffinityNp(attr.rawAddress.toCPointer<ByteVar>(), cpusetsize, cpuset.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadAttrSetaffinityNp(attr: MutPtr, cpusetsize: SizeT, cpuset: ConstPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuPthreadAttrSetaffinityNp(attr.rawAddress.toCPointer<ByteVar>(), cpusetsize, cpuset.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuPthreadAttrSetaffinityNp(attr.rawAddress.toCPointer<ByteVar>(), cpusetsize, cpuset.rawAddress.toCPointer<ByteVar>())
 
-public actual fun getpriority(which: PriorityWhichT, who: IdT): CInt =
-    libcUnixLinuxlikeLinuxGnuGetpriority(which, who)
+public actual fun getpriority(which: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PriorityWhichT, who: IdT): CInt =
+    rustlangLibcUnixLinuxlikeLinuxGnuGetpriority(which, who)
 
-public actual fun setpriority(which: PriorityWhichT, who: IdT, prio: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuSetpriority(which, who, prio)
+public actual fun setpriority(which: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PriorityWhichT, who: IdT, prio: CInt): CInt =
+    rustlangLibcUnixLinuxlikeLinuxGnuSetpriority(which, who, prio)
 
 public actual fun pthreadRwlockattrGetkindNp(attr: ConstPtr, value: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuPthreadRwlockattrGetkindNp(attr.rawAddress.toCPointer<ByteVar>(), value.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuPthreadRwlockattrGetkindNp(attr.rawAddress.toCPointer<ByteVar>(), value.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadRwlockattrSetkindNp(attr: MutPtr, value: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuPthreadRwlockattrSetkindNp(attr.rawAddress.toCPointer<ByteVar>(), value)
+    rustlangLibcUnixLinuxlikeLinuxGnuPthreadRwlockattrSetkindNp(attr.rawAddress.toCPointer<ByteVar>(), value)
 
-public actual fun pthreadSigqueue(thread: io.github.kotlinmania.rustlang.libc.PthreadT, sig: CInt, value: Sigval): CInt =
+public actual fun pthreadSigqueue(thread: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT, sig: CInt, value: Sigval): CInt =
     0
 
-public actual fun pthreadTryjoinNp(thread: io.github.kotlinmania.rustlang.libc.PthreadT, retval: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuPthreadTryjoinNp(thread, retval.rawAddress.toCPointer<ByteVar>())
+public actual fun pthreadTryjoinNp(thread: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT, retval: MutPtr): CInt =
+    rustlangLibcUnixLinuxlikeLinuxGnuPthreadTryjoinNp(thread, retval.rawAddress.toCPointer<ByteVar>())
 
-public actual fun pthreadTimedjoinNp(thread: io.github.kotlinmania.rustlang.libc.PthreadT, retval: MutPtr, abstime: ConstPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuPthreadTimedjoinNp(thread, retval.rawAddress.toCPointer<ByteVar>(), abstime.rawAddress.toCPointer<ByteVar>())
+public actual fun pthreadTimedjoinNp(thread: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT, retval: MutPtr, abstime: ConstPtr): CInt =
+    rustlangLibcUnixLinuxlikeLinuxGnuPthreadTimedjoinNp(thread, retval.rawAddress.toCPointer<ByteVar>(), abstime.rawAddress.toCPointer<ByteVar>())
 
-public actual fun mallinfo(): Mallinfo =
-    Mallinfo()
+public actual fun mallinfo(): io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Mallinfo =
+    io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Mallinfo()
 
-public actual fun mallinfo2(): Mallinfo2 =
-    Mallinfo2()
+public actual fun mallinfo2(): io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Mallinfo2 =
+    io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Mallinfo2()
 
 public actual fun mallocStats() {
-    libcUnixLinuxlikeLinuxGnuMallocStats()
+    rustlangLibcUnixLinuxlikeLinuxGnuMallocStats()
 }
 
 public actual fun mallocInfo(options: CInt, stream: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuMallocInfo(options, stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuMallocInfo(options, stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun mallocUsableSize(ptr: MutPtr): SizeT =
-    libcUnixLinuxlikeLinuxGnuMallocUsableSize(ptr.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuMallocUsableSize(ptr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getpwentR(pwd: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuGetpwentR(pwd.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuGetpwentR(pwd.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getgrentR(grp: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuGetgrentR(grp.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuGetgrentR(grp.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fgetpwentR(stream: MutPtr, pwd: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuFgetpwentR(stream.rawAddress.toCPointer<ByteVar>(), pwd.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuFgetpwentR(stream.rawAddress.toCPointer<ByteVar>(), pwd.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fgetgrentR(stream: MutPtr, grp: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuFgetgrentR(stream.rawAddress.toCPointer<ByteVar>(), grp.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuFgetgrentR(stream.rawAddress.toCPointer<ByteVar>(), grp.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getnetentR(resultBuf: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr, hErrnop: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuGetnetentR(resultBuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>(), hErrnop.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuGetnetentR(resultBuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>(), hErrnop.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getnetbynameR(name: ConstPtr, resultBuf: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr, hErrnop: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuGetnetbynameR(name.rawAddress.toCPointer<ByteVar>(), resultBuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>(), hErrnop.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuGetnetbynameR(name.rawAddress.toCPointer<ByteVar>(), resultBuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>(), hErrnop.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getnetbyaddrR(net: UInt, type: CInt, resultBuf: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr, hErrnop: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuGetnetbyaddrR(net, type, resultBuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>(), hErrnop.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuGetnetbyaddrR(net, type, resultBuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen, result.rawAddress.toCPointer<ByteVar>(), hErrnop.rawAddress.toCPointer<ByteVar>())
 
 public actual fun putpwent(p: ConstPtr, stream: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuPutpwent(p.rawAddress.toCPointer<ByteVar>(), stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuPutpwent(p.rawAddress.toCPointer<ByteVar>(), stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun putgrent(grp: ConstPtr, stream: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuPutgrent(grp.rawAddress.toCPointer<ByteVar>(), stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuPutgrent(grp.rawAddress.toCPointer<ByteVar>(), stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun sethostid(hostid: CLong): CInt =
-    libcUnixLinuxlikeLinuxGnuSethostid(hostid)
+    rustlangLibcUnixLinuxlikeLinuxGnuSethostid(hostid)
 
 public actual fun memfdCreate(name: ConstPtr, flags: CUint): CInt =
-    libcUnixLinuxlikeLinuxGnuMemfdCreate(name.rawAddress.toCPointer<ByteVar>(), flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuMemfdCreate(name.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun mlock2(addr: ConstPtr, len: SizeT, flags: CUint): CInt =
-    libcUnixLinuxlikeLinuxGnuMlock2(addr.rawAddress.toCPointer<ByteVar>(), len, flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuMlock2(addr.rawAddress.toCPointer<ByteVar>(), len, flags)
 
 public actual fun euidaccess(pathname: ConstPtr, mode: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuEuidaccess(pathname.rawAddress.toCPointer<ByteVar>(), mode)
+    rustlangLibcUnixLinuxlikeLinuxGnuEuidaccess(pathname.rawAddress.toCPointer<ByteVar>(), mode)
 
 public actual fun eaccess(pathname: ConstPtr, mode: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuEaccess(pathname.rawAddress.toCPointer<ByteVar>(), mode)
+    rustlangLibcUnixLinuxlikeLinuxGnuEaccess(pathname.rawAddress.toCPointer<ByteVar>(), mode)
 
 public actual fun asctimeR(tm: ConstPtr, buf: MutPtr): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuAsctimeR(tm.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuAsctimeR(tm.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun ctimeR(timep: ConstPtr, buf: MutPtr): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuCtimeR(timep.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuCtimeR(timep.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun dirname(path: MutPtr): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuDirname(path.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuDirname(path.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun posixBasename(path: MutPtr): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuPosixBasename(path.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuPosixBasename(path.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun gnuBasename(path: ConstPtr): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuGnuBasename(path.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuGnuBasename(path.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun dlmopen(lmid: LmidT, filename: ConstPtr, flag: CInt): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuDlmopen(lmid, filename.rawAddress.toCPointer<ByteVar>(), flag)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuDlmopen(lmid, filename.rawAddress.toCPointer<ByteVar>(), flag)?.toLong() ?: 0L)
 
 public actual fun dlinfo(handle: MutPtr, request: CInt, info: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuDlinfo(handle.rawAddress.toCPointer<ByteVar>(), request, info.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuDlinfo(handle.rawAddress.toCPointer<ByteVar>(), request, info.rawAddress.toCPointer<ByteVar>())
 
 public actual fun dladdr1(addr: ConstPtr, info: MutPtr, extraInfo: MutPtr, flags: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuDladdr1(addr.rawAddress.toCPointer<ByteVar>(), info.rawAddress.toCPointer<ByteVar>(), extraInfo.rawAddress.toCPointer<ByteVar>(), flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuDladdr1(addr.rawAddress.toCPointer<ByteVar>(), info.rawAddress.toCPointer<ByteVar>(), extraInfo.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun dlvsym(handle: MutPtr, symbol: ConstPtr, version: ConstPtr): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuDlvsym(handle.rawAddress.toCPointer<ByteVar>(), symbol.rawAddress.toCPointer<ByteVar>(), version.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuDlvsym(handle.rawAddress.toCPointer<ByteVar>(), symbol.rawAddress.toCPointer<ByteVar>(), version.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun mallocTrim(pad: SizeT): CInt =
-    libcUnixLinuxlikeLinuxGnuMallocTrim(pad)
+    rustlangLibcUnixLinuxlikeLinuxGnuMallocTrim(pad)
 
 public actual fun gnuGetLibcRelease(): ConstPtr =
-    ConstPtr(libcUnixLinuxlikeLinuxGnuGnuGetLibcRelease()?.toLong() ?: 0L)
+    ConstPtr(rustlangLibcUnixLinuxlikeLinuxGnuGnuGetLibcRelease()?.toLong() ?: 0L)
 
 public actual fun gnuGetLibcVersion(): ConstPtr =
-    ConstPtr(libcUnixLinuxlikeLinuxGnuGnuGetLibcVersion()?.toLong() ?: 0L)
+    ConstPtr(rustlangLibcUnixLinuxlikeLinuxGnuGnuGetLibcVersion()?.toLong() ?: 0L)
 
 public actual fun posixSpawnFileActionsAddchdirNp(actions: MutPtr, path: ConstPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddchdirNp(actions.rawAddress.toCPointer<ByteVar>(), path.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddchdirNp(actions.rawAddress.toCPointer<ByteVar>(), path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun posixSpawnFileActionsAddfchdirNp(actions: MutPtr, fd: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddfchdirNp(actions.rawAddress.toCPointer<ByteVar>(), fd)
+    rustlangLibcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddfchdirNp(actions.rawAddress.toCPointer<ByteVar>(), fd)
 
 public actual fun posixSpawnFileActionsAddclosefromNp(actions: MutPtr, from: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddclosefromNp(actions.rawAddress.toCPointer<ByteVar>(), from)
+    rustlangLibcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddclosefromNp(actions.rawAddress.toCPointer<ByteVar>(), from)
 
 public actual fun posixSpawnFileActionsAddtcsetpgrpNp(actions: MutPtr, tcfd: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddtcsetpgrpNp(actions.rawAddress.toCPointer<ByteVar>(), tcfd)
+    rustlangLibcUnixLinuxlikeLinuxGnuPosixSpawnFileActionsAddtcsetpgrpNp(actions.rawAddress.toCPointer<ByteVar>(), tcfd)
 
 public actual fun getmntentR(stream: MutPtr, mntbuf: MutPtr, buf: MutPtr, buflen: CInt): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuGetmntentR(stream.rawAddress.toCPointer<ByteVar>(), mntbuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuGetmntentR(stream.rawAddress.toCPointer<ByteVar>(), mntbuf.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>(), buflen)?.toLong() ?: 0L)
 
 public actual fun execveat(dirfd: CInt, pathname: ConstPtr, argv: ConstPtr, envp: ConstPtr, flags: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuExecveat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>(), envp.rawAddress.toCPointer<ByteVar>(), flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuExecveat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>(), envp.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun closeRange(first: CUint, last: CUint, flags: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuCloseRange(first, last, flags)
+    rustlangLibcUnixLinuxlikeLinuxGnuCloseRange(first, last, flags)
 
 public actual fun mqNotify(mqdes: MqdT, sevp: ConstPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuMqNotify(mqdes, sevp.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuMqNotify(mqdes, sevp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun epollPwait2(epfd: CInt, events: MutPtr, maxevents: CInt, timeout: ConstPtr, sigmask: ConstPtr): CInt =
-    libcUnixLinuxlikeLinuxGnuEpollPwait2(epfd, events.rawAddress.toCPointer<ByteVar>(), maxevents, timeout.rawAddress.toCPointer<ByteVar>(), sigmask.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcUnixLinuxlikeLinuxGnuEpollPwait2(epfd, events.rawAddress.toCPointer<ByteVar>(), maxevents, timeout.rawAddress.toCPointer<ByteVar>(), sigmask.rawAddress.toCPointer<ByteVar>())
 
 public actual fun mempcpy(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(libcUnixLinuxlikeLinuxGnuMempcpy(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcUnixLinuxlikeLinuxGnuMempcpy(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
 
 public actual fun tgkill(tgid: PidT, tid: PidT, sig: CInt): CInt =
-    libcUnixLinuxlikeLinuxGnuTgkill(tgid, tid, sig)
+    rustlangLibcUnixLinuxlikeLinuxGnuTgkill(tgid, tid, sig)

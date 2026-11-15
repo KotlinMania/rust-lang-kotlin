@@ -1,12 +1,13 @@
 // port-lint: source sys/thread_local/destructors/linux_like.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.linuxlike
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.os.raw.CInt
 
 // Destructor registration for Linux-like systems.
 //
@@ -56,11 +57,11 @@ public fun register(t: MutPtr, dtor: RegisterDtorCallback) {
     val CXA_THREAD_ATEXIT_IMPL: FnCallback1? = null
     if (CXA_THREAD_ATEXIT_IMPL != null && DSO_HANDLE != null && !dso.isNull()) {
         run {
-            f(transmute<RegisterDtorCallback, FnCallback>(dtor), t, mutPtrFromRustCast(dso))
+            f(transmute(dtor), t, mutPtrFromRustCast(dso))
         }
     } else {
         run {
-            io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.list.register(t, dtor)
+            io.github.kotlinmania.rustlang.sys.threadlocal.destructors.linuxlike.register(t, dtor)
         }
     }
 }

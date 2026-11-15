@@ -7,22 +7,23 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.libc.CChar
+import io.github.kotlinmania.rustlang.core.slice.get
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.io.ErrorKind
+import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.unix.bsd.SockaddrUn
 import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
-import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.os.net.linuxext.addr.SocketAddrExt
+import io.github.kotlinmania.rustlang.path.Path
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.os.net.linuxext.addr.SocketAddrExt
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
 
 public val SUN_PATH_OFFSET: Int = 0
 
@@ -41,7 +42,7 @@ public fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, SocklenT>, Error> {
     // both point to valid memory.
     // NOTE: We zeroed the memory above, so the path is already null
     // terminated.
-    copyNonoverlapping(bytes.asPtr(), addr.sunPath.asMutPtr(), bytes.size)
+    ptr.copyNonoverlapping(bytes.asPtr(), addr.sunPath.asMutPtr(), bytes.size)
     var len = SUN_PATH_OFFSET + bytes.size
     when (val matchVal = bytes.get(0)) {
         0 -> {}
@@ -146,7 +147,7 @@ public open class SocketAddr(
 
     public open fun address(): AddressKind {
         val len = this.len - SUN_PATH_OFFSET
-        val path = transmute<List<CChar>, List<UByte>>(this.addr.sunPath)
+        val path = transmute(this.addr.sunPath)
         // macOS seems to return a len of 16 and a zeroed sunPath for unnamed addresses
         return if (len == 0 || (true && this.addr.sunPath[0] == 0.toByte())) {
             AddressKind.Unnamed
@@ -193,7 +194,7 @@ public open class SocketAddr(
                 val addr by localStorageL107C12
                 val localStorageL108C12 = AddressableLocal(sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>()).toInt(), ObjectSlotLayout<SocklenT>())
                 val len by localStorageL108C12
-                when (val tryResult = cvt(f((localStorageL107C12.asMutPtr()), RustMutableReference(localStorageL108C12.asMutPtr(), localStorageL108C12.layout)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvt(f((localStorageL107C12.asMutPtr()), RustMutableReference(localStorageL108C12.asMutPtr(), localStorageL108C12.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 SocketAddr.fromParts(addr, len)
             }
         }
@@ -204,7 +205,7 @@ public open class SocketAddr(
                 // on OpenBSD, getsockname(2) returns the actual size of the socket address,
                 // and not the len of the content. Figure out the length for ourselves.
                 // https://marc.info/?l=openbsd-bugs&m=170105481926736&w=2
-                val sunPath: List<UByte> = transmute<List<CChar>, List<UByte>>(addr.sunPath)
+                val sunPath: List<UByte> = transmute(addr.sunPath)
                 len1 = (slice.memchr(0, sunPath)?.let({ newLen -> (newLen + SUN_PATH_OFFSET) }) ?: len1)
             }
             len1 = len1.min(sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>()).toInt())
@@ -256,7 +257,7 @@ public open class SocketAddr(
                 if (name1.len() + 1 > addr.sunPath.size) {
                     return Result.Err(constError(ErrorKind.InvalidInput, "abstract socket name must be shorter than SUN_LEN"))
                 }
-                copyNonoverlapping(name1.asPtr(), (MutPtr((addr.sunPath.asMutPtr()).rawAddress + ((1).toLong() * (PrimitiveLayouts.I8).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, name1.len())
+                ptr.copyNonoverlapping(name1.asPtr(), (MutPtr((addr.sunPath.asMutPtr()).rawAddress + ((1).toLong() * (PrimitiveLayouts.I8).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, name1.len())
                 val len = (SUN_PATH_OFFSET + 1 + name1.len())
                 SocketAddr.fromParts(addr, len)
             }

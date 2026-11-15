@@ -1,12 +1,14 @@
 // port-lint: source os/unix/net/stream.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.io.BorrowedCursor
+import io.github.kotlinmania.rustlang.io.Read
+import io.github.kotlinmania.rustlang.io.Write
 import io.github.kotlinmania.rustlang.libc.connect
 import io.github.kotlinmania.rustlang.libc.getpeername
 import io.github.kotlinmania.rustlang.libc.getsockname
@@ -14,29 +16,28 @@ import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_STREAM
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_RCVTIMEO
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_SNDTIMEO
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
-import io.github.kotlinmania.rustlang.std.io.BorrowedCursor
-import io.github.kotlinmania.rustlang.std.io.Read
-import io.github.kotlinmania.rustlang.std.io.Write
+import io.github.kotlinmania.rustlang.net.Shutdown
+import io.github.kotlinmania.rustlang.os.fd.AsFd
+import io.github.kotlinmania.rustlang.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.os.fd.FromRawFd
+import io.github.kotlinmania.rustlang.os.fd.IntoRawFd
+import io.github.kotlinmania.rustlang.os.fd.OwnedFd
+import io.github.kotlinmania.rustlang.os.fd.RawFd
+import io.github.kotlinmania.rustlang.os.raw.CInt
+import io.github.kotlinmania.rustlang.os.unix.net.SockaddrUn
+import io.github.kotlinmania.rustlang.os.unix.net.SocketAddr
+import io.github.kotlinmania.rustlang.os.unix.net.ancillary.SocketAncillary
+import io.github.kotlinmania.rustlang.os.unix.net.ancillary.recvVectoredWithAncillaryFrom
+import io.github.kotlinmania.rustlang.os.unix.net.ancillary.sendVectoredWithAncillaryTo
+import io.github.kotlinmania.rustlang.os.unix.net.ucred.UCred
+import io.github.kotlinmania.rustlang.os.unix.net.ucred.peerCred
+import io.github.kotlinmania.rustlang.path.Path
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.net.Shutdown
-import io.github.kotlinmania.rustlang.std.os.fd.AsFd
-import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
-import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.SocketAncillary
-import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.recvVectoredWithAncillaryFrom
-import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.sendVectoredWithAncillaryTo
-import io.github.kotlinmania.rustlang.std.os.unix.net.ucred.UCred
-import io.github.kotlinmania.rustlang.std.os.unix.net.ucred.impllinux.peerCred
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.AsInner
-import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn
+import io.github.kotlinmania.rustlang.sys.AsInner
+import io.github.kotlinmania.rustlang.sys.FromInner
+import io.github.kotlinmania.rustlang.sys.net.connection.wasip1.Socket
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -157,7 +158,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun localAddr(): Result<SocketAddr, Error> = SocketAddr.new({ addr, len -> getsockname(this.asRawFd(), addr, len) })
+    public open fun localAddr(): Result<SocketAddr, Error> = SocketAddr.new({ addr, len -> getsockname(this.asRawFd().toULong(), addr, len) })
 
     /**
      * Returns the socket address of the remote half of this connection.
@@ -173,7 +174,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun peerAddr(): Result<SocketAddr, Error> = SocketAddr.new({ addr, len -> getpeername(this.asRawFd(), addr, len) })
+    public open fun peerAddr(): Result<SocketAddr, Error> = SocketAddr.new({ addr, len -> getpeername(this.asRawFd().toULong(), addr, len) })
 
     /**
      * Gets the peer credentials for this Unix domain socket.
@@ -358,7 +359,7 @@ public open class UnixStream(
      * On Redox this always returns `None`.
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.io.Error?, Error> = this.value.takeError()
 
     /**
      * Shuts down the read, write, or both halves of this connection.
@@ -443,7 +444,7 @@ public open class UnixStream(
      * ```kotlin
      */
     public open fun recvVectoredWithAncillary(bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Int, Error> {
-        val (count, _, _) = when (val tryResult = recvVectoredWithAncillaryFrom(this.value, bufs, ancillary)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val (count, _, _) = when (val tryResult = recvVectoredWithAncillaryFrom(this.value, bufs, ancillary)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(count)
     }
 
@@ -523,9 +524,9 @@ public open class UnixStream(
          */
         public fun connect(path: Path): Result<UnixStream, Error> {
             return run {
-                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.connect(inner.asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.connect(inner.asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 Result.Ok(UnixStream(inner))
             }
         }
@@ -554,8 +555,8 @@ public open class UnixStream(
          */
         public fun connectAddr(socketAddr: SocketAddr): Result<UnixStream, Error> {
             return run {
-                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                when (val tryResult = cvt(connect(inner.asRawFd(), (addrOf(socketAddr.addr)), socketAddr.len))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvt(connect(inner.asRawFd(), (addrOf(socketAddr.addr)), socketAddr.len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 Result.Ok(UnixStream(inner))
             }
         }
@@ -579,7 +580,7 @@ public open class UnixStream(
          * ```kotlin
          */
         public fun pair(): Result<Pair<UnixStream, UnixStream>, Error> {
-            val (i1, i2) = when (val tryResult = Socket.newPair(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val (i1, i2) = when (val tryResult = Socket.newPair(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             return Result.Ok(Pair(UnixStream(i1), UnixStream(i2)))
         }
 

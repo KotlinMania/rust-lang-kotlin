@@ -1,9 +1,9 @@
 // port-lint: source math/cosf.rs
 package io.github.kotlinmania.rustlang.libm.math.cosf
 
-import io.github.kotlinmania.rustlang.libm.math.kcosf.kCosf
-import io.github.kotlinmania.rustlang.libm.math.ksinf.kSinf
-import io.github.kotlinmania.rustlang.libm.math.rempio2f.remPio2f
+import io.github.kotlinmania.rustlang.math.kcosf.kCosf
+import io.github.kotlinmania.rustlang.math.ksinf.kSinf
+import io.github.kotlinmania.rustlang.math.rempio2f.remPio2f
 
 // Small multiples of pi/2 rounded to double precision.
 public val C1_PIO2: Double = 1.0 * 1.5707963267948966

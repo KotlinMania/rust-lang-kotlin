@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
-private object X86ClflushoptJniBridge {
+private object CorearchX86ClflushoptJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -40,8 +40,8 @@ private object X86ClflushoptJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = X86ClflushoptJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = CorearchX86ClflushoptJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -58,9 +58,9 @@ private object X86ClflushoptJniBridge {
     }
 
     @JvmStatic
-    external fun corearchX86ClflushoptClflushopt(p: Long)
+    external fun rustlangCorearchX86ClflushoptClflushopt(p: Long)
 }
 
 public actual fun clflushopt(p: ConstPtr) {
-    X86ClflushoptJniBridge.corearchX86ClflushoptClflushopt(p.rawAddress)
+    CorearchX86ClflushoptJniBridge.rustlangCorearchX86ClflushoptClflushopt(p.rawAddress)
 }

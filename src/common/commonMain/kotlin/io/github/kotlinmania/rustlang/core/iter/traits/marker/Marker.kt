@@ -1,8 +1,8 @@
 // port-lint: source iter/traits/marker.rs
 package io.github.kotlinmania.rustlang.core.iter.traits.marker
 
-import io.github.kotlinmania.rustlang.core.iter.range.Step
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.iter.range.Step
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
 
 /**
  * Same as FusedIterator

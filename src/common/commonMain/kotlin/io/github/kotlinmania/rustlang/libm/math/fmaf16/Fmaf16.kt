@@ -3,8 +3,8 @@ package io.github.kotlinmania.rustlang.libm.math.fmaf16
 
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.libm.math.support.macros.cfgSelectNofmt
-import io.github.kotlinmania.rustlang.libm.math.support.unboundedShrU64
+import io.github.kotlinmania.rustlang.math.support.macros.cfgSelectNofmt
+import io.github.kotlinmania.rustlang.math.support.unboundedShrU64
 
 /**
  * We use a a U21.43 fixed-point representation when needed.

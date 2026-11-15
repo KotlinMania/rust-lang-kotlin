@@ -4,23 +4,23 @@ package io.github.kotlinmania.rustlang.std.num.f32
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.std.sys.cmath.acosf
-import io.github.kotlinmania.rustlang.std.sys.cmath.acoshf
-import io.github.kotlinmania.rustlang.std.sys.cmath.asinf
-import io.github.kotlinmania.rustlang.std.sys.cmath.asinhf
-import io.github.kotlinmania.rustlang.std.sys.cmath.atan2f
-import io.github.kotlinmania.rustlang.std.sys.cmath.atanf
-import io.github.kotlinmania.rustlang.std.sys.cmath.coshf
-import io.github.kotlinmania.rustlang.std.sys.cmath.erfcf
-import io.github.kotlinmania.rustlang.std.sys.cmath.erff
-import io.github.kotlinmania.rustlang.std.sys.cmath.expm1f
-import io.github.kotlinmania.rustlang.std.sys.cmath.hypotf
-import io.github.kotlinmania.rustlang.std.sys.cmath.lgammafR
-import io.github.kotlinmania.rustlang.std.sys.cmath.log1pf
-import io.github.kotlinmania.rustlang.std.sys.cmath.sinhf
-import io.github.kotlinmania.rustlang.std.sys.cmath.tanf
-import io.github.kotlinmania.rustlang.std.sys.cmath.tanhf
-import io.github.kotlinmania.rustlang.std.sys.cmath.tgammaf
+import io.github.kotlinmania.rustlang.sys.cmath.acosf
+import io.github.kotlinmania.rustlang.sys.cmath.acoshf
+import io.github.kotlinmania.rustlang.sys.cmath.asinf
+import io.github.kotlinmania.rustlang.sys.cmath.asinhf
+import io.github.kotlinmania.rustlang.sys.cmath.atan2f
+import io.github.kotlinmania.rustlang.sys.cmath.atanf
+import io.github.kotlinmania.rustlang.sys.cmath.coshf
+import io.github.kotlinmania.rustlang.sys.cmath.erfcf
+import io.github.kotlinmania.rustlang.sys.cmath.erff
+import io.github.kotlinmania.rustlang.sys.cmath.expm1f
+import io.github.kotlinmania.rustlang.sys.cmath.hypotf
+import io.github.kotlinmania.rustlang.sys.cmath.lgammafR
+import io.github.kotlinmania.rustlang.sys.cmath.log1pf
+import io.github.kotlinmania.rustlang.sys.cmath.sinhf
+import io.github.kotlinmania.rustlang.sys.cmath.tanf
+import io.github.kotlinmania.rustlang.sys.cmath.tanhf
+import io.github.kotlinmania.rustlang.sys.cmath.tgammaf
 import kotlin.math.cos
 import kotlin.math.ln
 import kotlin.math.sin
@@ -308,7 +308,7 @@ public fun Float.powi(n: Int): Float = Float.powi(this, n)
  * check(Float.powf(0.0, 0.0) == 1.0)
  * ```
  */
-public fun Float.powf(n: Float): Float = powf(this, n)
+public fun Float.powf(n: Float): Float = intrinsics.powf(this, n)
 
 /**
  * Returns the square root of a number.
@@ -353,7 +353,7 @@ public fun Float.sqrt(): Float = Float.sqrt(this)
  * check(absDifference <= 1e-6)
  * ```
  */
-public fun Float.exp(): Float = exp(this)
+public fun Float.exp(): Float = intrinsics.exp(this)
 
 /**
  * Returns `2 ^(self)`.
@@ -372,7 +372,7 @@ public fun Float.exp(): Float = exp(this)
  * check(absDifference <= 1e-5)
  * ```
  */
-public fun Float.exp2(): Float = exp2(this)
+public fun Float.exp2(): Float = intrinsics.exp2(this)
 
 /**
  * Returns the natural logarithm of the number.
@@ -401,7 +401,7 @@ public fun Float.exp2(): Float = exp2(this)
  * check((-42.0f).ln().isNan())
  * ```
  */
-public fun Float.ln(): Float = log(this)
+public fun Float.ln(): Float = intrinsics.log(this)
 
 /**
  * Returns the logarithm of the number with respect to an arbitrary base.
@@ -459,7 +459,7 @@ public fun Float.log(base: Float): Float = ln(this) / ln(base)
  * check((-42.0f).log2().isNan())
  * ```
  */
-public fun Float.log2(): Float = log2(this)
+public fun Float.log2(): Float = intrinsics.log2(this)
 
 /**
  * Returns the base 10 logarithm of the number.
@@ -486,7 +486,7 @@ public fun Float.log2(): Float = log2(this)
  * check((-42.0f).log10().isNan())
  * ```
  */
-public fun Float.log10(): Float = log10(this)
+public fun Float.log10(): Float = intrinsics.log10(this)
 
 /**
  * The positive difference of two numbers.
@@ -576,7 +576,7 @@ public fun Float.hypot(other: Float): Float = hypotf(this, other)
  * check(absDifference <= 1e-6)
  * ```
  */
-public fun Float.sin(): Float = sin(this)
+public fun Float.sin(): Float = intrinsics.sin(this)
 
 /**
  * Computes the cosine of a number (in radians).
@@ -594,7 +594,7 @@ public fun Float.sin(): Float = sin(this)
  * check(absDifference <= 1e-6)
  * ```
  */
-public fun Float.cos(): Float = cos(this)
+public fun Float.cos(): Float = intrinsics.cos(this)
 
 /**
  * Computes the tangent of a number (in radians).

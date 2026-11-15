@@ -2,9 +2,9 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.I8x32
-import io.github.kotlinmania.rustlang.corearch.simd.I8x64
+import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.I8x32
+import io.github.kotlinmania.rustlang.simd.I8x64
 
 public actual fun vpermi2b(a: I8x64, idx: I8x64, b: I8x64): I8x64 =
     null as I8x64

@@ -1,8 +1,8 @@
 // port-lint: source os/unix/thread.rs
 package io.github.kotlinmania.rustlang.std.os.unix.thread
 
-import io.github.kotlinmania.rustlang.std.os.linux.raw.PthreadT
-import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
+import io.github.kotlinmania.rustlang.os.linux.raw.PthreadT
+import io.github.kotlinmania.rustlang.thread.joinhandle.JoinHandle
 
 // Unix-specific extensions to primitives in the [std.thread] module.
 

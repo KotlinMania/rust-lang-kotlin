@@ -1,7 +1,7 @@
 // port-lint: source math/tgammaf.rs
 package io.github.kotlinmania.rustlang.libm.math.tgammaf
 
-import io.github.kotlinmania.rustlang.libm.math.tgamma.tgamma
+import io.github.kotlinmania.rustlang.math.tgamma.tgamma
 
 /**
  * The [Gamma function](https://en.wikipedia.org/wiki/GammaFunction) (f32).

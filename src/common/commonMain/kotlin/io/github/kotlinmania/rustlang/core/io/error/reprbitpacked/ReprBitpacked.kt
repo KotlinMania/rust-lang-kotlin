@@ -1,20 +1,20 @@
 // port-lint: source io/error/repr_bitpacked.rs
 package io.github.kotlinmania.rustlang.core.io.error.reprbitpacked
 
-import io.github.kotlinmania.rustlang.core.cmp.Eq
-import io.github.kotlinmania.rustlang.core.io.error.Custom
-import io.github.kotlinmania.rustlang.core.io.error.CustomOwner
-import io.github.kotlinmania.rustlang.core.io.error.ErrorData
-import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
-import io.github.kotlinmania.rustlang.core.io.error.RawOsError
-import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
+import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.NonZeroUsize
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.io.error.Custom
+import io.github.kotlinmania.rustlang.io.error.CustomOwner
+import io.github.kotlinmania.rustlang.io.error.ErrorData
+import io.github.kotlinmania.rustlang.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.io.error.RawOsError
+import io.github.kotlinmania.rustlang.io.error.SimpleMessage
+import io.github.kotlinmania.rustlang.num.nonzero.NonZeroUsize
+import io.github.kotlinmania.rustlang.option.Option
+import io.github.kotlinmania.rustlang.panicking.assertFailed
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 // This is a densely packed error representation which is used on targets with
 // 64-bit pointers.

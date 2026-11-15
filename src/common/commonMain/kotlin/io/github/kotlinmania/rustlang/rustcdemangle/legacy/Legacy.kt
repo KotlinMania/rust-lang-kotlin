@@ -176,7 +176,7 @@ public fun demangle(s: String): Result<Pair<Demangle, String>, Unit> {
     }
     var elements = 0
     val chars = inner.rustStrChars()
-    var c = when (val tryResult = chars.nextCodeOrNull()?.toChar().okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    var c = when (val tryResult = chars.nextCodeOrNull()?.toChar().okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     while (c != 'E') {
         // Decode an identifier element's length.
         if (!c.isDigit(10)) {
@@ -187,13 +187,13 @@ public fun demangle(s: String): Result<Pair<Demangle, String>, Unit> {
             val matchVal = c.rustToDigit(10u)
             if (matchVal == null) break
             val d = matchVal
-            len = when (val tryResult = rustCheckedMul(len, 10)?.let({ len1 -> len1.checkedAdd(d.toInt()) }).okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            c = when (val tryResult = chars.nextCodeOrNull()?.toChar().okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            len = when (val tryResult = rustCheckedMul(len, 10)?.let({ len1 -> len1.checkedAdd(d.toInt()) }).okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            c = when (val tryResult = chars.nextCodeOrNull()?.toChar().okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         }
         // `c` already contains the first character of this identifier, skip it and
         // all the other characters of this identifier, to reach the next element.
         for (unused in 0 until len) {
-            c = when (val tryResult = chars.nextCodeOrNull()?.toChar().okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            c = when (val tryResult = chars.nextCodeOrNull()?.toChar().okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         }
         elements += 1
     }

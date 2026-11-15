@@ -52,7 +52,7 @@ public class DebugStruct(
  * ```
  */
 public open class Once(
-    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.once.futex.Once,
+    public var inner: io.github.kotlinmania.rustlang.sys.sync.once.futex.Once,
 ) {
     /**
      * Performs an initialization routine once and only once. The given closure
@@ -284,12 +284,12 @@ public open class Once(
         /**
          * Creates a new `Once` value.
          */
-        public fun new(): Once = Once(inner = io.github.kotlinmania.rustlang.std.sys.sync.once.new())
+        public fun new(): Once = Once(inner = io.github.kotlinmania.rustlang.sys.sync.once.new())
 
         /**
          * Creates a new `Once` value that starts already completed.
          */
-        public fun newComplete(): Once = Once(inner = io.github.kotlinmania.rustlang.std.sys.sync.once.newComplete())
+        public fun newComplete(): Once = Once(inner = io.github.kotlinmania.rustlang.sys.sync.once.newComplete())
 
         /**
          * Creates a new `Once` value, same as [Once.new].
@@ -303,7 +303,7 @@ public open class Once(
  * can be used to query the poison status of the [Once].
  */
 public open class OnceState(
-    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.once.futex.OnceState,
+    public var inner: io.github.kotlinmania.rustlang.sys.sync.once.futex.OnceState,
 ) {
     /**
      * Returns `true` if the associated [Once] was poisoned prior to the

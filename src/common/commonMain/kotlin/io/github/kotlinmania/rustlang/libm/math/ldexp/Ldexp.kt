@@ -3,10 +3,10 @@ package io.github.kotlinmania.rustlang.libm.math.ldexp
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.libm.math.scalbn.scalbn
-import io.github.kotlinmania.rustlang.libm.math.scalbn.scalbnf
-import io.github.kotlinmania.rustlang.libm.math.scalbn.scalbnf128
-import io.github.kotlinmania.rustlang.libm.math.scalbn.scalbnf16
+import io.github.kotlinmania.rustlang.math.scalbn.scalbn
+import io.github.kotlinmania.rustlang.math.scalbn.scalbnf
+import io.github.kotlinmania.rustlang.math.scalbn.scalbnf128
+import io.github.kotlinmania.rustlang.math.scalbn.scalbnf16
 
 public fun ldexpf16(x: F16, n: Int): F16 = scalbnf16(x, n)
 

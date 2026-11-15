@@ -3,9 +3,9 @@
 
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lasx
 
-import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.loongarch64.simd.SimdExt
-import io.github.kotlinmania.rustlang.corearch.loongarch64.simd.simdExtSplat
+import io.github.kotlinmania.rustlang.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.loongarch64.simd.SimdExt
+import io.github.kotlinmania.rustlang.loongarch64.simd.simdExtSplat
 
 // LoongArch64 LASX intrinsics - intrinsics.simd implementation
 

@@ -1,15 +1,11 @@
 // port-lint: source collections/linked_list.rs
 package io.github.kotlinmania.rustlang.alloc.collections.linkedlist
 
-import io.github.kotlinmania.rustlang.alloc.alloc.Global
-import io.github.kotlinmania.rustlang.alloc.boxed.Box
+import io.github.kotlinmania.rustlang.alloc.Global
+import io.github.kotlinmania.rustlang.boxed.Box
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.mem.forget
-import io.github.kotlinmania.rustlang.core.mem.replace
-import io.github.kotlinmania.rustlang.core.mem.swap
-import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -2257,7 +2253,7 @@ public fun <T, I : Iterable<T>> fromIteratorFromIterLinkedListT(iter: I): Linked
     return list
 }
 
-public fun <I, A : Allocator> LinkedList<I.Item, A>.specExtend(iter: I) {
+public fun <Item, IntoIter, I, A : Allocator> LinkedList<I.Item, A>.specExtend(iter: I) {
     iter.iterator().forEach({ elt -> this.addLast(elt) })
 }
 

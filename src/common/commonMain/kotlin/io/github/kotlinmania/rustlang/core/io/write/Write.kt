@@ -1,11 +1,9 @@
 // port-lint: source io/write.rs
 package io.github.kotlinmania.rustlang.core.io.write
 
-import io.github.kotlinmania.rustlang.core.fmt.Arguments
-import io.github.kotlinmania.rustlang.core.fmt.write
-import io.github.kotlinmania.rustlang.core.io.error.Error
-import io.github.kotlinmania.rustlang.core.io.error.Result
-import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
+import io.github.kotlinmania.rustlang.io.error.Error
+import io.github.kotlinmania.rustlang.io.error.Result
+import io.github.kotlinmania.rustlang.io.ioslice.IoSlice
 
 /**
  * A trait for objects which are byte-oriented sinks.
@@ -211,18 +209,18 @@ public interface Write<T> {
             run {
                 val matchVal = this.write(buf1)
                 when {
-                    matchVal is Result.Ok<*> && matchVal.value == 0 -> {
+                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
                         return Result.Err(Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok<*> -> {
-                        val n = (matchVal as Result.Ok<*>).value
-                        buf1 = ((buf1).slice(n until buf1.size))
+                    matchVal is Result.Ok<*, *> -> {
+                        val n = (matchVal as Result.Ok<*, *>).value
+                        buf1 = ((buf1).subList(n, (buf1).size))
                     }
-                    matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.isInterrupted() -> {
-                        val e = (matchVal as Result.Err<*>).error
+                    matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.isInterrupted() -> {
+                        val e = (matchVal as Result.Err<*, *>).error
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*>).error
+                        val e1 = (matchVal as Result.Err<*, *>).error
                         return Result.Err(e1)
                     }
                 }
@@ -283,18 +281,18 @@ public interface Write<T> {
             run {
                 val matchVal = this.writeVectored(bufs)
                 when {
-                    matchVal is Result.Ok<*> && matchVal.value == 0 -> {
+                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
                         return Result.Err(Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok<*> -> {
-                        val n = (matchVal as Result.Ok<*>).value
+                    matchVal is Result.Ok<*, *> -> {
+                        val n = (matchVal as Result.Ok<*, *>).value
                         IoSlice.advanceSlices(bufs, n)
                     }
-                    matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.isInterrupted() -> {
-                        val e = (matchVal as Result.Err<*>).error
+                    matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.isInterrupted() -> {
+                        val e = (matchVal as Result.Err<*, *>).error
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*>).error
+                        val e1 = (matchVal as Result.Err<*, *>).error
                         return Result.Err(e1)
                     }
                 }
@@ -393,9 +391,9 @@ public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: Arguments): Result<U
         public open fun writeStr(s: String) {
             run {
                 val matchVal = this.inner.writeAll(s.encodeToByteArray().map { it.toUByte() })
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     Unit
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val e = matchVal.error
                     this.error = Result.Err(e)
                     Result.Err(Error)
@@ -405,10 +403,10 @@ public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: Arguments): Result<U
     }
     val output = Adapter(inner = thisRef, error = Result.Ok(Unit))
     return run {
-        val matchVal = write(output, args)
-        when (matchVal) { is Result.Ok<*> -> {
+        val matchVal = Write(output, args)
+        when (matchVal) { is Result.Ok<*, *> -> {
             Result.Ok(Unit)
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             // Check whether the error came from the underlying `Write`.
             if (output.error.isErr()) {
                 output.error

@@ -4,7 +4,6 @@
 package io.github.kotlinmania.rustlang.corearch.x8664
 
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.array.fromFn
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -15,7 +14,8 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.corearch.x86.mmCvtnessSbh
+import io.github.kotlinmania.rustlang.x86.mmCvtnessSbh
+import io.github.kotlinmania.rustlang.x8664.Tile1024i
 
 public open class Tilecfg(
     /**
@@ -101,7 +101,7 @@ public open class Tilecfg(
 
 public fun initAmx() {}
 
-public fun Tile1024i.Companion.zeroed(rows: UShort, colsb: UShort): Tile1024i = Tile1024i(rows = rows, colsb = colsb, tile = tilezeroInternal(rows, colsb))
+public fun Tile1024i.Companion.zeroed(rows: UShort, colsb: UShort): Tile1024i = Tile1024i(rows = rows, colsb = colsb, tile = io.github.kotlinmania.rustlang.x8664.tilezeroInternal(rows, colsb))
 
 public fun testTileLoadconfig() {
     run {

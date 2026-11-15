@@ -6,8 +6,8 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
+import io.github.kotlinmania.rustlang.sync.once.Once
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -228,9 +228,9 @@ public open class OnceLock<T> internal constructor(
     public open fun set(value: T): Result<Unit, T> =
         run {
             val matchVal = this.tryInsert(value)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 Result.Ok(Unit)
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val value1 = matchVal.error.second
                 Result.Err(value1)
             } }
@@ -309,8 +309,8 @@ public open class OnceLock<T> internal constructor(
      */
     public open fun getOrInit(f: () -> T): T =
         when (val matchVal = this.getOrTryInit({ Result.Ok(f()) })) {
-            is Result.Ok<*> -> {
-                val value = matchVal.value
+            is Result.Ok<*, *> -> {
+                val value = (matchVal as Result.Ok<*, *>).value
                 value
             }
         }
@@ -347,8 +347,8 @@ public open class OnceLock<T> internal constructor(
      */
     public open fun getMutOrInit(f: () -> T): T =
         when (val matchVal = this.getMutOrTryInit({ Result.Ok(f()) })) {
-            is Result.Ok<*> -> {
-                val value = matchVal.value
+            is Result.Ok<*, *> -> {
+                val value = (matchVal as Result.Ok<*, *>).value
                 value
             }
         }
@@ -398,7 +398,7 @@ public open class OnceLock<T> internal constructor(
                 return Result.Ok(value)
             }
         }
-        when (val tryResult = this.initialize(f)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.initialize(f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         // SAFETY: The inner value has been initialized
         return Result.Ok(this.getUnchecked())
     }
@@ -440,7 +440,7 @@ public open class OnceLock<T> internal constructor(
      */
     public open fun <E> getMutOrTryInit(f: () -> Result<T, E>): Result<T, E> {
         if (this.getMut() == null) {
-            when (val tryResult = this.initialize(f)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.initialize(f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         }
         // SAFETY: The inner value has been initialized
         return Result.Ok(this.getUncheckedMut())
@@ -515,10 +515,10 @@ public open class OnceLock<T> internal constructor(
         this.once.callOnceForce({ p ->
             run {
                 val matchVal = f()
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val value = matchVal.value
                     (slot.get()).write(value)
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val e = matchVal.error
                     res = Result.Err(e)
                     // Treat the underlying `Once` as poisoned since we

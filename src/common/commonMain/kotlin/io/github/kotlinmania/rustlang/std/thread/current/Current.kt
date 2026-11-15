@@ -2,22 +2,22 @@
 package io.github.kotlinmania.rustlang.std.thread.current
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.process.id
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.enable
+import io.github.kotlinmania.rustlang.process.abort
 import io.github.kotlinmania.rustlang.std.thread.id.ThreadId
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.sys.threadlocal.guard.enable
+import io.github.kotlinmania.rustlang.thread.current.id
+import io.github.kotlinmania.rustlang.thread.mainthread.main
 
 public val NONE: MutPtr = MutPtr(0L)
 
-public val BUSY: MutPtr = withoutProvenanceMut(1)
+public val BUSY: MutPtr = ptr.withoutProvenanceMut(1)
 
-public val DESTROYED: MutPtr = withoutProvenanceMut(2)
+public val DESTROYED: MutPtr = ptr.withoutProvenanceMut(2)
 
 public var ID: Cell<Any?> = Cell.new(null)
 
@@ -110,7 +110,7 @@ public fun currentId(): Any {
  * allowed to fall back to a non-OS ID (such as the Rust thread ID) or a non-unique ID (such as a
  * PID) if the thread ID cannot be retrieved.
  */
-public fun currentOsId(): ULong = io.github.kotlinmania.rustlang.std.sys.thread.unix.currentOsId().unwrapOrElse({ currentId().asU64().get() })
+public fun currentOsId(): ULong = io.github.kotlinmania.rustlang.sys.thread.unix.currentOsId().unwrapOrElse({ currentId().asU64().get() })
 
 /**
  * Gets a reference to the handle of the thread that invokes it, if the handle
@@ -145,7 +145,7 @@ public fun <R> withCurrentName(f: (String?) -> R): R =
                 // If there is a current thread handle, try to use the name stored
                 // there.
                 thread1.name()
-            } else if (io.github.kotlinmania.rustlang.std.thread.mainthread.get() != null && get() != null && id == main) {
+            } else if (mainthread.get() != null && get() != null && id == main) {
                 // The main thread doesn't always have a thread handle, we must
                 // identify it through its ID instead. The checks are ordered so
                 // that the current ID is only loaded if it is actually needed,

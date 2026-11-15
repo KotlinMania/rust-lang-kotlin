@@ -1,5 +1,5 @@
-#ifndef PANICUNWIND_SEH_SEH_WRAPPER_H
-#define PANICUNWIND_SEH_SEH_WRAPPER_H
+#ifndef RUSTLANG_SEH_SEH_WRAPPER_H
+#define RUSTLANG_SEH_SEH_WRAPPER_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -9,10 +9,10 @@
 extern "C" {
 #endif
 
-uint8_t panicunwindSehGetTYPEINFOVTABLE(void);
+uint8_t rustlangSehGetTYPEINFOVTABLE(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* PANICUNWIND_SEH_SEH_WRAPPER_H */
+#endif /* RUSTLANG_SEH_SEH_WRAPPER_H */

@@ -4,15 +4,15 @@ package io.github.kotlinmania.rustlang.core.range
 import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.ops.Bound.Excluded
-import io.github.kotlinmania.rustlang.core.ops.Bound.Included
-import io.github.kotlinmania.rustlang.core.ops.Bound.Unbounded
-import io.github.kotlinmania.rustlang.core.ops.range.Bound
-import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound
 import io.github.kotlinmania.rustlang.core.range.iter.RangeFromIter
 import io.github.kotlinmania.rustlang.core.range.iter.RangeInclusiveIter
 import io.github.kotlinmania.rustlang.core.range.iter.RangeIter
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.ops.Bound.Excluded
+import io.github.kotlinmania.rustlang.ops.Bound.Included
+import io.github.kotlinmania.rustlang.ops.Bound.Unbounded
+import io.github.kotlinmania.rustlang.ops.range.Bound
+import io.github.kotlinmania.rustlang.ops.range.OneSidedRangeBound
 
 // # Replacement range types
 //
@@ -71,9 +71,9 @@ public open class Range<Idx>(
     public open fun clone(): Range<Idx> = Range(start, end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -189,9 +189,9 @@ public fun <T> Range<T>.endBoundT(): Bound<T> = Excluded(this.end)
 
 public fun <T> Range<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Included(this.start), Excluded(this.end))
 
-public fun <T> fromRangeT(value: Range<T>): io.github.kotlinmania.rustlang.core.range.legacy.Range<T> = io.github.kotlinmania.rustlang.core.range.legacy.Range(start = value.start, end = value.end)
+public fun <T> fromRangeT(value: Range<T>): io.github.kotlinmania.rustlang.range.Range<T> = io.github.kotlinmania.rustlang.range.Range(start = value.start, end = value.end)
 
-public fun <T> fromRangeT(value: io.github.kotlinmania.rustlang.core.range.legacy.Range<T>): Range<T> = Range(start = value.start, end = value.end)
+public fun <T> fromRangeT(value: io.github.kotlinmania.rustlang.range.Range<T>): Range<T> = Range(start = value.start, end = value.end)
 
 /**
  * A range bounded inclusively below and above.
@@ -226,9 +226,9 @@ public open class RangeInclusive<Idx>(
     public open fun clone(): RangeInclusive<Idx> = RangeInclusive(start, last)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.last.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.last.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -346,7 +346,7 @@ public fun <T> RangeInclusive<T>.endBoundT(): Bound<T> = Included(this.last)
 // @stable(feature = "newRangeInclusiveApi", since = "1.95.0")
 public fun <T> RangeInclusive<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Included(this.start), Included(this.last))
 
-public fun <T> fromRangeInclusiveT(value: RangeInclusive<T>): io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<T> = io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive.new(value.start, value.last)
+public fun <T> fromRangeInclusiveT(value: RangeInclusive<T>): io.github.kotlinmania.rustlang.range.RangeInclusive<T> = io.github.kotlinmania.rustlang.range.RangeInclusive.new(value.start, value.last)
 
 /**
  * Converts from a legacy range to a non-legacy range, potentially panicking.
@@ -382,7 +382,7 @@ public fun <T> fromRangeInclusiveT(value: RangeInclusive<T>): io.github.kotlinma
  * check(result.isErr() || result.isOkAnd({ range -> range.isEmpty() }))
  * ```
  */
-public fun <T> fromRangeInclusiveT(value: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<T>): RangeInclusive<T> {
+public fun <T> fromRangeInclusiveT(value: io.github.kotlinmania.rustlang.range.RangeInclusive<T>): RangeInclusive<T> {
     check(!value.exhausted) { "attempted to convert from an exhausted `legacy::RangeInclusive`" }
     val (start, last) = value.intoInner()
     return RangeInclusive(start = start, last = last)
@@ -424,8 +424,8 @@ public open class RangeFrom<Idx>(
     public open fun clone(): RangeFrom<Idx> = RangeFrom(start)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -509,9 +509,9 @@ public fun <T> RangeFrom<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Includ
 
 public fun <T> RangeFrom<T>.bound(): Pair<OneSidedRangeBound, T> = Pair(OneSidedRangeBound.StartInclusive, this.start)
 
-public fun <T> fromRangeFromT(value: RangeFrom<T>): io.github.kotlinmania.rustlang.core.range.legacy.RangeFrom<T> = io.github.kotlinmania.rustlang.core.range.legacy.RangeFrom(start = value.start)
+public fun <T> fromRangeFromT(value: RangeFrom<T>): io.github.kotlinmania.rustlang.range.RangeFrom<T> = io.github.kotlinmania.rustlang.range.RangeFrom(start = value.start)
 
-public fun <T> fromRangeFromT(value: io.github.kotlinmania.rustlang.core.range.legacy.RangeFrom<T>): RangeFrom<T> = RangeFrom(start = value.start)
+public fun <T> fromRangeFromT(value: io.github.kotlinmania.rustlang.range.RangeFrom<T>): RangeFrom<T> = RangeFrom(start = value.start)
 
 /**
  * A range only bounded inclusively above.
@@ -567,8 +567,8 @@ public open class RangeToInclusive<Idx>(
     public open fun clone(): RangeToInclusive<Idx> = RangeToInclusive(last)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.last.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.last.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -611,9 +611,9 @@ public open class RangeToInclusive<Idx>(
     }
 }
 
-public fun <T> fromRangeToInclusiveT(value: io.github.kotlinmania.rustlang.core.range.legacy.RangeToInclusive<T>): RangeToInclusive<T> = RangeToInclusive(last = value.end)
+public fun <T> fromRangeToInclusiveT(value: io.github.kotlinmania.rustlang.range.RangeToInclusive<T>): RangeToInclusive<T> = RangeToInclusive(last = value.end)
 
-public fun <T> fromRangeToInclusiveT(value: RangeToInclusive<T>): io.github.kotlinmania.rustlang.core.range.legacy.RangeToInclusive<T> = io.github.kotlinmania.rustlang.core.range.legacy.RangeToInclusive(end = value.last)
+public fun <T> fromRangeToInclusiveT(value: RangeToInclusive<T>): io.github.kotlinmania.rustlang.range.RangeToInclusive<T> = io.github.kotlinmania.rustlang.range.RangeToInclusive(end = value.last)
 
 // RangeToInclusive<Idx> cannot impl From<RangeTo<Idx>>
 // because underflow would be possible with (..0).into()

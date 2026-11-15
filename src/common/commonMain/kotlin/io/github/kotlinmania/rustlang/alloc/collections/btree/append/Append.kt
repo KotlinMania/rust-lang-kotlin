@@ -1,7 +1,7 @@
 // port-lint: source collections/btree/append.rs
 package io.github.kotlinmania.rustlang.alloc.collections.btree.append
 
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.CAPACITY
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -18,7 +18,7 @@ public fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: Ru
     // Iterate through all key-value pairs, pushing them into nodes at the right level.
     for ((key, value) in iter) {
         // Try to push key-value pair into the current leaf node.
-        if (curNode.len() < CAPACITY) {
+        if (curNode.len() < node.CAPACITY) {
             curNode.push(key, value)
         } else {
             // No space left, go up and push there.
@@ -27,10 +27,10 @@ public fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: Ru
             while (true) {
                 run {
                     val matchVal = testNode.ascend()
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val parent = matchVal.value
                         val parent1 = parent.intoNode()
-                        if (parent1.len() < CAPACITY) {
+                        if (parent1.len() < node.CAPACITY) {
                             // Found a node with space left, push here.
                             openNode = parent1
                             break
@@ -38,7 +38,7 @@ public fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: Ru
                             // Go up again.
                             testNode = parent1.forgetType()
                         }
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         // We are at the top, create a new root node and push there.
                         openNode = this.pushInternalLevel(alloc.clone())
                         break

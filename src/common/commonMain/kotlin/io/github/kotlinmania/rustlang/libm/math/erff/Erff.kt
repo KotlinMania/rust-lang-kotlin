@@ -1,8 +1,8 @@
 // port-lint: source math/erff.rs
 package io.github.kotlinmania.rustlang.libm.math.erff
 
-import io.github.kotlinmania.rustlang.libm.math.expf.expf
-import io.github.kotlinmania.rustlang.libm.math.fabs.fabsf
+import io.github.kotlinmania.rustlang.math.expf.expf
+import io.github.kotlinmania.rustlang.math.fabs.fabsf
 
 public val ERX: kotlin.Float = 8.4506291151e-01f
 

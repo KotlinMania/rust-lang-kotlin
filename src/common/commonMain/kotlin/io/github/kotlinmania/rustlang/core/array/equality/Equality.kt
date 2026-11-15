@@ -1,10 +1,10 @@
 // port-lint: source array/equality.rs
 package io.github.kotlinmania.rustlang.core.array.equality
 
-import io.github.kotlinmania.rustlang.core.cmp.bytewise.BytewiseEq
-import io.github.kotlinmania.rustlang.core.intrinsics.rawEq
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
+import io.github.kotlinmania.rustlang.cmp.bytewise.BytewiseEq
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.intrinsics.rawEq
 
 public fun <T, U> List<T>.eqUArraynFromTArrayn(other: List<U>, n: Int): Boolean = SpecArrayEq.specEq(this, other)
 

@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.cycle
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 /**
  * An iterator that repeats endlessly.
@@ -62,7 +62,7 @@ public open class Cycle<I>(
         var acc1 = acc
         // fully iterate the current iterator. this is necessary because
         // `self.iter` may be empty even when `self.orig` isn't
-        acc1 = when (val tryResult = this.iter.tryFold(acc1, f)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        acc1 = when (val tryResult = this.iter.tryFold(acc1, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         this.iter = this.orig.clone()
         // complete a full cycle, keeping track of whether the cycled
         // iterator is empty or not. we need to return early in case
@@ -71,13 +71,13 @@ public open class Cycle<I>(
         acc1 = when (val tryResult = this.iter.tryFold(acc1, { acc2, x ->
             isEmpty = false
             f(acc2, x)
-        })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         if (isEmpty) {
             return acc1
         }
         while (true) {
             this.iter = this.orig.clone()
-            acc1 = when (val tryResult = this.iter.tryFold(acc1, f)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            acc1 = when (val tryResult = this.iter.tryFold(acc1, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         }
     }
 
@@ -86,9 +86,9 @@ public open class Cycle<I>(
         var n2 =
             run {
                 val matchVal = this.iter.advanceBy(n1)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     return Result.Ok(Unit)
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val rem = matchVal.error
                     rem.get()
                 } }
@@ -98,14 +98,14 @@ public open class Cycle<I>(
             n2 = run {
                 val matchVal1 = this.iter.advanceBy(n2)
                 when {
-                    matchVal1 is Result.Ok<*> -> { return Result.Ok(Unit) }
-                    matchVal1 is Result.Err<*> && (matchVal1 as Result.Err<*>).error.get() == n2 -> {
+                    matchVal1 is Result.Ok<*, *> -> { return Result.Ok(Unit) }
+                    matchVal1 is Result.Err<*, *> && (matchVal1 as Result.Err<*, *>).error.get() == n2 -> {
                         val e = matchVal1
-                        val rem1 = (matchVal1 as Result.Err<*>).error
+                        val rem1 = (matchVal1 as Result.Err<*, *>).error
                         return e
                     }
                     else -> {
-                        val rem2 = (matchVal1 as Result.Err<*>).error
+                        val rem2 = (matchVal1 as Result.Err<*, *>).error
                         rem2.get()
                     }
                 }

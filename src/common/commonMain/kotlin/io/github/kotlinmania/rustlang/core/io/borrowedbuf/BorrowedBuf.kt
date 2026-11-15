@@ -1,19 +1,19 @@
 // port-lint: source io/borrowed_buf.rs
 package io.github.kotlinmania.rustlang.core.io.borrowedbuf
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
+import io.github.kotlinmania.rustlang.fmt.Formatter
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 public class DebugStruct(
     private val out: StringBuilder,

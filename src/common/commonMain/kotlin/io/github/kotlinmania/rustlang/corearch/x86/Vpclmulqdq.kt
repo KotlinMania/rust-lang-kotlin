@@ -1,6 +1,9 @@
 // port-lint: source x86/vpclmulqdq.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.M512i
+
 // Vectorized Carry-less Multiplication (VCLMUL)
 //
 // The reference is [Intel 64 and IA-32 Architectures Software Developer's

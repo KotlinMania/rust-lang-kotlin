@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.ascii.Char as AsciiChar
+import io.github.kotlinmania.rustlang.ascii.Char as AsciiChar
 
 // The `Default` trait for types with a default value.
 

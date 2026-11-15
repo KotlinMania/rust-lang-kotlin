@@ -5,12 +5,9 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.copy
-import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -66,7 +63,7 @@ public open class PanicGuard<T, A : Allocator>(
                 // SAFETY: Continued from above.
                 val dstPtr = MutPtr((this.v.asMutPtr()).rawAddress + ((dst).toLong() * (ObjectSlotLayout<T>()).strideBytes))
                 // SAFETY: src and dstPtr < originalLen
-                copy(src, dstPtr, 1)
+                ptr.copy(src, dstPtr, 1)
                 dst += 1
             }
         }
@@ -76,7 +73,7 @@ public open class PanicGuard<T, A : Allocator>(
         if (untouchedLen > 0) {
             // SAFETY: untouchedStart..originalLen are valid; dst + untouchedLen <= originalLen.
             run {
-                copy(ConstPtr((this.v.asPtr()).rawAddress + ((untouchedStart).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((this.v.asMutPtr()).rawAddress + ((dst).toLong() * (ObjectSlotLayout<T>()).strideBytes)), untouchedLen)
+                ptr.copy(ConstPtr((this.v.asPtr()).rawAddress + ((untouchedStart).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((this.v.asMutPtr()).rawAddress + ((dst).toLong() * (ObjectSlotLayout<T>()).strideBytes)), untouchedLen)
             }
             dst += untouchedLen
         }
@@ -106,7 +103,7 @@ public fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typeL
             if (!guard.mask[i]) {
                 // SAFETY: read + i < originalLen, and after marking `mask` and `decided`,
                 // the guard can properly handles the case where dropInPlace panics.
-                dropInPlace(cur)
+                ptr.dropInPlace(cur)
             }
         }
         // Phase B: SVE compress.

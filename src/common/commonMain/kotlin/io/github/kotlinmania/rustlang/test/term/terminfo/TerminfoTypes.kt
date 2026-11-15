@@ -18,7 +18,7 @@ public sealed class Error {
     /**
      * io.Error forwards any io.Errors encountered when finding or reading the terminfo entry.
      */
-    public data class IoError(public var value: io.github.kotlinmania.rustlang.core.io.error.Error) : Error()
+    public data class IoError(public var value: Error) : Error()
 
     public open fun source(): Any? =
         when (this) {

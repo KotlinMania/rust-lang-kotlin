@@ -2,293 +2,293 @@
 
 package io.github.kotlinmania.rustlang.libc.new.common.posix.pthread
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT
 
-private object NewCommonPosixPthreadJniBridge {
+private object LibcNewCommonPosixPthreadJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadAtfork(prepare: Long, parent: Long, child: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadAtfork(prepare: Long, parent: Long, child: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadAttrGetguardsize(attr: Long, guardsize: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadAttrGetguardsize(attr: Long, guardsize: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadAttrGetinheritsched(attr: Long, inheritsched: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadAttrGetinheritsched(attr: Long, inheritsched: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadAttrGetschedparam(attr: Long, param: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadAttrGetschedparam(attr: Long, param: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadAttrGetschedpolicy(attr: Long, policy: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadAttrGetschedpolicy(attr: Long, policy: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadAttrGetstack(attr: Long, stackaddr: Long, stacksize: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadAttrGetstack(attr: Long, stackaddr: Long, stacksize: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadAttrSetguardsize(attr: Long, guardsize: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadAttrSetguardsize(attr: Long, guardsize: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadAttrSetinheritsched(attr: Long, inheritsched: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadAttrSetinheritsched(attr: Long, inheritsched: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadAttrSetschedparam(attr: Long, param: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadAttrSetschedparam(attr: Long, param: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadAttrSetschedpolicy(attr: Long, policy: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadAttrSetschedpolicy(attr: Long, policy: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadAttrSetstack(attr: Long, stackaddr: Long, stacksize: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadAttrSetstack(attr: Long, stackaddr: Long, stacksize: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadBarrierDestroy(barrier: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadBarrierDestroy(barrier: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadBarrierInit(barrier: Long, attr: Long, count: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadBarrierInit(barrier: Long, attr: Long, count: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadBarrierWait(barrier: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadBarrierWait(barrier: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadBarrierattrDestroy(attr: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadBarrierattrDestroy(attr: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadBarrierattrGetpshared(attr: Long, shared: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadBarrierattrGetpshared(attr: Long, shared: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadBarrierattrInit(attr: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadBarrierattrInit(attr: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadBarrierattrSetpshared(attr: Long, shared: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadBarrierattrSetpshared(attr: Long, shared: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadCancel(thread: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadCancel(thread: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadCondattrGetclock(attr: Long, clockId: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadCondattrGetclock(attr: Long, clockId: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadCondattrGetpshared(attr: Long, pshared: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadCondattrGetpshared(attr: Long, pshared: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadCondattrSetclock(attr: Long, clockId: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadCondattrSetclock(attr: Long, clockId: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadCondattrSetpshared(attr: Long, pshared: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadCondattrSetpshared(attr: Long, pshared: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadCreate(native: Long, attr: Long, f: Long, value: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadCreate(native: Long, attr: Long, f: Long, value: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadGetcpuclockid(thread: Long, clkId: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadGetcpuclockid(thread: Long, clkId: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadGetschedparam(native: Long, policy: Long, param: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadGetschedparam(native: Long, policy: Long, param: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadKill(thread: Long, sig: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadKill(thread: Long, sig: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadMutexConsistent(mutex: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadMutexConsistent(mutex: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadMutexTimedlock(lock: Long, abstime: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadMutexTimedlock(lock: Long, abstime: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadMutexattrGetprotocol(attr: Long, protocol: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadMutexattrGetprotocol(attr: Long, protocol: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadMutexattrGetpshared(attr: Long, pshared: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadMutexattrGetpshared(attr: Long, pshared: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadMutexattrGetrobust(attr: Long, robustness: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadMutexattrGetrobust(attr: Long, robustness: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadMutexattrSetprotocol(attr: Long, protocol: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadMutexattrSetprotocol(attr: Long, protocol: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadMutexattrSetpshared(attr: Long, pshared: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadMutexattrSetpshared(attr: Long, pshared: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadMutexattrSetrobust(attr: Long, robustness: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadMutexattrSetrobust(attr: Long, robustness: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadRwlockattrGetpshared(attr: Long, value: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadRwlockattrGetpshared(attr: Long, value: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadRwlockattrSetpshared(attr: Long, value: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadRwlockattrSetpshared(attr: Long, value: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadOnce(control: Long, routine: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadOnce(control: Long, routine: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadSetschedparam(native: Long, policy: Int, param: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadSetschedparam(native: Long, policy: Int, param: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadSetschedprio(native: Long, priority: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadSetschedprio(native: Long, priority: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadSigmask(how: Int, set: Long, oldset: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadSigmask(how: Int, set: Long, oldset: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadSpinDestroy(lock: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadSpinDestroy(lock: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadSpinInit(lock: Long, pshared: Int): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadSpinInit(lock: Long, pshared: Int): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadSpinLock(lock: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadSpinLock(lock: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadSpinTrylock(lock: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadSpinTrylock(lock: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonPosixPthreadPthreadSpinUnlock(lock: Long): Int
+    external fun rustlangLibcNewCommonPosixPthreadPthreadSpinUnlock(lock: Long): Int
 }
 
 public actual fun pthreadAtfork(prepare: PthreadAtforkPrepareCallback?, parent: PthreadAtforkPrepareCallback?, child: PthreadAtforkPrepareCallback?): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadAtfork(0L, 0L, 0L)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadAtfork(0L, 0L, 0L)
 
 public actual fun pthreadAttrGetguardsize(attr: ConstPtr, guardsize: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadAttrGetguardsize(attr.rawAddress, guardsize.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadAttrGetguardsize(attr.rawAddress, guardsize.rawAddress)
 
 public actual fun pthreadAttrGetinheritsched(attr: ConstPtr, inheritsched: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadAttrGetinheritsched(attr.rawAddress, inheritsched.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadAttrGetinheritsched(attr.rawAddress, inheritsched.rawAddress)
 
 public actual fun pthreadAttrGetschedparam(attr: ConstPtr, param: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadAttrGetschedparam(attr.rawAddress, param.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadAttrGetschedparam(attr.rawAddress, param.rawAddress)
 
 public actual fun pthreadAttrGetschedpolicy(attr: ConstPtr, policy: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadAttrGetschedpolicy(attr.rawAddress, policy.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadAttrGetschedpolicy(attr.rawAddress, policy.rawAddress)
 
 public actual fun pthreadAttrGetstack(attr: ConstPtr, stackaddr: MutPtr, stacksize: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadAttrGetstack(attr.rawAddress, stackaddr.rawAddress, stacksize.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadAttrGetstack(attr.rawAddress, stackaddr.rawAddress, stacksize.rawAddress)
 
 public actual fun pthreadAttrSetguardsize(attr: MutPtr, guardsize: SizeT): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadAttrSetguardsize(attr.rawAddress, guardsize.toLong())
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadAttrSetguardsize(attr.rawAddress, guardsize.toLong())
 
 public actual fun pthreadAttrSetinheritsched(attr: MutPtr, inheritsched: CInt): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadAttrSetinheritsched(attr.rawAddress, inheritsched)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadAttrSetinheritsched(attr.rawAddress, inheritsched)
 
 public actual fun pthreadAttrSetschedparam(attr: MutPtr, param: ConstPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadAttrSetschedparam(attr.rawAddress, param.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadAttrSetschedparam(attr.rawAddress, param.rawAddress)
 
 public actual fun pthreadAttrSetschedpolicy(attr: MutPtr, policy: CInt): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadAttrSetschedpolicy(attr.rawAddress, policy)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadAttrSetschedpolicy(attr.rawAddress, policy)
 
 public actual fun pthreadAttrSetstack(attr: MutPtr, stackaddr: MutPtr, stacksize: SizeT): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadAttrSetstack(attr.rawAddress, stackaddr.rawAddress, stacksize.toLong())
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadAttrSetstack(attr.rawAddress, stackaddr.rawAddress, stacksize.toLong())
 
 public actual fun pthreadBarrierDestroy(barrier: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadBarrierDestroy(barrier.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadBarrierDestroy(barrier.rawAddress)
 
 public actual fun pthreadBarrierInit(barrier: MutPtr, attr: ConstPtr, count: CUint): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadBarrierInit(barrier.rawAddress, attr.rawAddress, count.toInt())
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadBarrierInit(barrier.rawAddress, attr.rawAddress, count.toInt())
 
 public actual fun pthreadBarrierWait(barrier: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadBarrierWait(barrier.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadBarrierWait(barrier.rawAddress)
 
 public actual fun pthreadBarrierattrDestroy(attr: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadBarrierattrDestroy(attr.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadBarrierattrDestroy(attr.rawAddress)
 
 public actual fun pthreadBarrierattrGetpshared(attr: ConstPtr, shared: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadBarrierattrGetpshared(attr.rawAddress, shared.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadBarrierattrGetpshared(attr.rawAddress, shared.rawAddress)
 
 public actual fun pthreadBarrierattrInit(attr: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadBarrierattrInit(attr.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadBarrierattrInit(attr.rawAddress)
 
 public actual fun pthreadBarrierattrSetpshared(attr: MutPtr, shared: CInt): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadBarrierattrSetpshared(attr.rawAddress, shared)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadBarrierattrSetpshared(attr.rawAddress, shared)
 
 public actual fun pthreadCancel(thread: PthreadT): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadCancel(thread.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadCancel(thread.toLong())
 
 public actual fun pthreadCondattrGetclock(attr: ConstPtr, clockId: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadCondattrGetclock(attr.rawAddress, clockId.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadCondattrGetclock(attr.rawAddress, clockId.rawAddress)
 
 public actual fun pthreadCondattrGetpshared(attr: ConstPtr, pshared: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadCondattrGetpshared(attr.rawAddress, pshared.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadCondattrGetpshared(attr.rawAddress, pshared.rawAddress)
 
 public actual fun pthreadCondattrSetclock(attr: MutPtr, clockId: ClockidT): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadCondattrSetclock(attr.rawAddress, clockId.toInt())
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadCondattrSetclock(attr.rawAddress, clockId.toInt())
 
 public actual fun pthreadCondattrSetpshared(attr: MutPtr, pshared: CInt): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadCondattrSetpshared(attr.rawAddress, pshared)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadCondattrSetpshared(attr.rawAddress, pshared)
 
 public actual fun pthreadCreate(native: MutPtr, attr: ConstPtr, f: PthreadCreateFCallback, value: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadCreate(native.rawAddress, attr.rawAddress, 0L, value.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadCreate(native.rawAddress, attr.rawAddress, 0L, value.rawAddress)
 
 public actual fun pthreadGetcpuclockid(thread: PthreadT, clkId: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadGetcpuclockid(thread.rawAddress, clkId.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadGetcpuclockid(thread.toLong(), clkId.rawAddress)
 
 public actual fun pthreadGetschedparam(native: PthreadT, policy: MutPtr, param: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadGetschedparam(native.rawAddress, policy.rawAddress, param.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadGetschedparam(native.toLong(), policy.rawAddress, param.rawAddress)
 
 public actual fun pthreadKill(thread: PthreadT, sig: CInt): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadKill(thread.rawAddress, sig)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadKill(thread.toLong(), sig)
 
 public actual fun pthreadMutexConsistent(mutex: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadMutexConsistent(mutex.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadMutexConsistent(mutex.rawAddress)
 
 public actual fun pthreadMutexTimedlock(lock: MutPtr, abstime: ConstPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadMutexTimedlock(lock.rawAddress, abstime.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadMutexTimedlock(lock.rawAddress, abstime.rawAddress)
 
 public actual fun pthreadMutexattrGetprotocol(attr: ConstPtr, protocol: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadMutexattrGetprotocol(attr.rawAddress, protocol.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadMutexattrGetprotocol(attr.rawAddress, protocol.rawAddress)
 
 public actual fun pthreadMutexattrGetpshared(attr: ConstPtr, pshared: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadMutexattrGetpshared(attr.rawAddress, pshared.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadMutexattrGetpshared(attr.rawAddress, pshared.rawAddress)
 
 public actual fun pthreadMutexattrGetrobust(attr: ConstPtr, robustness: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadMutexattrGetrobust(attr.rawAddress, robustness.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadMutexattrGetrobust(attr.rawAddress, robustness.rawAddress)
 
 public actual fun pthreadMutexattrSetprotocol(attr: MutPtr, protocol: CInt): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadMutexattrSetprotocol(attr.rawAddress, protocol)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadMutexattrSetprotocol(attr.rawAddress, protocol)
 
 public actual fun pthreadMutexattrSetpshared(attr: MutPtr, pshared: CInt): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadMutexattrSetpshared(attr.rawAddress, pshared)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadMutexattrSetpshared(attr.rawAddress, pshared)
 
 public actual fun pthreadMutexattrSetrobust(attr: MutPtr, robustness: CInt): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadMutexattrSetrobust(attr.rawAddress, robustness)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadMutexattrSetrobust(attr.rawAddress, robustness)
 
 public actual fun pthreadRwlockattrGetpshared(attr: ConstPtr, value: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadRwlockattrGetpshared(attr.rawAddress, value.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadRwlockattrGetpshared(attr.rawAddress, value.rawAddress)
 
 public actual fun pthreadRwlockattrSetpshared(attr: MutPtr, value: CInt): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadRwlockattrSetpshared(attr.rawAddress, value)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadRwlockattrSetpshared(attr.rawAddress, value)
 
 public actual fun pthreadOnce(control: MutPtr, routine: PthreadAtforkPrepareCallback): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadOnce(control.rawAddress, 0L)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadOnce(control.rawAddress, 0L)
 
 public actual fun pthreadSetschedparam(native: PthreadT, policy: CInt, param: ConstPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadSetschedparam(native.rawAddress, policy, param.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadSetschedparam(native.toLong(), policy, param.rawAddress)
 
 public actual fun pthreadSetschedprio(native: PthreadT, priority: CInt): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadSetschedprio(native.rawAddress, priority)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadSetschedprio(native.toLong(), priority)
 
 public actual fun pthreadSigmask(how: CInt, set: ConstPtr, oldset: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadSigmask(how, set.rawAddress, oldset.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadSigmask(how, set.rawAddress, oldset.rawAddress)
 
 public actual fun pthreadSpinDestroy(lock: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadSpinDestroy(lock.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadSpinDestroy(lock.rawAddress)
 
 public actual fun pthreadSpinInit(lock: MutPtr, pshared: CInt): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadSpinInit(lock.rawAddress, pshared)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadSpinInit(lock.rawAddress, pshared)
 
 public actual fun pthreadSpinLock(lock: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadSpinLock(lock.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadSpinLock(lock.rawAddress)
 
 public actual fun pthreadSpinTrylock(lock: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadSpinTrylock(lock.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadSpinTrylock(lock.rawAddress)
 
 public actual fun pthreadSpinUnlock(lock: MutPtr): CInt =
-    NewCommonPosixPthreadJniBridge.libcNewCommonPosixPthreadPthreadSpinUnlock(lock.rawAddress)
+    LibcNewCommonPosixPthreadJniBridge.rustlangLibcNewCommonPosixPthreadPthreadSpinUnlock(lock.rawAddress)

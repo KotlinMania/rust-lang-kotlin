@@ -1,9 +1,9 @@
 // port-lint: tests x86_64/sse2.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.corearch.x86.mmSet1Pd
-import io.github.kotlinmania.rustlang.corearch.x86.mmSetrPd
-import io.github.kotlinmania.rustlang.corearch.x86.mmSfence
+import io.github.kotlinmania.rustlang.x86.mmSet1Pd
+import io.github.kotlinmania.rustlang.x86.mmSetrPd
+import io.github.kotlinmania.rustlang.x86.mmSfence
 
 // `x8664`s Streaming SIMD Extensions 2 (SSE2)
 

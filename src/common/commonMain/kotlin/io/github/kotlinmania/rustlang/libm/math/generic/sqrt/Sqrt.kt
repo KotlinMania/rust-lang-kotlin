@@ -3,14 +3,14 @@
 
 package io.github.kotlinmania.rustlang.libm.math.generic.sqrt
 
-import io.github.kotlinmania.rustlang.libm.math.support.coldPath
-import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
-import io.github.kotlinmania.rustlang.libm.math.support.env.Round
-import io.github.kotlinmania.rustlang.libm.math.support.env.Status
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.IntTy
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.HInt
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
+import io.github.kotlinmania.rustlang.math.support.coldPath
+import io.github.kotlinmania.rustlang.math.support.env.FpResult
+import io.github.kotlinmania.rustlang.math.support.env.Round
+import io.github.kotlinmania.rustlang.math.support.env.Status
+import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.floattraits.IntTy
+import io.github.kotlinmania.rustlang.math.support.inttraits.HInt
+import io.github.kotlinmania.rustlang.math.support.inttraits.Int
 
 // Generic square root algorithm.
 //

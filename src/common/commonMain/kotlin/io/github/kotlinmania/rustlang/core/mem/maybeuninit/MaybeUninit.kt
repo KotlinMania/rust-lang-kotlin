@@ -1,39 +1,39 @@
 // port-lint: source mem/maybe_uninit.rs
 package io.github.kotlinmania.rustlang.core.mem.maybeuninit
 
+import io.github.kotlinmania.rustlang.clone.TrivialClone
+import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
-import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
-import io.github.kotlinmania.rustlang.core.marker.Forget
-import io.github.kotlinmania.rustlang.core.marker.Freeze
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
-import io.github.kotlinmania.rustlang.core.mem.transmuteNeo
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
-import io.github.kotlinmania.rustlang.core.ptr.fromRef
-import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.marker.Forget
+import io.github.kotlinmania.rustlang.marker.Freeze
+import io.github.kotlinmania.rustlang.mem.sizeOf
+import io.github.kotlinmania.rustlang.mem.sizeOfVal
+import io.github.kotlinmania.rustlang.mem.transmuteNeo
+import io.github.kotlinmania.rustlang.option.Option
+import io.github.kotlinmania.rustlang.panicking.assertFailed
+import io.github.kotlinmania.rustlang.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.ptr.fromRef
+import io.github.kotlinmania.rustlang.ptr.read
 
 // Lang item so we can wrap other types in it. This is useful for coroutines.
 
@@ -169,6 +169,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.reinterpret
  * import std.mem.MaybeUninit
  *
  * val data1 = run {
@@ -181,7 +182,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  *     }
  *     // Everything is initialized. Transmute the array to the
  *     // initialized type.
- *     mem.reinterpret<List<List<UInt>>>(data)
+ *     reinterpret(data)
  * }
  * check(data1[0] == listOf(42))
  * ```
@@ -197,12 +198,12 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * var data: List<MaybeUninit<String>> = List(1000) { MaybeUninit.uninit(ObjectSlotLayout<String>()) }
  * // Count the number of elements we have assigned.
  * var dataLen: Int = 0
- * for (elem in ((data).slice(0 until 500))) {
+ * for (elem in ((data).subList(0, 500))) {
  *     elem.write("hello")
  *     dataLen += 1
  * }
  * // For each item in the array, drop if we allocated it.
- * for (elem1 in ((data).slice(0 until dataLen))) {
+ * for (elem1 in ((data).subList(0, dataLen))) {
  *     run {
  *         elem1.assumeInitDrop()
  *     }
@@ -295,6 +296,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+ * import io.github.kotlinmania.rustlang.core.mem.reinterpret
  *
  * fun <T> unsoundTransmute(value: T): MaybeUninit<T> {
  *     return reinterpret(value)
@@ -336,6 +338,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+ * import io.github.kotlinmania.rustlang.core.mem.reinterpret
  *
  * public fun doctestEntry() {
  *     fun identity(t: T): T {
@@ -373,6 +376,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+ * import io.github.kotlinmania.rustlang.core.mem.reinterpret
  * import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
  *
  * public fun doctestEntry() {
@@ -403,6 +407,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+ * import io.github.kotlinmania.rustlang.core.mem.reinterpret
  *
  * public fun doctestEntry() {
  *     @repr(C)
@@ -1287,7 +1292,7 @@ public fun <T> List<MaybeUninit<T>>.writeCloneOfSlice(src: List<T>): MutableList
     // for bounds checking to be elided, and the optimizer will
     // generate memcpy for simple cases (for example T = u8).
     val len = this.size
-    val src1 = ((src).slice(0 until len))
+    val src1 = ((src).subList(0, len))
     // guard is needed b/c panic might happen during a clone
     val guard = Guard(slice = this, initialized = 0)
     for (i in 0 until len) {

@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.atan
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.libm.math.fabs.fabs
+import io.github.kotlinmania.rustlang.math.fabs.fabs
 
 public val ATANHI: DoubleArray = doubleArrayOf(4.63647609000806093515e-01, 7.85398163397448278999e-01, 9.82793723247329054082e-01, 1.57079632679489655800e00)
 

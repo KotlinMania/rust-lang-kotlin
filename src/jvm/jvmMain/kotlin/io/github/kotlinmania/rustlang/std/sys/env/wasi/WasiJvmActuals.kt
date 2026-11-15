@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.env.wasi
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object SysEnvWasiJniBridge {
+private object StdSysEnvWasiJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -40,8 +40,8 @@ private object SysEnvWasiJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/std/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = SysEnvWasiJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = StdSysEnvWasiJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -58,8 +58,8 @@ private object SysEnvWasiJniBridge {
     }
 
     @JvmStatic
-    external fun stdSysEnvWasiWasilibcGetEnviron(): Long
+    external fun rustlangStdSysEnvWasiWasilibcGetEnviron(): Long
 }
 
 public actual fun wasilibcGetEnviron(): MutPtr =
-    MutPtr(SysEnvWasiJniBridge.stdSysEnvWasiWasilibcGetEnviron())
+    MutPtr(StdSysEnvWasiJniBridge.rustlangStdSysEnvWasiWasilibcGetEnviron())

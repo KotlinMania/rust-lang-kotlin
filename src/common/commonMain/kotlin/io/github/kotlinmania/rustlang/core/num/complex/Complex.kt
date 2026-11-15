@@ -2,14 +2,14 @@
 package io.github.kotlinmania.rustlang.core.num.complex
 
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.hint.coldPath
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.imp.libm.complex.rustDivhc3
-import io.github.kotlinmania.rustlang.core.num.imp.libm.complex.rustMulhc3
-import io.github.kotlinmania.rustlang.core.ops.arith.Add
-import io.github.kotlinmania.rustlang.core.ops.arith.Neg
-import io.github.kotlinmania.rustlang.core.ops.arith.Sub
+import io.github.kotlinmania.rustlang.hint.coldPath
+import io.github.kotlinmania.rustlang.num.imp.libm.complex.rustDivhc3
+import io.github.kotlinmania.rustlang.num.imp.libm.complex.rustMulhc3
+import io.github.kotlinmania.rustlang.ops.arith.Add
+import io.github.kotlinmania.rustlang.ops.arith.Neg
+import io.github.kotlinmania.rustlang.ops.arith.Sub
 
 /**
  * A [complex number], represented in rectangular form.
@@ -82,7 +82,7 @@ public open class Complex<T>(
      * The imaginary component.
      */
     public var im: T,
-) : Neg<Any?, Complex<Output>>, Add<Complex<T>, Any?, Complex<Output>>, Sub<Complex<T>, Any?, Complex<Output>> {
+) : Neg<Complex<Output>>, Add<Complex<T>, Complex<Output>>, Sub<Complex<T>, Complex<Output>> {
     public open fun clone(): Complex<T> = Complex(re, im)
 
     /**

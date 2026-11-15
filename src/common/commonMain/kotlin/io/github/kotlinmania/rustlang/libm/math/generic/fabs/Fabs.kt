@@ -1,7 +1,7 @@
 // port-lint: source math/generic/fabs.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.fabs
 
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.floattraits.Float
 
 /**
  * Absolute value.

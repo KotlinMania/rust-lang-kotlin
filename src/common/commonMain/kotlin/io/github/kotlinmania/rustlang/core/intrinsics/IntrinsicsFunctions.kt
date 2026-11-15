@@ -3,21 +3,22 @@ package io.github.kotlinmania.rustlang.core.intrinsics
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
-import io.github.kotlinmania.rustlang.core.ffi.valist.VaList
-import io.github.kotlinmania.rustlang.core.intrinsics.bounds.FloatPrimitive
-import io.github.kotlinmania.rustlang.core.intrinsics.bounds.IntegerPrimitive
-import io.github.kotlinmania.rustlang.core.intrinsics.fallback.CarryingMulAdd
-import io.github.kotlinmania.rustlang.core.intrinsics.fallback.CarrylessMul
-import io.github.kotlinmania.rustlang.core.intrinsics.fallback.DisjointBitOr
-import io.github.kotlinmania.rustlang.core.intrinsics.fallback.FunnelShift
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
 import io.github.kotlinmania.rustlang.core.num.rustIsSignPositive
-import io.github.kotlinmania.rustlang.core.panicking.panicNounwind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
+import io.github.kotlinmania.rustlang.ffi.valist.VaList
+import io.github.kotlinmania.rustlang.intrinsics.bounds.FloatPrimitive
+import io.github.kotlinmania.rustlang.intrinsics.bounds.IntegerPrimitive
+import io.github.kotlinmania.rustlang.intrinsics.constEvalSelect
+import io.github.kotlinmania.rustlang.intrinsics.fallback.CarryingMulAdd
+import io.github.kotlinmania.rustlang.intrinsics.fallback.CarrylessMul
+import io.github.kotlinmania.rustlang.intrinsics.fallback.DisjointBitOr
+import io.github.kotlinmania.rustlang.intrinsics.fallback.FunnelShift
+import io.github.kotlinmania.rustlang.mem.sizeOf
+import io.github.kotlinmania.rustlang.panicking.panicNounwind
+import io.github.kotlinmania.rustlang.ptr.swapNonoverlapping
 
 /**
  * The `prefetch` intrinsic is a hint to the code generator to insert a prefetch instruction

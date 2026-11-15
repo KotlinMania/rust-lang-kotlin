@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.std.os.unix.fs.dirs
 
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
-import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
-import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.fs.dirs.HomeDirs
+import io.github.kotlinmania.rustlang.fs.dirs.MediaDirs
+import io.github.kotlinmania.rustlang.path.Path
 
 public class DirsInlineTests {
     @kotlin.test.Test
@@ -26,17 +26,17 @@ public class DirsInlineTests {
             run {
                 val matchVal = MediaDirs.xdg()
                 when {
-                    matchVal is Result.Ok<*> -> {
-                        val dirs = (matchVal as Result.Ok<*>).value
+                    matchVal is Result.Ok<*, *> -> {
+                        val dirs = (matchVal as Result.Ok<*, *>).value
                         dirs
                     }
-                    matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.kind() == ErrorKind.NotFound -> {
-                        val e = (matchVal as Result.Err<*>).error
+                    matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.kind() == ErrorKind.NotFound -> {
+                        val e = (matchVal as Result.Err<*, *>).error
                         // xdg-user-dirs not initialized on this system, skip the test
                         return
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*>).error
+                        val e1 = (matchVal as Result.Err<*, *>).error
                         error("failed to fetch xdg user dirs: $e")
                     }
                 }

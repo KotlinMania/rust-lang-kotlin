@@ -1,7 +1,7 @@
 // port-lint: source x86_64/avx512bw.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.corearch.x86.Mmask64
+import io.github.kotlinmania.rustlang.x86.Mmask64
 
 /**
  * Convert 64-bit mask a into an integer value, and store the result in dst.

@@ -1,10 +1,10 @@
 // port-lint: source asserting.rs
 package io.github.kotlinmania.rustlang.core.asserting
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.fmt.Formatter
 
 // ***** TryCapture - Generic *****
 

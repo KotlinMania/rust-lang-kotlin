@@ -3,12 +3,17 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.simd.I32x16
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I32x8
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I64x4
-import io.github.kotlinmania.rustlang.corearch.simd.I64x8
+import io.github.kotlinmania.rustlang.simd.I32x16
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I32x8
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I64x4
+import io.github.kotlinmania.rustlang.simd.I64x8
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.M512i
+import io.github.kotlinmania.rustlang.x86.Mmask16
+import io.github.kotlinmania.rustlang.x86.Mmask8
 
 // Vector Pair Intersection to a Pair of Mask Registers (VP2INTERSECT)
 

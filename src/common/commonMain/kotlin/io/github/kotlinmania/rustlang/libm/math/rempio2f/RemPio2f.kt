@@ -1,7 +1,7 @@
 // port-lint: source math/rem_pio2f.rs
 package io.github.kotlinmania.rustlang.libm.math.rempio2f
 
-import io.github.kotlinmania.rustlang.libm.math.rempio2large.remPio2Large
+import io.github.kotlinmania.rustlang.math.rempio2large.remPio2Large
 
 public val TOINT: Double = 1.5 / 2.220446049250313E-16
 

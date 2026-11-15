@@ -2,16 +2,15 @@
 package io.github.kotlinmania.rustlang.core.panicking
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.fmt.Arguments
-import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.panic.location.Location
-import io.github.kotlinmania.rustlang.core.panic.panicinfo.PanicInfo
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
+import io.github.kotlinmania.rustlang.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.intrinsics.abortImmediate
+import io.github.kotlinmania.rustlang.panic.location.Location
+import io.github.kotlinmania.rustlang.panic.panicinfo.PanicInfo
+import io.github.kotlinmania.rustlang.str.pattern.Pattern
 
 // Panic support for core
 //

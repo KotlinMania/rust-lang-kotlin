@@ -1,12 +1,12 @@
 // port-lint: source int/sdiv.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.int.sdiv
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.int.udiv.udivti3
-import io.github.kotlinmania.rustlang.compilerbuiltins.int.udiv.umodti3
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
+import io.github.kotlinmania.rustlang.int.udiv.udivti3
+import io.github.kotlinmania.rustlang.int.udiv.umodti3
 
 // The `@armAeabiAlias= __aeabi_idiv` attribute cannot be made to work with `intrinsics` in macros
 // LLVM does not currently have a `__divmodti4` function, but GCC does

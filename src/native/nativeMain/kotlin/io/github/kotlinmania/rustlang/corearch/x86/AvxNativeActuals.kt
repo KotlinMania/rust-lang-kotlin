@@ -3,13 +3,17 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I32x8
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I64x4
-import io.github.kotlinmania.rustlang.corearch.simd.I8x32
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86AvxVzeroall
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86AvxVzeroupper
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.rustlangCorearchX86AvxVzeroall
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.rustlangCorearchX86AvxVzeroupper
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I32x8
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I64x4
+import io.github.kotlinmania.rustlang.simd.I8x32
+import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.x86.M128d
+import io.github.kotlinmania.rustlang.x86.M256
+import io.github.kotlinmania.rustlang.x86.M256d
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun roundpd256(a: M256d, b: Int): M256d =
@@ -52,11 +56,11 @@ public actual fun vcvttps2dq(a: M256): I32x8 =
     null as I32x8
 
 public actual fun vzeroall() {
-    corearchX86AvxVzeroall()
+    rustlangCorearchX86AvxVzeroall()
 }
 
 public actual fun vzeroupper() {
-    corearchX86AvxVzeroupper()
+    rustlangCorearchX86AvxVzeroupper()
 }
 
 public actual fun vpermilps256(a: M256, b: I32x8): M256 =

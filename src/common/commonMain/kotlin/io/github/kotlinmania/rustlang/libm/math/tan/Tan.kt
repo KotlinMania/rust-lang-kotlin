@@ -1,8 +1,8 @@
 // port-lint: source math/tan.rs
 package io.github.kotlinmania.rustlang.libm.math.tan
 
-import io.github.kotlinmania.rustlang.libm.math.ktan.kTan
-import io.github.kotlinmania.rustlang.libm.math.rempio2.remPio2
+import io.github.kotlinmania.rustlang.math.ktan.kTan
+import io.github.kotlinmania.rustlang.math.rempio2.remPio2
 
 // tan(x)
 // Return tangent function of x.

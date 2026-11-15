@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.std.sys.alloc.windows.cinterop
-headers = sys_alloc_windows_wrapper.h
-headerFilter = sys_alloc_windows_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = sys_alloc_windows_wrapper.a

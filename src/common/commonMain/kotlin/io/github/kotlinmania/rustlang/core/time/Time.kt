@@ -4,25 +4,24 @@
 package io.github.kotlinmania.rustlang.core.time
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.fmt.Alignment
-import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
-import io.github.kotlinmania.rustlang.core.num.f32.MIN_EXP
-import io.github.kotlinmania.rustlang.core.num.nichetypes.Nanoseconds
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.core.ops.arith.Add
-import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
-import io.github.kotlinmania.rustlang.core.ops.arith.Div
-import io.github.kotlinmania.rustlang.core.ops.arith.DivAssign
-import io.github.kotlinmania.rustlang.core.ops.arith.Mul
-import io.github.kotlinmania.rustlang.core.ops.arith.MulAssign
-import io.github.kotlinmania.rustlang.core.ops.arith.Sub
-import io.github.kotlinmania.rustlang.core.ops.arith.SubAssign
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
+import io.github.kotlinmania.rustlang.iter.traits.accum.Sum
+import io.github.kotlinmania.rustlang.num.f32.MIN_EXP
+import io.github.kotlinmania.rustlang.num.nichetypes.Nanoseconds
+import io.github.kotlinmania.rustlang.ops.arith.Add
+import io.github.kotlinmania.rustlang.ops.arith.AddAssign
+import io.github.kotlinmania.rustlang.ops.arith.Div
+import io.github.kotlinmania.rustlang.ops.arith.DivAssign
+import io.github.kotlinmania.rustlang.ops.arith.Mul
+import io.github.kotlinmania.rustlang.ops.arith.MulAssign
+import io.github.kotlinmania.rustlang.ops.arith.Sub
+import io.github.kotlinmania.rustlang.ops.arith.SubAssign
+import io.github.kotlinmania.rustlang.str.converts.fromUtf8Unchecked
 
 // Temporal quantification.
 //
@@ -99,7 +98,7 @@ public val DAYS_PER_WEEK: ULong = 7uL
 public open class Duration(
     public var secs: ULong,
     public var nanos: Nanoseconds,
-) : Add<Duration, Any?, Duration>, AddAssign<Duration>, Sub<Duration, Any?, Duration>, SubAssign<Duration>, Mul<UInt, Any?, Duration>, MulAssign<UInt>, Div<UInt, Any?, Duration>, DivAssign<UInt>, Sum<Duration, Duration> {
+) : Add<Duration, Duration>, AddAssign<Duration>, Sub<Duration, Duration>, SubAssign<Duration>, Mul<UInt, Duration>, MulAssign<UInt>, Div<UInt, Duration>, DivAssign<UInt>, Sum<Duration, Duration> {
     public open fun clone(): Duration = Duration(secs, nanos)
 
     /**
@@ -1305,10 +1304,10 @@ public open class Duration(
         public fun fromSecsF64(secs: Double): Duration =
             run {
                 val matchVal = Duration.tryFromSecsF64(secs)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val v = matchVal.value
                     v
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val e = matchVal.error
                     error("$e")
                 } }
@@ -1346,10 +1345,10 @@ public open class Duration(
         public fun fromSecsF32(secs: kotlin.Float): Duration =
             run {
                 val matchVal = Duration.tryFromSecsF32(secs)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val v = matchVal.value
                     v
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val e = matchVal.error
                     error("$e")
                 } }
@@ -1735,9 +1734,9 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
         closure@{ f1: StringBuilder ->
             if (integerPart1 != null) {
                 val integerPart2 = integerPart1
-                when (val tryResult = f1.writeFmt("$prefix$integerPart2")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = f1.writeFmt("$prefix$integerPart2")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
             } else {
-                when (val tryResult = f1.writeFmt("${prefix}18446744073709551616")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = f1.writeFmt("${prefix}18446744073709551616")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
             }
             // Write the decimal point and the fractional part (if any).
             if (end > 0) {
@@ -1745,7 +1744,7 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
                 // it was initialized with '0's, so it contains valid UTF8.
                 val s = fromUtf8Unchecked(((buf).sliceArray(0 until end)))
                 // If the user request a precision > 9, we pad '0's at the end.
-                when (val tryResult = f1.writeFmt(".$s")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = f1.writeFmt(".$s")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
             }
             f1.writeFmt("$postfix")
         }

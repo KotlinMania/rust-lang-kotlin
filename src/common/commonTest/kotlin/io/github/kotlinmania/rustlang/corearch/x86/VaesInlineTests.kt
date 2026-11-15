@@ -1,6 +1,22 @@
 // port-lint: tests x86/vaes.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.M512i
+import io.github.kotlinmania.rustlang.x86.mm256Broadcastsi128Si256
+import io.github.kotlinmania.rustlang.x86.mm256Extracti128Si256
+import io.github.kotlinmania.rustlang.x86.mm256SetEpi64x
+import io.github.kotlinmania.rustlang.x86.mm512BroadcastI32x4
+import io.github.kotlinmania.rustlang.x86.mm512Extracti32x4Epi32
+import io.github.kotlinmania.rustlang.x86.mm512SetEpi64
+import io.github.kotlinmania.rustlang.x86.mmAesdecSi128
+import io.github.kotlinmania.rustlang.x86.mmAesdeclastSi128
+import io.github.kotlinmania.rustlang.x86.mmAesencSi128
+import io.github.kotlinmania.rustlang.x86.mmAesenclastSi128
+import io.github.kotlinmania.rustlang.x86.mmSetEpi64x
+import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
+
 // Vectorized AES Instructions (VAES)
 //
 // The intrinsics here correspond to those in the `immintrin.h` C header.

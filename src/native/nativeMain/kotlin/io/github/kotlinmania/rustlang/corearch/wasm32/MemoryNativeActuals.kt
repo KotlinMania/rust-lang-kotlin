@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
-import io.github.kotlinmania.rustlang.corearch.wasm32.cinterop.corearchWasm32MemoryLlvmMemoryGrow
-import io.github.kotlinmania.rustlang.corearch.wasm32.cinterop.corearchWasm32MemoryLlvmMemorySize
+import io.github.kotlinmania.rustlang.corearch.wasm32.cinterop.rustlangCorearchWasm32MemoryLlvmMemoryGrow
+import io.github.kotlinmania.rustlang.corearch.wasm32.cinterop.rustlangCorearchWasm32MemoryLlvmMemorySize
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun llvmMemoryGrow(mem: UInt, pages: ULong): ULong =
-    corearchWasm32MemoryLlvmMemoryGrow(mem, pages)
+    rustlangCorearchWasm32MemoryLlvmMemoryGrow(mem, pages)
 
 public actual fun llvmMemorySize(mem: UInt): ULong =
-    corearchWasm32MemoryLlvmMemorySize(mem)
+    rustlangCorearchWasm32MemoryLlvmMemorySize(mem)

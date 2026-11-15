@@ -1,5 +1,36 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
+import io.github.kotlinmania.rustlang.bridge.server.emitDiagnostic
+import io.github.kotlinmania.rustlang.bridge.server.literalFromStr
+import io.github.kotlinmania.rustlang.bridge.server.spanByteRange
+import io.github.kotlinmania.rustlang.bridge.server.spanColumn
+import io.github.kotlinmania.rustlang.bridge.server.spanDebug
+import io.github.kotlinmania.rustlang.bridge.server.spanEnd
+import io.github.kotlinmania.rustlang.bridge.server.spanFile
+import io.github.kotlinmania.rustlang.bridge.server.spanJoin
+import io.github.kotlinmania.rustlang.bridge.server.spanLine
+import io.github.kotlinmania.rustlang.bridge.server.spanLocalFile
+import io.github.kotlinmania.rustlang.bridge.server.spanParent
+import io.github.kotlinmania.rustlang.bridge.server.spanRecoverProcMacroSpan
+import io.github.kotlinmania.rustlang.bridge.server.spanResolvedAt
+import io.github.kotlinmania.rustlang.bridge.server.spanSaveSpan
+import io.github.kotlinmania.rustlang.bridge.server.spanSource
+import io.github.kotlinmania.rustlang.bridge.server.spanSourceText
+import io.github.kotlinmania.rustlang.bridge.server.spanStart
+import io.github.kotlinmania.rustlang.bridge.server.spanSubspan
+import io.github.kotlinmania.rustlang.bridge.server.symbolNormalizeAndValidateIdent
+import io.github.kotlinmania.rustlang.bridge.server.trackEnvVar
+import io.github.kotlinmania.rustlang.bridge.server.trackPath
+import io.github.kotlinmania.rustlang.bridge.server.tsClone
+import io.github.kotlinmania.rustlang.bridge.server.tsConcatStreams
+import io.github.kotlinmania.rustlang.bridge.server.tsConcatTrees
+import io.github.kotlinmania.rustlang.bridge.server.tsDrop
+import io.github.kotlinmania.rustlang.bridge.server.tsExpandExpr
+import io.github.kotlinmania.rustlang.bridge.server.tsFromStr
+import io.github.kotlinmania.rustlang.bridge.server.tsFromTokenTree
+import io.github.kotlinmania.rustlang.bridge.server.tsIntoTrees
+import io.github.kotlinmania.rustlang.bridge.server.tsIsEmpty
+import io.github.kotlinmania.rustlang.bridge.server.tsToString
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 
 public sealed class Tag {

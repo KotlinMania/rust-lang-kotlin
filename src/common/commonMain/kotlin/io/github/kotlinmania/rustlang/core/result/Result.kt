@@ -1,15 +1,16 @@
 // port-lint: source result.rs
 package io.github.kotlinmania.rustlang.core.result
 
-import io.github.kotlinmania.rustlang.core.clone.UseCloned
-import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
-import io.github.kotlinmania.rustlang.core.mem.forget
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.ops.deref.Deref
-import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
+import io.github.kotlinmania.rustlang.clone.UseCloned
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
+import io.github.kotlinmania.rustlang.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.intrinsics.forget
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.ops.deref.Deref
+import io.github.kotlinmania.rustlang.ops.deref.DerefMut
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.ops.trytrait.Yeet
 
 // Error handling with the `Result` type.
 //
@@ -21,7 +22,9 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 // ```kotlin
 // sealed class Result<T, E> {
 //     public data class Ok<T, E>(public var value: T) : Result<T, E>()
-//     public data class Err<T, E>(public var value: E) : Result<T, E>()
+//     public data class Err<T, E>(public var value: E) : Result<T, E>() {
+//         public val error: E get() = value
+//     }
 // }
 // ```
 //
@@ -546,7 +549,7 @@ public typealias TryType<T, E> = Result<T, E>
  *
  * See the [module documentation](self) for details.
  */
-public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, Any?, Any?, T, Result<Nothing, E>> {
+public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T, Result<Nothing, E>> {
     /**
      * Contains the success value
      */
@@ -554,7 +557,9 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, An
     /**
      * Contains the error value
      */
-    public data class Err<T, E>(public var value: E) : Result<T, E>()
+    public data class Err<T, E>(public var value: E) : Result<T, E>() {
+        public val error: E get() = value
+    }
 
     public fun rustEquals(other: Result<T, E>): Boolean = this == other
 
@@ -1955,7 +1960,7 @@ public open class IntoIter<T>(
  * Since the third element caused an underflow, no further elements were taken,
  * so the final value of `shared` is 6 (= `3 + 2 + 1`), not 16.
  */
-public fun <T, E, V, I : Iterable<Result<T, E>>> fromIteratorFromIterResultVE(iter: I): Result<V, E> = tryProcess(iter.iterator(), { i -> i.collect() })
+public fun <T, E, V, I : Iterable<Result<T, E>>> fromIteratorFromIterResultVE(iter: I): Result<V, E> = Iter.tryProcess(iter.iterator(), { i -> i.collect() })
 
 public fun <T, E, F> fromResidualResultTF(residual: Result<Nothing, E>): Result<T, F> =
     when (residual) {

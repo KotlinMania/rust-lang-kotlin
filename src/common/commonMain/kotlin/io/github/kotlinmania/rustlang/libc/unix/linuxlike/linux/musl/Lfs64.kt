@@ -1,50 +1,50 @@
 // port-lint: source unix/linux_like/linux/musl/lfs64.rs
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ModeT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.Stat
-import io.github.kotlinmania.rustlang.libc.Statfs
-import io.github.kotlinmania.rustlang.libc.Statvfs
-import io.github.kotlinmania.rustlang.libc.creat
-import io.github.kotlinmania.rustlang.libc.fallocate
-import io.github.kotlinmania.rustlang.libc.fgetpos
-import io.github.kotlinmania.rustlang.libc.fopen
-import io.github.kotlinmania.rustlang.libc.freopen
-import io.github.kotlinmania.rustlang.libc.fseeko
-import io.github.kotlinmania.rustlang.libc.fsetpos
-import io.github.kotlinmania.rustlang.libc.fstat
-import io.github.kotlinmania.rustlang.libc.fstatat
-import io.github.kotlinmania.rustlang.libc.fstatfs
-import io.github.kotlinmania.rustlang.libc.fstatvfs
-import io.github.kotlinmania.rustlang.libc.ftello
-import io.github.kotlinmania.rustlang.libc.ftruncate
-import io.github.kotlinmania.rustlang.libc.getrlimit
-import io.github.kotlinmania.rustlang.libc.lseek
-import io.github.kotlinmania.rustlang.libc.lstat
-import io.github.kotlinmania.rustlang.libc.mmap
-import io.github.kotlinmania.rustlang.libc.pread
-import io.github.kotlinmania.rustlang.libc.preadv
-import io.github.kotlinmania.rustlang.libc.prlimit
-import io.github.kotlinmania.rustlang.libc.pwrite
-import io.github.kotlinmania.rustlang.libc.pwritev
-import io.github.kotlinmania.rustlang.libc.readdir
-import io.github.kotlinmania.rustlang.libc.sendfile
-import io.github.kotlinmania.rustlang.libc.setrlimit
-import io.github.kotlinmania.rustlang.libc.tmpfile
-import io.github.kotlinmania.rustlang.libc.truncate
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Off64T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.posixFallocate
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.posixFadvise
-import io.github.kotlinmania.rustlang.libc.unix.readdirR
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.fstatfs
+import io.github.kotlinmania.rustlang.unix.bsd.apple.preadv
+import io.github.kotlinmania.rustlang.unix.bsd.apple.pwritev
+import io.github.kotlinmania.rustlang.unix.creat
+import io.github.kotlinmania.rustlang.unix.fgetpos
+import io.github.kotlinmania.rustlang.unix.fopen
+import io.github.kotlinmania.rustlang.unix.freopen
+import io.github.kotlinmania.rustlang.unix.fseeko
+import io.github.kotlinmania.rustlang.unix.fsetpos
+import io.github.kotlinmania.rustlang.unix.fstat
+import io.github.kotlinmania.rustlang.unix.fstatat
+import io.github.kotlinmania.rustlang.unix.fstatvfs
+import io.github.kotlinmania.rustlang.unix.ftello
+import io.github.kotlinmania.rustlang.unix.ftruncate
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.ModeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Off64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.fallocate
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Statvfs
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.aarch64.Stat
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.mips64.Statfs
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.getrlimit
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.prlimit
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.setrlimit
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.posixFallocate
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.sendfile
+import io.github.kotlinmania.rustlang.unix.linuxlike.posixFadvise
+import io.github.kotlinmania.rustlang.unix.lseek
+import io.github.kotlinmania.rustlang.unix.lstat
+import io.github.kotlinmania.rustlang.unix.mmap
+import io.github.kotlinmania.rustlang.unix.pread
+import io.github.kotlinmania.rustlang.unix.pwrite
+import io.github.kotlinmania.rustlang.unix.readdir
+import io.github.kotlinmania.rustlang.unix.readdirR
+import io.github.kotlinmania.rustlang.unix.tmpfile
+import io.github.kotlinmania.rustlang.unix.truncate
 
-public fun creat64(path: ConstPtr, mode: ModeT): CInt = creat(path, mode)
+public fun creat64(path: ConstPtr, mode: ModeT): CInt = creat(path, mode.toUShort())
 
 public fun fallocate64(fd: CInt, mode: CInt, offset: Off64T, len: Off64T): CInt = fallocate(fd, mode, offset, len)
 

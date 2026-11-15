@@ -6,9 +6,9 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.sys.pal.c
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
+import io.github.kotlinmania.rustlang.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.sys.pal.c
+import io.github.kotlinmania.rustlang.sys.pal.windows.cvt
 
 public fun hostname(): Result<OsString> {
     winsock.startup()
@@ -16,7 +16,7 @@ public fun hostname(): Result<OsString> {
     // always enough.
     val buffer = MutableList(256) { MaybeUninit.uninit(PrimitiveLayouts.U16) }
     // SAFETY: these parameters specify a valid, writable region of memory.
-    when (val tryResult = cvt(c.GetHostNameW(buffer.asMutPtr().cast(), buffer.size))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(c.GetHostNameW(buffer.asMutPtr().cast(), buffer.size))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // Use `lstrlenW` here as it does not require the bytes after the nul
     // terminator to be initialized.
     // SAFETY: if `GetHostNameW` returns successfully, the name is nul-terminated.

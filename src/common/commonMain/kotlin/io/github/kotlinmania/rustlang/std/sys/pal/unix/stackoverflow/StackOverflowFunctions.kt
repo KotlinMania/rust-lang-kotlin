@@ -1,5 +1,7 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow
 
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlerSignal as imp
+
 /**
  * # Safety
  * Must be called only once, on the main thread, during program startup.
@@ -12,5 +14,5 @@ public fun init() {
         return
     }
     // SAFETY: guaranteed by caller.
-    io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlernone.init()
+    imp.init()
 }

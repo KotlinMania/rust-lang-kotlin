@@ -4,44 +4,46 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.U16x8
-import io.github.kotlinmania.rustlang.corearch.simd.U64x2
-import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.simd.I16x8
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.U16x8
+import io.github.kotlinmania.rustlang.simd.U64x2
+import io.github.kotlinmania.rustlang.simd.U8x16
+import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.x86.M128d
 
-private val x86Sse2NapiAddon: dynamic =
+private val corearchX86Sse2NapiAddon: dynamic =
     js("(function() { if (typeof globalThis !== 'undefined' && typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore; if (typeof process === 'undefined' || !process.versions || !process.versions.node) return null; var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) return null; try { var pkg = req('@kotlinmania/kmcore-native-bindings'); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = pkg; return pkg; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { var loaded = req(c); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = loaded; return loaded; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = null; return null; })()")
 
 public actual fun pause() {
-    if (x86Sse2NapiAddon != null) {
-        x86Sse2NapiAddon.corearchX86Sse2Pause()
+    if (corearchX86Sse2NapiAddon != null) {
+        corearchX86Sse2NapiAddon.rustlangCorearchX86Sse2Pause()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun clflush(p: ConstPtr) {
-    if (x86Sse2NapiAddon != null) {
-        x86Sse2NapiAddon.corearchX86Sse2Clflush(p.rawAddress.toString())
+    if (corearchX86Sse2NapiAddon != null) {
+        corearchX86Sse2NapiAddon.rustlangCorearchX86Sse2Clflush(p.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun lfence() {
-    if (x86Sse2NapiAddon != null) {
-        x86Sse2NapiAddon.corearchX86Sse2Lfence()
+    if (corearchX86Sse2NapiAddon != null) {
+        corearchX86Sse2NapiAddon.rustlangCorearchX86Sse2Lfence()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun mfence() {
-    if (x86Sse2NapiAddon != null) {
-        x86Sse2NapiAddon.corearchX86Sse2Mfence()
+    if (corearchX86Sse2NapiAddon != null) {
+        corearchX86Sse2NapiAddon.rustlangCorearchX86Sse2Mfence()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

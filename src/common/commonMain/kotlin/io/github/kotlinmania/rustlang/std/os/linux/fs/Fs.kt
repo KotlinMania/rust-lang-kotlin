@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.std.os.linux.fs
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.std.fs.Metadata
-import io.github.kotlinmania.rustlang.std.os.linux.raw.arch.Stat
+import io.github.kotlinmania.rustlang.fs.Metadata
+import io.github.kotlinmania.rustlang.os.linux.raw.Stat
 
 // Linux-specific extensions to primitives in the [std.fs] module.
 

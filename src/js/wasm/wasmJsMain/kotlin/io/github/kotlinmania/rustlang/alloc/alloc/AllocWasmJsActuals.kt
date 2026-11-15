@@ -7,12 +7,12 @@ private external fun initAllocNapiAddon(): Boolean
 
 private val allocNapiAvailable: Boolean = initAllocNapiAddon()
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.allocRustAllocErrorHandler(p0, p1)")
-private external fun wasmAllocRustAllocErrorHandler(p0: String, p1: String)
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangAllocRustAllocErrorHandler(p0, p1)")
+private external fun wasmRustlangAllocRustAllocErrorHandler(p0: String, p1: String)
 
 public actual fun rustAllocErrorHandler(size: ULong, align: ULong): Nothing {
     if (allocNapiAvailable) {
-        wasmAllocRustAllocErrorHandler(size.toString(), align.toString())
+        wasmRustlangAllocRustAllocErrorHandler(size.toString(), align.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

@@ -1,8 +1,8 @@
 // port-lint: source new/linux_uapi/linux/if_link.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.iflink
 
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
-import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 
 // Header: `uapi / linux / ifLink.h`
 

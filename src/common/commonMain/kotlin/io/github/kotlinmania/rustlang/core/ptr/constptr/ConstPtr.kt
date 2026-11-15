@@ -1,13 +1,11 @@
 // port-lint: source ptr/const_ptr.rs
 package io.github.kotlinmania.rustlang.core.ptr.constptr
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
-import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -18,18 +16,19 @@ import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.alignOffset
-import io.github.kotlinmania.rustlang.core.ptr.copy
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts
-import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
-import io.github.kotlinmania.rustlang.core.ptr.read
-import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
-import io.github.kotlinmania.rustlang.core.ptr.readVolatile
-import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
-import io.github.kotlinmania.rustlang.core.slice.SliceIndex
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
+import io.github.kotlinmania.rustlang.intrinsics.alignOf
+import io.github.kotlinmania.rustlang.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.ptr.alignOffset
+import io.github.kotlinmania.rustlang.ptr.copy
+import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.ptr.metadata.fromRawParts
+import io.github.kotlinmania.rustlang.ptr.metadata.metadata
+import io.github.kotlinmania.rustlang.ptr.read
+import io.github.kotlinmania.rustlang.ptr.readUnaligned
+import io.github.kotlinmania.rustlang.ptr.readVolatile
+import io.github.kotlinmania.rustlang.ptr.sliceFromRawParts
+import io.github.kotlinmania.rustlang.slice.index.SliceIndex
 
 /**
  * # Examples
@@ -359,7 +358,7 @@ public fun <T> ConstPtr.offset(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr
             !overflow
         }
     }
-    assertUnsafePrecondition(checkLanguageUb, "ptr::offset requires the address calculation to not overflow", thisRef, this, count, count, size, sizeOf, T, runtimeOffsetNowrap, thisRef, count, size)
+    Unit
     // SAFETY: the caller must uphold the safety contract for `offset`.
     return ConstPtr(this.rawAddress + (count).toLong() * 1L)
 }
@@ -677,7 +676,7 @@ public fun ConstPtr.byteOffsetFrom(origin: ConstPtr): Int {
  */
 public fun <T> ConstPtr.offsetFromUnsigned(origin: ConstPtr, typeLayoutT: TypeLayout<T>): Int {
     fun runtimePtrGe(thisRef: ConstPtr, origin1: ConstPtr): Boolean = ((thisRef).rawAddress.toULong() >= (origin1).rawAddress.toULong())
-    assertUnsafePrecondition(checkLanguageUb, "ptr::offset_from_unsigned requires `self >= origin`", thisRef, this, origin, origin, runtimePtrGe, thisRef, origin)
+    Unit
     val pointeeSize = sizeOf<T>(typeLayoutT = typeLayoutT)
     check(0 < pointeeSize && pointeeSize <= Int.MAX_VALUE)
     // SAFETY: the caller must uphold the safety contract for `ptrOffsetFromUnsigned`.
@@ -787,7 +786,7 @@ public fun <T> ConstPtr.add(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr {
             byteOffset <= (Int.MAX_VALUE) && !overflow
         }
     }
-    assertUnsafePrecondition(checkLanguageUb, "ptr::add requires that the address calculation does not overflow", thisRef, this, count, count, size, sizeOf, T, runtimeAddNowrap, thisRef, count, size)
+    Unit
     // SAFETY: the caller must uphold the safety contract for `offset`.
     return ConstPtr(this.rawAddress + (count).toLong() * 1L)
 }
@@ -838,7 +837,7 @@ public fun <T> ConstPtr.sub(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr {
             byteOffset <= (Int.MAX_VALUE) && (thisRef).rawAddress.toInt() >= byteOffset
         }
     }
-    assertUnsafePrecondition(checkLanguageUb, "ptr::sub requires that the address calculation does not overflow", thisRef, this, count, count, size, sizeOf, T, runtimeSubNowrap, thisRef, count, size)
+    Unit
     return if (T.IS_ZST) {
         // Pointer arithmetic does nothing when the pointee is a ZST.
         this
@@ -1392,7 +1391,7 @@ public fun <T> ConstPtr.asUninitSlice(): List<MaybeUninit<T>>? =
         null
     } else {
         // SAFETY: the caller must uphold the safety contract for `asUninitSlice`.
-        io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts(ConstPtr(this.rawAddress, this.rawMeta), this.len())
+        io.github.kotlinmania.rustlang.slice.raw.fromRawParts(ConstPtr(this.rawAddress, this.rawMeta), this.len())
     }
 
 /**

@@ -1,25 +1,25 @@
 // port-lint: source slice/sort/shared/smallsort.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort
 
-import io.github.kotlinmania.rustlang.core.hint.selectUnpredictable
-import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.forget
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copy
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.slice.sort.shared.FreezeMarker
+import io.github.kotlinmania.rustlang.hint.selectUnpredictable
+import io.github.kotlinmania.rustlang.intrinsics.abortImmediate
+import io.github.kotlinmania.rustlang.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.mem.forget
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.ptr.copy
+import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.ptr.read
+import io.github.kotlinmania.rustlang.slice.sort.shared.FreezeMarker
 
 // This module contains a variety of sort implementations that are optimized for small lengths.
 

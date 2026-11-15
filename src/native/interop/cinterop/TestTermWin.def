@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.test.term.win.cinterop
+headers = test_term_win_wrapper.h
+headerFilter = test_term_win_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = test_term_win_wrapper.a

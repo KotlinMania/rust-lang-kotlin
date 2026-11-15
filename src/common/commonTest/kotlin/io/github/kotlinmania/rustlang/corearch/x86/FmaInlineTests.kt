@@ -1,6 +1,11 @@
 // port-lint: tests x86/fma.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.mm256SetrPd
+import io.github.kotlinmania.rustlang.x86.mm256SetrPs
+import io.github.kotlinmania.rustlang.x86.mmSetrPd
+import io.github.kotlinmania.rustlang.x86.mmSetrPs
+
 // Fused Multiply-Add instruction set (FMA)
 //
 // The FMA instruction set is an extension to the 128 and 256-bit SSE

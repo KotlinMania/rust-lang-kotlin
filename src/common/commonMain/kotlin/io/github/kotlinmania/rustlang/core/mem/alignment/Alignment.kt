@@ -4,18 +4,16 @@ package io.github.kotlinmania.rustlang.core.mem.alignment
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignOfVal
-import io.github.kotlinmania.rustlang.core.mem.alignOfValRaw
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
-import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
+import io.github.kotlinmania.rustlang.mem.alignOfVal
+import io.github.kotlinmania.rustlang.mem.alignOfValRaw
+import io.github.kotlinmania.rustlang.num.error.IntErrorKind
+import io.github.kotlinmania.rustlang.num.error.TryFromIntError
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
 
 /**
  * A type storing a `Int` which is a power of two, and thus
@@ -56,7 +54,7 @@ public open class Alignment internal constructor(
         // validity invariant of the type would have to have been broken earlier --
         // and emitting it in an otherwise simple method is bad for compile time.
         // SAFETY: All the discriminants are non-zero.
-        return transmute<Alignment, NonZero<Int>>(this)
+        return transmute(this)
     }
 
     /**
@@ -325,10 +323,10 @@ public open class Alignment internal constructor(
          * It must *not* be zero.
          */
         public fun newUnchecked(align: Int): Alignment {
-            assertUnsafePrecondition(checkLanguageUb, "Alignment::new_unchecked requires a power of two", align, align, align, isPowerOfTwo)
+            Unit
             // SAFETY: By precondition, this must be a power of two, and
             // our variants encompass all possible powers of two.
-            return transmute<Int, Alignment>(align)
+            return transmute(align)
         }
 
         // Note(const-Note) Remove me once `Ord.max` is usable in const

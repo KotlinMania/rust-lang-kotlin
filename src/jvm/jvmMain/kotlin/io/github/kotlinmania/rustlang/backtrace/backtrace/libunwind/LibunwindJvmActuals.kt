@@ -3,9 +3,9 @@
 package io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.helenos.UintptrT
+import io.github.kotlinmania.rustlang.libc.unix.UintptrT
 
-private object BacktraceLibunwindJniBridge {
+private object BacktraceBacktraceLibunwindJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -41,8 +41,8 @@ private object BacktraceLibunwindJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/backtrace/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = BacktraceLibunwindJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = BacktraceBacktraceLibunwindJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -59,23 +59,23 @@ private object BacktraceLibunwindJniBridge {
     }
 
     @JvmStatic
-    external fun backtraceBacktraceLibunwindUnwindGetIp(ctx: Long): Long
+    external fun rustlangBacktraceBacktraceLibunwindUnwindGetIp(ctx: Long): Long
 
     @JvmStatic
-    external fun backtraceBacktraceLibunwindUnwindFindEnclosingFunction(pc: Long): Long
+    external fun rustlangBacktraceBacktraceLibunwindUnwindFindEnclosingFunction(pc: Long): Long
 
     @JvmStatic
-    external fun backtraceBacktraceLibunwindGetSp(ctx: Long): Long
+    external fun rustlangBacktraceBacktraceLibunwindGetSp(ctx: Long): Long
 }
 
 public actual fun unwindBacktrace(trace: UnwindTraceFn, traceArgument: MutPtr): UnwindReasonCode =
     null as UnwindReasonCode
 
 public actual fun unwindGetIp(ctx: MutPtr): UintptrT =
-    BacktraceLibunwindJniBridge.backtraceBacktraceLibunwindUnwindGetIp(ctx.rawAddress).toULong()
+    BacktraceBacktraceLibunwindJniBridge.rustlangBacktraceBacktraceLibunwindUnwindGetIp(ctx.rawAddress).toULong()
 
 public actual fun unwindFindEnclosingFunction(pc: MutPtr): MutPtr =
-    MutPtr(BacktraceLibunwindJniBridge.backtraceBacktraceLibunwindUnwindFindEnclosingFunction(pc.rawAddress))
+    MutPtr(BacktraceBacktraceLibunwindJniBridge.rustlangBacktraceBacktraceLibunwindUnwindFindEnclosingFunction(pc.rawAddress))
 
 public actual fun getSp(ctx: MutPtr): UintptrT =
-    BacktraceLibunwindJniBridge.backtraceBacktraceLibunwindGetSp(ctx.rawAddress).toULong()
+    BacktraceBacktraceLibunwindJniBridge.rustlangBacktraceBacktraceLibunwindGetSp(ctx.rawAddress).toULong()

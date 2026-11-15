@@ -1,7 +1,7 @@
 // port-lint: source ops/coroutine.rs
 package io.github.kotlinmania.rustlang.core.ops.coroutine
 
-import io.github.kotlinmania.rustlang.core.pin.Pin
+import io.github.kotlinmania.rustlang.pin.Pin
 
 /**
  * The result of a coroutine resumption.

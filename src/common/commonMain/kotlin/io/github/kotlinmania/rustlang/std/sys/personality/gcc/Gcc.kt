@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh
 import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh.EHAction
 import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh.EHContext
 import io.github.kotlinmania.rustlang.unwind.URC_CONTINUE_UNWIND
@@ -117,10 +118,10 @@ public fun rustEhPersonalityImpl(version: CInt, actions: UnwindAction, exception
         val ehAction =
             run {
                 val matchVal = findEhAction(context)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val action = matchVal.value
                     action
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     return URC_FATAL_PHASE1_ERROR
                 } }
             }
@@ -195,5 +196,5 @@ public fun findEhAction(context: MutPtr): Result<EHAction, Unit> =
             } else {
                 ip.wrappingSub(1)
             }, funcStart = unwindGetRegionStart(context), getTextStart = { unwindGetTextRelBase(context) }, getDataStart = { unwindGetDataRelBase(context) })
-        io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh.findEhAction(lsda, ehContext)
+        eh.findEhAction(lsda, ehContext)
     }

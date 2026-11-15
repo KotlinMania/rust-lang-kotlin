@@ -2,11 +2,11 @@
 
 package io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind
 
-import io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.cinterop.backtraceBacktraceLibunwindGetSp
-import io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.cinterop.backtraceBacktraceLibunwindUnwindFindEnclosingFunction
-import io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.cinterop.backtraceBacktraceLibunwindUnwindGetIp
+import io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.cinterop.rustlangBacktraceBacktraceLibunwindGetSp
+import io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.cinterop.rustlangBacktraceBacktraceLibunwindUnwindFindEnclosingFunction
+import io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.cinterop.rustlangBacktraceBacktraceLibunwindUnwindGetIp
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.helenos.UintptrT
+import io.github.kotlinmania.rustlang.libc.unix.UintptrT
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
@@ -16,10 +16,10 @@ public actual fun unwindBacktrace(trace: UnwindTraceFn, traceArgument: MutPtr): 
     null as UnwindReasonCode
 
 public actual fun unwindGetIp(ctx: MutPtr): UintptrT =
-    backtraceBacktraceLibunwindUnwindGetIp(ctx.rawAddress.toCPointer<ByteVar>())
+    rustlangBacktraceBacktraceLibunwindUnwindGetIp(ctx.rawAddress.toCPointer<ByteVar>())
 
 public actual fun unwindFindEnclosingFunction(pc: MutPtr): MutPtr =
-    MutPtr(backtraceBacktraceLibunwindUnwindFindEnclosingFunction(pc.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangBacktraceBacktraceLibunwindUnwindFindEnclosingFunction(pc.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun getSp(ctx: MutPtr): UintptrT =
-    backtraceBacktraceLibunwindGetSp(ctx.rawAddress.toCPointer<ByteVar>())
+    rustlangBacktraceBacktraceLibunwindGetSp(ctx.rawAddress.toCPointer<ByteVar>())

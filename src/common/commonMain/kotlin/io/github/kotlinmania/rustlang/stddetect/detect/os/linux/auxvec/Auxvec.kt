@@ -10,8 +10,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.chunks
+import io.github.kotlinmania.rustlang.detect.os.linux.readFile
 import io.github.kotlinmania.rustlang.libc.CUlong
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.readFile
 
 // Parses ELF auxiliary vectors.
 
@@ -155,7 +155,7 @@ public fun getauxval(key: Int): Result<Int, Unit> {
  * function returns `Err`.
  */
 public fun auxvFromFile(file: CStr): Result<AuxVec, String> {
-    val file1 = when (val tryResult = readFile(file)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val file1 = when (val tryResult = readFile(file)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return auxvFromFileBytes(file1)
 }
 

@@ -2,15 +2,15 @@
 package io.github.kotlinmania.rustlang.std.io.pipe
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.io.BorrowedCursor
-import io.github.kotlinmania.rustlang.std.io.IoSlice
-import io.github.kotlinmania.rustlang.std.io.IoSliceMut
-import io.github.kotlinmania.rustlang.std.io.Read
-import io.github.kotlinmania.rustlang.std.io.Write
+import io.github.kotlinmania.rustlang.io.BorrowedCursor
+import io.github.kotlinmania.rustlang.io.IoSlice
+import io.github.kotlinmania.rustlang.io.IoSliceMut
+import io.github.kotlinmania.rustlang.io.Read
+import io.github.kotlinmania.rustlang.io.Write
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.pipe.unix.pipe as imp
+import io.github.kotlinmania.rustlang.sys.FromInner
+import io.github.kotlinmania.rustlang.sys.IntoInner
+import io.github.kotlinmania.rustlang.sys.pipe.unix.pipe as imp
 
 /**
  * Creates an anonymous pipe.

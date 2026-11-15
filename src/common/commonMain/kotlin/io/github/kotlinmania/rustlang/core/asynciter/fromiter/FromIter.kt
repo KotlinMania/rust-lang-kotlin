@@ -1,11 +1,11 @@
 // port-lint: source async_iter/from_iter.rs
 package io.github.kotlinmania.rustlang.core.asynciter.fromiter
 
-import io.github.kotlinmania.rustlang.core.asynciter.asynciter.AsyncIterator
+import io.github.kotlinmania.rustlang.asynciter.asynciter.AsyncIterator
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.task.poll.Poll
-import io.github.kotlinmania.rustlang.core.task.wake.Context
+import io.github.kotlinmania.rustlang.task.poll.Poll
+import io.github.kotlinmania.rustlang.task.wake.Context
 
 public typealias Item<I> = I.Item
 
@@ -19,7 +19,7 @@ public typealias Item<I> = I.Item
  */
 public open class FromIter<I>(
     public var iter: I,
-) : AsyncIterator<Any?, Item> {
+) : AsyncIterator<Item> {
     public open fun clone(): FromIter<I> = FromIter(iter)
 
     public override fun pollNext(cx: Context): Poll<Item?> = Poll.Ready(this.iter.next())

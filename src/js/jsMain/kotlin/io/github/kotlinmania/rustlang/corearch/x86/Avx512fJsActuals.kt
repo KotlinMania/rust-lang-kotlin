@@ -4,32 +4,36 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.simd.F32x16
-import io.github.kotlinmania.rustlang.corearch.simd.F32x4
-import io.github.kotlinmania.rustlang.corearch.simd.F32x8
-import io.github.kotlinmania.rustlang.corearch.simd.F64x2
-import io.github.kotlinmania.rustlang.corearch.simd.F64x4
-import io.github.kotlinmania.rustlang.corearch.simd.F64x8
-import io.github.kotlinmania.rustlang.corearch.simd.I16x16
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x16
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I32x8
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I64x4
-import io.github.kotlinmania.rustlang.corearch.simd.I64x8
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.U16x16
-import io.github.kotlinmania.rustlang.corearch.simd.U16x8
-import io.github.kotlinmania.rustlang.corearch.simd.U32x16
-import io.github.kotlinmania.rustlang.corearch.simd.U32x4
-import io.github.kotlinmania.rustlang.corearch.simd.U32x8
-import io.github.kotlinmania.rustlang.corearch.simd.U64x2
-import io.github.kotlinmania.rustlang.corearch.simd.U64x4
-import io.github.kotlinmania.rustlang.corearch.simd.U64x8
-import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.simd.F32x16
+import io.github.kotlinmania.rustlang.simd.F32x4
+import io.github.kotlinmania.rustlang.simd.F32x8
+import io.github.kotlinmania.rustlang.simd.F64x2
+import io.github.kotlinmania.rustlang.simd.F64x4
+import io.github.kotlinmania.rustlang.simd.F64x8
+import io.github.kotlinmania.rustlang.simd.I16x16
+import io.github.kotlinmania.rustlang.simd.I16x8
+import io.github.kotlinmania.rustlang.simd.I32x16
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I32x8
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I64x4
+import io.github.kotlinmania.rustlang.simd.I64x8
+import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.U16x16
+import io.github.kotlinmania.rustlang.simd.U16x8
+import io.github.kotlinmania.rustlang.simd.U32x16
+import io.github.kotlinmania.rustlang.simd.U32x4
+import io.github.kotlinmania.rustlang.simd.U32x8
+import io.github.kotlinmania.rustlang.simd.U64x2
+import io.github.kotlinmania.rustlang.simd.U64x4
+import io.github.kotlinmania.rustlang.simd.U64x8
+import io.github.kotlinmania.rustlang.simd.U8x16
+import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.x86.M128d
+import io.github.kotlinmania.rustlang.x86.M512
+import io.github.kotlinmania.rustlang.x86.M512d
 
-private val x86Avx512fNapiAddon: dynamic =
+private val corearchX86Avx512fNapiAddon: dynamic =
     js("(function() { if (typeof globalThis !== 'undefined' && typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore; if (typeof process === 'undefined' || !process.versions || !process.versions.node) return null; var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) return null; try { var pkg = req('@kotlinmania/kmcore-native-bindings'); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = pkg; return pkg; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { var loaded = req(c); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = loaded; return loaded; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = null; return null; })()")
 
 public actual fun vsqrtps(a: F32x16, rounding: Int): F32x16 =
@@ -1125,10 +1129,10 @@ public actual fun vscalefsd(a: F64x2, b: F64x2, src: F64x2, mask: UByte, roundin
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vfmaddssround(a: Float, b: Float, c: Float, rounding: Int): Float =
-    if (x86Avx512fNapiAddon != null) (x86Avx512fNapiAddon.corearchX86Avx512fVfmaddssround(a.toDouble(), b.toDouble(), c.toDouble(), rounding) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (corearchX86Avx512fNapiAddon != null) (corearchX86Avx512fNapiAddon.rustlangCorearchX86Avx512fVfmaddssround(a.toDouble(), b.toDouble(), c.toDouble(), rounding) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vfmaddsdround(a: Double, b: Double, c: Double, rounding: Int): Double =
-    if (x86Avx512fNapiAddon != null) (x86Avx512fNapiAddon.corearchX86Avx512fVfmaddsdround(a, b, c, rounding) as Double) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (corearchX86Avx512fNapiAddon != null) (corearchX86Avx512fNapiAddon.rustlangCorearchX86Avx512fVfmaddsdround(a, b, c, rounding) as Double) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vfixupimmss(a: F32x4, b: F32x4, c: I32x4, imm8: Int, mask: UByte, sae: Int): F32x4 =
     throw UnsupportedOperationException("Native FFI addon is not available")

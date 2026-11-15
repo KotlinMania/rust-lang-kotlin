@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.std.sys.exit.cinterop
-headers = sys_exit_wrapper.h
-headerFilter = sys_exit_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = sys_exit_wrapper.a

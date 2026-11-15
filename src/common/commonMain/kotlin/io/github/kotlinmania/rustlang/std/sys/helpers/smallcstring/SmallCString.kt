@@ -13,16 +13,17 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
-import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.io.ErrorKind
+import io.github.kotlinmania.rustlang.io.constError
+import io.github.kotlinmania.rustlang.path.Path
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.sys.osstr.bytes.Slice
 
 // Make sure to stay under 4096 so the compiler doesn't insert a probe frame:
 // https://docs.rs/compilerBuiltins/latest/compilerBuiltins/probestack/index.html
 public val MAX_STACK_ALLOCATION: Int = 384
 
-public val NUL_ERR: io.github.kotlinmania.rustlang.std.io.Error = constError(ErrorKind.InvalidInput, "file name contained an unexpected NUL byte")
+public val NUL_ERR: io.github.kotlinmania.rustlang.io.Error = constError(ErrorKind.InvalidInput, "file name contained an unexpected NUL byte")
 
 public fun <T> runPathWithCstr(path: Path, f: (CStr) -> Result<T, Error>): Result<T, Error> = runWithCstr(path.asOsStr().asEncodedBytes(), f)
 
@@ -45,15 +46,15 @@ public fun <T> runWithCstrStack(bytes: List<UByte>, f: (CStr) -> Result<T, Error
     val buf = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
     val bufPtr = mutPtrFromRustCast(buf.asMutPtr())
     run {
-        copyNonoverlapping(bytes.asPtr(), bufPtr, bytes.size)
+        ptr.copyNonoverlapping(bytes.asPtr(), bufPtr, bytes.size)
         (PrimitiveLayouts.U8).writeNative((MutPtr((bufPtr).rawAddress + ((bytes.size).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, 0)
     }
     return run {
         val matchVal = CStr.fromBytesWithNul(Slice.fromRawParts(bufPtr, bytes.size + 1))
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val s = matchVal.value
             f(s)
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             Result.Err(NUL_ERR)
         } }
     }
@@ -62,10 +63,10 @@ public fun <T> runWithCstrStack(bytes: List<UByte>, f: (CStr) -> Result<T, Error
 public fun <T> runWithCstrAllocating(bytes: List<UByte>, f: (CStr) -> Result<T, Error>): Result<T, Error> =
     run {
         val matchVal = CString.new(bytes)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val s = matchVal.value
             f(s)
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             Result.Err(NUL_ERR)
         } }
     }

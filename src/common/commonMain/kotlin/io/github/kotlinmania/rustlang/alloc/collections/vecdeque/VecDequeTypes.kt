@@ -45,7 +45,7 @@ public fun wrapIndex(logicalIndex: Int, capacity: Int): WrappedIndex {
 public open class WrappedIndex internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Int>,
-) : Add<Int, Any?, Int> {
+) : Add<Int, Int> {
     public var field0: Int
         get() = value
         set(v) {

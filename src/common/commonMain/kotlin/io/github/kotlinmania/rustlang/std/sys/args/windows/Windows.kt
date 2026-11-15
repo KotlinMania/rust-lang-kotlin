@@ -10,21 +10,22 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
-import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.io.ErrorKind
+import io.github.kotlinmania.rustlang.io.constError
+import io.github.kotlinmania.rustlang.path.Iter
+import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.path.PathBuf
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.args.common.Args
-import io.github.kotlinmania.rustlang.std.sys.c
-import io.github.kotlinmania.rustlang.std.sys.helpers.wstr.WStrUnits
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.ensureNoNuls
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
-import io.github.kotlinmania.rustlang.std.sys.path.windows.getLongPath
-import io.github.kotlinmania.rustlang.std.sys.paths.unix.currentExe
+import io.github.kotlinmania.rustlang.sys.c
+import io.github.kotlinmania.rustlang.sys.helpers.wstr.WStrUnits
+import io.github.kotlinmania.rustlang.sys.pal.windows.ensureNoNuls
+import io.github.kotlinmania.rustlang.sys.pal.windows.fillUtf16Buf
+import io.github.kotlinmania.rustlang.sys.pal.windows.toU16s
+import io.github.kotlinmania.rustlang.sys.path.windows.getLongPath
+import io.github.kotlinmania.rustlang.sys.paths.unix.currentExe
 
 // The Windows command line is just a string
 // <https://docs.microsoft.com/en-us/archive/blogs/larryosterman/the-windows-command-line-is-just-a-string>
@@ -35,7 +36,7 @@ public fun args(): Args {
     // SAFETY: `GetCommandLineW` returns a pointer to a null terminated UTF-16
     // string so it's safe for `WStrUnits` to use.
     return run {
-        val lpCmdLine = c.GetCommandLineW()
+        val lpCmdLine = GetCommandLineW()
         val parsedArgsList =
             parseLpCmdLine(WStrUnits.new(lpCmdLine), {
                 currentExe().map(PathBuf::intoOsString).unwrapOrElse({ OsString.new() })
@@ -206,7 +207,7 @@ public fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<
     // If an argument has 0 characters then we need to quote it to ensure
     // that it actually gets passed through on the command line or otherwise
     // it will be dropped entirely when parsed on the other end.
-    when (val tryResult = ensureNoNuls(arg3)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = ensureNoNuls(arg3)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     val argBytes = arg3.asEncodedBytes()
     val (quote1, escape) =
         when (quote) {
@@ -244,7 +245,7 @@ public fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<
 
 public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<Unit, Error> {
     var quote1 = quote
-    when (val tryResult = ensureNoNuls(arg)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = ensureNoNuls(arg)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // If an argument has 0 characters then we need to quote it to ensure
     // that it actually gets passed through on the command line or otherwise
     // it will be dropped entirely when parsed on the other end.
@@ -316,7 +317,7 @@ public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<U
 }
 
 public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes: Boolean): Result<List<UShort>, Error> {
-    val INVALID_ARGUMENT_ERROR: io.github.kotlinmania.rustlang.std.io.Error = constError(ErrorKind.InvalidInput, "batch file arguments are invalid")
+    val INVALID_ARGUMENT_ERROR: io.github.kotlinmania.rustlang.io.Error = constError(ErrorKind.InvalidInput, "batch file arguments are invalid")
     // Windows file names cannot contain a `"` character or end with `\\`.
     // If the script name does then return an error.
     // Also we disallow `^` and `%` to prevent escaping or environment variable substitution.
@@ -348,12 +349,12 @@ public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes
                 if (argBytes.iter().any({ c -> DISALLOWED.contains(c) })) {
                     return Result.Err(INVALID_ARGUMENT_ERROR)
                 }
-                when (val tryResult = appendBatArg(cmd, argOs, forceQuotes)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = appendBatArg(cmd, argOs, forceQuotes)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
             else -> {
                 // Raw arguments are passed on as-is.
                 // It's the user's responsibility to properly handle arguments in this case.
-                when (val tryResult = appendArg(cmd, arg, forceQuotes)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = appendArg(cmd, arg, forceQuotes)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
         }
     }
@@ -368,7 +369,7 @@ public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes
  * This is necessary because cmd.exe does not support verbatim paths.
  */
 public fun toUserPath(path: Path): Result<List<UShort>, Error> {
-    return fromWideToUserPath(when (val tryResult = toU16s(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+    return fromWideToUserPath(when (val tryResult = toU16s(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
 }
 
 public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {
@@ -388,9 +389,9 @@ public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {
     return when {
         // `\\?\C:\...` => `C:\...`
         path.size >= 7 && path[0] == SEP && path[1] == SEP && path[2] == QUERY && path[3] == SEP && path[5] == COLON && path[6] == SEP -> run {
-            val lpfilename = ((path).slice(4 until path.size)).asPtr()
-            fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
-                if (fullPath == ((path).slice(4 until path.size - 1))) {
+            val lpfilename = ((path).subList(4, (path).size)).asPtr()
+            fillUtf16Buf({ buffer, size -> GetFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
+                if (fullPath == ((path).subList(4, path.size - 1))) {
                     val path1: List<UShort>  = fullPath.into()
                     path1.push(0)
                     path1
@@ -403,9 +404,9 @@ public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {
         path.size >= 8 && path[0] == SEP && path[1] == SEP && path[2] == QUERY && path[3] == SEP && path[4] == U && path[5] == N && path[6] == C && path[7] == SEP -> run {
             // Change the `C` in `UNC\` to `\` so we can get a slice that starts with `\\`.
             path[6] = 92u.toUShort()
-            val lpfilename1 = ((path).slice(6 until path.size)).asPtr()
-            fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(lpfilename1, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
-                if (fullPath == ((path).slice(6 until path.size - 1))) {
+            val lpfilename1 = ((path).subList(6, (path).size)).asPtr()
+            fillUtf16Buf({ buffer, size -> GetFullPathNameW(lpfilename1, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
+                if (fullPath == ((path).subList(6, path.size - 1))) {
                     val path1: List<UShort>  = fullPath.into()
                     path1.push(0)
                     path1

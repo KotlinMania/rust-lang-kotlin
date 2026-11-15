@@ -1,8 +1,9 @@
 // port-lint: source iter/sources/empty.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.empty
 
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.marker.PhantomData
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -44,7 +45,7 @@ public class DebugStruct(
  * check(null == nope.next())
  * ```
  */
-public fun <T> empty(): Empty<T> = Empty(Unit)
+public fun <T> empty(): Empty<T> = Empty(PhantomData)
 
 /**
  * An iterator that yields nothing.
@@ -81,11 +82,11 @@ public open class Empty<T>(
 
     // not @derive because that adds a Clone bound on T,
     // which isn't necessary.
-    public open fun clone(): Empty<T> = Empty(Unit)
+    public open fun clone(): Empty<T> = Empty(PhantomData)
 
     public companion object {
         // not @derive because that adds a Default bound on T,
         // which isn't necessary.
-        public fun <T> default(): Empty<T> = Empty(Unit)
+        public fun <T> default(): Empty<T> = Empty(PhantomData)
     }
 }

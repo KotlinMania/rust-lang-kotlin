@@ -1,6 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.new.helenos.inet.dnsr.cinterop
-headers = new_helenos_inet_dnsr_wrapper.h
-headerFilter = new_helenos_inet_dnsr_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = new_helenos_inet_dnsr_wrapper.a
-noStringConversion = libcNewHelenosInetDnsrDnsrName2host

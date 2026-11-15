@@ -1,6 +1,8 @@
 // port-lint: tests x86/pclmulqdq.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.mmSetEpi64x
+
 // Carry-less Multiplication (CLMUL)
 //
 // The reference is [Intel 64 and IA-32 Architectures Software Developer's

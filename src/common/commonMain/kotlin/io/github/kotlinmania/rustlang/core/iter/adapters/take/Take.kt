@@ -1,23 +1,23 @@
 // port-lint: source iter/adapters/take.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.take
 
-import io.github.kotlinmania.rustlang.core.cmp.min
-import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.sources.repeat.Repeat
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.iter.sources.repeat.Repeat
+import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -33,7 +33,7 @@ public typealias Source<I> = I.Source
 public open class Take<I>(
     public var iter: I,
     public var n: Int,
-) : SourceIter<Any?, Source>, InPlaceIterable, TrustedFused, TrustedLen<Take<I>>, SpecTake<Take<I>>, Iterable<Item> {
+) : SourceIter<Source>, InPlaceIterable, TrustedFused, TrustedLen<Take<I>>, SpecTake<Take<I>>, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Take.next()) {
@@ -73,9 +73,9 @@ public open class Take<I>(
         // while benefiting from the inner iterator's `advanceBy` fast path.
         return run {
             val matchVal = this.iter.advanceBy(this.n)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 this.n
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val remaining = matchVal.error
                 this.n - remaining.get()
             } }
@@ -131,9 +131,9 @@ public open class Take<I>(
         val rem1 =
             run {
                 val matchVal = this.iter.advanceBy(min)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     0
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val rem = matchVal.error
                     rem.get()
                 } }
@@ -206,9 +206,9 @@ public open class Take<I>(
         val remainder =
             run {
                 val matchVal = this.iter.advanceBackBy(advanceBy)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     0
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val rem = matchVal.error
                     rem.get()
                 } }

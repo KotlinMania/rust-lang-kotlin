@@ -2,16 +2,17 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.UintptrT
+import io.github.kotlinmania.rustlang.unix.UintptrT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.VmStatistics64
 
 public fun interface FnCallback {
     public operator fun invoke(ctx: MutPtr): CInt
@@ -113,15 +114,15 @@ public typealias ProcessorFlavorT = CInt
 
 public typealias ThreadFlavorT = NaturalT
 
-public typealias ThreadInspectT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias ThreadInspectT = io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
 
-public typealias ThreadActT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias ThreadActT = io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
 
 public typealias ThreadActArrayT = MutPtr
 
 public typealias PolicyT = CInt
 
-public typealias MachErrorT = io.github.kotlinmania.rustlang.libc.KernReturnT
+public typealias MachErrorT = io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT
 
 public typealias MachVmAddressT = ULong
 
@@ -129,11 +130,11 @@ public typealias MachVmOffsetT = ULong
 
 public typealias MachVmSizeT = ULong
 
-public typealias VmMapT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias VmMapT = io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
 
-public typealias MemEntryNamePortT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias MemEntryNamePortT = io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
 
-public typealias MemoryObjectT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias MemoryObjectT = io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
 
 public typealias MemoryObjectOffsetT = CUlonglong
 
@@ -141,7 +142,7 @@ public typealias VmInheritT = CUint
 
 public typealias VmProtT = CInt
 
-public typealias LedgerT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias LedgerT = io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
 
 public typealias LedgerArrayT = MutPtr
 
@@ -195,7 +196,7 @@ public typealias ThreadExtendedInfoT = MutPtr
 
 public typealias ThreadExtendedInfoDataT = ThreadExtendedInfo
 
-public typealias ThreadT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias ThreadT = io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
 
 public typealias ThreadPolicyFlavorT = NaturalT
 
@@ -269,9 +270,9 @@ public typealias VmStatistics64T = MutPtr
 
 public typealias VmStatistics64DataT = VmStatistics64
 
-public typealias TaskT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias TaskT = io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
 
-public typealias TaskInspectT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias TaskInspectT = io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
 
 public typealias SysdirSearchPathEnumerationState = CUint
 
@@ -279,7 +280,7 @@ public typealias CCStatus = Int
 
 public typealias CCCryptorStatus = Int
 
-public typealias CCRNGStatus = CCCryptorStatus
+public typealias CCRNGStatus = io.github.kotlinmania.rustlang.unix.bsd.apple.CCCryptorStatus
 
 public typealias CopyfileStateT = MutPtr
 

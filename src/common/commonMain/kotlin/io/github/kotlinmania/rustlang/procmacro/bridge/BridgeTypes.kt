@@ -1,9 +1,9 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
+import io.github.kotlinmania.rustlang.Span
+import io.github.kotlinmania.rustlang.TokenStream
+import io.github.kotlinmania.rustlang.bridge.symbol.Symbol
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.procmacro.Span
-import io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream
-import io.github.kotlinmania.rustlang.procmacro.bridge.symbol.Symbol
 
 public sealed class ApiTags {
     public data object TrackEnvVar : ApiTags()
@@ -51,7 +51,7 @@ public interface Mark<T, Unmarked> {
     public fun unmark(): Unmarked
 }
 
-public sealed class LitKind : Mark<LitKind, Any?, LitKind> {
+public sealed class LitKind : Mark<LitKind, LitKind> {
     public data object Byte : LitKind()
     public data object Char : LitKind()
     public data object Integer : LitKind()
@@ -77,7 +77,7 @@ public sealed class LitKind : Mark<LitKind, Any?, LitKind> {
     }
 }
 
-public sealed class IdentKind : Mark<IdentKind, Any?, IdentKind> {
+public sealed class IdentKind : Mark<IdentKind, IdentKind> {
     public data object Normal : IdentKind()
     public data object Raw : IdentKind()
     public data object ForcedKeyword : IdentKind()
@@ -98,7 +98,7 @@ public sealed class IdentKind : Mark<IdentKind, Any?, IdentKind> {
     }
 }
 
-public sealed class TokenTree<TokenStream, Span, Symbol> : Mark<TokenTree<TokenStream, Span, Symbol>, Any?, TokenTree<Unmarked, Unmarked, Unmarked>> {
+public sealed class TokenTree<TokenStream, Span, Symbol> : Mark<TokenTree<TokenStream, Span, Symbol>, TokenTree<Unmarked, Unmarked, Unmarked>> {
     public data class Group<TokenStream, Span, Symbol>(public var value: Group<TokenStream, Span>) : TokenTree<TokenStream, Span, Symbol>()
     public data class Punct<TokenStream, Span, Symbol>(public var value: Punct<Span>) : TokenTree<TokenStream, Span, Symbol>()
     public data class Ident<TokenStream, Span, Symbol>(public var value: Ident<Span, Symbol>) : TokenTree<TokenStream, Span, Symbol>()

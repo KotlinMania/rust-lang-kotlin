@@ -1,8 +1,8 @@
 // port-lint: source new/linux_uapi/arch/powerpc/asm/socket.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.arch.powerpc.asm.socket
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 
 // Header: `arch / powerpc / include / uapi / asm / socket.h`
 

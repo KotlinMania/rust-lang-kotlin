@@ -6,6 +6,27 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.hint.blackBox
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.M512i
+import io.github.kotlinmania.rustlang.x86.Mmask16
+import io.github.kotlinmania.rustlang.x86.Mmask32
+import io.github.kotlinmania.rustlang.x86.Mmask64
+import io.github.kotlinmania.rustlang.x86.mm256BlendEpi32
+import io.github.kotlinmania.rustlang.x86.mm256LoaduSi256
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi64x
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi8
+import io.github.kotlinmania.rustlang.x86.mm256SetzeroSi256
+import io.github.kotlinmania.rustlang.x86.mm512LoaduSi512
+import io.github.kotlinmania.rustlang.x86.mm512MaskBlendEpi32
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi64
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi8
+import io.github.kotlinmania.rustlang.x86.mm512SetzeroSi512
+import io.github.kotlinmania.rustlang.x86.mmBlendEpi32
+import io.github.kotlinmania.rustlang.x86.mmLoaduSi128
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi8
+import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
 
 // Galois Field New Instructions (GFNI)
 //

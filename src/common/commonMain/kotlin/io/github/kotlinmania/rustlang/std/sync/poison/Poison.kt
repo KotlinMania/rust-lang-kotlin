@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.thread.functions.panicking
+import io.github.kotlinmania.rustlang.sys.thread.unix.Thread
 
 // Synchronization objects that employ poisoning.
 //
@@ -120,7 +120,7 @@ public open class Flag internal constructor(
      * Checks the flag for a guarded borrow, where we may also set poison when `done`.
      */
     public open fun guard(): LockResult<Guard> {
-        val ret = Guard(panicking = panicking())
+        val ret = Guard(panicking = Thread.panicking())
         return if (this.get()) {
             Result.Err(PoisonError.new(ret))
         } else {
@@ -129,7 +129,7 @@ public open class Flag internal constructor(
     }
 
     public open fun done(guard: Guard) {
-        if (!guard.panicking && panicking()) {
+        if (!guard.panicking && Thread.panicking()) {
             this.failed.store(true, Ordering.Relaxed)
         }
     }
@@ -347,8 +347,8 @@ public typealias TryLockResult<Guard> = Result<Guard, TryLockError<Guard>>
 
 public fun <T, U> mapResult(result: LockResult<T>, f: (T) -> U): LockResult<U> =
     when {
-        result is Result.Ok<*> -> {
-            val t = (result as Result.Ok<*>).value
+        result is Result.Ok<*, *> -> {
+            val t = (result as Result.Ok<*, *>).value
             Result.Ok(f(t))
         }
         else -> Result.Err(PoisonError.new(f(data)))

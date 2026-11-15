@@ -4,10 +4,10 @@ package io.github.kotlinmania.rustlang.std.num.f64
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.std.sys.cmath.expm1
-import io.github.kotlinmania.rustlang.std.sys.cmath.lgammaR
-import io.github.kotlinmania.rustlang.std.sys.cmath.log1p
-import io.github.kotlinmania.rustlang.std.sys.cmath.tgamma
+import io.github.kotlinmania.rustlang.sys.cmath.expm1
+import io.github.kotlinmania.rustlang.sys.cmath.lgammaR
+import io.github.kotlinmania.rustlang.sys.cmath.log1p
+import io.github.kotlinmania.rustlang.sys.cmath.tgamma
 import kotlin.math.cos
 import kotlin.math.ln
 import kotlin.math.sin
@@ -295,7 +295,7 @@ public fun Double.powi(n: Int): Double = Double.powi(this, n)
  * check(Double.powf(0.0, 0.0) == 1.0)
  * ```
  */
-public fun Double.powf(n: Double): Double = powf(this, n)
+public fun Double.powf(n: Double): Double = intrinsics.powf(this, n)
 
 /**
  * Returns the square root of a number.
@@ -340,7 +340,7 @@ public fun Double.sqrt(): Double = Double.sqrt(this)
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.exp(): Double = exp(this)
+public fun Double.exp(): Double = intrinsics.exp(this)
 
 /**
  * Returns `2 ^(self)`.
@@ -359,7 +359,7 @@ public fun Double.exp(): Double = exp(this)
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.exp2(): Double = exp2(this)
+public fun Double.exp2(): Double = intrinsics.exp2(this)
 
 /**
  * Returns the natural logarithm of the number.
@@ -388,7 +388,7 @@ public fun Double.exp2(): Double = exp2(this)
  * check((-42.0).ln().isNan())
  * ```
  */
-public fun Double.ln(): Double = log(this)
+public fun Double.ln(): Double = intrinsics.log(this)
 
 /**
  * Returns the logarithm of the number with respect to an arbitrary base.
@@ -446,7 +446,7 @@ public fun Double.log(base: Double): Double = ln(this) / ln(base)
  * check((-42.0).log2().isNan())
  * ```
  */
-public fun Double.log2(): Double = log2(this)
+public fun Double.log2(): Double = intrinsics.log2(this)
 
 /**
  * Returns the base 10 logarithm of the number.
@@ -473,7 +473,7 @@ public fun Double.log2(): Double = log2(this)
  * check((-42.0).log10().isNan())
  * ```
  */
-public fun Double.log10(): Double = log10(this)
+public fun Double.log10(): Double = intrinsics.log10(this)
 
 /**
  * The positive difference of two numbers.
@@ -545,7 +545,7 @@ public fun Double.cbrt(): Double = Double.cbrt(this)
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.hypot(other: Double): Double = io.github.kotlinmania.rustlang.std.sys.cmath.hypot(this, other)
+public fun Double.hypot(other: Double): Double = io.github.kotlinmania.rustlang.sys.cmath.hypot(this, other)
 
 /**
  * Computes the sine of a number (in radians).
@@ -563,7 +563,7 @@ public fun Double.hypot(other: Double): Double = io.github.kotlinmania.rustlang.
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.sin(): Double = sin(this)
+public fun Double.sin(): Double = intrinsics.sin(this)
 
 /**
  * Computes the cosine of a number (in radians).
@@ -581,7 +581,7 @@ public fun Double.sin(): Double = sin(this)
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.cos(): Double = cos(this)
+public fun Double.cos(): Double = intrinsics.cos(this)
 
 /**
  * Computes the tangent of a number (in radians).
@@ -601,7 +601,7 @@ public fun Double.cos(): Double = cos(this)
  * check(absDifference < 1e-14)
  * ```
  */
-public fun Double.tan(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.tan(this)
+public fun Double.tan(): Double = io.github.kotlinmania.rustlang.sys.cmath.tan(this)
 
 /**
  * Computes the arcsine of a number. Return value is in radians in
@@ -624,7 +624,7 @@ public fun Double.tan(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.t
  * check(absDifference < 1e-14)
  * ```
  */
-public fun Double.asin(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.asin(this)
+public fun Double.asin(): Double = io.github.kotlinmania.rustlang.sys.cmath.asin(this)
 
 /**
  * Computes the arccosine of a number. Return value is in radians in
@@ -647,7 +647,7 @@ public fun Double.asin(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.acos(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.acos(this)
+public fun Double.acos(): Double = io.github.kotlinmania.rustlang.sys.cmath.acos(this)
 
 /**
  * Computes the arctangent of a number. Return value is in radians in the
@@ -669,7 +669,7 @@ public fun Double.acos(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.atan(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.atan(this)
+public fun Double.atan(): Double = io.github.kotlinmania.rustlang.sys.cmath.atan(this)
 
 /**
  * Computes the four quadrant arctangent of `self` (`y`) and `other` (`x`) in radians.
@@ -705,7 +705,7 @@ public fun Double.atan(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.
  * check(absDifference2 < 1e-10)
  * ```
  */
-public fun Double.atan2(other: Double): Double = io.github.kotlinmania.rustlang.std.sys.cmath.atan2(this, other)
+public fun Double.atan2(other: Double): Double = io.github.kotlinmania.rustlang.sys.cmath.atan2(this, other)
 
 /**
  * Simultaneously computes the sine and cosine of the number, `x`. Returns
@@ -807,7 +807,7 @@ public fun Double.ln1p(): Double = log1p(this)
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.sinh(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.sinh(this)
+public fun Double.sinh(): Double = io.github.kotlinmania.rustlang.sys.cmath.sinh(this)
 
 /**
  * Hyperbolic cosine function.
@@ -832,7 +832,7 @@ public fun Double.sinh(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.
  * check(absDifference < 1.0e-10)
  * ```
  */
-public fun Double.cosh(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.cosh(this)
+public fun Double.cosh(): Double = io.github.kotlinmania.rustlang.sys.cmath.cosh(this)
 
 /**
  * Hyperbolic tangent function.
@@ -856,7 +856,7 @@ public fun Double.cosh(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.
  * check(absDifference < 1.0e-10)
  * ```
  */
-public fun Double.tanh(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.tanh(this)
+public fun Double.tanh(): Double = io.github.kotlinmania.rustlang.sys.cmath.tanh(this)
 
 /**
  * Inverse hyperbolic sine function.
@@ -875,7 +875,7 @@ public fun Double.tanh(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.
  * check(absDifference < 1.0e-10)
  * ```
  */
-public fun Double.asinh(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.asinh(this)
+public fun Double.asinh(): Double = io.github.kotlinmania.rustlang.sys.cmath.asinh(this)
 
 /**
  * Inverse hyperbolic cosine function.
@@ -894,7 +894,7 @@ public fun Double.asinh(): Double = io.github.kotlinmania.rustlang.std.sys.cmath
  * check(absDifference < 1.0e-10)
  * ```
  */
-public fun Double.acosh(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.acosh(this)
+public fun Double.acosh(): Double = io.github.kotlinmania.rustlang.sys.cmath.acosh(this)
 
 /**
  * Inverse hyperbolic tangent function.
@@ -1000,7 +1000,7 @@ public fun Double.lnGamma(): Pair<Double, Int> {
  * }
  * ```
  */
-public fun Double.erf(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.erf(this)
+public fun Double.erf(): Double = io.github.kotlinmania.rustlang.sys.cmath.erf(this)
 
 /**
  * Complementary error function.
@@ -1025,4 +1025,4 @@ public fun Double.erf(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.e
  * }
  * ```
  */
-public fun Double.erfc(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.erfc(this)
+public fun Double.erfc(): Double = io.github.kotlinmania.rustlang.sys.cmath.erfc(this)

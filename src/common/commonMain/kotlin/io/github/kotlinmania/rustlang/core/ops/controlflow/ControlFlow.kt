@@ -1,9 +1,9 @@
 // port-lint: source ops/control_flow.rs
 package io.github.kotlinmania.rustlang.core.ops.controlflow
 
-import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.ops.trytrait.FromResidual
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias TryType<B, C> = ControlFlow<B, C>
 
@@ -86,7 +86,7 @@ public typealias TryType<B, C> = ControlFlow<B, C>
  * [Break]: ControlFlow.Break
  * [Continue]: ControlFlow.Continue
  */
-public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, Any?, Any?, C, ControlFlow<B, Nothing>>, FromResidual<ControlFlow<B, Nothing>, ControlFlow<B, C>> {
+public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B, Nothing>>, FromResidual<ControlFlow<B, Nothing>, ControlFlow<B, C>> {
     /**
      * Move on to the next phase of the operation as normal.
      */

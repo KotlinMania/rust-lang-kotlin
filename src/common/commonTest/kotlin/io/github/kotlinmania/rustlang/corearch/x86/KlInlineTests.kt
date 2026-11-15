@@ -9,6 +9,8 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
 
 // AES Key Locker Intrinsics
 //

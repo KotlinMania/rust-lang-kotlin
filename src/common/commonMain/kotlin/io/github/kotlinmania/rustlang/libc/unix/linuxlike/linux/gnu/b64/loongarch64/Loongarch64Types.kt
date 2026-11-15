@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.loongarch64
 
-import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.*
 
 public typealias WcharT = Int
 

@@ -1,12 +1,12 @@
 // port-lint: source cell/lazy.rs
 package io.github.kotlinmania.rustlang.core.cell.lazy
 
-import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.mem.replace
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -283,7 +283,7 @@ unreachableUnchecked()
                 run {
                     write(guard.first, State.Init(data))
                 }
-                forget(guard)
+                mem.forget(guard)
                 val data1 = state ?: error("unreachable")
                 return data1
             }

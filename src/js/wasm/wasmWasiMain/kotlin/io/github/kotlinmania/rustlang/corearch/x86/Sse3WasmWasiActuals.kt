@@ -3,8 +3,8 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.I8x16
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun lddqu(memAddr: ConstPtr): I8x16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Sse3Lddqu")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Sse3Lddqu")

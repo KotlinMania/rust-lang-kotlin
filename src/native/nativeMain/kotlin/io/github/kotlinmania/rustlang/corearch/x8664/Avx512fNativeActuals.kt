@@ -2,8 +2,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.corearch.simd.F32x4
-import io.github.kotlinmania.rustlang.corearch.simd.F64x2
+import io.github.kotlinmania.rustlang.simd.F32x4
+import io.github.kotlinmania.rustlang.simd.F64x2
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun vcvtss2si64(a: F32x4, rounding: Int): Long =

@@ -1,9 +1,7 @@
 // port-lint: source vec/into_iter.rs
 package io.github.kotlinmania.rustlang.alloc.vec.intoiter
 
-import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
-import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
-import io.github.kotlinmania.rustlang.alloc.vec.Vec
+import io.github.kotlinmania.rustlang.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
@@ -18,13 +16,13 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.rawvec.RawVec
+import io.github.kotlinmania.rustlang.vec.Vec
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -323,7 +321,7 @@ public open class IntoIter<T, A : Allocator>(
             if (len < n) {
                 this.forgetRemainingElements()
                 // SAFETY: ZSTs can be conjured ex nihilo, only the amount has to be correct
-                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err(IntoIter.newUnchecked(rawAry, 0 until len))
             }
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong()))
             // SAFETY: ditto
@@ -335,7 +333,7 @@ public open class IntoIter<T, A : Allocator>(
             run {
                 copyNonoverlapping(this.ptr.asPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
                 this.forgetRemainingElements()
-                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err(IntoIter.newUnchecked(rawAry, 0 until len))
             }
         }
         // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize
@@ -383,7 +381,7 @@ public open class IntoIter<T, A : Allocator>(
                 val tmp = this.ptr.read()
                 // See `next` for why we subtract from `end` here.
                 this.end = ConstPtr((this.end).rawAddress - ((1).toLong()))
-                accum1 = when (val tryResult = f(accum1, tmp)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                accum1 = when (val tryResult = f(accum1, tmp)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
         } else {
             // SAFETY: `self.end` can only be null if `T` is a ZST.
@@ -393,7 +391,7 @@ public open class IntoIter<T, A : Allocator>(
                 // SAFETY: the maximum this can be is `self.end`.
                 // Increment `self.ptr` first to avoid double dropping in the event of a panic.
                 this.ptr = this.ptr.add(1)
-                accum1 = when (val tryResult = f(accum1, tmp1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                accum1 = when (val tryResult = f(accum1, tmp1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
         }
         return fromOutputRFn(accum1)
@@ -442,7 +440,7 @@ public open class IntoIter<T, A : Allocator>(
             if (len < n) {
                 this.forgetRemainingElements()
                 // SAFETY: ZSTs can be conjured ex nihilo, only the amount has to be correct
-                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, n - len until n))
+                return Result.Err(IntoIter.newUnchecked(rawAry, n - len until n))
             }
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong()))
             // SAFETY: ditto
@@ -454,7 +452,7 @@ public open class IntoIter<T, A : Allocator>(
             run {
                 copyNonoverlapping(this.ptr.asPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
                 this.forgetRemainingElements()
-                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err(IntoIter.newUnchecked(rawAry, 0 until len))
             }
         }
         // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize

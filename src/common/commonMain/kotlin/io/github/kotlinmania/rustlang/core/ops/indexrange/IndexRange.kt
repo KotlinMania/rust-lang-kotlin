@@ -1,17 +1,16 @@
 // port-lint: source ops/index_range.rs
 package io.github.kotlinmania.rustlang.core.ops.indexrange
 
-import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.ubChecks
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedSub
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 /**
  * Like a `Range<Int>`, but with a safety invariant that `start <= end`.
@@ -151,7 +150,7 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextUnchecked()
-            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         }
         return accum1
     }
@@ -179,7 +178,7 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextBackUnchecked()
-            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         }
         return accum1
     }
@@ -218,7 +217,7 @@ public open class IndexRange(
          * - `start <= end`
          */
         public fun newUnchecked(start: Int, end: Int): IndexRange {
-            ubChecks.assertUnsafePrecondition(checkLibraryUb, "IndexRange::new_unchecked requires `start <= end`", start, start, end, end, start, end)
+            Unit
             return IndexRange(start = start, end = end)
         }
 

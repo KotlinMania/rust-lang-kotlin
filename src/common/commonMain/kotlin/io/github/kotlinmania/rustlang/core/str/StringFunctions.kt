@@ -1,22 +1,17 @@
 package io.github.kotlinmania.rustlang.core.str
 
+import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.cmp.Eq
-import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.constEvalSelect
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.slice.SliceIndex
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
@@ -53,7 +48,11 @@ import io.github.kotlinmania.rustlang.core.str.iter.SplitWhitespace
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
+import io.github.kotlinmania.rustlang.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.intrinsics.constEvalSelect
+import io.github.kotlinmania.rustlang.option.Option
+import io.github.kotlinmania.rustlang.panicking.assertFailed
+import io.github.kotlinmania.rustlang.slice.index.SliceIndex
 
 public fun sliceErrorFail(s: String, begin: Int, end: Int): Nothing = constEvalSelect(Triple(s, begin, end), ::sliceErrorFailCt, ::sliceErrorFailRt)
 
@@ -203,7 +202,7 @@ public fun String.isEmpty(): Boolean = this.length == 0
  * check("💖" == sparkleHeart1)
  * ```
  */
-public fun String.Companion.fromUtf8(v: List<UByte>): Result<String, Utf8Error> = io.github.kotlinmania.rustlang.core.str.converts.fromUtf8(v)
+public fun String.Companion.fromUtf8(v: List<UByte>): Result<String, Utf8Error> = io.github.kotlinmania.rustlang.str.converts.fromUtf8(v)
 
 /**
  * Converts a mutable slice of bytes to a mutable string slice.
@@ -230,7 +229,7 @@ public fun String.Companion.fromUtf8(v: List<UByte>): Result<String, Utf8Error> 
  * See the docs for [Utf8Error] for more details on the kinds of
  * errors that can be returned.
  */
-public fun String.Companion.fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> = io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Mut(v)
+public fun String.Companion.fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> = io.github.kotlinmania.rustlang.str.converts.fromUtf8Mut(v)
 
 /**
  * Converts a slice of bytes to a string slice without checking
@@ -255,7 +254,7 @@ public fun String.Companion.fromUtf8Mut(v: MutableList<UByte>): Result<String, U
  */
 public fun String.Companion.fromUtf8Unchecked(v: List<UByte>): String {
     // SAFETY: converts.fromUtf8Unchecked has the same safety requirements as this function.
-    return io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked(v)
+    return io.github.kotlinmania.rustlang.str.converts.fromUtf8Unchecked(v)
 }
 
 /**
@@ -278,7 +277,7 @@ public fun String.Companion.fromUtf8Unchecked(v: List<UByte>): String {
  */
 public fun String.Companion.fromUtf8UncheckedMut(v: MutableList<UByte>): String {
     // SAFETY: converts.fromUtf8UncheckedMut has the same safety requirements as this function.
-    return io.github.kotlinmania.rustlang.core.str.converts.fromUtf8UncheckedMut(v)
+    return io.github.kotlinmania.rustlang.str.converts.fromUtf8UncheckedMut(v)
 }
 
 /**
@@ -877,7 +876,7 @@ public fun String.splitAtMutChecked(mid: Int): Pair<String, String>? {
 public fun String.splitAtUnchecked(mid: Int): Pair<String, String> {
     val len = this.length
     val ptr = this.asPtr()
-    assertUnsafePrecondition(checkLibraryUb, "str::split_at_unchecked requires the index to be on a UTF-8 boundary", it, this, mid, mid, it, isCharBoundary, mid)
+    Unit
     // SAFETY: caller guarantees `mid` is on a char boundary.
     return Pair(fromUtf8Unchecked(rawSliceList(ptr, mid.toInt(), PrimitiveLayouts.U8)), fromUtf8Unchecked(rawSliceList(ConstPtr((ptr).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes)), (len - mid).toInt(), PrimitiveLayouts.U8)))
 }
@@ -893,7 +892,7 @@ public fun String.splitAtUnchecked(mid: Int): Pair<String, String> {
 public fun String.splitAtMutUnchecked(mid: Int): Pair<String, String> {
     val len = this.length
     val ptr = this.asMutPtr()
-    assertUnsafePrecondition(checkLibraryUb, "str::split_at_mut_unchecked requires the index to be on a UTF-8 boundary", it, this, mid, mid, it, isCharBoundary, mid)
+    Unit
     // SAFETY: caller guarantees `mid` is on a char boundary.
     return Pair(fromUtf8UncheckedMut(rawMutSliceList(ptr, mid.toInt(), PrimitiveLayouts.U8)), fromUtf8UncheckedMut(rawMutSliceList(MutPtr((ptr).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes)), (len - mid).toInt(), PrimitiveLayouts.U8)))
 }
@@ -2421,7 +2420,7 @@ public fun String.isAscii(): Boolean {
  * If this string slice [`isAscii`](Self.isAscii), returns it as a slice
  * of [ASCII characters](`ascii.Char`), otherwise returns `None`.
  */
-public fun String.asAscii(): List<io.github.kotlinmania.rustlang.core.ascii.Char>? {
+public fun String.asAscii(): List<io.github.kotlinmania.rustlang.ascii.Char>? {
     // Like in `isAscii`, we can work on the bytes directly.
     return this.encodeToByteArray().map { it.toUByte() }.asAscii()
 }
@@ -2434,8 +2433,8 @@ public fun String.asAscii(): List<io.github.kotlinmania.rustlang.core.ascii.Char
  *
  * Every character in this string must be ASCII, or else this is UB.
  */
-public fun String.asAsciiUnchecked(): List<io.github.kotlinmania.rustlang.core.ascii.Char> {
-    assertUnsafePrecondition(checkLibraryUb, "as_ascii_unchecked requires that the string is valid ASCII", it, this, it, isAscii)
+public fun String.asAsciiUnchecked(): List<io.github.kotlinmania.rustlang.ascii.Char> {
+    Unit
     // SAFETY: the caller promised that every byte of this string slice
     // is ASCII.
     return this.encodeToByteArray().map { it.toUByte() }.asAsciiUnchecked()

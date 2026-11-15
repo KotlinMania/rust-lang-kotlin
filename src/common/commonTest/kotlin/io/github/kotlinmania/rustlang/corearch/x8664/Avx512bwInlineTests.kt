@@ -1,7 +1,7 @@
 // port-lint: tests x86_64/avx512bw.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.corearch.x86.Mmask64
+import io.github.kotlinmania.rustlang.x86.Mmask64
 
 public fun testCvtmask64U64() {
     val a: Mmask64 = 0xCC336699uL

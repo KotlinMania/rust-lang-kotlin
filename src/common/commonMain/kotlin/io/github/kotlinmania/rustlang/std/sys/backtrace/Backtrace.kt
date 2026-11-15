@@ -7,17 +7,14 @@ import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.std.env.currentDir
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.fromBytes
+import io.github.kotlinmania.rustlang.os.windows.ffi.fromWide
+import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.path.PathBuf
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromBytes
-import io.github.kotlinmania.rustlang.std.path.MAIN_SEPARATOR
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.LOCK
+import io.github.kotlinmania.rustlang.sync.nonpoison.mutex.Mutex
+import io.github.kotlinmania.rustlang.sync.nonpoison.mutex.MutexGuard
+import io.github.kotlinmania.rustlang.sys.pal.unix.stackoverflow.threadinfo.LOCK
 
 // Common code for printing backtraces.
 
@@ -86,7 +83,7 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
     // this allows Miri to display backtraces in isolation mode
     val cwd =
         if (!false) {
-            currentDir().ok()
+            env.currentDir().ok()
         } else {
             null
         }
@@ -105,16 +102,16 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
     var print = printFmt != PrintFmt.Short
     setImageBase()
     // SAFETY: we roll our own locking in this town
-    traceUnsynchronized(closure@{ frame ->
+    backtracers.traceUnsynchronized(closure@{ frame ->
         if (printFmt == PrintFmt.Short && idx > MAX_NB_FRAMES) {
             return@closure false
         }
-        if (true) {
+        if (false) {
             val frameIp = frame.ip()
             res = btFmt.formatter().appendLine("$idx: $frameIp")
         } else {
             var hit = false
-            resolveFrameUnsynchronized(frame, closure1@{ symbol ->
+            backtracers.resolveFrameUnsynchronized(frame, closure1@{ symbol ->
                 hit = true
                 // `__rust_end_short_backtrace` means we are done hiding symbols
                 // for now. Print until we see `__rust_begin_short_backtrace`.
@@ -200,11 +197,11 @@ public fun outputFilename(fmt: StringBuilder, bows: BytesOrWideString, printFmt:
         when (bows) {
             is BytesOrWideString.Bytes -> {
                 val (bytes) = bows
-                Path.new(OsStr.fromBytes(bytes)).into()
+                Path.new(fromBytes(bytes)).into()
             }
             is BytesOrWideString.Wide -> {
                 val (wide) = bows
-                OsString.fromWide(wide).into()
+                fromWide(wide).into()
             }
         }
     if (printFmt == PrintFmt.Short && file.isAbsolute()) {
@@ -217,7 +214,7 @@ public fun outputFilename(fmt: StringBuilder, bows: BytesOrWideString, printFmt:
                         null -> {}
                         else -> {
                             val s = matchVal1
-                            return fmt.append(".$MAIN_SEPARATOR$s")
+                            return fmt.append(".${path.MAIN_SEPARATOR}$s")
                         }
                     }
                 }

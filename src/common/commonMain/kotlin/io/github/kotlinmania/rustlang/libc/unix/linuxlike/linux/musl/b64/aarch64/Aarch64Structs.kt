@@ -2,40 +2,40 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.aarch64
 
+import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.BlkcntT
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.InoT
-import io.github.kotlinmania.rustlang.libc.KeyT
-import io.github.kotlinmania.rustlang.libc.ModeT
-import io.github.kotlinmania.rustlang.libc.SigsetT
-import io.github.kotlinmania.rustlang.libc.StackT
-import io.github.kotlinmania.rustlang.libc.TimeT
-import io.github.kotlinmania.rustlang.libc.UidT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.OffT
+import io.github.kotlinmania.rustlang.unix.GidT
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.KeyT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.DevT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.BlkcntT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.InoT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.StackT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.SigsetT
 
 public class Stat(
-    public var stDev: DevT = 0,
+    public var stDev: DevT = 0uL,
     public var stIno: InoT = 0uL,
     public var stMode: ModeT = 0u,
-    public var stNlink: io.github.kotlinmania.rustlang.libc.NlinkT = 0u,
+    public var stNlink: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.aarch64.NlinkT = 0u,
     public var stUid: UidT = 0,
     public var stGid: GidT = 0,
-    public var stRdev: DevT = 0,
+    public var stRdev: DevT = 0uL,
     public var pad0: CUlong = 0uL,
     public var stSize: OffT = 0L,
-    public var stBlksize: io.github.kotlinmania.rustlang.libc.BlksizeT = 0,
+    public var stBlksize: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.aarch64.BlksizeT = 0,
     public var pad1: CInt = 0,
     public var stBlocks: BlkcntT = 0L,
     public var stAtime: TimeT = 0L,
@@ -55,13 +55,13 @@ public class Stat(
                 override val sizeBytes: Long = 128L
                 override fun readNative(addr: Long): Stat =
                     Stat(
-                        (PrimitiveLayouts.I32).readNative(addr),
+                        (PrimitiveLayouts.U64).readNative(addr),
                         (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U16).readNative(addr + 16L),
+                        (PrimitiveLayouts.U32).readNative(addr + 16L),
                         (PrimitiveLayouts.U32).readNative(addr + 20L),
                         (PrimitiveLayouts.I32).readNative(addr + 24L),
                         (PrimitiveLayouts.I32).readNative(addr + 28L),
-                        (PrimitiveLayouts.I32).readNative(addr + 32L),
+                        (PrimitiveLayouts.U64).readNative(addr + 32L),
                         (PrimitiveLayouts.U64).readNative(addr + 40L),
                         (PrimitiveLayouts.I64).readNative(addr + 48L),
                         (PrimitiveLayouts.I32).readNative(addr + 56L),
@@ -76,13 +76,13 @@ public class Stat(
                         (PrimitiveArrayLayouts.uIntArray(2)).readNative(addr + 120L),
                     )
                 override fun writeNative(addr: Long, value: Stat) {
-                    (PrimitiveLayouts.I32).writeNative(addr, value.stDev)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.stDev)
                     (PrimitiveLayouts.U64).writeNative(addr + 8L, value.stIno)
-                    (PrimitiveLayouts.U16).writeNative(addr + 16L, value.stMode)
+                    (PrimitiveLayouts.U32).writeNative(addr + 16L, value.stMode)
                     (PrimitiveLayouts.U32).writeNative(addr + 20L, value.stNlink)
                     (PrimitiveLayouts.I32).writeNative(addr + 24L, value.stUid)
                     (PrimitiveLayouts.I32).writeNative(addr + 28L, value.stGid)
-                    (PrimitiveLayouts.I32).writeNative(addr + 32L, value.stRdev)
+                    (PrimitiveLayouts.U64).writeNative(addr + 32L, value.stRdev)
                     (PrimitiveLayouts.U64).writeNative(addr + 40L, value.pad0)
                     (PrimitiveLayouts.I64).writeNative(addr + 48L, value.stSize)
                     (PrimitiveLayouts.I32).writeNative(addr + 56L, value.stBlksize)
@@ -98,13 +98,13 @@ public class Stat(
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Stat =
                     Stat(
-                        (PrimitiveLayouts.I32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U16).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 16),
                         (PrimitiveLayouts.U32).readBytes(buf, offset + 20),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 24),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 28),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 32),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 32),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 40),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 48),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 56),
@@ -119,13 +119,13 @@ public class Stat(
                         (PrimitiveArrayLayouts.uIntArray(2)).readBytes(buf, offset + 120),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Stat) {
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset, value.stDev)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.stDev)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.stIno)
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 16, value.stMode)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 16, value.stMode)
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 20, value.stNlink)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 24, value.stUid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 28, value.stGid)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 32, value.stRdev)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 32, value.stRdev)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 40, value.pad0)
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 48, value.stSize)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 56, value.stBlksize)
@@ -227,7 +227,7 @@ public data class IpcPerm(
                         (PrimitiveLayouts.I32).readNative(addr + 12L),
                         (PrimitiveLayouts.I32).readNative(addr + 16L),
                         (PrimitiveLayouts.I32).readNative(addr + 20L),
-                        (PrimitiveLayouts.U16).readNative(addr + 24L),
+                        (PrimitiveLayouts.U32).readNative(addr + 24L),
                         (PrimitiveLayouts.I32).readNative(addr + 28L),
                         (PrimitiveLayouts.I64).readNative(addr + 32L),
                         (PrimitiveLayouts.I64).readNative(addr + 40L),
@@ -239,7 +239,7 @@ public data class IpcPerm(
                     (PrimitiveLayouts.I32).writeNative(addr + 12L, value.gid)
                     (PrimitiveLayouts.I32).writeNative(addr + 16L, value.cuid)
                     (PrimitiveLayouts.I32).writeNative(addr + 20L, value.cgid)
-                    (PrimitiveLayouts.U16).writeNative(addr + 24L, value.mode)
+                    (PrimitiveLayouts.U32).writeNative(addr + 24L, value.mode)
                     (PrimitiveLayouts.I32).writeNative(addr + 28L, value.seq)
                     (PrimitiveLayouts.I64).writeNative(addr + 32L, value.unused1)
                     (PrimitiveLayouts.I64).writeNative(addr + 40L, value.unused2)
@@ -252,7 +252,7 @@ public data class IpcPerm(
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 12),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 16),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 20),
-                        (PrimitiveLayouts.U16).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 24),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 28),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 32),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 40),
@@ -264,7 +264,7 @@ public data class IpcPerm(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 12, value.gid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 16, value.cuid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 20, value.cgid)
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 24, value.mode)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 24, value.mode)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 28, value.seq)
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 32, value.unused1)
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 40, value.unused2)
@@ -291,7 +291,7 @@ public class UcontextT internal constructor(
         ucLinkCtorArg = MutPtr(0L),
         ucStack = StackT(),
         ucSigmask = SigsetT(),
-        ucMcontextCtorArg = McontextT(),
+        ucMcontextCtorArg = MutPtr(0L),
     )
 
     public operator fun component1(): CUlong = this.ucFlags
@@ -334,7 +334,7 @@ public class UcontextT internal constructor(
             ucLink: MutPtr = MutPtr(0L),
             ucStack: StackT = StackT(),
             ucSigmask: SigsetT = SigsetT(),
-            ucMcontext: McontextT = McontextT(),
+            ucMcontext: McontextT = MutPtr(0L),
         ): UcontextT = UcontextT(
             ucFlags = ucFlags,
             ucLinkCtorArg = ucLink,

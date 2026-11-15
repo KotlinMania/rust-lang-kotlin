@@ -3,28 +3,28 @@
 
 package io.github.kotlinmania.rustlang.core.num.f16
 
+import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.cmp.clamp.ClampBounds
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
-import io.github.kotlinmania.rustlang.core.intrinsics.copysignf16
-import io.github.kotlinmania.rustlang.core.intrinsics.fabs
-import io.github.kotlinmania.rustlang.core.intrinsics.faddAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fdivAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fma
-import io.github.kotlinmania.rustlang.core.intrinsics.fmulAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fmuladd
-import io.github.kotlinmania.rustlang.core.intrinsics.fremAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fsubAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.maximumNumberNszF16
-import io.github.kotlinmania.rustlang.core.intrinsics.maximumf16
-import io.github.kotlinmania.rustlang.core.intrinsics.minimumNumberNszF16
-import io.github.kotlinmania.rustlang.core.intrinsics.minimumf16
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.num.FpCategory
-import io.github.kotlinmania.rustlang.core.num.imp.libm.cbrtf
-import io.github.kotlinmania.rustlang.core.panic.constAssert
+import io.github.kotlinmania.rustlang.intrinsics.copysignf16
+import io.github.kotlinmania.rustlang.intrinsics.fabs
+import io.github.kotlinmania.rustlang.intrinsics.faddAlgebraic
+import io.github.kotlinmania.rustlang.intrinsics.fdivAlgebraic
+import io.github.kotlinmania.rustlang.intrinsics.fma
+import io.github.kotlinmania.rustlang.intrinsics.fmulAlgebraic
+import io.github.kotlinmania.rustlang.intrinsics.fmuladd
+import io.github.kotlinmania.rustlang.intrinsics.fremAlgebraic
+import io.github.kotlinmania.rustlang.intrinsics.fsubAlgebraic
+import io.github.kotlinmania.rustlang.intrinsics.maximumNumberNszF16
+import io.github.kotlinmania.rustlang.intrinsics.maximumf16
+import io.github.kotlinmania.rustlang.intrinsics.minimumNumberNszF16
+import io.github.kotlinmania.rustlang.intrinsics.minimumf16
+import io.github.kotlinmania.rustlang.num.FpCategory
+import io.github.kotlinmania.rustlang.num.imp.libm.cbrtf
+import io.github.kotlinmania.rustlang.panic.constAssert
 import kotlin.math.abs
 import kotlin.math.truncate
 
@@ -1420,7 +1420,7 @@ public fun F16.nanTo(replacement: F16): F16 =
  * }
  * ```
  */
-public fun F16.floor(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.floor(this)
+public fun F16.floor(): F16 = io.github.kotlinmania.rustlang.intrinsics.floor(this)
 
 /**
  * Returns the smallest integer greater than or equal to `self`.
@@ -1441,7 +1441,7 @@ public fun F16.floor(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.flo
  * }
  * ```
  */
-public fun F16.ceil(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.ceil(this)
+public fun F16.ceil(): F16 = io.github.kotlinmania.rustlang.intrinsics.ceil(this)
 
 /**
  * Returns the nearest integer to `self`. If a value is half-way between two
@@ -1469,7 +1469,7 @@ public fun F16.ceil(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.ceil
  * }
  * ```
  */
-public fun F16.round(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.round(this)
+public fun F16.round(): F16 = io.github.kotlinmania.rustlang.intrinsics.round(this)
 
 /**
  * Returns the nearest integer to a number. Rounds half-way cases to the number
@@ -1495,7 +1495,7 @@ public fun F16.round(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.rou
  * }
  * ```
  */
-public fun F16.roundTiesEven(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.roundTiesEven(this)
+public fun F16.roundTiesEven(): F16 = io.github.kotlinmania.rustlang.intrinsics.roundTiesEven(this)
 
 /**
  * Returns the integer part of `self`.
@@ -1519,7 +1519,7 @@ public fun F16.roundTiesEven(): F16 = io.github.kotlinmania.rustlang.core.intrin
  * }
  * ```
  */
-public fun F16.trunc(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.trunc(this)
+public fun F16.trunc(): F16 = io.github.kotlinmania.rustlang.intrinsics.trunc(this)
 
 /**
  * Returns the fractional part of `self`.
@@ -1737,7 +1737,7 @@ public fun F16.remEuclid(rhs: F16): F16 {
  * }
  * ```
  */
-public fun F16.powi(n: Int): F16 = io.github.kotlinmania.rustlang.core.intrinsics.powi(this, n)
+public fun F16.powi(n: Int): F16 = io.github.kotlinmania.rustlang.intrinsics.powi(this, n)
 
 /**
  * Returns the square root of a number.
@@ -1766,7 +1766,7 @@ public fun F16.powi(n: Int): F16 = io.github.kotlinmania.rustlang.core.intrinsic
  * }
  * ```
  */
-public fun F16.sqrt(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.sqrt(this)
+public fun F16.sqrt(): F16 = io.github.kotlinmania.rustlang.intrinsics.sqrt(this)
 
 /**
  * Returns the cube root of a number.

@@ -20,23 +20,23 @@ public open class SimdShuffleIdx(
         }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<SimdShuffleIdx> =
+        public fun typeLayout(len: Int = 0): TypeLayout<SimdShuffleIdx> =
             object : TypeLayout<SimdShuffleIdx> {
                 override val alignBytes: Long = 4L
-                override val sizeBytes: Long = alignUpBytes(((LEN).toLong() * (PrimitiveLayouts.U32).strideBytes), 4L)
+                override val sizeBytes: Long = alignUpBytes(((len).toLong() * (PrimitiveLayouts.U32).strideBytes), 4L)
                 override fun readNative(addr: Long): SimdShuffleIdx =
                     SimdShuffleIdx(
-                        (PrimitiveArrayLayouts.uIntArray((LEN).toInt())).readNative(addr),
+                        (PrimitiveArrayLayouts.uIntArray((len).toInt())).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: SimdShuffleIdx) {
-                    (PrimitiveArrayLayouts.uIntArray((LEN).toInt())).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uIntArray((len).toInt())).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): SimdShuffleIdx =
                     SimdShuffleIdx(
-                        (PrimitiveArrayLayouts.uIntArray((LEN).toInt())).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uIntArray((len).toInt())).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: SimdShuffleIdx) {
-                    (PrimitiveArrayLayouts.uIntArray((LEN).toInt())).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uIntArray((len).toInt())).writeBytes(buf, offset, value.value)
                 }
             }
     }

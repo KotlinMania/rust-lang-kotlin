@@ -8,6 +8,9 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.fs.dirs.HomeDirs
+import io.github.kotlinmania.rustlang.fs.dirs.MediaDirs
+import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.sysdirGetNextSearchPathEnumeration
 import io.github.kotlinmania.rustlang.libc.sysdirStartSearchPathEnumeration
 import io.github.kotlinmania.rustlang.libc.sysdirsearchpathdirectoryt.*
@@ -16,13 +19,9 @@ import io.github.kotlinmania.rustlang.libc.unix.bsd.PATH_MAX
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathDirectoryT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathDomainMaskT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathEnumerationState
-import io.github.kotlinmania.rustlang.std.env.homeDir
-import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
-import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
-import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.path.PathBuf
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.path.PathBuf
 
 /**
  * Darwin-specific extensions to [`fs.HomeDirs`](HomeDirs).
@@ -236,13 +235,13 @@ public interface MediaDirsExt<T> {
     }
 }
 
-public fun userHome(): Result<PathBuf, Error> = (homeDir().filter({ p -> p.isAbsolute() })?.let { Result.Ok(it) } ?: Result.Err(constError(ErrorKind.InvalidData, "home path not absolute")))
+public fun userHome(): Result<PathBuf, Error> = env.homeDir().filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "home path not absolute"))
 
 public fun homeDirsExtSysdirHomeDirs(): Result<HomeDirs, Error> {
     val dirs = HomeDirs.empty()
-    val home = when (val tryResult = userHome()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val caches = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_CACHES)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val applicationSupport = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_APPLICATION_SUPPORT)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val home = when (val tryResult = userHome()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val caches = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_CACHES)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val applicationSupport = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_APPLICATION_SUPPORT)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     dirs.cache = caches
     // Apple puts config/data/state all in Application Support
     dirs.config = applicationSupport.clone()
@@ -253,13 +252,13 @@ public fun homeDirsExtSysdirHomeDirs(): Result<HomeDirs, Error> {
 
 public fun mediaDirsExtSysdirMediaDirs(): Result<MediaDirs, Error> {
     val dirs = MediaDirs.empty()
-    val home = when (val tryResult = userHome()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val desktop = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_DESKTOP)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val documents = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_DOCUMENT)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val downloads = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_DOWNLOADS)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val movies = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_MOVIES)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val music = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_MUSIC)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val pictures = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_PICTURES)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val home = when (val tryResult = userHome()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val desktop = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_DESKTOP)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val documents = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_DOCUMENT)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val downloads = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_DOWNLOADS)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val movies = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_MOVIES)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val music = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_MUSIC)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val pictures = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_PICTURES)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     dirs.desktop = desktop
     dirs.documents = documents
     dirs.downloads = downloads
@@ -276,7 +275,7 @@ public fun getUserDir(home: Path, kind: SysdirSearchPathDirectoryT): Result<Path
     // SAFETY: SYSDIR_DOMAIN_MASK_USER < SYSDIR_DOMAIN_MASK_ALL
     val iter = Iter.new(home, kind, SYSDIR_DOMAIN_MASK_USER)
     val path = iter.next() ?: return Result.Ok(null)
-    val path1 = when (val tryResult = path) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val path1 = when (val tryResult = path) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     if (iter.next() != null) {
         // more than one path returned (shouldn't happen for SYSDIR_DOMAIN_MASK_USER)
         return Result.Err(constError(ErrorKind.InvalidData, "multiple paths returned for standard user directory"))

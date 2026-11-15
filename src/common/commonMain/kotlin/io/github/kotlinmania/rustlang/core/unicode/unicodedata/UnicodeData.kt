@@ -112,10 +112,10 @@ public fun skipSearch(needle: Char, shortOffsetRuns: List<ShortOffsetRunHeader>,
     val lastIdx =
         run {
             val matchVal = shortOffsetRuns.binarySearchByKey((needle1 shl 11), { header -> header.first shl 11 })
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val idx = matchVal.value
                 idx + 1
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val idx1 = matchVal.error
                 idx1
             } }

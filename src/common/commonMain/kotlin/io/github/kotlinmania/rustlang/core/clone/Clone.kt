@@ -1,15 +1,15 @@
 // port-lint: source clone.rs
 package io.github.kotlinmania.rustlang.core.clone
 
+import io.github.kotlinmania.rustlang.bytestr.ByteStr
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
-import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.ffi.cstr.CStr
 
 // The `Clone` trait for types that cannot be implicitly copied'.
 //

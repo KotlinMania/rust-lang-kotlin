@@ -1,11 +1,7 @@
 // port-lint: source byte_str.rs
 package io.github.kotlinmania.rustlang.alloc.bytestr
 
-import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
-import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
-import io.github.kotlinmania.rustlang.alloc.string.FromUtf8Error
-import io.github.kotlinmania.rustlang.alloc.string.String
+import io.github.kotlinmania.rustlang.boxed.Box
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.borrow.BorrowMut
@@ -25,6 +21,9 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
+import io.github.kotlinmania.rustlang.rcs.arc.Arc
+import io.github.kotlinmania.rustlang.rcs.rc.Rc
+import io.github.kotlinmania.rustlang.string.FromUtf8Error
 
 // The `ByteStr` and `ByteString` types and trait implementations.
 
@@ -51,7 +50,7 @@ public typealias Owned = ByteString
 public open class ByteString internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<List<UByte>>,
-) : DerefPure, AsRef<List<UByte>>, AsMut<List<UByte>>, Borrow<List<UByte>>, BorrowMut<List<UByte>>, FromStr {
+) : DerefPure, AsRef<List<UByte>>, AsMut<List<UByte>>, Borrow<List<UByte>>, BorrowMut<List<UByte>>, FromStr<Nothing> {
     public var field0: List<UByte>
         get() = value
         set(v) {
@@ -423,7 +422,7 @@ public fun List<UByte>.partialCmp(other: ByteStr): Ordering? {
 }
 
 public fun tryFromString(s: ByteStr): Result<String, Utf8Error> {
-    return Result.Ok(when (val tryResult = String.fromUtf8(s.first)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.into())
+    return Result.Ok(when (val tryResult = String.fromUtf8(s.first)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.into())
 }
 
 /**

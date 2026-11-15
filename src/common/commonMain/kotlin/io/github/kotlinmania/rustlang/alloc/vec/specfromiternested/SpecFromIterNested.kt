@@ -1,9 +1,8 @@
 // port-lint: source vec/spec_from_iter_nested.rs
 package io.github.kotlinmania.rustlang.alloc.vec.specfromiternested
 
-import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
-import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.rawvec.RawVec
 
 /**
  * Another specialization trait for Vec.fromIter
@@ -30,7 +29,7 @@ public fun <T, I> specFromIterNestedFromIterVecT(iterator: I): List<T> where I :
                 var vector = ArrayList<T>(initialCapacity)
                 // SAFETY: We requested capacity at least 1
                 run {
-                    write(vector.asMutPtr(), element)
+                    ptr.write(vector.asMutPtr(), element)
                     vector.setLen(1)
                 }
                 vector

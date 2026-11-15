@@ -1,0 +1,6 @@
+package = io.github.kotlinmania.rustlang.libc.windows.gnu.cinterop
+headers = libc_windows_gnu_wrapper.h
+headerFilter = libc_windows_gnu_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = libc_windows_gnu_wrapper.a
+noStringConversion = rustlangLibcWindowsGnuStrcasecmp rustlangLibcWindowsGnuStrncasecmp

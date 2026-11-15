@@ -1,9 +1,10 @@
 package io.github.kotlinmania.rustlang.corearch.armshared.neon
 
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.simd.Simd
+import io.github.kotlinmania.rustlang.simd.Simd
 
 public fun fromSimdByte(simd: Int8x8T): Simd<Byte> = transmute(simd)
 

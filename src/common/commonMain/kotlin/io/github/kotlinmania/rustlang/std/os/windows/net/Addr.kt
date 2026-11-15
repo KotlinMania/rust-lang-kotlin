@@ -7,25 +7,26 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
-import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.io.ErrorKind
+import io.github.kotlinmania.rustlang.io.constError
+import io.github.kotlinmania.rustlang.path.Path
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtNz
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.AF_UNIX
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvtNz
+import io.github.kotlinmania.rustlang.sys.pal.windows.c.AF_UNIX
+import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.SockaddrUn
 
 public fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, Int>, Error> {
     // SAFETY: All zeros is a valid representation for `sockaddrUn`.
     val addr: SockaddrUn  = SockaddrUn()
     addr.sunFamily = AF_UNIX
     // path to UTF-8 bytes
-    val bytes = when (val tryResult = path.toStr().okOr(constError(ErrorKind.InvalidInput, "path must be valid UTF-8"))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.asBytes()
+    val bytes = when (val tryResult = path.toStr().okOr(constError(ErrorKind.InvalidInput, "path must be valid UTF-8"))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.asBytes()
     if (bytes.size >= addr.sunPath.size) {
         return Result.Err(constError(ErrorKind.InvalidInput, "path too long"))
     }
@@ -33,7 +34,7 @@ public fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, Int>, Error> {
     // both point to valid memory.
     // NOTE: We zeroed the memory above, so the path is already null
     // terminated.
-    copyNonoverlapping(bytes.asPtr(), addr.sunPath.asMutPtr(), bytes.size)
+    ptr.copyNonoverlapping(bytes.asPtr(), addr.sunPath.asMutPtr(), bytes.size)
     val len = SUN_PATH_OFFSET + bytes.size + 1
     return Result.Ok(Pair(addr, len))
 }
@@ -90,7 +91,7 @@ public open class SocketAddr(
 
     public open fun address(): AddressKind {
         val len = this.len.toInt() - SUN_PATH_OFFSET
-        val path = transmute<List<Byte>, List<UByte>>(this.addr.sunPath)
+        val path = transmute(this.addr.sunPath)
         return if (len == 0) {
             AddressKind.Unnamed
         } else if (this.addr.sunPath[0] == 0.toByte()) {
@@ -129,9 +130,9 @@ public open class SocketAddr(
             return run {
                 val localStorageL60C12 = AddressableLocal(SockaddrUn(), ObjectSlotLayout<SockaddrUn>())
                 val addr by localStorageL60C12
-                val localStorageL61C12 = AddressableLocal(sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>()).toInt(), PrimitiveLayouts.I32)
+                val localStorageL61C12 = AddressableLocal(mem.sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>()).toInt(), PrimitiveLayouts.I32)
                 val len by localStorageL61C12
-                when (val tryResult = cvtNz(f(localStorageL60C12.asMutPtr(), RustMutableReference(localStorageL61C12.asMutPtr(), localStorageL61C12.layout)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvtNz(f(localStorageL60C12.asMutPtr(), RustMutableReference(localStorageL61C12.asMutPtr(), localStorageL61C12.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 SocketAddr.fromParts(addr, len)
             }
         }
@@ -139,7 +140,7 @@ public open class SocketAddr(
         public fun fromParts(addr: SockaddrUn, len: Int): Result<SocketAddr, Error> =
             if (addr.sunFamily != AF_UNIX) {
                 Result.Err(constError(ErrorKind.InvalidInput, "invalid address family"))
-            } else if (len < SUN_PATH_OFFSET || len > sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>()).toInt()) {
+            } else if (len < SUN_PATH_OFFSET || len > mem.sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>()).toInt()) {
                 Result.Err(constError(ErrorKind.InvalidInput, "invalid address length"))
             } else {
                 Result.Ok(SocketAddr(addr = addr, len = len.toUInt()))

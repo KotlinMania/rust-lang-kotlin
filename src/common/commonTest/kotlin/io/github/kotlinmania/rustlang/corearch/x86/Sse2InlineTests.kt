@@ -17,6 +17,10 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.mmSet1Ps
+import io.github.kotlinmania.rustlang.x86.mmSetrPs
+import io.github.kotlinmania.rustlang.x86.mmSfence
 
 // Streaming SIMD Extensions 2 (SSE2)
 

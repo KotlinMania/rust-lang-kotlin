@@ -1,12 +1,12 @@
 // port-lint: source slice/sort/shared/pivot.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot
 
-import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.intrinsics.abortImmediate
 
 // This module contains the logic for pivot selection.
 

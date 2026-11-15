@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.iter.Iter
+import io.github.kotlinmania.rustlang.path.Iter
 
 /**
  * Helper type to manage ownership of the strings within a C-style array.
@@ -25,8 +25,8 @@ public open class CStringArray internal constructor(
      */
     public open fun write(index: Int, item: CString) {
         val argc = this.ptrs.size - 1
-        val ptr = ((this.ptrs).slice(0 until argc))[index]
-        val old = replace(ptr, item.intoRaw())
+        val ptr = ((this.ptrs).subList(0, argc))[index]
+        val old = mem.replace(ptr, item.intoRaw())
         // SAFETY:
         // `CStringArray` owns all of its strings, and they were all transformed
         // into pointers using `CString.intoRaw`. Also, this is not the null
@@ -55,10 +55,10 @@ public open class CStringArray internal constructor(
     /**
      * Returns an iterator over all `CStr`s contained in this array.
      */
-    public open fun iter(): CStringIter = CStringIter(iter = ((this.ptrs).slice(0 until this.ptrs.size - 1)).iter())
+    public open fun iter(): CStringIter = CStringIter(iter = ((this.ptrs).subList(0, this.ptrs.size - 1)).iter())
 
     public open fun index(index: Int): CStr {
-        val ptr = ((this.ptrs).slice(0 until this.ptrs.size - 1))[index]
+        val ptr = ((this.ptrs).subList(0, this.ptrs.size - 1))[index]
         // SAFETY:
         // `CStringArray` owns all of its strings. Also, this is not the null
         // pointer since the indexing above would have failed.
@@ -77,7 +77,7 @@ public open class CStringArray internal constructor(
         // SAFETY:
         // `CStringArray` owns all of its strings, and they were all transformed
         // into pointers using `CString.intoRaw`.
-        ((this.ptrs).slice(0 until this.ptrs.size - 1)).forEach({ p -> (CString.fromRaw(p.castMut())).let { } })
+        ((this.ptrs).subList(0, this.ptrs.size - 1)).forEach({ p -> (CString.fromRaw(p.castMut())).let { } })
     }
 
     public companion object {

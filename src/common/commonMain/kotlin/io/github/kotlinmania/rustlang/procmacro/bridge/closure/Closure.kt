@@ -1,11 +1,11 @@
 // port-lint: source bridge/closure.rs
 package io.github.kotlinmania.rustlang.procmacro.bridge.closure
 
+import io.github.kotlinmania.rustlang.bridge.buffer.Buffer
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 
 // Closure type (equivalent to `dynamic FnMut(Buffer) -> Buffer`) that's `repr(C)`.
 

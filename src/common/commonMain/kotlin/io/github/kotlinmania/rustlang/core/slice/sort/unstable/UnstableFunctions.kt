@@ -1,11 +1,11 @@
 package io.github.kotlinmania.rustlang.core.slice.sort.unstable
 
-import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
-import io.github.kotlinmania.rustlang.core.slice.index.range
-import io.github.kotlinmania.rustlang.core.slice.sort.select.partitionAtIndex
-import io.github.kotlinmania.rustlang.core.slice.sort.shared.findExistingRun
-import io.github.kotlinmania.rustlang.core.slice.sort.unstable.heapsort.heapsort
-import io.github.kotlinmania.rustlang.core.slice.sort.unstable.quicksort.quicksort
+import io.github.kotlinmania.rustlang.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.slice.index.range
+import io.github.kotlinmania.rustlang.slice.sort.select.partitionAtIndex
+import io.github.kotlinmania.rustlang.slice.sort.shared.findExistingRun
+import io.github.kotlinmania.rustlang.slice.sort.unstable.heapsort.heapsort
+import io.github.kotlinmania.rustlang.slice.sort.unstable.quicksort.quicksort
 
 /**
  * Unstable sort called ipnsort by Lukas Bergdoll and Orson Peters.

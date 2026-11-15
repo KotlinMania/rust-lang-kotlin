@@ -2,14 +2,14 @@
 package io.github.kotlinmania.rustlang.libm.math.generic.fmawide
 
 import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
-import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
-import io.github.kotlinmania.rustlang.libm.math.support.env.Round
-import io.github.kotlinmania.rustlang.libm.math.support.env.Status
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.IntTy
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.NarrowFloat
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.WideFloat
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.CastFrom
+import io.github.kotlinmania.rustlang.math.support.env.FpResult
+import io.github.kotlinmania.rustlang.math.support.env.Round
+import io.github.kotlinmania.rustlang.math.support.env.Status
+import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.floattraits.IntTy
+import io.github.kotlinmania.rustlang.math.support.floattraits.NarrowFloat
+import io.github.kotlinmania.rustlang.math.support.floattraits.WideFloat
+import io.github.kotlinmania.rustlang.math.support.inttraits.CastFrom
 
 /**
  * Fma implementation when a hardware-backed larger float type is available. For `Float` and `Double`,

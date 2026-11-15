@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.sync.threadparking.darwin
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object SysSyncThreadparkingDarwinJniBridge {
+private object StdSysSyncThreadparkingDarwinJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -40,8 +40,8 @@ private object SysSyncThreadparkingDarwinJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/std/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = SysSyncThreadparkingDarwinJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = StdSysSyncThreadparkingDarwinJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -58,33 +58,33 @@ private object SysSyncThreadparkingDarwinJniBridge {
     }
 
     @JvmStatic
-    external fun stdSysSyncThreadparkingDarwinDispatchTime(whenBranch: Long, delta: Long): Long
+    external fun rustlangStdSysSyncThreadparkingDarwinDispatchTime(whenBranch: Long, delta: Long): Long
 
     @JvmStatic
-    external fun stdSysSyncThreadparkingDarwinDispatchSemaphoreCreate(value: Long): Long
+    external fun rustlangStdSysSyncThreadparkingDarwinDispatchSemaphoreCreate(value: Long): Long
 
     @JvmStatic
-    external fun stdSysSyncThreadparkingDarwinDispatchSemaphoreWait(dsema: Long, timeout: Long): Long
+    external fun rustlangStdSysSyncThreadparkingDarwinDispatchSemaphoreWait(dsema: Long, timeout: Long): Long
 
     @JvmStatic
-    external fun stdSysSyncThreadparkingDarwinDispatchSemaphoreSignal(dsema: Long): Long
+    external fun rustlangStdSysSyncThreadparkingDarwinDispatchSemaphoreSignal(dsema: Long): Long
 
     @JvmStatic
-    external fun stdSysSyncThreadparkingDarwinDispatchRelease(obj: Long)
+    external fun rustlangStdSysSyncThreadparkingDarwinDispatchRelease(obj: Long)
 }
 
 public actual fun dispatchTime(whenBranch: DispatchTimeT, delta: Long): DispatchTimeT =
-    SysSyncThreadparkingDarwinJniBridge.stdSysSyncThreadparkingDarwinDispatchTime(whenBranch.toLong(), delta).toULong()
+    StdSysSyncThreadparkingDarwinJniBridge.rustlangStdSysSyncThreadparkingDarwinDispatchTime(whenBranch.toLong(), delta).toULong()
 
 public actual fun dispatchSemaphoreCreate(value: Long): DispatchSemaphoreT =
-    MutPtr(SysSyncThreadparkingDarwinJniBridge.stdSysSyncThreadparkingDarwinDispatchSemaphoreCreate(value))
+    MutPtr(StdSysSyncThreadparkingDarwinJniBridge.rustlangStdSysSyncThreadparkingDarwinDispatchSemaphoreCreate(value))
 
 public actual fun dispatchSemaphoreWait(dsema: DispatchSemaphoreT, timeout: DispatchTimeT): Long =
-    SysSyncThreadparkingDarwinJniBridge.stdSysSyncThreadparkingDarwinDispatchSemaphoreWait(dsema.rawAddress, timeout.toLong())
+    StdSysSyncThreadparkingDarwinJniBridge.rustlangStdSysSyncThreadparkingDarwinDispatchSemaphoreWait(dsema.rawAddress, timeout.toLong())
 
 public actual fun dispatchSemaphoreSignal(dsema: DispatchSemaphoreT): Long =
-    SysSyncThreadparkingDarwinJniBridge.stdSysSyncThreadparkingDarwinDispatchSemaphoreSignal(dsema.rawAddress)
+    StdSysSyncThreadparkingDarwinJniBridge.rustlangStdSysSyncThreadparkingDarwinDispatchSemaphoreSignal(dsema.rawAddress)
 
 public actual fun dispatchRelease(obj: MutPtr) {
-    SysSyncThreadparkingDarwinJniBridge.stdSysSyncThreadparkingDarwinDispatchRelease(obj.rawAddress)
+    StdSysSyncThreadparkingDarwinJniBridge.rustlangStdSysSyncThreadparkingDarwinDispatchRelease(obj.rawAddress)
 }

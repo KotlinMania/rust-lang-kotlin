@@ -1,35 +1,35 @@
 // port-lint: source str/iter.rs
 package io.github.kotlinmania.rustlang.core.str.iter
 
-import io.github.kotlinmania.rustlang.core.iter.adapters.copied.Copied
-import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
-import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.FlatMap
-import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.str.BytesIsNotEmpty
-import io.github.kotlinmania.rustlang.core.str.CharEscapeDebug
-import io.github.kotlinmania.rustlang.core.str.CharEscapeDefault
-import io.github.kotlinmania.rustlang.core.str.CharEscapeUnicode
-import io.github.kotlinmania.rustlang.core.str.IsAsciiWhitespace
-import io.github.kotlinmania.rustlang.core.str.IsNotEmpty
-import io.github.kotlinmania.rustlang.core.str.IsWhitespace
-import io.github.kotlinmania.rustlang.core.str.LinesMap
-import io.github.kotlinmania.rustlang.core.str.UnsafeBytesToStr
-import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
-import io.github.kotlinmania.rustlang.core.str.count.countChars
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.validations.nextCodePoint
 import io.github.kotlinmania.rustlang.core.str.validations.nextCodePointReverse
-import io.github.kotlinmania.rustlang.core.str.validations.utf8CharWidth
-import io.github.kotlinmania.rustlang.core.str.validations.utf8IsContByte
-import io.github.kotlinmania.rustlang.core.iteratorGetUnchecked as underlyingIteratorGetUnchecked
-import io.github.kotlinmania.rustlang.core.slice.iter.Split as SliceSplit
+import io.github.kotlinmania.rustlang.iter.adapters.copied.Copied
+import io.github.kotlinmania.rustlang.iter.adapters.filter.Filter
+import io.github.kotlinmania.rustlang.iter.adapters.flatten.FlatMap
+import io.github.kotlinmania.rustlang.iter.adapters.map.Map
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.str.BytesIsNotEmpty
+import io.github.kotlinmania.rustlang.str.CharEscapeDebug
+import io.github.kotlinmania.rustlang.str.CharEscapeDefault
+import io.github.kotlinmania.rustlang.str.CharEscapeUnicode
+import io.github.kotlinmania.rustlang.str.IsAsciiWhitespace
+import io.github.kotlinmania.rustlang.str.IsNotEmpty
+import io.github.kotlinmania.rustlang.str.IsWhitespace
+import io.github.kotlinmania.rustlang.str.LinesMap
+import io.github.kotlinmania.rustlang.str.UnsafeBytesToStr
+import io.github.kotlinmania.rustlang.str.converts.fromUtf8Unchecked
+import io.github.kotlinmania.rustlang.str.count.countChars
+import io.github.kotlinmania.rustlang.str.validations.utf8CharWidth
+import io.github.kotlinmania.rustlang.str.validations.utf8IsContByte
+import io.github.kotlinmania.rustlang.iteratorGetUnchecked as underlyingIteratorGetUnchecked
+import io.github.kotlinmania.rustlang.slice.iter.Split as SliceSplit
 
 // Iterators for `String` methods.
 //
@@ -202,9 +202,9 @@ public open class Chars(
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = f.writeFmt("Chars(")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("Chars(")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -1641,9 +1641,9 @@ public open class EncodeUtf16(
  * The return type of [str.escapeDebug].
  */
 public open class EscapeDebug internal constructor(
-    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDebug, CharEscapeDebug>,
+    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDebug, CharEscapeDebug>,
 ) : Iterable<Char> {
-    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDebug, CharEscapeDebug> = innerCtorArg
+    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDebug, CharEscapeDebug> = innerCtorArg
         internal set
 
     override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
@@ -1669,7 +1669,7 @@ public open class EscapeDebug internal constructor(
 
     public companion object {
         public operator fun invoke(
-            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDebug, CharEscapeDebug>,
+            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDebug, CharEscapeDebug>,
         ): EscapeDebug = EscapeDebug(
             innerCtorArg = inner,
         )
@@ -1680,9 +1680,9 @@ public open class EscapeDebug internal constructor(
  * The return type of [str.escapeDefault].
  */
 public open class EscapeDefault internal constructor(
-    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDefault, CharEscapeDefault>,
+    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDefault, CharEscapeDefault>,
 ) : Iterable<Char> {
-    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDefault, CharEscapeDefault> = innerCtorArg
+    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDefault, CharEscapeDefault> = innerCtorArg
         internal set
 
     override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
@@ -1714,7 +1714,7 @@ public open class EscapeDefault internal constructor(
 
     public companion object {
         public operator fun invoke(
-            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDefault, CharEscapeDefault>,
+            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeDefault, CharEscapeDefault>,
         ): EscapeDefault = EscapeDefault(
             innerCtorArg = inner,
         )
@@ -1725,9 +1725,9 @@ public open class EscapeDefault internal constructor(
  * The return type of [str.escapeUnicode].
  */
 public open class EscapeUnicode internal constructor(
-    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeUnicode, CharEscapeUnicode>,
+    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeUnicode, CharEscapeUnicode>,
 ) : Iterable<Char> {
-    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeUnicode, CharEscapeUnicode> = innerCtorArg
+    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeUnicode, CharEscapeUnicode> = innerCtorArg
         internal set
 
     override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
@@ -1753,7 +1753,7 @@ public open class EscapeUnicode internal constructor(
 
     public companion object {
         public operator fun invoke(
-            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeUnicode, CharEscapeUnicode>,
+            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.char.EscapeUnicode, CharEscapeUnicode>,
         ): EscapeUnicode = EscapeUnicode(
             innerCtorArg = inner,
         )

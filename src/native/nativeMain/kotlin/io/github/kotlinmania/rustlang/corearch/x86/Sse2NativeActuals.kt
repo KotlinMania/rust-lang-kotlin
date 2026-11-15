@@ -4,35 +4,37 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.U16x8
-import io.github.kotlinmania.rustlang.corearch.simd.U64x2
-import io.github.kotlinmania.rustlang.corearch.simd.U8x16
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86Sse2Clflush
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86Sse2Lfence
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86Sse2Mfence
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86Sse2Pause
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.rustlangCorearchX86Sse2Clflush
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.rustlangCorearchX86Sse2Lfence
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.rustlangCorearchX86Sse2Mfence
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.rustlangCorearchX86Sse2Pause
+import io.github.kotlinmania.rustlang.simd.I16x8
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.U16x8
+import io.github.kotlinmania.rustlang.simd.U64x2
+import io.github.kotlinmania.rustlang.simd.U8x16
+import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.x86.M128d
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 
 public actual fun pause() {
-    corearchX86Sse2Pause()
+    rustlangCorearchX86Sse2Pause()
 }
 
 public actual fun clflush(p: ConstPtr) {
-    corearchX86Sse2Clflush(p.rawAddress.toCPointer<ByteVar>())
+    rustlangCorearchX86Sse2Clflush(p.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun lfence() {
-    corearchX86Sse2Lfence()
+    rustlangCorearchX86Sse2Lfence()
 }
 
 public actual fun mfence() {
-    corearchX86Sse2Mfence()
+    rustlangCorearchX86Sse2Mfence()
 }
 
 public actual fun pavgb(a: U8x16, b: U8x16): U8x16 =

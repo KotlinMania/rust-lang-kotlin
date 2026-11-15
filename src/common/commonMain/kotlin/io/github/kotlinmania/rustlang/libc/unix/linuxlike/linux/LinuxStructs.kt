@@ -2,43 +2,43 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.In6Addr
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SaFamilyT
-import io.github.kotlinmania.rustlang.libc.SchedParam
-import io.github.kotlinmania.rustlang.libc.SigsetT
-import io.github.kotlinmania.rustlang.libc.Sockaddr
-import io.github.kotlinmania.rustlang.libc.Timeval
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S16
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S32
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S64
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U8
-import io.github.kotlinmania.rustlang.libc.unix.IFNAMSIZ
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIZEOF_PTHREAD_COND_T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.SIZEOF_PTHREAD_RWLOCKATTR_T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.x8664.SIZEOF_PTHREAD_BARRIERATTR_T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.x8664.SIZEOF_PTHREAD_CONDATTR_T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.x8664.SIZEOF_PTHREAD_MUTEXATTR_T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_BARRIER_T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_MUTEX_T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_RWLOCK_T
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S16
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S32
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S64
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U16
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U64
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U8
+import io.github.kotlinmania.rustlang.unix.IFNAMSIZ
+import io.github.kotlinmania.rustlang.unix.In6Addr
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.bsd.SaFamilyT
+import io.github.kotlinmania.rustlang.unix.bsd.Sockaddr
+import io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT
+import io.github.kotlinmania.rustlang.unix.linuxlike.SIZEOF_PTHREAD_COND_T
+import io.github.kotlinmania.rustlang.unix.linuxlike.SchedParam
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.SIZEOF_PTHREAD_RWLOCKATTR_T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.SigsetT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.x8664.SIZEOF_PTHREAD_BARRIERATTR_T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.x8664.SIZEOF_PTHREAD_CONDATTR_T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.x8664.SIZEOF_PTHREAD_MUTEXATTR_T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_BARRIER_T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_MUTEX_T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_RWLOCK_T
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -4798,9 +4798,35 @@ public data class AfAlgIv(
 
 // linux/netTstamp.h
 public data class SockTxtime(
-    public var clockid: ClockidT = ClockidT(),
+    public var clockid: ClockidT = 0u,
     public var flags: U32 = 0u,
-)
+) {
+    public companion object {
+        public fun typeLayout(): TypeLayout<SockTxtime> =
+            object : TypeLayout<SockTxtime> {
+                override val alignBytes: Long = 4L
+                override val sizeBytes: Long = 8L
+                override fun readNative(addr: Long): SockTxtime =
+                    SockTxtime(
+                        (PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr + 4L),
+                    )
+                override fun writeNative(addr: Long, value: SockTxtime) {
+                    (PrimitiveLayouts.U32).writeNative(addr, value.clockid)
+                    (PrimitiveLayouts.U32).writeNative(addr + 4L, value.flags)
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): SockTxtime =
+                    SockTxtime(
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 4),
+                    )
+                override fun writeBytes(buf: ByteArray, offset: Int, value: SockTxtime) {
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.clockid)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.flags)
+                }
+            }
+    }
+}
 
 // linux/wireless.h
 public class IwreqData(

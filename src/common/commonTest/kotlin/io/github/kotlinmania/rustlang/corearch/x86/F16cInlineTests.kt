@@ -1,6 +1,10 @@
 // port-lint: tests x86/f16c.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.mm256SetPs
+import io.github.kotlinmania.rustlang.x86.mmSetEpi16
+import io.github.kotlinmania.rustlang.x86.mmSetPs
+
 // [F16C intrinsics].
 //
 // [F16C intrinsics]: https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=fp16&expand=1769

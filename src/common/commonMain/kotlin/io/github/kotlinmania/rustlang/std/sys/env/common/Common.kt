@@ -1,7 +1,7 @@
 // port-lint: source sys/env/common.rs
 package io.github.kotlinmania.rustlang.std.sys.env.common
 
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.ffi.osstr.OsString
 
 public open class Env(
     public var iter: ArrayDeque<Pair<OsString, OsString>>,

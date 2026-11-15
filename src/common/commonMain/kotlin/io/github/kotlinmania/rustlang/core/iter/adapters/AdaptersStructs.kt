@@ -1,10 +1,12 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters
 
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
+import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -18,7 +20,7 @@ public typealias Source<I> = I.Source
 public open class GenericShunt<I, R>(
     public var iter: I,
     public var residual: R?,
-) : SourceIter<Any?, Source>, InPlaceIterable, Iterable<Output> {
+) : SourceIter<Source>, InPlaceIterable, Iterable<Output> {
     override fun iterator(): Iterator<Output> = object : AbstractIterator<Output>() {
         override fun computeNext() {
             when (val v = this@GenericShunt.next()) {

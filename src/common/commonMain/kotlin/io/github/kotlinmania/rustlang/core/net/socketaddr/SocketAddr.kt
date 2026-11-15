@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.core.net.socketaddr
 
 import io.github.kotlinmania.rustlang.core.net.displaybuffer.DisplayBuffer
-import io.github.kotlinmania.rustlang.core.net.ipaddr.IpAddr
-import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
-import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.net.ipaddr.IpAddr
+import io.github.kotlinmania.rustlang.net.ipaddr.Ipv4Addr
+import io.github.kotlinmania.rustlang.net.ipaddr.Ipv6Addr
 
 /**
  * An internet socket address, either IPv4 or IPv6.

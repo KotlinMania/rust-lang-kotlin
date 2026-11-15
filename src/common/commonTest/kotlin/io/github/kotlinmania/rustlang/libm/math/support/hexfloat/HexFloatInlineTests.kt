@@ -5,18 +5,19 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.libm.math.support.env.Round
-import io.github.kotlinmania.rustlang.libm.math.support.env.Status
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.env.Round
+import io.github.kotlinmania.rustlang.math.support.env.Status
+import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
 import kotlin.math.pow
 
 // Utilities for working with hex float formats.
 
 public fun roundingProperties(s: String): Result<Unit, HexFloatParseError> {
-    val (xd, s0) = when (val tryResult = parseAny(s, 16u, 10u, Round.Negative)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val (xu, s1) = when (val tryResult = parseAny(s, 16u, 10u, Round.Positive)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val (xz, s2) = when (val tryResult = parseAny(s, 16u, 10u, Round.Zero)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val (xn, s3) = when (val tryResult = parseAny(s, 16u, 10u, Round.Nearest)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val (xd, s0) = when (val tryResult = parseAny(s, 16u, 10u, Round.Negative)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val (xu, s1) = when (val tryResult = parseAny(s, 16u, 10u, Round.Positive)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val (xz, s2) = when (val tryResult = parseAny(s, 16u, 10u, Round.Zero)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val (xn, s3) = when (val tryResult = parseAny(s, 16u, 10u, Round.Nearest)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // Note: A value between the least normal and largest subnormal
     // could have underflow status depend on rounding mode.
     if (s0 == Status.ok) {
@@ -36,28 +37,28 @@ public fun roundingProperties(s: String): Result<Unit, HexFloatParseError> {
         run {
             val l = xd1.nextUp()
             val r = xu1
-            check(l.biteq(r)) { ("s=$s, xd=$xd, xu=$xu").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("s=$s, xd=$xd, xu=$xu").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(r)).toString() + ")" }
         }
         val signs = listOf(xd1, xu1, xz1, xn1).map(F16::isSignNegative)
         if (signs.contentEquals(BooleanArray(4) { true })) {
             run {
                 val l1 = xz1
                 val r1 = xu1
-                check(l1.biteq(r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex(r1)).toString() + ")" }
+                check(biteq(l1, r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(r1)).toString() + ")" }
             }
         } else {
             check(signs == BooleanArray(4) { false })
             run {
                 val l2 = xz1
                 val r2 = xd1
-                check(l2.biteq(r2)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l2.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex(l2)).toString() + ")\nr: " + (r).toString() + " (" + (r2.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex(r2)).toString() + ")" }
+                check(biteq(l2, r2)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l2.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(l2)).toString() + ")\nr: " + (r).toString() + " (" + (r2.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(r2)).toString() + ")" }
             }
         }
         if (xn1.toBits() != xd1.toBits()) {
             run {
                 val l3 = xn1
                 val r3 = xu1
-                check(l3.biteq(r3)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l3.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex(l3)).toString() + ")\nr: " + (r).toString() + " (" + (r3.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex(r3)).toString() + ")" }
+                check(biteq(l3, r3)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l3.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(l3)).toString() + ")\nr: " + (r).toString() + " (" + (r3.toBits()).toString() + " " + (io.github.kotlinmania.rustlang.math.support.hexfloat.Hex(r3)).toString() + ")" }
             }
         }
     }
@@ -94,9 +95,9 @@ public class HexFloatParseTestsInlineTests {
             val s1 = canonicalizeSnanStr(s)
             run {
                 val matchVal = roundingProperties(s1)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     Unit
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val e = matchVal.error
                     error("failed rounding properties for `$s`: $e")
                 } }

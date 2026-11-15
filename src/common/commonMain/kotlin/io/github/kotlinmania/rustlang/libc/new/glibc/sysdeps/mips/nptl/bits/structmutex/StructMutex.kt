@@ -3,14 +3,14 @@
 
 package io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.mips.nptl.bits.structmutex
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.PthreadMutexT
-import io.github.kotlinmania.rustlang.libc.types.replaceArrayItems
-import io.github.kotlinmania.rustlang.libc.types.u8SliceCastCharSlice
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_MUTEX_T
+import io.github.kotlinmania.rustlang.types.replaceArrayItems
+import io.github.kotlinmania.rustlang.types.u8SliceCastCharSlice
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.PthreadMutexT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_MUTEX_T
 
 // Header: `sysdeps / mips / nptl / bits / structMutex.h`
 

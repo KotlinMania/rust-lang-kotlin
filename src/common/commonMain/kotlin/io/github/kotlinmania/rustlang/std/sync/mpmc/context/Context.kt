@@ -11,11 +11,10 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.currentThreadId
-import io.github.kotlinmania.rustlang.std.thread.LocalKey
-import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
-import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
-import io.github.kotlinmania.rustlang.std.thread.thread.Thread
-import io.github.kotlinmania.rustlang.std.time.Instant
+import io.github.kotlinmania.rustlang.thread.LocalKey
+import io.github.kotlinmania.rustlang.thread.localimpl.threadLocalInner
+import io.github.kotlinmania.rustlang.thread.thread.Thread
+import io.github.kotlinmania.rustlang.time.Instant
 
 // Thread-local channel context.
 
@@ -79,9 +78,9 @@ public open class Context(
                     // The deadline has been reached. Try aborting select.
                     return run {
                         val matchVal = this.trySelect(Selected.Aborted)
-                        when (matchVal) { is Result.Ok<*> -> {
+                        when (matchVal) { is Result.Ok<*, *> -> {
                             Selected.Aborted
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err<*, *> -> {
                             val s = matchVal.error
                             s
                         } }
@@ -136,7 +135,7 @@ public open class Context(
         /**
          * Creates a new `Context`.
          */
-        public fun new(): Context = Context(inner = Inner(select = AtomicUsize.new(Selected.Waiting.into()), packet = AtomicPtr.new(MutPtr(0L)), thread = currentOrUnnamed(), threadId = currentThreadId()))
+        public fun new(): Context = Context(inner = Inner(select = AtomicUsize.new(Selected.Waiting.into()), packet = AtomicPtr.new(MutPtr(0L)), thread = thread.currentOrUnnamed(), threadId = currentThreadId()))
     }
 }
 

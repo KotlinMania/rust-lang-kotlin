@@ -9,14 +9,14 @@ import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.io.Error
+import io.github.kotlinmania.rustlang.io.ErrorKind
+import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.clockGettime
-import io.github.kotlinmania.rustlang.libc.helenos.ClockidT
 import io.github.kotlinmania.rustlang.libc.timespec.default
+import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
 import io.github.kotlinmania.rustlang.libc.wasi.TimeT
-import io.github.kotlinmania.rustlang.std.io.Error
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
-import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
 
 public val NSEC_PER_SEC: ULong = 1000000000uL
 
@@ -60,10 +60,10 @@ public open class Timespec(
         } else {
             run {
                 val matchVal = other.subTimespec(this)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val d = matchVal.value
                     Result.Err(d)
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val d1 = matchVal.error
                     Result.Ok(d1)
                 } }

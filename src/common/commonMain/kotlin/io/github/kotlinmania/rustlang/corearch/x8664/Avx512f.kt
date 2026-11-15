@@ -1,11 +1,14 @@
 // port-lint: source x86_64/avx512f.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128
-import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128d
-import io.github.kotlinmania.rustlang.corearch.simd.F32x4
-import io.github.kotlinmania.rustlang.corearch.simd.F64x2
-import io.github.kotlinmania.rustlang.corearch.x86.MM_FROUND_CUR_DIRECTION
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.loongarch64.lsx.M128
+import io.github.kotlinmania.rustlang.loongarch64.lsx.M128d
+import io.github.kotlinmania.rustlang.simd.F32x4
+import io.github.kotlinmania.rustlang.simd.F64x2
+import io.github.kotlinmania.rustlang.x86.MM_FROUND_CUR_DIRECTION
+import io.github.kotlinmania.rustlang.x8664.mmCvtsdSi64
+import io.github.kotlinmania.rustlang.x8664.mmCvtssSi64
 
 /**
  * Convert the lower double-precision (64-bit) floating-point element in a to a 64-bit integer, and store the result in dst.

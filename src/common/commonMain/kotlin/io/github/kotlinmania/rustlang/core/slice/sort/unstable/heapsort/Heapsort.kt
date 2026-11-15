@@ -3,8 +3,8 @@ package io.github.kotlinmania.rustlang.core.slice.sort.unstable.heapsort
 
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.ptr.swapNonoverlapping
 
 // This module contains a branchless heapsort as fallback for unstable quicksort.
 

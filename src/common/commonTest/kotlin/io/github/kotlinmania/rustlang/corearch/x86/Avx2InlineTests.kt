@@ -5,8 +5,41 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.corearch.x8664.mm256InsertEpi64
-import io.github.kotlinmania.rustlang.corearch.x8664.mmInsertEpi64
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.mm256InsertEpi16
+import io.github.kotlinmania.rustlang.x86.mm256InsertEpi32
+import io.github.kotlinmania.rustlang.x86.mm256InsertEpi8
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi16
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi32
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi64x
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi8
+import io.github.kotlinmania.rustlang.x86.mm256Set1Pd
+import io.github.kotlinmania.rustlang.x86.mm256Set1Ps
+import io.github.kotlinmania.rustlang.x86.mm256SetEpi64x
+import io.github.kotlinmania.rustlang.x86.mm256SetrEpi16
+import io.github.kotlinmania.rustlang.x86.mm256SetrEpi32
+import io.github.kotlinmania.rustlang.x86.mm256SetrEpi64x
+import io.github.kotlinmania.rustlang.x86.mm256SetrEpi8
+import io.github.kotlinmania.rustlang.x86.mm256SetrPd
+import io.github.kotlinmania.rustlang.x86.mm256SetrPs
+import io.github.kotlinmania.rustlang.x86.mmInsertEpi16
+import io.github.kotlinmania.rustlang.x86.mmInsertEpi32
+import io.github.kotlinmania.rustlang.x86.mmInsertEpi8
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi16
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi32
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi8
+import io.github.kotlinmania.rustlang.x86.mmSet1Pd
+import io.github.kotlinmania.rustlang.x86.mmSet1Ps
+import io.github.kotlinmania.rustlang.x86.mmSetEpi32
+import io.github.kotlinmania.rustlang.x86.mmSetEpi64x
+import io.github.kotlinmania.rustlang.x86.mmSetrEpi16
+import io.github.kotlinmania.rustlang.x86.mmSetrEpi32
+import io.github.kotlinmania.rustlang.x86.mmSetrEpi8
+import io.github.kotlinmania.rustlang.x86.mmSetrPd
+import io.github.kotlinmania.rustlang.x86.mmSetrPs
+import io.github.kotlinmania.rustlang.x8664.mm256InsertEpi64
+import io.github.kotlinmania.rustlang.x8664.mmInsertEpi64
 
 // Advanced Vector Extensions 2 (AVX)
 //

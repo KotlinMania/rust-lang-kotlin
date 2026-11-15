@@ -11,16 +11,16 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
 import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.libm.math.exp.exp
-import io.github.kotlinmania.rustlang.libm.math.exp2m1.T1
-import io.github.kotlinmania.rustlang.libm.math.exp2m1.T2
-import io.github.kotlinmania.rustlang.libm.math.lgammar.T3
-import io.github.kotlinmania.rustlang.libm.math.support.env.Round
-import io.github.kotlinmania.rustlang.libm.math.support.env.Status
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.f32FromBits
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.f64FromBits
-import io.github.kotlinmania.rustlang.libm.math.support.macros.cfgSelectNofmt
+import io.github.kotlinmania.rustlang.math.exp.exp
+import io.github.kotlinmania.rustlang.math.exp2m1.T1
+import io.github.kotlinmania.rustlang.math.exp2m1.T2
+import io.github.kotlinmania.rustlang.math.lgammar.T3
+import io.github.kotlinmania.rustlang.math.support.env.Round
+import io.github.kotlinmania.rustlang.math.support.env.Status
+import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.floattraits.f32FromBits
+import io.github.kotlinmania.rustlang.math.support.floattraits.f64FromBits
+import io.github.kotlinmania.rustlang.math.support.macros.cfgSelectNofmt
 
 // Utilities for working with hex float formats.
 
@@ -31,8 +31,8 @@ public fun hf16(s: String): F16 =
     run {
         val matchVal = parseHexExact(s, 16u, 10u)
         when {
-            matchVal is Result.Ok<*> -> {
-                val bits = (matchVal as Result.Ok<*>).value
+            matchVal is Result.Ok<*, *> -> {
+                val bits = (matchVal as Result.Ok<*, *>).value
                 F16.fromBits(bits.toUShort())
             }
             else -> error("$s")
@@ -46,8 +46,8 @@ public fun hf32(s: String): kotlin.Float =
     run {
         val matchVal = parseHexExact(s, 32u, 23u)
         when {
-            matchVal is Result.Ok<*> -> {
-                val bits = (matchVal as Result.Ok<*>).value
+            matchVal is Result.Ok<*, *> -> {
+                val bits = (matchVal as Result.Ok<*, *>).value
                 f32FromBits(bits.toUInt())
             }
             else -> error("$s")
@@ -61,8 +61,8 @@ public fun hf64(s: String): Double =
     run {
         val matchVal = parseHexExact(s, 64u, 52u)
         when {
-            matchVal is Result.Ok<*> -> {
-                val bits = (matchVal as Result.Ok<*>).value
+            matchVal is Result.Ok<*, *> -> {
+                val bits = (matchVal as Result.Ok<*, *>).value
                 f64FromBits(bits.toULong())
             }
             else -> error("$s")
@@ -76,8 +76,8 @@ public fun hf128(s: String): F128 =
     run {
         val matchVal = parseHexExact(s, 128u, 112u)
         when {
-            matchVal is Result.Ok<*> -> {
-                val bits = (matchVal as Result.Ok<*>).value
+            matchVal is Result.Ok<*, *> -> {
+                val bits = (matchVal as Result.Ok<*, *>).value
                 F128.fromBits(bits)
             }
             else -> error("$s")
@@ -103,14 +103,14 @@ public fun parseHexExact(s: String, bits: UInt, sigBits: UInt): Result<U128, Hex
     run {
         val matchVal = parseAny(s, bits, sigBits, Round.Nearest)
         when {
-            matchVal is Result.Err<*> -> {
-                val e = (matchVal as Result.Err<*>).error
+            matchVal is Result.Err<*, *> -> {
+                val e = (matchVal as Result.Err<*, *>).error
                 Result.Err(e)
             }
-            matchVal is Result.Ok<*> && matchVal.value.second == Status.OK -> Result.Ok(bits)
-            matchVal is Result.Ok<*> && (matchVal as Result.Ok<*>).value.second.overflow() -> Result.Err(HexFloatParseError("the value is too huge"))
-            matchVal is Result.Ok<*> && (matchVal as Result.Ok<*>).value.second.underflow() -> Result.Err(HexFloatParseError("the value is too tiny"))
-            matchVal is Result.Ok<*> && (matchVal as Result.Ok<*>).value.second.inexact() -> Result.Err(HexFloatParseError("the value is too precise"))
+            matchVal is Result.Ok<*, *> && matchVal.value.second == Status.OK -> Result.Ok(bits)
+            matchVal is Result.Ok<*, *> && (matchVal as Result.Ok<*, *>).value.second.overflow() -> Result.Err(HexFloatParseError("the value is too huge"))
+            matchVal is Result.Ok<*, *> && (matchVal as Result.Ok<*, *>).value.second.underflow() -> Result.Err(HexFloatParseError("the value is too tiny"))
+            matchVal is Result.Ok<*, *> && (matchVal as Result.Ok<*, *>).value.second.inexact() -> Result.Err(HexFloatParseError("the value is too precise"))
             else -> error("unreachable")
         }
     }
@@ -156,10 +156,10 @@ public fun parseAny(s: String, bits: UInt, sigBits: UInt, round: Round): Result<
                     }
                 run {
                     val matchVal1 = parseFinite(rest1, bits, sigBits, round1)
-                    when (matchVal1) { is Result.Ok<*> -> {
+                    when (matchVal1) { is Result.Ok<*, *> -> {
                         val res = matchVal1.value
                         res
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         val e = matchVal1.error
                         return Result.Err(e)
                     } }
@@ -182,11 +182,11 @@ public fun parseFinite(b: List<UByte>, bits: UInt, sigBits: UInt, roundingMode: 
         run {
             val matchVal = parseHex(b)
             when {
-                matchVal is Result.Err<*> -> {
-                    val e = (matchVal as Result.Err<*>).error
+                matchVal is Result.Err<*, *> -> {
+                    val e = (matchVal as Result.Err<*, *>).error
                     return Result.Err(e)
                 }
-                matchVal is Result.Ok<*> && matchVal.value.sig == 0 -> { return Result.Ok(Pair(0, Status.OK)) }
+                matchVal is Result.Ok<*, *> && matchVal.value.sig == 0 -> { return Result.Ok(Pair(0, Status.OK)) }
                 else -> Pair(sig, exp)
             }
         }

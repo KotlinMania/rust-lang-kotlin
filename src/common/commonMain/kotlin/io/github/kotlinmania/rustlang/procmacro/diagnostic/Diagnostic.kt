@@ -1,8 +1,8 @@
 // port-lint: source diagnostic.rs
 package io.github.kotlinmania.rustlang.procmacro.diagnostic
 
-import io.github.kotlinmania.rustlang.procmacro.Span
-import io.github.kotlinmania.rustlang.procmacro.bridge.Methods
+import io.github.kotlinmania.rustlang.Span
+import io.github.kotlinmania.rustlang.bridge.server.emitDiagnostic
 
 /**
  * An enum representing a diagnostic level.
@@ -137,8 +137,8 @@ public open class Diagnostic(
      * Emit the diagnostic.
      */
     public open fun emit() {
-        fun toInternal(diag: Diagnostic): io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic<io.github.kotlinmania.rustlang.procmacro.bridge.client.Span> = io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic(level = diag.level, message = diag.message, spans = diag.spans.map({ s -> s.first }).toMutableList(), children = diag.children.map(::toInternal).toMutableList())
-        Methods.emitDiagnostic(toInternal(this))
+        fun toInternal(diag: Diagnostic): io.github.kotlinmania.rustlang.bridge.Diagnostic<io.github.kotlinmania.rustlang.bridge.client.Span> = io.github.kotlinmania.rustlang.bridge.Diagnostic(level = diag.level, message = diag.message, spans = diag.spans.map({ s -> s.first }).toMutableList(), children = diag.children.map(::toInternal).toMutableList())
+        emitDiagnostic(toInternal(this))
     }
 
     public companion object {

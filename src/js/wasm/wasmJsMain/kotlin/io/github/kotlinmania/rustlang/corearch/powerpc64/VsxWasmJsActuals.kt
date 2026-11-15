@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.powerpc64
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedInt
+import io.github.kotlinmania.rustlang.s390x.vector.VectorSignedInt
 
 public actual fun lxvl(a: ConstPtr, l: ULong): VectorSignedInt =
     throw UnsupportedOperationException("Native FFI addon is not available")

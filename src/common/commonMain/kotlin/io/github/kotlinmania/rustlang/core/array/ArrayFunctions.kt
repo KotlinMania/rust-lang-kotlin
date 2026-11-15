@@ -1,28 +1,30 @@
 package io.github.kotlinmania.rustlang.core.array
 
-import io.github.kotlinmania.rustlang.core.array.drain.Drain
+import io.github.kotlinmania.rustlang.array.drain.Drain
+import io.github.kotlinmania.rustlang.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
-import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.forget
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
-import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
-import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.iter.Iter
+import io.github.kotlinmania.rustlang.intrinsics.transmuteUnchecked
+import io.github.kotlinmania.rustlang.iter.sources.repeatn.repeatN
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.mem.forget
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.ops.trytrait.ChangeOutputType
+import io.github.kotlinmania.rustlang.ops.trytrait.FromResidual
+import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.ops.trytrait.Residual
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.slice.iter.Iter
 
 /**
  * Creates an array of type `[T; N]` by repeatedly cloning a value.
@@ -182,7 +184,7 @@ public fun <T> fromMut(s: T): List<T> {
 public fun <R : Try<R, Any?, Any?>> tryFromFnErased(buffer: MutableList<MaybeUninit<Output>>, generator: (Int) -> R): ControlFlow<Residual> {
     val guard = Guard(arrayMut = buffer, initialized = 0)
     while (guard.initialized < guard.arrayMut.size) {
-        val item = when (val tryResult = generator(guard.initialized).branch()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val item = when (val tryResult = generator(guard.initialized).branch()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         // SAFETY: The loop condition ensures we have space to push the item
         guard.pushUnchecked(item)
     }
@@ -819,10 +821,10 @@ public fun <T> List<T>.rsplitArrayMut(n: Int, m: Int): Pair<MutableList<T>, List
 public fun <I : Iterator<T>, T> I.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> {
     val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }
     val r = iterNextChunkErased(array, this)
-    return when (r) { is Result.Ok<*> -> {
+    return when (r) { is Result.Ok<*, *> -> {
         // SAFETY: All elements of `array` were populated.
         Result.Ok(MaybeUninit.arrayAssumeInit(array))
-    }; is Result.Err<*> -> {
+    }; is Result.Err<*, *> -> {
         val initialized = r.error
         // SAFETY: Only the first `initialized` elements were populated
         Result.Err(IntoIter.newUnchecked(array, 0 until initialized))
@@ -848,10 +850,10 @@ public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where 
 public fun <I, T> I.specNextChunkBack(n: Int): Result<List<T>, IntoIter<T>> {
     val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }
     val r = iterNextChunkBackErased(array, this)
-    return when (r) { is Result.Ok<*> -> {
+    return when (r) { is Result.Ok<*, *> -> {
         // SAFETY: All elements of `array` were populated.
         Result.Ok(MaybeUninit.arrayAssumeInit(array))
-    }; is Result.Err<*> -> {
+    }; is Result.Err<*, *> -> {
         val initialized = r.error
         // SAFETY: Only the last `initialized` elements were populated
         Result.Err(IntoIter.newUnchecked(array, n - initialized until n))

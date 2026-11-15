@@ -1,8 +1,10 @@
 // port-lint: source set.rs
 package io.github.kotlinmania.rustlang.hashbrown
 
-import io.github.kotlinmania.rustlang.alloc.alloc.Global
-import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.Equivalent
+import io.github.kotlinmania.rustlang.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.Allocator
+import io.github.kotlinmania.rustlang.alloc.Global
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
@@ -15,10 +17,11 @@ import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
 import io.github.kotlinmania.rustlang.core.ops.bit.BitXor
 import io.github.kotlinmania.rustlang.core.ops.bit.BitXorAssign
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
-import io.github.kotlinmania.rustlang.hashbrown.map.HashMap
-import io.github.kotlinmania.rustlang.hashbrown.map.Keys
-import io.github.kotlinmania.rustlang.hashbrown.raw.RawExtractIf
+import io.github.kotlinmania.rustlang.hasher.DefaultHashBuilder
+import io.github.kotlinmania.rustlang.map
+import io.github.kotlinmania.rustlang.map.HashMap
+import io.github.kotlinmania.rustlang.map.Keys
+import io.github.kotlinmania.rustlang.raw.RawExtractIf
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -154,7 +157,7 @@ public class DebugTuple(
  */
 public open class HashSet<T, S, A : Allocator>(
     public var map: MutableMap<T, Unit>,
-) : BitOr<HashSet<T, S, A>, Any?, HashSet<T, S, A>>, BitAnd<HashSet<T, S, A>, Any?, HashSet<T, S, A>>, BitXor<HashSet<T, S, A>, Any?, HashSet<T, S, A>>, Sub<HashSet<T, S, A>, Any?, HashSet<T, S, A>>, BitOrAssign<HashSet<T, S, A>>, BitAndAssign<HashSet<T, S, A>>, BitXorAssign<HashSet<T, S, A>>, SubAssign<HashSet<T, S, A>>, Iterable<T> {
+) : BitOr<HashSet<T, S, A>, HashSet<T, S, A>>, BitAnd<HashSet<T, S, A>, HashSet<T, S, A>>, BitXor<HashSet<T, S, A>, HashSet<T, S, A>>, Sub<HashSet<T, S, A>, HashSet<T, S, A>>, BitOrAssign<HashSet<T, S, A>>, BitAndAssign<HashSet<T, S, A>>, BitXorAssign<HashSet<T, S, A>>, SubAssign<HashSet<T, S, A>>, Iterable<T> {
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     public open fun clone(): HashSet<T, S, A> = HashSet(map = this.map.toMutableMap())
@@ -609,11 +612,11 @@ public open class HashSet<T, S, A : Allocator>(
      */
     public open fun getOrInsert(value: T): T =
         when (val matchVal = this.map.entry(value)) {
-            is Entry.Occupied -> {
+            is map.Entry.Occupied -> {
                 val (entry) = matchVal
                 entry
             }
-            is Entry.Vacant -> {
+            is map.Entry.Vacant -> {
                 val (entry1) = matchVal
                 entry1.insertEntry()
             }
@@ -647,11 +650,11 @@ public open class HashSet<T, S, A : Allocator>(
      */
     public open fun <Q> getOrInsertWith(value: Q, f: (Q) -> T): T where Q : Equivalent<T> =
         when (val matchVal = this.map.entryRef(value)) {
-            is EntryRef.Occupied -> {
+            is map.EntryRef.Occupied -> {
                 val (entry) = matchVal
                 entry
             }
-            is EntryRef.Vacant -> {
+            is map.EntryRef.Vacant -> {
                 val (entry1) = matchVal
                 entry1.insertEntryWithKey(f(value))
             }
@@ -698,11 +701,11 @@ public open class HashSet<T, S, A : Allocator>(
      */
     public open fun entry(value: T): Entry<T, S, A> =
         when (val matchVal = this.map.entry(value)) {
-            is Entry.Occupied -> {
+            is map.Entry.Occupied -> {
                 val (entry) = matchVal
                 Entry.Occupied(OccupiedEntry(inner = entry))
             }
-            is Entry.Vacant -> {
+            is map.Entry.Vacant -> {
                 val (entry1) = matchVal
                 Entry.Vacant(VacantEntry(inner = entry1))
             }
@@ -836,13 +839,13 @@ public open class HashSet<T, S, A : Allocator>(
         val value1 = UnsafeCell.new(value)
         // SAFETY: We know the key is no longer accessed after the initial check.
         return when (val matchVal = this.map.entryRef(value1.get())) {
-            is EntryRef.Occupied -> {
+            is map.EntryRef.Occupied -> {
                 val (entry) = matchVal
                 // SAFETY: We know the key will not be accessed any more, and
                 // that the key is equivalent to the one in the entry.
                 entry.replaceKeyUnchecked(value1.intoInner())
             }
-            is EntryRef.Vacant -> {
+            is map.EntryRef.Vacant -> {
                 val (entry1) = matchVal
                 // SAFETY: A value is equivalent to itself.
                 run {
@@ -1109,11 +1112,11 @@ public open class HashSet<T, S, A : Allocator>(
     public open fun bitxorAssign(rhs: HashSet<T, S, A>) {
         for (item in rhs) {
             when (val matchVal = this.map.entryRef(item)) {
-                is EntryRef.Occupied -> {
+                is map.EntryRef.Occupied -> {
                     val (entry) = matchVal
                     entry.remove()
                 }
-                is EntryRef.Vacant -> {
+                is map.EntryRef.Vacant -> {
                     val (entry1) = matchVal
                     entry1.insert()
                 }
@@ -1259,6 +1262,116 @@ public open class HashSet<T, S, A : Allocator>(
 }
 
 /**
+ * Creates an empty `HashSet`.
+ *
+ * The hash set is initially created with a capacity of 0, so it will not allocate until it
+ * is first inserted into.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashSet` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashSet], for example with
+ * [`withHasher`](HashSet.withHasher) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashSet
+ *
+ * val set: MutableSet<Int> = mutableSetOf()
+ * ```
+ */
+public fun <T> HashSet.Companion.new(): HashSet<T, DefaultHashBuilder> = HashSet(map = mutableMapOf())
+
+/**
+ * Creates an empty `HashSet` with the specified capacity.
+ *
+ * The hash set will be able to hold at least `capacity` elements without
+ * reallocating. If `capacity` is 0, the hash set will not allocate.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashSet` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashSet], for example with
+ * [`withCapacityAndHasher`](HashSet.withCapacityAndHasher) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashSet
+ *
+ * val set: MutableSet<Int> = mutableSetOf()
+ * check(set.capacity() >= 10)
+ * ```
+ */
+public fun <T> HashSet.Companion.withCapacity(capacity: Int): HashSet<T, DefaultHashBuilder> = HashSet(map = mutableMapOf())
+
+/**
+ * Creates an empty `HashSet`.
+ *
+ * The hash set is initially created with a capacity of 0, so it will not allocate until it
+ * is first inserted into.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashSet` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashSet], for example with
+ * [`withHasherIn`](HashSet.withHasherIn) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashSet
+ *
+ * val set: MutableSet<Int> = mutableSetOf()
+ * ```
+ */
+public fun <T, A : Allocator> HashSet.Companion.newIn(alloc: A): HashSet<T, DefaultHashBuilder, A> = HashSet(map = HashMap.newIn(alloc))
+
+/**
+ * Creates an empty `HashSet` with the specified capacity.
+ *
+ * The hash set will be able to hold at least `capacity` elements without
+ * reallocating. If `capacity` is 0, the hash set will not allocate.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashSet` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashSet], for example with
+ * [`withCapacityAndHasherIn`](HashSet.withCapacityAndHasherIn) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashSet
+ *
+ * val set: MutableSet<Int> = mutableSetOf()
+ * check(set.capacity() >= 10)
+ * ```
+ */
+public fun <T, A : Allocator> HashSet.Companion.withCapacityIn(capacity: Int, alloc: A): HashSet<T, DefaultHashBuilder, A> = HashSet(map = HashMap.withCapacityIn(capacity, alloc))
+
+/**
  * Creates a new empty hash set which will use the given hasher to hash
  * keys.
  *
@@ -1324,6 +1437,21 @@ public fun <T, S> HashSet.Companion.withHasher(hasher: S): HashSet<T, S, Global>
  */
 public fun <T, S> HashSet.Companion.withCapacityAndHasher(capacity: Int, hasher: S): HashSet<T, S, Global> = HashSet(map = HashMap.withCapacityAndHasher(capacity, hasher))
 
+// The default hasher is used to match the std implementation signature
+
+/**
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashSet
+ *
+ * val set1 = mutableSetOf(1, 2, 3, 4)
+ * val set2: HashSet = listOf(1, 2, 3, 4).into()
+ * check(set1 == set2)
+ * ```
+ */
+public fun <T, A> fromHashSetTDefaultHashBuilderA(arr: List<T>, n: Int): HashSet<T, DefaultHashBuilder, A> where A : Allocator = ArrayDeque((arr).toList()).toMutableSet()
+
 /**
  * An iterator over the items of a `HashSet`.
  *
@@ -1381,9 +1509,9 @@ public open class Iter<K> internal constructor(
  * [intoIter]: HashSet.intoIter
  */
 public open class IntoIter<K, A : Allocator> internal constructor(
-    iterCtorArg: IntoIter<K, Unit, A>,
+    iterCtorArg: map.IntoIter<K, Unit, A>,
 ) : Iterable<K> {
-    public var iter: IntoIter<K, Unit, A> = iterCtorArg
+    public var iter: map.IntoIter<K, Unit, A> = iterCtorArg
         internal set
 
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
@@ -1419,7 +1547,7 @@ public open class IntoIter<K, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, A : Allocator> invoke(
-            iter: IntoIter<K, Unit, A>,
+            iter: map.IntoIter<K, Unit, A>,
         ): IntoIter<K, A> = IntoIter<K, A>(
             iterCtorArg = iter,
         )
@@ -1437,9 +1565,9 @@ public open class IntoIter<K, A : Allocator> internal constructor(
  * [drain]: HashSet.drain
  */
 public open class Drain<K, A : Allocator> internal constructor(
-    iterCtorArg: Drain<K, Unit, A>,
+    iterCtorArg: map.Drain<K, Unit, A>,
 ) : Iterable<K> {
-    public var iter: Drain<K, Unit, A> = iterCtorArg
+    public var iter: map.Drain<K, Unit, A> = iterCtorArg
         internal set
 
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
@@ -1475,7 +1603,7 @@ public open class Drain<K, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, A : Allocator> invoke(
-            iter: Drain<K, Unit, A>,
+            iter: map.Drain<K, Unit, A>,
         ): Drain<K, A> = Drain<K, A>(
             iterCtorArg = iter,
         )
@@ -1989,9 +2117,9 @@ public sealed class Entry<T, S, A> {
  * ```
  */
 public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
-    innerCtorArg: OccupiedEntry<T, Unit, S, A>,
+    innerCtorArg: map.OccupiedEntry<T, Unit, S, A>,
 ) {
-    public var inner: OccupiedEntry<T, Unit, S, A> = innerCtorArg
+    public var inner: map.OccupiedEntry<T, Unit, S, A> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder) {
@@ -2051,7 +2179,7 @@ public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
-            inner: OccupiedEntry<T, Unit, S, A>,
+            inner: map.OccupiedEntry<T, Unit, S, A>,
         ): OccupiedEntry<T, S, A> = OccupiedEntry<T, S, A>(
             innerCtorArg = inner,
         )
@@ -2091,9 +2219,9 @@ public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
  * ```
  */
 public open class VacantEntry<T, S, A : Allocator> internal constructor(
-    innerCtorArg: VacantEntry<T, Unit, S, A>,
+    innerCtorArg: map.VacantEntry<T, Unit, S, A>,
 ) {
-    public var inner: VacantEntry<T, Unit, S, A> = innerCtorArg
+    public var inner: map.VacantEntry<T, Unit, S, A> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder) {
@@ -2160,7 +2288,7 @@ public open class VacantEntry<T, S, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
-            inner: VacantEntry<T, Unit, S, A>,
+            inner: map.VacantEntry<T, Unit, S, A>,
         ): VacantEntry<T, S, A> = VacantEntry<T, S, A>(
             innerCtorArg = inner,
         )

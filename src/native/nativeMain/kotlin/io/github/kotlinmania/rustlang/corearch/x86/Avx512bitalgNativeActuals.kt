@@ -2,9 +2,12 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.I8x32
-import io.github.kotlinmania.rustlang.corearch.simd.I8x64
+import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.I8x32
+import io.github.kotlinmania.rustlang.simd.I8x64
+import io.github.kotlinmania.rustlang.x86.Mmask16
+import io.github.kotlinmania.rustlang.x86.Mmask32
+import io.github.kotlinmania.rustlang.x86.Mmask64
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun bitshuffle512(data: I8x64, indices: I8x64): Mmask64 =

@@ -1,13 +1,14 @@
 // port-lint: source iter/adapters/array_chunks.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.arraychunks
 
-import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.array.iter.IntoIter
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -22,9 +23,9 @@ public typealias Source<I> = I.Source
  */
 public open class ArrayChunks<I> internal constructor(
     public var iter: I,
-    remainderCtorArg: IntoIter<Item, N>?,
+    remainderCtorArg: IntoIter<Item>?,
 ) {
-    public var remainder: IntoIter<Item, N>? = remainderCtorArg
+    public var remainder: IntoIter<Item>? = remainderCtorArg
         internal set
 
     public open fun clone(): ArrayChunks<I> = ArrayChunks(iter, remainder)
@@ -32,7 +33,7 @@ public open class ArrayChunks<I> internal constructor(
     public companion object {
         public operator fun <I> invoke(
             iter: I,
-            remainder: IntoIter<Item, N>?,
+            remainder: IntoIter<Item>?,
         ): ArrayChunks<I> = ArrayChunks<I>(
             iter = iter,
             remainderCtorArg = remainder,
@@ -82,10 +83,10 @@ public fun <Item, I, B, R> ArrayChunks<I, N>.tryFold(init: B, f: (B, List<I.Item
     while (true) {
         run {
             val matchVal = this.iter.nextChunk()
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val chunk = matchVal.value
-                acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            }; is Result.Err<*> -> {
+                acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            }; is Result.Err<*, *> -> {
                 val remainder = matchVal.error
                 // Make sure to not overwrite `self.remainder` with an empty array
                 // when `next` is called after `ArrayChunks` exhaustion.
@@ -109,9 +110,9 @@ public fun <I, B, R> ArrayChunks<I, N>.tryRfold(init: B, f: (B, Item) -> R, n: I
     // (assuming correct `I as ExactSizeIterator` impl).
     while (true) {
         val matchVal = this.iter.nextChunkBack()
-        if (matchVal !is Result.Ok<*>) break
-        val chunk = (matchVal as Result.Ok<*>).value
-        acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        if (matchVal !is Result.Ok<*, *>) break
+        val chunk = (matchVal as Result.Ok<*, *>).value
+        acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     }
     return acc
 }

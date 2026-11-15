@@ -2,6 +2,20 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.x86.mmCastsi128Pd
+import io.github.kotlinmania.rustlang.x86.mmCastsi128Ps
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi16
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi32
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi8
+import io.github.kotlinmania.rustlang.x86.mmSet1Pd
+import io.github.kotlinmania.rustlang.x86.mmSet1Ps
+import io.github.kotlinmania.rustlang.x86.mmSetEpi64x
+import io.github.kotlinmania.rustlang.x86.mmSetrEpi16
+import io.github.kotlinmania.rustlang.x86.mmSetrEpi32
+import io.github.kotlinmania.rustlang.x86.mmSetrEpi8
+import io.github.kotlinmania.rustlang.x86.mmSetrPd
+import io.github.kotlinmania.rustlang.x86.mmSetrPs
 
 // Streaming SIMD Extensions 4.1 (SSE4.1)
 

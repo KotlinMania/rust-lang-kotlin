@@ -1,10 +1,8 @@
 // port-lint: source bool.rs
 package io.github.kotlinmania.rustlang.core.bool
 
-import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
+import io.github.kotlinmania.rustlang.intrinsics.disjointBitor
 
 // impl bool {}
 
@@ -189,7 +187,7 @@ public fun Boolean.toggle() {
  * This results in undefined behaviour if both `self` and `rhs` are true.
  */
 public fun Boolean.uncheckedDisjointBitor(rhs: Boolean): Boolean {
-    assertUnsafePrecondition(checkLanguageUb, "bool::unchecked_disjoint_bitor cannot bitor two truths", lhs, this, rhs, rhs, lhs, rhs)
+    Unit
     // SAFETY: Same precondition.
     return disjointBitor(this, rhs)
 }

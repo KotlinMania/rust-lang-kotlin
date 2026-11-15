@@ -3,11 +3,6 @@ package io.github.kotlinmania.rustlang.core.any
 
 import io.github.kotlinmania.rustlang.core.RustTypeId
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeId
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdEq
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVtable
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -16,17 +11,22 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.typeinfo.TraitImpl
-import io.github.kotlinmania.rustlang.core.mem.typeinfo.TypeKind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.metadata.DynMetadata
-import io.github.kotlinmania.rustlang.core.ptr.metadata.Pointee
-import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeId
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdEq
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdVtable
+import io.github.kotlinmania.rustlang.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.mem.transmutability.transmute
+import io.github.kotlinmania.rustlang.mem.typeinfo.TraitImpl
+import io.github.kotlinmania.rustlang.mem.typeinfo.TypeKind
+import io.github.kotlinmania.rustlang.ptr.metadata.DynMetadata
+import io.github.kotlinmania.rustlang.ptr.metadata.Pointee
+import io.github.kotlinmania.rustlang.ptr.readUnaligned
 
 // Utilities for dynamic typing or type reflection.
 //

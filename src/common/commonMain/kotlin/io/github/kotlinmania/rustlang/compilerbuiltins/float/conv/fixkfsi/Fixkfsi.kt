@@ -7,4 +7,4 @@ import io.github.kotlinmania.rustlang.core.F128
 // Conversions from signed integers to floats.
 // Conversions from floats to unsigned integers.
 // Conversions from floats to signed integers.
-public fun fixkfsi(f: F128): Int = io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.fixkfsi(f)
+public fun fixkfsi(f: F128): Int = io.github.kotlinmania.rustlang.float.conv.fixkfsi(f)

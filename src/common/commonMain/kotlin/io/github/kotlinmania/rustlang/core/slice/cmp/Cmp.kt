@@ -1,22 +1,25 @@
 // port-lint: source slice/cmp.rs
 package io.github.kotlinmania.rustlang.core.slice.cmp
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.bytewise.BytewiseEq
-import io.github.kotlinmania.rustlang.core.intrinsics.compareBytes
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul
+import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.cmp.bytewise.BytewiseEq
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.intrinsics.compareBytes
+import io.github.kotlinmania.rustlang.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedMul
+import io.github.kotlinmania.rustlang.mem.transmuteCopy
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.slice.memchr.memchr
 
 // Comparison traits for `[T]`.
 
@@ -146,10 +149,10 @@ public fun <A, B, C> chainingImpl(left: List<A>, right: List<A>, elemChain: (A, 
     val l = minOf(left.size, right.size)
     // Slice to the loop iteration range to enable bound check
     // elimination in the compiler
-    val lhs = ((left).slice(0 until l))
-    val rhs = ((right).slice(0 until l))
+    val lhs = ((left).subList(0, l))
+    val rhs = ((right).subList(0, l))
     for (i in 0 until l) {
-        when (val tryResult = elemChain(lhs[i], rhs[i])) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = elemChain(lhs[i], rhs[i])) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     }
     return lenChain(left.size, right.size)
 }

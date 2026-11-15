@@ -6,11 +6,11 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.I16x8
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I8x16
 
-private object S390xVectorJniBridge {
+private object CorearchS390xVectorJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -46,8 +46,8 @@ private object S390xVectorJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = S390xVectorJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = CorearchS390xVectorJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -64,7 +64,7 @@ private object S390xVectorJniBridge {
     }
 
     @JvmStatic
-    external fun corearchS390xVectorLcbb(a: Long, b: Int): Int
+    external fun rustlangCorearchS390xVectorLcbb(a: Long, b: Int): Int
 }
 
 public actual fun nearbyintV4f32(a: VectorFloat): VectorFloat =
@@ -203,7 +203,7 @@ public actual fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr) {
 }
 
 public actual fun lcbb(a: ConstPtr, b: UInt): UInt =
-    S390xVectorJniBridge.corearchS390xVectorLcbb(a.rawAddress, b.toInt()).toUInt()
+    CorearchS390xVectorJniBridge.rustlangCorearchS390xVectorLcbb(a.rawAddress, b.toInt()).toUInt()
 
 public actual fun vlbb(a: ConstPtr, b: UInt): MaybeUninit<VectorSignedChar> =
     MaybeUninit.uninit(VectorSignedChar.typeLayout())

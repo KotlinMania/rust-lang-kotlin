@@ -5,8 +5,12 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
-import io.github.kotlinmania.rustlang.corearch.simd.U16x4
-import io.github.kotlinmania.rustlang.corearch.simd.U16x8
+import io.github.kotlinmania.rustlang.simd.U16x4
+import io.github.kotlinmania.rustlang.simd.U16x8
+import io.github.kotlinmania.rustlang.x86.mm256SetPs
+import io.github.kotlinmania.rustlang.x86.mm256SetrPs
+import io.github.kotlinmania.rustlang.x86.mmSetPs
+import io.github.kotlinmania.rustlang.x86.mmSetrPs
 
 public val BF16_ONE: UShort = 0x3F80u
 

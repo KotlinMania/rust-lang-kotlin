@@ -213,7 +213,7 @@ public open class Builder(
         val name = this.name
         val stackSize = this.stackSize
         val noHooks = this.noHooks
-        return Result.Ok(JoinHandle(when (val tryResult = spawnUnchecked(name, stackSize, noHooks, null, f)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+        return Result.Ok(JoinHandle(when (val tryResult = spawnUnchecked(name, stackSize, noHooks, null, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
     }
 
     public companion object {

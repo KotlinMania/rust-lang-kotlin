@@ -1,6 +1,14 @@
 // port-lint: source powerpc/macros.rs
 package io.github.kotlinmania.rustlang.corearch.powerpc.macros
 
+import io.github.kotlinmania.rustlang.powerpc.macros.implVecTrait
+import io.github.kotlinmania.rustlang.powerpc.macros.sTL
+import io.github.kotlinmania.rustlang.powerpc.macros.tB
+import io.github.kotlinmania.rustlang.powerpc.macros.tTL
+import io.github.kotlinmania.rustlang.powerpc.macros.tTS
+import io.github.kotlinmania.rustlang.powerpc.macros.tU
+import io.github.kotlinmania.rustlang.powerpc.macros.testImpl
+
 private const val TEST_IMPL_TEMPLATE: String = "public unsafe fun \$fn(\$(\$v: \$ty),*)-> \$r {\$call(\$(\$v),*)}"
 
 private const val TEST_IMPL_TEMPLATE_1: String = "testImpl {\$fn(\$(\$v: \$ty),*)-> \$r[\$call, \$instrAltivec/ \$instrVsx/ \$instrVsx]}"

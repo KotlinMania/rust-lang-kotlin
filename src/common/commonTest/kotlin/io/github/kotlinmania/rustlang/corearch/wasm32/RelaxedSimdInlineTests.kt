@@ -3,6 +3,15 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.wasm32.V128
+import io.github.kotlinmania.rustlang.wasm32.f32x4
+import io.github.kotlinmania.rustlang.wasm32.f64x2
+import io.github.kotlinmania.rustlang.wasm32.i32x4
+import io.github.kotlinmania.rustlang.wasm32.i8x16
+import io.github.kotlinmania.rustlang.wasm32.u32x4
+import io.github.kotlinmania.rustlang.wasm32.u8x16
+
 public fun compareBytes(a: V128, b: List<V128>) {
     val a1: UByteArray = transmute(a)
     if (b.any({ b1 ->

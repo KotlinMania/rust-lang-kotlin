@@ -1,14 +1,14 @@
 // port-lint: source panic/unwind_safe.rs
 package io.github.kotlinmania.rustlang.core.panic.unwindsafe
 
-import io.github.kotlinmania.rustlang.core.asynciter.asynciter.AsyncIterator
-import io.github.kotlinmania.rustlang.core.future.future.Future
+import io.github.kotlinmania.rustlang.asynciter.asynciter.AsyncIterator
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.task.poll.Poll
-import io.github.kotlinmania.rustlang.core.task.wake.Context
+import io.github.kotlinmania.rustlang.future.future.Future
+import io.github.kotlinmania.rustlang.pin.Pin
+import io.github.kotlinmania.rustlang.task.poll.Poll
+import io.github.kotlinmania.rustlang.task.wake.Context
 
 public class DebugTuple(
     private val out: StringBuilder,

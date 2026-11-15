@@ -1,9 +1,9 @@
 // port-lint: source iter.rs
 package io.github.kotlinmania.rustlang.coresimd.iter
 
+import io.github.kotlinmania.rustlang.Simd
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.Mul
-import io.github.kotlinmania.rustlang.coresimd.Simd
 
 public fun <I : Iterator<Simd<Float, N>>> sumSimdFloatN(iter: I, n: Int): Simd<Float, N> = iter.fold(Simd.splat(0.toFloat()), Add::add)
 

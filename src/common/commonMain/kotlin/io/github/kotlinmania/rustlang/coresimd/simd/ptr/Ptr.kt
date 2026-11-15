@@ -1,9 +1,9 @@
 // port-lint: source simd/ptr.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.ptr
 
+import io.github.kotlinmania.rustlang.Simd
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.coresimd.Simd
 
 // Traits for vectors of pointers.
 
@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.coresimd.Simd
  *
  * Equivalent to calling [core.ptr.withoutProvenance] on each element.
  */
-public fun withoutProvenance(addr: Simd<Int, N>, n: Int): Simd<ConstPtr> {
+public fun withoutProvenance(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
     // An int-to-pointer reinterpret currently has exactly the intended semantics: it creates a
     // pointer without provenance. Note that this is *not* a stable guarantee about reinterpret
     // semantics, it relies on sysroot crates having special status.
@@ -26,7 +26,7 @@ public fun withoutProvenance(addr: Simd<Int, N>, n: Int): Simd<ConstPtr> {
  *
  * Equivalent to calling [core.ptr.withoutProvenanceMut] on each element.
  */
-public fun withoutProvenanceMut(addr: Simd<Int, N>, n: Int): Simd<MutPtr> {
+public fun withoutProvenanceMut(addr: Simd<Int>, n: Int): Simd<MutPtr> {
     // An int-to-pointer reinterpret currently has exactly the intended semantics: it creates a
     // pointer without provenance. Note that this is *not* a stable guarantee about reinterpret
     // semantics, it relies on sysroot crates having special status.
@@ -40,7 +40,7 @@ public fun withoutProvenanceMut(addr: Simd<Int, N>, n: Int): Simd<MutPtr> {
  *
  * Equivalent to calling [core.ptr.withExposedProvenance] on each element.
  */
-public fun withExposedProvenance(addr: Simd<Int, N>, n: Int): Simd<ConstPtr> {
+public fun withExposedProvenance(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
     // SAFETY: addr is a vector of Int
     return run { val _simdArg0 = addr; _simdArg0 }
 }
@@ -50,7 +50,7 @@ public fun withExposedProvenance(addr: Simd<Int, N>, n: Int): Simd<ConstPtr> {
  *
  * Equivalent to calling [core.ptr.withExposedProvenanceMut] on each element.
  */
-public fun withExposedProvenanceMut(addr: Simd<Int, N>, n: Int): Simd<MutPtr> {
+public fun withExposedProvenanceMut(addr: Simd<Int>, n: Int): Simd<MutPtr> {
     // SAFETY: addr is a vector of Int
     return run { val _simdArg0 = addr; _simdArg0 }
 }

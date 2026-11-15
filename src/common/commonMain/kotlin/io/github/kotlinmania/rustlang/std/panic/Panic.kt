@@ -6,11 +6,11 @@ import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.env.varOs
-import io.github.kotlinmania.rustlang.std.panicking.beginPanic
-import io.github.kotlinmania.rustlang.std.panicking.paniccount.setAlwaysAbort
-import io.github.kotlinmania.rustlang.std.sys.backtrace.FULL_BACKTRACE_DEFAULT
-import io.github.kotlinmania.rustlang.std.thread.Result
+import io.github.kotlinmania.rustlang.env.varOs
+import io.github.kotlinmania.rustlang.panicking.beginPanic
+import io.github.kotlinmania.rustlang.panicking.paniccount.setAlwaysAbort
+import io.github.kotlinmania.rustlang.sys.backtrace.FULL_BACKTRACE_DEFAULT
+import io.github.kotlinmania.rustlang.thread.Result
 
 // Panic support in the standard library.
 
@@ -289,7 +289,7 @@ public fun <M> panicAny(msg: M): Nothing {
  * check(result1.isErr())
  * ```
  */
-public fun <R> catchUnwind(f: () -> R): Result<R> = io.github.kotlinmania.rustlang.std.panicking.catchUnwind(f)
+public fun <R> catchUnwind(f: () -> R): Result<R> = catchUnwind(f)
 
 /**
  * Triggers a panic without invoking the panic hook.
@@ -320,7 +320,7 @@ public fun <R> catchUnwind(f: () -> R): Result<R> = io.github.kotlinmania.rustla
  * }
  * ```
  */
-public fun resumeUnwind(payload: RustAny): Nothing = io.github.kotlinmania.rustlang.std.panicking.resumeUnwind(payload)
+public fun resumeUnwind(payload: RustAny): Nothing = resumeUnwind(payload)
 
 /**
  * Makes all future panics abort directly without running the panic hook or unwinding.
@@ -482,9 +482,9 @@ public fun getBacktraceStyle(): BacktraceStyle? {
         }
     return run {
         val matchVal2 = SHOULD_CAPTURE.compareExchange(0, format.asU8(), Ordering.Relaxed, Ordering.Relaxed)
-        when (matchVal2) { is Result.Ok<*> -> {
+        when (matchVal2) { is Result.Ok<*, *> -> {
             format
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             val new = matchVal2.error
             BacktraceStyle.fromU8(new)
         } }

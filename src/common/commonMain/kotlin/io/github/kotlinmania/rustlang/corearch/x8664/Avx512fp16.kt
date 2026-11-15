@@ -1,8 +1,8 @@
 // port-lint: source x86_64/avx512fp16.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.corearch.x86.M128h
-import io.github.kotlinmania.rustlang.corearch.x86.MM_FROUND_CUR_DIRECTION
+import io.github.kotlinmania.rustlang.x86.M128h
+import io.github.kotlinmania.rustlang.x86.MM_FROUND_CUR_DIRECTION
 
 /**
  * Convert the signed 64-bit integer b to a half-precision (16-bit) floating-point element, store the

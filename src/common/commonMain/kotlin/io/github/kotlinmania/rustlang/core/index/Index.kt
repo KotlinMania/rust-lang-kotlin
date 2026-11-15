@@ -1,13 +1,13 @@
 // port-lint: source index.rs
 package io.github.kotlinmania.rustlang.core.index
 
-import io.github.kotlinmania.rustlang.core.intrinsics.sliceGetUnchecked
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.range.Range
-import io.github.kotlinmania.rustlang.core.slice.SliceIndex
+import io.github.kotlinmania.rustlang.intrinsics.sliceGetUnchecked
+import io.github.kotlinmania.rustlang.range.Range
+import io.github.kotlinmania.rustlang.slice.index.SliceIndex
 
 // Helper types for indexing slices.
 
@@ -81,7 +81,7 @@ public open class Clamp<Idx>(
  * }
  * ```
  */
-public open class Last : SliceIndex<List<T>, Any?, T> {
+public open class Last : SliceIndex<List<T>, T> {
     public override fun get(slice: List<T>): T? = slice.last()
 
     public override fun getMut(slice: MutableList<T>): T? = slice.lastOrNull()
@@ -141,39 +141,39 @@ public fun <T> Clamp<Int>.index(slice: List<T>): T = slice[minOf(this.value, sli
 
 public fun <T> Clamp<Int>.indexMut(slice: MutableList<T>): T = slice[minOf(this.value, slice.size - 1)]
 
-public fun <T> Clamp<Range<Int>>.getTSlice(slice: List<T>): List<T>? {
+public fun <T> Clamp<range.Range<Int>>.getTSlice(slice: List<T>): List<T>? {
     val start = minOf(this.value.start, slice.size)
     val end = minOf(this.value.end, slice.size)
     return (start until end).get(slice)
 }
 
-public fun <T> Clamp<Range<Int>>.getMutTSlice(slice: MutableList<T>): List<T>? {
+public fun <T> Clamp<range.Range<Int>>.getMutTSlice(slice: MutableList<T>): List<T>? {
     val start = minOf(this.value.start, slice.size)
     val end = minOf(this.value.end, slice.size)
     return (start until end).getMut(slice)
 }
 
-public fun Clamp<Range<Int>>.getUncheckedTSlice(slice: ConstPtr): ConstPtr {
+public fun Clamp<range.Range<Int>>.getUncheckedTSlice(slice: ConstPtr): ConstPtr {
     val start = minOf(this.value.start, slice.len())
     val end = minOf(this.value.end, slice.len())
     // SAFETY: a range ending before len is always valid
     return (start until end).getUnchecked(slice)
 }
 
-public fun Clamp<Range<Int>>.getUncheckedMutTSlice(slice: MutPtr): MutPtr {
+public fun Clamp<range.Range<Int>>.getUncheckedMutTSlice(slice: MutPtr): MutPtr {
     val start = minOf(this.value.start, slice.len())
     val end = minOf(this.value.end, slice.len())
     // SAFETY: a range ending before len is always valid
     return (start until end).getUncheckedMut(slice)
 }
 
-public fun <T> Clamp<Range<Int>>.indexTSlice(slice: List<T>): List<T> {
+public fun <T> Clamp<range.Range<Int>>.indexTSlice(slice: List<T>): List<T> {
     val start = minOf(this.value.start, slice.size)
     val end = minOf(this.value.end, slice.size)
     return (start until end).index(slice)
 }
 
-public fun <T> Clamp<Range<Int>>.indexMutTSlice(slice: MutableList<T>): List<T> {
+public fun <T> Clamp<range.Range<Int>>.indexMutTSlice(slice: MutableList<T>): List<T> {
     val start = minOf(this.value.start, slice.size)
     val end = minOf(this.value.end, slice.size)
     return (start until end).indexMut(slice)

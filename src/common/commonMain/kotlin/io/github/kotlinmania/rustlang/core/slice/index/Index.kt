@@ -1,26 +1,25 @@
 // port-lint: source slice/index.rs
 package io.github.kotlinmania.rustlang.core.slice.index
 
-import io.github.kotlinmania.rustlang.core.intrinsics.sliceGetUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
-import io.github.kotlinmania.rustlang.core.ops.range.Bound
-import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
-import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
-import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
-import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
-import io.github.kotlinmania.rustlang.core.ops.range.RangeTo
-import io.github.kotlinmania.rustlang.core.ops.range.RangeToInclusive
-import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.range.Range
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
+import io.github.kotlinmania.rustlang.intrinsics.sliceGetUnchecked
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedSub
+import io.github.kotlinmania.rustlang.ops.indexrange.IndexRange
+import io.github.kotlinmania.rustlang.ops.range.Bound
+import io.github.kotlinmania.rustlang.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.ops.range.RangeFrom
+import io.github.kotlinmania.rustlang.ops.range.RangeFull
+import io.github.kotlinmania.rustlang.ops.range.RangeInclusive
+import io.github.kotlinmania.rustlang.ops.range.RangeTo
+import io.github.kotlinmania.rustlang.ops.range.RangeToInclusive
+import io.github.kotlinmania.rustlang.panic.constPanic
+import io.github.kotlinmania.rustlang.range.Range
 
 // Indexing implementations for `[T]`.
 
@@ -139,7 +138,7 @@ public fun <T> Int.getMut(slice: MutableList<T>): T? =
     }
 
 public fun Int.getUnchecked(slice: ConstPtr): ConstPtr {
-    assertUnsafePrecondition(checkLibraryUb, "slice::get_unchecked requires that the index is within the slice", thisRef, this, len, slice, len, thisRef, len)
+    Unit
     // SAFETY: the caller guarantees that `slice` is not dangling, so it
     // cannot be longer than `Long.MAX`. They also guarantee that
     // `self` is in bounds of `slice` so `self` cannot overflow an `Long`,
@@ -152,7 +151,7 @@ public fun Int.getUnchecked(slice: ConstPtr): ConstPtr {
 }
 
 public fun Int.getUncheckedMut(slice: MutPtr): MutPtr {
-    assertUnsafePrecondition(checkLibraryUb, "slice::get_unchecked_mut requires that the index is within the slice", thisRef, this, len, slice, len, thisRef, len)
+    Unit
     // SAFETY: see comments for `getUnchecked` above.
     return sliceGetUnchecked(slice, this)
 }
@@ -188,7 +187,7 @@ public fun <T> IndexRange.getMut(slice: MutableList<T>): MutableList<T>? =
     }
 
 public fun IndexRange.getUnchecked(slice: ConstPtr): ConstPtr {
-    assertUnsafePrecondition(checkLibraryUb, "slice::get_unchecked requires that the index is within the slice", end, this, end, len, slice, len, end, len)
+    Unit
     // SAFETY: the caller guarantees that `slice` is not dangling, so it
     // cannot be longer than `Long.MAX`. They also guarantee that
     // `self` is in bounds of `slice` so `self` cannot overflow an `Long`,
@@ -197,7 +196,7 @@ public fun IndexRange.getUnchecked(slice: ConstPtr): ConstPtr {
 }
 
 public fun IndexRange.getUncheckedMut(slice: MutPtr): MutPtr {
-    assertUnsafePrecondition(checkLibraryUb, "slice::get_unchecked_mut requires that the index is within the slice", end, this, end, len, slice, len, end, len)
+    Unit
     // SAFETY: see comments for `getUnchecked` above.
     return getOffsetLenMutNoubcheck(slice, this.start(), this.len())
 }
@@ -242,7 +241,7 @@ public fun <T> Range<Int>.getMut(slice: MutableList<T>): MutableList<T>? =
     }
 
 public fun Range<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
-    assertUnsafePrecondition(checkLibraryUb, "slice::get_unchecked requires that the range is within the slice", start, this, start, end, this, end, len, slice, len, end, start, end, len)
+    Unit
     // SAFETY: the caller guarantees that `slice` is not dangling, so it
     // cannot be longer than `Long.MAX`. They also guarantee that
     // `self` is in bounds of `slice` so `self` cannot overflow an `Long`,
@@ -256,7 +255,7 @@ public fun Range<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
 }
 
 public fun Range<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
-    assertUnsafePrecondition(checkLibraryUb, "slice::get_unchecked_mut requires that the range is within the slice", start, this, start, end, this, end, len, slice, len, end, start, end, len)
+    Unit
     // SAFETY: see comments for `getUnchecked` above.
     return run {
         val newLen = uncheckedSub(this.end, this.start)
@@ -747,10 +746,10 @@ public fun tryIntoSliceRange(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>):
 public fun intoSliceRange(len: Int, bounds: Pair<Bound<Int>, Bound<Int>>): Range<Int> =
     run {
         val matchVal = tryIntoSliceRange(len, bounds)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val range = matchVal.value
             range
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             val e = matchVal.error
             e.report(len)
         } }

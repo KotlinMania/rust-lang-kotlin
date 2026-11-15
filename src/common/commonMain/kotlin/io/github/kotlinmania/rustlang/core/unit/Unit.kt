@@ -1,7 +1,7 @@
 // port-lint: source unit.rs
 package io.github.kotlinmania.rustlang.core.unit
 
-import io.github.kotlinmania.rustlang.core.any.TypeId
+import io.github.kotlinmania.rustlang.any.TypeId
 
 /**
  * Collapses all unit items from an iterator into one.

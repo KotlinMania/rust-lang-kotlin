@@ -1,8 +1,8 @@
 package io.github.kotlinmania.rustlang.libc.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
 
 public typealias IntmaxT = Long
 

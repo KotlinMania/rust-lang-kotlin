@@ -1,9 +1,9 @@
 // port-lint: source math/asinhf.rs
 package io.github.kotlinmania.rustlang.libm.math.asinhf
 
-import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrtf
-import io.github.kotlinmania.rustlang.libm.math.log1pf.log1pf
-import io.github.kotlinmania.rustlang.libm.math.logf.logf
+import io.github.kotlinmania.rustlang.math.arch.aarch64.sqrt.sqrtf
+import io.github.kotlinmania.rustlang.math.log1pf.log1pf
+import io.github.kotlinmania.rustlang.math.logf.logf
 
 public val LN2: kotlin.Float = 0.693147180559945309417232121458176568f
 

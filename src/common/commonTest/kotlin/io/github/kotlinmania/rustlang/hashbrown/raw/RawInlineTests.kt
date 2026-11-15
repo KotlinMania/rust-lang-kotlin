@@ -1,25 +1,23 @@
 // port-lint: tests raw.rs
 package io.github.kotlinmania.rustlang.hashbrown.raw
 
-import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.Allocator
+import io.github.kotlinmania.rustlang.alloc.Global
+import io.github.kotlinmania.rustlang.control.group.generic.Group
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
-import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.Group
 
 public fun <T> rehashInPlace(table: RawTable<T>, hasher: (T) -> ULong, typeLayoutT: TypeLayout<T>) {
     run {
         table.table.rehashInPlace({ table1, index -> hasher(table1.bucket<T>(index).asRef()) }, sizeOf<T>(typeLayoutT = typeLayoutT), if (needsDrop<T>()) {
-            { ptr -> dropInPlace(ptr.cast()) }
+            { ptr -> ptr.dropInPlace(ptr.cast()) }
         } else {
             null
         })
@@ -164,12 +162,12 @@ public class RawTestMapInlineTests {
         ) : Allocator {
             public open fun clone(): MyAlloc = MyAlloc(inner)
 
-            public open fun allocate(layout: Layout): Result<NonNull, AllocError> {
+            public override fun allocate(layout: Layout): Result<NonNull, AllocError> {
                 val g = Global
                 return g.allocate(layout)
             }
 
-            public open fun deallocate(ptr: NonNull, layout: Layout) {
+            public override fun deallocate(ptr: NonNull, layout: Layout) {
                 run {
                     val g = Global
                     g.deallocate(ptr, layout)

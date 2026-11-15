@@ -11,35 +11,36 @@ import io.github.kotlinmania.rustlang.core.num.rustOverflowingAdd
 import io.github.kotlinmania.rustlang.core.num.rustOverflowingSub
 import io.github.kotlinmania.rustlang.core.num.rustWrappingMul
 import io.github.kotlinmania.rustlang.core.num.rustWrappingShr
-import io.github.kotlinmania.rustlang.core.ops.arith.Add
-import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
-import io.github.kotlinmania.rustlang.core.ops.arith.Div
-import io.github.kotlinmania.rustlang.core.ops.arith.DivAssign
-import io.github.kotlinmania.rustlang.core.ops.arith.Mul
-import io.github.kotlinmania.rustlang.core.ops.arith.MulAssign
-import io.github.kotlinmania.rustlang.core.ops.arith.Rem
-import io.github.kotlinmania.rustlang.core.ops.arith.RemAssign
-import io.github.kotlinmania.rustlang.core.ops.arith.Sub
-import io.github.kotlinmania.rustlang.core.ops.arith.SubAssign
-import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
-import io.github.kotlinmania.rustlang.core.ops.bit.BitAndAssign
-import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
-import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
-import io.github.kotlinmania.rustlang.core.ops.bit.BitXor
-import io.github.kotlinmania.rustlang.core.ops.bit.BitXorAssign
-import io.github.kotlinmania.rustlang.core.ops.bit.Not
-import io.github.kotlinmania.rustlang.core.ops.bit.Shl
-import io.github.kotlinmania.rustlang.core.ops.bit.ShlAssign
-import io.github.kotlinmania.rustlang.core.ops.bit.Shr
-import io.github.kotlinmania.rustlang.core.ops.bit.ShrAssign
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.DisplayHex
+import io.github.kotlinmania.rustlang.core.ops.Add
+import io.github.kotlinmania.rustlang.core.ops.AddAssign
+import io.github.kotlinmania.rustlang.core.ops.BitAnd
+import io.github.kotlinmania.rustlang.core.ops.BitAndAssign
+import io.github.kotlinmania.rustlang.core.ops.BitOr
+import io.github.kotlinmania.rustlang.core.ops.BitOrAssign
+import io.github.kotlinmania.rustlang.core.ops.BitXor
+import io.github.kotlinmania.rustlang.core.ops.BitXorAssign
+import io.github.kotlinmania.rustlang.core.ops.Div
+import io.github.kotlinmania.rustlang.core.ops.DivAssign
+import io.github.kotlinmania.rustlang.core.ops.Mul
+import io.github.kotlinmania.rustlang.core.ops.MulAssign
+import io.github.kotlinmania.rustlang.core.ops.Not
+import io.github.kotlinmania.rustlang.core.ops.Rem
+import io.github.kotlinmania.rustlang.core.ops.RemAssign
+import io.github.kotlinmania.rustlang.core.ops.Shl
+import io.github.kotlinmania.rustlang.core.ops.ShlAssign
+import io.github.kotlinmania.rustlang.core.ops.Shr
+import io.github.kotlinmania.rustlang.core.ops.ShrAssign
+import io.github.kotlinmania.rustlang.core.ops.Sub
+import io.github.kotlinmania.rustlang.core.ops.SubAssign
+import io.github.kotlinmania.rustlang.math.support.hexfloat.DisplayHex
+import io.github.kotlinmania.rustlang.math.support.inttraits.OtherSign
 
 // Some constants are only used with tests
 
 /**
  * Minimal integer implementations needed on all integer types, including wide integers.
  */
-public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T>, Not<T>, Shl<UInt, T> {
+public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T, T>, Not<T>, Shl<UInt, T> {
     /**
      * If `Self` is a signed integer
      */
@@ -62,7 +63,7 @@ public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T>, Not<T>, Shl<
 /**
  * Trait for some basic operations on integers
  */
-public interface Int<T> : DisplayHex, AddAssign, SubAssign, MulAssign, DivAssign, RemAssign, BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign<Int<T>>, ShlAssign<UInt>, ShrAssign<UInt>, ShrAssign<Int<T>>, Add<T>, Sub<T>, Mul<T>, Div<T>, Rem<T>, Shl<Int<T>, T>, Shl<UInt, T>, Shr<Int<T>, T>, Shr<UInt, T>, BitXor<T>, BitAnd<T>, CastFrom<Int<T>, T>, CastFrom<UShort, T>, CastFrom<UInt, T>, CastFrom<UByte, T>, CastInto<Int<T>>, CastInto<UShort>, CastInto<UInt>, CastInto<UByte> {
+public interface Int<T> : DisplayHex, AddAssign<T>, SubAssign<T>, MulAssign<T>, DivAssign<T>, RemAssign<T>, BitAndAssign<T>, BitOrAssign<T>, BitXorAssign<T>, ShlAssign<Int<T>>, ShlAssign<UInt>, ShrAssign<UInt>, ShrAssign<Int<T>>, Add<T, T>, Sub<T, T>, Mul<T, T>, Div<T, T>, Rem<T, T>, Shl<Int<T>, T>, Shl<UInt, T>, Shr<Int<T>, T>, Shr<UInt, T>, BitXor<T, T>, BitAnd<T, T>, CastFrom<Int<T>, T>, CastFrom<UShort, T>, CastFrom<UInt, T>, CastFrom<UByte, T>, CastInto<Int<T>>, CastInto<UShort>, CastInto<UInt>, CastInto<UByte> {
     public fun signed(): OtherSign<Unsigned>
 
     public fun unsigned(): Unsigned
@@ -900,7 +901,7 @@ public fun I128.borrowingSub(other: I128, borrow: Boolean): Pair<I128, Boolean> 
  * Trait for integers twice the bit width of another integer. This is implemented for all
  * primitives except for `UByte`, because there is not a smaller primitive.
  */
-public interface DInt<T, H> : Add<T>, Sub<T>, Shl<UInt, T>, Shr<UInt, T> {
+public interface DInt<T, H> : Add<T, T>, Sub<T, T>, Shl<UInt, T>, Shr<UInt, T> {
     /**
      * Returns the low half of `self`
      */

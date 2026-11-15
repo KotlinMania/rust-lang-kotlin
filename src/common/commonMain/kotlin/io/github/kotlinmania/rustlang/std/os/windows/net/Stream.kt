@@ -5,28 +5,29 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.io.IoSlice
-import io.github.kotlinmania.rustlang.std.io.Read
-import io.github.kotlinmania.rustlang.std.io.Write
+import io.github.kotlinmania.rustlang.io.IoSlice
+import io.github.kotlinmania.rustlang.io.Read
+import io.github.kotlinmania.rustlang.io.Write
+import io.github.kotlinmania.rustlang.net.Shutdown
+import io.github.kotlinmania.rustlang.os.windows.io.AsRawSocket
+import io.github.kotlinmania.rustlang.os.windows.io.AsSocket
+import io.github.kotlinmania.rustlang.os.windows.io.BorrowedSocket
+import io.github.kotlinmania.rustlang.os.windows.io.FromRawSocket
+import io.github.kotlinmania.rustlang.os.windows.io.IntoRawSocket
+import io.github.kotlinmania.rustlang.os.windows.io.RawSocket
+import io.github.kotlinmania.rustlang.os.windows.net.SocketAddr
+import io.github.kotlinmania.rustlang.path.Path
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.net.Shutdown
-import io.github.kotlinmania.rustlang.std.os.windows.io.AsRawSocket
-import io.github.kotlinmania.rustlang.std.os.windows.io.AsSocket
-import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedSocket
-import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawSocket
-import io.github.kotlinmania.rustlang.std.os.windows.io.IntoRawSocket
-import io.github.kotlinmania.rustlang.std.os.windows.io.RawSocket
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtNz
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.AF_UNIX
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SOCK_STREAM
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SO_RCVTIMEO
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SO_SNDTIMEO
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.connect
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getpeername
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getsockname
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.winsock.startup
+import io.github.kotlinmania.rustlang.sys.net.connection.wasip1.Socket
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvtNz
+import io.github.kotlinmania.rustlang.sys.pal.windows.c.AF_UNIX
+import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.SOCK_STREAM
+import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.SO_RCVTIMEO
+import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.SO_SNDTIMEO
+import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.connect
+import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.getpeername
+import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.getsockname
+import io.github.kotlinmania.rustlang.sys.pal.windows.winsock.startup
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -295,7 +296,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.io.Error?, Error> = this.value.takeError()
 
     /**
      * Creates a new independently owned handle to the underlying socket.
@@ -394,7 +395,7 @@ public open class UnixStream(
          * ```kotlin
          */
         public fun connect(path: Path): Result<UnixStream, Error> {
-            val socketAddr = when (val tryResult = SocketAddr.fromPathname(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val socketAddr = when (val tryResult = SocketAddr.fromPathname(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             return UnixStream.connectAddr(socketAddr)
         }
 
@@ -423,9 +424,9 @@ public open class UnixStream(
          */
         public fun connectAddr(socketAddr: SocketAddr): Result<UnixStream, Error> {
             startup()
-            val inner = when (val tryResult = Socket.new(AF_UNIX.toInt(), SOCK_STREAM)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val inner = when (val tryResult = Socket.new(AF_UNIX.toInt(), SOCK_STREAM)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             run {
-                when (val tryResult = cvtNz(connect(inner.asRaw(), addrOf(socketAddr.addr), socketAddr.len.toInt()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvtNz(connect(inner.asRaw(), addrOf(socketAddr.addr), socketAddr.len.toInt()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
             return Result.Ok(UnixStream(inner))
         }

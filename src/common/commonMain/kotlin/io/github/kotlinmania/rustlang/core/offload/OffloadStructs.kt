@@ -2,9 +2,9 @@
 
 package io.github.kotlinmania.rustlang.core.offload
 
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 // Region & Partitioning Strategy
 

@@ -8,10 +8,10 @@ private object DummyJniBridge {
     }
 
     @JvmStatic
-    external fun panicunwindDummyRustAbort()
+    external fun rustlangDummyRustAbort()
 }
 
 public actual fun rustAbort(): Nothing {
-    DummyJniBridge.panicunwindDummyRustAbort()
+    DummyJniBridge.rustlangDummyRustAbort()
     error("Unreachable noreturn C function rustAbort")
 }

@@ -2,27 +2,27 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.LocaleT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.UidT
-import io.github.kotlinmania.rustlang.libc.unix.IntptrT
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.DevT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.IdtypeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Ioctl
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.unix.GidT
+import io.github.kotlinmania.rustlang.unix.IntptrT
+import io.github.kotlinmania.rustlang.unix.LocaleT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.IdtypeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Ioctl
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
 
-private object UnixLinuxlikeJniBridge {
+private object LibcUnixLinuxlikeJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -58,8 +58,8 @@ private object UnixLinuxlikeJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = UnixLinuxlikeJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = LibcUnixLinuxlikeJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -76,524 +76,533 @@ private object UnixLinuxlikeJniBridge {
     }
 
     @JvmStatic
-    external fun libcUnixLinuxlikeIoctl(fd: Int, request: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixLinuxlikeIoctl(fd: Int, request: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeLibcCurrentSigrtmax(): Int
+    external fun rustlangLibcUnixLinuxlikeLibcCurrentSigrtmax(): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeLibcCurrentSigrtmin(): Int
+    external fun rustlangLibcUnixLinuxlikeLibcCurrentSigrtmin(): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeSemDestroy(sem: Long): Int
+    external fun rustlangLibcUnixLinuxlikeSemDestroy(sem: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeSemInit(sem: Long, pshared: Int, value: Int): Int
+    external fun rustlangLibcUnixLinuxlikeSemInit(sem: Long, pshared: Int, value: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeFdatasync(fd: Int): Int
+    external fun rustlangLibcUnixLinuxlikeFdatasync(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeMincore(addr: Long, len: Long, vec: Long): Int
+    external fun rustlangLibcUnixLinuxlikeMincore(addr: Long, len: Long, vec: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeClockGetcpuclockid(pid: Int, clkId: Long): Int
+    external fun rustlangLibcUnixLinuxlikeClockGetres(clkId: Int, tp: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeGetitimer(which: Int, currValue: Long): Int
+    external fun rustlangLibcUnixLinuxlikeClockGettime(clkId: Int, tp: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeSetitimer(which: Int, newValue: Long, oldValue: Long): Int
+    external fun rustlangLibcUnixLinuxlikeClockSettime(clkId: Int, tp: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeDirfd(dirp: Long): Int
+    external fun rustlangLibcUnixLinuxlikeClockGetcpuclockid(pid: Int, clkId: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeMemalign(align: Long, size: Long): Long
+    external fun rustlangLibcUnixLinuxlikeGetitimer(which: Int, currValue: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeSetgroups(ngroups: Long, ptr: Long): Int
+    external fun rustlangLibcUnixLinuxlikeSetitimer(which: Int, newValue: Long, oldValue: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikePipe2(fds: Long, flags: Int): Int
+    external fun rustlangLibcUnixLinuxlikeDirfd(dirp: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeStatfs(path: Long, buf: Long): Int
+    external fun rustlangLibcUnixLinuxlikeMemalign(align: Long, size: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeFstatfs(fd: Int, buf: Long): Int
+    external fun rustlangLibcUnixLinuxlikeSetgroups(ngroups: Long, ptr: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeMemrchr(cx: Long, c: Int, n: Long): Long
+    external fun rustlangLibcUnixLinuxlikePipe2(fds: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikePosixFadvise(fd: Int, offset: Long, len: Long, advise: Int): Int
+    external fun rustlangLibcUnixLinuxlikeStatfs(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeFutimens(fd: Int, times: Long): Int
+    external fun rustlangLibcUnixLinuxlikeFstatfs(fd: Int, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeUtimensat(dirfd: Int, path: Long, times: Long, flag: Int): Int
+    external fun rustlangLibcUnixLinuxlikeMemrchr(cx: Long, c: Int, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeDuplocale(base: Long): Long
+    external fun rustlangLibcUnixLinuxlikePosixFadvise(fd: Int, offset: Long, len: Long, advise: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeFreelocale(loc: Long)
+    external fun rustlangLibcUnixLinuxlikeFutimens(fd: Int, times: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeNewlocale(mask: Int, locale: Long, base: Long): Long
+    external fun rustlangLibcUnixLinuxlikeUtimensat(dirfd: Int, path: Long, times: Long, flag: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeUselocale(loc: Long): Long
+    external fun rustlangLibcUnixLinuxlikeDuplocale(base: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeMknodat(dirfd: Int, pathname: Long, mode: Int, dev: Long): Int
+    external fun rustlangLibcUnixLinuxlikeFreelocale(loc: Long)
 
     @JvmStatic
-    external fun libcUnixLinuxlikePtsnameR(fd: Int, buf: Long, buflen: Long): Int
+    external fun rustlangLibcUnixLinuxlikeNewlocale(mask: Int, locale: Long, base: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeClearenv(): Int
+    external fun rustlangLibcUnixLinuxlikeUselocale(loc: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeWaitid(idtype: Int, id: Int, infop: Long, options: Int): Int
+    external fun rustlangLibcUnixLinuxlikeMknodat(dirfd: Int, pathname: Long, mode: Int, dev: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeGetresuid(ruid: Long, euid: Long, suid: Long): Int
+    external fun rustlangLibcUnixLinuxlikePtsnameR(fd: Int, buf: Long, buflen: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeGetresgid(rgid: Long, egid: Long, sgid: Long): Int
+    external fun rustlangLibcUnixLinuxlikeClearenv(): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeAcct(filename: Long): Int
+    external fun rustlangLibcUnixLinuxlikeWaitid(idtype: Int, id: Int, infop: Long, options: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeBrk(addr: Long): Int
+    external fun rustlangLibcUnixLinuxlikeGetresuid(ruid: Long, euid: Long, suid: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeSbrk(increment: Long): Long
+    external fun rustlangLibcUnixLinuxlikeGetresgid(rgid: Long, egid: Long, sgid: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeVfork(): Int
+    external fun rustlangLibcUnixLinuxlikeAcct(filename: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeSetresgid(rgid: Int, egid: Int, sgid: Int): Int
+    external fun rustlangLibcUnixLinuxlikeBrk(addr: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeSetresuid(ruid: Int, euid: Int, suid: Int): Int
+    external fun rustlangLibcUnixLinuxlikeSbrk(increment: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeWait4(pid: Int, status: Long, options: Int, rusage: Long): Int
+    external fun rustlangLibcUnixLinuxlikeVfork(): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeLoginTty(fd: Int): Int
+    external fun rustlangLibcUnixLinuxlikeSetresgid(rgid: Int, egid: Int, sgid: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeExecvpe(file: Long, argv: Long, envp: Long): Int
+    external fun rustlangLibcUnixLinuxlikeSetresuid(ruid: Int, euid: Int, suid: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeFexecve(fd: Int, argv: Long, envp: Long): Int
+    external fun rustlangLibcUnixLinuxlikeWait4(pid: Int, status: Long, options: Int, rusage: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeGetifaddrs(ifap: Long): Int
+    external fun rustlangLibcUnixLinuxlikeLoginTty(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeFreeifaddrs(ifa: Long)
+    external fun rustlangLibcUnixLinuxlikeExecvpe(file: Long, argv: Long, envp: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeBind(socket: Int, address: Long, addressLen: Int): Int
+    external fun rustlangLibcUnixLinuxlikeFexecve(fd: Int, argv: Long, envp: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeWritev(fd: Int, iov: Long, iovcnt: Int): Long
+    external fun rustlangLibcUnixLinuxlikeGetifaddrs(ifap: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeReadv(fd: Int, iov: Long, iovcnt: Int): Long
+    external fun rustlangLibcUnixLinuxlikeFreeifaddrs(ifa: Long)
 
     @JvmStatic
-    external fun libcUnixLinuxlikeSendmsg(fd: Int, msg: Long, flags: Int): Long
+    external fun rustlangLibcUnixLinuxlikeBind(socket: Int, address: Long, addressLen: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeRecvmsg(fd: Int, msg: Long, flags: Int): Long
+    external fun rustlangLibcUnixLinuxlikeWritev(fd: Int, iov: Long, iovcnt: Int): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeUname(buf: Long): Int
+    external fun rustlangLibcUnixLinuxlikeReadv(fd: Int, iov: Long, iovcnt: Int): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeStrchrnul(s: Long, c: Int): Long
+    external fun rustlangLibcUnixLinuxlikeSendmsg(fd: Int, msg: Long, flags: Int): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeStrftime(s: Long, max: Long, format: Long, tm: Long): Long
+    external fun rustlangLibcUnixLinuxlikeRecvmsg(fd: Int, msg: Long, flags: Int): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeStrftimeL(s: Long, max: Long, format: Long, tm: Long, locale: Long): Long
+    external fun rustlangLibcUnixLinuxlikeUname(buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeStrptime(s: Long, format: Long, tm: Long): Long
+    external fun rustlangLibcUnixLinuxlikeStrchrnul(s: Long, c: Int): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeMkostemp(template: Long, flags: Int): Int
+    external fun rustlangLibcUnixLinuxlikeStrftime(s: Long, max: Long, format: Long, tm: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeMkostemps(template: Long, suffixlen: Int, flags: Int): Int
+    external fun rustlangLibcUnixLinuxlikeStrftimeL(s: Long, max: Long, format: Long, tm: Long, locale: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeGetdomainname(name: Long, len: Long): Int
+    external fun rustlangLibcUnixLinuxlikeStrptime(s: Long, format: Long, tm: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeSetdomainname(name: Long, len: Long): Int
+    external fun rustlangLibcUnixLinuxlikeMkostemp(template: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeIfNameindex(): Long
+    external fun rustlangLibcUnixLinuxlikeMkostemps(template: Long, suffixlen: Int, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeIfFreenameindex(ptr: Long)
+    external fun rustlangLibcUnixLinuxlikeGetdomainname(name: Long, len: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeGetpwnamR(name: Long, pwd: Long, buf: Long, buflen: Long, result: Long): Int
+    external fun rustlangLibcUnixLinuxlikeSetdomainname(name: Long, len: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeGetpwuidR(uid: Int, pwd: Long, buf: Long, buflen: Long, result: Long): Int
+    external fun rustlangLibcUnixLinuxlikeIfNameindex(): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeFstatfs64(fd: Int, buf: Long): Int
+    external fun rustlangLibcUnixLinuxlikeIfFreenameindex(ptr: Long)
 
     @JvmStatic
-    external fun libcUnixLinuxlikeStatvfs64(path: Long, buf: Long): Int
+    external fun rustlangLibcUnixLinuxlikeGetpwnamR(name: Long, pwd: Long, buf: Long, buflen: Long, result: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeFstatvfs64(fd: Int, buf: Long): Int
+    external fun rustlangLibcUnixLinuxlikeGetpwuidR(uid: Int, pwd: Long, buf: Long, buflen: Long, result: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeStatfs64(path: Long, buf: Long): Int
+    external fun rustlangLibcUnixLinuxlikeFstatfs64(fd: Int, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeCreat64(path: Long, mode: Int): Int
+    external fun rustlangLibcUnixLinuxlikeStatvfs64(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeFstat64(fildes: Int, buf: Long): Int
+    external fun rustlangLibcUnixLinuxlikeFstatvfs64(fd: Int, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeFstatat64(dirfd: Int, pathname: Long, buf: Long, flags: Int): Int
+    external fun rustlangLibcUnixLinuxlikeStatfs64(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeFtruncate64(fd: Int, length: Long): Int
+    external fun rustlangLibcUnixLinuxlikeCreat64(path: Long, mode: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeLseek64(fd: Int, offset: Long, whence: Int): Long
+    external fun rustlangLibcUnixLinuxlikeFstat64(fildes: Int, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeLstat64(path: Long, buf: Long): Int
+    external fun rustlangLibcUnixLinuxlikeFstatat64(dirfd: Int, pathname: Long, buf: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeMmap64(addr: Long, len: Long, prot: Int, flags: Int, fd: Int, offset: Long): Long
+    external fun rustlangLibcUnixLinuxlikeFtruncate64(fd: Int, length: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeOpen64(path: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixLinuxlikeLseek64(fd: Int, offset: Long, whence: Int): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeOpenat64(fd: Int, path: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixLinuxlikeLstat64(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikePosixFadvise64(fd: Int, offset: Long, len: Long, advise: Int): Int
+    external fun rustlangLibcUnixLinuxlikeMmap64(addr: Long, len: Long, prot: Int, flags: Int, fd: Int, offset: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikePread64(fd: Int, buf: Long, count: Long, offset: Long): Long
+    external fun rustlangLibcUnixLinuxlikeOpen64(path: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikePwrite64(fd: Int, buf: Long, count: Long, offset: Long): Long
+    external fun rustlangLibcUnixLinuxlikeOpenat64(fd: Int, path: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeReaddir64(dirp: Long): Long
+    external fun rustlangLibcUnixLinuxlikePosixFadvise64(fd: Int, offset: Long, len: Long, advise: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeReaddir64R(dirp: Long, entry: Long, result: Long): Int
+    external fun rustlangLibcUnixLinuxlikePread64(fd: Int, buf: Long, count: Long, offset: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeStat64(path: Long, buf: Long): Int
+    external fun rustlangLibcUnixLinuxlikePwrite64(fd: Int, buf: Long, count: Long, offset: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeTruncate64(path: Long, length: Long): Int
+    external fun rustlangLibcUnixLinuxlikeReaddir64(dirp: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikePreadv64(fd: Int, iov: Long, iovcnt: Int, offset: Long): Long
+    external fun rustlangLibcUnixLinuxlikeReaddir64R(dirp: Long, entry: Long, result: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikePwritev64(fd: Int, iov: Long, iovcnt: Int, offset: Long): Long
+    external fun rustlangLibcUnixLinuxlikeStat64(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeForkpty(amaster: Long, name: Long, termp: Long, winp: Long): Int
+    external fun rustlangLibcUnixLinuxlikeTruncate64(path: Long, length: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeOpenpty(amaster: Long, aslave: Long, name: Long, termp: Long, winp: Long): Int
+    external fun rustlangLibcUnixLinuxlikePreadv64(fd: Int, iov: Long, iovcnt: Int, offset: Long): Long
 
     @JvmStatic
-    external fun libcUnixLinuxlikeStatx(dirfd: Int, pathname: Long, flags: Int, mask: Int, statxbuf: Long): Int
+    external fun rustlangLibcUnixLinuxlikePwritev64(fd: Int, iov: Long, iovcnt: Int, offset: Long): Long
+
+    @JvmStatic
+    external fun rustlangLibcUnixLinuxlikeForkpty(amaster: Long, name: Long, termp: Long, winp: Long): Int
+
+    @JvmStatic
+    external fun rustlangLibcUnixLinuxlikeOpenpty(amaster: Long, aslave: Long, name: Long, termp: Long, winp: Long): Int
+
+    @JvmStatic
+    external fun rustlangLibcUnixLinuxlikeStatx(dirfd: Int, pathname: Long, flags: Int, mask: Int, statxbuf: Long): Int
 }
 
 public actual fun ioctl(fd: CInt, request: Ioctl, vararg variadicArgs: Long): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeIoctl(fd, request.toLong(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeIoctl(fd, request.toLong(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun libcCurrentSigrtmax(): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeLibcCurrentSigrtmax()
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeLibcCurrentSigrtmax()
 
 public actual fun libcCurrentSigrtmin(): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeLibcCurrentSigrtmin()
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeLibcCurrentSigrtmin()
 
 public actual fun semDestroy(sem: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeSemDestroy(sem.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeSemDestroy(sem.rawAddress)
 
 public actual fun semInit(sem: MutPtr, pshared: CInt, value: CUint): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeSemInit(sem.rawAddress, pshared, value.toInt())
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeSemInit(sem.rawAddress, pshared, value.toInt())
 
 public actual fun fdatasync(fd: CInt): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeFdatasync(fd)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeFdatasync(fd)
 
 public actual fun mincore(addr: MutPtr, len: SizeT, vec: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeMincore(addr.rawAddress, len.toLong(), vec.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeMincore(addr.rawAddress, len.toLong(), vec.rawAddress)
 
-public actual fun clockGetres(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: MutPtr): CInt =
-    0
+public actual fun clockGetres(clkId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: MutPtr): CInt =
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeClockGetres(clkId, tp.rawAddress)
 
-public actual fun clockGettime(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: MutPtr): CInt =
-    0
+public actual fun clockGettime(clkId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: MutPtr): CInt =
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeClockGettime(clkId, tp.rawAddress)
 
-public actual fun clockSettime(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: ConstPtr): CInt =
-    0
+public actual fun clockSettime(clkId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: ConstPtr): CInt =
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeClockSettime(clkId, tp.rawAddress)
 
 public actual fun clockGetcpuclockid(pid: PidT, clkId: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeClockGetcpuclockid(pid, clkId.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeClockGetcpuclockid(pid, clkId.rawAddress)
 
 public actual fun getitimer(which: CInt, currValue: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeGetitimer(which, currValue.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeGetitimer(which, currValue.rawAddress)
 
 public actual fun setitimer(which: CInt, newValue: ConstPtr, oldValue: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeSetitimer(which, newValue.rawAddress, oldValue.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeSetitimer(which, newValue.rawAddress, oldValue.rawAddress)
 
 public actual fun dirfd(dirp: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeDirfd(dirp.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeDirfd(dirp.rawAddress)
 
 public actual fun memalign(align: SizeT, size: SizeT): MutPtr =
-    MutPtr(UnixLinuxlikeJniBridge.libcUnixLinuxlikeMemalign(align.toLong(), size.toLong()))
+    MutPtr(LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeMemalign(align.toLong(), size.toLong()))
 
 public actual fun setgroups(ngroups: SizeT, ptr: ConstPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeSetgroups(ngroups.toLong(), ptr.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeSetgroups(ngroups.toLong(), ptr.rawAddress)
 
 public actual fun pipe2(fds: MutPtr, flags: CInt): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikePipe2(fds.rawAddress, flags)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikePipe2(fds.rawAddress, flags)
 
 public actual fun statfs(path: ConstPtr, buf: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeStatfs(path.rawAddress, buf.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeStatfs(path.rawAddress, buf.rawAddress)
 
 public actual fun fstatfs(fd: CInt, buf: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeFstatfs(fd, buf.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeFstatfs(fd, buf.rawAddress)
 
 public actual fun memrchr(cx: ConstPtr, c: CInt, n: SizeT): MutPtr =
-    MutPtr(UnixLinuxlikeJniBridge.libcUnixLinuxlikeMemrchr(cx.rawAddress, c, n.toLong()))
+    MutPtr(LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeMemrchr(cx.rawAddress, c, n.toLong()))
 
 public actual fun posixFadvise(fd: CInt, offset: OffT, len: OffT, advise: CInt): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikePosixFadvise(fd, offset, len, advise)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikePosixFadvise(fd, offset, len, advise)
 
 public actual fun futimens(fd: CInt, times: ConstPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeFutimens(fd, times.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeFutimens(fd, times.rawAddress)
 
 public actual fun utimensat(dirfd: CInt, path: ConstPtr, times: ConstPtr, flag: CInt): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeUtimensat(dirfd, path.rawAddress, times.rawAddress, flag)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeUtimensat(dirfd, path.rawAddress, times.rawAddress, flag)
 
 public actual fun duplocale(base: LocaleT): LocaleT =
-    MutPtr(UnixLinuxlikeJniBridge.libcUnixLinuxlikeDuplocale(base.rawAddress))
+    MutPtr(LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeDuplocale(base.rawAddress))
 
 public actual fun freelocale(loc: LocaleT) {
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeFreelocale(loc.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeFreelocale(loc.rawAddress)
 }
 
 public actual fun newlocale(mask: CInt, locale: ConstPtr, base: LocaleT): LocaleT =
-    MutPtr(UnixLinuxlikeJniBridge.libcUnixLinuxlikeNewlocale(mask, locale.rawAddress, base.rawAddress))
+    MutPtr(LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeNewlocale(mask, locale.rawAddress, base.rawAddress))
 
 public actual fun uselocale(loc: LocaleT): LocaleT =
-    MutPtr(UnixLinuxlikeJniBridge.libcUnixLinuxlikeUselocale(loc.rawAddress))
+    MutPtr(LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeUselocale(loc.rawAddress))
 
 public actual fun mknodat(dirfd: CInt, pathname: ConstPtr, mode: ModeT, dev: DevT): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeMknodat(dirfd, pathname.rawAddress, mode.toInt(), dev.toLong())
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeMknodat(dirfd, pathname.rawAddress, mode.toInt(), dev)
 
 public actual fun ptsnameR(fd: CInt, buf: MutPtr, buflen: SizeT): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikePtsnameR(fd, buf.rawAddress, buflen.toLong())
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikePtsnameR(fd, buf.rawAddress, buflen.toLong())
 
 public actual fun clearenv(): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeClearenv()
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeClearenv()
 
 public actual fun waitid(idtype: IdtypeT, id: IdT, infop: MutPtr, options: CInt): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeWaitid(idtype.toInt(), id.toInt(), infop.rawAddress, options)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeWaitid(idtype.toInt(), id.toInt(), infop.rawAddress, options)
 
 public actual fun getresuid(ruid: MutPtr, euid: MutPtr, suid: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeGetresuid(ruid.rawAddress, euid.rawAddress, suid.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeGetresuid(ruid.rawAddress, euid.rawAddress, suid.rawAddress)
 
 public actual fun getresgid(rgid: MutPtr, egid: MutPtr, sgid: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeGetresgid(rgid.rawAddress, egid.rawAddress, sgid.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeGetresgid(rgid.rawAddress, egid.rawAddress, sgid.rawAddress)
 
 public actual fun acct(filename: ConstPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeAcct(filename.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeAcct(filename.rawAddress)
 
 public actual fun brk(addr: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeBrk(addr.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeBrk(addr.rawAddress)
 
 public actual fun sbrk(increment: IntptrT): MutPtr =
-    MutPtr(UnixLinuxlikeJniBridge.libcUnixLinuxlikeSbrk(increment))
+    MutPtr(LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeSbrk(increment))
 
 public actual fun vfork(): PidT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeVfork()
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeVfork()
 
 public actual fun setresgid(rgid: GidT, egid: GidT, sgid: GidT): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeSetresgid(rgid, egid, sgid)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeSetresgid(rgid, egid, sgid)
 
 public actual fun setresuid(ruid: UidT, euid: UidT, suid: UidT): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeSetresuid(ruid, euid, suid)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeSetresuid(ruid, euid, suid)
 
 public actual fun wait4(pid: PidT, status: MutPtr, options: CInt, rusage: MutPtr): PidT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeWait4(pid, status.rawAddress, options, rusage.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeWait4(pid, status.rawAddress, options, rusage.rawAddress)
 
 public actual fun loginTty(fd: CInt): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeLoginTty(fd)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeLoginTty(fd)
 
 public actual fun execvpe(file: ConstPtr, argv: ConstPtr, envp: ConstPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeExecvpe(file.rawAddress, argv.rawAddress, envp.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeExecvpe(file.rawAddress, argv.rawAddress, envp.rawAddress)
 
 public actual fun fexecve(fd: CInt, argv: ConstPtr, envp: ConstPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeFexecve(fd, argv.rawAddress, envp.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeFexecve(fd, argv.rawAddress, envp.rawAddress)
 
 public actual fun getifaddrs(ifap: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeGetifaddrs(ifap.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeGetifaddrs(ifap.rawAddress)
 
 public actual fun freeifaddrs(ifa: MutPtr) {
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeFreeifaddrs(ifa.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeFreeifaddrs(ifa.rawAddress)
 }
 
 public actual fun bind(socket: CInt, address: ConstPtr, addressLen: SocklenT): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeBind(socket, address.rawAddress, addressLen.toInt())
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeBind(socket, address.rawAddress, addressLen.toInt())
 
 public actual fun writev(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeWritev(fd, iov.rawAddress, iovcnt)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeWritev(fd, iov.rawAddress, iovcnt)
 
 public actual fun readv(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeReadv(fd, iov.rawAddress, iovcnt)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeReadv(fd, iov.rawAddress, iovcnt)
 
 public actual fun sendmsg(fd: CInt, msg: ConstPtr, flags: CInt): SsizeT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeSendmsg(fd, msg.rawAddress, flags)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeSendmsg(fd, msg.rawAddress, flags)
 
 public actual fun recvmsg(fd: CInt, msg: MutPtr, flags: CInt): SsizeT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeRecvmsg(fd, msg.rawAddress, flags)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeRecvmsg(fd, msg.rawAddress, flags)
 
 public actual fun uname(buf: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeUname(buf.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeUname(buf.rawAddress)
 
 public actual fun strchrnul(s: ConstPtr, c: CInt): MutPtr =
-    MutPtr(UnixLinuxlikeJniBridge.libcUnixLinuxlikeStrchrnul(s.rawAddress, c))
+    MutPtr(LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeStrchrnul(s.rawAddress, c))
 
 public actual fun strftime(s: MutPtr, max: SizeT, format: ConstPtr, tm: ConstPtr): SizeT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeStrftime(s.rawAddress, max.toLong(), format.rawAddress, tm.rawAddress).toULong()
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeStrftime(s.rawAddress, max.toLong(), format.rawAddress, tm.rawAddress).toULong()
 
 public actual fun strftimeL(s: MutPtr, max: SizeT, format: ConstPtr, tm: ConstPtr, locale: LocaleT): SizeT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeStrftimeL(s.rawAddress, max.toLong(), format.rawAddress, tm.rawAddress, locale.rawAddress).toULong()
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeStrftimeL(s.rawAddress, max.toLong(), format.rawAddress, tm.rawAddress, locale.rawAddress).toULong()
 
 public actual fun strptime(s: ConstPtr, format: ConstPtr, tm: MutPtr): MutPtr =
-    MutPtr(UnixLinuxlikeJniBridge.libcUnixLinuxlikeStrptime(s.rawAddress, format.rawAddress, tm.rawAddress))
+    MutPtr(LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeStrptime(s.rawAddress, format.rawAddress, tm.rawAddress))
 
 public actual fun mkostemp(template: MutPtr, flags: CInt): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeMkostemp(template.rawAddress, flags)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeMkostemp(template.rawAddress, flags)
 
 public actual fun mkostemps(template: MutPtr, suffixlen: CInt, flags: CInt): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeMkostemps(template.rawAddress, suffixlen, flags)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeMkostemps(template.rawAddress, suffixlen, flags)
 
 public actual fun getdomainname(name: MutPtr, len: SizeT): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeGetdomainname(name.rawAddress, len.toLong())
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeGetdomainname(name.rawAddress, len.toLong())
 
 public actual fun setdomainname(name: ConstPtr, len: SizeT): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeSetdomainname(name.rawAddress, len.toLong())
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeSetdomainname(name.rawAddress, len.toLong())
 
 public actual fun ifNameindex(): MutPtr =
-    MutPtr(UnixLinuxlikeJniBridge.libcUnixLinuxlikeIfNameindex())
+    MutPtr(LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeIfNameindex())
 
 public actual fun ifFreenameindex(ptr: MutPtr) {
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeIfFreenameindex(ptr.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeIfFreenameindex(ptr.rawAddress)
 }
 
 public actual fun getpwnamR(name: ConstPtr, pwd: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeGetpwnamR(name.rawAddress, pwd.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeGetpwnamR(name.rawAddress, pwd.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
 
 public actual fun getpwuidR(uid: UidT, pwd: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeGetpwuidR(uid, pwd.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeGetpwuidR(uid, pwd.rawAddress, buf.rawAddress, buflen.toLong(), result.rawAddress)
 
 public actual fun fstatfs64(fd: CInt, buf: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeFstatfs64(fd, buf.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeFstatfs64(fd, buf.rawAddress)
 
 public actual fun statvfs64(path: ConstPtr, buf: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeStatvfs64(path.rawAddress, buf.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeStatvfs64(path.rawAddress, buf.rawAddress)
 
 public actual fun fstatvfs64(fd: CInt, buf: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeFstatvfs64(fd, buf.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeFstatvfs64(fd, buf.rawAddress)
 
 public actual fun statfs64(path: ConstPtr, buf: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeStatfs64(path.rawAddress, buf.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeStatfs64(path.rawAddress, buf.rawAddress)
 
 public actual fun creat64(path: ConstPtr, mode: ModeT): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeCreat64(path.rawAddress, mode.toInt())
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeCreat64(path.rawAddress, mode.toInt())
 
 public actual fun fstat64(fildes: CInt, buf: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeFstat64(fildes, buf.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeFstat64(fildes, buf.rawAddress)
 
 public actual fun fstatat64(dirfd: CInt, pathname: ConstPtr, buf: MutPtr, flags: CInt): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeFstatat64(dirfd, pathname.rawAddress, buf.rawAddress, flags)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeFstatat64(dirfd, pathname.rawAddress, buf.rawAddress, flags)
 
 public actual fun ftruncate64(fd: CInt, length: Off64T): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeFtruncate64(fd, length)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeFtruncate64(fd, length)
 
 public actual fun lseek64(fd: CInt, offset: Off64T, whence: CInt): Off64T =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeLseek64(fd, offset, whence)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeLseek64(fd, offset, whence)
 
 public actual fun lstat64(path: ConstPtr, buf: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeLstat64(path.rawAddress, buf.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeLstat64(path.rawAddress, buf.rawAddress)
 
 public actual fun mmap64(addr: MutPtr, len: SizeT, prot: CInt, flags: CInt, fd: CInt, offset: Off64T): MutPtr =
-    MutPtr(UnixLinuxlikeJniBridge.libcUnixLinuxlikeMmap64(addr.rawAddress, len.toLong(), prot, flags, fd, offset))
+    MutPtr(LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeMmap64(addr.rawAddress, len.toLong(), prot, flags, fd, offset))
 
 public actual fun open64(path: ConstPtr, oflag: CInt, vararg variadicArgs: Long): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeOpen64(path.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeOpen64(path.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun openat64(fd: CInt, path: ConstPtr, oflag: CInt, vararg variadicArgs: Long): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeOpenat64(fd, path.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeOpenat64(fd, path.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun posixFadvise64(fd: CInt, offset: Off64T, len: Off64T, advise: CInt): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikePosixFadvise64(fd, offset, len, advise)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikePosixFadvise64(fd, offset, len, advise)
 
 public actual fun pread64(fd: CInt, buf: MutPtr, count: SizeT, offset: Off64T): SsizeT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikePread64(fd, buf.rawAddress, count.toLong(), offset)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikePread64(fd, buf.rawAddress, count.toLong(), offset)
 
 public actual fun pwrite64(fd: CInt, buf: ConstPtr, count: SizeT, offset: Off64T): SsizeT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikePwrite64(fd, buf.rawAddress, count.toLong(), offset)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikePwrite64(fd, buf.rawAddress, count.toLong(), offset)
 
 public actual fun readdir64(dirp: MutPtr): MutPtr =
-    MutPtr(UnixLinuxlikeJniBridge.libcUnixLinuxlikeReaddir64(dirp.rawAddress))
+    MutPtr(LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeReaddir64(dirp.rawAddress))
 
 public actual fun readdir64R(dirp: MutPtr, entry: MutPtr, result: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeReaddir64R(dirp.rawAddress, entry.rawAddress, result.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeReaddir64R(dirp.rawAddress, entry.rawAddress, result.rawAddress)
 
 public actual fun stat64(path: ConstPtr, buf: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeStat64(path.rawAddress, buf.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeStat64(path.rawAddress, buf.rawAddress)
 
 public actual fun truncate64(path: ConstPtr, length: Off64T): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeTruncate64(path.rawAddress, length)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeTruncate64(path.rawAddress, length)
 
 public actual fun preadv64(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: Off64T): SsizeT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikePreadv64(fd, iov.rawAddress, iovcnt, offset)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikePreadv64(fd, iov.rawAddress, iovcnt, offset)
 
 public actual fun pwritev64(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: Off64T): SsizeT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikePwritev64(fd, iov.rawAddress, iovcnt, offset)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikePwritev64(fd, iov.rawAddress, iovcnt, offset)
 
 public actual fun forkpty(amaster: MutPtr, name: MutPtr, termp: ConstPtr, winp: ConstPtr): PidT =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeForkpty(amaster.rawAddress, name.rawAddress, termp.rawAddress, winp.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeForkpty(amaster.rawAddress, name.rawAddress, termp.rawAddress, winp.rawAddress)
 
 public actual fun openpty(amaster: MutPtr, aslave: MutPtr, name: MutPtr, termp: ConstPtr, winp: ConstPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeOpenpty(amaster.rawAddress, aslave.rawAddress, name.rawAddress, termp.rawAddress, winp.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeOpenpty(amaster.rawAddress, aslave.rawAddress, name.rawAddress, termp.rawAddress, winp.rawAddress)
 
 public actual fun statx(dirfd: CInt, pathname: ConstPtr, flags: CInt, mask: CUint, statxbuf: MutPtr): CInt =
-    UnixLinuxlikeJniBridge.libcUnixLinuxlikeStatx(dirfd, pathname.rawAddress, flags, mask.toInt(), statxbuf.rawAddress)
+    LibcUnixLinuxlikeJniBridge.rustlangLibcUnixLinuxlikeStatx(dirfd, pathname.rawAddress, flags, mask.toInt(), statxbuf.rawAddress)

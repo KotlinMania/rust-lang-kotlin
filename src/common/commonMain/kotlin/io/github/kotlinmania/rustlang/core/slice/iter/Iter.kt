@@ -1,35 +1,35 @@
 // port-lint: source slice/iter.rs
 package io.github.kotlinmania.rustlang.core.slice.iter
 
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.cmp.min
-import io.github.kotlinmania.rustlang.core.convert.AsRef
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.convert.AsRef
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.mem.replace
-import io.github.kotlinmania.rustlang.core.mem.take
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.iter.macros.len
+import io.github.kotlinmania.rustlang.core.slice.get
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.iter.adapters.fuse.nth
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.mem.replace
+import io.github.kotlinmania.rustlang.mem.take
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.ptr.withoutProvenance
+import io.github.kotlinmania.rustlang.ptr.withoutProvenanceMut
+import io.github.kotlinmania.rustlang.slice.iter.macros.len
 
 // Definitions of a bunch of iterators for `[T]`.
 
@@ -535,8 +535,8 @@ public open class SplitInclusive<T, P>(
         if (idx == this.v.size) {
             this.finished = true
         }
-        val ret = ((this.v).slice(0 until idx))
-        this.v = ((this.v).slice(idx until this.v.size))
+        val ret = ((this.v).subList(0, idx))
+        this.v = ((this.v).subList(idx, (this.v).size))
         return ret
     }
 
@@ -547,7 +547,7 @@ public open class SplitInclusive<T, P>(
             // If the predicate doesn't match anything, we yield one slice.
             // If it matches every element, we yield `len()` one-element slices,
             // or a single empty slice.
-            Pair(1, max(1, this.v.size))
+            Pair(1, cmp.max(1, this.v.size))
         }
 
     public open fun nextBack(): List<T>? {
@@ -561,14 +561,14 @@ public open class SplitInclusive<T, P>(
             if (this.v.isEmpty()) {
                 listOf()
             } else {
-                ((this.v).slice(0 until (this.v.size - 1)))
+                ((this.v).subList(0, (this.v.size - 1)))
             }
         val idx = ((remainder.iter().indexOfLast({ x -> (this.pred)(x) }).takeIf { it >= 0 })?.let({ idx -> idx + 1 }) ?: 0)
         if (idx == 0) {
             this.finished = true
         }
-        val ret = ((this.v).slice(idx until this.v.size))
-        this.v = ((this.v).slice(0 until idx))
+        val ret = ((this.v).subList(idx, (this.v).size))
+        this.v = ((this.v).subList(0, idx))
         return ret
     }
 
@@ -734,7 +734,7 @@ public open class SplitInclusiveMut<T, P>(
             // If the predicate doesn't match anything, we yield one slice.
             // If it matches every element, we yield `len()` one-element slices,
             // or a single empty slice.
-            Pair(1, max(1, this.v.size))
+            Pair(1, cmp.max(1, this.v.size))
         }
 
     public open fun nextBack(): MutableList<T>? {
@@ -750,7 +750,7 @@ public open class SplitInclusiveMut<T, P>(
                 // The last index of self.v is already checked and found to match
                 // by the last iteration, so we start searching a new match
                 // one index to the left.
-                val remainder = ((this.v).slice(0 until (this.v.size - 1)))
+                val remainder = ((this.v).subList(0, (this.v.size - 1)))
                 remainder.iter().indexOfLast({ x -> pred(x) }).takeIf { it >= 0 }
             }
         val idx = idxOpt.map({ idx -> idx + 1 }).unwrapOr(0)
@@ -1135,8 +1135,8 @@ public open class Windows<T> internal constructor(
         if (this.size.get() > this.v.size) {
             null
         } else {
-            val ret = ((this.v).slice(0 until this.size.get()))
-            this.v = ((this.v).slice(1 until this.v.size))
+            val ret = ((this.v).subList(0, this.size.get()))
+            this.v = ((this.v).subList(1, (this.v).size))
             ret
         }
 
@@ -1157,7 +1157,7 @@ public open class Windows<T> internal constructor(
             nth
         } else {
             // setting length to 0 is cheaper than overwriting the pointer when assigning &[]
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1168,7 +1168,7 @@ public open class Windows<T> internal constructor(
             null
         } else {
             val start = this.v.size - this.size.get()
-            ((this.v).slice(start until this.v.size))
+            ((this.v).subList(start, (this.v).size))
         }
 
     public override fun iteratorGetUnchecked(idx: Int): List<T> {
@@ -1183,11 +1183,11 @@ public open class Windows<T> internal constructor(
 
     public open fun nthBack(n: Int): List<T>? =
         if (rustCheckedSub(this.v.size, n) != null && end.checkedSub(this.size.get()) != null) {
-            val res = ((this.v).slice(start until end))
-            this.v = ((this.v).slice(0 until end - 1))
+            val res = ((this.v).subList(start, end))
+            this.v = ((this.v).subList(0, end - 1))
             res
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1268,12 +1268,12 @@ public open class Chunks<T>(
 
     public override fun nth(n: Int): List<T>? =
         if (rustCheckedMul(n, this.chunkSize) != null && start < this.v.size) {
-            val rest = ((this.v).slice(start until this.v.size))
+            val rest = ((this.v).subList(start, (this.v).size))
             val (chunk, rest1) = rest.splitAt(this.chunkSize.min(rest.size))
             this.v = rest1
             chunk
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1283,7 +1283,7 @@ public open class Chunks<T>(
             null
         } else {
             val start = (this.v.size - 1) / this.chunkSize * this.chunkSize
-            ((this.v).slice(start until this.v.size))
+            ((this.v).subList(start, (this.v).size))
         }
 
     public override fun iteratorGetUnchecked(idx: Int): List<T> {
@@ -1337,11 +1337,11 @@ public open class Chunks<T>(
         return if (n < len) {
             val start = (len - 1 - n) * this.chunkSize
             val end = start + (this.v.size - start).min(this.chunkSize)
-            val nthBack = ((this.v).slice(start until end))
-            this.v = ((this.v).slice(0 until start))
+            val nthBack = ((this.v).subList(start, end))
+            this.v = ((this.v).subList(0, start))
             nthBack
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1595,10 +1595,10 @@ public open class ChunksExact<T>(
 
     public override fun nth(n: Int): List<T>? =
         if (rustCheckedMul(n, this.chunkSize) != null && start < this.v.size) {
-            this.v = ((this.v).slice(start until this.v.size))
+            this.v = ((this.v).subList(start, (this.v).size))
             this.next()
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1625,11 +1625,11 @@ public open class ChunksExact<T>(
         return if (n < len) {
             val start = (len - 1 - n) * this.chunkSize
             val end = start + this.chunkSize
-            val nthBack = ((this.v).slice(start until end))
-            this.v = ((this.v).slice(0 until start))
+            val nthBack = ((this.v).subList(start, end))
+            this.v = ((this.v).subList(0, start))
             nthBack
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1826,7 +1826,7 @@ public fun <T> ArrayWindows<T, N>.clone(n: Int): ArrayWindows<T, N> = ArrayWindo
 public fun <T> ArrayWindows<T, N>.next(n: Int): List<T>? {
     val ret = this.v.firstChunk()
     if (ret != null) {
-        this.v = ((this.v).slice(1 until this.v.size))
+        this.v = ((this.v).subList(1, (this.v).size))
     }
     return ret
 }
@@ -1840,7 +1840,7 @@ public fun <T> ArrayWindows<T, N>.count(n: Int): Int = this.len()
 
 public fun <T> ArrayWindows<T, N>.nth(n: Int): List<T>? {
     val idx = n.min(this.v.size)
-    this.v = ((this.v).slice(idx until this.v.size))
+    this.v = ((this.v).subList(idx, (this.v).size))
     return this.next()
 }
 
@@ -1857,14 +1857,14 @@ public fun <T> ArrayWindows<T, N>.iteratorGetUnchecked(idx: Int, n: Int): List<T
 public fun <T> ArrayWindows<T, N>.nextBack(n: Int): List<T>? {
     val ret = this.v.lastChunk()
     if (ret != null) {
-        this.v = ((this.v).slice(0 until this.v.size - 1))
+        this.v = ((this.v).subList(0, this.v.size - 1))
     }
     return ret
 }
 
 public fun <T> ArrayWindows<T, N>.nthBack(n: Int): List<T>? {
     val idx = rustSaturatingSub(this.v.size, n)
-    this.v = ((this.v).slice(0 until idx))
+    this.v = ((this.v).subList(0, idx))
     return this.nextBack()
 }
 
@@ -1936,12 +1936,12 @@ public open class RChunks<T>(
     public override fun nth(n: Int): List<T>? =
         if (rustCheckedMul(n, this.chunkSize) != null && end < this.v.size) {
             val end = this.v.size - end
-            val rest = ((this.v).slice(0 until end))
+            val rest = ((this.v).subList(0, end))
             val (rest1, chunk) = rest.splitAt(rustSaturatingSub(end, this.chunkSize))
             this.v = rest1
             chunk
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1957,7 +1957,7 @@ public open class RChunks<T>(
                 } else {
                     rem
                 }
-            ((this.v).slice(0 until end))
+            ((this.v).subList(0, end))
         }
 
     public override fun iteratorGetUnchecked(idx: Int): List<T> {
@@ -1990,11 +1990,11 @@ public open class RChunks<T>(
             val offsetFromEnd = (len - 1 - n) * this.chunkSize
             val end = this.v.size - offsetFromEnd
             val start = rustSaturatingSub(end, this.chunkSize)
-            val nthBack = ((this.v).slice(start until end))
-            this.v = ((this.v).slice(end until this.v.size))
+            val nthBack = ((this.v).subList(start, end))
+            this.v = ((this.v).subList(end, (this.v).size))
             nthBack
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -2247,10 +2247,10 @@ public open class RChunksExact<T>(
 
     public override fun nth(n: Int): List<T>? =
         if (rustCheckedMul(n, this.chunkSize) != null && end < this.v.size) {
-            this.v = ((this.v).slice(0 until this.v.size - end))
+            this.v = ((this.v).subList(0, this.v.size - end))
             this.next()
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -2281,11 +2281,11 @@ public open class RChunksExact<T>(
             val offset = (len - n) * this.chunkSize
             val start = this.v.size - offset
             val end = start + this.chunkSize
-            val nthBack = ((this.v).slice(start until end))
-            this.v = ((this.v).slice(end until this.v.size))
+            val nthBack = ((this.v).subList(start, end))
+            this.v = ((this.v).subList(end, (this.v).size))
             nthBack
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }

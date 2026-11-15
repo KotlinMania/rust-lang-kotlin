@@ -1,18 +1,19 @@
 // port-lint: source fmt/rt.rs
 package io.github.kotlinmania.rustlang.core.fmt.rt
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.LowerExp
-import io.github.kotlinmania.rustlang.core.fmt.Pointer
-import io.github.kotlinmania.rustlang.core.fmt.UpperExp
-import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.fmt.Formatter
+import io.github.kotlinmania.rustlang.fmt.LowerExp
+import io.github.kotlinmania.rustlang.fmt.Pointer
+import io.github.kotlinmania.rustlang.fmt.UpperExp
+import io.github.kotlinmania.rustlang.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 // All types and methods in this file are used by the compiler in
 // the expansion/lowering of formatArgs().

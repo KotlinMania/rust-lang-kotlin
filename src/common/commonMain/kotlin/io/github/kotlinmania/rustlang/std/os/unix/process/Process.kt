@@ -2,24 +2,21 @@
 package io.github.kotlinmania.rustlang.std.os.unix.process
 
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGKILL
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.os.fd.OwnedFd
+import io.github.kotlinmania.rustlang.os.fd.RawFd
+import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.process.ChildStderr
+import io.github.kotlinmania.rustlang.process.ChildStdin
+import io.github.kotlinmania.rustlang.process.ChildStdout
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
-import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.process.Child
-import io.github.kotlinmania.rustlang.std.process.ChildStderr
-import io.github.kotlinmania.rustlang.std.process.ChildStdin
-import io.github.kotlinmania.rustlang.std.process.ChildStdout
-import io.github.kotlinmania.rustlang.std.process.Command
-import io.github.kotlinmania.rustlang.std.process.ExitStatus
-import io.github.kotlinmania.rustlang.std.process.ExitStatusError
-import io.github.kotlinmania.rustlang.std.process.Stdio
-import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.process.unix.common.getppid
-import io.github.kotlinmania.rustlang.std.sys.process.unsupported.ChildPipe
+import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.sys.process.unix.common.getppid
+import io.github.kotlinmania.rustlang.sys.process.unix.unix.Process
+import io.github.kotlinmania.rustlang.sys.process.unsupported.ChildPipe
+import io.github.kotlinmania.rustlang.sys.process.unsupported.Stdio
 
 // Unix-specific extensions to primitives in the [std.process] module.
 
@@ -156,7 +153,7 @@ public interface CommandExt {
      * required to gracefully handle errors it is recommended to use the
      * cross-platform `spawn` instead.
      */
-    public fun exec(): io.github.kotlinmania.rustlang.std.io.Error
+    public fun exec(): io.github.kotlinmania.rustlang.io.Error
 
     /**
      * Set executable argument
@@ -262,10 +259,10 @@ public fun Command.preExec(f: () -> Result<Unit, Error>): Command {
     return this
 }
 
-public fun Command.exec(): io.github.kotlinmania.rustlang.std.io.Error {
+public fun Command.exec(): io.github.kotlinmania.rustlang.io.Error {
     // NOTE: This may *not* be safe to call after `libc.fork`, because it
     // may allocate. That may be worth fixing at some point in the future.
-    return this.asInnerMut().exec(io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio.Inherit)
+    return this.asInnerMut().exec(Stdio.Inherit)
 }
 
 public fun Command.arg0(arg: OsStr): Command {
@@ -425,7 +422,7 @@ public interface ExitStatusExt<T> {
     public fun intoRaw(): Int
 }
 
-public fun exitStatusExtFromRawExitStatus(raw: Int): ExitStatus = ExitStatus.fromInner(From.from(raw))
+public fun exitStatusExtFromRawExitStatus(raw: Int): ExitStatus = Process.ExitStatus.fromInner(From.from(raw))
 
 public fun ExitStatus.signal(): Int? = this.asInner().signal()
 
@@ -437,7 +434,7 @@ public fun ExitStatus.continued(): Boolean = this.asInner().continued()
 
 public fun ExitStatus.intoRaw(): Int = this.asInner().intoRaw().into()
 
-public fun exitStatusExtFromRawExitStatusError(raw: Int): ExitStatusError = ExitStatus.fromRaw(raw).exitOk().expectErr("<ExitStatusError as ExitStatusExt>::from_raw(0) but zero is not an error")
+public fun exitStatusExtFromRawExitStatusError(raw: Int): ExitStatusError = Process.ExitStatus.fromRaw(raw).exitOk().expectErr("<ExitStatusError as ExitStatusExt>::from_raw(0) but zero is not an error")
 
 public fun ExitStatusError.signal(): Int? = this.intoStatus().signal()
 
@@ -550,8 +547,8 @@ public fun Child.killProcessGroup(): Result<Unit, Error> = this.handle.sendProce
 
 public fun fromRawFdStdio(fd: RawFd): Stdio {
     val fd1 = FileDesc.fromRawFd(fd)
-    val io = io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio.Fd(fd1)
-    return Stdio.fromInner(io)
+    val io = Stdio.Fd(fd1)
+    return Process.Stdio.fromInner(io)
 }
 
 /**
@@ -560,8 +557,8 @@ public fun fromRawFdStdio(fd: RawFd): Stdio {
  */
 public fun fromStdio(fd: OwnedFd): Stdio {
     val fd1 = FileDesc.fromInner(fd)
-    val io = io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio.Fd(fd1)
-    return Stdio.fromInner(io)
+    val io = Stdio.Fd(fd1)
+    return Process.Stdio.fromInner(io)
 }
 
 public fun ChildStdin.asRawFd(): RawFd = this.asInner().asRawFd()
@@ -591,7 +588,7 @@ public fun fromOwnedFd(childStdin: ChildStdin): OwnedFd = childStdin.intoInner()
  */
 public fun fromChildStdin(fd: OwnedFd): ChildStdin {
     val pipe = ChildPipe.fromInner(fd)
-    return ChildStdin.fromInner(pipe)
+    return Process.ChildStdin.fromInner(pipe)
 }
 
 public fun ChildStdout.asFd(): BorrowedFd = this.asInner().asFd()
@@ -609,7 +606,7 @@ public fun fromOwnedFd(childStdout: ChildStdout): OwnedFd = childStdout.intoInne
  */
 public fun fromChildStdout(fd: OwnedFd): ChildStdout {
     val pipe = ChildPipe.fromInner(fd)
-    return ChildStdout.fromInner(pipe)
+    return Process.ChildStdout.fromInner(pipe)
 }
 
 public fun ChildStderr.asFd(): BorrowedFd = this.asInner().asFd()
@@ -627,7 +624,7 @@ public fun fromOwnedFd(childStderr: ChildStderr): OwnedFd = childStderr.intoInne
  */
 public fun fromChildStderr(fd: OwnedFd): ChildStderr {
     val pipe = ChildPipe.fromInner(fd)
-    return ChildStderr.fromInner(pipe)
+    return Process.ChildStderr.fromInner(pipe)
 }
 
 /**

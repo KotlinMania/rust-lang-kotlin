@@ -2,13 +2,13 @@
 package io.github.kotlinmania.rustlang.core.io.error.osfunctionsatomic
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
-import io.github.kotlinmania.rustlang.core.io.error.OsFunctions
-import io.github.kotlinmania.rustlang.core.io.error.RawOsError
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
+import io.github.kotlinmania.rustlang.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.io.error.OsFunctions
+import io.github.kotlinmania.rustlang.io.error.RawOsError
+import io.github.kotlinmania.rustlang.sync.atomic.Atomic
 
 // OS-dependent functions
 //

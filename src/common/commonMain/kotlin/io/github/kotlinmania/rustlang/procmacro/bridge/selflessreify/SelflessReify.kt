@@ -1,10 +1,9 @@
 // port-lint: source bridge/selfless_reify.rs
 package io.github.kotlinmania.rustlang.procmacro.bridge.selflessreify
 
+import io.github.kotlinmania.rustlang.bridge.BridgeConfig
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.conjureZst
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
 
 // Abstraction for creating `fun` pointers from any callable that *effectively*
 // has the equivalent of implementing `Default`, even if the compiler neither

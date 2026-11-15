@@ -3,16 +3,18 @@
 
 package io.github.kotlinmania.rustlang.hashbrown
 
-import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.Equivalent
+import io.github.kotlinmania.rustlang.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
-import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
-import io.github.kotlinmania.rustlang.hashbrown.raw.RawDrain
-import io.github.kotlinmania.rustlang.hashbrown.raw.RawExtractIf
-import io.github.kotlinmania.rustlang.hashbrown.raw.RawIntoIter
-import io.github.kotlinmania.rustlang.hashbrown.raw.RawIter
-import io.github.kotlinmania.rustlang.hashbrown.raw.RawTable
+import io.github.kotlinmania.rustlang.hasher.DefaultHashBuilder
+import io.github.kotlinmania.rustlang.raw.Bucket
+import io.github.kotlinmania.rustlang.raw.RawDrain
+import io.github.kotlinmania.rustlang.raw.RawExtractIf
+import io.github.kotlinmania.rustlang.raw.RawIntoIter
+import io.github.kotlinmania.rustlang.raw.RawIter
+import io.github.kotlinmania.rustlang.raw.RawTable
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -1222,10 +1224,10 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
         val hasher = makeHasher(this.hashBuilder)
         return run {
             val matchVal = this.table.findOrFindInsertIndex(hash, equivalent, hasher)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val bucket = matchVal.value
                 replace(bucket.asMut().second, v)
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val index = matchVal.error
                 run {
                     this.table.insertAtIndex(hash, index, Pair(k, v))
@@ -1775,6 +1777,147 @@ public fun <Q, K> equivalent(k: Q): (K) -> Boolean where Q : Equivalent<K> = { x
 public fun <Q, S> makeHash(hashBuilder: S, value: Q): ULong where S : BuildHasher = hashBuilder.hashOne(value)
 
 /**
+ * Creates an empty `HashMap`.
+ *
+ * The hash map is initially created with a capacity of 0, so it will not allocate until it
+ * is first inserted into.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashMap` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashMap], for example with
+ * [`withHasher`](HashMap.withHasher) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashMap
+ *
+ * var map: MutableMap<String, Int> = mutableMapOf()
+ * check(map.size == 0)
+ * check(map.capacity() == 0)
+ * ```
+ */
+public fun <K, V> HashMap.Companion.new(): HashMap<K, V, DefaultHashBuilder> = HashMap.default()
+
+/**
+ * Creates an empty `HashMap` with the specified capacity.
+ *
+ * The hash map will be able to hold at least `capacity` elements without
+ * reallocating. If `capacity` is 0, the hash map will not allocate.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashMap` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashMap], for example with
+ * [`withCapacityAndHasher`](HashMap.withCapacityAndHasher) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashMap
+ *
+ * var map: MutableMap<String, Int> = mutableMapOf()
+ * check(map.size == 0)
+ * check(map.capacity() >= 10)
+ * ```
+ */
+public fun <K, V> HashMap.Companion.withCapacity(capacity: Int): HashMap<K, V, DefaultHashBuilder> = HashMap.withCapacityAndHasher(capacity, DefaultHashBuilder.default())
+
+/**
+ * Creates an empty `HashMap` using the given allocator.
+ *
+ * The hash map is initially created with a capacity of 0, so it will not allocate until it
+ * is first inserted into.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashMap` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashMap], for example with
+ * [`withHasherIn`](HashMap.withHasherIn) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import bumpalo.Bump
+ * import hashbrown.HashMap
+ *
+ * val bump = Bump.new()
+ * var map = HashMap.newIn(bump)
+ * // The created HashMap holds none elements
+ * check(map.len() == 0)
+ * // The created HashMap also doesn't allocate memory
+ * check(map.capacity() == 0)
+ * // Now we insert element inside created HashMap
+ * map.insert("One", 1)
+ * // We can see that the HashMap holds 1 element
+ * check(map.len() == 1)
+ * // And it also allocates some capacity
+ * check(map.capacity() > 1)
+ * ```
+ */
+public fun <K, V, A : Allocator> HashMap.Companion.newIn(alloc: A): HashMap<K, V, DefaultHashBuilder, A> = HashMap.withHasherIn(DefaultHashBuilder.default(), alloc)
+
+/**
+ * Creates an empty `HashMap` with the specified capacity using the given allocator.
+ *
+ * The hash map will be able to hold at least `capacity` elements without
+ * reallocating. If `capacity` is 0, the hash map will not allocate.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashMap` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashMap], for example with
+ * [`withCapacityAndHasherIn`](HashMap.withCapacityAndHasherIn) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import bumpalo.Bump
+ * import hashbrown.HashMap
+ *
+ * val bump = Bump.new()
+ * var map = HashMap.withCapacityIn(5, bump)
+ * // The created HashMap holds none elements
+ * check(map.len() == 0)
+ * // But it can hold at least 5 elements without reallocating
+ * val emptyMapCapacity = map.capacity()
+ * check(emptyMapCapacity >= 5)
+ * // Now we insert some 5 elements inside created HashMap
+ * map.insert("One", 1)
+ * map.insert("Two", 2)
+ * map.insert("Three", 3)
+ * map.insert("Four", 4)
+ * map.insert("Five", 5)
+ * // We can see that the HashMap holds 5 elements
+ * check(map.len() == 5)
+ * // But its capacity isn't changed
+ * check(map.capacity() == emptyMapCapacity)
+ * ```
+ */
+public fun <K, V, A : Allocator> HashMap.Companion.withCapacityIn(capacity: Int, alloc: A): HashMap<K, V, DefaultHashBuilder, A> = HashMap.withCapacityAndHasherIn(capacity, DefaultHashBuilder.default(), alloc)
+
+/**
  * Creates an empty `HashMap` which will use the given hash builder to hash
  * keys.
  *
@@ -1843,6 +1986,21 @@ public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V,
  * ```
  */
 public fun <K, V, S> HashMap.Companion.withCapacityAndHasher(capacity: Int, hashBuilder: S): HashMap<K, V, S> = HashMap(hashBuilder = hashBuilder, table = RawTable.withCapacity(capacity))
+
+// The default hasher is used to match the std implementation signature
+
+/**
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashMap
+ *
+ * val map1 = mutableMapOf(1 to 2, 3 to 4)
+ * val map2: HashMap = listOf(Pair(1, 2), Pair(3, 4)).into()
+ * check(map1 == map2)
+ * ```
+ */
+public fun <K, V, A> fromHashMapKVDefaultHashBuilderA(arr: List<Pair<K, V>>, n: Int): HashMap<K, V, DefaultHashBuilder, A> where A : Allocator = ArrayDeque((arr).toList()).toMap(LinkedHashMap())
 
 /**
  * An iterator over the entries of a `HashMap` in arbitrary order.

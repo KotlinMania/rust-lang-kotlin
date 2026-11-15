@@ -1,8 +1,8 @@
 // port-lint: source iter/sources/once_with.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.oncewith
 
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
 
 /**
  * Creates an iterator that lazily generates a value exactly once by invoking

@@ -1,10 +1,10 @@
 // port-lint: source iter/adapters/by_ref_sized.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized
 
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 /**
  * Like `Iterator.byRef`, but requiring `Sized` so it can forward generics.

@@ -6,9 +6,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_MONOTONIC
-import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_REALTIME
-import io.github.kotlinmania.rustlang.libc.helenos.ClockidT
 import io.github.kotlinmania.rustlang.libc.pthreadCondBroadcast
 import io.github.kotlinmania.rustlang.libc.pthreadCondDestroy
 import io.github.kotlinmania.rustlang.libc.pthreadCondInit
@@ -18,16 +15,19 @@ import io.github.kotlinmania.rustlang.libc.pthreadCondWait
 import io.github.kotlinmania.rustlang.libc.pthreadCondattrDestroy
 import io.github.kotlinmania.rustlang.libc.pthreadCondattrInit
 import io.github.kotlinmania.rustlang.libc.pthreadCondattrSetclock
+import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
+import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_REALTIME
+import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
 import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
 import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
 import io.github.kotlinmania.rustlang.libc.wasi.PTHREAD_COND_INITIALIZER
 import io.github.kotlinmania.rustlang.libc.wasi.PthreadCondT
 import io.github.kotlinmania.rustlang.libc.wasi.PthreadCondattrT
-import io.github.kotlinmania.rustlang.std.sys.helpers.copaque.COpaque
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.AttrGuard
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.Mutex
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.TIMESPEC_MAX_CAPPED
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
+import io.github.kotlinmania.rustlang.sys.helpers.copaque.COpaque
+import io.github.kotlinmania.rustlang.sys.pal.unix.sync.mutex.AttrGuard
+import io.github.kotlinmania.rustlang.sys.pal.unix.sync.mutex.Mutex
+import io.github.kotlinmania.rustlang.sys.pal.unix.time.TIMESPEC_MAX_CAPPED
+import io.github.kotlinmania.rustlang.sys.pal.unix.time.Timespec
 
 public open class Condvar internal constructor(
     innerCtorArg: COpaque<PthreadCondT>,

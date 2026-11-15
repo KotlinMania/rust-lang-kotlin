@@ -6,15 +6,15 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.io.Error
+import io.github.kotlinmania.rustlang.io.Read
+import io.github.kotlinmania.rustlang.io.Write
 import io.github.kotlinmania.rustlang.libc.wasi.EBADF
 import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.STDIN_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
-import io.github.kotlinmania.rustlang.std.io.Error
-import io.github.kotlinmania.rustlang.std.io.Read
-import io.github.kotlinmania.rustlang.std.io.Write
-import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.io.DEFAULT_BUF_SIZE
+import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.sys.io.DEFAULT_BUF_SIZE
 
 public open class Stdin : Read {
     public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = FileDesc.fromRawFd(STDIN_FILENO).read(buf)

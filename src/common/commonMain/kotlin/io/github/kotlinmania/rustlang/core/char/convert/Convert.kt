@@ -1,16 +1,14 @@
 // port-lint: source char/convert.rs
 package io.github.kotlinmania.rustlang.core.char.convert
 
+import io.github.kotlinmania.rustlang.char.TryFromCharError
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.char.TryFromCharError
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
+import io.github.kotlinmania.rustlang.mem.transmutability.transmute
 
 // Character conversions.
 
@@ -21,10 +19,10 @@ public fun fromU32(i: UInt): Char? {
     // Note(const-Note): once Result.ok is const fn, use it here
     return run {
         val matchVal = charTryFromU32(i)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val c = matchVal.value
             c
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             null
         } }
     }
@@ -36,7 +34,7 @@ public fun fromU32(i: UInt): Char? {
 public fun fromU32Unchecked(i: UInt): Char {
     // SAFETY: the caller must guarantee that `i` is a valid char value.
     return run {
-        assertUnsafePrecondition(checkLanguageUb, "invalid value for `char`", i, i, charTryFromU32, i, isOk)
+        Unit
         transmuteWithLayouts(i, PrimitiveLayouts.U32, PrimitiveLayouts.CHAR)
     }
 }
@@ -112,10 +110,10 @@ public fun tryFromUByte(c: Char): Result<UByte, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = UByte.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val b = matchVal.value
             Result.Ok(b)
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             Result.Err(TryFromCharError())
         } }
     }
@@ -145,10 +143,10 @@ public fun tryFromUShort(c: Char): Result<UShort, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = UShort.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val x = matchVal.value
             Result.Ok(x)
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             Result.Err(TryFromCharError())
         } }
     }
@@ -189,10 +187,10 @@ public fun tryFromInt(c: Char): Result<Int, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = Int.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val x = matchVal.value
             Result.Ok(x)
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             Result.Err(TryFromCharError())
         } }
     }

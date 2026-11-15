@@ -6,20 +6,19 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.os.fd.AsFd
-import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
-import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.process.Command
-import io.github.kotlinmania.rustlang.std.process.ExitStatus
-import io.github.kotlinmania.rustlang.std.sys.AsInner
-import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd.PidFd as InnerPidFd
+import io.github.kotlinmania.rustlang.os.fd.AsFd
+import io.github.kotlinmania.rustlang.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.os.fd.FromRawFd
+import io.github.kotlinmania.rustlang.os.fd.IntoRawFd
+import io.github.kotlinmania.rustlang.os.fd.OwnedFd
+import io.github.kotlinmania.rustlang.os.fd.RawFd
+import io.github.kotlinmania.rustlang.process.ExitStatus
+import io.github.kotlinmania.rustlang.sys.AsInner
+import io.github.kotlinmania.rustlang.sys.FromInner
+import io.github.kotlinmania.rustlang.sys.IntoInner
+import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.sys.process.unix.pidfd.PidFd as InnerPidFd
 
 // Linux-specific extensions to primitives in the [std.process] module.
 
@@ -102,7 +101,7 @@ public open class PidFd internal constructor(
      * [Child.tryWait]: process.Child.tryWait
      */
     public open fun tryWait(): Result<ExitStatus?> {
-        return Result.Ok(when (val tryResult = this.inner.tryWait()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.map(FromInner::fromInner))
+        return Result.Ok(when (val tryResult = this.inner.tryWait()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.map(FromInner::fromInner))
     }
 
     public override fun asInner(): InnerPidFd = this.inner
@@ -200,10 +199,10 @@ public interface CommandExt {
      * [pidfd]: fn@ChildExt.pidfd
      * [intoPidfd]: ChildExt.intoPidfd
      */
-    public fun createPidfd(value: Boolean): Command
+    public fun createPidfd(value: Boolean): process.Command
 }
 
-public fun Command.createPidfd(value: Boolean): Command {
+public fun process.Command.createPidfd(value: Boolean): process.Command {
     this.asInnerMut().createPidfd(value)
     return this
 }

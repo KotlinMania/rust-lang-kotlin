@@ -1,8 +1,8 @@
 // port-lint: source mem/drop_guard.rs
 package io.github.kotlinmania.rustlang.core.mem.dropguard
 
-import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.mem.manuallydrop.ManuallyDrop
 
 /**
  * Wrap a value and run a closure when dropped.

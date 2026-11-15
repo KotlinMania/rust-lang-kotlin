@@ -2,715 +2,743 @@
 
 package io.github.kotlinmania.rustlang.libc.windows
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAbort
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAbs
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAccept
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAccess
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAlignedFree
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAlignedMalloc
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAlignedRealloc
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAtexit
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAtof
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAtoi
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAtol
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsAtoll
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsBind
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsCalloc
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsChdir
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsChmod
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsClock
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsClose
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsCommit
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsConnect
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsCreat
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsDup
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsDup2
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsExecl
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsExecle
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsExeclp
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsExeclpe
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsExecv
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsExecve
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsExecvp
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsExecvpe
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsExit
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFclose
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFdopen
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFeof
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFerror
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFflush
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFgetc
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFgetpos
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFgets
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFileno
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFopen
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFputc
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFputs
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFread
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFree
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFreopen
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFseek
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFsetpos
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFstat
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFtell
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFwrite
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetDaylight
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetDstbias
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetOsfhandle
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetTimezone
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetTzname
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetchar
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetcwd
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetenv
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetpeername
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetpid
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetsockname
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsGetsockopt
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIsalnum
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIsalpha
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIsatty
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIsblank
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIscntrl
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIsdigit
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIsgraph
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIslower
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIsprint
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIspunct
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIsspace
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIsupper
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsIsxdigit
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsLabs
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsListen
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsLseek
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsLseek64
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsMalloc
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsMemchr
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsMemcmp
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsMemcpy
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsMemmove
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsMemset
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsMkdir
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsMsize
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsOpen
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsOpenOsfhandle
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPclose
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPerror
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPipe
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPopen
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPutchar
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPutenv
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPutenvS
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPuts
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsQsort
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsQsortS
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRaise
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRand
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRead
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRealloc
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRecvfrom
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRemove
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRename
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRewind
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRmdir
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSendto
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSetbuf
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSetlocale
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSetsockopt
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSetvbuf
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSignal
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSocket
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSrand
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStat
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrcat
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrchr
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrcmp
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrcoll
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrcpy
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrcspn
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrdup
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrerror
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrlen
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrncat
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrncmp
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrncpy
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrnlen
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrpbrk
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrrchr
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrspn
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrstr
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrtod
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrtof
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrtok
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrtol
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrtoll
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrtoul
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrtoull
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrxfrm
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSystem
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsTmpfile
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsTolower
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsToupper
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsTzset
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsUngetc
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsUnlink
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWchmod
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWcslen
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWcsnlen
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWcstombs
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWexecl
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWexecle
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWexeclp
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWexeclpe
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWexecv
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWexecve
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWexecvp
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWexecvpe
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWopen
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWputenv
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWputenvS
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWrite
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWrmdir
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWsetlocale
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWstat
-import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsWutime
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAbort
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAbs
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAccept
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAccess
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAlignedFree
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAlignedMalloc
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAlignedRealloc
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAtexit
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAtof
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAtoi
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAtol
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsAtoll
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsBind
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsCalloc
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsChdir
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsChmod
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsClock
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsClose
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsCommit
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsConnect
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsCreat
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsDup
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsDup2
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsExecl
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsExecle
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsExeclp
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsExeclpe
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsExecv
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsExecve
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsExecvp
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsExecvpe
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsExit
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFclose
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFdopen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFeof
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFerror
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFflush
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFgetc
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFgetpos
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFgets
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFileno
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFopen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFprintf
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFputc
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFputs
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFread
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFree
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFreopen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFscanf
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFseek
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFsetpos
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFstat
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFtell
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsFwrite
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetDaylight
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetDstbias
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetOsfhandle
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetTimezone
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetTzname
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetchar
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetcwd
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetenv
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetpeername
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetpid
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetsockname
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsGetsockopt
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIsalnum
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIsalpha
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIsatty
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIsblank
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIscntrl
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIsdigit
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIsgraph
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIslower
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIsprint
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIspunct
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIsspace
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIsupper
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsIsxdigit
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsLabs
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsListen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsLseek
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsLseek64
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsMalloc
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsMemchr
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsMemcmp
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsMemcpy
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsMemmove
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsMemset
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsMkdir
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsMsize
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsOpen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsOpenOsfhandle
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsPclose
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsPerror
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsPipe
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsPopen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsPrintf
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsPutchar
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsPutenv
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsPutenvS
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsPuts
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsQsort
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsQsortS
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsRaise
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsRand
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsRead
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsRealloc
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsRecvfrom
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsRemove
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsRename
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsRewind
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsRmdir
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsScanf
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSendto
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSetbuf
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSetlocale
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSetsockopt
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSetvbuf
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSignal
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSnprintf
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSocket
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSprintf
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSrand
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSscanf
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStat
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrcat
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrchr
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrcmp
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrcoll
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrcpy
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrcspn
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrdup
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrerror
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrlen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrncat
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrncmp
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrncpy
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrnlen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrpbrk
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrrchr
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrspn
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrstr
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrtod
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrtof
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrtok
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrtol
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrtoll
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrtoul
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrtoull
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsStrxfrm
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsSystem
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsTmpfile
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsTolower
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsToupper
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsTzset
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsUngetc
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsUnlink
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWchmod
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWcslen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWcsnlen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWcstombs
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWexecl
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWexecle
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWexeclp
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWexeclpe
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWexecv
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWexecve
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWexecvp
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWexecvpe
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWopen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWputenv
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWputenvS
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWrite
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWrmdir
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWsetlocale
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWstat
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.rustlangLibcWindowsWutime
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toLong
 
+public actual fun printf(format: ConstPtr, vararg variadicArgs: Long): CInt =
+    rustlangLibcWindowsPrintf(format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    rustlangLibcWindowsFprintf(stream.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun snprintf(buffer: MutPtr, count: SizeT, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    rustlangLibcWindowsSnprintf(buffer.rawAddress.toCPointer<ByteVar>(), count, format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun sprintf(buffer: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    rustlangLibcWindowsSprintf(buffer.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun scanf(format: ConstPtr, vararg variadicArgs: Long): CInt =
+    rustlangLibcWindowsScanf(format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun sscanf(buffer: ConstPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    rustlangLibcWindowsSscanf(buffer.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun fscanf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    rustlangLibcWindowsFscanf(stream.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
 public actual fun isalnum(c: CInt): CInt =
-    libcWindowsIsalnum(c)
+    rustlangLibcWindowsIsalnum(c)
 
 public actual fun isalpha(c: CInt): CInt =
-    libcWindowsIsalpha(c)
+    rustlangLibcWindowsIsalpha(c)
 
 public actual fun iscntrl(c: CInt): CInt =
-    libcWindowsIscntrl(c)
+    rustlangLibcWindowsIscntrl(c)
 
 public actual fun isdigit(c: CInt): CInt =
-    libcWindowsIsdigit(c)
+    rustlangLibcWindowsIsdigit(c)
 
 public actual fun isgraph(c: CInt): CInt =
-    libcWindowsIsgraph(c)
+    rustlangLibcWindowsIsgraph(c)
 
 public actual fun islower(c: CInt): CInt =
-    libcWindowsIslower(c)
+    rustlangLibcWindowsIslower(c)
 
 public actual fun isprint(c: CInt): CInt =
-    libcWindowsIsprint(c)
+    rustlangLibcWindowsIsprint(c)
 
 public actual fun ispunct(c: CInt): CInt =
-    libcWindowsIspunct(c)
+    rustlangLibcWindowsIspunct(c)
 
 public actual fun isspace(c: CInt): CInt =
-    libcWindowsIsspace(c)
+    rustlangLibcWindowsIsspace(c)
 
 public actual fun isupper(c: CInt): CInt =
-    libcWindowsIsupper(c)
+    rustlangLibcWindowsIsupper(c)
 
 public actual fun isxdigit(c: CInt): CInt =
-    libcWindowsIsxdigit(c)
+    rustlangLibcWindowsIsxdigit(c)
 
 public actual fun isblank(c: CInt): CInt =
-    libcWindowsIsblank(c)
+    rustlangLibcWindowsIsblank(c)
 
 public actual fun tolower(c: CInt): CInt =
-    libcWindowsTolower(c)
+    rustlangLibcWindowsTolower(c)
 
 public actual fun toupper(c: CInt): CInt =
-    libcWindowsToupper(c)
+    rustlangLibcWindowsToupper(c)
 
 public actual fun qsort(base: MutPtr, num: SizeT, size: SizeT, compar: QsortComparCallback?) {
-    libcWindowsQsort(base.rawAddress.toCPointer<ByteVar>(), num, size, 0L.toCPointer<ByteVar>())
+    rustlangLibcWindowsQsort(base.rawAddress.toCPointer<ByteVar>(), num, size, 0L.toCPointer<ByteVar>())
 }
 
 public actual fun qsortS(base: MutPtr, num: SizeT, size: SizeT, compar: QsortSComparCallback?, arg: MutPtr) {
-    libcWindowsQsortS(base.rawAddress.toCPointer<ByteVar>(), num, size, 0L.toCPointer<ByteVar>(), arg.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsQsortS(base.rawAddress.toCPointer<ByteVar>(), num, size, 0L.toCPointer<ByteVar>(), arg.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun fopen(filename: ConstPtr, mode: ConstPtr): MutPtr =
-    MutPtr(libcWindowsFopen(filename.rawAddress.toCPointer<ByteVar>(), mode.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsFopen(filename.rawAddress.toCPointer<ByteVar>(), mode.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun freopen(filename: ConstPtr, mode: ConstPtr, file: MutPtr): MutPtr =
-    MutPtr(libcWindowsFreopen(filename.rawAddress.toCPointer<ByteVar>(), mode.rawAddress.toCPointer<ByteVar>(), file.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsFreopen(filename.rawAddress.toCPointer<ByteVar>(), mode.rawAddress.toCPointer<ByteVar>(), file.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun fflush(file: MutPtr): CInt =
-    libcWindowsFflush(file.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFflush(file.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fclose(file: MutPtr): CInt =
-    libcWindowsFclose(file.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFclose(file.rawAddress.toCPointer<ByteVar>())
 
 public actual fun remove(filename: ConstPtr): CInt =
-    libcWindowsRemove(filename.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsRemove(filename.rawAddress.toCPointer<ByteVar>())
 
 public actual fun rename(oldname: ConstPtr, newname: ConstPtr): CInt =
-    libcWindowsRename(oldname.rawAddress.toCPointer<ByteVar>(), newname.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsRename(oldname.rawAddress.toCPointer<ByteVar>(), newname.rawAddress.toCPointer<ByteVar>())
 
 public actual fun tmpfile(): MutPtr =
-    MutPtr(libcWindowsTmpfile()?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsTmpfile()?.toLong() ?: 0L)
 
 public actual fun setvbuf(stream: MutPtr, buffer: MutPtr, mode: CInt, size: SizeT): CInt =
-    libcWindowsSetvbuf(stream.rawAddress.toCPointer<ByteVar>(), buffer.rawAddress.toCPointer<ByteVar>(), mode, size)
+    rustlangLibcWindowsSetvbuf(stream.rawAddress.toCPointer<ByteVar>(), buffer.rawAddress.toCPointer<ByteVar>(), mode, size)
 
 public actual fun setbuf(stream: MutPtr, buf: MutPtr) {
-    libcWindowsSetbuf(stream.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsSetbuf(stream.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun getchar(): CInt =
-    libcWindowsGetchar()
+    rustlangLibcWindowsGetchar()
 
 public actual fun putchar(c: CInt): CInt =
-    libcWindowsPutchar(c)
+    rustlangLibcWindowsPutchar(c)
 
 public actual fun fgetc(stream: MutPtr): CInt =
-    libcWindowsFgetc(stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFgetc(stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fgets(buf: MutPtr, n: CInt, stream: MutPtr): MutPtr =
-    MutPtr(libcWindowsFgets(buf.rawAddress.toCPointer<ByteVar>(), n, stream.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsFgets(buf.rawAddress.toCPointer<ByteVar>(), n, stream.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun fputc(c: CInt, stream: MutPtr): CInt =
-    libcWindowsFputc(c, stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFputc(c, stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fputs(s: ConstPtr, stream: MutPtr): CInt =
-    libcWindowsFputs(s.rawAddress.toCPointer<ByteVar>(), stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFputs(s.rawAddress.toCPointer<ByteVar>(), stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun puts(s: ConstPtr): CInt =
-    libcWindowsPuts(s.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsPuts(s.rawAddress.toCPointer<ByteVar>())
 
 public actual fun ungetc(c: CInt, stream: MutPtr): CInt =
-    libcWindowsUngetc(c, stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsUngetc(c, stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fread(ptr: MutPtr, size: SizeT, nobj: SizeT, stream: MutPtr): SizeT =
-    libcWindowsFread(ptr.rawAddress.toCPointer<ByteVar>(), size, nobj, stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFread(ptr.rawAddress.toCPointer<ByteVar>(), size, nobj, stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fwrite(ptr: ConstPtr, size: SizeT, nobj: SizeT, stream: MutPtr): SizeT =
-    libcWindowsFwrite(ptr.rawAddress.toCPointer<ByteVar>(), size, nobj, stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFwrite(ptr.rawAddress.toCPointer<ByteVar>(), size, nobj, stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fseek(stream: MutPtr, offset: CLong, whence: CInt): CInt =
-    libcWindowsFseek(stream.rawAddress.toCPointer<ByteVar>(), offset, whence)
+    rustlangLibcWindowsFseek(stream.rawAddress.toCPointer<ByteVar>(), offset, whence)
 
 public actual fun ftell(stream: MutPtr): CLong =
-    libcWindowsFtell(stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFtell(stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun rewind(stream: MutPtr) {
-    libcWindowsRewind(stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsRewind(stream.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun fgetpos(stream: MutPtr, ptr: MutPtr): CInt =
-    libcWindowsFgetpos(stream.rawAddress.toCPointer<ByteVar>(), ptr.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFgetpos(stream.rawAddress.toCPointer<ByteVar>(), ptr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fsetpos(stream: MutPtr, ptr: ConstPtr): CInt =
-    libcWindowsFsetpos(stream.rawAddress.toCPointer<ByteVar>(), ptr.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFsetpos(stream.rawAddress.toCPointer<ByteVar>(), ptr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun feof(stream: MutPtr): CInt =
-    libcWindowsFeof(stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFeof(stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun ferror(stream: MutPtr): CInt =
-    libcWindowsFerror(stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFerror(stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun perror(s: ConstPtr) {
-    libcWindowsPerror(s.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsPerror(s.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun atof(s: ConstPtr): CDouble =
-    libcWindowsAtof(s.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsAtof(s.rawAddress.toCPointer<ByteVar>())
 
 public actual fun atoi(s: ConstPtr): CInt =
-    libcWindowsAtoi(s.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsAtoi(s.rawAddress.toCPointer<ByteVar>())
 
 public actual fun atol(s: ConstPtr): CLong =
-    libcWindowsAtol(s.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsAtol(s.rawAddress.toCPointer<ByteVar>())
 
 public actual fun atoll(s: ConstPtr): CLonglong =
-    libcWindowsAtoll(s.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsAtoll(s.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strtod(s: ConstPtr, endp: MutPtr): CDouble =
-    libcWindowsStrtod(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsStrtod(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strtof(s: ConstPtr, endp: MutPtr): CFloat =
-    libcWindowsStrtof(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsStrtof(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strtol(s: ConstPtr, endp: MutPtr, base: CInt): CLong =
-    libcWindowsStrtol(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
+    rustlangLibcWindowsStrtol(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
 
 public actual fun strtoll(s: ConstPtr, endp: MutPtr, base: CInt): CLonglong =
-    libcWindowsStrtoll(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
+    rustlangLibcWindowsStrtoll(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
 
 public actual fun strtoul(s: ConstPtr, endp: MutPtr, base: CInt): CUlong =
-    libcWindowsStrtoul(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
+    rustlangLibcWindowsStrtoul(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
 
 public actual fun strtoull(s: ConstPtr, endp: MutPtr, base: CInt): CUlonglong =
-    libcWindowsStrtoull(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
+    rustlangLibcWindowsStrtoull(s.rawAddress.toCPointer<ByteVar>(), endp.rawAddress.toCPointer<ByteVar>(), base)
 
 public actual fun calloc(nobj: SizeT, size: SizeT): MutPtr =
-    MutPtr(libcWindowsCalloc(nobj, size)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsCalloc(nobj, size)?.toLong() ?: 0L)
 
 public actual fun malloc(size: SizeT): MutPtr =
-    MutPtr(libcWindowsMalloc(size)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsMalloc(size)?.toLong() ?: 0L)
 
 public actual fun msize(p: MutPtr): SizeT =
-    libcWindowsMsize(p.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsMsize(p.rawAddress.toCPointer<ByteVar>())
 
 public actual fun realloc(p: MutPtr, size: SizeT): MutPtr =
-    MutPtr(libcWindowsRealloc(p.rawAddress.toCPointer<ByteVar>(), size)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsRealloc(p.rawAddress.toCPointer<ByteVar>(), size)?.toLong() ?: 0L)
 
 public actual fun free(p: MutPtr) {
-    libcWindowsFree(p.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFree(p.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun abort(): Nothing {
-    libcWindowsAbort()
+    rustlangLibcWindowsAbort()
     error("Unreachable noreturn C function abort")
 }
 
 public actual fun exit(status: CInt): Nothing {
-    libcWindowsExit(status)
+    rustlangLibcWindowsExit(status)
     error("Unreachable noreturn C function exit")
 }
 
 public actual fun atexit(cb: AtexitCbCallback): CInt =
-    libcWindowsAtexit(0L.toCPointer<ByteVar>())
+    rustlangLibcWindowsAtexit(0L.toCPointer<ByteVar>())
 
 public actual fun system(s: ConstPtr): CInt =
-    libcWindowsSystem(s.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsSystem(s.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getenv(s: ConstPtr): MutPtr =
-    MutPtr(libcWindowsGetenv(s.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsGetenv(s.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strcpy(dst: MutPtr, src: ConstPtr): MutPtr =
-    MutPtr(libcWindowsStrcpy(dst.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsStrcpy(dst.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(libcWindowsStrncpy(dst.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsStrncpy(dst.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
 
 public actual fun strcat(s: MutPtr, ct: ConstPtr): MutPtr =
-    MutPtr(libcWindowsStrcat(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsStrcat(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strncat(s: MutPtr, ct: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(libcWindowsStrncat(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsStrncat(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
 
 public actual fun strcmp(cs: ConstPtr, ct: ConstPtr): CInt =
-    libcWindowsStrcmp(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsStrcmp(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strncmp(cs: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    libcWindowsStrncmp(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
+    rustlangLibcWindowsStrncmp(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
 
 public actual fun strcoll(cs: ConstPtr, ct: ConstPtr): CInt =
-    libcWindowsStrcoll(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsStrcoll(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strchr(cs: ConstPtr, c: CInt): MutPtr =
-    MutPtr(libcWindowsStrchr(cs.rawAddress.toCPointer<ByteVar>(), c)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsStrchr(cs.rawAddress.toCPointer<ByteVar>(), c)?.toLong() ?: 0L)
 
 public actual fun strrchr(cs: ConstPtr, c: CInt): MutPtr =
-    MutPtr(libcWindowsStrrchr(cs.rawAddress.toCPointer<ByteVar>(), c)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsStrrchr(cs.rawAddress.toCPointer<ByteVar>(), c)?.toLong() ?: 0L)
 
 public actual fun strspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    libcWindowsStrspn(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsStrspn(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strcspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    libcWindowsStrcspn(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsStrcspn(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strdup(cs: ConstPtr): MutPtr =
-    MutPtr(libcWindowsStrdup(cs.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsStrdup(cs.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strpbrk(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    MutPtr(libcWindowsStrpbrk(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsStrpbrk(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strstr(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    MutPtr(libcWindowsStrstr(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsStrstr(cs.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strlen(cs: ConstPtr): SizeT =
-    libcWindowsStrlen(cs.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsStrlen(cs.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strnlen(cs: ConstPtr, maxlen: SizeT): SizeT =
-    libcWindowsStrnlen(cs.rawAddress.toCPointer<ByteVar>(), maxlen)
+    rustlangLibcWindowsStrnlen(cs.rawAddress.toCPointer<ByteVar>(), maxlen)
 
 public actual fun strerror(n: CInt): MutPtr =
-    MutPtr(libcWindowsStrerror(n)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsStrerror(n)?.toLong() ?: 0L)
 
 public actual fun strtok(s: MutPtr, t: ConstPtr): MutPtr =
-    MutPtr(libcWindowsStrtok(s.rawAddress.toCPointer<ByteVar>(), t.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsStrtok(s.rawAddress.toCPointer<ByteVar>(), t.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun strxfrm(s: MutPtr, ct: ConstPtr, n: SizeT): SizeT =
-    libcWindowsStrxfrm(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
+    rustlangLibcWindowsStrxfrm(s.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
 
 public actual fun wcslen(buf: ConstPtr): SizeT =
-    libcWindowsWcslen(buf.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsWcslen(buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wcsnlen(str: ConstPtr, numberOfElements: SizeT): SizeT =
-    libcWindowsWcsnlen(str.rawAddress.toCPointer<ByteVar>(), numberOfElements)
+    rustlangLibcWindowsWcsnlen(str.rawAddress.toCPointer<ByteVar>(), numberOfElements)
 
 public actual fun wcstombs(dest: MutPtr, src: ConstPtr, n: SizeT): SizeT =
-    libcWindowsWcstombs(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)
+    rustlangLibcWindowsWcstombs(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)
 
 public actual fun memchr(cx: ConstPtr, c: CInt, n: SizeT): MutPtr =
-    MutPtr(libcWindowsMemchr(cx.rawAddress.toCPointer<ByteVar>(), c, n)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsMemchr(cx.rawAddress.toCPointer<ByteVar>(), c, n)?.toLong() ?: 0L)
 
 public actual fun memcmp(cx: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    libcWindowsMemcmp(cx.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
+    rustlangLibcWindowsMemcmp(cx.rawAddress.toCPointer<ByteVar>(), ct.rawAddress.toCPointer<ByteVar>(), n)
 
 public actual fun memcpy(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(libcWindowsMemcpy(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsMemcpy(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
 
 public actual fun memmove(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(libcWindowsMemmove(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsMemmove(dest.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
 
 public actual fun memset(dest: MutPtr, c: CInt, n: SizeT): MutPtr =
-    MutPtr(libcWindowsMemset(dest.rawAddress.toCPointer<ByteVar>(), c, n)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsMemset(dest.rawAddress.toCPointer<ByteVar>(), c, n)?.toLong() ?: 0L)
 
 public actual fun abs(i: CInt): CInt =
-    libcWindowsAbs(i)
+    rustlangLibcWindowsAbs(i)
 
 public actual fun labs(i: CLong): CLong =
-    libcWindowsLabs(i)
+    rustlangLibcWindowsLabs(i)
 
 public actual fun rand(): CInt =
-    libcWindowsRand()
+    rustlangLibcWindowsRand()
 
 public actual fun srand(seed: CUint) {
-    libcWindowsSrand(seed)
+    rustlangLibcWindowsSrand(seed)
 }
 
 public actual fun signal(signum: CInt, handler: SighandlerT): SighandlerT =
-    libcWindowsSignal(signum, handler)
+    rustlangLibcWindowsSignal(signum, handler)
 
 public actual fun raise(signum: CInt): CInt =
-    libcWindowsRaise(signum)
+    rustlangLibcWindowsRaise(signum)
 
 public actual fun clock(): ClockT =
-    libcWindowsClock()
+    rustlangLibcWindowsClock()
 
 public actual fun getDaylight(hours: MutPtr): ErrnoT =
-    libcWindowsGetDaylight(hours.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsGetDaylight(hours.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getDstbias(seconds: MutPtr): ErrnoT =
-    libcWindowsGetDstbias(seconds.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsGetDstbias(seconds.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getTimezone(seconds: MutPtr): ErrnoT =
-    libcWindowsGetTimezone(seconds.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsGetTimezone(seconds.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getTzname(pReturnValue: MutPtr, timeZoneName: MutPtr, sizeInBytes: SizeT, index: CInt): ErrnoT =
-    libcWindowsGetTzname(pReturnValue.rawAddress.toCPointer<ByteVar>(), timeZoneName.rawAddress.toCPointer<ByteVar>(), sizeInBytes, index)
+    rustlangLibcWindowsGetTzname(pReturnValue.rawAddress.toCPointer<ByteVar>(), timeZoneName.rawAddress.toCPointer<ByteVar>(), sizeInBytes, index)
 
 public actual fun tzset() {
-    libcWindowsTzset()
+    rustlangLibcWindowsTzset()
 }
 
 public actual fun chmod(path: ConstPtr, mode: CInt): CInt =
-    libcWindowsChmod(path.rawAddress.toCPointer<ByteVar>(), mode)
+    rustlangLibcWindowsChmod(path.rawAddress.toCPointer<ByteVar>(), mode)
 
 public actual fun wchmod(path: ConstPtr, mode: CInt): CInt =
-    libcWindowsWchmod(path.rawAddress.toCPointer<ByteVar>(), mode)
+    rustlangLibcWindowsWchmod(path.rawAddress.toCPointer<ByteVar>(), mode)
 
 public actual fun mkdir(path: ConstPtr): CInt =
-    libcWindowsMkdir(path.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsMkdir(path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wrmdir(path: ConstPtr): CInt =
-    libcWindowsWrmdir(path.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsWrmdir(path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fstat(fildes: CInt, buf: MutPtr): CInt =
-    libcWindowsFstat(fildes, buf.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFstat(fildes, buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun stat(path: ConstPtr, buf: MutPtr): CInt =
-    libcWindowsStat(path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsStat(path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wstat(path: ConstPtr, buf: MutPtr): CInt =
-    libcWindowsWstat(path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsWstat(path.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wutime(file: ConstPtr, buf: MutPtr): CInt =
-    libcWindowsWutime(file.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsWutime(file.rawAddress.toCPointer<ByteVar>(), buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun popen(command: ConstPtr, mode: ConstPtr): MutPtr =
-    MutPtr(libcWindowsPopen(command.rawAddress.toCPointer<ByteVar>(), mode.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsPopen(command.rawAddress.toCPointer<ByteVar>(), mode.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun pclose(stream: MutPtr): CInt =
-    libcWindowsPclose(stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsPclose(stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun fdopen(fd: CInt, mode: ConstPtr): MutPtr =
-    MutPtr(libcWindowsFdopen(fd, mode.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsFdopen(fd, mode.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun fileno(stream: MutPtr): CInt =
-    libcWindowsFileno(stream.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsFileno(stream.rawAddress.toCPointer<ByteVar>())
 
 public actual fun open(path: ConstPtr, oflag: CInt, vararg variadicArgs: Long): CInt =
-    libcWindowsOpen(path.rawAddress.toCPointer<ByteVar>(), oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    rustlangLibcWindowsOpen(path.rawAddress.toCPointer<ByteVar>(), oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun wopen(path: ConstPtr, oflag: CInt, vararg variadicArgs: Long): CInt =
-    libcWindowsWopen(path.rawAddress.toCPointer<ByteVar>(), oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    rustlangLibcWindowsWopen(path.rawAddress.toCPointer<ByteVar>(), oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun creat(path: ConstPtr, mode: CInt): CInt =
-    libcWindowsCreat(path.rawAddress.toCPointer<ByteVar>(), mode)
+    rustlangLibcWindowsCreat(path.rawAddress.toCPointer<ByteVar>(), mode)
 
 public actual fun access(path: ConstPtr, amode: CInt): CInt =
-    libcWindowsAccess(path.rawAddress.toCPointer<ByteVar>(), amode)
+    rustlangLibcWindowsAccess(path.rawAddress.toCPointer<ByteVar>(), amode)
 
 public actual fun chdir(dir: ConstPtr): CInt =
-    libcWindowsChdir(dir.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsChdir(dir.rawAddress.toCPointer<ByteVar>())
 
 public actual fun close(fd: CInt): CInt =
-    libcWindowsClose(fd)
+    rustlangLibcWindowsClose(fd)
 
 public actual fun dup(fd: CInt): CInt =
-    libcWindowsDup(fd)
+    rustlangLibcWindowsDup(fd)
 
 public actual fun dup2(src: CInt, dst: CInt): CInt =
-    libcWindowsDup2(src, dst)
+    rustlangLibcWindowsDup2(src, dst)
 
 public actual fun execl(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    libcWindowsExecl(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    rustlangLibcWindowsExecl(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun wexecl(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    libcWindowsWexecl(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    rustlangLibcWindowsWexecl(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun execle(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    libcWindowsExecle(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    rustlangLibcWindowsExecle(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun wexecle(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    libcWindowsWexecle(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    rustlangLibcWindowsWexecle(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun execlp(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    libcWindowsExeclp(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    rustlangLibcWindowsExeclp(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun wexeclp(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    libcWindowsWexeclp(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    rustlangLibcWindowsWexeclp(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun execlpe(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    libcWindowsExeclpe(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    rustlangLibcWindowsExeclpe(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun wexeclpe(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    libcWindowsWexeclpe(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    rustlangLibcWindowsWexeclpe(path.rawAddress.toCPointer<ByteVar>(), arg0.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun execv(prog: ConstPtr, argv: ConstPtr): IntptrT =
-    libcWindowsExecv(prog.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsExecv(prog.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>())
 
 public actual fun execve(prog: ConstPtr, argv: ConstPtr, envp: ConstPtr): CInt =
-    libcWindowsExecve(prog.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>(), envp.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsExecve(prog.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>(), envp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun execvp(c: ConstPtr, argv: ConstPtr): CInt =
-    libcWindowsExecvp(c.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsExecvp(c.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>())
 
 public actual fun execvpe(c: ConstPtr, argv: ConstPtr, envp: ConstPtr): CInt =
-    libcWindowsExecvpe(c.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>(), envp.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsExecvpe(c.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>(), envp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wexecv(prog: ConstPtr, argv: ConstPtr): IntptrT =
-    libcWindowsWexecv(prog.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsWexecv(prog.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wexecve(prog: ConstPtr, argv: ConstPtr, envp: ConstPtr): IntptrT =
-    libcWindowsWexecve(prog.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>(), envp.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsWexecve(prog.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>(), envp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wexecvp(c: ConstPtr, argv: ConstPtr): IntptrT =
-    libcWindowsWexecvp(c.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsWexecvp(c.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wexecvpe(c: ConstPtr, argv: ConstPtr, envp: ConstPtr): IntptrT =
-    libcWindowsWexecvpe(c.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>(), envp.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsWexecvpe(c.rawAddress.toCPointer<ByteVar>(), argv.rawAddress.toCPointer<ByteVar>(), envp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getcwd(buf: MutPtr, size: CInt): MutPtr =
-    MutPtr(libcWindowsGetcwd(buf.rawAddress.toCPointer<ByteVar>(), size)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsGetcwd(buf.rawAddress.toCPointer<ByteVar>(), size)?.toLong() ?: 0L)
 
 public actual fun getpid(): CInt =
-    libcWindowsGetpid()
+    rustlangLibcWindowsGetpid()
 
 public actual fun isatty(fd: CInt): CInt =
-    libcWindowsIsatty(fd)
+    rustlangLibcWindowsIsatty(fd)
 
 public actual fun lseek(fd: CInt, offset: CLong, origin: CInt): CLong =
-    libcWindowsLseek(fd, offset, origin)
+    rustlangLibcWindowsLseek(fd, offset, origin)
 
 public actual fun lseek64(fd: CInt, offset: CLonglong, origin: CInt): CLonglong =
-    libcWindowsLseek64(fd, offset, origin)
+    rustlangLibcWindowsLseek64(fd, offset, origin)
 
 public actual fun pipe(fds: MutPtr, psize: CUint, textmode: CInt): CInt =
-    libcWindowsPipe(fds.rawAddress.toCPointer<ByteVar>(), psize, textmode)
+    rustlangLibcWindowsPipe(fds.rawAddress.toCPointer<ByteVar>(), psize, textmode)
 
 public actual fun read(fd: CInt, buf: MutPtr, count: CUint): CInt =
-    libcWindowsRead(fd, buf.rawAddress.toCPointer<ByteVar>(), count)
+    rustlangLibcWindowsRead(fd, buf.rawAddress.toCPointer<ByteVar>(), count)
 
 public actual fun rmdir(path: ConstPtr): CInt =
-    libcWindowsRmdir(path.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsRmdir(path.rawAddress.toCPointer<ByteVar>())
 
 public actual fun unlink(c: ConstPtr): CInt =
-    libcWindowsUnlink(c.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsUnlink(c.rawAddress.toCPointer<ByteVar>())
 
 public actual fun write(fd: CInt, buf: ConstPtr, count: CUint): CInt =
-    libcWindowsWrite(fd, buf.rawAddress.toCPointer<ByteVar>(), count)
+    rustlangLibcWindowsWrite(fd, buf.rawAddress.toCPointer<ByteVar>(), count)
 
 public actual fun commit(fd: CInt): CInt =
-    libcWindowsCommit(fd)
+    rustlangLibcWindowsCommit(fd)
 
 public actual fun getOsfhandle(fd: CInt): IntptrT =
-    libcWindowsGetOsfhandle(fd)
+    rustlangLibcWindowsGetOsfhandle(fd)
 
 public actual fun openOsfhandle(osfhandle: IntptrT, flags: CInt): CInt =
-    libcWindowsOpenOsfhandle(osfhandle, flags)
+    rustlangLibcWindowsOpenOsfhandle(osfhandle, flags)
 
 public actual fun setlocale(category: CInt, locale: ConstPtr): MutPtr =
-    MutPtr(libcWindowsSetlocale(category, locale.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsSetlocale(category, locale.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun wsetlocale(category: CInt, locale: ConstPtr): MutPtr =
-    MutPtr(libcWindowsWsetlocale(category, locale.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsWsetlocale(category, locale.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun alignedMalloc(size: SizeT, alignment: SizeT): MutPtr =
-    MutPtr(libcWindowsAlignedMalloc(size, alignment)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsAlignedMalloc(size, alignment)?.toLong() ?: 0L)
 
 public actual fun alignedFree(ptr: MutPtr) {
-    libcWindowsAlignedFree(ptr.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsAlignedFree(ptr.rawAddress.toCPointer<ByteVar>())
 }
 
 public actual fun alignedRealloc(memblock: MutPtr, size: SizeT, alignment: SizeT): MutPtr =
-    MutPtr(libcWindowsAlignedRealloc(memblock.rawAddress.toCPointer<ByteVar>(), size, alignment)?.toLong() ?: 0L)
+    MutPtr(rustlangLibcWindowsAlignedRealloc(memblock.rawAddress.toCPointer<ByteVar>(), size, alignment)?.toLong() ?: 0L)
 
 public actual fun putenv(envstring: ConstPtr): CInt =
-    libcWindowsPutenv(envstring.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsPutenv(envstring.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wputenv(envstring: ConstPtr): CInt =
-    libcWindowsWputenv(envstring.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsWputenv(envstring.rawAddress.toCPointer<ByteVar>())
 
-public actual fun putenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.libc.ErrnoT =
-    libcWindowsPutenvS(envstring.rawAddress.toCPointer<ByteVar>(), valueString.rawAddress.toCPointer<ByteVar>())
+public actual fun putenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.windows.ErrnoT =
+    rustlangLibcWindowsPutenvS(envstring.rawAddress.toCPointer<ByteVar>(), valueString.rawAddress.toCPointer<ByteVar>())
 
-public actual fun wputenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.libc.ErrnoT =
-    libcWindowsWputenvS(envstring.rawAddress.toCPointer<ByteVar>(), valueString.rawAddress.toCPointer<ByteVar>())
+public actual fun wputenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.windows.ErrnoT =
+    rustlangLibcWindowsWputenvS(envstring.rawAddress.toCPointer<ByteVar>(), valueString.rawAddress.toCPointer<ByteVar>())
 
 public actual fun listen(s: Socket, backlog: CInt): CInt =
-    libcWindowsListen(s, backlog)
+    rustlangLibcWindowsListen(s, backlog)
 
 public actual fun accept(s: Socket, addr: MutPtr, addrlen: MutPtr): Socket =
-    libcWindowsAccept(s, addr.rawAddress.toCPointer<ByteVar>(), addrlen.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsAccept(s, addr.rawAddress.toCPointer<ByteVar>(), addrlen.rawAddress.toCPointer<ByteVar>())
 
 public actual fun bind(s: Socket, name: ConstPtr, namelen: CInt): CInt =
-    libcWindowsBind(s, name.rawAddress.toCPointer<ByteVar>(), namelen)
+    rustlangLibcWindowsBind(s, name.rawAddress.toCPointer<ByteVar>(), namelen)
 
 public actual fun connect(s: Socket, name: ConstPtr, namelen: CInt): CInt =
-    libcWindowsConnect(s, name.rawAddress.toCPointer<ByteVar>(), namelen)
+    rustlangLibcWindowsConnect(s, name.rawAddress.toCPointer<ByteVar>(), namelen)
 
 public actual fun getpeername(s: Socket, name: MutPtr, nameln: MutPtr): CInt =
-    libcWindowsGetpeername(s, name.rawAddress.toCPointer<ByteVar>(), nameln.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsGetpeername(s, name.rawAddress.toCPointer<ByteVar>(), nameln.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getsockname(s: Socket, name: MutPtr, nameln: MutPtr): CInt =
-    libcWindowsGetsockname(s, name.rawAddress.toCPointer<ByteVar>(), nameln.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsGetsockname(s, name.rawAddress.toCPointer<ByteVar>(), nameln.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getsockopt(s: Socket, level: CInt, optname: CInt, optval: MutPtr, optlen: MutPtr): CInt =
-    libcWindowsGetsockopt(s, level, optname, optval.rawAddress.toCPointer<ByteVar>(), optlen.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsGetsockopt(s, level, optname, optval.rawAddress.toCPointer<ByteVar>(), optlen.rawAddress.toCPointer<ByteVar>())
 
 public actual fun recvfrom(s: Socket, buf: MutPtr, len: CInt, flags: CInt, from: MutPtr, fromlen: MutPtr): CInt =
-    libcWindowsRecvfrom(s, buf.rawAddress.toCPointer<ByteVar>(), len, flags, from.rawAddress.toCPointer<ByteVar>(), fromlen.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcWindowsRecvfrom(s, buf.rawAddress.toCPointer<ByteVar>(), len, flags, from.rawAddress.toCPointer<ByteVar>(), fromlen.rawAddress.toCPointer<ByteVar>())
 
 public actual fun sendto(s: Socket, buf: ConstPtr, len: CInt, flags: CInt, to: ConstPtr, tolen: CInt): CInt =
-    libcWindowsSendto(s, buf.rawAddress.toCPointer<ByteVar>(), len, flags, to.rawAddress.toCPointer<ByteVar>(), tolen)
+    rustlangLibcWindowsSendto(s, buf.rawAddress.toCPointer<ByteVar>(), len, flags, to.rawAddress.toCPointer<ByteVar>(), tolen)
 
 public actual fun setsockopt(s: Socket, level: CInt, optname: CInt, optval: ConstPtr, optlen: CInt): CInt =
-    libcWindowsSetsockopt(s, level, optname, optval.rawAddress.toCPointer<ByteVar>(), optlen)
+    rustlangLibcWindowsSetsockopt(s, level, optname, optval.rawAddress.toCPointer<ByteVar>(), optlen)
 
 public actual fun socket(af: CInt, socketType: CInt, protocol: CInt): Socket =
-    libcWindowsSocket(af, socketType, protocol)
+    rustlangLibcWindowsSocket(af, socketType, protocol)

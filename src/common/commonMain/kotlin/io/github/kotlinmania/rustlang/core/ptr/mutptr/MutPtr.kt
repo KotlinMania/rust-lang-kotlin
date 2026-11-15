@@ -1,12 +1,11 @@
 // port-lint: source ptr/mut_ptr.rs
 package io.github.kotlinmania.rustlang.core.ptr.mutptr
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
-import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -18,26 +17,26 @@ import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.alignOffset
-import io.github.kotlinmania.rustlang.core.ptr.copy
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
-import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
-import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
-import io.github.kotlinmania.rustlang.core.ptr.read
-import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
-import io.github.kotlinmania.rustlang.core.ptr.readVolatile
-import io.github.kotlinmania.rustlang.core.ptr.replace
-import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
-import io.github.kotlinmania.rustlang.core.ptr.swap
-import io.github.kotlinmania.rustlang.core.ptr.write
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.core.ptr.writeUnaligned
-import io.github.kotlinmania.rustlang.core.ptr.writeVolatile
-import io.github.kotlinmania.rustlang.core.slice.SliceIndex
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
+import io.github.kotlinmania.rustlang.intrinsics.alignOf
+import io.github.kotlinmania.rustlang.ptr.alignOffset
+import io.github.kotlinmania.rustlang.ptr.copy
+import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.ptr.metadata.fromRawPartsMut
+import io.github.kotlinmania.rustlang.ptr.metadata.metadata
+import io.github.kotlinmania.rustlang.ptr.read
+import io.github.kotlinmania.rustlang.ptr.readUnaligned
+import io.github.kotlinmania.rustlang.ptr.readVolatile
+import io.github.kotlinmania.rustlang.ptr.replace
+import io.github.kotlinmania.rustlang.ptr.sliceFromRawPartsMut
+import io.github.kotlinmania.rustlang.ptr.swap
+import io.github.kotlinmania.rustlang.ptr.write
+import io.github.kotlinmania.rustlang.ptr.writeBytes
+import io.github.kotlinmania.rustlang.ptr.writeUnaligned
+import io.github.kotlinmania.rustlang.ptr.writeVolatile
+import io.github.kotlinmania.rustlang.slice.index.SliceIndex
 
 /**
  * # Examples
@@ -396,7 +395,7 @@ public fun <T> MutPtr.offset(count: Int, typeLayoutT: TypeLayout<T>): MutPtr {
             !overflow
         }
     }
-    assertUnsafePrecondition(checkLanguageUb, "ptr::offset requires the address calculation to not overflow", thisRef, this, count, count, size, sizeOf, T, runtimeOffsetNowrap, thisRef, count, size)
+    Unit
     // SAFETY: the caller must uphold the safety contract for `offset`.
     // The obtained pointer is valid for writes since the caller must
     // guarantee that it points to the same allocation as `self`.
@@ -947,7 +946,7 @@ public fun <T> MutPtr.add(count: Int, typeLayoutT: TypeLayout<T>): MutPtr {
             byteOffset <= (Int.MAX_VALUE) && !overflow
         }
     }
-    assertUnsafePrecondition(checkLanguageUb, "ptr::add requires that the address calculation does not overflow", thisRef, this, count, count, size, sizeOf, T, runtimeAddNowrap, thisRef, count, size)
+    Unit
     // SAFETY: the caller must uphold the safety contract for `offset`.
     return MutPtr(this.rawAddress + (count).toLong() * 1L)
 }
@@ -998,7 +997,7 @@ public fun <T> MutPtr.sub(count: Int, typeLayoutT: TypeLayout<T>): MutPtr {
             byteOffset <= (Int.MAX_VALUE) && (thisRef).rawAddress.toInt() >= byteOffset
         }
     }
-    assertUnsafePrecondition(checkLanguageUb, "ptr::sub requires that the address calculation does not overflow", thisRef, this, count, count, size, sizeOf, T, runtimeSubNowrap, thisRef, count, size)
+    Unit
     return if (T.IS_ZST) {
         // Pointer arithmetic does nothing when the pointee is a ZST.
         this
@@ -1841,7 +1840,7 @@ public fun <T> MutPtr.asUninitSliceMut(): MutableList<MaybeUninit<T>>? =
         null
     } else {
         // SAFETY: the caller must uphold the safety contract for `asUninitSliceMut`.
-        io.github.kotlinmania.rustlang.core.slice.raw.fromRawPartsMut(MutPtr(this.rawAddress, this.rawMeta), this.len())
+        io.github.kotlinmania.rustlang.slice.raw.fromRawPartsMut(MutPtr(this.rawAddress, this.rawMeta), this.len())
     }
 
 /**

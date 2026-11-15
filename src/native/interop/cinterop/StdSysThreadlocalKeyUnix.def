@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.cinterop
+headers = std_sys_threadlocal_key_unix_wrapper.h
+headerFilter = std_sys_threadlocal_key_unix_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = std_sys_threadlocal_key_unix_wrapper.a

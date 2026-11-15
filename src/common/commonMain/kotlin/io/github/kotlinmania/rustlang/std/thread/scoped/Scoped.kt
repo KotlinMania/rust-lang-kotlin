@@ -6,15 +6,15 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.panic.catchUnwind
+import io.github.kotlinmania.rustlang.panic.resumeUnwind
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.panic.catchUnwind
-import io.github.kotlinmania.rustlang.std.panic.resumeUnwind
-import io.github.kotlinmania.rustlang.std.thread.Result
 import io.github.kotlinmania.rustlang.std.thread.builder.Builder
 import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.JoinInner
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.spawnUnchecked
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
+import io.github.kotlinmania.rustlang.thread.Result
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -305,15 +305,15 @@ public fun <T> scope(f: (Scope) -> T): T {
     }
     // Throw any panic from `f`, or the return value of `f` if no thread panicked.
     return when {
-        result is Result.Err<*> -> {
-            val e = (result as Result.Err<*>).error
+        result is Result.Err<*, *> -> {
+            val e = (result as Result.Err<*, *>).error
             resumeUnwind(e)
         }
-        result is Result.Ok<*> && scope.data.aThreadPanicked.load(Ordering.Relaxed) -> {
+        result is Result.Ok<*, *> && scope.data.aThreadPanicked.load(Ordering.Relaxed) -> {
             error("a scoped thread panicked")
         }
         else -> {
-            val result1 = (result as Result.Ok<*>).value
+            val result1 = (result as Result.Ok<*, *>).value
             result1
         }
     }
@@ -359,5 +359,5 @@ public fun <T> Builder.spawnScoped(scope: Scope, f: () -> T): Result<ScopedJoinH
     val name = this.name
     val stackSize = this.stackSize
     val noHooks = this.noHooks
-    return Result.Ok(ScopedJoinHandle(when (val tryResult = spawnUnchecked(name, stackSize, noHooks, scope.data.clone(), f)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(ScopedJoinHandle(when (val tryResult = spawnUnchecked(name, stackSize, noHooks, scope.data.clone(), f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
 }

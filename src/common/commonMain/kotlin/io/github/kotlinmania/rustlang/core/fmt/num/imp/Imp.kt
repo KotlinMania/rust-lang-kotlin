@@ -1,19 +1,18 @@
 // port-lint: source fmt/num.rs
 package io.github.kotlinmania.rustlang.core.fmt.num.imp
 
+import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
-import io.github.kotlinmania.rustlang.core.cmp.Eq
-import io.github.kotlinmania.rustlang.core.fmt.num.DECIMAL_PAIRS
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
-import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
 import io.github.kotlinmania.rustlang.core.num.rustCheckedPow
 import io.github.kotlinmania.rustlang.core.num.rustPow
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.fmt.num.DECIMAL_PAIRS
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.option.Option
+import io.github.kotlinmania.rustlang.panicking.assertFailed
+import io.github.kotlinmania.rustlang.fmt.fmt as numfmt
 
 public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: UByte) {
     val MAX_DEC_N: Int = ULong.MAX_VALUE.ilog10().toInt() + 1
@@ -154,7 +153,7 @@ public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: U
             } else {
                 ""
             }
-        f.padFormattedParts(Formatted(sign = sign, parts = parts))
+        f.padFormattedParts(numfmt.Formatted(sign = sign, parts = parts))
     }
 }
 

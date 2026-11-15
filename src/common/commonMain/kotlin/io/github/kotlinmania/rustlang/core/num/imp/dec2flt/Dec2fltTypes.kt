@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt
 
-import io.github.kotlinmania.rustlang.core.num.imp.traits.FloatExt
+import io.github.kotlinmania.rustlang.num.imp.traits.FloatExt
 
 /**
  * Extension to `Float` that are necessary for parsing using the Lemire method.

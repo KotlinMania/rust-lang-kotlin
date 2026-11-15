@@ -7,10 +7,8 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Handle
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.LeftOrRight.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.NodeRef
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Internal
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.KV
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.LeafOrInternal
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Mut
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker
+import io.github.kotlinmania.rustlang.collections.btree.node.Internal
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -21,7 +19,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * returns that shrunk parent node. Returns an `Err` if the node is
  * an empty root.
  */
-public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNodeThroughParent(alloc: A): Result<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>> {
+public fun <K, V, A : AllocatorClone> NodeRef<marker.Mut, K, V, marker.LeafOrInternal>.fixNodeThroughParent(alloc: A): Result<NodeRef<marker.Mut, K, V, marker.Internal>?, NodeRef<marker.Mut, K, V, marker.LeafOrInternal>> {
     val len = this.len()
     return if (len >= MIN_LEN) {
         Result.Ok(null)
@@ -29,7 +27,7 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
         run {
             val matchVal = this.chooseParentKv()
             when {
-                matchVal is Result.Ok<*> && matchVal.value is Left -> {
+                matchVal is Result.Ok<*, *> && matchVal.value is Left -> {
                     if (leftParentKv.canMerge()) {
                         val parent = leftParentKv.mergeTrackingParent(alloc)
                         Result.Ok(parent)
@@ -38,7 +36,7 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
                         Result.Ok(null)
                     }
                 }
-                matchVal is Result.Ok<*> && matchVal.value is Right -> {
+                matchVal is Result.Ok<*, *> && matchVal.value is Right -> {
                     if (rightParentKv.canMerge()) {
                         val parent1 = rightParentKv.mergeTrackingParent(alloc)
                         Result.Ok(parent1)
@@ -48,7 +46,7 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
                     }
                 }
                 else -> {
-                    val root = (matchVal as Result.Err<*>).error
+                    val root = (matchVal as Result.Err<*, *>).error
                     if (len > 0) {
                         Result.Ok(null)
                     } else {
@@ -69,14 +67,14 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
  * This method does not expect ancestors to already be underfull upon entry
  * and panics if it encounters an empty ancestor.
  */
-public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNodeAndAffectedAncestors(alloc: A): Boolean {
+public fun <K, V, A : AllocatorClone> NodeRef<marker.Mut, K, V, marker.LeafOrInternal>.fixNodeAndAffectedAncestors(alloc: A): Boolean {
     while (true) {
         run {
             val matchVal = this.fixNodeThroughParent(alloc.clone())
             when {
-                matchVal is Result.Ok<*> && matchVal.value != null -> this = parent.forgetType()
-                matchVal is Result.Ok<*> && matchVal.value == null -> {
-                    val None = (matchVal as Result.Ok<*>).value
+                matchVal is Result.Ok<*, *> && matchVal.value != null -> this = parent.forgetType()
+                matchVal is Result.Ok<*, *> && matchVal.value == null -> {
+                    val None = (matchVal as Result.Ok<*, *>).value
                     return true
                 }
                 else -> { return false }
@@ -142,7 +140,7 @@ public fun <K, V> Root<K, V>.fixRightBorderOfPlentiful() {
     }
 }
 
-public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.fixLeftBorderOfLeftEdge(alloc: A) {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<marker.Mut, K, V, marker.LeafOrInternal>, marker.KV>.fixLeftBorderOfLeftEdge(alloc: A) {
     while (true) {
         val matchVal = this.force()
         if (matchVal !is Internal) break
@@ -152,7 +150,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>,
     }
 }
 
-public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.fixRightBorderOfRightEdge(alloc: A) {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<marker.Mut, K, V, marker.LeafOrInternal>, marker.KV>.fixRightBorderOfRightEdge(alloc: A) {
     while (true) {
         val matchVal = this.force()
         if (matchVal !is Internal) break
@@ -168,7 +166,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>,
  * without becoming underfull.
  * Returns the left child.
  */
-public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, KV>.fixLeftChild(alloc: A): NodeRef<Mut, K, V, LeafOrInternal> {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<marker.Mut, K, V, marker.Internal>, marker.KV>.fixLeftChild(alloc: A): NodeRef<marker.Mut, K, V, marker.LeafOrInternal> {
     val internalKv = this.considerForBalancing()
     val leftLen = internalKv.leftChildLen()
     check(internalKv.rightChildLen() >= MIN_LEN)
@@ -190,7 +188,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, KV>.f
  * without becoming underfull.
  * Returns wherever the right child ended up.
  */
-public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, KV>.fixRightChild(alloc: A): NodeRef<Mut, K, V, LeafOrInternal> {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<marker.Mut, K, V, marker.Internal>, marker.KV>.fixRightChild(alloc: A): NodeRef<marker.Mut, K, V, marker.LeafOrInternal> {
     val internalKv = this.considerForBalancing()
     val rightLen = internalKv.rightChildLen()
     check(internalKv.leftChildLen() >= MIN_LEN)

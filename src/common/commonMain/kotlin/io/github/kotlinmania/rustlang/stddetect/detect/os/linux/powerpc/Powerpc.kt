@@ -2,9 +2,9 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.powerpc
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
+import io.github.kotlinmania.rustlang.detect.arch.Feature
+import io.github.kotlinmania.rustlang.detect.cache.Cache
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec
 
 // Run-time feature detection for PowerPC on Linux.
 //
@@ -36,7 +36,7 @@ public fun detectFeatures(): Initializer {
                 value1.set(f.toUInt())
             }
         }
-    when (val matchVal = auxv()) {
+    when (val matchVal = auxvec.auxv()) {
         is Ok -> {
             val auxv = matchVal.value
             // note: the PowerPC values are the mask to do the test (instead of the

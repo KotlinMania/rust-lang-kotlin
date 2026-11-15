@@ -1,6 +1,8 @@
 // port-lint: source x86/aes.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.M128i
+
 // AES New Instructions (AES-NI)
 //
 // The intrinsics here correspond to those in the `wmmintrin.h` C header.

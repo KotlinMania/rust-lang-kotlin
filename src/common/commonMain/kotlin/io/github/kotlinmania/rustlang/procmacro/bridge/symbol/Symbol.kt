@@ -1,22 +1,20 @@
 // port-lint: source bridge/symbol.rs
 package io.github.kotlinmania.rustlang.procmacro.bridge.symbol
 
+import io.github.kotlinmania.rustlang.bridge.Decode
+import io.github.kotlinmania.rustlang.bridge.Encode
+import io.github.kotlinmania.rustlang.bridge.Mark
+import io.github.kotlinmania.rustlang.bridge.arena.Arena
+import io.github.kotlinmania.rustlang.bridge.buffer.Buffer
+import io.github.kotlinmania.rustlang.bridge.client.Client
+import io.github.kotlinmania.rustlang.bridge.fxhash.FxHashMap
+import io.github.kotlinmania.rustlang.bridge.server.Server
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.procmacro.bridge.Decode
-import io.github.kotlinmania.rustlang.procmacro.bridge.Encode
-import io.github.kotlinmania.rustlang.procmacro.bridge.Mark
-import io.github.kotlinmania.rustlang.procmacro.bridge.arena.Arena
-import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
-import io.github.kotlinmania.rustlang.procmacro.bridge.client.Client
-import io.github.kotlinmania.rustlang.procmacro.bridge.fxhash.FxHashMap
-import io.github.kotlinmania.rustlang.procmacro.bridge.server.HandleStore
-import io.github.kotlinmania.rustlang.procmacro.bridge.server.MarkedSymbol
-import io.github.kotlinmania.rustlang.procmacro.bridge.server.Server
 
 // Client-side interner used for symbols.
 //
@@ -120,7 +118,7 @@ public open class Symbol internal constructor(
                 95u, in 97u..122u, in 65u..90u -> true
                 else -> false
             } &&
-                ((bytes).slice(1 until bytes.size)).all({ b -> when (b) {
+                ((bytes).subList(1, (bytes).size)).all({ b -> when (b) {
                     95u, in 97u..122u, in 65u..90u, in 48u..57u -> true
                     else -> false
                 } })

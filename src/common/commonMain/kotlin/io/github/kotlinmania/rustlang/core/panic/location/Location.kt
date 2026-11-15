@@ -1,14 +1,14 @@
 // port-lint: source panic/location.rs
 package io.github.kotlinmania.rustlang.core.panic.location
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
-import io.github.kotlinmania.rustlang.core.intrinsics.callerLocation
+import io.github.kotlinmania.rustlang.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.intrinsics.callerLocation
+import io.github.kotlinmania.rustlang.mem.sizeOfValRaw
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 public class DebugStruct(
     private val out: StringBuilder,

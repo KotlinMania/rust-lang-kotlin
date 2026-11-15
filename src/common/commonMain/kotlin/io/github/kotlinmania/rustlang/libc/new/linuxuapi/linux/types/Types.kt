@@ -1,14 +1,14 @@
 // port-lint: source new/linux_uapi/linux/types.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
-import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 
 // * Header: `uapi / linux / types.h`
 // * Header: `uapi / asm - generic / int - ll64.h`

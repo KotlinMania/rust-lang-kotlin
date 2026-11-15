@@ -3,15 +3,16 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -20,39 +21,40 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.CcT
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.Cmsghdr
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.In6Addr
-import io.github.kotlinmania.rustlang.libc.Ino64T
-import io.github.kotlinmania.rustlang.libc.InoT
-import io.github.kotlinmania.rustlang.libc.KeyT
-import io.github.kotlinmania.rustlang.libc.LocaleT
-import io.github.kotlinmania.rustlang.libc.ModeT
-import io.github.kotlinmania.rustlang.libc.Msghdr
-import io.github.kotlinmania.rustlang.libc.NfdsT
-import io.github.kotlinmania.rustlang.libc.NlItem
-import io.github.kotlinmania.rustlang.libc.Off64T
-import io.github.kotlinmania.rustlang.libc.OffT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.PthreadOnceT
-import io.github.kotlinmania.rustlang.libc.RegoffT
-import io.github.kotlinmania.rustlang.libc.Rlim64T
-import io.github.kotlinmania.rustlang.libc.RlimT
-import io.github.kotlinmania.rustlang.libc.Sockaddr
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.TcflagT
-import io.github.kotlinmania.rustlang.libc.TimerT
-import io.github.kotlinmania.rustlang.libc.Timespec
-import io.github.kotlinmania.rustlang.libc.UidT
 import io.github.kotlinmania.rustlang.libc.unix.CMSG_ALIGN
-import io.github.kotlinmania.rustlang.libc.unix.IFNAMSIZ
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.RLIM_INFINITY
+import io.github.kotlinmania.rustlang.unix.CcT
+import io.github.kotlinmania.rustlang.unix.GidT
+import io.github.kotlinmania.rustlang.unix.IFNAMSIZ
+import io.github.kotlinmania.rustlang.unix.In6Addr
+import io.github.kotlinmania.rustlang.unix.LocaleT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.bsd.Sockaddr
+import io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.KeyT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem
+import io.github.kotlinmania.rustlang.unix.bsd.apple.RLIM_INFINITY
+import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
+import io.github.kotlinmania.rustlang.unix.linuxlike.IPTOS_TOS_MASK
+import io.github.kotlinmania.rustlang.unix.linuxlike.MAX_ADDR_LEN
+import io.github.kotlinmania.rustlang.unix.linuxlike.TimerT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Ino64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.NfdsT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.PthreadOnceT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Rlim64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Cmsghdr
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Msghdr
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timespec
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.InoT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.RlimT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.RegoffT
 
 public fun interface GlobErrfuncCallback {
     public operator fun invoke(epath: ConstPtr, errnum: CInt): CInt
@@ -2105,9 +2107,9 @@ public data class Dirent64(
 }
 
 public data class CAnonymousElf32Rela(
-    public var rOffset: Elf32Addr = 0u,
-    public var rInfo: Elf32Word = 0u,
-    public var rAddend: Elf32Sword = 0,
+    public var rOffset: io.github.kotlinmania.rustlang.unix.linuxlike.Elf32Addr = 0u,
+    public var rInfo: io.github.kotlinmania.rustlang.unix.linuxlike.Elf32Word = 0u,
+    public var rAddend: io.github.kotlinmania.rustlang.unix.linuxlike.Elf32Sword = 0,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousElf32Rela> =
@@ -2141,9 +2143,9 @@ public data class CAnonymousElf32Rela(
 }
 
 public data class CAnonymousElf64Rela(
-    public var rOffset: Elf64Addr = 0uL,
-    public var rInfo: Elf64Xword = 0uL,
-    public var rAddend: Elf64Sxword = 0L,
+    public var rOffset: io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Addr = 0uL,
+    public var rInfo: io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Xword = 0uL,
+    public var rAddend: io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Sxword = 0L,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousElf64Rela> =

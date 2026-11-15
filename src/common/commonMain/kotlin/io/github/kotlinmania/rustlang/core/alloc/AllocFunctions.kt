@@ -1,8 +1,9 @@
 package io.github.kotlinmania.rustlang.core.alloc
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 /**
  * Defers to the pinned allocator. Requires that the smart pointer inside the

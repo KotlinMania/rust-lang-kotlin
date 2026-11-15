@@ -2,12 +2,12 @@
 package io.github.kotlinmania.rustlang.std.sys.sync.condvar.futex
 
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Futex
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWait
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWake
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWakeAll
-import io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.Futex
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWait
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWake
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWakeAll
+import io.github.kotlinmania.rustlang.sys.sync.mutex.futex.Mutex
 
 public open class Condvar(
     // The value of this atomic is simply incremented on every notification.

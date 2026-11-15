@@ -13,6 +13,8 @@ private const val CFG_IF_TEMPLATE_4: String = "\$(\$it)*"
 
 private const val DEFAULT_FN_TEMPLATE: String = "default\$(\$tt)*"
 
+private const val DEFAULT_FN_TEMPLATE_1: String = "\$(\$tt)*"
+
 internal fun cfgIf(meta: String = "", it: String = "", it2: String = "", iMet: String = "", iIt: String = "", eMet: String = "", eIt: String = "", not: String = "", m: String = "", rest: String = "", clause: String = ""): String =
     when {
         clause == "ifBranch # cfg elseBranch ifBranch # cfg" && iMet.isNotEmpty() && iIt.isNotEmpty() && eMet.isNotEmpty() && eIt.isNotEmpty() -> arrayOf("\$iMet" to iMet, "\$iIt" to iIt, "\$eMet" to eMet, "\$eIt" to eIt).fold(CFG_IF_TEMPLATE_1) { acc0, (k0, v0) -> acc0.replace(k0, v0) }
@@ -28,12 +30,12 @@ internal fun defaultFn(a: String = "", tt: String = ""): String =
         if (CFG_FEATURE_NIGHTLY) {
             DEFAULT_FN_TEMPLATE.replace("\$tt", tt)
         } else {
-            ""
+            DEFAULT_FN_TEMPLATE_1.replace("\$tt", tt)
         }
     } else {
         if (CFG_FEATURE_NIGHTLY) {
             DEFAULT_FN_TEMPLATE.replace("\$tt", tt)
         } else {
-            ""
+            DEFAULT_FN_TEMPLATE_1.replace("\$tt", tt)
         }
     }

@@ -4,6 +4,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
 
 public open class SvboolT(
     public var value: Boolean,
@@ -50,7 +51,7 @@ public open class SvboolT(
 
 public open class Svint8T(
     public var value: Byte,
-) : AsUnsigned<Any?, Svuint8T> {
+) : AsUnsigned<Svuint8T> {
     public var field0: Byte
         get() = value
         set(v) {
@@ -86,7 +87,7 @@ public open class Svint8T(
 
 public open class Svuint8T(
     public var value: UByte,
-) : AsSigned<Any?, Svint8T> {
+) : AsSigned<Svint8T> {
     public var field0: UByte
         get() = value
         set(v) {
@@ -122,7 +123,7 @@ public open class Svuint8T(
 
 public open class Svint16T(
     public var value: Short,
-) : AsUnsigned<Any?, Svuint16T> {
+) : AsUnsigned<Svuint16T> {
     public var field0: Short
         get() = value
         set(v) {
@@ -158,7 +159,7 @@ public open class Svint16T(
 
 public open class Svuint16T(
     public var value: UShort,
-) : AsSigned<Any?, Svint16T> {
+) : AsSigned<Svint16T> {
     public var field0: UShort
         get() = value
         set(v) {
@@ -228,7 +229,7 @@ public open class Svfloat32T(
 
 public open class Svint32T(
     public var value: Int,
-) : AsUnsigned<Any?, Svuint32T> {
+) : AsUnsigned<Svuint32T> {
     public var field0: Int
         get() = value
         set(v) {
@@ -264,7 +265,7 @@ public open class Svint32T(
 
 public open class Svuint32T(
     public var value: UInt,
-) : AsSigned<Any?, Svint32T> {
+) : AsSigned<Svint32T> {
     public var field0: UInt
         get() = value
         set(v) {
@@ -334,7 +335,7 @@ public open class Svfloat64T(
 
 public open class Svint64T(
     public var value: Long,
-) : AsUnsigned<Any?, Svuint64T> {
+) : AsUnsigned<Svuint64T> {
     public var field0: Long
         get() = value
         set(v) {
@@ -370,7 +371,7 @@ public open class Svint64T(
 
 public open class Svuint64T(
     public var value: ULong,
-) : AsSigned<Any?, Svint64T> {
+) : AsSigned<Svint64T> {
     public var field0: ULong
         get() = value
         set(v) {
@@ -406,7 +407,7 @@ public open class Svuint64T(
 
 public open class Nxv2i8(
     public var value: Byte,
-) : AsUnsigned<Any?, Nxv2u8> {
+) : AsUnsigned<Nxv2u8> {
     public var field0: Byte
         get() = value
         set(v) {
@@ -442,7 +443,7 @@ public open class Nxv2i8(
 
 public open class Nxv4i8(
     public var value: Byte,
-) : AsUnsigned<Any?, Nxv4u8> {
+) : AsUnsigned<Nxv4u8> {
     public var field0: Byte
         get() = value
         set(v) {
@@ -478,7 +479,7 @@ public open class Nxv4i8(
 
 public open class Nxv8i8(
     public var value: Byte,
-) : AsUnsigned<Any?, Nxv8u8> {
+) : AsUnsigned<Nxv8u8> {
     public var field0: Byte
         get() = value
         set(v) {
@@ -514,7 +515,7 @@ public open class Nxv8i8(
 
 public open class Nxv2i16(
     public var value: Short,
-) : AsUnsigned<Any?, Nxv2u16> {
+) : AsUnsigned<Nxv2u16> {
     public var field0: Short
         get() = value
         set(v) {
@@ -550,7 +551,7 @@ public open class Nxv2i16(
 
 public open class Nxv4i16(
     public var value: Short,
-) : AsUnsigned<Any?, Nxv4u16> {
+) : AsUnsigned<Nxv4u16> {
     public var field0: Short
         get() = value
         set(v) {
@@ -586,7 +587,7 @@ public open class Nxv4i16(
 
 public open class Nxv2i32(
     public var value: Int,
-) : AsUnsigned<Any?, Nxv2u32> {
+) : AsUnsigned<Nxv2u32> {
     public var field0: Int
         get() = value
         set(v) {
@@ -622,7 +623,7 @@ public open class Nxv2i32(
 
 public open class Nxv2u8(
     public var value: UByte,
-) : AsSigned<Any?, Nxv2i8> {
+) : AsSigned<Nxv2i8> {
     public var field0: UByte
         get() = value
         set(v) {
@@ -658,7 +659,7 @@ public open class Nxv2u8(
 
 public open class Nxv4u8(
     public var value: UByte,
-) : AsSigned<Any?, Nxv4i8> {
+) : AsSigned<Nxv4i8> {
     public var field0: UByte
         get() = value
         set(v) {
@@ -694,7 +695,7 @@ public open class Nxv4u8(
 
 public open class Nxv8u8(
     public var value: UByte,
-) : AsSigned<Any?, Nxv8i8> {
+) : AsSigned<Nxv8i8> {
     public var field0: UByte
         get() = value
         set(v) {
@@ -730,7 +731,7 @@ public open class Nxv8u8(
 
 public open class Nxv2u16(
     public var value: UShort,
-) : AsSigned<Any?, Nxv2i16> {
+) : AsSigned<Nxv2i16> {
     public var field0: UShort
         get() = value
         set(v) {
@@ -766,7 +767,7 @@ public open class Nxv2u16(
 
 public open class Nxv4u16(
     public var value: UShort,
-) : AsSigned<Any?, Nxv4i16> {
+) : AsSigned<Nxv4i16> {
     public var field0: UShort
         get() = value
         set(v) {
@@ -802,7 +803,7 @@ public open class Nxv4u16(
 
 public open class Nxv2u32(
     public var value: UInt,
-) : AsSigned<Any?, Nxv2i32> {
+) : AsSigned<Nxv2i32> {
     public var field0: UInt
         get() = value
         set(v) {
@@ -839,7 +840,7 @@ public open class Nxv2u32(
 public open class Svint8x2T(
     public var field0: Svint8T,
     public var field1: Svint8T,
-) : AsUnsigned<Any?, Svuint8x2T> {
+) : AsUnsigned<Svuint8x2T> {
     public open fun clone(): Svint8x2T = Svint8x2T(field0, field1)
 
     public override fun asUnsigned(): Svuint8x2T = transmuteUnchecked(this)
@@ -874,7 +875,7 @@ public open class Svint8x2T(
 public open class Svuint8x2T(
     public var field0: Svuint8T,
     public var field1: Svuint8T,
-) : AsSigned<Any?, Svint8x2T> {
+) : AsSigned<Svint8x2T> {
     public open fun clone(): Svuint8x2T = Svuint8x2T(field0, field1)
 
     public override fun asSigned(): Svint8x2T = transmuteUnchecked(this)
@@ -909,7 +910,7 @@ public open class Svuint8x2T(
 public open class Svint16x2T(
     public var field0: Svint16T,
     public var field1: Svint16T,
-) : AsUnsigned<Any?, Svuint16x2T> {
+) : AsUnsigned<Svuint16x2T> {
     public open fun clone(): Svint16x2T = Svint16x2T(field0, field1)
 
     public override fun asUnsigned(): Svuint16x2T = transmuteUnchecked(this)
@@ -944,7 +945,7 @@ public open class Svint16x2T(
 public open class Svuint16x2T(
     public var field0: Svuint16T,
     public var field1: Svuint16T,
-) : AsSigned<Any?, Svint16x2T> {
+) : AsSigned<Svint16x2T> {
     public open fun clone(): Svuint16x2T = Svuint16x2T(field0, field1)
 
     public override fun asSigned(): Svint16x2T = transmuteUnchecked(this)
@@ -1012,7 +1013,7 @@ public open class Svfloat32x2T(
 public open class Svint32x2T(
     public var field0: Svint32T,
     public var field1: Svint32T,
-) : AsUnsigned<Any?, Svuint32x2T> {
+) : AsUnsigned<Svuint32x2T> {
     public open fun clone(): Svint32x2T = Svint32x2T(field0, field1)
 
     public override fun asUnsigned(): Svuint32x2T = transmuteUnchecked(this)
@@ -1047,7 +1048,7 @@ public open class Svint32x2T(
 public open class Svuint32x2T(
     public var field0: Svuint32T,
     public var field1: Svuint32T,
-) : AsSigned<Any?, Svint32x2T> {
+) : AsSigned<Svint32x2T> {
     public open fun clone(): Svuint32x2T = Svuint32x2T(field0, field1)
 
     public override fun asSigned(): Svint32x2T = transmuteUnchecked(this)
@@ -1115,7 +1116,7 @@ public open class Svfloat64x2T(
 public open class Svint64x2T(
     public var field0: Svint64T,
     public var field1: Svint64T,
-) : AsUnsigned<Any?, Svuint64x2T> {
+) : AsUnsigned<Svuint64x2T> {
     public open fun clone(): Svint64x2T = Svint64x2T(field0, field1)
 
     public override fun asUnsigned(): Svuint64x2T = transmuteUnchecked(this)
@@ -1150,7 +1151,7 @@ public open class Svint64x2T(
 public open class Svuint64x2T(
     public var field0: Svuint64T,
     public var field1: Svuint64T,
-) : AsSigned<Any?, Svint64x2T> {
+) : AsSigned<Svint64x2T> {
     public open fun clone(): Svuint64x2T = Svuint64x2T(field0, field1)
 
     public override fun asSigned(): Svint64x2T = transmuteUnchecked(this)
@@ -1186,7 +1187,7 @@ public open class Svint8x3T(
     public var field0: Svint8T,
     public var field1: Svint8T,
     public var field2: Svint8T,
-) : AsUnsigned<Any?, Svuint8x3T> {
+) : AsUnsigned<Svuint8x3T> {
     public open fun clone(): Svint8x3T = Svint8x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Svuint8x3T = transmuteUnchecked(this)
@@ -1226,7 +1227,7 @@ public open class Svuint8x3T(
     public var field0: Svuint8T,
     public var field1: Svuint8T,
     public var field2: Svuint8T,
-) : AsSigned<Any?, Svint8x3T> {
+) : AsSigned<Svint8x3T> {
     public open fun clone(): Svuint8x3T = Svuint8x3T(field0, field1, field2)
 
     public override fun asSigned(): Svint8x3T = transmuteUnchecked(this)
@@ -1266,7 +1267,7 @@ public open class Svint16x3T(
     public var field0: Svint16T,
     public var field1: Svint16T,
     public var field2: Svint16T,
-) : AsUnsigned<Any?, Svuint16x3T> {
+) : AsUnsigned<Svuint16x3T> {
     public open fun clone(): Svint16x3T = Svint16x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Svuint16x3T = transmuteUnchecked(this)
@@ -1306,7 +1307,7 @@ public open class Svuint16x3T(
     public var field0: Svuint16T,
     public var field1: Svuint16T,
     public var field2: Svuint16T,
-) : AsSigned<Any?, Svint16x3T> {
+) : AsSigned<Svint16x3T> {
     public open fun clone(): Svuint16x3T = Svuint16x3T(field0, field1, field2)
 
     public override fun asSigned(): Svint16x3T = transmuteUnchecked(this)
@@ -1384,7 +1385,7 @@ public open class Svint32x3T(
     public var field0: Svint32T,
     public var field1: Svint32T,
     public var field2: Svint32T,
-) : AsUnsigned<Any?, Svuint32x3T> {
+) : AsUnsigned<Svuint32x3T> {
     public open fun clone(): Svint32x3T = Svint32x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Svuint32x3T = transmuteUnchecked(this)
@@ -1424,7 +1425,7 @@ public open class Svuint32x3T(
     public var field0: Svuint32T,
     public var field1: Svuint32T,
     public var field2: Svuint32T,
-) : AsSigned<Any?, Svint32x3T> {
+) : AsSigned<Svint32x3T> {
     public open fun clone(): Svuint32x3T = Svuint32x3T(field0, field1, field2)
 
     public override fun asSigned(): Svint32x3T = transmuteUnchecked(this)
@@ -1502,7 +1503,7 @@ public open class Svint64x3T(
     public var field0: Svint64T,
     public var field1: Svint64T,
     public var field2: Svint64T,
-) : AsUnsigned<Any?, Svuint64x3T> {
+) : AsUnsigned<Svuint64x3T> {
     public open fun clone(): Svint64x3T = Svint64x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Svuint64x3T = transmuteUnchecked(this)
@@ -1542,7 +1543,7 @@ public open class Svuint64x3T(
     public var field0: Svuint64T,
     public var field1: Svuint64T,
     public var field2: Svuint64T,
-) : AsSigned<Any?, Svint64x3T> {
+) : AsSigned<Svint64x3T> {
     public open fun clone(): Svuint64x3T = Svuint64x3T(field0, field1, field2)
 
     public override fun asSigned(): Svint64x3T = transmuteUnchecked(this)
@@ -1583,7 +1584,7 @@ public open class Svint8x4T(
     public var field1: Svint8T,
     public var field2: Svint8T,
     public var field3: Svint8T,
-) : AsUnsigned<Any?, Svuint8x4T> {
+) : AsUnsigned<Svuint8x4T> {
     public open fun clone(): Svint8x4T = Svint8x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Svuint8x4T = transmuteUnchecked(this)
@@ -1628,7 +1629,7 @@ public open class Svuint8x4T(
     public var field1: Svuint8T,
     public var field2: Svuint8T,
     public var field3: Svuint8T,
-) : AsSigned<Any?, Svint8x4T> {
+) : AsSigned<Svint8x4T> {
     public open fun clone(): Svuint8x4T = Svuint8x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Svint8x4T = transmuteUnchecked(this)
@@ -1673,7 +1674,7 @@ public open class Svint16x4T(
     public var field1: Svint16T,
     public var field2: Svint16T,
     public var field3: Svint16T,
-) : AsUnsigned<Any?, Svuint16x4T> {
+) : AsUnsigned<Svuint16x4T> {
     public open fun clone(): Svint16x4T = Svint16x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Svuint16x4T = transmuteUnchecked(this)
@@ -1718,7 +1719,7 @@ public open class Svuint16x4T(
     public var field1: Svuint16T,
     public var field2: Svuint16T,
     public var field3: Svuint16T,
-) : AsSigned<Any?, Svint16x4T> {
+) : AsSigned<Svint16x4T> {
     public open fun clone(): Svuint16x4T = Svuint16x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Svint16x4T = transmuteUnchecked(this)
@@ -1806,7 +1807,7 @@ public open class Svint32x4T(
     public var field1: Svint32T,
     public var field2: Svint32T,
     public var field3: Svint32T,
-) : AsUnsigned<Any?, Svuint32x4T> {
+) : AsUnsigned<Svuint32x4T> {
     public open fun clone(): Svint32x4T = Svint32x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Svuint32x4T = transmuteUnchecked(this)
@@ -1851,7 +1852,7 @@ public open class Svuint32x4T(
     public var field1: Svuint32T,
     public var field2: Svuint32T,
     public var field3: Svuint32T,
-) : AsSigned<Any?, Svint32x4T> {
+) : AsSigned<Svint32x4T> {
     public open fun clone(): Svuint32x4T = Svuint32x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Svint32x4T = transmuteUnchecked(this)
@@ -1939,7 +1940,7 @@ public open class Svint64x4T(
     public var field1: Svint64T,
     public var field2: Svint64T,
     public var field3: Svint64T,
-) : AsUnsigned<Any?, Svuint64x4T> {
+) : AsUnsigned<Svuint64x4T> {
     public open fun clone(): Svint64x4T = Svint64x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Svuint64x4T = transmuteUnchecked(this)
@@ -1984,7 +1985,7 @@ public open class Svuint64x4T(
     public var field1: Svuint64T,
     public var field2: Svuint64T,
     public var field3: Svuint64T,
-) : AsSigned<Any?, Svint64x4T> {
+) : AsSigned<Svint64x4T> {
     public open fun clone(): Svuint64x4T = Svuint64x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Svint64x4T = transmuteUnchecked(this)

@@ -2,9 +2,9 @@
 package io.github.kotlinmania.rustlang.libm.math.generic.fmod
 
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
-import io.github.kotlinmania.rustlang.libm.math.support.modular.linearMulReduction
+import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.inttraits.Int
+import io.github.kotlinmania.rustlang.math.support.modular.linearMulReduction
 
 public fun <Int, SignedInt, D, F : Float<F, Any?, Any?>> fmod(x: F, y: F, fromBitsFFn: (Int) -> F): F {
     val v1 = F.Int.ONE

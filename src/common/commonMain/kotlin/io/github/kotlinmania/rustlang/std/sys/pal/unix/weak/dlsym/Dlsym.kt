@@ -65,7 +65,7 @@ public open class DlsymWeak<F> internal constructor(
                 // Note: use `reinterpret` once it stops complaining about generics.
                 else -> {
                     val func2 = matchVal
-                    transmuteCopy<MutPtr, F>(func2)
+                    mem.transmuteCopy<MutPtr, F>(func2)
                 }
             }
         }
@@ -83,7 +83,7 @@ public open class DlsymWeak<F> internal constructor(
         } else {
             // SAFETY: see the comment in `get`.
             // Note: use `reinterpret` once it stops complaining about generics.
-            transmuteCopy<MutPtr, F>(value)
+            mem.transmuteCopy<MutPtr, F>(value)
         }
     }
 
@@ -105,6 +105,6 @@ public open class DlsymWeak<F> internal constructor(
          * it exists), calling the function pointer returned by `get()` is
          * undefined behaviour.
          */
-        public fun <F> new(name: CStr): DlsymWeak<F> = DlsymWeak(name = name.asPtr(), func = AtomicPtr.new(withoutProvenanceMut(1)), marker = Unit)
+        public fun <F> new(name: CStr): DlsymWeak<F> = DlsymWeak(name = name.asPtr(), func = AtomicPtr.new(ptr.withoutProvenanceMut(1)), marker = Unit)
     }
 }

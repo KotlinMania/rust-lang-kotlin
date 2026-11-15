@@ -2,15 +2,15 @@
 
 package io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT
 
-private object NewCommonLinuxlikePthreadJniBridge {
+private object LibcNewCommonLinuxlikePthreadJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -46,8 +46,8 @@ private object NewCommonLinuxlikePthreadJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = NewCommonLinuxlikePthreadJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = LibcNewCommonLinuxlikePthreadJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -64,38 +64,38 @@ private object NewCommonLinuxlikePthreadJniBridge {
     }
 
     @JvmStatic
-    external fun libcNewCommonLinuxlikePthreadPthreadGetaffinityNp(thread: Long, cpusetsize: Long, cpuset: Long): Int
+    external fun rustlangLibcNewCommonLinuxlikePthreadPthreadGetaffinityNp(thread: Long, cpusetsize: Long, cpuset: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonLinuxlikePthreadPthreadGetattrNp(native: Long, attr: Long): Int
+    external fun rustlangLibcNewCommonLinuxlikePthreadPthreadGetattrNp(native: Long, attr: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonLinuxlikePthreadPthreadGetnameNp(thread: Long, name: Long, len: Long): Int
+    external fun rustlangLibcNewCommonLinuxlikePthreadPthreadGetnameNp(thread: Long, name: Long, len: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonLinuxlikePthreadPthreadGettidNp(thread: Long): Int
+    external fun rustlangLibcNewCommonLinuxlikePthreadPthreadGettidNp(thread: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonLinuxlikePthreadPthreadSetaffinityNp(thread: Long, cpusetsize: Long, cpuset: Long): Int
+    external fun rustlangLibcNewCommonLinuxlikePthreadPthreadSetaffinityNp(thread: Long, cpusetsize: Long, cpuset: Long): Int
 
     @JvmStatic
-    external fun libcNewCommonLinuxlikePthreadPthreadSetnameNp(thread: Long, name: Long): Int
+    external fun rustlangLibcNewCommonLinuxlikePthreadPthreadSetnameNp(thread: Long, name: Long): Int
 }
 
 public actual fun pthreadGetaffinityNp(thread: PthreadT, cpusetsize: SizeT, cpuset: MutPtr): CInt =
-    NewCommonLinuxlikePthreadJniBridge.libcNewCommonLinuxlikePthreadPthreadGetaffinityNp(thread.rawAddress, cpusetsize.toLong(), cpuset.rawAddress)
+    LibcNewCommonLinuxlikePthreadJniBridge.rustlangLibcNewCommonLinuxlikePthreadPthreadGetaffinityNp(thread.toLong(), cpusetsize.toLong(), cpuset.rawAddress)
 
 public actual fun pthreadGetattrNp(native: PthreadT, attr: MutPtr): CInt =
-    NewCommonLinuxlikePthreadJniBridge.libcNewCommonLinuxlikePthreadPthreadGetattrNp(native.rawAddress, attr.rawAddress)
+    LibcNewCommonLinuxlikePthreadJniBridge.rustlangLibcNewCommonLinuxlikePthreadPthreadGetattrNp(native.toLong(), attr.rawAddress)
 
 public actual fun pthreadGetnameNp(thread: PthreadT, name: MutPtr, len: SizeT): CInt =
-    NewCommonLinuxlikePthreadJniBridge.libcNewCommonLinuxlikePthreadPthreadGetnameNp(thread.rawAddress, name.rawAddress, len.toLong())
+    LibcNewCommonLinuxlikePthreadJniBridge.rustlangLibcNewCommonLinuxlikePthreadPthreadGetnameNp(thread.toLong(), name.rawAddress, len.toLong())
 
 public actual fun pthreadGettidNp(thread: PthreadT): PidT =
-    NewCommonLinuxlikePthreadJniBridge.libcNewCommonLinuxlikePthreadPthreadGettidNp(thread.rawAddress)
+    LibcNewCommonLinuxlikePthreadJniBridge.rustlangLibcNewCommonLinuxlikePthreadPthreadGettidNp(thread.toLong())
 
 public actual fun pthreadSetaffinityNp(thread: PthreadT, cpusetsize: SizeT, cpuset: ConstPtr): CInt =
-    NewCommonLinuxlikePthreadJniBridge.libcNewCommonLinuxlikePthreadPthreadSetaffinityNp(thread.rawAddress, cpusetsize.toLong(), cpuset.rawAddress)
+    LibcNewCommonLinuxlikePthreadJniBridge.rustlangLibcNewCommonLinuxlikePthreadPthreadSetaffinityNp(thread.toLong(), cpusetsize.toLong(), cpuset.rawAddress)
 
 public actual fun pthreadSetnameNp(thread: PthreadT, name: ConstPtr): CInt =
-    NewCommonLinuxlikePthreadJniBridge.libcNewCommonLinuxlikePthreadPthreadSetnameNp(thread.rawAddress, name.rawAddress)
+    LibcNewCommonLinuxlikePthreadJniBridge.rustlangLibcNewCommonLinuxlikePthreadPthreadSetnameNp(thread.toLong(), name.rawAddress)

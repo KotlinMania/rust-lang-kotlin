@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
 import io.github.kotlinmania.rustlang.libm.math.support.FpResult
 import io.github.kotlinmania.rustlang.libm.math.support.Round
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
+import io.github.kotlinmania.rustlang.math.support.hexfloat.hf64
 import kotlin.math.abs
 
 /**

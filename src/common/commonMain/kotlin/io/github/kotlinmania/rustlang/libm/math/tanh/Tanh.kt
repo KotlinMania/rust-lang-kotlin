@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.tanh
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.libm.math.expm1.expm1
+import io.github.kotlinmania.rustlang.math.expm1.expm1
 
 // tanh(x) = (exp(x) - exp(-x))/(exp(x) + exp(-x))
 // = (exp(2*x) - 1)/(exp(2*x) - 1 + 2)

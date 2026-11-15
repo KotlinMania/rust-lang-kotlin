@@ -2,14 +2,15 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -18,33 +19,34 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.CcT
-import io.github.kotlinmania.rustlang.libc.In6Addr
-import io.github.kotlinmania.rustlang.libc.Msghdr
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SaFamilyT
-import io.github.kotlinmania.rustlang.libc.Sigval
-import io.github.kotlinmania.rustlang.libc.Sockaddr
-import io.github.kotlinmania.rustlang.libc.SpeedT
-import io.github.kotlinmania.rustlang.libc.TcflagT
-import io.github.kotlinmania.rustlang.libc.Timespec
-import io.github.kotlinmania.rustlang.libc.Timeval
-import io.github.kotlinmania.rustlang.libc.UidT
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S16
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S32
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S64
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U8
-import io.github.kotlinmania.rustlang.libc.unix.IFNAMSIZ
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.UT_HOSTSIZE
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.UT_LINESIZE
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.UT_NAMESIZE
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Be16
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S16
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S32
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S64
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U16
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U64
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U8
+import io.github.kotlinmania.rustlang.unix.CcT
+import io.github.kotlinmania.rustlang.unix.IFNAMSIZ
+import io.github.kotlinmania.rustlang.unix.In6Addr
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.Sigval
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.bsd.SaFamilyT
+import io.github.kotlinmania.rustlang.unix.bsd.Sockaddr
+import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.ETH_ALEN
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.NCCS
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.UT_HOSTSIZE
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.UT_LINESIZE
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.UT_NAMESIZE
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Be16
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Msghdr
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timespec
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -489,9 +491,9 @@ public data class Flock(
 public data class Flock64(
     public var lType: CShort = 0,
     public var lWhence: CShort = 0,
-    public var lStart: KernelLoffT = 0L,
-    public var lLen: KernelLoffT = 0L,
-    public var lPid: KernelPidT = 0,
+    public var lStart: io.github.kotlinmania.rustlang.unix.linuxlike.android.KernelLoffT = 0L,
+    public var lLen: io.github.kotlinmania.rustlang.unix.linuxlike.android.KernelLoffT = 0L,
+    public var lPid: io.github.kotlinmania.rustlang.unix.linuxlike.android.KernelPidT = 0,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<Flock64> =
@@ -646,12 +648,12 @@ public data class ExitStatus(
 public data class Statvfs(
     public var fBsize: CUlong = 0uL,
     public var fFrsize: CUlong = 0uL,
-    public var fBlocks: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fBfree: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fBavail: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fFiles: io.github.kotlinmania.rustlang.libc.FsfilcntT = 0u,
-    public var fFfree: io.github.kotlinmania.rustlang.libc.FsfilcntT = 0u,
-    public var fFavail: io.github.kotlinmania.rustlang.libc.FsfilcntT = 0u,
+    public var fBlocks: io.github.kotlinmania.rustlang.unix.linuxlike.android.FsblkcntT = 0uL,
+    public var fBfree: io.github.kotlinmania.rustlang.unix.linuxlike.android.FsblkcntT = 0uL,
+    public var fBavail: io.github.kotlinmania.rustlang.unix.linuxlike.android.FsblkcntT = 0uL,
+    public var fFiles: io.github.kotlinmania.rustlang.unix.linuxlike.android.FsfilcntT = 0uL,
+    public var fFfree: io.github.kotlinmania.rustlang.unix.linuxlike.android.FsfilcntT = 0uL,
+    public var fFavail: io.github.kotlinmania.rustlang.unix.linuxlike.android.FsfilcntT = 0uL,
     public var fFsid: CUlong = 0uL,
     public var fFlag: CUlong = 0uL,
     public var fNamemax: CUlong = 0uL,
@@ -3222,7 +3224,7 @@ public data class SiginfoT(
 }
 
 public data class Lastlog(
-    public var llTime: io.github.kotlinmania.rustlang.libc.TimeT = 0L,
+    public var llTime: io.github.kotlinmania.rustlang.unix.linuxlike.android.TimeT = 0L,
     public var llLine: UByteArray = UByteArray(UT_LINESIZE),
     public var llHost: UByteArray = UByteArray(UT_HOSTSIZE),
 ) {

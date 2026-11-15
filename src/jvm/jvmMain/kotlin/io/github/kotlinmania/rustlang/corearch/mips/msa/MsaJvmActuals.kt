@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.mips.msa
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object MipsMsaJniBridge {
+private object CorearchMipsMsaJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -40,8 +40,8 @@ private object MipsMsaJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = MipsMsaJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = CorearchMipsMsaJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -58,10 +58,10 @@ private object MipsMsaJniBridge {
     }
 
     @JvmStatic
-    external fun corearchMipsMsaMsaCfcmsa(a: Int): Int
+    external fun rustlangCorearchMipsMsaMsaCfcmsa(a: Int): Int
 
     @JvmStatic
-    external fun corearchMipsMsaMsaCtcmsa(imm5: Int, a: Int)
+    external fun rustlangCorearchMipsMsaMsaCtcmsa(imm5: Int, a: Int)
 }
 
 public actual fun msaAddAB(a: V16i8, b: V16i8): V16i8 =
@@ -407,7 +407,7 @@ public actual fun msaCeqiD(a: V2i64, b: Int): V2i64 =
     V2i64()
 
 public actual fun msaCfcmsa(a: Int): Int =
-    MipsMsaJniBridge.corearchMipsMsaMsaCfcmsa(a)
+    CorearchMipsMsaJniBridge.rustlangCorearchMipsMsaMsaCfcmsa(a)
 
 public actual fun msaCleSB(a: V16i8, b: V16i8): V16i8 =
     V16i8()
@@ -530,7 +530,7 @@ public actual fun msaCopyUD(a: V2i64, b: Int): ULong =
     0uL
 
 public actual fun msaCtcmsa(imm5: Int, a: Int) {
-    MipsMsaJniBridge.corearchMipsMsaMsaCtcmsa(imm5, a)
+    CorearchMipsMsaJniBridge.rustlangCorearchMipsMsaMsaCtcmsa(imm5, a)
 }
 
 public actual fun msaDivSB(a: V16i8, b: V16i8): V16i8 =

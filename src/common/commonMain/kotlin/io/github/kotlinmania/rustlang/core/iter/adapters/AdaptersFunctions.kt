@@ -1,9 +1,9 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters
 
-import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
-import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.ops.trytrait.ChangeOutputType
+import io.github.kotlinmania.rustlang.ops.trytrait.FromResidual
+import io.github.kotlinmania.rustlang.ops.trytrait.Residual
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 /**
  * Process the given iterator as if it yielded the item's `Try.Output`

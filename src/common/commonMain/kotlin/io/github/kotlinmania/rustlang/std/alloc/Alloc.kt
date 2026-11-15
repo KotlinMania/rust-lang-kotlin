@@ -1,9 +1,12 @@
 // port-lint: source alloc.rs
 package io.github.kotlinmania.rustlang.std.alloc
 
+import io.github.kotlinmania.rustlang.core.alloc.AllocError
+import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -11,14 +14,14 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.panic.BacktraceStyle
+import io.github.kotlinmania.rustlang.panic.getBacktraceStyle
+import io.github.kotlinmania.rustlang.process.abort
 import io.github.kotlinmania.rustlang.std.Layout
-import io.github.kotlinmania.rustlang.std.panic.BacktraceStyle
-import io.github.kotlinmania.rustlang.std.panic.getBacktraceStyle
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
-import io.github.kotlinmania.rustlang.std.sys.backtrace.rustEndShortBacktrace
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.alloc.unix.alloc as imp
+import io.github.kotlinmania.rustlang.sys.backtrace.lock
+import io.github.kotlinmania.rustlang.sys.backtrace.rustEndShortBacktrace
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.sys.alloc.unix.alloc as imp
 
 // Memory allocation APIs.
 //
@@ -180,7 +183,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                         } else {
                             imp.alloc(layout)
                         }
-                    val ptr = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    val ptr = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                     Result.Ok(ptr.castSlice(size))
                 }
             }
@@ -202,9 +205,9 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                     run {
                         val newSize = newLayout.size()
                         // `realloc` probably checks for `newSize >= oldLayout.size()` or something similar.
-                        assertUnchecked(newSize >= oldLayout.size())
+                        hint.assertUnchecked(newSize >= oldLayout.size())
                         val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
-                        val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                        val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                         if (zeroed) {
                             rawPtr.add(oldSize).writeBytes(0, newSize - oldSize)
                         }
@@ -219,8 +222,8 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                 else -> {
                     val oldSize1 = matchVal
                     run {
-                        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                        copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), oldSize1)
+                        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                        ptr.copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), oldSize1)
                         Allocator.deallocate(this, ptr, oldLayout)
                         Result.Ok(newPtr)
                     }
@@ -268,9 +271,9 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                     val newSize = matchVal
                     run {
                         // `realloc` probably checks for `newSize <= oldLayout.size()` or something similar.
-                        assertUnchecked(newSize <= oldLayout.size())
+                        hint.assertUnchecked(newSize <= oldLayout.size())
                         val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
-                        val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                        val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                         Result.Ok(ptr1.castSlice(newSize))
                     }
                 }
@@ -282,8 +285,8 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                 else -> {
                     val newSize1 = matchVal
                     run {
-                        val newPtr = when (val tryResult = Allocator.allocate(this, newLayout)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                        copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), newSize1)
+                        val newPtr = when (val tryResult = Allocator.allocate(this, newLayout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                        ptr.copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), newSize1)
                         Allocator.deallocate(this, ptr, oldLayout)
                         Result.Ok(newPtr)
                     }

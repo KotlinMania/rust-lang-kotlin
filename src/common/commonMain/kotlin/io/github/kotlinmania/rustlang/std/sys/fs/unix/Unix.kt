@@ -1,6 +1,7 @@
 // port-lint: source sys/fs/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.fs.unix
 
+import io.github.kotlinmania.rustlang.Ffi
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
@@ -30,6 +31,13 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.fs.Metadata
+import io.github.kotlinmania.rustlang.fs.Permissions
+import io.github.kotlinmania.rustlang.fs.TryLockError
+import io.github.kotlinmania.rustlang.io.ErrorKind
+import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.chmod
 import io.github.kotlinmania.rustlang.libc.closedir
@@ -126,43 +134,36 @@ import io.github.kotlinmania.rustlang.libc.wasi.S_IXGRP
 import io.github.kotlinmania.rustlang.libc.wasi.S_IXOTH
 import io.github.kotlinmania.rustlang.libc.wasi.S_IXUSR
 import io.github.kotlinmania.rustlang.libc.wasi.UTIME_OMIT
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.fs.Metadata
-import io.github.kotlinmania.rustlang.std.fs.Permissions
-import io.github.kotlinmania.rustlang.std.fs.TryLockError
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
-import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.os.fd.AsFd
-import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
-import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.asBytes
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromBytes
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromVec
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sys.AsInner
-import io.github.kotlinmania.rustlang.std.sys.AsInnerMut
-import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.fs.common.Dir
-import io.github.kotlinmania.rustlang.std.sys.fs.common.NOT_FILE_ERROR
-import io.github.kotlinmania.rustlang.std.sys.helpers.ignoreNotfound
-import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runPathWithCstr
-import io.github.kotlinmania.rustlang.std.sys.io.Errno
-import io.github.kotlinmania.rustlang.std.sys.io.error.unix.setErrno
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime
-import io.github.kotlinmania.rustlang.std.sys.time.unix.UNIX_EPOCH
-import io.github.kotlinmania.rustlang.std.sys.weak.syscall
+import io.github.kotlinmania.rustlang.os.fd.AsFd
+import io.github.kotlinmania.rustlang.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.os.fd.FromRawFd
+import io.github.kotlinmania.rustlang.os.fd.IntoRawFd
+import io.github.kotlinmania.rustlang.os.fd.OwnedFd
+import io.github.kotlinmania.rustlang.os.fd.RawFd
+import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.asBytes
+import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.fromBytes
+import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.fromVec
+import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.path.PathBuf
+import io.github.kotlinmania.rustlang.process.abort
+import io.github.kotlinmania.rustlang.sys.AsInner
+import io.github.kotlinmania.rustlang.sys.AsInnerMut
+import io.github.kotlinmania.rustlang.sys.FromInner
+import io.github.kotlinmania.rustlang.sys.IntoInner
+import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.sys.fs.common.Dir
+import io.github.kotlinmania.rustlang.sys.fs.common.NOT_FILE_ERROR
+import io.github.kotlinmania.rustlang.sys.helpers.ignoreNotfound
+import io.github.kotlinmania.rustlang.sys.helpers.smallcstring.runPathWithCstr
+import io.github.kotlinmania.rustlang.sys.io.Errno
+import io.github.kotlinmania.rustlang.sys.io.error.unix.setErrno
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvtR
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.sys.time.unix.SystemTime
+import io.github.kotlinmania.rustlang.sys.time.unix.UNIX_EPOCH
+import io.github.kotlinmania.rustlang.sys.weak.syscall
 import io.github.kotlinmania.rustlang.libc.fstat as fstat64
 import io.github.kotlinmania.rustlang.libc.ftruncate as ftruncate64
 import io.github.kotlinmania.rustlang.libc.lseek as lseek64
@@ -225,36 +226,36 @@ public open class File(
             }
         }
         val stat: Stat64  = MaybeUninit.zeroed(ObjectSlotLayout<Stat64>()).assumeInit()
-        when (val tryResult = cvt(fstat64(fd, stat))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(fstat64(fd, stat))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(FileAttr.fromStat64(stat))
     }
 
     public open fun fsync(): Result<Unit, Error> {
         fun osFsync(fd: CInt): CInt = fcntl(fd, F_FULLFSYNC)
-        when (val tryResult = cvtR({ osFsync(this.asRawFd()) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvtR({ osFsync(this.asRawFd()) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
     public open fun datasync(): Result<Unit, Error> {
         fun osDatasync(fd: CInt): CInt = fcntl(fd, F_FULLFSYNC)
-        when (val tryResult = cvtR({ osDatasync(this.asRawFd()) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvtR({ osDatasync(this.asRawFd()) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
     public open fun lock(): Result<Unit, Error> {
-        when (val tryResult = cvt(Flock(this.asRawFd(), LOCK_EX))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(Flock(this.asRawFd(), LOCK_EX))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
     public open fun lockShared(): Result<Unit, Error> {
-        when (val tryResult = cvt(Flock(this.asRawFd(), LOCK_SH))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(Flock(this.asRawFd(), LOCK_SH))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
     public open fun tryLock(): Result<Unit, TryLockError> {
         val result = cvt(Flock(this.asRawFd(), LOCK_EX or LOCK_NB))
-        return if (result is Result.Err<*>) {
-            val err = (result as Result.Err<*>).error
+        return if (result is Result.Err<*, *>) {
+            val err = (result as Result.Err<*, *>).error
             if (err.kind() == ErrorKind.WouldBlock) {
                 Result.Err(TryLockError.WouldBlock)
             } else {
@@ -267,8 +268,8 @@ public open class File(
 
     public open fun tryLockShared(): Result<Unit, TryLockError> {
         val result = cvt(Flock(this.asRawFd(), LOCK_SH or LOCK_NB))
-        return if (result is Result.Err<*>) {
-            val err = (result as Result.Err<*>).error
+        return if (result is Result.Err<*, *>) {
+            val err = (result as Result.Err<*, *>).error
             if (err.kind() == ErrorKind.WouldBlock) {
                 Result.Err(TryLockError.WouldBlock)
             } else {
@@ -280,12 +281,12 @@ public open class File(
     }
 
     public open fun unlock(): Result<Unit, Error> {
-        when (val tryResult = cvt(Flock(this.asRawFd(), LOCK_UN))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(Flock(this.asRawFd(), LOCK_UN))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
     public open fun truncate(size: ULong): Result<Unit, Error> {
-        val size1: Off64T = when (val tryResult = size.tryInto().mapErr({ e -> io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, e) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val size1: Off64T = when (val tryResult = size.tryInto().mapErr({ e -> io.github.kotlinmania.rustlang.io.Error.new(ErrorKind.InvalidInput, e) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return cvtR({ ftruncate64(this.asRawFd(), size1) }).map({ Unit })
     }
 
@@ -333,7 +334,7 @@ public open class File(
                     Pair(SEEK_CUR, off2)
                 }
             }
-        val n = when (val tryResult = cvt(lseek64(this.asRawFd(), pos1.toLong(), whence))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val n = when (val tryResult = cvt(lseek64(this.asRawFd(), pos1.toLong(), whence))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(n.toULong())
     }
 
@@ -343,7 +344,7 @@ public open class File(
             when {
                 // Fall back to default implementation if the returned size is 0,
                 // we might be in a proc mount.
-                matchVal is Result.Ok<*> && matchVal.value == 0 -> null
+                matchVal is Result.Ok<*, *> && matchVal.value == 0 -> null
                 else -> {
                     val result = matchVal
                     result
@@ -356,13 +357,13 @@ public open class File(
     public open fun duplicate(): Result<File, Error> = this.value.duplicate().map({ File(it) })
 
     public open fun setPermissions(perm: FilePermissions): Result<Unit, Error> {
-        when (val tryResult = cvtR({ fchmod(this.asRawFd(), perm.mode) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvtR({ fchmod(this.asRawFd(), perm.mode) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
     public open fun setTimes(times: FileTimes): Result<Unit, Error> {
-        val ta = when (val tryResult = TimesAttrlist.fromTimes(times)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = cvt(fsetattrlist(this.asRawFd(), ta.attrlist(), ta.timesBuf(), ta.timesBufSize(), 0))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val ta = when (val tryResult = TimesAttrlist.fromTimes(times)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(fsetattrlist(this.asRawFd(), ta.attrlist(), ta.timesBuf(), ta.timesBufSize(), 0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -388,12 +389,12 @@ public open class File(
         public fun open(path: Path, opts: OpenOptions): Result<File, Error> = runPathWithCstr(path, { path1 -> File.openC(path1, opts) })
 
         public fun openC(path: CStr, opts: OpenOptions): Result<File, Error> {
-            val flags = O_CLOEXEC or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } or (opts.customFlags and O_ACCMODE.inv())
+            val flags = O_CLOEXEC or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) } or (opts.customFlags and O_ACCMODE.inv())
             // The third argument of `open64` is documented to have type `modeT`. On
             // some platforms (like macOS, where `open64` is actually `open`), `modeT` is `UShort`.
             // However, since this is a variadic function, C integer promotion rules mean that on
             // the ABI level, this still gets passed as `cInt` (aka `UInt` on Unix platforms).
-            val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             return Result.Ok(File(FileDesc.fromRawFd(fd)))
         }
 
@@ -638,7 +639,7 @@ public open class DirStream internal constructor(
             debugAssertFdIsOpen(fd)
         }
         val r = closedir(this.value)
-        check(r == 0 || io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError().isInterrupted()) { "unexpected error during closedir: ${io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError()}" }
+        check(r == 0 || io.Error.lastOsError().isInterrupted()) { "unexpected error during closedir: ${io.Error.lastOsError()}" }
     }
 
     // SAFETY: `int dirfd(DIR * dirstream)` is MT-safe, implying that the pointer
@@ -721,17 +722,17 @@ public open class DirEntry(
     // We need to store an owned copy of the entry name on platforms that use
     // readdir() (not readdirR()), because a) struct dirent may use a flexible
     // array to store the name, b) it lives only until the next readdir() call.
-    public var name: CString,
+    public var name: Ffi.CString,
 ) {
     public open fun path(): PathBuf = this.dir.root.join(this.fileNameOsStr())
 
     public open fun fileName(): OsString = this.fileNameOsStr().toOsString()
 
     public open fun metadata(): Result<FileAttr, Error> {
-        val fd = when (val tryResult = cvt(dirfd(this.dir.dirp.value))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val fd = when (val tryResult = cvt(dirfd(this.dir.dirp.value))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         // Make this FD into a directory handle. We don't actually drop it,
         // so having an `OwnedFd` is fine.
-        val dirHandle = Dir(OwnedFd.fromRawFd(fd))
+        val dirHandle = mem.ManuallyDrop.new(Dir(OwnedFd.fromRawFd(fd)))
         return dirHandle.metadataC(this.name, true)
     }
 
@@ -849,9 +850,9 @@ public open class OpenOptions(
                     // If no access mode is set, check if any creation flags are set
                     // to provide a more descriptive error message
                     if (this.create || this.createNew || this.truncate) {
-                        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
+                        Result.Err(io.github.kotlinmania.rustlang.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
                     } else {
-                        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
+                        Result.Err(io.github.kotlinmania.rustlang.io.Error.new(ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
                     }
                 }
             }
@@ -864,12 +865,12 @@ public open class OpenOptions(
                 matchVal.first == true && matchVal.second == false -> {}
                 matchVal.first == false && matchVal.second == false -> {
                     if (this.truncate || this.create || this.createNew) {
-                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
+                        return Result.Err(io.github.kotlinmania.rustlang.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
                     }
                 }
                 else -> {
                     if (this.truncate && !this.createNew) {
-                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
+                        return Result.Err(io.github.kotlinmania.rustlang.io.Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
                     }
                 }
             }
@@ -1268,7 +1269,7 @@ public fun debugAssertFdIsOpen(fd: RawFd) {
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "fatal runtime error: " + ("IO Safety violation: owned file descriptor already closed").toString() + ", aborting\n")
+                        io.Write.writeFmt(out, "fatal runtime error: " + ("IO Safety violation: owned file descriptor already closed").toString() + ", aborting\n")
                     }
                 }
                 run {
@@ -1328,17 +1329,17 @@ public open class TimesAttrlist internal constructor(
             val thisRef = TimesAttrlist(buf = List(3) { MaybeUninit.uninit(ObjectSlotLayout<Timespec>()) }, attrlist = Attrlist(), numTimes = 0)
             thisRef.attrlist.bitmapcount = ATTR_BIT_MAP_COUNT
             if (times.created != null) {
-                thisRef.buf[thisRef.numTimes].write(when (val tryResult = fileTimeToTimespec(times.created)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+                thisRef.buf[thisRef.numTimes].write(when (val tryResult = fileTimeToTimespec(times.created)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
                 thisRef.numTimes += 1
                 thisRef.attrlist.commonattr = thisRef.attrlist.commonattr or ATTR_CMN_CRTIME
             }
             if (times.modified != null) {
-                thisRef.buf[thisRef.numTimes].write(when (val tryResult = fileTimeToTimespec(times.modified)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+                thisRef.buf[thisRef.numTimes].write(when (val tryResult = fileTimeToTimespec(times.modified)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
                 thisRef.numTimes += 1
                 thisRef.attrlist.commonattr = thisRef.attrlist.commonattr or ATTR_CMN_MODTIME
             }
             if (times.accessed != null) {
-                thisRef.buf[thisRef.numTimes].write(when (val tryResult = fileTimeToTimespec(times.accessed)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+                thisRef.buf[thisRef.numTimes].write(when (val tryResult = fileTimeToTimespec(times.accessed)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
                 thisRef.numTimes += 1
                 thisRef.attrlist.commonattr = thisRef.attrlist.commonattr or ATTR_CMN_ACCTIME
             }
@@ -1348,7 +1349,7 @@ public open class TimesAttrlist internal constructor(
 }
 
 public fun readdir(path: Path): Result<ReadDir, Error> {
-    val ptr = when (val tryResult = runPathWithCstr(path, { p -> Result.Ok(opendir(p.asPtr())) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val ptr = when (val tryResult = runPathWithCstr(path, { p -> Result.Ok(opendir(p.asPtr())) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return if (ptr.isNull()) {
         Result.Err(Error.lastOsError())
     } else {
@@ -1367,9 +1368,9 @@ public fun renameNoreplace(old: CStr, new: CStr): Result<Unit, Error> {
     // `RENAME_NOREPLACE` is `cUint` on linux and `cInt` on Android, so casting is needed here.
     val flags = RENAME_NOREPLACE.toUInt()
     val res = cvt(renameat2(AT_FDCWD, old.asPtr(), AT_FDCWD, new.asPtr(), flags))
-    return when (res) { is Result.Ok<*> -> {
+    return when (res) { is Result.Ok<*, *> -> {
         Result.Ok(Unit)
-    }; is Result.Err<*> -> {
+    }; is Result.Err<*, *> -> {
         val err = res.error
         when (val matchVal = err.rawOsError()) {
             // The kernel predates `renameat2`.
@@ -1379,8 +1380,8 @@ public fun renameNoreplace(old: CStr, new: CStr): Result<Unit, Error> {
             EINVAL -> run {
                 val matchVal1 = linkThenUnlink(old, new)
                 when {
-                    matchVal1 is Result.Err<*> && (matchVal1 as Result.Err<*>).error.rawOsError() != EEXIST -> {
-                        val fallback = (matchVal1 as Result.Err<*>).error
+                    matchVal1 is Result.Err<*, *> && (matchVal1 as Result.Err<*, *>).error.rawOsError() != EEXIST -> {
+                        val fallback = (matchVal1 as Result.Err<*, *>).error
                         Result.Err(err)
                     }
                     else -> {
@@ -1413,10 +1414,10 @@ public fun setPermNofollow(p: CStr, perm: FilePermissions): Result<Unit, Error> 
         // and that successfully converted the `Path` to a `CString`,
         // it should be safe to convert the `CStr` back to a `Path`.
         val osStr = OsStr.fromEncodedBytesUnchecked(p1.toBytes())
-        return when (val tryResult = options.open(Path.new(osStr))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.setPermissions(Permissions.fromInner(perm1))
+        return when (val tryResult = options.open(Path.new(osStr))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.setPermissions(Permissions.fromInner(perm1))
     }
     // This res value is modified for platforms that support the `fchmodat` syscall.
-    var res: Result<Unit, Error> = Result.Err(io.github.kotlinmania.rustlang.core.io.error.ErrorKind.Unsupported.into())
+    var res: Result<Unit, io.Error> = Result.Err(io.ErrorKind.Unsupported.into())
     // These platforms support `fchmodat`, so utilize this syscall over `open` + `fchmod`.
     // We can *not* use this on Android due to <https://github.com/android/ndk/issues/1258>.
     run {
@@ -1425,18 +1426,18 @@ public fun setPermNofollow(p: CStr, perm: FilePermissions): Result<Unit, Error> 
     // If fchmodat fails with `ErrorKind.Unsupported` fallback to using open + fchmod. This is just in case
     // for older systems like Ubuntu 20.04 where fchmodat fails with EOPNOTSUPP on both regular files and
     // symlinks when AT_SYMLINK_NOFOLLOW is passed in.
-    return when (res) { is Result.Ok<*> -> {
+    return when (res) { is Result.Ok<*, *> -> {
         Result.Ok(Unit)
-    }; is Result.Err<*> -> {
+    }; is Result.Err<*, *> -> {
         val err = res.error
-        if (err.kind() == io.github.kotlinmania.rustlang.core.io.error.ErrorKind.Unsupported) {
+        if (err.kind() == io.ErrorKind.Unsupported) {
             run {
                 val matchVal = openAndSetPermissions(p, perm)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     return Result.Ok(Unit)
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val e = matchVal.error
-                    if (e.kind() == io.github.kotlinmania.rustlang.core.io.error.ErrorKind.FilesystemLoop) {
+                    if (e.kind() == io.ErrorKind.FilesystemLoop) {
                         // When open is used with O_NOFOLLOW flag, if the trailing component of
                         // a path is a symbolic link, it should fail with ELOOP error. Instead of
                         // returning `FilesystemLoop`, this returns `Unsupported` to keep it consistent
@@ -1457,7 +1458,7 @@ public fun readlink(cPath: CStr): Result<PathBuf, Error> {
     val p = cPath.asPtr()
     val buf = ArrayList(256)
     while (true) {
-        val bufRead = (when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.readlink(p, buf.asMutPtr(), buf.capacity()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }).toInt()
+        val bufRead = (when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.readlink(p, buf.asMutPtr(), buf.capacity()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }).toInt()
         run {
             buf.setLen(bufRead)
         }
@@ -1475,7 +1476,7 @@ public fun readlink(cPath: CStr): Result<PathBuf, Error> {
 public fun symlink(original: CStr, link: CStr): Result<Unit, Error> = cvt(io.github.kotlinmania.rustlang.libc.symlink(original.asPtr(), link.asPtr())).map({ Unit })
 
 public fun link(original: CStr, link: CStr): Result<Unit, Error> {
-    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.powerpc64.link(original.asPtr(), link.asPtr()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.powerpc64.link(original.asPtr(), link.asPtr()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(Unit)
 }
 
@@ -1488,7 +1489,7 @@ public fun stat(p: CStr): Result<FileAttr, Error> {
         }
     }
     val stat: Stat64  = MaybeUninit.zeroed(ObjectSlotLayout<Stat64>()).assumeInit()
-    when (val tryResult = cvt(Stat64(p.asPtr(), stat))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(Stat64(p.asPtr(), stat))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(FileAttr.fromStat64(stat))
 }
 
@@ -1501,14 +1502,14 @@ public fun lstat(p: CStr): Result<FileAttr, Error> {
         }
     }
     val stat: Stat64  = MaybeUninit.zeroed(ObjectSlotLayout<Stat64>()).assumeInit()
-    when (val tryResult = cvt(lstat64(p.asPtr(), stat))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(lstat64(p.asPtr(), stat))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(FileAttr.fromStat64(stat))
 }
 
 public fun canonicalize(path: CStr): Result<PathBuf, Error> {
     val r = realpath(path.asPtr(), MutPtr(0L))
     if (r.isNull()) {
-        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
     }
     return Result.Ok(PathBuf.from(OsString.fromVec(run {
         val buf = CStr.fromPtr(r).toBytes().toMutableList()
@@ -1518,13 +1519,13 @@ public fun canonicalize(path: CStr): Result<PathBuf, Error> {
 }
 
 public fun linkThenUnlink(old: CStr, new: CStr): Result<Unit, Error> {
-    when (val tryResult = link(old, new)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = link(old, new)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return unlink(old)
 }
 
-public fun openFrom(from: Path): Result<Pair<io.github.kotlinmania.rustlang.std.fs.File, Metadata>, Error> {
-    val reader = when (val tryResult = File.open(from)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val metadata = when (val tryResult = reader.metadata()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+public fun openFrom(from: Path): Result<Pair<io.github.kotlinmania.rustlang.fs.File, Metadata>, Error> {
+    val reader = when (val tryResult = File.open(from)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val metadata = when (val tryResult = reader.metadata()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     if (!metadata.isFile()) {
         return Result.Err(NOT_FILE_ERROR)
     }
@@ -1533,14 +1534,14 @@ public fun openFrom(from: Path): Result<Pair<io.github.kotlinmania.rustlang.std.
 
 public fun setTimesImpl(p: CStr, times: FileTimes, followSymlinks: Boolean): Result<Unit, Error> {
     // Apple platforms use setattrlist which supports setting times on symlinks
-    val ta = when (val tryResult = TimesAttrlist.fromTimes(times)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val ta = when (val tryResult = TimesAttrlist.fromTimes(times)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     val options =
         if (followSymlinks) {
             0
         } else {
             FSOPT_NOFOLLOW
         }
-    when (val tryResult = cvt(setattrlist(p.asPtr(), ta.attrlist(), ta.timesBuf(), ta.timesBufSize(), options.toUInt()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(setattrlist(p.asPtr(), ta.attrlist(), ta.timesBuf(), ta.timesBufSize(), options.toUInt()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(Unit)
 }
 
@@ -1548,9 +1549,9 @@ public fun setTimes(p: CStr, times: FileTimes): Result<Unit, Error> = setTimesIm
 
 public fun setTimesNofollow(p: CStr, times: FileTimes): Result<Unit, Error> = setTimesImpl(p, times, false)
 
-public fun openToAndSetPermissions(to: Path, readerMetadata: Metadata): Result<Pair<io.github.kotlinmania.rustlang.std.fs.File, Metadata>, Error> {
-    val writer = when (val tryResult = OpenOptions.new().write(true).create(true).truncate(true).open(to)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val writerMetadata = when (val tryResult = writer.metadata()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+public fun openToAndSetPermissions(to: Path, readerMetadata: Metadata): Result<Pair<io.github.kotlinmania.rustlang.fs.File, Metadata>, Error> {
+    val writer = when (val tryResult = OpenOptions.new().write(true).create(true).truncate(true).open(to)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val writerMetadata = when (val tryResult = writer.metadata()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(Pair(writer, writerMetadata))
 }
 
@@ -1580,9 +1581,9 @@ public open class CachedFileMetadata(
 }
 
 public fun copy(from: Path, to: Path): Result<ULong, Error> {
-    val (reader, readerMetadata) = when (val tryResult = openFrom(from)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val (writer, writerMetadata) = when (val tryResult = openToAndSetPermissions(to, readerMetadata)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    return io.github.kotlinmania.rustlang.std.io.copy(CachedFileMetadata(reader, readerMetadata), CachedFileMetadata(writer, writerMetadata))
+    val (reader, readerMetadata) = when (val tryResult = openFrom(from)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val (writer, writerMetadata) = when (val tryResult = openToAndSetPermissions(to, readerMetadata)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    return io.github.kotlinmania.rustlang.io.copy(CachedFileMetadata(reader, readerMetadata), CachedFileMetadata(writer, writerMetadata))
 }
 
 public fun chown(path: Path, uid: UInt, gid: UInt): Result<Unit, Error> =
@@ -1591,7 +1592,7 @@ public fun chown(path: Path, uid: UInt, gid: UInt): Result<Unit, Error> =
     })
 
 public fun fchown(fd: CInt, uid: UInt, gid: UInt): Result<Unit, Error> {
-    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.fchown(fd, uid, gid))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.fchown(fd, uid, gid))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(Unit)
 }
 
@@ -1608,14 +1609,14 @@ public fun mkfifo(path: Path, mode: UInt): Result<Unit, Error> =
     })
 
 public fun openatNofollowDironly(parentFd: RawFd?, p: CStr): Result<OwnedFd, Error> {
-    val fd = when (val tryResult = cvtR({ openat((parentFd ?: AT_FDCWD), p.asPtr(), O_CLOEXEC or O_RDONLY or O_NOFOLLOW or O_DIRECTORY) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val fd = when (val tryResult = cvtR({ openat((parentFd ?: AT_FDCWD), p.asPtr(), O_CLOEXEC or O_RDONLY or O_NOFOLLOW or O_DIRECTORY) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(OwnedFd.fromRawFd(fd))
 }
 
 public fun fdreaddir(dirFd: OwnedFd): Result<Pair<ReadDir, RawFd>, Error> {
     val ptr = fdopendir(dirFd.asRawFd())
     if (ptr.isNull()) {
-        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
     }
     val dirp = DirStream(ptr)
     // file descriptor is automatically closed by libc.closedir() now, so give up ownership
@@ -1635,7 +1636,7 @@ public fun isDir(ent: DirEntry): Boolean? =
     }
 
 public fun isEnoent(result: Result<Unit, Error>): Boolean =
-    if (result is Result.Err<*> &&
+    if (result is Result.Err<*, *> &&
         when (val matchVal = err.rawOsError()) {
             ENOENT -> true
             else -> false
@@ -1656,11 +1657,11 @@ public fun removeDirAllRecursive(parentFd: RawFd?, path: CStr): Result<Unit, Err
         run {
             val matchVal = openatNofollowDironly(parentFd, path)
             when {
-                matchVal is Result.Err<*> && when (val matchVal1 = (matchVal as Result.Err<*>).error.rawOsError()) {
+                matchVal is Result.Err<*, *> && when (val matchVal1 = (matchVal as Result.Err<*, *>).error.rawOsError()) {
                     ENOTDIR, ELOOP -> true
                     else -> false
                 } -> {
-                    val err = (matchVal as Result.Err<*>).error
+                    val err = (matchVal as Result.Err<*, *>).error
                     // not a directory - don't traverse further
                     // (for symlinks, older Linux kernels may return ELOOP instead of ENOTDIR)
                     return when (parentFd) {
@@ -1676,12 +1677,12 @@ public fun removeDirAllRecursive(parentFd: RawFd?, path: CStr): Result<Unit, Err
                 }
                 else -> {
                     val result = matchVal
-                    when (val tryResult = result) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = result) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 }
             }
         }
     // open the directory passing ownership of the fd
-    val (dir, fd1) = when (val tryResult = fdreaddir(fd)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val (dir, fd1) = when (val tryResult = fdreaddir(fd)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // For WASI all directory entries for this directory are read first
     // before any removal is done. This works around the fact that the
     // WASIp1 API for reading directories is not well-designed for handling
@@ -1690,24 +1691,24 @@ public fun removeDirAllRecursive(parentFd: RawFd?, path: CStr): Result<Unit, Err
     // modifications, it should be possible to delete everything.
     val dir1 = dir.collect<Vec>()
     for (child in dir1) {
-        val child1 = when (val tryResult = child) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val child1 = when (val tryResult = child) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         // we need an inner try block, because if one of these
         // directories has already been deleted, then we need to
         // continue the loop, not return ok.
         val result1: Result<Unit, Error> =
             when (val matchVal2 = isDir(child1)) {
                 true -> {
-                    when (val tryResult = removeDirAllRecursive(fd1, child1.name)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = removeDirAllRecursive(fd1, child1.name)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 }
                 false -> {
-                    when (val tryResult = cvt(unlinkat(fd1, child1.name.asPtr(), 0))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = cvt(unlinkat(fd1, child1.name.asPtr(), 0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 }
                 null -> {
                     // POSIX specifies that calling unlink()/unlinkat(..., 0) on a directory can succeed
                     // if the process has the appropriate privileges. This however can causing orphaned
                     // directories requiring an fsck e.g. on Solaris and Illumos. So we try recursing
                     // into it first instead of trying to unlink() it.
-                    when (val tryResult = removeDirAllRecursive(fd1, child1.name)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = removeDirAllRecursive(fd1, child1.name)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 }
             }
         if (result1.isErr() && !isEnoent(result1)) {
@@ -1715,7 +1716,7 @@ public fun removeDirAllRecursive(parentFd: RawFd?, path: CStr): Result<Unit, Err
         }
     }
     // unlink the directory after removing its contents
-    when (val tryResult = ignoreNotfound(cvt(unlinkat((parentFd ?: AT_FDCWD), path.asPtr(), AT_REMOVEDIR)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = ignoreNotfound(cvt(unlinkat((parentFd ?: AT_FDCWD), path.asPtr(), AT_REMOVEDIR)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(Unit)
 }
 
@@ -1723,12 +1724,12 @@ public fun removeDirAllModern(p: CStr): Result<Unit, Error> {
     // We cannot just call removeDirAllRecursive() here because that would not delete a passed
     // symlink. No need to worry about races, because removeDirAllRecursive() does not recurse
     // into symlinks.
-    val attr = when (val tryResult = lstat(p)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val attr = when (val tryResult = lstat(p)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return if (attr.fileType().isSymlink()) {
         // This would error in `removeDirAllRecursive` as it is not a directory.
         // We promise to delete directory symlinks, so use `unlink` to do that. On Unix, we
         // inadvertently also delete symlinks to files.
-        unlink(p)
+        io.github.kotlinmania.rustlang.sys.fs.unix.unlink(p)
     } else {
         removeDirAllRecursive(null, p)
     }

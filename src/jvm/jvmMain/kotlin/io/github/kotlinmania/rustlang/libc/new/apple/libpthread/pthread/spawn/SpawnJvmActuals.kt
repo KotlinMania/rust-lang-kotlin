@@ -2,13 +2,13 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.spawn
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.QosClassT
+import io.github.kotlinmania.rustlang.new.apple.libpthread.sys.qos.QosClassT
 
-private object NewAppleLibpthreadPthreadSpawnJniBridge {
+private object LibcNewAppleLibpthreadPthreadSpawnJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -44,8 +44,8 @@ private object NewAppleLibpthreadPthreadSpawnJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = NewAppleLibpthreadPthreadSpawnJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = LibcNewAppleLibpthreadPthreadSpawnJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -62,11 +62,11 @@ private object NewAppleLibpthreadPthreadSpawnJniBridge {
     }
 
     @JvmStatic
-    external fun libcNewAppleLibpthreadPthreadSpawnPosixSpawnattrGetQosClassNp(attr: Long, qosClass: Long): Int
+    external fun rustlangLibcNewAppleLibpthreadPthreadSpawnPosixSpawnattrGetQosClassNp(attr: Long, qosClass: Long): Int
 }
 
 public actual fun posixSpawnattrSetQosClassNp(attr: MutPtr, qosClass: QosClassT): CInt =
     0
 
 public actual fun posixSpawnattrGetQosClassNp(attr: ConstPtr, qosClass: MutPtr): CInt =
-    NewAppleLibpthreadPthreadSpawnJniBridge.libcNewAppleLibpthreadPthreadSpawnPosixSpawnattrGetQosClassNp(attr.rawAddress, qosClass.rawAddress)
+    LibcNewAppleLibpthreadPthreadSpawnJniBridge.rustlangLibcNewAppleLibpthreadPthreadSpawnPosixSpawnattrGetQosClassNp(attr.rawAddress, qosClass.rawAddress)

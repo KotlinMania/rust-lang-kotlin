@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry
 
 import io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry.Entry.*
-import io.github.kotlinmania.rustlang.alloc.collections.btree.setval.SetValZST
+import io.github.kotlinmania.rustlang.collections.btree.setval.SetValZST
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 
 public class DebugStruct(

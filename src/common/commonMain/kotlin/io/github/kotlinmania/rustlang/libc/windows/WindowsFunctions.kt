@@ -1,16 +1,16 @@
 package io.github.kotlinmania.rustlang.libc.windows
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
 
 public fun interface QsortComparCallback {
     public operator fun invoke(arg0: ConstPtr, arg1: ConstPtr): CInt
@@ -23,6 +23,21 @@ public fun interface QsortSComparCallback {
 public fun interface AtexitCbCallback {
     public operator fun invoke()
 }
+
+// Special handling for all print and scan type functions because of https://github.com/rust-lang/libc/issues/2860
+public expect fun printf(format: ConstPtr, vararg variadicArgs: Long): CInt
+
+public expect fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt
+
+public expect fun snprintf(buffer: MutPtr, count: SizeT, format: ConstPtr, vararg variadicArgs: Long): CInt
+
+public expect fun sprintf(buffer: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt
+
+public expect fun scanf(format: ConstPtr, vararg variadicArgs: Long): CInt
+
+public expect fun sscanf(buffer: ConstPtr, format: ConstPtr, vararg variadicArgs: Long): CInt
+
+public expect fun fscanf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt
 
 public expect fun isalnum(c: CInt): CInt
 
@@ -341,9 +356,9 @@ public expect fun putenv(envstring: ConstPtr): CInt
 
 public expect fun wputenv(envstring: ConstPtr): CInt
 
-public expect fun putenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.libc.ErrnoT
+public expect fun putenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.windows.ErrnoT
 
-public expect fun wputenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.libc.ErrnoT
+public expect fun wputenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.windows.ErrnoT
 
 public expect fun listen(s: Socket, backlog: CInt): CInt
 

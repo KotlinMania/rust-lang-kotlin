@@ -1,9 +1,9 @@
 // port-lint: source collections/btree/set.rs
 package io.github.kotlinmania.rustlang.alloc.collections.btree.set
 
-import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.collections.btree.map
 import io.github.kotlinmania.rustlang.alloc.collections.btree.map.BTreeMap
-import io.github.kotlinmania.rustlang.alloc.collections.btree.map.ExtractIfInner
 import io.github.kotlinmania.rustlang.alloc.collections.btree.map.Keys
 import io.github.kotlinmania.rustlang.alloc.collections.btree.map.UnorderedKeyError
 import io.github.kotlinmania.rustlang.alloc.collections.btree.mergeiter.MergeIterInner
@@ -11,9 +11,11 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry.Entry
 import io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry.OccupiedEntry
 import io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry.VacantEntry
 import io.github.kotlinmania.rustlang.alloc.collections.btree.setval.SetValZST
-import io.github.kotlinmania.rustlang.alloc.vec.Vec
+import io.github.kotlinmania.rustlang.collections.btree.map.ExtractIfInner
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.iter.adapters.peekable.Peekable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
@@ -25,6 +27,7 @@ import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.or
+import io.github.kotlinmania.rustlang.vec.Vec
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -120,7 +123,7 @@ public class DebugTuple(
  */
 public open class BTreeSet<T, A : AllocatorClone>(
     public var map: MutableMap<T, SetValZST>,
-) : Sub<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, BitXor<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, BitAnd<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, BitOr<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, Iterable<T> {
+) : Sub<BTreeSet<T, A>, BTreeSet<T, A>>, BitXor<BTreeSet<T, A>, BTreeSet<T, A>>, BitAnd<BTreeSet<T, A>, BTreeSet<T, A>>, BitOr<BTreeSet<T, A>, BTreeSet<T, A>>, Iterable<T> {
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     public override fun hashCode(): Int {
@@ -668,11 +671,11 @@ public open class BTreeSet<T, A : AllocatorClone>(
      */
     public open fun entry(value: T): Entry<T, A> =
         when (val matchVal = this.map.entry(value)) {
-            is io.github.kotlinmania.rustlang.alloc.collections.btree.map.entry.Entry.Occupied -> {
+            is map.Entry.Occupied -> {
                 val (entry) = matchVal
                 Entry.Occupied(OccupiedEntry(inner = entry))
             }
-            is io.github.kotlinmania.rustlang.alloc.collections.btree.map.entry.Entry.Vacant -> {
+            is map.Entry.Vacant -> {
                 val (entry1) = matchVal
                 Entry.Vacant(VacantEntry(inner = entry1))
             }
@@ -1196,9 +1199,9 @@ public open class Iter<T> internal constructor(
  * [intoIter]: BTreeSet#method.intoIter
  */
 public open class IntoIter<T, A : AllocatorClone> internal constructor(
-    iterCtorArg: io.github.kotlinmania.rustlang.alloc.collections.btree.map.IntoIter<T, SetValZST, A>,
+    iterCtorArg: io.github.kotlinmania.rustlang.collections.btree.set.IntoIter<T, SetValZST, A>,
 ) : TrustedLen, Iterable<T> {
-    public var iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.IntoIter<T, SetValZST, A> = iterCtorArg
+    public var iter: io.github.kotlinmania.rustlang.collections.btree.set.IntoIter<T, SetValZST, A> = iterCtorArg
         internal set
 
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
@@ -1220,7 +1223,7 @@ public open class IntoIter<T, A : AllocatorClone> internal constructor(
 
     public companion object {
         public operator fun <T, A : AllocatorClone> invoke(
-            iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.IntoIter<T, SetValZST, A>,
+            iter: io.github.kotlinmania.rustlang.collections.btree.set.IntoIter<T, SetValZST, A>,
         ): IntoIter<T, A> = IntoIter<T, A>(
             iterCtorArg = iter,
         )
@@ -1248,9 +1251,9 @@ public open class IntoIter<T, A : AllocatorClone> internal constructor(
  * [range]: BTreeSet.range
  */
 public open class Range<T> internal constructor(
-    iterCtorArg: io.github.kotlinmania.rustlang.alloc.collections.btree.map.Range<T, SetValZST>,
+    iterCtorArg: io.github.kotlinmania.rustlang.collections.btree.set.Range<T, SetValZST>,
 ) : Iterable<T> {
-    public var iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.Range<T, SetValZST> = iterCtorArg
+    public var iter: io.github.kotlinmania.rustlang.collections.btree.set.Range<T, SetValZST> = iterCtorArg
         internal set
 
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
@@ -1276,7 +1279,7 @@ public open class Range<T> internal constructor(
 
     public companion object {
         public operator fun <T> invoke(
-            iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.Range<T, SetValZST>,
+            iter: io.github.kotlinmania.rustlang.collections.btree.set.Range<T, SetValZST>,
         ): Range<T> = Range<T>(
             iterCtorArg = iter,
         )
@@ -1908,9 +1911,9 @@ public fun <T> defaultBTreeSetT(): BTreeSet<T> = BTreeSet.new()
  * A `Cursor` is created with the [BTreeSet.lowerBound] and [BTreeSet.upperBound] methods.
  */
 public open class Cursor<K> internal constructor(
-    innerCtorArg: io.github.kotlinmania.rustlang.alloc.collections.btree.map.Cursor<K, SetValZST>,
+    innerCtorArg: io.github.kotlinmania.rustlang.collections.btree.set.Cursor<K, SetValZST>,
 ) {
-    public var inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.Cursor<K, SetValZST> = innerCtorArg
+    public var inner: io.github.kotlinmania.rustlang.collections.btree.set.Cursor<K, SetValZST> = innerCtorArg
         internal set
 
     public open fun clone(): Cursor<K> = Cursor(inner)
@@ -1953,7 +1956,7 @@ public open class Cursor<K> internal constructor(
 
     public companion object {
         public operator fun <K> invoke(
-            inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.Cursor<K, SetValZST>,
+            inner: io.github.kotlinmania.rustlang.collections.btree.set.Cursor<K, SetValZST>,
         ): Cursor<K> = Cursor<K>(
             innerCtorArg = inner,
         )
@@ -1975,9 +1978,9 @@ public open class Cursor<K> internal constructor(
  * methods.
  */
 public open class CursorMut<K, A> internal constructor(
-    innerCtorArg: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMut<K, SetValZST, A>,
+    innerCtorArg: io.github.kotlinmania.rustlang.collections.btree.set.CursorMut<K, SetValZST, A>,
 ) {
-    public var inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMut<K, SetValZST, A> = innerCtorArg
+    public var inner: io.github.kotlinmania.rustlang.collections.btree.set.CursorMut<K, SetValZST, A> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder) {
@@ -1986,7 +1989,7 @@ public open class CursorMut<K, A> internal constructor(
 
     public companion object {
         public operator fun <K, A> invoke(
-            inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMut<K, SetValZST, A>,
+            inner: io.github.kotlinmania.rustlang.collections.btree.set.CursorMut<K, SetValZST, A>,
         ): CursorMut<K, A> = CursorMut<K, A>(
             innerCtorArg = inner,
         )
@@ -2017,9 +2020,9 @@ public open class CursorMut<K, A> internal constructor(
  * * All elements in the tree must remain in sorted order.
  */
 public open class CursorMutKey<K, A> internal constructor(
-    innerCtorArg: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMutKey<K, SetValZST, A>,
+    innerCtorArg: io.github.kotlinmania.rustlang.collections.btree.set.CursorMutKey<K, SetValZST, A>,
 ) {
-    public var inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMutKey<K, SetValZST, A> = innerCtorArg
+    public var inner: io.github.kotlinmania.rustlang.collections.btree.set.CursorMutKey<K, SetValZST, A> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder) {
@@ -2028,7 +2031,7 @@ public open class CursorMutKey<K, A> internal constructor(
 
     public companion object {
         public operator fun <K, A> invoke(
-            inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMutKey<K, SetValZST, A>,
+            inner: io.github.kotlinmania.rustlang.collections.btree.set.CursorMutKey<K, SetValZST, A>,
         ): CursorMutKey<K, A> = CursorMutKey<K, A>(
             innerCtorArg = inner,
         )

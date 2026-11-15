@@ -8,16 +8,16 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.rustOverflowingAdd
 import io.github.kotlinmania.rustlang.core.num.rustOverflowingMul
 import io.github.kotlinmania.rustlang.core.num.rustOverflowingSub
-import io.github.kotlinmania.rustlang.core.ops.arith.Add
-import io.github.kotlinmania.rustlang.core.ops.arith.Sub
-import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
-import io.github.kotlinmania.rustlang.core.ops.bit.Not
-import io.github.kotlinmania.rustlang.core.ops.bit.Shl
-import io.github.kotlinmania.rustlang.core.ops.bit.Shr
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.DInt
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.MinInt
-import io.github.kotlinmania.rustlang.libm.math.support.macros.cfgSelectNofmt
+import io.github.kotlinmania.rustlang.core.ops.Add
+import io.github.kotlinmania.rustlang.core.ops.BitOr
+import io.github.kotlinmania.rustlang.core.ops.Not
+import io.github.kotlinmania.rustlang.core.ops.Shl
+import io.github.kotlinmania.rustlang.core.ops.Shr
+import io.github.kotlinmania.rustlang.core.ops.Sub
+import io.github.kotlinmania.rustlang.math.support.inttraits.DInt
+import io.github.kotlinmania.rustlang.math.support.inttraits.Int
+import io.github.kotlinmania.rustlang.math.support.inttraits.MinInt
+import io.github.kotlinmania.rustlang.math.support.macros.cfgSelectNofmt
 
 // Integers used for wide operations, larger than `ULong`.
 
@@ -29,7 +29,7 @@ public val U128_LO_MASK: U128 = U128.fromULong(ULong.MAX_VALUE)
 public open class U256(
     public var hi: U128,
     public var lo: U128,
-) : MinInt<U256, Any?, Any?, I256, U256>, BitOr<Any?, U256>, Not<Any?, U256>, Add<U256, U256>, Sub<U256, U256>, Shl<UInt, U256>, Shr<UInt, U256>, DInt<U256, Any?, U128> {
+) : MinInt<U256, I256, U256>, BitOr<U256, Any?, U256>, Not<Any?, U256>, Add<U256, U256>, Sub<U256, U256>, Shl<UInt, U256>, Shr<UInt, U256>, DInt<U256, U128> {
     public open fun clone(): U256 = U256(hi, lo)
 
     /**
@@ -164,7 +164,7 @@ public open class U256(
 public open class I256(
     public var hi: I128,
     public var lo: U128,
-) : MinInt<I256, Any?, Any?, U256, U256>, BitOr<Any?, I256>, Not<Any?, I256>, Add<I256, I256>, Sub<I256, I256>, Shl<UInt, I256>, Shr<UInt, I256>, DInt<I256, Any?, I128> {
+) : MinInt<I256, U256, U256>, BitOr<I256, Any?, I256>, Not<Any?, I256>, Add<I256, I256>, Sub<I256, I256>, Shl<UInt, I256>, Shr<UInt, I256>, DInt<I256, I128> {
     public open fun clone(): I256 = I256(hi, lo)
 
     /**

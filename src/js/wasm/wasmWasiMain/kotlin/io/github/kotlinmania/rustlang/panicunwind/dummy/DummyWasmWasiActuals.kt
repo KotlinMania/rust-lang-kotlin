@@ -3,10 +3,10 @@
 package io.github.kotlinmania.rustlang.panicunwind.dummy
 
 // The host must provide the C companion wrapper exports in import module kmcore.
-@kotlin.wasm.WasmImport("kmcore", "panicunwindDummyRustAbort")
-private external fun wasiPanicunwindDummyRustAbort(): Unit
+@kotlin.wasm.WasmImport("kmcore", "rustlangDummyRustAbort")
+private external fun wasiRustlangDummyRustAbort(): Unit
 
 public actual fun rustAbort(): Nothing {
-    wasiPanicunwindDummyRustAbort()
-    error("C noreturn function panicunwindDummyRustAbort returned")
+    wasiRustlangDummyRustAbort()
+    error("C noreturn function rustlangDummyRustAbort returned")
 }

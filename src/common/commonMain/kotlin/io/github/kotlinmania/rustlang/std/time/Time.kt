@@ -8,9 +8,9 @@ import io.github.kotlinmania.rustlang.core.ops.arith.SubAssign
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.time.unix.UNIX_EPOCH
+import io.github.kotlinmania.rustlang.sys.FromInner
+import io.github.kotlinmania.rustlang.sys.IntoInner
+import io.github.kotlinmania.rustlang.sys.time.unix.UNIX_EPOCH
 
 // Temporal quantification.
 //
@@ -151,9 +151,9 @@ import io.github.kotlinmania.rustlang.std.sys.time.unix.UNIX_EPOCH
  * [checkedDurationSince]: Instant.checkedDurationSince
  */
 public open class Instant(
-    public var value: io.github.kotlinmania.rustlang.std.sys.time.unix.Instant,
-) : Add<Duration, Any?, Instant>, AddAssign<Duration>, Sub<Duration, Any?, Instant>, SubAssign<Duration> {
-    public var field0: io.github.kotlinmania.rustlang.std.sys.time.unix.Instant
+    public var value: io.github.kotlinmania.rustlang.sys.time.unix.Instant,
+) : Add<Duration, Instant>, AddAssign<Duration>, Sub<Duration, Instant>, SubAssign<Duration> {
+    public var field0: io.github.kotlinmania.rustlang.sys.time.unix.Instant
         get() = value
         set(v) {
             value = v
@@ -278,7 +278,7 @@ public open class Instant(
     public open fun checkedSub(duration: Duration): Instant? = this.value.checkedSubDuration(duration).map({ Instant(it) })
 
     // Used by platform specific `sleepUntil` implementations such as the one used on Linux.
-    public open fun intoInner(): io.github.kotlinmania.rustlang.std.sys.time.unix.Instant = this.value
+    public open fun intoInner(): io.github.kotlinmania.rustlang.sys.time.unix.Instant = this.value
 
     /**
      * # Panics
@@ -328,7 +328,7 @@ public open class Instant(
          * val now = Instant.now()
          * ```
          */
-        public fun now(): Instant = Instant(io.github.kotlinmania.rustlang.std.sys.time.unix.Instant.now())
+        public fun now(): Instant = Instant(io.github.kotlinmania.rustlang.sys.time.unix.Instant.now())
     }
 }
 
@@ -424,9 +424,9 @@ public open class Instant(
  * [UnixEpoch]: SystemTime.UnixEpoch
  */
 public open class SystemTime(
-    public var value: io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime,
-) : Add<Duration, Any?, SystemTime>, AddAssign<Duration>, Sub<Duration, Any?, SystemTime>, SubAssign<Duration>, FromInner<io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime, SystemTime>, IntoInner<io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime> {
-    public var field0: io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime
+    public var value: io.github.kotlinmania.rustlang.sys.time.unix.SystemTime,
+) : Add<Duration, SystemTime>, AddAssign<Duration>, Sub<Duration, SystemTime>, SubAssign<Duration>, FromInner<io.github.kotlinmania.rustlang.sys.time.unix.SystemTime, SystemTime>, IntoInner<io.github.kotlinmania.rustlang.sys.time.unix.SystemTime> {
+    public var field0: io.github.kotlinmania.rustlang.sys.time.unix.SystemTime
         get() = value
         set(v) {
             value = v
@@ -580,7 +580,7 @@ public open class SystemTime(
         this.value.fmt(f)
     }
 
-    public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime = this.value
+    public override fun intoInner(): io.github.kotlinmania.rustlang.sys.time.unix.SystemTime = this.value
 
     public companion object {
         //
@@ -653,7 +653,7 @@ public open class SystemTime(
          * }
          * ```
          */
-        public val MAX: SystemTime = SystemTime(io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime.MAX)
+        public val MAX: SystemTime = SystemTime(io.github.kotlinmania.rustlang.sys.time.unix.SystemTime.MAX)
 
         /**
          * Represents the minimum value representable by [SystemTime] on this platform.
@@ -693,7 +693,7 @@ public open class SystemTime(
          * }
          * ```
          */
-        public val MIN: SystemTime = SystemTime(io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime.MIN)
+        public val MIN: SystemTime = SystemTime(io.github.kotlinmania.rustlang.sys.time.unix.SystemTime.MIN)
 
         /**
          * Returns the system time corresponding to "now".
@@ -706,9 +706,9 @@ public open class SystemTime(
          * val sysTime = SystemTime.now()
          * ```
          */
-        public fun now(): SystemTime = SystemTime(io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime.now())
+        public fun now(): SystemTime = SystemTime(io.github.kotlinmania.rustlang.sys.time.unix.SystemTime.now())
 
-        public fun fromInner(time: io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime): SystemTime = SystemTime(time)
+        public fun fromInner(time: io.github.kotlinmania.rustlang.sys.time.unix.SystemTime): SystemTime = SystemTime(time)
     }
 }
 

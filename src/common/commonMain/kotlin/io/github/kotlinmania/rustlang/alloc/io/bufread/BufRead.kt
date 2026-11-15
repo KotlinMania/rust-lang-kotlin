@@ -1,11 +1,6 @@
 // port-lint: source io/buf_read.rs
 package io.github.kotlinmania.rustlang.alloc.io.bufread
 
-import io.github.kotlinmania.rustlang.alloc.io.read.Read
-import io.github.kotlinmania.rustlang.alloc.io.read.appendToString
-import io.github.kotlinmania.rustlang.alloc.io.util.Lines
-import io.github.kotlinmania.rustlang.alloc.io.util.Split
-import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -13,6 +8,10 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
+import io.github.kotlinmania.rustlang.io.read.Read
+import io.github.kotlinmania.rustlang.io.read.appendToString
+import io.github.kotlinmania.rustlang.io.util.Lines
+import io.github.kotlinmania.rustlang.io.util.Split
 
 /**
  * A `BufRead` is a type of [Read]er which has an internal buffer, allowing it
@@ -395,22 +394,22 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte
                 run {
                     val matchVal = r.fillBuf()
                     when {
-                        matchVal is Result.Ok<*> -> {
-                            val n = (matchVal as Result.Ok<*>).value
+                        matchVal is Result.Ok<*, *> -> {
+                            val n = (matchVal as Result.Ok<*, *>).value
                             n
                         }
-                        matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.isInterrupted() -> {
-                            val e = (matchVal as Result.Err<*>).error
+                        matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.isInterrupted() -> {
+                            val e = (matchVal as Result.Err<*, *>).error
                             continue
                         }
                         else -> {
-                            val e1 = (matchVal as Result.Err<*>).error
+                            val e1 = (matchVal as Result.Err<*, *>).error
                             return Result.Err(e1)
                         }
                     }
                 }
             val (done, available1) =
-                when (val matchVal1 = memchr(delim, available)) {
+                when (val matchVal1 = memchr.memchr(delim, available)) {
                     null -> Pair(false, available)
                     else -> {
                         val i = matchVal1
@@ -419,7 +418,7 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte
                 }
             run {
                 val count = available1.len()
-                when (val tryResult = buf.tryReserve(count)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = buf.tryReserve(count)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 // SAFETY:
                 // * self and buf are non-overlapping
                 // * buf[..len] is already initialized
@@ -450,21 +449,21 @@ public fun <R : BufRead<R>> defaultSkipUntil(r: R, delim: UByte): Result<Int> {
                 run {
                     val matchVal = r.fillBuf()
                     when {
-                        matchVal is Result.Ok<*> -> {
-                            val n = (matchVal as Result.Ok<*>).value
+                        matchVal is Result.Ok<*, *> -> {
+                            val n = (matchVal as Result.Ok<*, *>).value
                             n
                         }
-                        matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.kind() == ErrorKind.Interrupted -> {
-                            val e = (matchVal as Result.Err<*>).error
+                        matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.kind() == ErrorKind.Interrupted -> {
+                            val e = (matchVal as Result.Err<*, *>).error
                             continue
                         }
                         else -> {
-                            val e1 = (matchVal as Result.Err<*>).error
+                            val e1 = (matchVal as Result.Err<*, *>).error
                             return Result.Err(e1)
                         }
                     }
                 }
-            when (val matchVal1 = memchr(delim, available)) {
+            when (val matchVal1 = memchr.memchr(delim, available)) {
                 null -> Pair(false, available.len())
                 else -> {
                     val i = matchVal1

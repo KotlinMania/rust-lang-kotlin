@@ -1,7 +1,7 @@
 // port-lint: source io/seek.rs
 package io.github.kotlinmania.rustlang.core.io.seek
 
-import io.github.kotlinmania.rustlang.core.io.error.Result
+import io.github.kotlinmania.rustlang.io.error.Result
 
 /**
  * The `Seek` trait provides a cursor which can be moved within a stream of
@@ -74,7 +74,7 @@ public interface Seek {
      * ```
      */
     public fun rewind(): Result<Unit> {
-        when (val tryResult = this.seek(SeekFrom.Start(0))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.seek(SeekFrom.Start(0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -163,7 +163,7 @@ public interface Seek {
      * ```
      */
     public fun seekRelative(offset: Long): Result<Unit> {
-        when (val tryResult = this.seek(SeekFrom.Current(offset))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.seek(SeekFrom.Current(offset))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 }
@@ -174,12 +174,12 @@ public interface Seek {
  * but additional work needs to be done before or after.
  */
 public fun <T : Seek> streamLenDefault(selfRef: T): Result<ULong> {
-    val oldPos = when (val tryResult = selfRef.streamPosition()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val len = when (val tryResult = selfRef.seek(SeekFrom.End(0))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val oldPos = when (val tryResult = selfRef.streamPosition()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val len = when (val tryResult = selfRef.seek(SeekFrom.End(0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // Avoid seeking a third time when we were already at the end of the
     // stream. The branch is usually way cheaper than a seek operation.
     if (oldPos != len) {
-        when (val tryResult = selfRef.seek(SeekFrom.Start(oldPos))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = selfRef.seek(SeekFrom.Start(oldPos))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     }
     return Result.Ok(len)
 }

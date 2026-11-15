@@ -6,16 +6,16 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.libc.SysFutex
-import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_MONOTONIC
 import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_PRIVATE_FLAG
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAIT_BITSET
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAKE
+import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
 import io.github.kotlinmania.rustlang.libc.wasi.EINTR
 import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sys.io.Errno
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.sys.io.Errno
+import io.github.kotlinmania.rustlang.sys.pal.unix.time.Timespec
 
 /**
  * An atomic for use as a futex that is at least 32-bits but may be larger

@@ -1,11 +1,6 @@
 // port-lint: source float/div.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.div
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.CastInto
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.HInt
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.HalfRep
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -15,6 +10,11 @@ import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
 import io.github.kotlinmania.rustlang.core.num.rustWrappingShl
 import io.github.kotlinmania.rustlang.core.num.rustWrappingShr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.support.CastInto
+import io.github.kotlinmania.rustlang.support.Float
+import io.github.kotlinmania.rustlang.support.HInt
+import io.github.kotlinmania.rustlang.support.HalfRep
+import io.github.kotlinmania.rustlang.support.Int
 
 // Floating point division routines.
 //

@@ -38,7 +38,7 @@ private object SehJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/panicunwind/native/$hostPlatform-$hostArch/$libFileName"
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
         val stream = SehJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
@@ -56,8 +56,8 @@ private object SehJniBridge {
     }
 
     @JvmStatic
-    external fun panicunwindSehGetTYPEINFOVTABLE(): Byte
+    external fun rustlangSehGetTYPEINFOVTABLE(): Byte
 }
 
 public actual val TYPE_INFO_VTABLE: UByte
-    get() = SehJniBridge.panicunwindSehGetTYPEINFOVTABLE().toUByte()
+    get() = SehJniBridge.rustlangSehGetTYPEINFOVTABLE().toUByte()

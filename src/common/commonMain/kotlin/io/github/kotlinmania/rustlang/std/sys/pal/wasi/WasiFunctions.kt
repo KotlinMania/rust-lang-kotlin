@@ -1,28 +1,29 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.wasi
 
-import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.Io
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.abort
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.wasip1.Errno
 
 public fun abortInternal(): Nothing = abort()
 
-public fun err2io(err: Errno): Error = Error.fromRawOsError(err.raw().into())
+public fun err2io(err: Errno): Io.Error = io.Error.fromRawOsError(err.raw().into())
 
-public fun <T : IsMinusOne> cvt(t: T): Result<T, io.github.kotlinmania.rustlang.std.io.error.Error> =
+public fun <T : IsMinusOne> cvt(t: T): Result<T, Error> =
     if (t.isMinusOne()) {
-        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
     } else {
         Result.Ok(t)
     }
 
-public fun <T> cvtR(f: () -> T): Result<T, io.github.kotlinmania.rustlang.std.io.error.Error> where T : IsMinusOne {
+public fun <T> cvtR(f: () -> T): Result<T, Error> where T : IsMinusOne {
     while (true) {
         run {
             val matchVal = cvt(f())
             when {
-                matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.isInterrupted() -> {
-                    val e = (matchVal as Result.Err<*>).error
+                matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.isInterrupted() -> {
+                    val e = (matchVal as Result.Err<*, *>).error
                 }
                 else -> {
                     val other = matchVal

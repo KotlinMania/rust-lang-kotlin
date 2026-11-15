@@ -1,6 +1,19 @@
 // port-lint: tests x86/vpclmulqdq.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.M512i
+import io.github.kotlinmania.rustlang.x86.mm256Broadcastsi128Si256
+import io.github.kotlinmania.rustlang.x86.mm256Extracti128Si256
+import io.github.kotlinmania.rustlang.x86.mm512BroadcastI32x4
+import io.github.kotlinmania.rustlang.x86.mm512Extracti32x4Epi32
+import io.github.kotlinmania.rustlang.x86.mm512Extracti64x4Epi64
+import io.github.kotlinmania.rustlang.x86.mm512SetEpi64
+import io.github.kotlinmania.rustlang.x86.mmClmulepi64Si128
+import io.github.kotlinmania.rustlang.x86.mmSetEpi64x
+import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
+
 // Vectorized Carry-less Multiplication (VCLMUL)
 //
 // The reference is [Intel 64 and IA-32 Architectures Software Developer's

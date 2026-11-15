@@ -1,10 +1,9 @@
 package io.github.kotlinmania.rustlang.core.slice.sort.stable
 
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.SMALL_SORT_GENERAL_SCRATCH_LEN
-import io.github.kotlinmania.rustlang.core.slice.sort.stable.tiny.mergesort
+import io.github.kotlinmania.rustlang.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.slice.sort.shared.smallsort.SMALL_SORT_GENERAL_SCRATCH_LEN
+import io.github.kotlinmania.rustlang.slice.sort.stable.tiny.mergesort
 
 /**
  * Stable sort called driftsort by Orson Peters and Lukas Bergdoll.
@@ -87,5 +86,5 @@ public fun <T, BufT : BufGuard<T, BufT>> driftsortMain(v: MutableList<T>, isLess
     // small-sort or two small-sorts plus a single merge outperforms it, so use
     // eager mode.
     val eagerSort = len <= smallSortThresholdTFn() * 2
-    io.github.kotlinmania.rustlang.core.slice.sort.stable.drift.sort(v, scratch, eagerSort, isLess)
+    io.github.kotlinmania.rustlang.slice.sort.stable.drift.sort(v, scratch, eagerSort, isLess)
 }

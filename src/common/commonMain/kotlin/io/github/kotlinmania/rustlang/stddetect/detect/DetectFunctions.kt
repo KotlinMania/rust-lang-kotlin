@@ -1,7 +1,7 @@
 package io.github.kotlinmania.rustlang.stddetect.detect
 
+import io.github.kotlinmania.rustlang.detect.bit.test
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.test
 
 /**
  * Performs run-time feature detection.

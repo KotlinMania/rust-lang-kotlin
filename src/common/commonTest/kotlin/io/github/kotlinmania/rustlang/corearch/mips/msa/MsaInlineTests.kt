@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.corearch.mips.msa
 
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 // MIPS SIMD Architecture intrinsics
@@ -1040,31 +1041,31 @@ public fun testMsaCopySW() {
 public fun testMsaCopySD() {
     val a = i64x2.new(3, 9223372036854775807)
     val r = 9223372036854775807.toLong()
-    check(r == transmute(msaCopySD(transmute(a), 1)))
+    check(r == transmute(msaCopySD(transmute(a), 1L)))
 }
 
 public fun testMsaCopyUB() {
     val a = i8x16.new(100, 127, 4, 127, 100, 127, 4, 127, 100, 127, 4, 127, 100, 127, 4, 127)
     val r = 100.toUInt()
-    check(r == transmute(msaCopyUB(transmute(a), 12)))
+    check(r == transmute(msaCopyUB(transmute(a), 12u)))
 }
 
 public fun testMsaCopyUH() {
     val a = i16x8.new(32767, 3276, 100, 11, 32767, 3276, 100, 11)
     val r = 32767.toUInt()
-    check(r == transmute(msaCopyUH(transmute(a), 4)))
+    check(r == transmute(msaCopyUH(transmute(a), 4u)))
 }
 
 public fun testMsaCopyUW() {
     val a = i32x4.new(100, 2147483647, 5, 2147483647)
     val r = 2147483647.toUInt()
-    check(r == transmute(msaCopyUW(transmute(a), 1)))
+    check(r == transmute(msaCopyUW(transmute(a), 1u)))
 }
 
 public fun testMsaCopyUD() {
     val a = i64x2.new(3, Long.MAX_VALUE)
     val r = 9223372036854775807.toULong()
-    check(r == transmute(msaCopyUD(transmute(a), 1)))
+    check(r == transmute(msaCopyUD(transmute(a), 1uL)))
 }
 
 // Can not be tested in user mode
@@ -1590,7 +1591,7 @@ public fun testMsaFillW() {
 
 public fun testMsaFillD() {
     val r = i64x2.new(2, 2)
-    check(r == transmute(msaFillD(2L)))
+    check(r == transmute(msaFillD(2)))
 }
 
 public fun testMsaFlog2W() {

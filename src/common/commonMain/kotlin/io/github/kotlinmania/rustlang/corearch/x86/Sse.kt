@@ -3,16 +3,19 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.num.f32.sqrt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.x86.M128i
 
 // Streaming SIMD Extensions (SSE)
 
@@ -857,7 +860,7 @@ public fun mmLoaduPs(p: ConstPtr): M128 {
     // Note: Using `* p` would require `Float` alignment, but `movups` has no
     // alignment restrictions.
     val dst = mmUndefinedPs()
-    copyNonoverlapping(ConstPtr(p.rawAddress, p.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M128>(typeLayoutT = ObjectSlotLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
+    ptr.copyNonoverlapping(ConstPtr(p.rawAddress, p.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M128>(typeLayoutT = ObjectSlotLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -962,7 +965,7 @@ public fun mmStorePs(p: MutPtr, a: M128) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_ps)
  */
 public fun mmStoreuPs(p: MutPtr, a: M128) {
-    copyNonoverlapping(constPtrFromRustCast(addrOf(a)), MutPtr(p.rawAddress, p.rawMeta), sizeOf<M128>(typeLayoutT = ObjectSlotLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
+    ptr.copyNonoverlapping(constPtrFromRustCast(addrOf(a)), MutPtr(p.rawAddress, p.rawMeta), mem.sizeOf<M128>(typeLayoutT = ObjectSlotLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 /**

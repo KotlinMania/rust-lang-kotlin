@@ -1,8 +1,9 @@
 // port-lint: source marker.rs
 package io.github.kotlinmania.rustlang.core.marker
 
-import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 
 // Primitive traits and types representing basic properties of types.

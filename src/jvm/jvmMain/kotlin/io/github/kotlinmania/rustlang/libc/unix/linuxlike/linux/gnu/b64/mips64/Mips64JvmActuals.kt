@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.mips64
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SizeT
 
-private object UnixLinuxlikeLinuxGnuB64Mips64JniBridge {
+private object LibcUnixLinuxlikeLinuxGnuB64Mips64JniBridge {
     init {
         loadNativeLibrary()
     }
@@ -43,8 +43,8 @@ private object UnixLinuxlikeLinuxGnuB64Mips64JniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = UnixLinuxlikeLinuxGnuB64Mips64JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = LibcUnixLinuxlikeLinuxGnuB64Mips64JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -61,8 +61,8 @@ private object UnixLinuxlikeLinuxGnuB64Mips64JniBridge {
     }
 
     @JvmStatic
-    external fun libcUnixLinuxlikeLinuxGnuB64Mips64Sysctl(name: Long, namelen: Int, oldp: Long, oldlenp: Long, newp: Long, newlen: Long): Int
+    external fun rustlangLibcUnixLinuxlikeLinuxGnuB64Mips64Sysctl(name: Long, namelen: Int, oldp: Long, oldlenp: Long, newp: Long, newlen: Long): Int
 }
 
 public actual fun sysctl(name: MutPtr, namelen: CInt, oldp: MutPtr, oldlenp: MutPtr, newp: MutPtr, newlen: SizeT): CInt =
-    UnixLinuxlikeLinuxGnuB64Mips64JniBridge.libcUnixLinuxlikeLinuxGnuB64Mips64Sysctl(name.rawAddress, namelen, oldp.rawAddress, oldlenp.rawAddress, newp.rawAddress, newlen.toLong())
+    LibcUnixLinuxlikeLinuxGnuB64Mips64JniBridge.rustlangLibcUnixLinuxlikeLinuxGnuB64Mips64Sysctl(name.rawAddress, namelen, oldp.rawAddress, oldlenp.rawAddress, newp.rawAddress, newlen.toLong())

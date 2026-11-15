@@ -8,8 +8,8 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.abortOnDtorUnwind
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests.destructors
+import io.github.kotlinmania.rustlang.sys.threadlocal.abortOnDtorUnwind
+import io.github.kotlinmania.rustlang.sys.threadlocal.key.tests.destructors
 
 public sealed class State(
     public val value: Int,

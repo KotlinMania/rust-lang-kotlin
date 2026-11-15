@@ -1,20 +1,20 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.SpeedT
-import io.github.kotlinmania.rustlang.libc.types.cstr
-import io.github.kotlinmania.rustlang.libc.types.u32CastInt
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.aarch64.MAP_ANON
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.aarch64.O_DIRECTORY
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.aarch64.O_NONBLOCK
+import io.github.kotlinmania.rustlang.types.cstr
+import io.github.kotlinmania.rustlang.types.u32CastInt
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.SocklenT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.aarch64.MAP_ANON
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.aarch64.O_DIRECTORY
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.aarch64.O_NONBLOCK
 
 // include/sys/mman.h
 //
@@ -255,7 +255,7 @@ public val RTLD_GLOBAL: CInt = 0x100
 
 public val RTLD_NOLOAD: CInt = 0x4
 
-public val CLOCK_SGI_CYCLE: ClockidT = 10
+public val CLOCK_SGI_CYCLE: ClockidT = 10u
 
 public val B0: SpeedT = 0uL
 

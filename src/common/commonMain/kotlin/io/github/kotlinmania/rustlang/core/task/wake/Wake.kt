@@ -1,19 +1,19 @@
 // port-lint: source task/wake.rs
 package io.github.kotlinmania.rustlang.core.task.wake
 
+import io.github.kotlinmania.rustlang.any.Any
+import io.github.kotlinmania.rustlang.convert.AsRef
 import io.github.kotlinmania.rustlang.core.RustAny
-import io.github.kotlinmania.rustlang.core.any.Any
-import io.github.kotlinmania.rustlang.core.convert.AsRef
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.mem.transmutability.transmute
+import io.github.kotlinmania.rustlang.panic.unwindsafe.AssertUnwindSafe
+import io.github.kotlinmania.rustlang.ptr.eq
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: ConstPtr): RawWaker
@@ -552,7 +552,7 @@ public open class Waker internal constructor(
      * import std.task.Waker
      *
      * open class Shared(public var waker: Waker)
-     * open class Waiter(public var shared: Mutex<Shared>) : Future {
+     * open class Waiter(public var shared: Mutex<Shared>) : Future<Unit> {
      *     public open fun poll(cx: Context): Poll<Unit> {
      *         var shared = this.shared.lock().unwrap()
      *         // update the waker
@@ -672,7 +672,7 @@ public open class Waker internal constructor(
         public fun fromFnPtr(f: FromFnPtrFCallback, fieldLayout: TypeLayout<RawWaker>): Waker {
             // SAFETY: Unsafe is used for transmutes, pointer came from `fun()` so it
             // is sound to reinterpret it back to `fun()`.
-            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute<ConstPtr, FromFnPtrFCallback>(thisRef)() }, { thisRef -> transmute<ConstPtr, FromFnPtrFCallback>(thisRef)() }, {})
+            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute(thisRef)() }, { thisRef -> transmute(thisRef)() }, {})
             val raw = RawWaker.new(constPtrFromRustCast(f), VTABLE)
             // SAFETY: `clone` is just a copy, `drop` is a no-op while `wake` and
             // `wakeByRef` just call the function pointer.
@@ -915,7 +915,7 @@ public open class LocalWaker internal constructor(
         public fun fromFnPtr(f: FromFnPtrFCallback, fieldLayout: TypeLayout<RawWaker>): LocalWaker {
             // SAFETY: Unsafe is used for transmutes, pointer came from `fun()` so it
             // is sound to reinterpret it back to `fun()`.
-            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute<ConstPtr, FromFnPtrFCallback>(thisRef)() }, { thisRef -> transmute<ConstPtr, FromFnPtrFCallback>(thisRef)() }, {})
+            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute(thisRef)() }, { thisRef -> transmute(thisRef)() }, {})
             val raw = RawWaker.new(constPtrFromRustCast(f), VTABLE)
             // SAFETY: `clone` is just a copy, `drop` is a no-op while `wake` and
             // `wakeByRef` just call the function pointer.

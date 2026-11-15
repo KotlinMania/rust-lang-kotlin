@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64
 
-import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.*
 
 // The following definitions are correct for aarch64 and x8664,
 // but may be wrong for mips64

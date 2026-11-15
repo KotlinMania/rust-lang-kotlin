@@ -1,8 +1,8 @@
 // port-lint: source simd/num/uint.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.num.uint
 
-import io.github.kotlinmania.rustlang.coresimd.Simd
-import io.github.kotlinmania.rustlang.coresimd.simd.SimdCast
+import io.github.kotlinmania.rustlang.Simd
+import io.github.kotlinmania.rustlang.SimdCast
 
 /**
  * Operations on SIMD vectors of unsigned integers.

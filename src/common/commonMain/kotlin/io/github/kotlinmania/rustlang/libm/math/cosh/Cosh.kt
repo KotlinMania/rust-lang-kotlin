@@ -1,9 +1,9 @@
 // port-lint: source math/cosh.rs
 package io.github.kotlinmania.rustlang.libm.math.cosh
 
-import io.github.kotlinmania.rustlang.libm.math.exp.exp
-import io.github.kotlinmania.rustlang.libm.math.expm1.expm1
-import io.github.kotlinmania.rustlang.libm.math.kexpo2.kExpo2
+import io.github.kotlinmania.rustlang.math.exp.exp
+import io.github.kotlinmania.rustlang.math.expm1.expm1
+import io.github.kotlinmania.rustlang.math.kexpo2.kExpo2
 
 /**
  * Hyperbolic cosine (f64)

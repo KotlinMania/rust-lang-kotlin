@@ -6,6 +6,12 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.num.rustRotateLeft
 import io.github.kotlinmania.rustlang.core.num.rustRotateRight
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.x86.mm256LoaduSi256
+import io.github.kotlinmania.rustlang.x86.mm256SetM128i
+import io.github.kotlinmania.rustlang.x86.mm256SetrEpi64x
+import io.github.kotlinmania.rustlang.x86.mmLoaduSi128
+import io.github.kotlinmania.rustlang.x86.mmSetEpi64x
+import io.github.kotlinmania.rustlang.x86.mmSetrEpi32
 
 public fun testMmSha1msg1Epu32() {
     val a = mmSetEpi64x(0xe9b5dba5b5c0fbcfuL.toLong(), 0x71374491428a2f98L)

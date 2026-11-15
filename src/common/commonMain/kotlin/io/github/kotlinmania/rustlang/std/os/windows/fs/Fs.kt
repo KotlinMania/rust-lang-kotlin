@@ -3,18 +3,18 @@ package io.github.kotlinmania.rustlang.std.os.windows.fs
 
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.fs.File
-import io.github.kotlinmania.rustlang.std.fs.FileTimes
-import io.github.kotlinmania.rustlang.std.fs.FileType
-import io.github.kotlinmania.rustlang.std.fs.Metadata
-import io.github.kotlinmania.rustlang.std.fs.OpenOptions
-import io.github.kotlinmania.rustlang.std.fs.Permissions
-import io.github.kotlinmania.rustlang.std.io.defaultReadBuf
+import io.github.kotlinmania.rustlang.fs.File
+import io.github.kotlinmania.rustlang.fs.FileTimes
+import io.github.kotlinmania.rustlang.fs.FileType
+import io.github.kotlinmania.rustlang.fs.Metadata
+import io.github.kotlinmania.rustlang.fs.OpenOptions
+import io.github.kotlinmania.rustlang.fs.Permissions
+import io.github.kotlinmania.rustlang.io.defaultReadBuf
+import io.github.kotlinmania.rustlang.path.Path
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.fs.windows.symlinkInner
-import io.github.kotlinmania.rustlang.std.time.SystemTime
+import io.github.kotlinmania.rustlang.sys.FromInner
+import io.github.kotlinmania.rustlang.sys.fs.windows.symlinkInner
+import io.github.kotlinmania.rustlang.time.SystemTime
 
 // Windows-specific extensions to primitives in the [std.fs] module.
 
@@ -107,21 +107,21 @@ public interface FileExt {
             run {
                 val matchVal = this.seekRead(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*> && matchVal.value == 0 -> { break }
-                    matchVal is Result.Ok<*> -> {
-                        val n = (matchVal as Result.Ok<*>).value
+                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> { break }
+                    matchVal is Result.Ok<*, *> -> {
+                        val n = (matchVal as Result.Ok<*, *>).value
                         buf1 = buf1.subList(n, buf1.size)
                         offset1 += n.toULong()
                     }
                     else -> {
-                        val e = (matchVal as Result.Err<*>).error
+                        val e = (matchVal as Result.Err<*, *>).error
                         return Result.Err(e)
                     }
                 }
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
+            Result.Err(io.github.kotlinmania.rustlang.io.Error.READ_EXACT_EOF)
         } else {
             Result.Ok(Unit)
         }
@@ -203,7 +203,7 @@ public interface FileExt {
             val prevWritten = buf.written()
             run {
                 val matchVal = this.seekReadBuf(buf.reborrow(), offset1)
-                when (matchVal) { is Result.Ok<*> -> {}; is Result.Err<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {}; is Result.Err<*, *> -> {
                     val e = matchVal.error
                     return Result.Err(e)
                 } }
@@ -211,7 +211,7 @@ public interface FileExt {
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
+                return Result.Err(io.github.kotlinmania.rustlang.io.Error.READ_EXACT_EOF)
             }
         }
         return Result.Ok(Unit)
@@ -294,16 +294,16 @@ public interface FileExt {
             run {
                 val matchVal = this.seekWrite(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*> && matchVal.value == 0 -> {
-                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
+                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
+                        return Result.Err(io.github.kotlinmania.rustlang.io.Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok<*> -> {
-                        val n = (matchVal as Result.Ok<*>).value
-                        buf1 = ((buf1).slice(n until buf1.size))
+                    matchVal is Result.Ok<*, *> -> {
+                        val n = (matchVal as Result.Ok<*, *>).value
+                        buf1 = ((buf1).subList(n, (buf1).size))
                         offset1 += n.toULong()
                     }
                     else -> {
-                        val e = (matchVal as Result.Err<*>).error
+                        val e = (matchVal as Result.Err<*, *>).error
                         return Result.Err(e)
                     }
                 }
@@ -936,4 +936,4 @@ public fun symlinkDir(original: Path, link: Path): Result<Unit, Error> = symlink
  *
  * If either path is not a local file path then this will fail.
  */
-public fun junctionPoint(original: Path, link: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.windows.junctionPoint(original, link)
+public fun junctionPoint(original: Path, link: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.sys.fs.windows.junctionPoint(original, link)

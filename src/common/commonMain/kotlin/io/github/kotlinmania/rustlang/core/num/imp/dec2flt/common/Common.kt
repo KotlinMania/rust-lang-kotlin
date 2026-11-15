@@ -38,7 +38,7 @@ public interface ByteSlice<T> {
 // inlining this is crucial to remove bound checks
 public fun List<UByte>.readU64(): ULong {
     val tmp = MutableList(8) { 0 }
-    tmp.copyFromSlice(((this).slice(0 until 8)))
+    tmp.copyFromSlice(((this).subList(0, 8)))
     return run { val bytesTmp0 = tmp; ((bytesTmp0[7].toULong() shl 56) or (bytesTmp0[6].toULong() shl 48) or (bytesTmp0[5].toULong() shl 40) or (bytesTmp0[4].toULong() shl 32) or (bytesTmp0[3].toULong() shl 24) or (bytesTmp0[2].toULong() shl 16) or (bytesTmp0[1].toULong() shl 8) or bytesTmp0[0].toULong()) }
 }
 

@@ -1,13 +1,13 @@
 package io.github.kotlinmania.rustlang.compilerbuiltins.mem
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.mem.impls.cStringLength
-import io.github.kotlinmania.rustlang.compilerbuiltins.mem.impls.compareBytes
-import io.github.kotlinmania.rustlang.compilerbuiltins.mem.impls.copyBackward
-import io.github.kotlinmania.rustlang.compilerbuiltins.mem.impls.copyForward
-import io.github.kotlinmania.rustlang.compilerbuiltins.mem.impls.setBytes
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.mem.x8664.cStringLength
+import io.github.kotlinmania.rustlang.mem.x8664.compareBytes
+import io.github.kotlinmania.rustlang.mem.x8664.copyBackward
+import io.github.kotlinmania.rustlang.mem.x8664.copyForward
+import io.github.kotlinmania.rustlang.mem.x8664.setBytes
 
 public fun memcpy(dest: MutPtr, src: ConstPtr, n: Int): MutPtr {
     copyForward(dest, src, n)

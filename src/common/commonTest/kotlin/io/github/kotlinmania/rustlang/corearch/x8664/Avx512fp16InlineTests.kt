@@ -1,9 +1,9 @@
 // port-lint: tests x86_64/avx512fp16.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.corearch.x86.MM_FROUND_NO_EXC
-import io.github.kotlinmania.rustlang.corearch.x86.MM_FROUND_TO_NEAREST_INT
-import io.github.kotlinmania.rustlang.corearch.x86.mmSetrPh
+import io.github.kotlinmania.rustlang.x86.MM_FROUND_NO_EXC
+import io.github.kotlinmania.rustlang.x86.MM_FROUND_TO_NEAREST_INT
+import io.github.kotlinmania.rustlang.x86.mmSetrPh
 
 public fun testMmCvti64Sh() {
     val a = mmSetrPh(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)

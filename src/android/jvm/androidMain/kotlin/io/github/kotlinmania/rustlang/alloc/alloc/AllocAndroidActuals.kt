@@ -8,10 +8,10 @@ private object AllocJniBridge {
     }
 
     @JvmStatic
-    external fun allocRustAllocErrorHandler(size: Long, align: Long)
+    external fun rustlangAllocRustAllocErrorHandler(size: Long, align: Long)
 }
 
 public actual fun rustAllocErrorHandler(size: ULong, align: ULong): Nothing {
-    AllocJniBridge.allocRustAllocErrorHandler(size.toLong(), align.toLong())
+    AllocJniBridge.rustlangAllocRustAllocErrorHandler(size.toLong(), align.toLong())
     error("Unreachable noreturn C function rustAllocErrorHandler")
 }

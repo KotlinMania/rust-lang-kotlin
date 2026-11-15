@@ -2,36 +2,36 @@
 
 package io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.libcNewCommonLinuxlikePthreadPthreadGetaffinityNp
-import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.libcNewCommonLinuxlikePthreadPthreadGetattrNp
-import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.libcNewCommonLinuxlikePthreadPthreadGetnameNp
-import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.libcNewCommonLinuxlikePthreadPthreadGettidNp
-import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.libcNewCommonLinuxlikePthreadPthreadSetaffinityNp
-import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.libcNewCommonLinuxlikePthreadPthreadSetnameNp
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.rustlangLibcNewCommonLinuxlikePthreadPthreadGetaffinityNp
+import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.rustlangLibcNewCommonLinuxlikePthreadPthreadGetattrNp
+import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.rustlangLibcNewCommonLinuxlikePthreadPthreadGetnameNp
+import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.rustlangLibcNewCommonLinuxlikePthreadPthreadGettidNp
+import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.rustlangLibcNewCommonLinuxlikePthreadPthreadSetaffinityNp
+import io.github.kotlinmania.rustlang.libc.new.common.linuxlike.pthread.cinterop.rustlangLibcNewCommonLinuxlikePthreadPthreadSetnameNp
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 
 public actual fun pthreadGetaffinityNp(thread: PthreadT, cpusetsize: SizeT, cpuset: MutPtr): CInt =
-    libcNewCommonLinuxlikePthreadPthreadGetaffinityNp(thread.rawAddress.toCPointer<ByteVar>(), cpusetsize, cpuset.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcNewCommonLinuxlikePthreadPthreadGetaffinityNp(thread.toLong().toCPointer<ByteVar>(), cpusetsize, cpuset.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadGetattrNp(native: PthreadT, attr: MutPtr): CInt =
-    libcNewCommonLinuxlikePthreadPthreadGetattrNp(native.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcNewCommonLinuxlikePthreadPthreadGetattrNp(native.toLong().toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadGetnameNp(thread: PthreadT, name: MutPtr, len: SizeT): CInt =
-    libcNewCommonLinuxlikePthreadPthreadGetnameNp(thread.rawAddress.toCPointer<ByteVar>(), name.rawAddress.toCPointer<ByteVar>(), len)
+    rustlangLibcNewCommonLinuxlikePthreadPthreadGetnameNp(thread.toLong().toCPointer<ByteVar>(), name.rawAddress.toCPointer<ByteVar>(), len)
 
 public actual fun pthreadGettidNp(thread: PthreadT): PidT =
-    libcNewCommonLinuxlikePthreadPthreadGettidNp(thread.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcNewCommonLinuxlikePthreadPthreadGettidNp(thread.toLong().toCPointer<ByteVar>())
 
 public actual fun pthreadSetaffinityNp(thread: PthreadT, cpusetsize: SizeT, cpuset: ConstPtr): CInt =
-    libcNewCommonLinuxlikePthreadPthreadSetaffinityNp(thread.rawAddress.toCPointer<ByteVar>(), cpusetsize, cpuset.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcNewCommonLinuxlikePthreadPthreadSetaffinityNp(thread.toLong().toCPointer<ByteVar>(), cpusetsize, cpuset.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadSetnameNp(thread: PthreadT, name: ConstPtr): CInt =
-    libcNewCommonLinuxlikePthreadPthreadSetnameNp(thread.rawAddress.toCPointer<ByteVar>(), name.rawAddress.toCPointer<ByteVar>())
+    rustlangLibcNewCommonLinuxlikePthreadPthreadSetnameNp(thread.toLong().toCPointer<ByteVar>(), name.rawAddress.toCPointer<ByteVar>())

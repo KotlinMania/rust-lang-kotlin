@@ -2,20 +2,20 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
-private object Wasm32MemoryJniBridge {
+private object CorearchWasm32MemoryJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun corearchWasm32MemoryLlvmMemoryGrow(mem: Int, pages: Long): Long
+    external fun rustlangCorearchWasm32MemoryLlvmMemoryGrow(mem: Int, pages: Long): Long
 
     @JvmStatic
-    external fun corearchWasm32MemoryLlvmMemorySize(mem: Int): Long
+    external fun rustlangCorearchWasm32MemoryLlvmMemorySize(mem: Int): Long
 }
 
 public actual fun llvmMemoryGrow(mem: UInt, pages: ULong): ULong =
-    Wasm32MemoryJniBridge.corearchWasm32MemoryLlvmMemoryGrow(mem.toInt(), pages.toLong()).toULong()
+    CorearchWasm32MemoryJniBridge.rustlangCorearchWasm32MemoryLlvmMemoryGrow(mem.toInt(), pages.toLong()).toULong()
 
 public actual fun llvmMemorySize(mem: UInt): ULong =
-    Wasm32MemoryJniBridge.corearchWasm32MemoryLlvmMemorySize(mem.toInt()).toULong()
+    CorearchWasm32MemoryJniBridge.rustlangCorearchWasm32MemoryLlvmMemorySize(mem.toInt()).toULong()

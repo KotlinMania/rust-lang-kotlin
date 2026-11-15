@@ -1,14 +1,14 @@
 // port-lint: source task.rs
 package io.github.kotlinmania.rustlang.alloc.task
 
-import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
-import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.task.wake.LocalWaker
 import io.github.kotlinmania.rustlang.core.task.wake.RawWaker
 import io.github.kotlinmania.rustlang.core.task.wake.RawWakerVTable
 import io.github.kotlinmania.rustlang.core.task.wake.Waker
+import io.github.kotlinmania.rustlang.rcs.arc.Arc
+import io.github.kotlinmania.rustlang.rcs.rc.Rc
 
 // Types and Traits for working with asynchronous tasks.
 //

@@ -7,7 +7,7 @@ private val allocNapiAddon: dynamic =
 
 public actual fun rustAllocErrorHandler(size: ULong, align: ULong): Nothing {
     if (allocNapiAddon != null) {
-        allocNapiAddon.allocRustAllocErrorHandler(size.toString(), align.toString())
+        allocNapiAddon.rustlangAllocRustAllocErrorHandler(size.toString(), align.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

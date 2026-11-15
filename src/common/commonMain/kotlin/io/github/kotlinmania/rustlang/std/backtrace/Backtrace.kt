@@ -6,13 +6,12 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
-import io.github.kotlinmania.rustlang.std.env.currentDir
-import io.github.kotlinmania.rustlang.std.env.variable
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
-import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
-import io.github.kotlinmania.rustlang.std.sys.backtrace.outputFilename
-import io.github.kotlinmania.rustlang.std.sys.backtrace.setImageBase
+import io.github.kotlinmania.rustlang.env.currentDir
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.sync.lazylock.LazyLock
+import io.github.kotlinmania.rustlang.sys.backtrace.lock
+import io.github.kotlinmania.rustlang.sys.backtrace.outputFilename
+import io.github.kotlinmania.rustlang.sys.backtrace.setImageBase
 
 // Support for capturing a stack backtrace of an OS thread
 //
@@ -150,9 +149,9 @@ public open class Backtrace(
         val full = fmt.alternate()
         val (frames, style) =
             if (full) {
-                Pair(capture.frames, PrintFmt.Full)
+                Pair(capture.frames, backtracers.PrintFmt.Full)
             } else {
-                Pair(capture.frames[capture.actualStart until capture.frames.size], PrintFmt.Short)
+                Pair(capture.frames[capture.actualStart until capture.frames.size], backtracers.PrintFmt.Short)
             }
         // When printing paths we try to strip the cwd if it exists, otherwise
         // we just print the path as-is. Note that we also only do this for the
@@ -163,14 +162,14 @@ public open class Backtrace(
             { fmt1: StringBuilder, path: BytesOrWideString ->
                 outputFilename(fmt1, path, style, cwd.asRef().ok())
             }
-        val f = BacktraceFmt.new(fmt, style, printPath)
+        val f = backtracers.BacktraceFmt.new(fmt, style, printPath)
         f.addContext()
         for (frame in frames) {
             if (frame.symbols.isEmpty()) {
                 f.frame().printRaw(frame.frame.ip(), null, null, null)
             } else {
                 for (symbol in frame.symbols.iter()) {
-                    f.frame().printRawWithColumn(frame.frame.ip(), symbol.name.asRef().map({ b -> SymbolName.new(b) }), symbol.filename.asRef().map({ b -> when (b) {
+                    f.frame().printRawWithColumn(frame.frame.ip(), symbol.name.asRef().map({ b -> backtracers.SymbolName.new(b) }), symbol.filename.asRef().map({ b -> when (b) {
                         is BytesOrWide.Bytes -> {
                             val (w) = b
                             BytesOrWideString.Bytes(w)
@@ -203,17 +202,17 @@ public open class Backtrace(
             }
             val enabled =
                 run {
-                    val matchVal = variable("RUST_LIB_BACKTRACE")
-                    when (matchVal) { is Result.Ok<*> -> {
+                    val matchVal = env.variable("RUST_LIB_BACKTRACE")
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val s = matchVal.value
                         s != "0"
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         run {
-                            val matchVal1 = variable("RUST_BACKTRACE")
-                            when (matchVal1) { is Result.Ok<*> -> {
+                            val matchVal1 = env.variable("RUST_BACKTRACE")
+                            when (matchVal1) { is Result.Ok<*, *> -> {
                                 val s1 = matchVal1.value
                                 s1 != "0"
-                            }; is Result.Err<*> -> {
+                            }; is Result.Err<*, *> -> {
                                 false
                             } }
                         }
@@ -279,7 +278,7 @@ public open class Backtrace(
             var actualStart = null
             setImageBase()
             run {
-                traceUnsynchronized({ frame ->
+                backtracers.traceUnsynchronized({ frame ->
                     frames.add(BacktraceFrame(frame = RawFrame.Actual(frame.clone()), symbols = mutableListOf()))
                     if (frame.symbolAddress().addr() == ip && actualStart == null) {
                         actualStart = frames.size
@@ -380,7 +379,7 @@ public open class BacktraceFrame(
 }
 
 public sealed class RawFrame {
-    public data class Actual(public var value: Frame) : RawFrame()
+    public data class Actual(public var value: backtracers.Frame) : RawFrame()
 
     public open fun ip(): MutPtr =
         when (this) {
@@ -403,7 +402,7 @@ public open class BacktraceSymbol(
         // Until there are stable per-frame accessors, the format shouldn't be changed:
         // https://github.com/rust-lang/rust/issues/65280#issuecomment-638966585
         fmt.append("{ ")
-        when (val matchVal = this.name?.let({ b -> SymbolName.new(b) })) {
+        when (val matchVal = this.name?.let({ b -> backtracers.SymbolName.new(b) })) {
             null -> {
                 fmt.append("fn: <unknown>")
             }
@@ -444,7 +443,7 @@ public sealed class BytesOrWide {
                 val (w1) = this
                 BytesOrWideString.Wide(w1)
             }
-        }, PrintFmt.Short, currentDir().asRef().ok())
+        }, backtracers.PrintFmt.Short, currentDir().asRef().ok())
     }
 }
 
@@ -466,7 +465,7 @@ public fun lazyResolve(capture: Capture): LazyResolve =
                     }
                 }
             run {
-                resolveFrameUnsynchronized(frame2, { symbol ->
+                backtracers.resolveFrameUnsynchronized(frame2, { symbol ->
                     symbols.push(BacktraceSymbol(name = symbol.name().map({ m -> (m.encodeToByteArray().map { it.toUByte() }).toMutableList() }), filename = symbol.filenameRaw().map({ b -> when (b) {
                         is BytesOrWideString.Bytes -> {
                             val (b1) = b

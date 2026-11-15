@@ -2,11 +2,11 @@
 package io.github.kotlinmania.rustlang.core.slice.sort.stable.tiny
 
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.sort.stable.merge.merge
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.ptr.swapNonoverlapping
+import io.github.kotlinmania.rustlang.slice.sort.stable.merge.merge
 
 // Binary-size optimized mergesort inspired by https://github.com/voultapher/tiny-sort-rs.
 

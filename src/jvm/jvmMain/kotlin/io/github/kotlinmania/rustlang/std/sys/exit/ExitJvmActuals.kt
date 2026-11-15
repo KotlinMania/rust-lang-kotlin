@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.exit
 
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 
-private object SysExitJniBridge {
+private object StdSysExitJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -40,8 +40,8 @@ private object SysExitJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/std/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = SysExitJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = StdSysExitJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -58,10 +58,10 @@ private object SysExitJniBridge {
     }
 
     @JvmStatic
-    external fun stdSysExitExit(status: Int)
+    external fun rustlangStdSysExitExit(status: Int)
 }
 
 public actual fun exit(status: CInt): Nothing {
-    SysExitJniBridge.stdSysExitExit(status)
+    StdSysExitJniBridge.rustlangStdSysExitExit(status)
     error("Unreachable noreturn C function exit")
 }

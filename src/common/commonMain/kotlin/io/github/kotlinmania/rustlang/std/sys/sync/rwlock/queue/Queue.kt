@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.sys.sync.rwlock.queue
 
 import io.github.kotlinmania.rustlang.core.cell.once.OnceCell
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -13,14 +12,13 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.AcqRel
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
-import io.github.kotlinmania.rustlang.std.thread.thread.Thread
+import io.github.kotlinmania.rustlang.process.abort
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.AcqRel
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.thread.thread.Thread
 
 // Efficient read-write locking without `pthreadRwlockT`.
 //
@@ -227,7 +225,7 @@ public open class Node internal constructor(
      */
     public open fun prepare() {
         // Fall back to creating an unnamed `Thread` handle to allow locking in TLS destructors.
-        this.thread.getOrInit(currentOrUnnamed)
+        this.thread.getOrInit(thread.currentOrUnnamed)
         this.completed = AtomicBool.new(false)
     }
 
@@ -481,9 +479,9 @@ public open class RwLock internal constructor(
                     // The lock is available, try locking it.
                     run {
                         val matchVal1 = this.state.compareExchangeWeak(state, next, Acquire, Relaxed)
-                        when (matchVal1) { is Result.Ok<*> -> {
+                        when (matchVal1) { is Result.Ok<*, *> -> {
                             return
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err<*, *> -> {
                             val new = matchVal1.error
                             state = new
                         } }
@@ -544,7 +542,7 @@ public open class RwLock internal constructor(
                 node.wait()
             }
             // The node was removed from the queue, disarm the guard.
-            forget(guard)
+            mem.forget(guard)
             // Reload the state and try again.
             state = this.state.load(Relaxed)
             count = 0
@@ -572,7 +570,7 @@ public open class RwLock internal constructor(
                 null
             }
         })
-            when (matchVal) { is Result.Ok<*> -> {}; is Result.Err<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {}; is Result.Err<*, *> -> {
                 val state = matchVal.error
                 this.readUnlockContended(state)
             } }
@@ -640,9 +638,9 @@ public open class RwLock internal constructor(
                 val next = current.mask(LOCKED.inv())
                 run {
                     val matchVal = this.state.compareExchangeWeak(current, next, Release, Relaxed)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         return
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         val new = matchVal.error
                         current = new
                         continue
@@ -653,12 +651,12 @@ public open class RwLock internal constructor(
             val next1 = current.mapAddr({ addr -> (addr and LOCKED.inv()) or QUEUE_LOCKED })
             run {
                 val matchVal1 = this.state.compareExchangeWeak(current, next1, AcqRel, Relaxed)
-                when (matchVal1) { is Result.Ok<*> -> {
+                when (matchVal1) { is Result.Ok<*, *> -> {
                     // SAFETY: This thread just acquired the queue lock, and this function's safety
                     // contract requires that there are threads already queued on the lock.
                     this.unlockQueue(next1)
                     return
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val new1 = matchVal1.error
                     current = new1
                 } }
@@ -715,16 +713,16 @@ public open class RwLock internal constructor(
                 val next = state1.mapAddr({ addr -> addr or DOWNGRADED })
                 run {
                     val matchVal = this.state.compareExchangeWeak(state1, next, Release, Relaxed)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         return
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         val new = matchVal.error
                         state1 = new
                     } }
                 }
             } else {
                 // Grab the entire queue by swapping the `state` with a single reader.
-                val next1 = withoutProvenanceMut(SINGLE or LOCKED)
+                val next1 = ptr.withoutProvenanceMut(SINGLE or LOCKED)
                 when (val matchVal1 = this.state.compareExchangeWeak(state1, next1, AcqRel, Relaxed)) {
                     is Err -> {
                         val new1 = matchVal1.error
@@ -765,9 +763,9 @@ public open class RwLock internal constructor(
                 // Leave waking up waiters to them by releasing the queue lock.
                 run {
                     val matchVal = this.state.compareExchangeWeak(state1, state1.mask(QUEUE_LOCKED.inv()), Release, Acquire)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         return
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         val new = matchVal.error
                         state1 = new
                         continue
@@ -817,7 +815,7 @@ public open class RwLock internal constructor(
                 // Clear the queue.
                 val next1 =
                     if (downgrade) {
-                        withoutProvenanceMut(SINGLE or LOCKED)
+                        ptr.withoutProvenanceMut(SINGLE or LOCKED)
                     } else {
                         UNLOCKED
                     }

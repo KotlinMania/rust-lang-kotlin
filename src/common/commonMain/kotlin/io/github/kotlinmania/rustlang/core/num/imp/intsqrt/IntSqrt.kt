@@ -2,11 +2,11 @@
 package io.github.kotlinmania.rustlang.core.num.imp.intsqrt
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
 import io.github.kotlinmania.rustlang.core.num.rustOverflowingMul
 import io.github.kotlinmania.rustlang.core.num.rustOverflowingSub
 import io.github.kotlinmania.rustlang.core.num.rustPow
+import io.github.kotlinmania.rustlang.hint.assertUnchecked
 
 // These functions use the [Karatsuba square root algorithm][1] to compute the
 // [integer square root](https://en.wikipedia.org/wiki/IntegerSquareRoot)

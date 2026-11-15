@@ -2,9 +2,9 @@
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.i386.mcontext
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.mach.i386.structs.DarwinX86ExceptionState64
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.mach.i386.structs.DarwinX86FloatState64
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.mach.i386.structs.DarwinX86ThreadState64
+import io.github.kotlinmania.rustlang.new.apple.xnu.mach.i386.structs.DarwinX86ExceptionState64
+import io.github.kotlinmania.rustlang.new.apple.xnu.mach.i386.structs.DarwinX86FloatState64
+import io.github.kotlinmania.rustlang.new.apple.xnu.mach.i386.structs.DarwinX86ThreadState64
 
 // Header: `i386 / _mcontext.h`
 //

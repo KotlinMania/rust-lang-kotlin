@@ -11,18 +11,18 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpmc.context.Context
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Token
 import io.github.kotlinmania.rustlang.std.sync.mpmc.utils.Backoff
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.Waker
-import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvTimeoutError
-import io.github.kotlinmania.rustlang.std.sync.mpsc.TryRecvError
-import io.github.kotlinmania.rustlang.std.sync.mpsc.TrySendError
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
-import io.github.kotlinmania.rustlang.std.time.Instant
+import io.github.kotlinmania.rustlang.sync.mpmc.SendTimeoutError
+import io.github.kotlinmania.rustlang.sync.mpsc.RecvTimeoutError
+import io.github.kotlinmania.rustlang.sync.mpsc.TryRecvError
+import io.github.kotlinmania.rustlang.sync.mpsc.TrySendError
+import io.github.kotlinmania.rustlang.sync.nonpoison.mutex.Mutex
+import io.github.kotlinmania.rustlang.time.Instant
 
 // Zero-capacity channel.
 //

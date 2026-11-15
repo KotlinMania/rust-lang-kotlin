@@ -7,12 +7,12 @@ private external fun initDummyNapiAddon(): Boolean
 
 private val dummyNapiAvailable: Boolean = initDummyNapiAddon()
 
-@JsFun("() => globalThis.__km_napi_kmcore.panicunwindDummyRustAbort()")
-private external fun wasmPanicunwindDummyRustAbort()
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangDummyRustAbort()")
+private external fun wasmRustlangDummyRustAbort()
 
 public actual fun rustAbort(): Nothing {
     if (dummyNapiAvailable) {
-        wasmPanicunwindDummyRustAbort()
+        wasmRustlangDummyRustAbort()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

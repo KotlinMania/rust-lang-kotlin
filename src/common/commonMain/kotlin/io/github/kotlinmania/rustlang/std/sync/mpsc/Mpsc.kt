@@ -6,8 +6,8 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
-import io.github.kotlinmania.rustlang.std.time.Instant
+import io.github.kotlinmania.rustlang.sync.mpmc.SendTimeoutError
+import io.github.kotlinmania.rustlang.time.Instant
 
 // Multi-producer, single-consumer FIFO queue communication primitives.
 //
@@ -223,7 +223,7 @@ public class DebugTuple(
  * ```
  */
 public open class Receiver<T>(
-    public var inner: io.github.kotlinmania.rustlang.std.sync.mpmc.Receiver<T>,
+    public var inner: io.github.kotlinmania.rustlang.sync.mpmc.Receiver<T>,
 ) : Iterable<T> {
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
@@ -731,7 +731,7 @@ public open class IntoIter<T>(
  * ```
  */
 public open class Sender<T>(
-    public var inner: io.github.kotlinmania.rustlang.std.sync.mpmc.Sender<T>,
+    public var inner: io.github.kotlinmania.rustlang.sync.mpmc.Sender<T>,
 ) : Share {
     // The send port can be sent from place to place, so long as it
     // is not used to send non-sendable things.
@@ -901,7 +901,7 @@ public open class Sender<T>(
  * ```
  */
 public open class SyncSender<T>(
-    public var inner: io.github.kotlinmania.rustlang.std.sync.mpmc.Sender<T>,
+    public var inner: io.github.kotlinmania.rustlang.sync.mpmc.Sender<T>,
 ) : Share {
     // ///////////////////////////////////////////////////////////////////////////
     // SyncSender
@@ -1359,7 +1359,7 @@ public sealed class TrySendError<T> {
  * ```
  */
 public fun <T> channel(): Pair<Sender<T>, Receiver<T>> {
-    val (tx, rx) = io.github.kotlinmania.rustlang.std.sync.mpmc.channel()
+    val (tx, rx) = io.github.kotlinmania.rustlang.sync.mpmc.channel()
     return Pair(Sender(inner = tx), Receiver(inner = rx))
 }
 
@@ -1406,6 +1406,6 @@ public fun <T> channel(): Pair<Sender<T>, Receiver<T>> {
  * ```
  */
 public fun <T> syncChannel(bound: Int): Pair<SyncSender<T>, Receiver<T>> {
-    val (tx, rx) = io.github.kotlinmania.rustlang.std.sync.mpmc.syncChannel(bound)
+    val (tx, rx) = io.github.kotlinmania.rustlang.sync.mpmc.syncChannel(bound)
     return Pair(SyncSender(inner = tx), Receiver(inner = rx))
 }

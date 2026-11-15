@@ -41,7 +41,7 @@ public sealed class Alignment {
  * check("$pythagoreanTriple" == "(3, 4, 5)")
  * ```
  */
-public typealias Result = io.github.kotlinmania.rustlang.core.result.Result<Unit, Error>
+public typealias Result = Result<Unit, Error>
 
 /**
  * A trait for writing or formatting into Unicode-accepting buffers or streams.
@@ -75,8 +75,6 @@ public interface Write<T> {
      * # Examples
      *
      * ```kotlin
-     * import String
-     *
      * fun <W : Write> writer(f: W, s: String): Result<Unit, Error> {
      *     return run { f.append(s); Result.success(Unit) }
      * }
@@ -127,8 +125,6 @@ public interface Write<T> {
      * # Examples
      *
      * ```kotlin
-     * import String
-     *
      * fun <W : Write> writer(f: W, s: String): Result<Unit, Error> {
      *     return f.writeFmt("$s")
      * }
@@ -299,7 +295,6 @@ public interface Debug {
      * # Examples
      *
      * ```kotlin
-     * import String
      * import std.fmt
      *
      * public class DebugTuple(
@@ -667,6 +662,7 @@ public interface UpperHex {
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+ * import io.github.kotlinmania.rustlang.core.slice.get
  * import std.fmt
  *
  * open class Length(public var value: Int) : fmt.Pointer {

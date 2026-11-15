@@ -1,11 +1,11 @@
 // port-lint: source math/exp2m1.rs
 package io.github.kotlinmania.rustlang.libm.math.exp2m1
 
-import io.github.kotlinmania.rustlang.libm.math.kcos.C2
-import io.github.kotlinmania.rustlang.libm.math.ldexp.ldexp
 import io.github.kotlinmania.rustlang.libm.math.support.Int
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
+import io.github.kotlinmania.rustlang.math.kcos.C2
+import io.github.kotlinmania.rustlang.math.ldexp.ldexp
+import io.github.kotlinmania.rustlang.math.support.hexfloat.hf64
 
 public val LN2H: Double =
     run {
@@ -2647,9 +2647,9 @@ public fun lookupException(table: List<Triple<Double, Double, Double>>, x: Doubl
             return hi + lo
         }
         if (x < input) {
-            table1 = ((table1).slice(0 until middle))
+            table1 = ((table1).subList(0, middle))
         } else {
-            table1 = ((table1).slice(middle + 1 until table1.size))
+            table1 = ((table1).subList(middle + 1, (table1).size))
         }
     }
     return null

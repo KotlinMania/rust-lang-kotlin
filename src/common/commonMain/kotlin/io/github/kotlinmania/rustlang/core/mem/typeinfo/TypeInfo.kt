@@ -2,30 +2,30 @@
 package io.github.kotlinmania.rustlang.core.mem.typeinfo
 
 import io.github.kotlinmania.rustlang.core.RustTypeId
-import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeActualTypeId
-import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeName
-import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeOffset
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeId
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdArrayLen
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdElementTy
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdFieldRepresentingType
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdFields
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdFunctionPtr
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdGenerics
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdIsSigned
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdNonExhaustive
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdPointsMutably
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdPointsTo
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdReflectedAttrs
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdSizeOf
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdTypeOf
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariantName
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariantNonExhaustive
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariantReflectedAttrs
-import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVariants
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.metadata.DynMetadata
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.intrinsics.fieldRepresentingTypeActualTypeId
+import io.github.kotlinmania.rustlang.intrinsics.fieldRepresentingTypeName
+import io.github.kotlinmania.rustlang.intrinsics.fieldRepresentingTypeOffset
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeId
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdArrayLen
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdElementTy
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdFieldRepresentingType
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdFields
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdFunctionPtr
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdGenerics
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdIsSigned
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdNonExhaustive
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdPointsMutably
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdPointsTo
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdReflectedAttrs
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdSizeOf
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdTypeOf
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdVariantName
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdVariantNonExhaustive
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdVariantReflectedAttrs
+import io.github.kotlinmania.rustlang.intrinsics.reflection.typeIdVariants
+import io.github.kotlinmania.rustlang.ptr.metadata.DynMetadata
 
 // MVP for exposing compile-time information about types in a
 // runtime or const-eval processable way.

@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.std.os.android.fs
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.std.fs.Metadata
-import io.github.kotlinmania.rustlang.std.os.android.raw.arch.Stat
+import io.github.kotlinmania.rustlang.fs.Metadata
+import io.github.kotlinmania.rustlang.os.android.raw.Stat
 
 /**
  * OS-specific extensions to [fs.Metadata].

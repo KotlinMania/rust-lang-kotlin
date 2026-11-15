@@ -19,11 +19,12 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.io.ErrorKind
+import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.Poll
 import io.github.kotlinmania.rustlang.libc.Send
 import io.github.kotlinmania.rustlang.libc.gaiStrerror
-import io.github.kotlinmania.rustlang.libc.helenos.SizeT
 import io.github.kotlinmania.rustlang.libc.recv
 import io.github.kotlinmania.rustlang.libc.recvfrom
 import io.github.kotlinmania.rustlang.libc.recvmsg
@@ -33,6 +34,7 @@ import io.github.kotlinmania.rustlang.libc.socketpair
 import io.github.kotlinmania.rustlang.libc.unix.IPPROTO_TCP
 import io.github.kotlinmania.rustlang.libc.unix.Linger
 import io.github.kotlinmania.rustlang.libc.unix.Pollfd
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.Timeval
 import io.github.kotlinmania.rustlang.libc.unix.bsd.Msghdr
 import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
@@ -61,30 +63,28 @@ import io.github.kotlinmania.rustlang.libc.wasi.POLLOUT
 import io.github.kotlinmania.rustlang.libc.wasi.SOCK_CLOEXEC
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
 import io.github.kotlinmania.rustlang.libc.wasi.TimeT
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
-import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.net.Shutdown
+import io.github.kotlinmania.rustlang.os.fd.AsFd
+import io.github.kotlinmania.rustlang.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.os.fd.FromRawFd
+import io.github.kotlinmania.rustlang.os.fd.IntoRawFd
+import io.github.kotlinmania.rustlang.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.net.Shutdown
-import io.github.kotlinmania.rustlang.std.os.fd.AsFd
-import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.sys.AsInner
-import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.io.Errno
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.MAX_SEND_LEN
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.getsockopt
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.setsockopt
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.socketAddrFromC
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.socketAddrToC
-import io.github.kotlinmania.rustlang.std.sys.pal.Conf
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
-import io.github.kotlinmania.rustlang.std.time.Instant
+import io.github.kotlinmania.rustlang.sys.AsInner
+import io.github.kotlinmania.rustlang.sys.FromInner
+import io.github.kotlinmania.rustlang.sys.IntoInner
+import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.sys.io.Errno
+import io.github.kotlinmania.rustlang.sys.net.connection.socket.MAX_SEND_LEN
+import io.github.kotlinmania.rustlang.sys.net.connection.socket.getsockopt
+import io.github.kotlinmania.rustlang.sys.net.connection.socket.setsockopt
+import io.github.kotlinmania.rustlang.sys.net.connection.socket.socketAddrFromC
+import io.github.kotlinmania.rustlang.sys.net.connection.socket.socketAddrToC
+import io.github.kotlinmania.rustlang.sys.pal.Conf
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvtR
+import io.github.kotlinmania.rustlang.time.Instant
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_LINGER_SEC as SO_LINGER
 
 public typealias WrlenT = SizeT
@@ -101,13 +101,13 @@ public open class Socket(
     public open fun connect(addr: SocketAddr): Result<Unit, Error> {
         val (addr1, len) = socketAddrToC(addr)
         while (true) {
-            val result = io.github.kotlinmania.rustlang.libc.connect(this.asRawFd(), addr1.asPtr(), len)
+            val result = io.github.kotlinmania.rustlang.libc.connect(this.asRawFd().toULong(), addr1.asPtr(), len)
             if (result.isMinusOne()) {
                 val err = Errno()
                 when (err) {
                     EINTR -> { continue }
                     EISCONN -> { return Result.Ok(Unit) }
-                    else -> { return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(err)) }
+                    else -> { return Result.Err(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(err)) }
                 }
             }
             return Result.Ok(Unit)
@@ -121,7 +121,7 @@ public open class Socket(
         pollfd.fd = this.asRawFd()
         pollfd.events = POLLOUT
         if (timeout1.asSecs() == 0 && timeout1.subsecNanos() == 0) {
-            return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.ZERO_TIMEOUT)
+            return Result.Err(io.github.kotlinmania.rustlang.io.Error.ZERO_TIMEOUT)
         }
         val start = Instant.now()
         while (true) {
@@ -137,7 +137,7 @@ public open class Socket(
             val timeout4 = minOf(timeout3, Int.MAX_VALUE.toULong()).toInt()
             when (Poll(RustMutableReference(localStorageL175C8.asMutPtr(), localStorageL175C8.layout), 1, timeout4)) {
                 -1 -> {
-                    val err = io.github.kotlinmania.rustlang.std.io.Error.lastOsError()
+                    val err = io.github.kotlinmania.rustlang.io.Error.lastOsError()
                     if (!err.isInterrupted()) {
                         return Result.Err(err)
                     }
@@ -153,7 +153,7 @@ public open class Socket(
                     if (failureShowsInRevents && !hupOrErr) {
                         return Result.Ok(Unit)
                     }
-                    when (val matchVal = when (val tryResult = this.takeError()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
+                    when (val matchVal = when (val tryResult = this.takeError()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }) {
                         null -> {}
                         else -> {
                             val e = matchVal
@@ -171,7 +171,7 @@ public open class Socket(
 
     public open fun accept(storage: MutPtr, len: MutPtr): Result<Socket, Error> {
         return run {
-            val fd = when (val tryResult = cvtR({ accept4(this.asRawFd(), storage, len, SOCK_CLOEXEC) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val fd = when (val tryResult = cvtR({ accept4(this.asRawFd(), storage, len, SOCK_CLOEXEC) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             Result.Ok(Socket(FileDesc.fromRawFd(fd)))
         }
     }
@@ -180,12 +180,12 @@ public open class Socket(
 
     public open fun sendWithFlags(buf: List<UByte>, flags: CInt): Result<Int, Error> {
         val len = minOf(buf.size, MAX_SEND_LEN).toULong()
-        val ret = when (val tryResult = cvt(Send(this.asRawFd(), (buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, len, flags))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val ret = when (val tryResult = cvt(Send(this.asRawFd(), (buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, len, flags))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(ret.toInt())
     }
 
     public open fun recvWithFlags(buf: BorrowedCursor<UByte>, flags: CInt): Result<Unit, Error> {
-        val ret = when (val tryResult = cvt(recv(this.asRawFd(), mutPtrFromRustCast(buf.asMut().asMutPtr()), buf.capacity(), flags))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val ret = when (val tryResult = cvt(recv(this.asRawFd().toULong(), mutPtrFromRustCast(buf.asMut().asMutPtr()), buf.capacity(), flags))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         run {
             buf.advance(ret.toInt())
         }
@@ -194,13 +194,13 @@ public open class Socket(
 
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> {
         val buf1 = BorrowedBuf.from(buf)
-        when (val tryResult = this.recvWithFlags(buf1.unfilled(), 0)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.recvWithFlags(buf1.unfilled(), 0)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(buf1.len())
     }
 
     public open fun peek(buf: MutableList<UByte>): Result<Int, Error> {
         val buf1 = BorrowedBuf.from(buf)
-        when (val tryResult = this.recvWithFlags(buf1.unfilled(), MSG_PEEK)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.recvWithFlags(buf1.unfilled(), MSG_PEEK)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(buf1.len())
     }
 
@@ -218,14 +218,14 @@ public open class Socket(
         val storage by localStorageL330C8
         val localStorageL331C8 = AddressableLocal(sizeOfVal(storage).toInt(), ObjectSlotLayout<io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT>())
         val addrlen by localStorageL331C8
-        val n = when (val tryResult = cvt(recvfrom(this.asRawFd(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, buf.size, flags, (localStorageL330C8.asMutPtr()), RustMutableReference(localStorageL331C8.asMutPtr(), localStorageL331C8.layout)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(Pair(n.toInt(), when (val tryResult = socketAddrFromC(storage.asPtr(), addrlen)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+        val n = when (val tryResult = cvt(recvfrom(this.asRawFd().toULong(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, buf.size, flags, (localStorageL330C8.asMutPtr()), RustMutableReference(localStorageL331C8.asMutPtr(), localStorageL331C8.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        return Result.Ok(Pair(n.toInt(), when (val tryResult = socketAddrFromC(storage.asPtr(), addrlen)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
     }
 
     public open fun recvFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, Error> = this.recvFromWithFlags(buf, 0)
 
     public open fun recvMsg(msg: RustMutableReference<Msghdr>): Result<Int, Error> {
-        val n = when (val tryResult = cvt(recvmsg(this.asRawFd(), msg, MSG_CMSG_CLOEXEC))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val n = when (val tryResult = cvt(recvmsg(this.asRawFd(), msg, MSG_CMSG_CLOEXEC))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(n.toInt())
     }
 
@@ -238,18 +238,18 @@ public open class Socket(
     public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
     public open fun sendMsg(msg: RustMutableReference<Msghdr>): Result<Int, Error> {
-        val n = when (val tryResult = cvt(sendmsg(this.asRawFd(), msg, 0))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val n = when (val tryResult = cvt(sendmsg(this.asRawFd(), msg, 0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(n.toInt())
     }
 
-    public open fun setTimeout(dur: Duration?, kind: CInt): Result<Unit, Error> {
+    public open fun setTimeout(dur: Duration?, kind: io.github.kotlinmania.rustlang.libc.CInt): Result<Unit, Error> {
         val timeout1 =
             when (dur) {
                 null -> Timeval(tvSec = 0, tvUsec = 0)
                 else -> {
                     val dur1 = dur
                     if (dur1.asSecs() == 0 && dur1.subsecNanos() == 0) {
-                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.ZERO_TIMEOUT)
+                        return Result.Err(io.github.kotlinmania.rustlang.io.Error.ZERO_TIMEOUT)
                     }
                     val secs =
                         if (dur1.asSecs() > TimeT.MAX_VALUE.toULong()) {
@@ -267,8 +267,8 @@ public open class Socket(
         return setsockopt(this, SOL_SOCKET, kind, timeout1)
     }
 
-    public open fun timeout(kind: CInt): Result<Duration?, Error> {
-        val raw: Timeval = when (val tryResult = getsockopt(this, SOL_SOCKET, kind)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    public open fun timeout(kind: io.github.kotlinmania.rustlang.libc.CInt): Result<Duration?, Error> {
+        val raw: Timeval = when (val tryResult = getsockopt(this, SOL_SOCKET, kind)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return if (raw.tvSec == 0 && raw.tvUsec == 0) {
             Result.Ok(null)
         } else {
@@ -285,7 +285,7 @@ public open class Socket(
                 Shutdown.Read -> SHUT_RD
                 Shutdown.Both -> SHUT_RDWR
             }
-        when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.Shutdown(this.asRawFd(), how1))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.Shutdown(this.asRawFd(), how1))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -295,28 +295,28 @@ public open class Socket(
     }
 
     public open fun linger(): Result<Duration?, Error> {
-        val value: Linger = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_LINGER)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val value: Linger = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_LINGER)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok((value.lOnoff != 0u.toUShort()).then({ Duration.fromSecs(value.lLinger.toULong()) }))
     }
 
     public open fun setKeepalive(keepalive: Boolean): Result<Unit, Error> = setsockopt(this, SOL_SOCKET, SO_KEEPALIVE, keepalive.toInt())
 
     public open fun keepalive(): Result<Boolean, Error> {
-        val raw: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_KEEPALIVE)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val raw: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_KEEPALIVE)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok((raw != 0).toUByte())
     }
 
     public open fun setNodelay(nodelay: Boolean): Result<Unit, Error> = setsockopt(this, IPPROTO_TCP, TCP_NODELAY, nodelay.toInt())
 
     public open fun nodelay(): Result<Boolean, Error> {
-        val raw: CInt = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_NODELAY)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val raw: CInt = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_NODELAY)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok((raw != 0).toUByte())
     }
 
     public open fun setQuickack(quickack: Boolean): Result<Unit, Error> = setsockopt(this, IPPROTO_TCP, TCP_QUICKACK, quickack.toInt())
 
     public open fun quickack(): Result<Boolean, Error> {
-        val raw: CInt = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_QUICKACK)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val raw: CInt = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_QUICKACK)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok((raw != 0).toUByte())
     }
 
@@ -327,19 +327,19 @@ public open class Socket(
     }
 
     public open fun deferaccept(): Result<Duration, Error> {
-        val raw: CInt = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_DEFER_ACCEPT)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val raw: CInt = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_DEFER_ACCEPT)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Duration.fromSecs(((raw as Any?) as Result<Duration, Error>)))
     }
 
     public open fun setPasscred(passcred: Boolean): Result<Unit, Error> = setsockopt(this, SOL_SOCKET, SO_PASSCRED, passcred.toInt())
 
     public open fun passcred(): Result<Boolean, Error> {
-        val passcred: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_PASSCRED)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val passcred: io.github.kotlinmania.rustlang.libc.CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_PASSCRED)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok((passcred != 0).toUByte())
     }
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> {
-        val localStorageL586C8 = AddressableLocal(nonblocking.toInt(), ObjectSlotLayout<CInt>())
+        val localStorageL586C8 = AddressableLocal(nonblocking.toInt(), ObjectSlotLayout<io.github.kotlinmania.rustlang.libc.CInt>())
         return cvt(Ioctl(this.asRawFd(), FIONBIO, RustMutableReference(localStorageL586C8.asMutPtr(), localStorageL586C8.layout))).map({ Unit })
     }
 
@@ -348,12 +348,12 @@ public open class Socket(
         return setsockopt(this, SOL_SOCKET, option, mark.toInt())
     }
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> {
-        val raw: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_ERROR)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.io.Error?, Error> {
+        val raw: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_ERROR)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return if (raw == 0) {
             Result.Ok(null)
         } else {
-            Result.Ok(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(raw))
+            Result.Ok(io.github.kotlinmania.rustlang.io.Error.fromRawOsError(raw))
         }
     }
 
@@ -374,7 +374,7 @@ public open class Socket(
             // On platforms that support it we pass the SOCK_CLOEXEC
             // flag to atomically create the socket and set it as
             // CLOEXEC. On Linux this was added in 2.6.27.
-            val fd = when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.windows.Socket(family, ty or SOCK_CLOEXEC, 0))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val fd = when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.windows.Socket(family, ty or SOCK_CLOEXEC, 0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             val socket = Socket(FileDesc.fromRawFd(fd))
             return Result.Ok(socket)
         }
@@ -384,7 +384,7 @@ public open class Socket(
                 val localStorageL118C12 = AddressableArrayLocal.fromIntArray(intArrayOf(0, 0))
                 val fds by localStorageL118C12
                 // Like above, set cloexec atomically
-                when (val tryResult = cvt(socketpair(fam, ty or SOCK_CLOEXEC, 0, localStorageL118C12.elementMutPtr(0)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvt(socketpair(fam, ty or SOCK_CLOEXEC, 0, localStorageL118C12.elementMutPtr(0)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 Result.Ok(Pair(Socket(FileDesc.fromRawFd(fds[0])), Socket(FileDesc.fromRawFd(fds[1]))))
             }
         }
@@ -404,10 +404,10 @@ public fun cvtGai(err: CInt): Result<Unit, Error> {
     // We may need to trigger a glibc workaround. See onResolverFailure() for details.
     onResolverFailure()
     if (err == EAI_SYSTEM) {
-        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
     }
     val detail = CStr.fromPtr(gaiStrerror(err)).toStringLossy()
-    return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.Uncategorized, "failed to lookup address information: $detail"))
+    return Result.Err(io.github.kotlinmania.rustlang.io.Error.new(ErrorKind.Uncategorized, "failed to lookup address information: $detail"))
 }
 
 // In versions of glibc prior to 2.26, there's a bug where the DNS resolver

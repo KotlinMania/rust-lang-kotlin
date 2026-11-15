@@ -2,13 +2,6 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
-import io.github.kotlinmania.rustlang.corearch.simd.F32x4
-import io.github.kotlinmania.rustlang.corearch.simd.F64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-
 public actual fun llvmRelaxedSwizzle(a: I8x16, b: I8x16): I8x16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 

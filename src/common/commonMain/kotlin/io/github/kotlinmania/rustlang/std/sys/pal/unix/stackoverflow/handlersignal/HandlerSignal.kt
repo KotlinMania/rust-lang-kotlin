@@ -1,7 +1,6 @@
 // port-lint: source sys/pal/unix/stack_overflow/handler_signal.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlersignal
 
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -13,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.io.Error
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CVoid
 import io.github.kotlinmania.rustlang.libc.getauxval
@@ -42,14 +42,13 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_WRITE
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.MAP_STACK
 import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
-import io.github.kotlinmania.rustlang.std.io.Error
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.conf.pageSize
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.Handler
+import io.github.kotlinmania.rustlang.process.abort
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.deleteCurrentInfo
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.setCurrentInfo
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.withCurrentInfo
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.sys.pal.unix.conf.pageSize
+import io.github.kotlinmania.rustlang.sys.pal.unix.stackoverflow.Handler
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.libc.mmap as mmap64
 
 public fun interface FnCallback {
@@ -110,7 +109,7 @@ public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
                     null -> {}
                     else -> {
                         val out = matchVal
-                        Write.writeFmt(out, "\nthread '$name' ($tid) has overflowed its stack\n")
+                        io.Write.writeFmt(out, "\nthread '$name' ($tid) has overflowed its stack\n")
                     }
                 }
                 run {
@@ -121,7 +120,7 @@ public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
                         null -> {}
                         else -> {
                             val out1 = matchVal1
-                            Write.writeFmt(out1, "fatal runtime error: " + ("stack overflow").toString() + ", aborting\n")
+                            io.Write.writeFmt(out1, "fatal runtime error: " + ("stack overflow").toString() + ", aborting\n")
                         }
                     }
                     run {
@@ -185,7 +184,7 @@ public fun init() {
                 NEED_ALTSTACK.store(true, Ordering.Release)
                 val handler = makeHandler(true)
                 MAIN_ALTSTACK.store(handler.data, Ordering.Relaxed)
-                forget(handler)
+                mem.forget(handler)
                 when (val matchVal = guardPageRange.also { guardPageRange = null }) {
                     null -> {}
                     else -> {

@@ -1,8 +1,8 @@
 // port-lint: source collections/vec_deque/spec_extend.rs
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.specextend
 
-import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
-import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.drain.Drain
+import io.github.kotlinmania.rustlang.collections.vecdeque.VecDeque
+import io.github.kotlinmania.rustlang.collections.vecdeque.drain.Drain
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.iter.adapters.copied.Copied
 import io.github.kotlinmania.rustlang.core.iter.adapters.rev.Rev

@@ -1,15 +1,16 @@
 // port-lint: source iter/adapters/scan.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.scan
 
-import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -51,7 +52,7 @@ public open class Scan<I, St, F>(
     public var iter: I,
     public var f: F,
     public var state: St,
-) : SourceIter<Any?, Source>, InPlaceIterable, Iterable<B> {
+) : SourceIter<Source>, InPlaceIterable, Iterable<B> {
     override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
         override fun computeNext() {
             when (val v = this@Scan.next()) {

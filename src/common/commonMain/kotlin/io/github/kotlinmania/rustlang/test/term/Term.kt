@@ -1,7 +1,6 @@
 // port-lint: source term.rs
 package io.github.kotlinmania.rustlang.test.term
 
-import io.github.kotlinmania.rustlang.std.thread.Result
 import io.github.kotlinmania.rustlang.test.term.terminfo.TerminfoTerminal
 
 // Terminal formatting module.
@@ -25,7 +24,7 @@ public typealias StdoutTerminal = Terminal
  * Returns a Terminal wrapping stdout, or None if a terminal couldn't be
  * opened.
  */
-public fun stdout(): StdoutTerminal? = TerminfoTerminal.new(io.github.kotlinmania.rustlang.std.io.stdio.stdout()).map({ t -> ((t as Any?) as StdoutTerminal) })
+public fun stdout(): StdoutTerminal? = TerminfoTerminal.new(stdout()).map({ t -> ((t as Any?) as StdoutTerminal) })
 
 /**
  * Number for a terminal color

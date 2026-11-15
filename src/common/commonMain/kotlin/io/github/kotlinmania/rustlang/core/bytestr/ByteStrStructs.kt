@@ -1,10 +1,9 @@
 package io.github.kotlinmania.rustlang.core.bytestr
 
-import io.github.kotlinmania.rustlang.core.borrow.Borrow
-import io.github.kotlinmania.rustlang.core.borrow.BorrowMut
-import io.github.kotlinmania.rustlang.core.convert.AsMut
-import io.github.kotlinmania.rustlang.core.convert.AsRef
-import io.github.kotlinmania.rustlang.core.fmt.Alignment
+import io.github.kotlinmania.rustlang.borrow.Borrow
+import io.github.kotlinmania.rustlang.borrow.BorrowMut
+import io.github.kotlinmania.rustlang.convert.AsMut
+import io.github.kotlinmania.rustlang.convert.AsRef
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -12,11 +11,13 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.slice.get
+import io.github.kotlinmania.rustlang.fmt.Alignment
+import io.github.kotlinmania.rustlang.ops.deref.DerefPure
 
 /**
  * A wrapper for `[UByte]` representing a human-readable string that's conventionally, but not
@@ -97,18 +98,18 @@ public open class ByteStr internal constructor(
     public open fun derefMut(): MutableList<UByte> = this.value
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         for (chunk in this.utf8Chunks()) {
             for (c in chunk.valid().chars()) {
                 when (c) {
-                    '\u0000' -> { when (val tryResult = f.writeFmt("\\0")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } }
-                    in '\u0001'..'\u007f' -> when (val tryResult = f.writeFmt("${(c.toUByte()).escapeAscii()}")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                    else -> when (val tryResult = f.writeFmt("${c.escapeDebug()}")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    '\u0000' -> { when (val tryResult = f.writeFmt("\\0")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) } }
+                    in '\u0001'..'\u007f' -> when (val tryResult = f.writeFmt("${(c.toUByte()).escapeAscii()}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                    else -> when (val tryResult = f.writeFmt("${c.escapeDebug()}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 }
             }
-            when (val tryResult = f.writeFmt("${chunk.invalid().escapeAscii()}")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = f.writeFmt("${chunk.invalid().escapeAscii()}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         }
-        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -182,7 +183,7 @@ public open class ByteStr internal constructor(
             }
         // The width is originally stored as a 16-bit number, so this cannot fail.
         val padding = UShort.tryFrom(requestedWidth.saturatingSub(actualWidth1)).unwrap()
-        val postPadding = when (val tryResult = f.padding(padding, Alignment.Left)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val postPadding = when (val tryResult = f.padding(padding, Alignment.Left)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         emit(truncated, f)
         return postPadding.write(f)
     }

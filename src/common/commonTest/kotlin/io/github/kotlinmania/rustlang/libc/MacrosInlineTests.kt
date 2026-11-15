@@ -3,10 +3,14 @@
 
 package io.github.kotlinmania.rustlang.libc
 
+import io.github.kotlinmania.rustlang.cEnum
 import io.github.kotlinmania.rustlang.core.RustTypeId
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
-import io.github.kotlinmania.rustlang.libc.types.CEnumRepr
+import io.github.kotlinmania.rustlang.f
+import io.github.kotlinmania.rustlang.s2
+import io.github.kotlinmania.rustlang.sNoExtraTraits2
+import io.github.kotlinmania.rustlang.types.CEnumRepr
 
 public fun interface FnCallback {
     public operator fun invoke(): UInt

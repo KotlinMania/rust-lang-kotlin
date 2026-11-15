@@ -3,22 +3,21 @@
 
 package io.github.kotlinmania.rustlang.core.fmt.num
 
+import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
-import io.github.kotlinmania.rustlang.core.cmp.Eq
-import io.github.kotlinmania.rustlang.core.fmt.numbuffer.NumBuffer
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
-import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
 import io.github.kotlinmania.rustlang.core.num.rustCheckedPow
 import io.github.kotlinmania.rustlang.core.num.rustPow
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.fmt.numbuffer.NumBuffer
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.option.Option
+import io.github.kotlinmania.rustlang.panicking.assertFailed
+import io.github.kotlinmania.rustlang.fmt.fmt as numfmt
 
 // Integer and floating-point number formatting
 //
@@ -372,7 +371,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
             } else {
                 ""
             }
-        f.padFormattedParts(Formatted(sign = sign, parts = parts))
+        f.padFormattedParts(numfmt.Formatted(sign = sign, parts = parts))
     }
 }
 
@@ -569,8 +568,8 @@ public fun writeQuad(buf: MutableList<MaybeUninit<UByte>>, quad: ULong) {
     val low1 = low.toInt()
     // SAFETY: `high` and `low` are below 100 because `quad` is below 10_000.
     assertUnchecked(high1 < 100 && low1 < 100)
-    ((buf).slice(0 until 2)).writeCopyOfSlice(((DECIMAL_PAIRS).sliceArray(high1 * 2 until high1 * 2 + 2)))
-    ((buf).slice(2 until 4)).writeCopyOfSlice(((DECIMAL_PAIRS).sliceArray(low1 * 2 until low1 * 2 + 2)))
+    ((buf).subList(0, 2)).writeCopyOfSlice(((DECIMAL_PAIRS).sliceArray(high1 * 2 until high1 * 2 + 2)))
+    ((buf).subList(2, 4)).writeCopyOfSlice(((DECIMAL_PAIRS).sliceArray(low1 * 2 until low1 * 2 + 2)))
 }
 
 /**

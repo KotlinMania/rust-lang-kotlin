@@ -1,10 +1,11 @@
 // port-lint: source future/pending.rs
 package io.github.kotlinmania.rustlang.core.future.pending
 
-import io.github.kotlinmania.rustlang.core.future.future.Future
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.task.poll.Poll
-import io.github.kotlinmania.rustlang.core.task.wake.Context
+import io.github.kotlinmania.rustlang.future.future.Future
+import io.github.kotlinmania.rustlang.marker.PhantomData
+import io.github.kotlinmania.rustlang.task.poll.Poll
+import io.github.kotlinmania.rustlang.task.wake.Context
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -40,7 +41,7 @@ public class DebugStruct(
  */
 public open class Pending<T>(
     public var data: Unit,
-) : Future<Any?, T> {
+) : Future<T> {
     public override fun poll(arg0: Context): Poll<T> = Poll.Pending
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Pending").finish()
@@ -62,4 +63,4 @@ public open class Pending<T>(
  * error("unreachable")
  * ```
  */
-public fun <T> pending(): Pending<T> = Pending(data = Unit)
+public fun <T> pending(): Pending<T> = Pending(data = PhantomData)

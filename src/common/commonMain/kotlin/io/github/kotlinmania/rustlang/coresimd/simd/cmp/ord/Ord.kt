@@ -1,9 +1,9 @@
 // port-lint: source simd/cmp/ord.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.cmp.ord
 
-import io.github.kotlinmania.rustlang.coresimd.Mask
-import io.github.kotlinmania.rustlang.coresimd.Simd
-import io.github.kotlinmania.rustlang.coresimd.simd.cmp.eq.SimdPartialEq
+import io.github.kotlinmania.rustlang.Mask
+import io.github.kotlinmania.rustlang.Simd
+import io.github.kotlinmania.rustlang.simd.cmp.eq.SimdPartialEq
 
 /**
  * Parallel `PartialOrd`.

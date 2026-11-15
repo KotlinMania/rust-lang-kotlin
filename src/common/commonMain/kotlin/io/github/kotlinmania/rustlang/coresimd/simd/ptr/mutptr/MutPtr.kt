@@ -1,10 +1,10 @@
 // port-lint: source simd/ptr/mut_ptr.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.ptr.mutptr
 
+import io.github.kotlinmania.rustlang.Simd
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.coresimd.Simd
 
 public typealias Usize = Simd<Int, N>
 
@@ -106,7 +106,7 @@ public fun Simd<MutPtr, N>.addr(n: Int): Simd<Int> {
     return transmuteCopy(this)
 }
 
-public fun Simd<MutPtr, N>.withAddr(addr: Simd<Int, N>, n: Int): Simd<MutPtr, N> {
+public fun Simd<MutPtr, N>.withAddr(addr: Simd<Int>, n: Int): Simd<MutPtr, N> {
     // Note(strictProvenanceMagic): I am magic and should be a compiler intrinsic.
     //
     // In the mean-time, this operation is defined to be "as if" it was
@@ -120,11 +120,11 @@ public fun Simd<MutPtr, N>.exposeProvenance(n: Int): Simd<Int> {
     return run { val _simdArg0 = this; _simdArg0 }
 }
 
-public fun Simd<MutPtr, N>.wrappingOffset(count: Simd<Int, N>, n: Int): Simd<MutPtr, N> {
+public fun Simd<MutPtr, N>.wrappingOffset(count: Simd<Int>, n: Int): Simd<MutPtr, N> {
     // Safety: simdArithOffset takes a vector of pointers and a vector of offsets
     return run { val _simdArg0 = this; val _simdArg1 = count; _simdArg0 }
 }
 
-public fun Simd<MutPtr, N>.wrappingAdd(count: Simd<Int, N>, n: Int): Simd<MutPtr, N> = this.wrappingOffset(count.cast())
+public fun Simd<MutPtr, N>.wrappingAdd(count: Simd<Int>, n: Int): Simd<MutPtr, N> = this.wrappingOffset(count.cast())
 
-public fun Simd<MutPtr, N>.wrappingSub(count: Simd<Int, N>, n: Int): Simd<MutPtr, N> = this.wrappingOffset(-count.cast())
+public fun Simd<MutPtr, N>.wrappingSub(count: Simd<Int>, n: Int): Simd<MutPtr, N> = this.wrappingOffset(-count.cast())

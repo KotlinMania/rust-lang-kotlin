@@ -1,18 +1,18 @@
 // port-lint: source num/niche_types.rs
 package io.github.kotlinmania.rustlang.core.num.nichetypes
 
+import io.github.kotlinmania.rustlang.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
-import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.marker.StructuralPartialEq
 
 public open class Nanoseconds internal constructor(
     public val fieldStorage: MutPtr,

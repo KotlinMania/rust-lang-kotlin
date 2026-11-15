@@ -1,13 +1,11 @@
 // port-lint: source math/arch/x86/fma.rs
 package io.github.kotlinmania.rustlang.libm.math.arch.x86.fma
 
-import io.github.kotlinmania.rustlang.libm.math.arch.x86.detect.cpuflags.FMA
-import io.github.kotlinmania.rustlang.libm.math.arch.x86.detect.cpuflags.FMA4
+import io.github.kotlinmania.rustlang.libm.math.Generic
+import io.github.kotlinmania.rustlang.libm.math.arch.x86.detect.cpuFlags
 import io.github.kotlinmania.rustlang.libm.math.arch.x86.detect.getCpuFeatures
-import io.github.kotlinmania.rustlang.libm.math.generic.fma.fmaRound
-import io.github.kotlinmania.rustlang.libm.math.generic.fmawide.fmaWideRound
-import io.github.kotlinmania.rustlang.libm.math.support.env.Round
-import io.github.kotlinmania.rustlang.libm.math.support.featuredetect.selectOnce
+import io.github.kotlinmania.rustlang.math.support.env.Round
+import io.github.kotlinmania.rustlang.math.support.featuredetect.selectOnce
 
 // Use assembly fma if the `fma` or `fma4` feature is detected at runtime.
 
@@ -45,7 +43,7 @@ public fun fmaf(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float
  * Must have +fma available.
  */
 public fun fmaWithFma(x: Double, y: Double, z: Double): Double {
-    check(getCpuFeatures().contains(FMA))
+    check(getCpuFeatures().contains(cpuflags.FMA))
     // SAFETY: fma is asserted available by precondition, which provides the instruction. No
     // memory access or side effects.
     run {
@@ -60,7 +58,7 @@ public fun fmaWithFma(x: Double, y: Double, z: Double): Double {
  * Must have +fma available.
  */
 public fun fmafWithFma(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float {
-    check(getCpuFeatures().contains(FMA))
+    check(getCpuFeatures().contains(cpuflags.FMA))
     // SAFETY: fma is asserted available by precondition, which provides the instruction. No
     // memory access or side effects.
     run {
@@ -75,7 +73,7 @@ public fun fmafWithFma(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotli
  * Must have +fma4 available.
  */
 public fun fmaWithFma4(x: Double, y: Double, z: Double): Double {
-    check(getCpuFeatures().contains(FMA4))
+    check(getCpuFeatures().contains(cpuflags.FMA4))
     // SAFETY: fma4 is asserted available by precondition, which provides the instruction. No
     // memory access or side effects.
     run {
@@ -90,7 +88,7 @@ public fun fmaWithFma4(x: Double, y: Double, z: Double): Double {
  * Must have +fma4 available.
  */
 public fun fmafWithFma4(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float {
-    check(getCpuFeatures().contains(FMA4))
+    check(getCpuFeatures().contains(cpuflags.FMA4))
     // SAFETY: fma4 is asserted available by precondition, which provides the instruction. No
     // memory access or side effects.
     run {
@@ -101,6 +99,6 @@ public fun fmafWithFma4(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotl
 
 // Note: the `selectImplementation` macro should handle arch implementations that want
 // to use the fallback, so we don't need to recreate the body.
-public fun fmaFallback(x: Double, y: Double, z: Double): Double = fmaRound(x, y, z, Round.Nearest).value
+public fun fmaFallback(x: Double, y: Double, z: Double): Double = Generic.fmaRound(x, y, z, Round.Nearest).value
 
-public fun fmafFallback(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float = fmaWideRound(x, y, z, Round.Nearest).value
+public fun fmafFallback(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float = Generic.fmaWideRound(x, y, z, Round.Nearest).value

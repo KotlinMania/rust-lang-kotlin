@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop
-headers = loongarch32_wrapper.h
-headerFilter = loongarch32_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = loongarch32_wrapper.a

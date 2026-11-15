@@ -9,6 +9,38 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.M512i
+import io.github.kotlinmania.rustlang.x86.Mmask16
+import io.github.kotlinmania.rustlang.x86.Mmask32
+import io.github.kotlinmania.rustlang.x86.Mmask64
+import io.github.kotlinmania.rustlang.x86.Mmask8
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi16
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi32
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi8
+import io.github.kotlinmania.rustlang.x86.mm256SetEpi16
+import io.github.kotlinmania.rustlang.x86.mm256SetEpi32
+import io.github.kotlinmania.rustlang.x86.mm256SetEpi8
+import io.github.kotlinmania.rustlang.x86.mm256SetzeroSi256
+import io.github.kotlinmania.rustlang.x86.mm256UndefinedSi256
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi16
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi32
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi64
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi8
+import io.github.kotlinmania.rustlang.x86.mm512SetEpi16
+import io.github.kotlinmania.rustlang.x86.mm512SetEpi32
+import io.github.kotlinmania.rustlang.x86.mm512SetEpi8
+import io.github.kotlinmania.rustlang.x86.mm512SetzeroSi512
+import io.github.kotlinmania.rustlang.x86.mm512UndefinedEpi32
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi16
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi32
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi8
+import io.github.kotlinmania.rustlang.x86.mmSetEpi16
+import io.github.kotlinmania.rustlang.x86.mmSetEpi32
+import io.github.kotlinmania.rustlang.x86.mmSetEpi8
+import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
+import io.github.kotlinmania.rustlang.x86.mmUndefinedSi128
 
 public fun testMm512AbsEpi16() {
     val a = mm512Set1Epi16((-1).toShort())

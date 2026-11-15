@@ -5,6 +5,9 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.num.rustWrappingSub
+import io.github.kotlinmania.rustlang.int.specializeddivrem.u64ByU64DivRem
+import io.github.kotlinmania.rustlang.int.specializeddivrem.u64NormalizationShift
+import io.github.kotlinmania.rustlang.int.specializeddivrem.zeroDivFn
 
 // Creates an unsigned division function that uses a combination of hardware division and
 // binary long division to divide integers larger than what hardware division by itself can do. This

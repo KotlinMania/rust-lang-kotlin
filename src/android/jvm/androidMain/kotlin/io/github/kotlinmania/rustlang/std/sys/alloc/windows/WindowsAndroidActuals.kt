@@ -4,34 +4,33 @@ package io.github.kotlinmania.rustlang.std.sys.alloc.windows
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.sys.c
 
-private object SysAllocWindowsJniBridge {
+private object StdSysAllocWindowsJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun stdSysAllocWindowsGetProcessHeap(): Long
+    external fun rustlangStdSysAllocWindowsGetProcessHeap(): Long
 
     @JvmStatic
-    external fun stdSysAllocWindowsHeapAlloc(hheap: Long, dwflags: Int, dwbytes: Long): Long
+    external fun rustlangStdSysAllocWindowsHeapAlloc(hheap: Long, dwflags: Int, dwbytes: Long): Long
 
     @JvmStatic
-    external fun stdSysAllocWindowsHeapReAlloc(hheap: Long, dwflags: Int, lpmem: Long, dwbytes: Long): Long
+    external fun rustlangStdSysAllocWindowsHeapReAlloc(hheap: Long, dwflags: Int, lpmem: Long, dwbytes: Long): Long
 
     @JvmStatic
-    external fun stdSysAllocWindowsHeapFree(hheap: Long, dwflags: Int, lpmem: Long): Int
+    external fun rustlangStdSysAllocWindowsHeapFree(hheap: Long, dwflags: Int, lpmem: Long): Int
 }
 
-public actual fun getProcessHeap(): c.Handle =
-    MutPtr(SysAllocWindowsJniBridge.stdSysAllocWindowsGetProcessHeap())
+public actual fun getProcessHeap(): Handle =
+    MutPtr(StdSysAllocWindowsJniBridge.rustlangStdSysAllocWindowsGetProcessHeap())
 
-public actual fun heapAlloc(hheap: c.Handle, dwflags: UInt, dwbytes: ULong): MutPtr =
-    MutPtr(SysAllocWindowsJniBridge.stdSysAllocWindowsHeapAlloc(hheap.rawAddress, dwflags.toInt(), dwbytes.toLong()))
+public actual fun heapAlloc(hheap: Handle, dwflags: UInt, dwbytes: ULong): MutPtr =
+    MutPtr(StdSysAllocWindowsJniBridge.rustlangStdSysAllocWindowsHeapAlloc(hheap.rawAddress, dwflags.toInt(), dwbytes.toLong()))
 
-public actual fun heapReAlloc(hheap: c.Handle, dwflags: UInt, lpmem: ConstPtr, dwbytes: ULong): MutPtr =
-    MutPtr(SysAllocWindowsJniBridge.stdSysAllocWindowsHeapReAlloc(hheap.rawAddress, dwflags.toInt(), lpmem.rawAddress, dwbytes.toLong()))
+public actual fun heapReAlloc(hheap: Handle, dwflags: UInt, lpmem: ConstPtr, dwbytes: ULong): MutPtr =
+    MutPtr(StdSysAllocWindowsJniBridge.rustlangStdSysAllocWindowsHeapReAlloc(hheap.rawAddress, dwflags.toInt(), lpmem.rawAddress, dwbytes.toLong()))
 
-public actual fun heapFree(hheap: c.Handle, dwflags: UInt, lpmem: ConstPtr): c.Bool =
-    SysAllocWindowsJniBridge.stdSysAllocWindowsHeapFree(hheap.rawAddress, dwflags.toInt(), lpmem.rawAddress)
+public actual fun heapFree(hheap: Handle, dwflags: UInt, lpmem: ConstPtr): Bool =
+    StdSysAllocWindowsJniBridge.rustlangStdSysAllocWindowsHeapFree(hheap.rawAddress, dwflags.toInt(), lpmem.rawAddress)

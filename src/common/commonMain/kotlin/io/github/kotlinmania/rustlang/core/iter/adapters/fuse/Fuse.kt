@@ -1,15 +1,15 @@
 // port-lint: source iter/adapters/fuse.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.fuse
 
-import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -25,7 +25,7 @@ public open class Fuse<I>(
     // we still have to be prepared for that state due to variance.
     // See rust-lang/rust#85863
     public var iter: I?,
-) : TrustedFused, TrustedLen<Fuse<I>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, FuseImpl<I, Any?, Item>, SourceIter<Any?, Source>, Iterable<Item> {
+) : TrustedFused, TrustedLen<Fuse<I>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, FuseImpl<I, Item>, SourceIter<Source>, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Fuse.next()) {
@@ -180,7 +180,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 this.iter = null
             }
         }
@@ -214,7 +214,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 this.iter = null
             }
         }
@@ -256,7 +256,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryFold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
         }
         return acc1
@@ -295,7 +295,7 @@ public open class Fuse<I>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = iter.tryRfold(acc1, fold)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
         }
         return acc1

@@ -1,18 +1,18 @@
 // port-lint: source iter/adapters/map.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.map
 
-import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -97,7 +97,7 @@ public open class Map<I, F>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
     public var iter: I,
     public var f: F,
-) : TrustedFused, TrustedLen<Map<I, F>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, SourceIter<Any?, Source>, InPlaceIterable, Iterable<B> {
+) : TrustedFused, TrustedLen<Map<I, F>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, SourceIter<Source>, InPlaceIterable, Iterable<B> {
     override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
         override fun computeNext() {
             when (val v = this@Map.next()) {

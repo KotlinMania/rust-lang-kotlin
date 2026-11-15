@@ -5,20 +5,20 @@ import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.fs.createDir
-import io.github.kotlinmania.rustlang.std.fs.metadata
-import io.github.kotlinmania.rustlang.std.fs.readDir
-import io.github.kotlinmania.rustlang.std.fs.removeDir
-import io.github.kotlinmania.rustlang.std.fs.removeFile
-import io.github.kotlinmania.rustlang.std.fs.rename
-import io.github.kotlinmania.rustlang.std.fs.symlinkMetadata
-import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
-import io.github.kotlinmania.rustlang.std.sys.fs.unsupported.FileAttr
-import io.github.kotlinmania.rustlang.std.sys.helpers.ignoreNotfound
+import io.github.kotlinmania.rustlang.fs.createDir
+import io.github.kotlinmania.rustlang.fs.metadata
+import io.github.kotlinmania.rustlang.fs.readDir
+import io.github.kotlinmania.rustlang.fs.removeDir
+import io.github.kotlinmania.rustlang.fs.removeFile
+import io.github.kotlinmania.rustlang.fs.rename
+import io.github.kotlinmania.rustlang.fs.symlinkMetadata
+import io.github.kotlinmania.rustlang.io.constError
+import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.path.PathBuf
+import io.github.kotlinmania.rustlang.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.sys.fs.unix.OpenOptions
+import io.github.kotlinmania.rustlang.sys.fs.unsupported.FileAttr
+import io.github.kotlinmania.rustlang.sys.helpers.ignoreNotfound
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -48,20 +48,20 @@ public class DebugStruct(
 public val NOT_FILE_ERROR: Error = constError(ErrorKind.InvalidInput, "the source path is neither a regular file nor a symlink to a regular file")
 
 public fun copy(from: Path, to: Path): Result<ULong, Error> {
-    val reader = when (val tryResult = File.open(from)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val metadata = when (val tryResult = reader.metadata()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val reader = when (val tryResult = File.open(from)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val metadata = when (val tryResult = reader.metadata()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     if (!metadata.isFile()) {
         return Result.Err(NOT_FILE_ERROR)
     }
-    val writer = when (val tryResult = File.create(to)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val writer = when (val tryResult = File.create(to)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     val perm = metadata.permissions()
-    val ret = when (val tryResult = io.github.kotlinmania.rustlang.std.io.copy(reader, writer)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    when (val tryResult = writer.setPermissions(perm)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val ret = when (val tryResult = io.github.kotlinmania.rustlang.io.copy(reader, writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = writer.setPermissions(perm)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(ret)
 }
 
 public fun removeDirAll(path: Path): Result<Unit, Error> {
-    val filetype = when (val tryResult = symlinkMetadata(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.fileType()
+    val filetype = when (val tryResult = symlinkMetadata(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.fileType()
     return if (filetype.isSymlink()) {
         removeFile(path)
     } else {
@@ -70,18 +70,18 @@ public fun removeDirAll(path: Path): Result<Unit, Error> {
 }
 
 public fun removeDirAllRecursive(path: Path): Result<Unit, Error> {
-    for (child in when (val tryResult = readDir(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
+    for (child in when (val tryResult = readDir(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }) {
         val result: Result<Unit, Error> =
             run {
-                val child1 = when (val tryResult = child) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                if (when (val tryResult = child1.fileType()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.isDir()) {
-                    when (val tryResult = removeDirAllRecursive(child1.path())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val child1 = when (val tryResult = child) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                if (when (val tryResult = child1.fileType()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.isDir()) {
+                    when (val tryResult = removeDirAllRecursive(child1.path())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 } else {
-                    when (val tryResult = removeFile(child1.path())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = removeFile(child1.path())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 }
             }
         // ignore internal NotFound errors to prevent race conditions
-        if (result is Result.Err<*> && err.kind() != ErrorKind.NotFound) {
+        if (result is Result.Err<*, *> && err.kind() != ErrorKind.NotFound) {
             return result
         }
     }
@@ -92,13 +92,13 @@ public fun exists(path: Path): Result<Boolean, Error> =
     run {
         val matchVal = metadata(path)
         when {
-            matchVal is Result.Ok<*> -> Result.Ok(true)
-            matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.kind() == ErrorKind.NotFound -> {
-                val error = (matchVal as Result.Err<*>).error
+            matchVal is Result.Ok<*, *> -> Result.Ok(true)
+            matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.kind() == ErrorKind.NotFound -> {
+                val error = (matchVal as Result.Err<*, *>).error
                 Result.Ok(false)
             }
             else -> {
-                val error1 = (matchVal as Result.Err<*>).error
+                val error1 = (matchVal as Result.Err<*, *>).error
                 Result.Err(error1)
             }
         }
@@ -109,11 +109,11 @@ public open class Dir(
 ) {
     public open fun duplicate(): Result<Dir, Error> = Result.Ok(Dir(path = this.path.clone()))
 
-    public open fun openFile(path: Path, opts: OpenOptions): Result<io.github.kotlinmania.rustlang.std.sys.fs.unix.File, Error> = File.open(this.path.join(path), opts)
+    public open fun openFile(path: Path, opts: OpenOptions): Result<io.github.kotlinmania.rustlang.sys.fs.unix.File, Error> = File.open(this.path.join(path), opts)
 
     public open fun selfMetadata(): Result<FileAttr, Error> = this.path.metadata().map({ m -> m.intoInner() })
 
-    public open fun removeFile(path: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.removeFile(this.path.join(path))
+    public open fun removeFile(path: Path): Result<Unit, Error> = removeFile(this.path.join(path))
 
     public open fun rename(from: Path, toDir: Dir, to: Path): Result<Unit, Error> = rename(this.path.join(from), toDir.path.join(to))
 
@@ -121,7 +121,7 @@ public open class Dir(
 
     public open fun openDir(path: Path, opts: OpenOptions): Result<Dir, Error> = Dir.open(this.path.join(path), opts)
 
-    public open fun removeDir(path: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.removeDir(this.path.join(path))
+    public open fun removeDir(path: Path): Result<Unit, Error> = removeDir(this.path.join(path))
 
     public open fun metadata(path: Path): Result<FileAttr, Error> = this.path.join(path).metadata().map({ m -> m.intoInner() })
 

@@ -14,11 +14,15 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.io.stdio.Stderr
+import io.github.kotlinmania.rustlang.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CUlong
 import io.github.kotlinmania.rustlang.libc.Poll
-import io.github.kotlinmania.rustlang.libc.helenos.PidT
 import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.Pollfd
 import io.github.kotlinmania.rustlang.libc.unix.UidT
 import io.github.kotlinmania.rustlang.libc.wasi.EAGAIN
@@ -28,29 +32,26 @@ import io.github.kotlinmania.rustlang.libc.wasi.POLLIN
 import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.SigsetT
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.asBytes
+import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.fromBytes
+import io.github.kotlinmania.rustlang.os.unix.ffi.osstr.intoVec
+import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.process.StdioPipes
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
-import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
-import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.asBytes
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromBytes
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.intoVec
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.process.StdioPipes
-import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
-import io.github.kotlinmania.rustlang.std.sys.io.error.unix.setErrno
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
-import io.github.kotlinmania.rustlang.std.sys.pipe.unix.Pipe
-import io.github.kotlinmania.rustlang.std.sys.pipe.unix.pipe
-import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnv
-import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnvs
-import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.cstringarray.CStringArray
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.cstringarray.CStringIter
+import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.sys.fs.unix.OpenOptions
+import io.github.kotlinmania.rustlang.sys.io.error.unix.setErrno
+import io.github.kotlinmania.rustlang.sys.osstr.bytes.Slice
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvtR
+import io.github.kotlinmania.rustlang.sys.pipe.unix.Pipe
+import io.github.kotlinmania.rustlang.sys.pipe.unix.pipe
+import io.github.kotlinmania.rustlang.sys.process.env.CommandEnv
+import io.github.kotlinmania.rustlang.sys.process.env.CommandEnvs
+import io.github.kotlinmania.rustlang.sys.process.env.CommandResolvedEnvs
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -283,9 +284,9 @@ public open class Command internal constructor(
         val stdin = (this.stdin ?: defaultStdin)
         val stdout = (this.stdout ?: default)
         val stderr = (this.stderr ?: default)
-        val (theirStdin, ourStdin) = when (val tryResult = stdin.toChildStdio(true)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        val (theirStdout, ourStdout) = when (val tryResult = stdout.toChildStdio(false)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        val (theirStderr, ourStderr) = when (val tryResult = stderr.toChildStdio(false)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val (theirStdin, ourStdin) = when (val tryResult = stdin.toChildStdio(true)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val (theirStdout, ourStdout) = when (val tryResult = stdout.toChildStdio(false)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val (theirStderr, ourStderr) = when (val tryResult = stderr.toChildStdio(false)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         val ours = StdioPipes(stdin = ourStdin, stdout = ourStdout, stderr = ourStderr)
         val theirs = ChildPipes(stdin = theirStdin, stdout = theirStdout, stderr = theirStderr)
         return Result.Ok(Pair(ours, theirs))
@@ -430,10 +431,10 @@ public open class ChildPipes(
 
 public sealed class ChildStdio {
     public data object Inherit : ChildStdio()
-    public data class Explicit(public var value: CInt) : ChildStdio()
+    public data class Explicit(public var value: io.github.kotlinmania.rustlang.os.raw.CInt) : ChildStdio()
     public data class Owned(public var value: FileDesc) : ChildStdio()
 
-    public open fun fd(): CInt? =
+    public open fun fd(): io.github.kotlinmania.rustlang.os.raw.CInt? =
         when (this) {
             ChildStdio.Inherit -> null
             is ChildStdio.Explicit -> {
@@ -467,18 +468,18 @@ public sealed class Stdio {
             is Stdio.Fd -> {
                 val (fd) = this
                 if (fd.asRawFd() >= 0 && fd.asRawFd() <= STDERR_FILENO) {
-                    Result.Ok(Pair(ChildStdio.Owned(when (val tryResult = fd.duplicate()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }), null))
+                    Result.Ok(Pair(ChildStdio.Owned(when (val tryResult = fd.duplicate()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }), null))
                 } else {
                     Result.Ok(Pair(ChildStdio.Explicit(fd.asRawFd()), null))
                 }
             }
             is Stdio.StaticFd -> {
                 val (fd1) = this
-                val fd2 = FileDesc.fromInner(when (val tryResult = fd1.tryCloneToOwned()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+                val fd2 = FileDesc.fromInner(when (val tryResult = fd1.tryCloneToOwned()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
                 Result.Ok(Pair(ChildStdio.Owned(fd2), null))
             }
             Stdio.MakePipe -> {
-                val (reader, writer) = when (val tryResult = pipe()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val (reader, writer) = when (val tryResult = pipe()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 val (ours, theirs) =
                     if (readable) {
                         Pair(writer, reader)
@@ -491,7 +492,7 @@ public sealed class Stdio {
                 val opts = OpenOptions.new()
                 opts.read(readable)
                 opts.write(!readable)
-                val fd3 = when (val tryResult = File.openC(DEV_NULL, opts)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val fd3 = when (val tryResult = File.openC(DEV_NULL, opts)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 Result.Ok(Pair(ChildStdio.Owned(fd3.intoInner()), null))
             }
         }
@@ -658,12 +659,12 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
     // reader will return Ok(0), in which case we'll see `Ok` ourselves. In
     // this case we flip the other fd back into blocking mode and read
     // whatever's leftover on that file descriptor.
-    fun read(fd: FileDesc, dst: List<UByte>): Result<Boolean, io.github.kotlinmania.rustlang.std.io.Error> =
+    fun read(fd: FileDesc, dst: List<UByte>): Result<Boolean, io.github.kotlinmania.rustlang.io.Error> =
         run {
             val matchVal = fd.readToEnd(dst)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 Result.Ok(true)
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val e = matchVal.error
                 if (e.rawOsError() == EWOULDBLOCK || e.rawOsError() == EAGAIN) {
                     Result.Ok(false)
@@ -674,8 +675,8 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
         }
     // Set both pipes into nonblocking mode as we're gonna be reading from both
     // in the `select` loop below, and we wouldn't want one to block the other!
-    when (val tryResult = out.setNonblocking(true)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    when (val tryResult = err.setNonblocking(true)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = out.setNonblocking(true)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = err.setNonblocking(true)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     val localStorageL651C4 = AddressableArrayLocal.fromList(emptyList(), ObjectSlotLayout<Pollfd>())
     val fds by localStorageL651C4
     fds[0].fd = out.asRawFd()
@@ -684,13 +685,13 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
     fds[1].events = POLLIN
     while (true) {
         // wait for either pipe to become readable using `poll`
-        when (val tryResult = cvtR({ Poll(localStorageL651C4.elementMutPtr(0), 2, -1) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        if (fds[0].revents != 0 && when (val tryResult = read(out, stdout)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
-            when (val tryResult = err.setNonblocking(false)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvtR({ Poll(localStorageL651C4.elementMutPtr(0), 2, -1) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        if (fds[0].revents != 0 && when (val tryResult = read(out, stdout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }) {
+            when (val tryResult = err.setNonblocking(false)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             return err.readToEnd(stderr).map({ Unit })
         }
-        if (fds[1].revents != 0 && when (val tryResult = read(err, stderr)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
-            when (val tryResult = out.setNonblocking(false)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        if (fds[1].revents != 0 && when (val tryResult = read(err, stderr)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }) {
+            when (val tryResult = out.setNonblocking(false)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             return out.readToEnd(stdout).map({ Unit })
         }
     }

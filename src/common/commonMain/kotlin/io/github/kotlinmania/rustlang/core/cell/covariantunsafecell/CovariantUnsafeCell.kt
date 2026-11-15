@@ -1,14 +1,14 @@
 // port-lint: source cell/covariant_unsafe_cell.rs
 package io.github.kotlinmania.rustlang.core.cell.covariantunsafecell
 
-import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 public class DebugStruct(
     private val out: StringBuilder,

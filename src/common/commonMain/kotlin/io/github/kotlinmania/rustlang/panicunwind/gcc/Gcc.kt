@@ -7,9 +7,8 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.eq
-import io.github.kotlinmania.rustlang.panicunwind.rustDropPanic
-import io.github.kotlinmania.rustlang.panicunwind.rustForeignException
+import io.github.kotlinmania.rustlang.rustDropPanic
+import io.github.kotlinmania.rustlang.rustForeignException
 import io.github.kotlinmania.rustlang.unwind.types.UnwindException
 import io.github.kotlinmania.rustlang.unwind.types.UnwindExceptionClass
 import io.github.kotlinmania.rustlang.unwind.types.UnwindReasonCode
@@ -104,7 +103,7 @@ public fun cleanup(ptr: MutPtr): RustAny =
         // Just access the canary field, avoid accessing the entire `Exception` as
         // it can be a foreign Rust exception.
         val canary = (addrOf(exception1.canary)).read()
-        if (!eq(canary, CANARY)) {
+        if (!ptr.eq(canary, CANARY)) {
             // A foreign Rust exception, treat it slightly differently from other
             // foreign exceptions, because call into `_Unwind_DeleteException` will
             // call into `__rust_drop_panic` which produces a confusing

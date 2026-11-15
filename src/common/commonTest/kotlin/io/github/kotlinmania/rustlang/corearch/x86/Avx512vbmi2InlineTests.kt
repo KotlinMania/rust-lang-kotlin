@@ -4,6 +4,27 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.hint.blackBox
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi16
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi32
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi64x
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi8
+import io.github.kotlinmania.rustlang.x86.mm256SetEpi16
+import io.github.kotlinmania.rustlang.x86.mm256SetEpi8
+import io.github.kotlinmania.rustlang.x86.mm256SetzeroSi256
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi16
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi32
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi64
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi8
+import io.github.kotlinmania.rustlang.x86.mm512SetEpi16
+import io.github.kotlinmania.rustlang.x86.mm512SetEpi8
+import io.github.kotlinmania.rustlang.x86.mm512SetzeroSi512
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi16
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi32
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi8
+import io.github.kotlinmania.rustlang.x86.mmSetEpi16
+import io.github.kotlinmania.rustlang.x86.mmSetEpi8
+import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
 
 public fun testMm512MaskCompressEpi16() {
     val src = mm512Set1Epi16(200)

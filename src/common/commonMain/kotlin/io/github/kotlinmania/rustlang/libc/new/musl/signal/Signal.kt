@@ -3,20 +3,20 @@
 
 package io.github.kotlinmania.rustlang.libc.new.musl.signal
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.Sigval
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.Sigval
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.ClockT
 
 // Header source: `include / signal.h`
 //
@@ -364,8 +364,8 @@ public data class CAnonymousFirstTimer(
 
 public data class CAnonymousSecondSigchld(
     public var siStatus: CInt = 0,
-    public var siUtime: ClockT = 0uL,
-    public var siStime: ClockT = 0uL,
+    public var siUtime: ClockT = 0L,
+    public var siStime: ClockT = 0L,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousSecondSigchld> =
@@ -375,24 +375,24 @@ public data class CAnonymousSecondSigchld(
                 override fun readNative(addr: Long): CAnonymousSecondSigchld =
                     CAnonymousSecondSigchld(
                         (PrimitiveLayouts.I32).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U64).readNative(addr + 16L),
+                        (PrimitiveLayouts.I64).readNative(addr + 8L),
+                        (PrimitiveLayouts.I64).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: CAnonymousSecondSigchld) {
                     (PrimitiveLayouts.I32).writeNative(addr, value.siStatus)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.siUtime)
-                    (PrimitiveLayouts.U64).writeNative(addr + 16L, value.siStime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 8L, value.siUtime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 16L, value.siStime)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): CAnonymousSecondSigchld =
                     CAnonymousSecondSigchld(
                         (PrimitiveLayouts.I32).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: CAnonymousSecondSigchld) {
                     (PrimitiveLayouts.I32).writeBytes(buf, offset, value.siStatus)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.siUtime)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.siStime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 8, value.siUtime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 16, value.siStime)
                 }
             }
     }

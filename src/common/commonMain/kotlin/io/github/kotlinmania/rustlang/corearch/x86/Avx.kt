@@ -3,20 +3,42 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I32x8
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I64x4
-import io.github.kotlinmania.rustlang.corearch.simd.I8x32
-import io.github.kotlinmania.rustlang.corearch.simd.U32x8
-import io.github.kotlinmania.rustlang.corearch.simd.U64x4
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I32x8
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I64x4
+import io.github.kotlinmania.rustlang.simd.I8x32
+import io.github.kotlinmania.rustlang.simd.U32x8
+import io.github.kotlinmania.rustlang.simd.U64x4
+import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.x86.M128d
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.M256
+import io.github.kotlinmania.rustlang.x86.M256d
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.mmAndPd
+import io.github.kotlinmania.rustlang.x86.mmAndPs
+import io.github.kotlinmania.rustlang.x86.mmAndnotPd
+import io.github.kotlinmania.rustlang.x86.mmAndnotPs
+import io.github.kotlinmania.rustlang.x86.mmLoaduPd
+import io.github.kotlinmania.rustlang.x86.mmLoaduPs
+import io.github.kotlinmania.rustlang.x86.mmLoaduSi128
+import io.github.kotlinmania.rustlang.x86.mmSet1Ps
+import io.github.kotlinmania.rustlang.x86.mmSetzeroPd
+import io.github.kotlinmania.rustlang.x86.mmSetzeroPs
+import io.github.kotlinmania.rustlang.x86.mmStoreuPd
+import io.github.kotlinmania.rustlang.x86.mmStoreuPs
+import io.github.kotlinmania.rustlang.x86.mmStoreuSi128
+import io.github.kotlinmania.rustlang.x86.mmUndefinedPd
+import io.github.kotlinmania.rustlang.x86.mmUndefinedPs
 
 // Advanced Vector Extensions (AVX)
 //
@@ -398,7 +420,7 @@ public fun mm256BlendPs(a: M256, b: M256, imm8: Int): M256 {
  */
 public fun mm256BlendvPd(a: M256d, b: M256d, c: M256d): M256d =
     run {
-        val mask: I64x4 = run { val _simdArg0 = transmute<I64x4>(c); val _simdArg1 = i64x4.ZERO; _simdArg0 }
+        val mask: I64x4 = run { val _simdArg0 = transmute(c); val _simdArg1 = i64x4.ZERO; _simdArg0 }
         transmute(run { val _simdArg0 = mask; val _simdArg1 = b.asF64x4(); val _simdArg2 = a.asF64x4(); _simdArg1 })
     }
 
@@ -410,7 +432,7 @@ public fun mm256BlendvPd(a: M256d, b: M256d, c: M256d): M256d =
  */
 public fun mm256BlendvPs(a: M256, b: M256, c: M256): M256 =
     run {
-        val mask: I32x8 = run { val _simdArg0 = transmute<I32x8>(c); val _simdArg1 = i32x8.ZERO; _simdArg0 }
+        val mask: I32x8 = run { val _simdArg0 = transmute(c); val _simdArg1 = i32x8.ZERO; _simdArg0 }
         transmute(run { val _simdArg0 = mask; val _simdArg1 = b.asF32x8(); val _simdArg2 = a.asF32x8(); _simdArg1 })
     }
 
@@ -1268,7 +1290,7 @@ public fun mm256StorePs(memAddr: MutPtr, a: M256) {
  */
 public fun mm256LoaduPd(memAddr: ConstPtr): M256d {
     val dst = mm256UndefinedPd()
-    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M256d>(typeLayoutT = ObjectSlotLayout<M256d>()), typeLayoutT = PrimitiveLayouts.U8)
+    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M256d>(typeLayoutT = ObjectSlotLayout<M256d>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -1292,7 +1314,7 @@ public fun mm256StoreuPd(memAddr: MutPtr, a: M256d) {
  */
 public fun mm256LoaduPs(memAddr: ConstPtr): M256 {
     val dst = mm256UndefinedPs()
-    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M256>(typeLayoutT = ObjectSlotLayout<M256>()), typeLayoutT = PrimitiveLayouts.U8)
+    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M256>(typeLayoutT = ObjectSlotLayout<M256>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -1342,7 +1364,7 @@ public fun mm256StoreSi256(memAddr: MutPtr, a: M256i) {
  */
 public fun mm256LoaduSi256(memAddr: ConstPtr): M256i {
     val dst = mm256UndefinedSi256()
-    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M256i>(typeLayoutT = ObjectSlotLayout<M256i>()), typeLayoutT = PrimitiveLayouts.U8)
+    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M256i>(typeLayoutT = ObjectSlotLayout<M256i>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 

@@ -1,27 +1,27 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.IdT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.TimerT
-import io.github.kotlinmania.rustlang.libc.UidT
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.CMSG_ALIGN
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Cmsghdr
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Msghdr
+import io.github.kotlinmania.rustlang.unix.GidT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.IdT
+import io.github.kotlinmania.rustlang.unix.linuxlike.TimerT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Cmsghdr
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Msghdr
 
 public fun interface CloneCbCallback {
     public operator fun invoke(arg0: MutPtr): CInt
@@ -95,15 +95,15 @@ public fun nlaAlign(len: CInt): CInt = ((len) + NLA_ALIGNTO - 1) and (NLA_ALIGNT
 
 public fun soEeOffender(ee: ConstPtr): MutPtr = (ConstPtr((ee).rawAddress + ((1).toLong() * (SockExtendedErr.typeLayout()).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
 
-public fun makedev(ma: CUint, mi: CUint): io.github.kotlinmania.rustlang.libc.DevT {
+public fun makedev(ma: CUint, mi: CUint): io.github.kotlinmania.rustlang.unix.linuxlike.android.DevT {
     val ma1 = ma.toULong()
     val mi1 = mi.toULong()
     return ((ma1 and 0xfffuL) shl 8) or (mi1 and 0xffuL) or ((mi1 and 0xfff00uL) shl 12)
 }
 
-public fun major(dev: io.github.kotlinmania.rustlang.libc.DevT): CInt = ((dev shr 8) and 0xfffuL).toInt()
+public fun major(dev: io.github.kotlinmania.rustlang.unix.linuxlike.android.DevT): CInt = ((dev shr 8) and 0xfffuL).toInt()
 
-public fun minor(dev: io.github.kotlinmania.rustlang.libc.DevT): CInt = ((dev and 0xffuL) or ((dev shr 12) and 0xfff00uL)).toInt()
+public fun minor(dev: io.github.kotlinmania.rustlang.unix.linuxlike.android.DevT): CInt = ((dev and 0xffuL) or ((dev shr 12) and 0xfff00uL)).toInt()
 
 public expect fun setpwent()
 
@@ -168,7 +168,7 @@ public expect fun schedCpucount(setsize: SizeT, set: ConstPtr): CInt
 
 public expect fun schedGetcpu(): CInt
 
-public expect fun mallinfo(): Mallinfo
+public expect fun mallinfo(): io.github.kotlinmania.rustlang.unix.linuxlike.android.Mallinfo
 
 // available from API 23
 public expect fun mallocInfo(options: CInt, stream: MutPtr): CInt

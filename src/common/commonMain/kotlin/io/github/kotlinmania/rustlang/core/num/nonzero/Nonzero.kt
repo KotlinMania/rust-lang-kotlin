@@ -1,45 +1,21 @@
 // port-lint: source num/nonzero.rs
 package io.github.kotlinmania.rustlang.core.num.nonzero
 
+import io.github.kotlinmania.rustlang.clone.TrivialClone
+import io.github.kotlinmania.rustlang.clone.UseCloned
+import io.github.kotlinmania.rustlang.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.clone.UseCloned
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.fmt.LowerExp
-import io.github.kotlinmania.rustlang.core.fmt.UpperExp
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU64
-import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.ubChecks
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedDiv
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedRem
-import io.github.kotlinmania.rustlang.core.marker.Freeze
-import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
-import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
-import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
-import io.github.kotlinmania.rustlang.core.num.imp.intlog10.u8
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroCharInner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI128Inner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI16Inner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI64Inner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI8Inner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroIsizeInner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU128Inner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU64Inner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAbs
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
@@ -56,15 +32,35 @@ import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
 import io.github.kotlinmania.rustlang.core.num.rustWrappingAbs
 import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
-import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
-import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.fromRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedDiv
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedRem
+import io.github.kotlinmania.rustlang.marker.Freeze
+import io.github.kotlinmania.rustlang.marker.StructuralPartialEq
+import io.github.kotlinmania.rustlang.num.error.IntErrorKind
+import io.github.kotlinmania.rustlang.num.error.ParseIntError
+import io.github.kotlinmania.rustlang.num.error.TryFromIntError
+import io.github.kotlinmania.rustlang.num.imp.intlog10.u8
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroCharInner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroI128Inner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroI16Inner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroI32Inner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroI64Inner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroI8Inner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroIsizeInner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroU128Inner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroU16Inner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroU32Inner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroU64Inner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroU8Inner
+import io.github.kotlinmania.rustlang.num.nichetypes.NonZeroUsizeInner
+import io.github.kotlinmania.rustlang.ops.bit.BitOr
+import io.github.kotlinmania.rustlang.ops.bit.BitOrAssign
+import io.github.kotlinmania.rustlang.ptr.fromRef
 
 // Definitions of integer that is known not to equal zero.
 
@@ -134,7 +130,7 @@ public interface ZeroablePrimitive<T, out NonZeroInner>
 public open class NonZero<T, NonZeroInner> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<NonZeroInner>,
-) : LowerExp, UpperExp, Freeze, UseCloned<NonZero<T, NonZeroInner>>, TrivialClone<NonZero<T, NonZeroInner>>, StructuralPartialEq, BitOr<NonZero<T, NonZeroInner>, Any?, NonZero<T, NonZeroInner>>, BitOrAssign<NonZero<T, NonZeroInner>> {
+) : LowerExp, UpperExp, Freeze, UseCloned<NonZero<T, NonZeroInner>>, TrivialClone<NonZero<T, NonZeroInner>>, StructuralPartialEq, BitOr<NonZero<T, NonZeroInner>, NonZero<T, NonZeroInner>>, BitOrAssign<NonZero<T, NonZeroInner>> {
     public var field0: T.NonZeroInner
         get() = value
         set(v) {
@@ -284,7 +280,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
                 null -> {
                     // SAFETY: The caller guarantees that `n` is non-zero, so this is unreachable.
                     run {
-                        ubChecks.assertUnsafePrecondition(checkLanguageUb, "NonZero::new_unchecked requires the argument to be non-zero", false)
+                        Unit
                         error("Entered Rust intrinsics::unreachable")
                     }
                 }
@@ -319,7 +315,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
                 null -> {
                     // SAFETY: The caller guarantees that `n` references a value that is non-zero, so this is unreachable.
                     run {
-                        ubChecks.assertUnsafePrecondition(checkLibraryUb, "NonZero::from_mut_unchecked requires the argument to dereference as non-zero", false)
+                        Unit
                         error("Entered Rust intrinsics::unreachable")
                     }
                 }
@@ -1198,10 +1194,10 @@ public fun NonZero.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UI
     val n1 =
         run {
             val matchVal = UByte.fromAsciiBytesRadixImpl(src, radix)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val n = matchVal.value
                 n
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val err = matchVal.error
                 return Result.Err(err)
             } }

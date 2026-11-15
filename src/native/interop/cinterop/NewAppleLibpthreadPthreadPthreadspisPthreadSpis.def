@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.pthreadspis.cinterop
-headers = new_apple_libpthread_pthread_pthreadspis_pthread_spis_wrapper.h
-headerFilter = new_apple_libpthread_pthread_pthreadspis_pthread_spis_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = new_apple_libpthread_pthread_pthreadspis_pthread_spis_wrapper.a

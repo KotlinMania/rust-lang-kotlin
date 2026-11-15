@@ -3,18 +3,18 @@
 package io.github.kotlinmania.rustlang.panicunwind
 
 // The host must provide the C companion wrapper exports in import module kmcore.
-@kotlin.wasm.WasmImport("kmcore", "panicunwindRustDropPanic")
-private external fun wasiPanicunwindRustDropPanic(): Unit
+@kotlin.wasm.WasmImport("kmcore", "rustlangPanicunwindRustDropPanic")
+private external fun wasiRustlangPanicunwindRustDropPanic(): Unit
 
 public actual fun rustDropPanic(): Nothing {
-    wasiPanicunwindRustDropPanic()
-    error("C noreturn function panicunwindRustDropPanic returned")
+    wasiRustlangPanicunwindRustDropPanic()
+    error("C noreturn function rustlangPanicunwindRustDropPanic returned")
 }
 
-@kotlin.wasm.WasmImport("kmcore", "panicunwindRustForeignException")
-private external fun wasiPanicunwindRustForeignException(): Unit
+@kotlin.wasm.WasmImport("kmcore", "rustlangPanicunwindRustForeignException")
+private external fun wasiRustlangPanicunwindRustForeignException(): Unit
 
 public actual fun rustForeignException(): Nothing {
-    wasiPanicunwindRustForeignException()
-    error("C noreturn function panicunwindRustForeignException returned")
+    wasiRustlangPanicunwindRustForeignException()
+    error("C noreturn function rustlangPanicunwindRustForeignException returned")
 }

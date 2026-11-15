@@ -22,7 +22,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  * }
  * ```
  */
-public fun UByteArray.asAscii(n: Int): List<io.github.kotlinmania.rustlang.core.ascii.Char>? =
+public fun UByteArray.asAscii(n: Int): List<io.github.kotlinmania.rustlang.ascii.Char>? =
     if (this.isAscii()) {
         // SAFETY: Just checked that it's ASCII
         this.asAsciiUnchecked()
@@ -38,9 +38,9 @@ public fun UByteArray.asAscii(n: Int): List<io.github.kotlinmania.rustlang.core.
  *
  * Every byte in the array must be in `0 ..= 127`, or else this is UB.
  */
-public fun UByteArray.asAsciiUnchecked(n: Int): List<io.github.kotlinmania.rustlang.core.ascii.Char> {
+public fun UByteArray.asAsciiUnchecked(n: Int): List<io.github.kotlinmania.rustlang.ascii.Char> {
     val bytePtr: ConstPtr = this
     val asciiPtr = ConstPtr(bytePtr.rawAddress, bytePtr.rawMeta)
     // SAFETY: The caller promised all the bytes are ASCII
-    return (ObjectSlotLayout<List<io.github.kotlinmania.rustlang.core.ascii.Char>>()).readNative((asciiPtr).rawAddress)
+    return (ObjectSlotLayout<List<io.github.kotlinmania.rustlang.ascii.Char>>()).readNative((asciiPtr).rawAddress)
 }

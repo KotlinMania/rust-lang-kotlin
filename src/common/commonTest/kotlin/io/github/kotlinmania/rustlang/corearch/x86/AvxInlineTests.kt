@@ -8,8 +8,19 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.x86.mmSet1Pd
+import io.github.kotlinmania.rustlang.x86.mmSet1Ps
+import io.github.kotlinmania.rustlang.x86.mmSetrEpi32
+import io.github.kotlinmania.rustlang.x86.mmSetrEpi8
+import io.github.kotlinmania.rustlang.x86.mmSetrPd
+import io.github.kotlinmania.rustlang.x86.mmSetrPs
+import io.github.kotlinmania.rustlang.x86.mmSfence
+import io.github.kotlinmania.rustlang.x86.mmUndefinedPd
+import io.github.kotlinmania.rustlang.x86.mmUndefinedPs
+import io.github.kotlinmania.rustlang.x86.mmUndefinedSi128
 
 // Advanced Vector Extensions (AVX)
 //

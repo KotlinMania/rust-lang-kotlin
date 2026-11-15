@@ -2,126 +2,126 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.corearch.simd.I16x16
-import io.github.kotlinmania.rustlang.corearch.simd.I16x32
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x16
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I32x8
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.I8x32
-import io.github.kotlinmania.rustlang.corearch.simd.I8x64
-import io.github.kotlinmania.rustlang.corearch.simd.U16x16
-import io.github.kotlinmania.rustlang.corearch.simd.U16x8
-import io.github.kotlinmania.rustlang.corearch.simd.U8x16
-import io.github.kotlinmania.rustlang.corearch.simd.U8x32
-import io.github.kotlinmania.rustlang.corearch.simd.U8x64
+import io.github.kotlinmania.rustlang.simd.I16x16
+import io.github.kotlinmania.rustlang.simd.I16x32
+import io.github.kotlinmania.rustlang.simd.I16x8
+import io.github.kotlinmania.rustlang.simd.I32x16
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I32x8
+import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.I8x32
+import io.github.kotlinmania.rustlang.simd.I8x64
+import io.github.kotlinmania.rustlang.simd.U16x16
+import io.github.kotlinmania.rustlang.simd.U16x8
+import io.github.kotlinmania.rustlang.simd.U8x16
+import io.github.kotlinmania.rustlang.simd.U8x32
+import io.github.kotlinmania.rustlang.simd.U8x64
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun vpdpwssd(src: I32x16, a: I16x32, b: I16x32): I32x16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwssd")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwssd")
 
 public actual fun vpdpwssd256(src: I32x8, a: I16x16, b: I16x16): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwssd256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwssd256")
 
 public actual fun vpdpwssd128(src: I32x4, a: I16x8, b: I16x8): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwssd128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwssd128")
 
 public actual fun vpdpwssds(src: I32x16, a: I16x32, b: I16x32): I32x16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwssds")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwssds")
 
 public actual fun vpdpwssds256(src: I32x8, a: I16x16, b: I16x16): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwssds256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwssds256")
 
 public actual fun vpdpwssds128(src: I32x4, a: I16x8, b: I16x8): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwssds128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwssds128")
 
 public actual fun vpdpbusd(src: I32x16, a: U8x64, b: I8x64): I32x16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbusd")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbusd")
 
 public actual fun vpdpbusd256(src: I32x8, a: U8x32, b: I8x32): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbusd256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbusd256")
 
 public actual fun vpdpbusd128(src: I32x4, a: U8x16, b: I8x16): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbusd128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbusd128")
 
 public actual fun vpdpbusds(src: I32x16, a: U8x64, b: I8x64): I32x16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbusds")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbusds")
 
 public actual fun vpdpbusds256(src: I32x8, a: U8x32, b: I8x32): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbusds256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbusds256")
 
 public actual fun vpdpbusds128(src: I32x4, a: U8x16, b: I8x16): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbusds128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbusds128")
 
 public actual fun vpdpbssd128(src: I32x4, a: I8x16, b: I8x16): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbssd128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbssd128")
 
 public actual fun vpdpbssd256(src: I32x8, a: I8x32, b: I8x32): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbssd256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbssd256")
 
 public actual fun vpdpbssds128(src: I32x4, a: I8x16, b: I8x16): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbssds128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbssds128")
 
 public actual fun vpdpbssds256(src: I32x8, a: I8x32, b: I8x32): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbssds256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbssds256")
 
 public actual fun vpdpbsud128(src: I32x4, a: I8x16, b: U8x16): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbsud128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbsud128")
 
 public actual fun vpdpbsud256(src: I32x8, a: I8x32, b: U8x32): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbsud256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbsud256")
 
 public actual fun vpdpbsuds128(src: I32x4, a: I8x16, b: U8x16): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbsuds128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbsuds128")
 
 public actual fun vpdpbsuds256(src: I32x8, a: I8x32, b: U8x32): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbsuds256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbsuds256")
 
 public actual fun vpdpbuud128(src: I32x4, a: U8x16, b: U8x16): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbuud128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbuud128")
 
 public actual fun vpdpbuud256(src: I32x8, a: U8x32, b: U8x32): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbuud256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbuud256")
 
 public actual fun vpdpbuuds128(src: I32x4, a: U8x16, b: U8x16): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbuuds128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbuuds128")
 
 public actual fun vpdpbuuds256(src: I32x8, a: U8x32, b: U8x32): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpbuuds256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpbuuds256")
 
 public actual fun vpdpwsud128(src: I32x4, a: I16x8, b: U16x8): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwsud128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwsud128")
 
 public actual fun vpdpwsud256(src: I32x8, a: I16x16, b: U16x16): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwsud256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwsud256")
 
 public actual fun vpdpwsuds128(src: I32x4, a: I16x8, b: U16x8): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwsuds128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwsuds128")
 
 public actual fun vpdpwsuds256(src: I32x8, a: I16x16, b: U16x16): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwsuds256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwsuds256")
 
 public actual fun vpdpwusd128(src: I32x4, a: U16x8, b: I16x8): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwusd128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwusd128")
 
 public actual fun vpdpwusd256(src: I32x8, a: U16x16, b: I16x16): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwusd256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwusd256")
 
 public actual fun vpdpwusds128(src: I32x4, a: U16x8, b: I16x8): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwusds128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwusds128")
 
 public actual fun vpdpwusds256(src: I32x8, a: U16x16, b: I16x16): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwusds256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwusds256")
 
 public actual fun vpdpwuud128(src: I32x4, a: U16x8, b: U16x8): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwuud128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwuud128")
 
 public actual fun vpdpwuud256(src: I32x8, a: U16x16, b: U16x16): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwuud256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwuud256")
 
 public actual fun vpdpwuuds128(src: I32x4, a: U16x8, b: U16x8): I32x4 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwuuds128")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwuuds128")
 
 public actual fun vpdpwuuds256(src: I32x8, a: U16x16, b: U16x16): I32x8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vnniVpdpwuuds256")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangCorearchX86Avx512vnniVpdpwuuds256")

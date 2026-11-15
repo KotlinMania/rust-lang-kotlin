@@ -3,8 +3,8 @@
 package io.github.kotlinmania.rustlang.corearch.mips.msa
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.mips.msa.cinterop.corearchMipsMsaMsaCfcmsa
-import io.github.kotlinmania.rustlang.corearch.mips.msa.cinterop.corearchMipsMsaMsaCtcmsa
+import io.github.kotlinmania.rustlang.corearch.mips.msa.cinterop.rustlangCorearchMipsMsaMsaCfcmsa
+import io.github.kotlinmania.rustlang.corearch.mips.msa.cinterop.rustlangCorearchMipsMsaMsaCtcmsa
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun msaAddAB(a: V16i8, b: V16i8): V16i8 =
@@ -350,7 +350,7 @@ public actual fun msaCeqiD(a: V2i64, b: Int): V2i64 =
     V2i64()
 
 public actual fun msaCfcmsa(a: Int): Int =
-    corearchMipsMsaMsaCfcmsa(a)
+    rustlangCorearchMipsMsaMsaCfcmsa(a)
 
 public actual fun msaCleSB(a: V16i8, b: V16i8): V16i8 =
     V16i8()
@@ -473,7 +473,7 @@ public actual fun msaCopyUD(a: V2i64, b: Int): ULong =
     0uL
 
 public actual fun msaCtcmsa(imm5: Int, a: Int) {
-    corearchMipsMsaMsaCtcmsa(imm5, a)
+    rustlangCorearchMipsMsaMsaCtcmsa(imm5, a)
 }
 
 public actual fun msaDivSB(a: V16i8, b: V16i8): V16i8 =

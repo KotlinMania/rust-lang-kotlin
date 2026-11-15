@@ -9,4 +9,4 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 /**
  * Returns `n / d` and sets `* rem = n % d`
  */
-public fun divmoddi4(a: Long, b: Long, rem: RustMutableReference<Long>): Long = io.github.kotlinmania.rustlang.compilerbuiltins.int.sdiv.divmoddi4(a, b, rem)
+public fun divmoddi4(a: Long, b: Long, rem: RustMutableReference<Long>): Long = io.github.kotlinmania.rustlang.int.sdiv.divmoddi4(a, b, rem)

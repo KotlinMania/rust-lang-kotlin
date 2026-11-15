@@ -3,15 +3,16 @@ package io.github.kotlinmania.rustlang.std.sys.pal.windows.c.cotaskmemfree
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.OLE32
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.compat.LazyModule
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.compat.Module
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.compat.constCstrFromBytes
+import io.github.kotlinmania.rustlang.sys.pal.windows.c.OLE32
+import io.github.kotlinmania.rustlang.sys.pal.windows.compat.LazyModule
+import io.github.kotlinmania.rustlang.sys.pal.windows.compat.Module
+import io.github.kotlinmania.rustlang.sys.pal.windows.compat.constCstrFromBytes
 
 // Functions that aren't available on every version of Windows that we support,
 // but we still use them and just provide some form of a fallback implementation.

@@ -1,27 +1,28 @@
 // port-lint: source iter/adapters/skip.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.skip
 
-import io.github.kotlinmania.rustlang.core.cmp.min
-import io.github.kotlinmania.rustlang.core.intrinsics.unlikely
-import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.cmp.min
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.mem.take
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.intrinsics.unlikely
+import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.mem.take
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -37,7 +38,7 @@ public typealias Source<I> = I.Source
 public open class Skip<I>(
     public var iter: I,
     public var n: Int,
-) : TrustedFused, SourceIter<Any?, Source>, InPlaceIterable, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Skip<I>>, Iterable<Item> {
+) : TrustedFused, SourceIter<Source>, InPlaceIterable, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Skip<I>>, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Skip.next()) {
@@ -149,9 +150,9 @@ public open class Skip<I>(
         val remainder =
             run {
                 val matchVal = this.iter.advanceBy(skipAndAdvance)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     0
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val n2 = matchVal.error
                     n2.get()
                 } }
@@ -163,9 +164,9 @@ public open class Skip<I>(
         if (unlikely(remainder == 0 && n1 > 0)) {
             n1 = run {
                 val matchVal1 = this.iter.advanceBy(n1)
-                when (matchVal1) { is Result.Ok<*> -> {
+                when (matchVal1) { is Result.Ok<*, *> -> {
                     0
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val n3 = matchVal1.error
                     n3.get()
                 } }

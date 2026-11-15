@@ -1,13 +1,13 @@
 // port-lint: source new/musl/sys/socket.rs
 package io.github.kotlinmania.rustlang.libc.new.musl.sys.socket
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.SocklenT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
 
 // Header: `sys / socket.h`
 //
@@ -215,7 +215,7 @@ public data class Cmsghdr(
 }
 
 public data class Mmsghdr(
-    public var msgHdr: io.github.kotlinmania.rustlang.libc.Msghdr = io.github.kotlinmania.rustlang.libc.Msghdr(),
+    public var msgHdr: io.github.kotlinmania.rustlang.new.musl.sys.socket.Msghdr = io.github.kotlinmania.rustlang.new.musl.sys.socket.Msghdr(),
     public var msgLen: CUint = 0u,
 ) {
     public companion object {

@@ -3,14 +3,14 @@
 
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.SaFamilyT
+import io.github.kotlinmania.rustlang.unix.bsd.SaFamilyT
 
 // Header: `uapi / linux / can.h`
 
@@ -26,7 +26,7 @@ public val CAN_EFF_MASK: CanidT = 0x1FFFFFFFu
 
 public val CAN_ERR_MASK: CanidT = 0x1FFFFFFFu
 
-public val CANXL_PRIO_MASK: io.github.kotlinmania.rustlang.libc.CanidT = CAN_SFF_MASK
+public val CANXL_PRIO_MASK: io.github.kotlinmania.rustlang.new.linuxuapi.linux.can.CanidT = CAN_SFF_MASK
 
 public typealias CanidT = UInt
 

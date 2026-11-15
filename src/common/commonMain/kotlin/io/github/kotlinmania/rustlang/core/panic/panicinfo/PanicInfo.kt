@@ -1,9 +1,8 @@
 // port-lint: source panic/panic_info.rs
 package io.github.kotlinmania.rustlang.core.panic.panicinfo
 
-import io.github.kotlinmania.rustlang.core.fmt.Arguments
-import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.panic.location.Location
 
 /**
  * A struct providing information about a panic.
@@ -77,7 +76,7 @@ public open class PanicInfo(
      * [std.panic.PanicHookInfo]: ../../std/panic/struct.PanicHookInfo.html
      * [std.panic.PanicHookInfo.payload]: ../../std/panic/struct.PanicHookInfo.html#method.payload
      */
-    public open fun payload(): io.github.kotlinmania.rustlang.core.any.Any {
+    public open fun payload(): io.github.kotlinmania.rustlang.any.Any {
         open class NoPayload
         return NoPayload()
     }
@@ -100,9 +99,9 @@ public open class PanicInfo(
 
     public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> {
         formatter.append("panicked at ")
-        when (val tryResult = this.location.fmt(formatter)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.location.fmt(formatter)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         formatter.append(":\n")
-        when (val tryResult = formatter.writeFmt(this.message)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = formatter.writeFmt(this.message)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 

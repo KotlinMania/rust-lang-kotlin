@@ -1,22 +1,20 @@
 package io.github.kotlinmania.rustlang.alloc.collections.binaryheap
 
-import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
-import io.github.kotlinmania.rustlang.alloc.vec.Vec
+import io.github.kotlinmania.rustlang.collections.TryReserveError
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.vec.Vec
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -330,7 +328,7 @@ public open class BinaryHeap<T, A : Allocator>(
             // 1 <= end < self.len(), which means self.len() >= 2.
             run {
                 val ptr = this.data.asMutPtr()
-                swap(ptr, MutPtr((ptr).rawAddress + ((end).toLong() * (ObjectSlotLayout<T>()).strideBytes)))
+                ptr.swap(ptr, MutPtr((ptr).rawAddress + ((end).toLong() * (ObjectSlotLayout<T>()).strideBytes)))
             }
             // SAFETY: `end` goes from `self.len() - 1` to 1 (both included) so:
             // 0 < 1 <= end <= self.len() - 1 < self.len()
@@ -1398,7 +1396,7 @@ public open class Hole<T>(
         run {
             val indexPtr: ConstPtr = MutPtr((ptr).rawAddress + ((index).toLong() * (ObjectSlotLayout<T>()).strideBytes))
             val holePtr = MutPtr((ptr).rawAddress + ((this.pos).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-            copyNonoverlapping(indexPtr, holePtr, 1, typeLayoutT = ObjectSlotLayout<Any?>())
+            ptr.copyNonoverlapping(indexPtr, holePtr, 1, typeLayoutT = ObjectSlotLayout<Any?>())
         }
         this.pos = index
     }
@@ -1408,7 +1406,7 @@ public open class Hole<T>(
         val pos = this.pos
         // ignore-tidy-undocumented-unchecked
         run {
-            copyNonoverlapping(this.elt, this.data.getUncheckedMut(pos), 1)
+            ptr.copyNonoverlapping(this.elt, this.data.getUncheckedMut(pos), 1)
         }
     }
 
@@ -1586,9 +1584,9 @@ public open class IntoIterSorted<T, A : Allocator> internal constructor(
  * [drain]: BinaryHeap.drain
  */
 public open class Drain<T, A : Allocator> internal constructor(
-    iterCtorArg: io.github.kotlinmania.rustlang.alloc.vec.drain.Drain<T, A>,
+    iterCtorArg: vec.Drain<T, A>,
 ) : Iterable<T> {
-    public var iter: io.github.kotlinmania.rustlang.alloc.vec.drain.Drain<T, A> = iterCtorArg
+    public var iter: vec.Drain<T, A> = iterCtorArg
         internal set
 
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
@@ -1615,7 +1613,7 @@ public open class Drain<T, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(
-            iter: io.github.kotlinmania.rustlang.alloc.vec.drain.Drain<T, A>,
+            iter: vec.Drain<T, A>,
         ): Drain<T, A> = Drain<T, A>(
             iterCtorArg = iter,
         )

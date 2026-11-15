@@ -3,26 +3,28 @@ package io.github.kotlinmania.rustlang.libm.math.round
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf128
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf16
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf32
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
+import io.github.kotlinmania.rustlang.libm.math.Generic
+import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
+import io.github.kotlinmania.rustlang.math.support.hexfloat.hf128
+import io.github.kotlinmania.rustlang.math.support.hexfloat.hf16
+import io.github.kotlinmania.rustlang.math.support.hexfloat.hf32
+import io.github.kotlinmania.rustlang.math.support.hexfloat.hf64
 
 public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F) -> F, cases: List<Pair<F, F>>) {
     for ((x, expRes) in cases) {
-        val value = io.github.kotlinmania.rustlang.libm.math.generic.round.round(x)
+        val value = Generic.round(x)
         run {
             val l = value
             val r = expRes
-            check(l.biteq(r)) { ("generic::round_status($x) ${Hex(x)}").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("generic::round_status($x) ${Hex(x)}").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
         val value1 = f(x)
         run {
             val l1 = value1
             val r1 = expRes
-            check(l1.biteq(r1)) { ("round($x) ${Hex(x)}").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
+            check(biteq(l1, r1)) { ("round($x) ${Hex(x)}").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
         }
     }
 }

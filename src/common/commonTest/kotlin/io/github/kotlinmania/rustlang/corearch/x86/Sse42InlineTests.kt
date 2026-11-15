@@ -3,6 +3,11 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi8
+import io.github.kotlinmania.rustlang.x86.mmSetrEpi8
+
 // Streaming SIMD Extensions 4.2 (SSE4.2)
 //
 // Extends SSE4.1 with STTNI (String and Text New Instructions).

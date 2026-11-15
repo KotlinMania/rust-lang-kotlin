@@ -2,1037 +2,1037 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.IdT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.TimerT
-import io.github.kotlinmania.rustlang.libc.UidT
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.unix.GidT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.IdT
+import io.github.kotlinmania.rustlang.unix.linuxlike.TimerT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
 
 @JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
-private external fun initUnixLinuxlikeAndroidNapiAddon(): Boolean
+private external fun initLibcUnixLinuxlikeAndroidNapiAddon(): Boolean
 
-private val unixLinuxlikeAndroidNapiAvailable: Boolean = initUnixLinuxlikeAndroidNapiAddon()
+private val libcUnixLinuxlikeAndroidNapiAvailable: Boolean = initLibcUnixLinuxlikeAndroidNapiAddon()
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSetpwent()")
-private external fun wasmLibcUnixLinuxlikeAndroidSetpwent()
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSetpwent()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSetpwent()
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidEndpwent()")
-private external fun wasmLibcUnixLinuxlikeAndroidEndpwent()
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidEndpwent()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidEndpwent()
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetpwent()")
-private external fun wasmLibcUnixLinuxlikeAndroidGetpwent(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetpwent()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetpwent(): String
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSetgrent()")
-private external fun wasmLibcUnixLinuxlikeAndroidSetgrent()
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSetgrent()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSetgrent()
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidEndgrent()")
-private external fun wasmLibcUnixLinuxlikeAndroidEndgrent()
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidEndgrent()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidEndgrent()
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetgrent()")
-private external fun wasmLibcUnixLinuxlikeAndroidGetgrent(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetgrent()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetgrent(): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetrlimit64(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetrlimit64(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetrlimit64(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetrlimit64(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSetrlimit64(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSetrlimit64(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSetrlimit64(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSetrlimit64(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetrlimit(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetrlimit(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetrlimit(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetrlimit(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSetrlimit(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSetrlimit(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSetrlimit(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSetrlimit(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPrlimit(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidPrlimit(p0: Int, p1: Int, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPrlimit(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPrlimit(p0: Int, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPrlimit64(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidPrlimit64(p0: Int, p1: Int, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPrlimit64(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPrlimit64(p0: Int, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidStrerrorR(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidStrerrorR(p0: Int, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidStrerrorR(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidStrerrorR(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGettimeofday(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidGettimeofday(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGettimeofday(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGettimeofday(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidMlock2(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidMlock2(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidMlock2(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidMlock2(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidMadvise(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidMadvise(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidMadvise(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidMadvise(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidMsync(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidMsync(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidMsync(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidMsync(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidMprotect(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidMprotect(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidMprotect(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidMprotect(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetnameinfo(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetnameinfo(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: String, p6: Int): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetnameinfo(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetnameinfo(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: String, p6: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPreadv(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidPreadv(p0: Int, p1: String, p2: Int, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPreadv(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPreadv(p0: Int, p1: String, p2: Int, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPwritev(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidPwritev(p0: Int, p1: String, p2: Int, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPwritev(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPwritev(p0: Int, p1: String, p2: Int, p3: String): String
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidProcessVmReadv(p0, p1, p2, p3, p4, p5)")
-private external fun wasmLibcUnixLinuxlikeAndroidProcessVmReadv(p0: Int, p1: String, p2: String, p3: String, p4: String, p5: String): String
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidProcessVmReadv(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidProcessVmReadv(p0: Int, p1: String, p2: String, p3: String, p4: String, p5: String): String
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidProcessVmWritev(p0, p1, p2, p3, p4, p5)")
-private external fun wasmLibcUnixLinuxlikeAndroidProcessVmWritev(p0: Int, p1: String, p2: String, p3: String, p4: String, p5: String): String
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidProcessVmWritev(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidProcessVmWritev(p0: Int, p1: String, p2: String, p3: String, p4: String, p5: String): String
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPtrace(p0, p1, p2, p3, p4, p5)")
-private external fun wasmLibcUnixLinuxlikeAndroidPtrace(p0: Int, p1: Int, p2: String, p3: String, p4: String, p5: String): String
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPtrace(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPtrace(p0: Int, p1: Int, p2: String, p3: String, p4: String, p5: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetpriority(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetpriority(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetpriority(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetpriority(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSetpriority(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidSetpriority(p0: Int, p1: Int, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSetpriority(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSetpriority(p0: Int, p1: Int, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedCpualloc(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedCpualloc(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedCpualloc(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedCpualloc(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedCpufree(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedCpufree(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedCpufree(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedCpufree(p0: String)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedCpucount(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedCpucount(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedCpucount(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedCpucount(p0: String, p1: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedGetcpu()")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedGetcpu(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedGetcpu()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedGetcpu(): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidMallocInfo(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidMallocInfo(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidMallocInfo(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidMallocInfo(p0: Int, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidMallocUsableSize(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidMallocUsableSize(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidMallocUsableSize(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidMallocUsableSize(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidUtmpname(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidUtmpname(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidUtmpname(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidUtmpname(p0: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSetutent()")
-private external fun wasmLibcUnixLinuxlikeAndroidSetutent()
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSetutent()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSetutent()
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetutent()")
-private external fun wasmLibcUnixLinuxlikeAndroidGetutent(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetutent()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetutent(): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSeekdir(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSeekdir(p0: String, p1: String)
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSeekdir(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSeekdir(p0: String, p1: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidTelldir(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidTelldir(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidTelldir(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidTelldir(p0: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidFallocate(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidFallocate(p0: Int, p1: Int, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidFallocate(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidFallocate(p0: Int, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidFallocate64(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidFallocate64(p0: Int, p1: Int, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidFallocate64(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidFallocate64(p0: Int, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPosixFallocate(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidPosixFallocate(p0: Int, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPosixFallocate(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPosixFallocate(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPosixFallocate64(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidPosixFallocate64(p0: Int, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPosixFallocate64(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPosixFallocate64(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetxattr(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetxattr(p0: String, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetxattr(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetxattr(p0: String, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidLgetxattr(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidLgetxattr(p0: String, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidLgetxattr(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidLgetxattr(p0: String, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidFgetxattr(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidFgetxattr(p0: Int, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidFgetxattr(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidFgetxattr(p0: Int, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSetxattr(p0, p1, p2, p3, p4)")
-private external fun wasmLibcUnixLinuxlikeAndroidSetxattr(p0: String, p1: String, p2: String, p3: String, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSetxattr(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSetxattr(p0: String, p1: String, p2: String, p3: String, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidLsetxattr(p0, p1, p2, p3, p4)")
-private external fun wasmLibcUnixLinuxlikeAndroidLsetxattr(p0: String, p1: String, p2: String, p3: String, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidLsetxattr(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidLsetxattr(p0: String, p1: String, p2: String, p3: String, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidFsetxattr(p0, p1, p2, p3, p4)")
-private external fun wasmLibcUnixLinuxlikeAndroidFsetxattr(p0: Int, p1: String, p2: String, p3: String, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidFsetxattr(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidFsetxattr(p0: Int, p1: String, p2: String, p3: String, p4: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidListxattr(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidListxattr(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidListxattr(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidListxattr(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidLlistxattr(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidLlistxattr(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidLlistxattr(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidLlistxattr(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidFlistxattr(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidFlistxattr(p0: Int, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidFlistxattr(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidFlistxattr(p0: Int, p1: String, p2: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidRemovexattr(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidRemovexattr(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidRemovexattr(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidRemovexattr(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidLremovexattr(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidLremovexattr(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidLremovexattr(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidLremovexattr(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidFremovexattr(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidFremovexattr(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidFremovexattr(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidFremovexattr(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSignalfd(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidSignalfd(p0: Int, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSignalfd(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSignalfd(p0: Int, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidTimerfdCreate(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidTimerfdCreate(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidTimerfdCreate(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidTimerfdCreate(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidTimerfdGettime(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidTimerfdGettime(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidTimerfdGettime(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidTimerfdGettime(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidTimerfdSettime(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidTimerfdSettime(p0: Int, p1: Int, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidTimerfdSettime(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidTimerfdSettime(p0: Int, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidTimerCreate(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidTimerCreate(p0: Int, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidTimerCreate(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidTimerCreate(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidTimerDelete(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidTimerDelete(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidTimerDelete(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidTimerDelete(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidTimerGetoverrun(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidTimerGetoverrun(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidTimerGetoverrun(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidTimerGetoverrun(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidTimerGettime(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidTimerGettime(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidTimerGettime(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidTimerGettime(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidTimerSettime(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidTimerSettime(p0: String, p1: Int, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidTimerSettime(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidTimerSettime(p0: String, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSyscall(p0, p1, p2, p3, p4, p5)")
-private external fun wasmLibcUnixLinuxlikeAndroidSyscall(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: String): String
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSyscall(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSyscall(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedGetaffinity(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedGetaffinity(p0: Int, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedGetaffinity(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedGetaffinity(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedSetaffinity(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedSetaffinity(p0: Int, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedSetaffinity(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedSetaffinity(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidEpollCreate(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidEpollCreate(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidEpollCreate(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidEpollCreate(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidEpollCreate1(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidEpollCreate1(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidEpollCreate1(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidEpollCreate1(p0: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidEpollWait(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidEpollWait(p0: Int, p1: String, p2: Int, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidEpollWait(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidEpollWait(p0: Int, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidEpollCtl(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidEpollCtl(p0: Int, p1: Int, p2: Int, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidEpollCtl(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidEpollCtl(p0: Int, p1: Int, p2: Int, p3: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidUnshare(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidUnshare(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidUnshare(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidUnshare(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidUmount(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidUmount(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidUmount(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidUmount(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedGetPriorityMax(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedGetPriorityMax(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedGetPriorityMax(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedGetPriorityMax(p0: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidTee(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidTee(p0: Int, p1: Int, p2: String, p3: Int): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidTee(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidTee(p0: Int, p1: Int, p2: String, p3: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSettimeofday(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSettimeofday(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSettimeofday(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSettimeofday(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSplice(p0, p1, p2, p3, p4, p5)")
-private external fun wasmLibcUnixLinuxlikeAndroidSplice(p0: Int, p1: String, p2: Int, p3: String, p4: String, p5: Int): String
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSplice(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSplice(p0: Int, p1: String, p2: Int, p3: String, p4: String, p5: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidEventfd(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidEventfd(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidEventfd(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidEventfd(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidEventfdRead(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidEventfdRead(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidEventfdRead(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidEventfdRead(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidEventfdWrite(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidEventfdWrite(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidEventfdWrite(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidEventfdWrite(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedRrGetInterval(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedRrGetInterval(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedRrGetInterval(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedRrGetInterval(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSemTimedwait(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSemTimedwait(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSemTimedwait(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSemTimedwait(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSemGetvalue(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSemGetvalue(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSemGetvalue(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSemGetvalue(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedSetparam(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedSetparam(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedSetparam(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedSetparam(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSetns(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSetns(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSetns(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSetns(p0: Int, p1: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSwapoff(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSwapoff(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSwapoff(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSwapoff(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidVmsplice(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidVmsplice(p0: Int, p1: String, p2: String, p3: Int): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidVmsplice(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidVmsplice(p0: Int, p1: String, p2: String, p3: Int): String
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidMount(p0, p1, p2, p3, p4)")
-private external fun wasmLibcUnixLinuxlikeAndroidMount(p0: String, p1: String, p2: String, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidMount(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidMount(p0: String, p1: String, p2: String, p3: String, p4: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPersonality(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidPersonality(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPersonality(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPersonality(p0: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPrctl(p0, p1, p2, p3, p4, p5)")
-private external fun wasmLibcUnixLinuxlikeAndroidPrctl(p0: Int, p1: Int, p2: String, p3: String, p4: String, p5: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPrctl(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPrctl(p0: Int, p1: Int, p2: String, p3: String, p4: String, p5: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedGetparam(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedGetparam(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedGetparam(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedGetparam(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPpoll(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidPpoll(p0: String, p1: Int, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPpoll(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPpoll(p0: String, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidClone(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
-private external fun wasmLibcUnixLinuxlikeAndroidClone(p0: String, p1: String, p2: Int, p3: String, p4: Int, p5: String, p6: String, p7: String, p8: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidClone(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidClone(p0: String, p1: String, p2: Int, p3: String, p4: Int, p5: String, p6: String, p7: String, p8: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedGetscheduler(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedGetscheduler(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedGetscheduler(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedGetscheduler(p0: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidClockNanosleep(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidClockNanosleep(p0: Int, p1: Int, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidClockNanosleep(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidClockNanosleep(p0: Int, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSethostname(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSethostname(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSethostname(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSethostname(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedGetPriorityMin(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedGetPriorityMin(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedGetPriorityMin(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedGetPriorityMin(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSysinfo(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSysinfo(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSysinfo(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSysinfo(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidUmount2(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidUmount2(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidUmount2(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidUmount2(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSwapon(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSwapon(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSwapon(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSwapon(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSchedSetscheduler(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidSchedSetscheduler(p0: Int, p1: Int, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSchedSetscheduler(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSchedSetscheduler(p0: Int, p1: Int, p2: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSendfile(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidSendfile(p0: Int, p1: Int, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSendfile(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSendfile(p0: Int, p1: Int, p2: String, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSendfile64(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidSendfile64(p0: Int, p1: Int, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSendfile64(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSendfile64(p0: Int, p1: Int, p2: String, p3: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSetfsgid(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSetfsgid(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSetfsgid(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSetfsgid(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSetfsuid(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSetfsuid(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSetfsuid(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSetfsuid(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSigsuspend(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSigsuspend(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSigsuspend(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSigsuspend(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetgrgidR(p0, p1, p2, p3, p4)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetgrgidR(p0: Int, p1: String, p2: String, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetgrgidR(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetgrgidR(p0: Int, p1: String, p2: String, p3: String, p4: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSigaltstack(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSigaltstack(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSigaltstack(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSigaltstack(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSemClose(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSemClose(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSemClose(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSemClose(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetgrnamR(p0, p1, p2, p3, p4)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetgrnamR(p0: String, p1: String, p2: String, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetgrnamR(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetgrnamR(p0: String, p1: String, p2: String, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSemOpen(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmLibcUnixLinuxlikeAndroidSemOpen(p0: String, p1: Int, p2: Int, p3: String, p4: String, p5: String, p6: String): String
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSemOpen(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSemOpen(p0: String, p1: Int, p2: Int, p3: String, p4: String, p5: String, p6: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetgrnam(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetgrnam(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetgrnam(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetgrnam(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSemUnlink(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSemUnlink(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSemUnlink(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSemUnlink(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidDaemon(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidDaemon(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidDaemon(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidDaemon(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSigtimedwait(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidSigtimedwait(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSigtimedwait(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSigtimedwait(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSigwait(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSigwait(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSigwait(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSigwait(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetgrgid(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetgrgid(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetgrgid(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetgrgid(p0: Int): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetgrouplist(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetgrouplist(p0: String, p1: Int, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetgrouplist(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetgrouplist(p0: String, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidInitgroups(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidInitgroups(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidInitgroups(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidInitgroups(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPopen(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidPopen(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPopen(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPopen(p0: String, p1: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidFaccessat(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidFaccessat(p0: Int, p1: String, p2: Int, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidFaccessat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidFaccessat(p0: Int, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidErrno()")
-private external fun wasmLibcUnixLinuxlikeAndroidErrno(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidErrno()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidErrno(): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidInotifyRmWatch(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidInotifyRmWatch(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidInotifyRmWatch(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidInotifyRmWatch(p0: Int, p1: Int): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidInotifyInit()")
-private external fun wasmLibcUnixLinuxlikeAndroidInotifyInit(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidInotifyInit()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidInotifyInit(): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidInotifyInit1(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidInotifyInit1(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidInotifyInit1(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidInotifyInit1(p0: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidInotifyAddWatch(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidInotifyAddWatch(p0: Int, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidInotifyAddWatch(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidInotifyAddWatch(p0: Int, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidRegcomp(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidRegcomp(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidRegcomp(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidRegcomp(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidRegexec(p0, p1, p2, p3, p4)")
-private external fun wasmLibcUnixLinuxlikeAndroidRegexec(p0: String, p1: String, p2: String, p3: String, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidRegexec(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidRegexec(p0: String, p1: String, p2: String, p3: String, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidRegerror(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidRegerror(p0: Int, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidRegerror(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidRegerror(p0: Int, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidRegfree(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidRegfree(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidRegfree(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidRegfree(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidAndroidSetAbortMessage(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidAndroidSetAbortMessage(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidAndroidSetAbortMessage(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidAndroidSetAbortMessage(p0: String)
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGettid()")
-private external fun wasmLibcUnixLinuxlikeAndroidGettid(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGettid()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGettid(): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidTgkill(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidTgkill(p0: Int, p1: Int, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidTgkill(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidTgkill(p0: Int, p1: Int, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetauxval(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetauxval(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetauxval(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetauxval(p0: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetrandom(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetrandom(p0: String, p1: String, p2: Int): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetrandom(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetrandom(p0: String, p1: String, p2: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetentropy(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetentropy(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetentropy(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetentropy(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSystemPropertySet(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSystemPropertySet(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSystemPropertySet(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSystemPropertySet(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSystemPropertyGet(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSystemPropertyGet(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSystemPropertyGet(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSystemPropertyGet(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSystemPropertyFind(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSystemPropertyFind(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSystemPropertyFind(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSystemPropertyFind(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSystemPropertyFindNth(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSystemPropertyFindNth(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSystemPropertyFindNth(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSystemPropertyFindNth(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSystemPropertyForeach(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidSystemPropertyForeach(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSystemPropertyForeach(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSystemPropertyForeach(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidDlIteratePhdr(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidDlIteratePhdr(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidDlIteratePhdr(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidDlIteratePhdr(p0: String, p1: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidArc4random()")
-private external fun wasmLibcUnixLinuxlikeAndroidArc4random(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidArc4random()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidArc4random(): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidArc4randomUniform(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidArc4randomUniform(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidArc4randomUniform(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidArc4randomUniform(p0: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidArc4randomBuf(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidArc4randomBuf(p0: String, p1: String)
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidArc4randomBuf(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidArc4randomBuf(p0: String, p1: String)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidReallocarray(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidReallocarray(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidReallocarray(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidReallocarray(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidDirname(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidDirname(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidDirname(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidDirname(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidBasename(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidBasename(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidBasename(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidBasename(p0: String): String
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidGetoptLong(p0, p1, p2, p3, p4)")
-private external fun wasmLibcUnixLinuxlikeAndroidGetoptLong(p0: Int, p1: String, p2: String, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidGetoptLong(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidGetoptLong(p0: Int, p1: String, p2: String, p3: String, p4: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSync()")
-private external fun wasmLibcUnixLinuxlikeAndroidSync()
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSync()")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSync()
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidSyncfs(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidSyncfs(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidSyncfs(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidSyncfs(p0: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidMemmem(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidMemmem(p0: String, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidMemmem(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidMemmem(p0: String, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidFreadUnlocked(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidFreadUnlocked(p0: String, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidFreadUnlocked(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidFreadUnlocked(p0: String, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidFwriteUnlocked(p0, p1, p2, p3)")
-private external fun wasmLibcUnixLinuxlikeAndroidFwriteUnlocked(p0: String, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidFwriteUnlocked(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidFwriteUnlocked(p0: String, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidFflushUnlocked(p0)")
-private external fun wasmLibcUnixLinuxlikeAndroidFflushUnlocked(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidFflushUnlocked(p0)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidFflushUnlocked(p0: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidFgetsUnlocked(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidFgetsUnlocked(p0: String, p1: Int, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidFgetsUnlocked(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidFgetsUnlocked(p0: String, p1: Int, p2: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidKlogctl(p0, p1, p2)")
-private external fun wasmLibcUnixLinuxlikeAndroidKlogctl(p0: Int, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidKlogctl(p0, p1, p2)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidKlogctl(p0: Int, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidMemfdCreate(p0, p1)")
-private external fun wasmLibcUnixLinuxlikeAndroidMemfdCreate(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidMemfdCreate(p0, p1)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidMemfdCreate(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidRenameat2(p0, p1, p2, p3, p4)")
-private external fun wasmLibcUnixLinuxlikeAndroidRenameat2(p0: Int, p1: String, p2: Int, p3: String, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidRenameat2(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidRenameat2(p0: Int, p1: String, p2: Int, p3: String, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPreadv2(p0, p1, p2, p3, p4)")
-private external fun wasmLibcUnixLinuxlikeAndroidPreadv2(p0: Int, p1: String, p2: Int, p3: String, p4: Int): String
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPreadv2(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPreadv2(p0: Int, p1: String, p2: Int, p3: String, p4: Int): String
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcUnixLinuxlikeAndroidPwritev2(p0, p1, p2, p3, p4)")
-private external fun wasmLibcUnixLinuxlikeAndroidPwritev2(p0: Int, p1: String, p2: Int, p3: String, p4: Int): String
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcUnixLinuxlikeAndroidPwritev2(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcUnixLinuxlikeAndroidPwritev2(p0: Int, p1: String, p2: Int, p3: String, p4: Int): String
 
 public actual fun setpwent() {
-    if (unixLinuxlikeAndroidNapiAvailable) {
-        wasmLibcUnixLinuxlikeAndroidSetpwent()
+    if (libcUnixLinuxlikeAndroidNapiAvailable) {
+        wasmRustlangLibcUnixLinuxlikeAndroidSetpwent()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun endpwent() {
-    if (unixLinuxlikeAndroidNapiAvailable) {
-        wasmLibcUnixLinuxlikeAndroidEndpwent()
+    if (libcUnixLinuxlikeAndroidNapiAvailable) {
+        wasmRustlangLibcUnixLinuxlikeAndroidEndpwent()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun getpwent(): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidGetpwent().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidGetpwent().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setgrent() {
-    if (unixLinuxlikeAndroidNapiAvailable) {
-        wasmLibcUnixLinuxlikeAndroidSetgrent()
+    if (libcUnixLinuxlikeAndroidNapiAvailable) {
+        wasmRustlangLibcUnixLinuxlikeAndroidSetgrent()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun endgrent() {
-    if (unixLinuxlikeAndroidNapiAvailable) {
-        wasmLibcUnixLinuxlikeAndroidEndgrent()
+    if (libcUnixLinuxlikeAndroidNapiAvailable) {
+        wasmRustlangLibcUnixLinuxlikeAndroidEndgrent()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun getgrent(): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidGetgrent().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidGetgrent().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getrlimit64(resource: CInt, rlim: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetrlimit64(resource, rlim.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetrlimit64(resource, rlim.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setrlimit64(resource: CInt, rlim: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSetrlimit64(resource, rlim.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSetrlimit64(resource, rlim.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getrlimit(resource: CInt, rlim: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetrlimit(resource, rlim.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetrlimit(resource, rlim.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setrlimit(resource: CInt, rlim: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSetrlimit(resource, rlim.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSetrlimit(resource, rlim.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun prlimit(pid: PidT, resource: CInt, newLimit: ConstPtr, oldLimit: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPrlimit(pid, resource, newLimit.rawAddress.toString(), oldLimit.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPrlimit(pid, resource, newLimit.rawAddress.toString(), oldLimit.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun prlimit64(pid: PidT, resource: CInt, newLimit: ConstPtr, oldLimit: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPrlimit64(pid, resource, newLimit.rawAddress.toString(), oldLimit.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPrlimit64(pid, resource, newLimit.rawAddress.toString(), oldLimit.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strerrorR(errnum: CInt, buf: MutPtr, buflen: SizeT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidStrerrorR(errnum, buf.rawAddress.toString(), buflen.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidStrerrorR(errnum, buf.rawAddress.toString(), buflen.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun gettimeofday(tp: MutPtr, tz: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGettimeofday(tp.rawAddress.toString(), tz.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGettimeofday(tp.rawAddress.toString(), tz.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun mlock2(addr: ConstPtr, len: SizeT, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidMlock2(addr.rawAddress.toString(), len.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidMlock2(addr.rawAddress.toString(), len.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun madvise(addr: MutPtr, len: SizeT, advice: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidMadvise(addr.rawAddress.toString(), len.toString(), advice) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidMadvise(addr.rawAddress.toString(), len.toString(), advice) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun msync(addr: MutPtr, len: SizeT, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidMsync(addr.rawAddress.toString(), len.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidMsync(addr.rawAddress.toString(), len.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun mprotect(addr: MutPtr, len: SizeT, prot: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidMprotect(addr.rawAddress.toString(), len.toString(), prot) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidMprotect(addr.rawAddress.toString(), len.toString(), prot) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getnameinfo(sa: ConstPtr, salen: SocklenT, host: MutPtr, hostlen: SizeT, serv: MutPtr, servlen: SizeT, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetnameinfo(sa.rawAddress.toString(), salen.toInt(), host.rawAddress.toString(), hostlen.toString(), serv.rawAddress.toString(), servlen.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetnameinfo(sa.rawAddress.toString(), salen.toInt(), host.rawAddress.toString(), hostlen.toString(), serv.rawAddress.toString(), servlen.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun preadv(fd: CInt, iov: ConstPtr, count: CInt, offset: OffT): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPreadv(fd, iov.rawAddress.toString(), count, offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPreadv(fd, iov.rawAddress.toString(), count, offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pwritev(fd: CInt, iov: ConstPtr, count: CInt, offset: OffT): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPwritev(fd, iov.rawAddress.toString(), count, offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPwritev(fd, iov.rawAddress.toString(), count, offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun processVmReadv(pid: PidT, localIov: ConstPtr, localIovCount: CUlong, remoteIov: ConstPtr, remoteIovCount: CUlong, flags: CUlong): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidProcessVmReadv(pid, localIov.rawAddress.toString(), localIovCount.toString(), remoteIov.rawAddress.toString(), remoteIovCount.toString(), flags.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidProcessVmReadv(pid, localIov.rawAddress.toString(), localIovCount.toString(), remoteIov.rawAddress.toString(), remoteIovCount.toString(), flags.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun processVmWritev(pid: PidT, localIov: ConstPtr, localIovCount: CUlong, remoteIov: ConstPtr, remoteIovCount: CUlong, flags: CUlong): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidProcessVmWritev(pid, localIov.rawAddress.toString(), localIovCount.toString(), remoteIov.rawAddress.toString(), remoteIovCount.toString(), flags.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidProcessVmWritev(pid, localIov.rawAddress.toString(), localIovCount.toString(), remoteIov.rawAddress.toString(), remoteIovCount.toString(), flags.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ptrace(request: CInt, vararg variadicArgs: Long): CLong =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPtrace(request, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPtrace(request, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getpriority(which: CInt, who: IdT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetpriority(which, who.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetpriority(which, who.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setpriority(which: CInt, who: IdT, prio: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSetpriority(which, who.toInt(), prio) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSetpriority(which, who.toInt(), prio) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedCpualloc(count: SizeT): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidSchedCpualloc(count.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidSchedCpualloc(count.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedCpufree(set: MutPtr) {
-    if (unixLinuxlikeAndroidNapiAvailable) {
-        wasmLibcUnixLinuxlikeAndroidSchedCpufree(set.rawAddress.toString())
+    if (libcUnixLinuxlikeAndroidNapiAvailable) {
+        wasmRustlangLibcUnixLinuxlikeAndroidSchedCpufree(set.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun schedCpucount(setsize: SizeT, set: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedCpucount(setsize.toString(), set.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSchedCpucount(setsize.toString(), set.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedGetcpu(): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedGetcpu() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSchedGetcpu() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun mallinfo(): Mallinfo =
+public actual fun mallinfo(): io.github.kotlinmania.rustlang.unix.linuxlike.android.Mallinfo =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun mallocInfo(options: CInt, stream: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidMallocInfo(options, stream.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidMallocInfo(options, stream.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun mallocUsableSize(ptr: ConstPtr): SizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidMallocUsableSize(ptr.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidMallocUsableSize(ptr.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun utmpname(name: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidUtmpname(name.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidUtmpname(name.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setutent() {
-    if (unixLinuxlikeAndroidNapiAvailable) {
-        wasmLibcUnixLinuxlikeAndroidSetutent()
+    if (libcUnixLinuxlikeAndroidNapiAvailable) {
+        wasmRustlangLibcUnixLinuxlikeAndroidSetutent()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun getutent(): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidGetutent().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidGetutent().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun seekdir(dirp: MutPtr, loc: CLong) {
-    if (unixLinuxlikeAndroidNapiAvailable) {
-        wasmLibcUnixLinuxlikeAndroidSeekdir(dirp.rawAddress.toString(), loc.toString())
+    if (libcUnixLinuxlikeAndroidNapiAvailable) {
+        wasmRustlangLibcUnixLinuxlikeAndroidSeekdir(dirp.rawAddress.toString(), loc.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun telldir(dirp: MutPtr): CLong =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTelldir(dirp.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidTelldir(dirp.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fallocate(fd: CInt, mode: CInt, offset: OffT, len: OffT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidFallocate(fd, mode, offset.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidFallocate(fd, mode, offset.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fallocate64(fd: CInt, mode: CInt, offset: Off64T, len: Off64T): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidFallocate64(fd, mode, offset.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidFallocate64(fd, mode, offset.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun posixFallocate(fd: CInt, offset: OffT, len: OffT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPosixFallocate(fd, offset.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPosixFallocate(fd, offset.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun posixFallocate64(fd: CInt, offset: Off64T, len: Off64T): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPosixFallocate64(fd, offset.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPosixFallocate64(fd, offset.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getxattr(path: ConstPtr, name: ConstPtr, value: MutPtr, size: SizeT): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetxattr(path.rawAddress.toString(), name.rawAddress.toString(), value.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetxattr(path.rawAddress.toString(), name.rawAddress.toString(), value.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lgetxattr(path: ConstPtr, name: ConstPtr, value: MutPtr, size: SizeT): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidLgetxattr(path.rawAddress.toString(), name.rawAddress.toString(), value.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidLgetxattr(path.rawAddress.toString(), name.rawAddress.toString(), value.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fgetxattr(filedes: CInt, name: ConstPtr, value: MutPtr, size: SizeT): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidFgetxattr(filedes, name.rawAddress.toString(), value.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidFgetxattr(filedes, name.rawAddress.toString(), value.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setxattr(path: ConstPtr, name: ConstPtr, value: ConstPtr, size: SizeT, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSetxattr(path.rawAddress.toString(), name.rawAddress.toString(), value.rawAddress.toString(), size.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSetxattr(path.rawAddress.toString(), name.rawAddress.toString(), value.rawAddress.toString(), size.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lsetxattr(path: ConstPtr, name: ConstPtr, value: ConstPtr, size: SizeT, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidLsetxattr(path.rawAddress.toString(), name.rawAddress.toString(), value.rawAddress.toString(), size.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidLsetxattr(path.rawAddress.toString(), name.rawAddress.toString(), value.rawAddress.toString(), size.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fsetxattr(filedes: CInt, name: ConstPtr, value: ConstPtr, size: SizeT, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidFsetxattr(filedes, name.rawAddress.toString(), value.rawAddress.toString(), size.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidFsetxattr(filedes, name.rawAddress.toString(), value.rawAddress.toString(), size.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun listxattr(path: ConstPtr, list: MutPtr, size: SizeT): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidListxattr(path.rawAddress.toString(), list.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidListxattr(path.rawAddress.toString(), list.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun llistxattr(path: ConstPtr, list: MutPtr, size: SizeT): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidLlistxattr(path.rawAddress.toString(), list.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidLlistxattr(path.rawAddress.toString(), list.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun flistxattr(filedes: CInt, list: MutPtr, size: SizeT): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidFlistxattr(filedes, list.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidFlistxattr(filedes, list.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun removexattr(path: ConstPtr, name: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidRemovexattr(path.rawAddress.toString(), name.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidRemovexattr(path.rawAddress.toString(), name.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lremovexattr(path: ConstPtr, name: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidLremovexattr(path.rawAddress.toString(), name.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidLremovexattr(path.rawAddress.toString(), name.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fremovexattr(filedes: CInt, name: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidFremovexattr(filedes, name.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidFremovexattr(filedes, name.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun signalfd(fd: CInt, mask: ConstPtr, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSignalfd(fd, mask.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSignalfd(fd, mask.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerfdCreate(clock: ClockidT, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerfdCreate(clock.toInt(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidTimerfdCreate(clock.toInt(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerfdGettime(fd: CInt, currentValue: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerfdGettime(fd, currentValue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidTimerfdGettime(fd, currentValue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerfdSettime(fd: CInt, flags: CInt, newValue: ConstPtr, oldValue: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerfdSettime(fd, flags, newValue.rawAddress.toString(), oldValue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidTimerfdSettime(fd, flags, newValue.rawAddress.toString(), oldValue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerCreate(clockid: ClockidT, sevp: MutPtr, timerid: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerCreate(clockid.toInt(), sevp.rawAddress.toString(), timerid.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidTimerCreate(clockid.toInt(), sevp.rawAddress.toString(), timerid.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerDelete(timerid: TimerT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerDelete(timerid.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidTimerDelete(timerid.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerGetoverrun(timerid: TimerT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerGetoverrun(timerid.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidTimerGetoverrun(timerid.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerGettime(timerid: TimerT, currValue: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerGettime(timerid.rawAddress.toString(), currValue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidTimerGettime(timerid.rawAddress.toString(), currValue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerSettime(timerid: TimerT, flags: CInt, newValue: ConstPtr, oldValue: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerSettime(timerid.rawAddress.toString(), flags, newValue.rawAddress.toString(), oldValue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidTimerSettime(timerid.rawAddress.toString(), flags, newValue.rawAddress.toString(), oldValue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun syscall(num: CLong, vararg variadicArgs: Long): CLong =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSyscall(num.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSyscall(num.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedGetaffinity(pid: PidT, cpusetsize: SizeT, cpuset: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedGetaffinity(pid, cpusetsize.toString(), cpuset.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSchedGetaffinity(pid, cpusetsize.toString(), cpuset.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedSetaffinity(pid: PidT, cpusetsize: SizeT, cpuset: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedSetaffinity(pid, cpusetsize.toString(), cpuset.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSchedSetaffinity(pid, cpusetsize.toString(), cpuset.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun epollCreate(size: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidEpollCreate(size) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidEpollCreate(size) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun epollCreate1(flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidEpollCreate1(flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidEpollCreate1(flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun epollWait(epfd: CInt, events: MutPtr, maxevents: CInt, timeout: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidEpollWait(epfd, events.rawAddress.toString(), maxevents, timeout) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidEpollWait(epfd, events.rawAddress.toString(), maxevents, timeout) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun epollCtl(epfd: CInt, op: CInt, fd: CInt, event: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidEpollCtl(epfd, op, fd, event.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidEpollCtl(epfd, op, fd, event.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun unshare(flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidUnshare(flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidUnshare(flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun umount(target: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidUmount(target.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidUmount(target.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedGetPriorityMax(policy: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedGetPriorityMax(policy) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSchedGetPriorityMax(policy) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tee(fdIn: CInt, fdOut: CInt, len: SizeT, flags: CUint): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTee(fdIn, fdOut, len.toString(), flags.toInt()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidTee(fdIn, fdOut, len.toString(), flags.toInt()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun settimeofday(tv: ConstPtr, tz: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSettimeofday(tv.rawAddress.toString(), tz.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSettimeofday(tv.rawAddress.toString(), tz.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun splice(fdIn: CInt, offIn: MutPtr, fdOut: CInt, offOut: MutPtr, len: SizeT, flags: CUint): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSplice(fdIn, offIn.rawAddress.toString(), fdOut, offOut.rawAddress.toString(), len.toString(), flags.toInt()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSplice(fdIn, offIn.rawAddress.toString(), fdOut, offOut.rawAddress.toString(), len.toString(), flags.toInt()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun eventfd(initval: CUint, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidEventfd(initval.toInt(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidEventfd(initval.toInt(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun eventfdRead(fd: CInt, value: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidEventfdRead(fd, value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidEventfdRead(fd, value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun eventfdWrite(fd: CInt, value: EventfdT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidEventfdWrite(fd, value.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidEventfdWrite(fd, value.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedRrGetInterval(pid: PidT, tp: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedRrGetInterval(pid, tp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSchedRrGetInterval(pid, tp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun semTimedwait(sem: MutPtr, abstime: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSemTimedwait(sem.rawAddress.toString(), abstime.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSemTimedwait(sem.rawAddress.toString(), abstime.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun semGetvalue(sem: MutPtr, sval: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSemGetvalue(sem.rawAddress.toString(), sval.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSemGetvalue(sem.rawAddress.toString(), sval.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedSetparam(pid: PidT, param: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedSetparam(pid, param.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSchedSetparam(pid, param.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setns(fd: CInt, nstype: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSetns(fd, nstype) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSetns(fd, nstype) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun swapoff(puath: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSwapoff(puath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSwapoff(puath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vmsplice(fd: CInt, iov: ConstPtr, nrSegs: SizeT, flags: CUint): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidVmsplice(fd, iov.rawAddress.toString(), nrSegs.toString(), flags.toInt()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidVmsplice(fd, iov.rawAddress.toString(), nrSegs.toString(), flags.toInt()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun mount(src: ConstPtr, target: ConstPtr, fstype: ConstPtr, flags: CUlong, data: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidMount(src.rawAddress.toString(), target.rawAddress.toString(), fstype.rawAddress.toString(), flags.toString(), data.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidMount(src.rawAddress.toString(), target.rawAddress.toString(), fstype.rawAddress.toString(), flags.toString(), data.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun personality(persona: CUint): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPersonality(persona.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPersonality(persona.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun prctl(option: CInt, vararg variadicArgs: Long): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPrctl(option, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPrctl(option, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedGetparam(pid: PidT, param: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedGetparam(pid, param.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSchedGetparam(pid, param.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ppoll(fds: MutPtr, nfds: NfdsT, timeout: ConstPtr, sigmask: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPpoll(fds.rawAddress.toString(), nfds.toInt(), timeout.rawAddress.toString(), sigmask.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPpoll(fds.rawAddress.toString(), nfds.toInt(), timeout.rawAddress.toString(), sigmask.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun clone(cb: CloneCbCallback, childStack: MutPtr, flags: CInt, arg: MutPtr, vararg variadicArgs: Long): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidClone(0L.toString(), childStack.rawAddress.toString(), flags, arg.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidClone(0L.toString(), childStack.rawAddress.toString(), flags, arg.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedGetscheduler(pid: PidT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedGetscheduler(pid) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSchedGetscheduler(pid) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun clockNanosleep(clkId: ClockidT, flags: CInt, rqtp: ConstPtr, rmtp: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidClockNanosleep(clkId.toInt(), flags, rqtp.rawAddress.toString(), rmtp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidClockNanosleep(clkId.toInt(), flags, rqtp.rawAddress.toString(), rmtp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sethostname(name: ConstPtr, len: SizeT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSethostname(name.rawAddress.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSethostname(name.rawAddress.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedGetPriorityMin(policy: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedGetPriorityMin(policy) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSchedGetPriorityMin(policy) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sysinfo(info: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSysinfo(info.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSysinfo(info.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun umount2(target: ConstPtr, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidUmount2(target.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidUmount2(target.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun swapon(path: ConstPtr, swapflags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSwapon(path.rawAddress.toString(), swapflags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSwapon(path.rawAddress.toString(), swapflags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedSetscheduler(pid: PidT, policy: CInt, param: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedSetscheduler(pid, policy, param.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSchedSetscheduler(pid, policy, param.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sendfile(outFd: CInt, inFd: CInt, offset: MutPtr, count: SizeT): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSendfile(outFd, inFd, offset.rawAddress.toString(), count.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSendfile(outFd, inFd, offset.rawAddress.toString(), count.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sendfile64(outFd: CInt, inFd: CInt, offset: MutPtr, count: SizeT): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSendfile64(outFd, inFd, offset.rawAddress.toString(), count.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSendfile64(outFd, inFd, offset.rawAddress.toString(), count.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setfsgid(gid: GidT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSetfsgid(gid) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSetfsgid(gid) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setfsuid(uid: UidT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSetfsuid(uid) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSetfsuid(uid) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sigsuspend(mask: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSigsuspend(mask.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSigsuspend(mask.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getgrgidR(gid: GidT, grp: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetgrgidR(gid, grp.rawAddress.toString(), buf.rawAddress.toString(), buflen.toString(), result.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetgrgidR(gid, grp.rawAddress.toString(), buf.rawAddress.toString(), buflen.toString(), result.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sigaltstack(ss: ConstPtr, oss: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSigaltstack(ss.rawAddress.toString(), oss.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSigaltstack(ss.rawAddress.toString(), oss.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun semClose(sem: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSemClose(sem.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSemClose(sem.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getgrnamR(name: ConstPtr, grp: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetgrnamR(name.rawAddress.toString(), grp.rawAddress.toString(), buf.rawAddress.toString(), buflen.toString(), result.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetgrnamR(name.rawAddress.toString(), grp.rawAddress.toString(), buf.rawAddress.toString(), buflen.toString(), result.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun semOpen(name: ConstPtr, oflag: CInt, vararg variadicArgs: Long): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidSemOpen(name.rawAddress.toString(), oflag, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidSemOpen(name.rawAddress.toString(), oflag, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getgrnam(name: ConstPtr): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidGetgrnam(name.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidGetgrnam(name.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun semUnlink(name: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSemUnlink(name.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSemUnlink(name.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun daemon(nochdir: CInt, noclose: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidDaemon(nochdir, noclose) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidDaemon(nochdir, noclose) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sigtimedwait(set: ConstPtr, info: MutPtr, timeout: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSigtimedwait(set.rawAddress.toString(), info.rawAddress.toString(), timeout.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSigtimedwait(set.rawAddress.toString(), info.rawAddress.toString(), timeout.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sigwait(set: ConstPtr, sig: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSigwait(set.rawAddress.toString(), sig.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSigwait(set.rawAddress.toString(), sig.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getgrgid(gid: GidT): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidGetgrgid(gid).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidGetgrgid(gid).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getgrouplist(user: ConstPtr, group: GidT, groups: MutPtr, ngroups: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetgrouplist(user.rawAddress.toString(), group, groups.rawAddress.toString(), ngroups.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetgrouplist(user.rawAddress.toString(), group, groups.rawAddress.toString(), ngroups.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun initgroups(user: ConstPtr, group: GidT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidInitgroups(user.rawAddress.toString(), group) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidInitgroups(user.rawAddress.toString(), group) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun popen(command: ConstPtr, mode: ConstPtr): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidPopen(command.rawAddress.toString(), mode.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidPopen(command.rawAddress.toString(), mode.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun faccessat(dirfd: CInt, pathname: ConstPtr, mode: CInt, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidFaccessat(dirfd, pathname.rawAddress.toString(), mode, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidFaccessat(dirfd, pathname.rawAddress.toString(), mode, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun errno(): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidErrno().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidErrno().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun inotifyRmWatch(fd: CInt, wd: UInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidInotifyRmWatch(fd, wd.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidInotifyRmWatch(fd, wd.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun inotifyInit(): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidInotifyInit() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidInotifyInit() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun inotifyInit1(flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidInotifyInit1(flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidInotifyInit1(flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun inotifyAddWatch(fd: CInt, path: ConstPtr, mask: UInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidInotifyAddWatch(fd, path.rawAddress.toString(), mask.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidInotifyAddWatch(fd, path.rawAddress.toString(), mask.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun regcomp(preg: MutPtr, pattern: ConstPtr, cflags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidRegcomp(preg.rawAddress.toString(), pattern.rawAddress.toString(), cflags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidRegcomp(preg.rawAddress.toString(), pattern.rawAddress.toString(), cflags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun regexec(preg: ConstPtr, input: ConstPtr, nmatch: SizeT, pmatch: MutPtr, eflags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidRegexec(preg.rawAddress.toString(), input.rawAddress.toString(), nmatch.toString(), pmatch.rawAddress.toString(), eflags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidRegexec(preg.rawAddress.toString(), input.rawAddress.toString(), nmatch.toString(), pmatch.rawAddress.toString(), eflags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun regerror(errcode: CInt, preg: ConstPtr, errbuf: MutPtr, errbufSize: SizeT): SizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidRegerror(errcode, preg.rawAddress.toString(), errbuf.rawAddress.toString(), errbufSize.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidRegerror(errcode, preg.rawAddress.toString(), errbuf.rawAddress.toString(), errbufSize.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun regfree(preg: MutPtr) {
-    if (unixLinuxlikeAndroidNapiAvailable) {
-        wasmLibcUnixLinuxlikeAndroidRegfree(preg.rawAddress.toString())
+    if (libcUnixLinuxlikeAndroidNapiAvailable) {
+        wasmRustlangLibcUnixLinuxlikeAndroidRegfree(preg.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun androidSetAbortMessage(msg: ConstPtr) {
-    if (unixLinuxlikeAndroidNapiAvailable) {
-        wasmLibcUnixLinuxlikeAndroidAndroidSetAbortMessage(msg.rawAddress.toString())
+    if (libcUnixLinuxlikeAndroidNapiAvailable) {
+        wasmRustlangLibcUnixLinuxlikeAndroidAndroidSetAbortMessage(msg.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun gettid(): PidT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGettid() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGettid() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tgkill(tgid: PidT, tid: PidT, sig: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTgkill(tgid, tid, sig) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidTgkill(tgid, tid, sig) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getauxval(type: CUlong): CUlong =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetauxval(type.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetauxval(type.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getrandom(buf: MutPtr, buflen: SizeT, flags: CUint): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetrandom(buf.rawAddress.toString(), buflen.toString(), flags.toInt()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetrandom(buf.rawAddress.toString(), buflen.toString(), flags.toInt()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getentropy(buf: MutPtr, buflen: SizeT): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetentropy(buf.rawAddress.toString(), buflen.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetentropy(buf.rawAddress.toString(), buflen.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun systemPropertySet(name: ConstPtr, value: ConstPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSystemPropertySet(name.rawAddress.toString(), value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSystemPropertySet(name.rawAddress.toString(), value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun systemPropertyGet(name: ConstPtr, value: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSystemPropertyGet(name.rawAddress.toString(), value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSystemPropertyGet(name.rawAddress.toString(), value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun systemPropertyFind(name: ConstPtr): ConstPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) ConstPtr(wasmLibcUnixLinuxlikeAndroidSystemPropertyFind(name.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) ConstPtr(wasmRustlangLibcUnixLinuxlikeAndroidSystemPropertyFind(name.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun systemPropertyFindNth(n: CUint): ConstPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) ConstPtr(wasmLibcUnixLinuxlikeAndroidSystemPropertyFindNth(n.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) ConstPtr(wasmRustlangLibcUnixLinuxlikeAndroidSystemPropertyFindNth(n.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun systemPropertyForeach(callback: SystemPropertyForeachCallbackCallback, cookie: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSystemPropertyForeach(0L.toString(), cookie.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSystemPropertyForeach(0L.toString(), cookie.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun dlIteratePhdr(callback: DlIteratePhdrCallbackCallback?, data: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidDlIteratePhdr(0L.toString(), data.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidDlIteratePhdr(0L.toString(), data.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun arc4random(): UInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidArc4random().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidArc4random().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun arc4randomUniform(upperBound: UInt): UInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidArc4randomUniform(upperBound.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidArc4randomUniform(upperBound.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun arc4randomBuf(buf: MutPtr, n: SizeT) {
-    if (unixLinuxlikeAndroidNapiAvailable) {
-        wasmLibcUnixLinuxlikeAndroidArc4randomBuf(buf.rawAddress.toString(), n.toString())
+    if (libcUnixLinuxlikeAndroidNapiAvailable) {
+        wasmRustlangLibcUnixLinuxlikeAndroidArc4randomBuf(buf.rawAddress.toString(), n.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun reallocarray(ptr: MutPtr, nmemb: SizeT, size: SizeT): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidReallocarray(ptr.rawAddress.toString(), nmemb.toString(), size.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidReallocarray(ptr.rawAddress.toString(), nmemb.toString(), size.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun dirname(path: ConstPtr): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidDirname(path.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidDirname(path.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun basename(path: ConstPtr): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidBasename(path.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidBasename(path.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getoptLong(argc: CInt, argv: ConstPtr, optstring: ConstPtr, longopts: ConstPtr, longindex: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidGetoptLong(argc, argv.rawAddress.toString(), optstring.rawAddress.toString(), longopts.rawAddress.toString(), longindex.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidGetoptLong(argc, argv.rawAddress.toString(), optstring.rawAddress.toString(), longopts.rawAddress.toString(), longindex.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sync() {
-    if (unixLinuxlikeAndroidNapiAvailable) {
-        wasmLibcUnixLinuxlikeAndroidSync()
+    if (libcUnixLinuxlikeAndroidNapiAvailable) {
+        wasmRustlangLibcUnixLinuxlikeAndroidSync()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun syncfs(fd: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSyncfs(fd) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidSyncfs(fd) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun memmem(haystack: ConstPtr, haystacklen: SizeT, needle: ConstPtr, needlelen: SizeT): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidMemmem(haystack.rawAddress.toString(), haystacklen.toString(), needle.rawAddress.toString(), needlelen.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidMemmem(haystack.rawAddress.toString(), haystacklen.toString(), needle.rawAddress.toString(), needlelen.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun freadUnlocked(buf: MutPtr, size: SizeT, nobj: SizeT, stream: MutPtr): SizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidFreadUnlocked(buf.rawAddress.toString(), size.toString(), nobj.toString(), stream.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidFreadUnlocked(buf.rawAddress.toString(), size.toString(), nobj.toString(), stream.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fwriteUnlocked(buf: ConstPtr, size: SizeT, nobj: SizeT, stream: MutPtr): SizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidFwriteUnlocked(buf.rawAddress.toString(), size.toString(), nobj.toString(), stream.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidFwriteUnlocked(buf.rawAddress.toString(), size.toString(), nobj.toString(), stream.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fflushUnlocked(stream: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidFflushUnlocked(stream.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidFflushUnlocked(stream.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fgetsUnlocked(buf: MutPtr, size: CInt, stream: MutPtr): MutPtr =
-    if (unixLinuxlikeAndroidNapiAvailable) MutPtr(wasmLibcUnixLinuxlikeAndroidFgetsUnlocked(buf.rawAddress.toString(), size, stream.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) MutPtr(wasmRustlangLibcUnixLinuxlikeAndroidFgetsUnlocked(buf.rawAddress.toString(), size, stream.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun klogctl(syslogType: CInt, bufp: MutPtr, len: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidKlogctl(syslogType, bufp.rawAddress.toString(), len) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidKlogctl(syslogType, bufp.rawAddress.toString(), len) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun memfdCreate(name: ConstPtr, flags: CUint): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidMemfdCreate(name.rawAddress.toString(), flags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidMemfdCreate(name.rawAddress.toString(), flags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun renameat2(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CUint): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidRenameat2(olddirfd, oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString(), flags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidRenameat2(olddirfd, oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString(), flags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun preadv2(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT, flags: CInt): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPreadv2(fd, iov.rawAddress.toString(), iovcnt, offset.toString(), flags).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPreadv2(fd, iov.rawAddress.toString(), iovcnt, offset.toString(), flags).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pwritev2(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT, flags: CInt): SsizeT =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidPwritev2(fd, iov.rawAddress.toString(), iovcnt, offset.toString(), flags).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcUnixLinuxlikeAndroidNapiAvailable) wasmRustlangLibcUnixLinuxlikeAndroidPwritev2(fd, iov.rawAddress.toString(), iovcnt, offset.toString(), flags).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")

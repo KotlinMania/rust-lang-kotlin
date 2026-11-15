@@ -1,9 +1,6 @@
 // port-lint: source io/error.rs
 package io.github.kotlinmania.rustlang.core.io.error
 
-import io.github.kotlinmania.rustlang.core.fmt.builders.fromFn
-import io.github.kotlinmania.rustlang.core.hint.mustUse
-import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind.*
 import io.github.kotlinmania.rustlang.core.io.error.osfunctions.decodeErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.osfunctions.formatOsError
@@ -13,9 +10,12 @@ import io.github.kotlinmania.rustlang.core.io.error.repr.Repr
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.fmt.fmt
+import io.github.kotlinmania.rustlang.hint.mustUse
+import io.github.kotlinmania.rustlang.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.mem.forget
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public fun interface OsFunctionsFormatOsErrorCallback {
@@ -119,7 +119,7 @@ public class DebugTuple(
  * }
  * ```
  */
-public typealias Result<T> = io.github.kotlinmania.rustlang.core.result.Result<T, Error>
+public typealias Result<T> = Result<T, Error>
 
 // Note(#74481): Hard-links required to link from `core` to `std`
 
@@ -138,7 +138,7 @@ public open class Error(
 ) {
     public open fun fmt(f: StringBuilder): RustResult<Unit, Unit> = run { f.append((this.repr).toString()); RustResult.Ok(Unit) }
 
-    public open fun intoCustomOwner(): io.github.kotlinmania.rustlang.core.result.Result<CustomOwner, Error> =
+    public open fun intoCustomOwner(): Result<CustomOwner, Error> =
         if (when (val matchVal = this.repr.data()) {
             is ErrorData.Custom -> true
             else -> false
@@ -431,19 +431,19 @@ unreachableUnchecked()
         /**
          * Common errors constants for use in std
          */
-        public val INVALID_UTF8: Error = mustUse(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "stream did not contain valid UTF-8")))
+        public val INVALID_UTF8: Error = mustUse(io.github.kotlinmania.rustlang.io.error.Error.fromStaticMessage(io.github.kotlinmania.rustlang.io.error.SimpleMessage(kind = ErrorKind.InvalidData, message = "stream did not contain valid UTF-8")))
 
-        public val READ_EXACT_EOF: Error = mustUse(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.UnexpectedEof, message = "failed to fill whole buffer")))
+        public val READ_EXACT_EOF: Error = mustUse(io.github.kotlinmania.rustlang.io.error.Error.fromStaticMessage(io.github.kotlinmania.rustlang.io.error.SimpleMessage(kind = ErrorKind.UnexpectedEof, message = "failed to fill whole buffer")))
 
-        public val UNKNOWN_THREAD_COUNT: Error = mustUse(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.NotFound, message = "the number of hardware threads is not known for the target platform")))
+        public val UNKNOWN_THREAD_COUNT: Error = mustUse(io.github.kotlinmania.rustlang.io.error.Error.fromStaticMessage(io.github.kotlinmania.rustlang.io.error.SimpleMessage(kind = ErrorKind.NotFound, message = "the number of hardware threads is not known for the target platform")))
 
-        public val UNSUPPORTED_PLATFORM: Error = mustUse(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Unsupported, message = "operation not supported on this platform")))
+        public val UNSUPPORTED_PLATFORM: Error = mustUse(io.github.kotlinmania.rustlang.io.error.Error.fromStaticMessage(io.github.kotlinmania.rustlang.io.error.SimpleMessage(kind = ErrorKind.Unsupported, message = "operation not supported on this platform")))
 
-        public val WRITE_ALL_EOF: Error = mustUse(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.WriteZero, message = "failed to write whole buffer")))
+        public val WRITE_ALL_EOF: Error = mustUse(io.github.kotlinmania.rustlang.io.error.Error.fromStaticMessage(io.github.kotlinmania.rustlang.io.error.SimpleMessage(kind = ErrorKind.WriteZero, message = "failed to write whole buffer")))
 
-        public val ZERO_TIMEOUT: Error = mustUse(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "cannot set a 0 duration timeout")))
+        public val ZERO_TIMEOUT: Error = mustUse(io.github.kotlinmania.rustlang.io.error.Error.fromStaticMessage(io.github.kotlinmania.rustlang.io.error.SimpleMessage(kind = ErrorKind.InvalidInput, message = "cannot set a 0 duration timeout")))
 
-        public val NO_ADDRESSES: Error = mustUse(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "could not resolve to any addresses")))
+        public val NO_ADDRESSES: Error = mustUse(io.github.kotlinmania.rustlang.io.error.Error.fromStaticMessage(io.github.kotlinmania.rustlang.io.error.SimpleMessage(kind = ErrorKind.InvalidInput, message = "could not resolve to any addresses")))
 
         /**
          * Intended for use for errors not exposed to the user, where allocating onto

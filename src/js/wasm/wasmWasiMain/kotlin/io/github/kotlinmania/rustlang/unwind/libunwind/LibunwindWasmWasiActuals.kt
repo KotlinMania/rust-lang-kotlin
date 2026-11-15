@@ -4,45 +4,45 @@ package io.github.kotlinmania.rustlang.unwind.libunwind
 
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unwind.types.UnwindReasonCode
-import io.github.kotlinmania.rustlang.unwind.types.UnwindWord
+import io.github.kotlinmania.rustlang.types.UnwindReasonCode
+import io.github.kotlinmania.rustlang.types.UnwindWord
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun unwindResume(exception: MutPtr): Nothing =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindResume")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindUnwindResume")
 
 public actual fun unwindDeleteException(exception: MutPtr) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindDeleteException")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindUnwindDeleteException")
 }
 
 public actual fun unwindGetLanguageSpecificData(ctx: MutPtr): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindGetLanguageSpecificData")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindUnwindGetLanguageSpecificData")
 
 public actual fun unwindGetRegionStart(ctx: MutPtr): UnwindPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindGetRegionStart")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindUnwindGetRegionStart")
 
 public actual fun unwindGetTextRelBase(ctx: MutPtr): UnwindPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindGetTextRelBase")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindUnwindGetTextRelBase")
 
 public actual fun unwindGetDataRelBase(ctx: MutPtr): UnwindPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindGetDataRelBase")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindUnwindGetDataRelBase")
 
 public actual fun unwindGetGr(ctx: MutPtr, regIndex: CInt): UnwindWord =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindGetGr")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindUnwindGetGr")
 
 public actual fun unwindSetGr(ctx: MutPtr, regIndex: CInt, value: UnwindWord) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindSetGr")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindUnwindSetGr")
 }
 
 public actual fun unwindSetIp(ctx: MutPtr, value: UnwindWord) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindSetIp")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindUnwindSetIp")
 }
 
 public actual fun unwindGetIpinfo(ctx: MutPtr, ipBeforeInsn: MutPtr): UnwindWord =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindGetIpinfo")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindUnwindGetIpinfo")
 
 public actual fun unwindRaiseException(exception: MutPtr): UnwindReasonCode =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindRaiseException")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindUnwindRaiseException")
 
 public actual fun gccSpecificHandler(exceptionRecord: MutPtr, establisherFrame: Lpvoid, contextRecord: MutPtr, dispatcherContext: MutPtr, personality: PersonalityFn): ExceptionDisposition =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindGccSpecificHandler")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangLibunwindGccSpecificHandler")

@@ -3,12 +3,11 @@ package io.github.kotlinmania.rustlang.alloc.collections.btree.split
 
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.ForceResult.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Internal
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf
 import io.github.kotlinmania.rustlang.alloc.collections.btree.search.SearchResult.*
+import io.github.kotlinmania.rustlang.collections.btree.node.Internal
+import io.github.kotlinmania.rustlang.collections.btree.node.Leaf
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
-import io.github.kotlinmania.rustlang.core.mem.dropguard.DropGuard
 
 /**
  * Calculates the length of both trees that result from splitting up

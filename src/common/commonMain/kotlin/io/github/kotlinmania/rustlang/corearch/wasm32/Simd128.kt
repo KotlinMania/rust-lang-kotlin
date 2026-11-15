@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
+import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
@@ -12,29 +13,11 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.simd.F32x4
-import io.github.kotlinmania.rustlang.corearch.simd.F64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I16x16
-import io.github.kotlinmania.rustlang.corearch.simd.I16x4
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x2
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I32x8
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.I8x8
-import io.github.kotlinmania.rustlang.corearch.simd.Simd
-import io.github.kotlinmania.rustlang.corearch.simd.U16x4
-import io.github.kotlinmania.rustlang.corearch.simd.U16x8
-import io.github.kotlinmania.rustlang.corearch.simd.U32x2
-import io.github.kotlinmania.rustlang.corearch.simd.U32x4
-import io.github.kotlinmania.rustlang.corearch.simd.U64x2
-import io.github.kotlinmania.rustlang.corearch.simd.U8x16
-import io.github.kotlinmania.rustlang.corearch.simd.U8x8
-import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
+import io.github.kotlinmania.rustlang.simd.Simd
+import io.github.kotlinmania.rustlang.simd.debugSimdFinish
 
 // This module implements the [WebAssembly `SIMD128` ISA].
 //
@@ -354,7 +337,7 @@ public fun v128Load8Splat(m: ConstPtr): V128 = u8x16Splat((PrimitiveLayouts.U8).
  * alignment requirement on this pointer since this intrinsic performs a
  * 1-aligned load.
  */
-public fun v128Load16Splat(m: ConstPtr): V128 = u16x8Splat(readUnaligned(m, typeLayoutT = PrimitiveLayouts.U16))
+public fun v128Load16Splat(m: ConstPtr): V128 = u16x8Splat(ptr.readUnaligned(m, typeLayoutT = PrimitiveLayouts.U16))
 
 /**
  * Load a single element and splat to all lanes of a v128 vector.
@@ -370,7 +353,7 @@ public fun v128Load16Splat(m: ConstPtr): V128 = u16x8Splat(readUnaligned(m, type
  * alignment requirement on this pointer since this intrinsic performs a
  * 1-aligned load.
  */
-public fun v128Load32Splat(m: ConstPtr): V128 = u32x4Splat(readUnaligned(m, typeLayoutT = PrimitiveLayouts.U32))
+public fun v128Load32Splat(m: ConstPtr): V128 = u32x4Splat(ptr.readUnaligned(m, typeLayoutT = PrimitiveLayouts.U32))
 
 /**
  * Load a single element and splat to all lanes of a v128 vector.
@@ -386,7 +369,7 @@ public fun v128Load32Splat(m: ConstPtr): V128 = u32x4Splat(readUnaligned(m, type
  * alignment requirement on this pointer since this intrinsic performs a
  * 1-aligned load.
  */
-public fun v128Load64Splat(m: ConstPtr): V128 = u64x2Splat(readUnaligned(m, typeLayoutT = PrimitiveLayouts.U64))
+public fun v128Load64Splat(m: ConstPtr): V128 = u64x2Splat(ptr.readUnaligned(m, typeLayoutT = PrimitiveLayouts.U64))
 
 /**
  * Load a 32-bit element into the low bits of the vector and sets all other
@@ -402,7 +385,7 @@ public fun v128Load64Splat(m: ConstPtr): V128 = u64x2Splat(readUnaligned(m, type
  * alignment requirement on this pointer since this intrinsic performs a
  * 1-aligned load.
  */
-public fun v128Load32Zero(m: ConstPtr): V128 = u32x4(readUnaligned(m, typeLayoutT = PrimitiveLayouts.U32), 0u, 0u, 0u)
+public fun v128Load32Zero(m: ConstPtr): V128 = u32x4(ptr.readUnaligned(m, typeLayoutT = PrimitiveLayouts.U32), 0u, 0u, 0u)
 
 /**
  * Load a 64-bit element into the low bits of the vector and sets all other
@@ -418,7 +401,7 @@ public fun v128Load32Zero(m: ConstPtr): V128 = u32x4(readUnaligned(m, typeLayout
  * alignment requirement on this pointer since this intrinsic performs a
  * 1-aligned load.
  */
-public fun v128Load64Zero(m: ConstPtr): V128 = u64x2ReplaceLane(u64x2(0uL, 0uL), readUnaligned(m, typeLayoutT = PrimitiveLayouts.U64), 0)
+public fun v128Load64Zero(m: ConstPtr): V128 = u64x2ReplaceLane(u64x2(0uL, 0uL), ptr.readUnaligned(m, typeLayoutT = PrimitiveLayouts.U64), 0)
 
 /**
  * Stores a `v128` vector to the given heap address.
@@ -476,7 +459,7 @@ public fun v128Load8Lane(v: V128, m: ConstPtr, l: Int): V128 = u8x16ReplaceLane(
  * alignment requirement on this pointer since this intrinsic performs a
  * 1-aligned load.
  */
-public fun v128Load16Lane(v: V128, m: ConstPtr, l: Int): V128 = u16x8ReplaceLane(v, readUnaligned(m, typeLayoutT = PrimitiveLayouts.U16), l)
+public fun v128Load16Lane(v: V128, m: ConstPtr, l: Int): V128 = u16x8ReplaceLane(v, ptr.readUnaligned(m, typeLayoutT = PrimitiveLayouts.U16), l)
 
 /**
  * Loads a 32-bit value from `m` and sets lane `L` of `v` to that value.
@@ -491,7 +474,7 @@ public fun v128Load16Lane(v: V128, m: ConstPtr, l: Int): V128 = u16x8ReplaceLane
  * alignment requirement on this pointer since this intrinsic performs a
  * 1-aligned load.
  */
-public fun v128Load32Lane(v: V128, m: ConstPtr, l: Int): V128 = u32x4ReplaceLane(v, readUnaligned(m, typeLayoutT = PrimitiveLayouts.U32), l)
+public fun v128Load32Lane(v: V128, m: ConstPtr, l: Int): V128 = u32x4ReplaceLane(v, ptr.readUnaligned(m, typeLayoutT = PrimitiveLayouts.U32), l)
 
 /**
  * Loads a 64-bit value from `m` and sets lane `L` of `v` to that value.
@@ -506,7 +489,7 @@ public fun v128Load32Lane(v: V128, m: ConstPtr, l: Int): V128 = u32x4ReplaceLane
  * alignment requirement on this pointer since this intrinsic performs a
  * 1-aligned load.
  */
-public fun v128Load64Lane(v: V128, m: ConstPtr, l: Int): V128 = u64x2ReplaceLane(v, readUnaligned(m, typeLayoutT = PrimitiveLayouts.U64), l)
+public fun v128Load64Lane(v: V128, m: ConstPtr, l: Int): V128 = u64x2ReplaceLane(v, ptr.readUnaligned(m, typeLayoutT = PrimitiveLayouts.U64), l)
 
 /**
  * Stores the 8-bit value from lane `L` of `v` into `m`
@@ -540,7 +523,7 @@ public fun v128Store8Lane(v: V128, m: MutPtr, l: Int) {
  * 1-aligned store.
  */
 public fun v128Store16Lane(v: V128, m: MutPtr, l: Int) {
-    writeUnaligned(m, u16x8ExtractLane(v, l), typeLayoutT = PrimitiveLayouts.U16)
+    ptr.writeUnaligned(m, u16x8ExtractLane(v, l), typeLayoutT = PrimitiveLayouts.U16)
 }
 
 /**
@@ -557,7 +540,7 @@ public fun v128Store16Lane(v: V128, m: MutPtr, l: Int) {
  * 1-aligned store.
  */
 public fun v128Store32Lane(v: V128, m: MutPtr, l: Int) {
-    writeUnaligned(m, u32x4ExtractLane(v, l), typeLayoutT = PrimitiveLayouts.U32)
+    ptr.writeUnaligned(m, u32x4ExtractLane(v, l), typeLayoutT = PrimitiveLayouts.U32)
 }
 
 /**
@@ -574,7 +557,7 @@ public fun v128Store32Lane(v: V128, m: MutPtr, l: Int) {
  * 1-aligned store.
  */
 public fun v128Store64Lane(v: V128, m: MutPtr, l: Int) {
-    writeUnaligned(m, u64x2ExtractLane(v, l), typeLayoutT = PrimitiveLayouts.U64)
+    ptr.writeUnaligned(m, u64x2ExtractLane(v, l), typeLayoutT = PrimitiveLayouts.U64)
 }
 
 /**
@@ -583,7 +566,7 @@ public fun v128Store64Lane(v: V128, m: MutPtr, l: Int) {
  * If possible this will generate a `v128.const` instruction, otherwise it may
  * be lowered to a sequence of instructions to materialize the vector value.
  */
-public fun i8x16(a0: Byte, a1: Byte, a2: Byte, a3: Byte, a4: Byte, a5: Byte, a6: Byte, a7: Byte, a8: Byte, a9: Byte, a10: Byte, a11: Byte, a12: Byte, a13: Byte, a14: Byte, a15: Byte): V128 = I8x16.new(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15).v128()
+public fun i8x16(a0: Byte, a1: Byte, a2: Byte, a3: Byte, a4: Byte, a5: Byte, a6: Byte, a7: Byte, a8: Byte, a9: Byte, a10: Byte, a11: Byte, a12: Byte, a13: Byte, a14: Byte, a15: Byte): V128 = Simd.i8x16.new(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15).v128()
 
 /**
  * Materializes a SIMD value from the provided operands.
@@ -591,7 +574,7 @@ public fun i8x16(a0: Byte, a1: Byte, a2: Byte, a3: Byte, a4: Byte, a5: Byte, a6:
  * If possible this will generate a `v128.const` instruction, otherwise it may
  * be lowered to a sequence of instructions to materialize the vector value.
  */
-public fun u8x16(a0: UByte, a1: UByte, a2: UByte, a3: UByte, a4: UByte, a5: UByte, a6: UByte, a7: UByte, a8: UByte, a9: UByte, a10: UByte, a11: UByte, a12: UByte, a13: UByte, a14: UByte, a15: UByte): V128 = U8x16.new(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15).v128()
+public fun u8x16(a0: UByte, a1: UByte, a2: UByte, a3: UByte, a4: UByte, a5: UByte, a6: UByte, a7: UByte, a8: UByte, a9: UByte, a10: UByte, a11: UByte, a12: UByte, a13: UByte, a14: UByte, a15: UByte): V128 = Simd.u8x16.new(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15).v128()
 
 /**
  * Materializes a SIMD value from the provided operands.
@@ -599,7 +582,7 @@ public fun u8x16(a0: UByte, a1: UByte, a2: UByte, a3: UByte, a4: UByte, a5: UByt
  * If possible this will generate a `v128.const` instruction, otherwise it may
  * be lowered to a sequence of instructions to materialize the vector value.
  */
-public fun i16x8(a0: Short, a1: Short, a2: Short, a3: Short, a4: Short, a5: Short, a6: Short, a7: Short): V128 = I16x8.new(a0, a1, a2, a3, a4, a5, a6, a7).v128()
+public fun i16x8(a0: Short, a1: Short, a2: Short, a3: Short, a4: Short, a5: Short, a6: Short, a7: Short): V128 = Simd.i16x8.new(a0, a1, a2, a3, a4, a5, a6, a7).v128()
 
 /**
  * Materializes a SIMD value from the provided operands.
@@ -607,7 +590,7 @@ public fun i16x8(a0: Short, a1: Short, a2: Short, a3: Short, a4: Short, a5: Shor
  * If possible this will generate a `v128.const` instruction, otherwise it may
  * be lowered to a sequence of instructions to materialize the vector value.
  */
-public fun u16x8(a0: UShort, a1: UShort, a2: UShort, a3: UShort, a4: UShort, a5: UShort, a6: UShort, a7: UShort): V128 = U16x8.new(a0, a1, a2, a3, a4, a5, a6, a7).v128()
+public fun u16x8(a0: UShort, a1: UShort, a2: UShort, a3: UShort, a4: UShort, a5: UShort, a6: UShort, a7: UShort): V128 = Simd.u16x8.new(a0, a1, a2, a3, a4, a5, a6, a7).v128()
 
 /**
  * Materializes a SIMD value from the provided operands.
@@ -615,7 +598,7 @@ public fun u16x8(a0: UShort, a1: UShort, a2: UShort, a3: UShort, a4: UShort, a5:
  * If possible this will generate a `v128.const` instruction, otherwise it may
  * be lowered to a sequence of instructions to materialize the vector value.
  */
-public fun i32x4(a0: Int, a1: Int, a2: Int, a3: Int): V128 = I32x4.new(a0, a1, a2, a3).v128()
+public fun i32x4(a0: Int, a1: Int, a2: Int, a3: Int): V128 = Simd.i32x4.new(a0, a1, a2, a3).v128()
 
 /**
  * Materializes a SIMD value from the provided operands.
@@ -623,7 +606,7 @@ public fun i32x4(a0: Int, a1: Int, a2: Int, a3: Int): V128 = I32x4.new(a0, a1, a
  * If possible this will generate a `v128.const` instruction, otherwise it may
  * be lowered to a sequence of instructions to materialize the vector value.
  */
-public fun u32x4(a0: UInt, a1: UInt, a2: UInt, a3: UInt): V128 = U32x4.new(a0, a1, a2, a3).v128()
+public fun u32x4(a0: UInt, a1: UInt, a2: UInt, a3: UInt): V128 = Simd.u32x4.new(a0, a1, a2, a3).v128()
 
 /**
  * Materializes a SIMD value from the provided operands.
@@ -631,7 +614,7 @@ public fun u32x4(a0: UInt, a1: UInt, a2: UInt, a3: UInt): V128 = U32x4.new(a0, a
  * If possible this will generate a `v128.const` instruction, otherwise it may
  * be lowered to a sequence of instructions to materialize the vector value.
  */
-public fun i64x2(a0: Long, a1: Long): V128 = I64x2.new(a0, a1).v128()
+public fun i64x2(a0: Long, a1: Long): V128 = Simd.i64x2.new(a0, a1).v128()
 
 /**
  * Materializes a SIMD value from the provided operands.
@@ -639,7 +622,7 @@ public fun i64x2(a0: Long, a1: Long): V128 = I64x2.new(a0, a1).v128()
  * If possible this will generate a `v128.const` instruction, otherwise it may
  * be lowered to a sequence of instructions to materialize the vector value.
  */
-public fun u64x2(a0: ULong, a1: ULong): V128 = U64x2.new(a0, a1).v128()
+public fun u64x2(a0: ULong, a1: ULong): V128 = Simd.u64x2.new(a0, a1).v128()
 
 /**
  * Materializes a SIMD value from the provided operands.
@@ -647,7 +630,7 @@ public fun u64x2(a0: ULong, a1: ULong): V128 = U64x2.new(a0, a1).v128()
  * If possible this will generate a `v128.const` instruction, otherwise it may
  * be lowered to a sequence of instructions to materialize the vector value.
  */
-public fun f32x4(a0: Float, a1: Float, a2: Float, a3: Float): V128 = F32x4.new(a0, a1, a2, a3).v128()
+public fun f32x4(a0: Float, a1: Float, a2: Float, a3: Float): V128 = Simd.f32x4.new(a0, a1, a2, a3).v128()
 
 /**
  * Materializes a SIMD value from the provided operands.
@@ -655,7 +638,7 @@ public fun f32x4(a0: Float, a1: Float, a2: Float, a3: Float): V128 = F32x4.new(a
  * If possible this will generate a `v128.const` instruction, otherwise it may
  * be lowered to a sequence of instructions to materialize the vector value.
  */
-public fun f64x2(a0: Double, a1: Double): V128 = F64x2.new(a0, a1).v128()
+public fun f64x2(a0: Double, a1: Double): V128 = Simd.f64x2.new(a0, a1).v128()
 
 /**
  * Returns a new vector with lanes selected from the lanes of the two input
@@ -1064,35 +1047,35 @@ public fun i8x16Swizzle(a: V128, s: V128): V128 = llvmSwizzle(a.asI8x16(), s.asI
  *
  * Constructs a vector with `x` replicated to all 16 lanes.
  */
-public fun i8x16Splat(a: Byte): V128 = I8x16.splat(a).v128()
+public fun i8x16Splat(a: Byte): V128 = Simd.i8x16.splat(a).v128()
 
 /**
  * Creates a vector with identical lanes.
  *
  * Constructs a vector with `x` replicated to all 16 lanes.
  */
-public fun u8x16Splat(a: UByte): V128 = U8x16.splat(a).v128()
+public fun u8x16Splat(a: UByte): V128 = Simd.u8x16.splat(a).v128()
 
 /**
  * Creates a vector with identical lanes.
  *
  * Construct a vector with `x` replicated to all 8 lanes.
  */
-public fun i16x8Splat(a: Short): V128 = I16x8.splat(a).v128()
+public fun i16x8Splat(a: Short): V128 = Simd.i16x8.splat(a).v128()
 
 /**
  * Creates a vector with identical lanes.
  *
  * Construct a vector with `x` replicated to all 8 lanes.
  */
-public fun u16x8Splat(a: UShort): V128 = U16x8.splat(a).v128()
+public fun u16x8Splat(a: UShort): V128 = Simd.u16x8.splat(a).v128()
 
 /**
  * Creates a vector with identical lanes.
  *
  * Constructs a vector with `x` replicated to all 4 lanes.
  */
-public fun i32x4Splat(a: Int): V128 = I32x4.splat(a).v128()
+public fun i32x4Splat(a: Int): V128 = Simd.i32x4.splat(a).v128()
 
 /**
  * Creates a vector with identical lanes.
@@ -1106,7 +1089,7 @@ public fun u32x4Splat(a: UInt): V128 = i32x4Splat(a.toInt())
  *
  * Construct a vector with `x` replicated to all 2 lanes.
  */
-public fun i64x2Splat(a: Long): V128 = I64x2.splat(a).v128()
+public fun i64x2Splat(a: Long): V128 = Simd.i64x2.splat(a).v128()
 
 /**
  * Creates a vector with identical lanes.
@@ -1120,14 +1103,14 @@ public fun u64x2Splat(a: ULong): V128 = i64x2Splat(a.toLong())
  *
  * Constructs a vector with `x` replicated to all 4 lanes.
  */
-public fun f32x4Splat(a: Float): V128 = F32x4.splat(a).v128()
+public fun f32x4Splat(a: Float): V128 = Simd.f32x4.splat(a).v128()
 
 /**
  * Creates a vector with identical lanes.
  *
  * Constructs a vector with `x` replicated to all 2 lanes.
  */
-public fun f64x2Splat(a: Double): V128 = F64x2.splat(a).v128()
+public fun f64x2Splat(a: Double): V128 = Simd.f64x2.splat(a).v128()
 
 /**
  * Compares two 128-bit vectors as if they were two vectors of 16 eight-bit
@@ -1564,7 +1547,7 @@ public fun f64x2Ge(a: V128, b: V128): V128 = run { val _simdArg0 = a.asF64x2(); 
 /**
  * Flips each bit of the 128-bit input vector.
  */
-public fun v128Not(a: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = I64x2.new(0.inv(), 0.inv()); _simdArg0 }.v128()
+public fun v128Not(a: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = Simd.i64x2.new(0.inv(), 0.inv()); _simdArg0 }.v128()
 
 /**
  * Performs a bitwise and of the two input 128-bit vectors, returning the
@@ -1577,7 +1560,7 @@ public fun v128And(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); 
  *
  * This operation is equivalent to `v128.and(a, v128.not(b))`
  */
-public fun v128Andnot(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = run { val _simdArg0 = b.asI64x2(); val _simdArg1 = I64x2.new(-1, -1); _simdArg0 }; _simdArg0 }.v128()
+public fun v128Andnot(a: V128, b: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = run { val _simdArg0 = b.asI64x2(); val _simdArg1 = Simd.i64x2.new(-1, -1); _simdArg0 }; _simdArg0 }.v128()
 
 /**
  * Performs a bitwise or of the two input 128-bit vectors, returning the
@@ -1607,14 +1590,14 @@ public fun v128AnyTrue(a: V128): Boolean = llvmAnyTrueI8x16(a.asI8x16()) != 0
 public fun i8x16Abs(a: V128): V128 =
     run {
         val a1 = a.asI8x16()
-        val zero = I8x16.ZERO
+        val zero = Simd.i8x16.ZERO
         run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = zero; val _simdArg1 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }.v128()
     }
 
 /**
  * Negates a 128-bit vectors interpreted as sixteen 8-bit signed integers
  */
-public fun i8x16Neg(a: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = I8x16.splat(-1); _simdArg0 }.v128()
+public fun i8x16Neg(a: V128): V128 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = Simd.i8x16.splat(-1); _simdArg0 }.v128()
 
 /**
  * Count the number of bits set to one within each lane.
@@ -1693,7 +1676,7 @@ public fun i8x16Shl(a: V128, amt: UInt): V128 {
     // Basically the extra mask here is required as a bridge from the documented
     // semantics through LLVM back out to WebAssembly. Both ends have the
     // documented semantics, and the mask is required by LLVM in the middle.
-    return run { val _simdArg0 = a.asI8x16(); val _simdArg1 = I8x16.splat((amt and 0x7u).toByte()); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asI8x16(); val _simdArg1 = Simd.i8x16.splat((amt and 0x7u).toByte()); _simdArg0 }.v128()
 }
 
 /**
@@ -1706,7 +1689,7 @@ public fun i8x16Shl(a: V128, amt: UInt): V128 {
 public fun i8x16Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI8x16(); val _simdArg1 = I8x16.splat((amt and 0x7u).toByte()); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asI8x16(); val _simdArg1 = Simd.i8x16.splat((amt and 0x7u).toByte()); _simdArg0 }.v128()
 }
 
 /**
@@ -1719,7 +1702,7 @@ public fun i8x16Shr(a: V128, amt: UInt): V128 {
 public fun u8x16Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asU8x16(); val _simdArg1 = U8x16.splat((amt and 0x7u).toUByte()); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asU8x16(); val _simdArg1 = Simd.u8x16.splat((amt and 0x7u).toUByte()); _simdArg0 }.v128()
 }
 
 /**
@@ -1818,14 +1801,14 @@ public fun i16x8ExtaddPairwiseU8x16(a: V128): V128 = llvmI16x8ExtaddPairwiseI8x1
  */
 public fun i16x8Abs(a: V128): V128 {
     val a1 = a.asI16x8()
-    val zero = I16x8.ZERO
+    val zero = Simd.i16x8.ZERO
     return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = zero; val _simdArg1 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }.v128()
 }
 
 /**
  * Negates a 128-bit vectors interpreted as eight 16-bit signed integers
  */
-public fun i16x8Neg(a: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = I16x8.splat(-1); _simdArg0 }.v128()
+public fun i16x8Neg(a: V128): V128 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = Simd.i16x8.splat(-1); _simdArg0 }.v128()
 
 /**
  * Lane-wise saturating rounding multiplication in Q15 format.
@@ -1912,7 +1895,7 @@ public fun i16x8ExtendHighU8x16(a: V128): V128 = run { val _simdArg0 = run { val
 public fun i16x8Shl(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI16x8(); val _simdArg1 = I16x8.splat((amt and 0xfu).toShort()); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asI16x8(); val _simdArg1 = Simd.i16x8.splat((amt and 0xfu).toShort()); _simdArg0 }.v128()
 }
 
 /**
@@ -1925,7 +1908,7 @@ public fun i16x8Shl(a: V128, amt: UInt): V128 {
 public fun i16x8Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI16x8(); val _simdArg1 = I16x8.splat((amt and 0xfu).toShort()); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asI16x8(); val _simdArg1 = Simd.i16x8.splat((amt and 0xfu).toShort()); _simdArg0 }.v128()
 }
 
 /**
@@ -1938,7 +1921,7 @@ public fun i16x8Shr(a: V128, amt: UInt): V128 {
 public fun u16x8Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asU16x8(); val _simdArg1 = U16x8.splat((amt and 0xfu).toUShort()); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asU16x8(); val _simdArg1 = Simd.u16x8.splat((amt and 0xfu).toUShort()); _simdArg0 }.v128()
 }
 
 /**
@@ -2095,14 +2078,14 @@ public fun i32x4ExtaddPairwiseU16x8(a: V128): V128 = llvmI32x4ExtaddPairwiseI16x
  */
 public fun i32x4Abs(a: V128): V128 {
     val a1 = a.asI32x4()
-    val zero = I32x4.ZERO
+    val zero = Simd.i32x4.ZERO
     return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = zero; val _simdArg1 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }.v128()
 }
 
 /**
  * Negates a 128-bit vectors interpreted as four 32-bit signed integers
  */
-public fun i32x4Neg(a: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = I32x4.splat(-1); _simdArg0 }.v128()
+public fun i32x4Neg(a: V128): V128 = run { val _simdArg0 = a.asI32x4(); val _simdArg1 = Simd.i32x4.splat(-1); _simdArg0 }.v128()
 
 /**
  * Returns true if all lanes are non-zero, false otherwise.
@@ -2148,7 +2131,7 @@ public fun i32x4ExtendHighU16x8(a: V128): V128 = run { val _simdArg0 = run { val
 public fun i32x4Shl(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI32x4(); val _simdArg1 = I32x4.splat((amt and 0x1fu).toInt()); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asI32x4(); val _simdArg1 = Simd.i32x4.splat((amt and 0x1fu).toInt()); _simdArg0 }.v128()
 }
 
 /**
@@ -2161,7 +2144,7 @@ public fun i32x4Shl(a: V128, amt: UInt): V128 {
 public fun i32x4Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI32x4(); val _simdArg1 = I32x4.splat((amt and 0x1fu).toInt()); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asI32x4(); val _simdArg1 = Simd.i32x4.splat((amt and 0x1fu).toInt()); _simdArg0 }.v128()
 }
 
 /**
@@ -2174,7 +2157,7 @@ public fun i32x4Shr(a: V128, amt: UInt): V128 {
 public fun u32x4Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asU32x4(); val _simdArg1 = U32x4.splat(amt and 0x1fu); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asU32x4(); val _simdArg1 = Simd.u32x4.splat(amt and 0x1fu); _simdArg0 }.v128()
 }
 
 /**
@@ -2296,14 +2279,14 @@ public fun i32x4ExtmulHighU16x8(a: V128, b: V128): V128 =
  */
 public fun i64x2Abs(a: V128): V128 {
     val a1 = a.asI64x2()
-    val zero = I64x2.ZERO
+    val zero = Simd.i64x2.ZERO
     return run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = zero; val _simdArg1 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }.v128()
 }
 
 /**
  * Negates a 128-bit vectors interpreted as two 64-bit signed integers
  */
-public fun i64x2Neg(a: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = I64x2.splat(-1); _simdArg0 }.v128()
+public fun i64x2Neg(a: V128): V128 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = Simd.i64x2.splat(-1); _simdArg0 }.v128()
 
 /**
  * Returns true if all lanes are non-zero, false otherwise.
@@ -2349,7 +2332,7 @@ public fun i64x2ExtendHighU32x4(a: V128): V128 = run { val _simdArg0 = run { val
 public fun i64x2Shl(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI64x2(); val _simdArg1 = I64x2.splat((amt and 0x3fu).toLong()); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asI64x2(); val _simdArg1 = Simd.i64x2.splat((amt and 0x3fu).toLong()); _simdArg0 }.v128()
 }
 
 /**
@@ -2362,7 +2345,7 @@ public fun i64x2Shl(a: V128, amt: UInt): V128 {
 public fun i64x2Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asI64x2(); val _simdArg1 = I64x2.splat((amt and 0x3fu).toLong()); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asI64x2(); val _simdArg1 = Simd.i64x2.splat((amt and 0x3fu).toLong()); _simdArg0 }.v128()
 }
 
 /**
@@ -2375,7 +2358,7 @@ public fun i64x2Shr(a: V128, amt: UInt): V128 {
 public fun u64x2Shr(a: V128, amt: UInt): V128 {
     // SAFETY: see i8x16Shl for more documentation why this is unchecked,
     // essentially the shift amount must be valid hence the mask.
-    return run { val _simdArg0 = a.asU64x2(); val _simdArg1 = U64x2.splat((amt and 0x3fu).toULong()); _simdArg0 }.v128()
+    return run { val _simdArg0 = a.asU64x2(); val _simdArg1 = Simd.u64x2.splat((amt and 0x3fu).toULong()); _simdArg0 }.v128()
 }
 
 /**
@@ -2658,7 +2641,7 @@ public fun f32x4ConvertU32x4(a: V128): V128 = run { val _simdArg0 = a.asU32x4();
  * to the nearest representable integer value.
  */
 public fun i32x4TruncSatF64x2Zero(a: V128): V128 {
-    val ret: I32x4 = run { val _simdArg0 = run { val _simdArg0 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); val res = (ObjectSlotLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); res } }; val _simdArg1 = I32x2.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+    val ret: I32x4 = run { val _simdArg0 = run { val _simdArg0 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); val res = (ObjectSlotLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); res } }; val _simdArg1 = Simd.i32x2.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
     return ret.v128()
 }
 
@@ -2673,7 +2656,7 @@ public fun i32x4TruncSatF64x2Zero(a: V128): V128 {
  * to the nearest representable integer value.
  */
 public fun u32x4TruncSatF64x2Zero(a: V128): V128 {
-    val ret: U32x4 = run { val _simdArg0 = run { val _simdArg0 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); val res = (ObjectSlotLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); res } }; val _simdArg1 = U32x2.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+    val ret: U32x4 = run { val _simdArg0 = run { val _simdArg0 = a.asF64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); val res = (ObjectSlotLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U32x2>()).alignBytes)); res } }; val _simdArg1 = Simd.u32x2.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
     return ret.v128()
 }
 
@@ -2694,7 +2677,7 @@ public fun f64x2ConvertLowU32x4(a: V128): V128 = run { val _simdArg0 = run { val
  * single-precision floating point number, it is rounded to the nearest-even
  * representable number.
  */
-public fun f32x4DemoteF64x2Zero(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = F64x2.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<F32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<F32x4>()).alignBytes)); val res = (ObjectSlotLayout<F32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<F32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<F32x4>()).alignBytes)); res } }.v128()
+public fun f32x4DemoteF64x2Zero(a: V128): V128 = run { val _simdArg0 = run { val _simdArg0 = a.asF64x2(); val _simdArg1 = Simd.f64x2.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<F32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<F32x4>()).alignBytes)); val res = (ObjectSlotLayout<F32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<F32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<F32x4>()).alignBytes)); res } }.v128()
 
 /**
  * Conversion of the two lower single-precision floating point lanes to the two

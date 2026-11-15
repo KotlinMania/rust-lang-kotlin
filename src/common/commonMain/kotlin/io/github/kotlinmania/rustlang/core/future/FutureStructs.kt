@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.core.future
 
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 /**
  * This type is needed because:

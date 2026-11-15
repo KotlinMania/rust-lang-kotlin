@@ -1,14 +1,14 @@
 // port-lint: source new/linux_uapi/linux/can/j1939.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.j1939
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.CAN_J1939
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.SOL_CAN_BASE
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.can.CAN_J1939
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.can.SOL_CAN_BASE
 
 // `linux / can / j1939.h`
 

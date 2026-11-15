@@ -1,8 +1,8 @@
 package io.github.kotlinmania.rustlang.libc.windows
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 
 public val INT_MIN: CInt = Int.MIN_VALUE
 
@@ -277,15 +277,15 @@ public val NSIG: CInt = 23
 
 public val SIG_ERR: CInt = -1
 
-public val SIG_DFL: io.github.kotlinmania.rustlang.libc.SighandlerT = 0uL
+public val SIG_DFL: io.github.kotlinmania.rustlang.windows.SighandlerT = 0uL
 
-public val SIG_IGN: io.github.kotlinmania.rustlang.libc.SighandlerT = 1uL
+public val SIG_IGN: io.github.kotlinmania.rustlang.windows.SighandlerT = 1uL
 
-public val SIG_GET: io.github.kotlinmania.rustlang.libc.SighandlerT = 2uL
+public val SIG_GET: io.github.kotlinmania.rustlang.windows.SighandlerT = 2uL
 
-public val SIG_SGE: io.github.kotlinmania.rustlang.libc.SighandlerT = 3uL
+public val SIG_SGE: io.github.kotlinmania.rustlang.windows.SighandlerT = 3uL
 
-public val SIG_ACK: io.github.kotlinmania.rustlang.libc.SighandlerT = 4uL
+public val SIG_ACK: io.github.kotlinmania.rustlang.windows.SighandlerT = 4uL
 
 public val L_TMPNAM: CUint = 260u
 

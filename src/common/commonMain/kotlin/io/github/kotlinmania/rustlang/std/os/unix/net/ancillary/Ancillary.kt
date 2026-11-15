@@ -28,9 +28,9 @@ import io.github.kotlinmania.rustlang.libc.CMSG_LEN
 import io.github.kotlinmania.rustlang.libc.CMSG_NXTHDR
 import io.github.kotlinmania.rustlang.libc.CMSG_SPACE
 import io.github.kotlinmania.rustlang.libc.SCM_CREDS2
-import io.github.kotlinmania.rustlang.libc.helenos.PidT
 import io.github.kotlinmania.rustlang.libc.memcpy
 import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.UidT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.Cmsghdr
 import io.github.kotlinmania.rustlang.libc.unix.bsd.Msghdr
@@ -39,12 +39,12 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_CTRUNC
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_TRUNC
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Ucred
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
+import io.github.kotlinmania.rustlang.os.fd.RawFd
+import io.github.kotlinmania.rustlang.os.unix.net.SockaddrUn
+import io.github.kotlinmania.rustlang.os.unix.net.SocketAddr
+import io.github.kotlinmania.rustlang.path.Path
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn
+import io.github.kotlinmania.rustlang.sys.net.connection.wasip1.Socket
 
 public fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error> {
     return run {
@@ -61,7 +61,7 @@ public fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoSli
         if (msg.msgControllen > 0) {
             msg.msgControl = ancillary.buffer.asMutPtr()
         }
-        val count = when (val tryResult = socket.recvMsg(RustMutableReference(localStorageL42C8.asMutPtr(), localStorageL42C8.layout))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val count = when (val tryResult = socket.recvMsg(RustMutableReference(localStorageL42C8.asMutPtr(), localStorageL42C8.layout))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         ancillary.length = msg.msgControllen.toInt()
         ancillary.truncated = (msg.msgFlags and MSG_CTRUNC == MSG_CTRUNC).toUByte()
         val truncated = msg.msgFlags and MSG_TRUNC == MSG_TRUNC
@@ -75,7 +75,7 @@ public fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<I
         var (msgName, msgNamelen) =
             if (path != null) {
                 val path1 = path
-                when (val tryResult = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn(path1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = io.github.kotlinmania.rustlang.os.unix.net.SockaddrUn(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             } else {
                 Pair(MaybeUninit.zeroed(ObjectSlotLayout<Result<Int, Error>>()).assumeInit(), 0)
             }
@@ -128,7 +128,7 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
         if (newLength1 > buffer.size) {
             return false
         }
-        ((buffer).slice((length1).read() until newLength1)).fill(0)
+        ((buffer).subList((length1).read(), newLength1)).fill(0)
         (length1).write(newLength1)
         val msg: Msghdr  = Msghdr()
         msg.msgControl = buffer.asMutPtr()
@@ -174,7 +174,7 @@ public open class AncillaryDataIter<T>(
         if (sizeOf<T>(typeLayoutT = typeLayoutT) <= this.data.size) {
             run {
                 val unit = readUnaligned(this.data.asPtr())
-                this.data = ((this.data).slice(sizeOf<T>(typeLayoutT = typeLayoutT) until this.data.size))
+                this.data = ((this.data).subList(sizeOf<T>(typeLayoutT = typeLayoutT), (this.data).size))
                 unit
             }
         } else {
@@ -427,7 +427,7 @@ public open class Messages(
                         CMSG_NXTHDR(msg, current)
                     }
                 }
-            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             // Most operating systems, but not Linux or emscripten, return the previous pointer
             // when its length is zero. Therefore, check if the previous pointer is the same as
             // the current one.
@@ -501,7 +501,7 @@ public open class SocketAncillary(
     /**
      * Returns the iterator of the control messages.
      */
-    public open fun messages(): Messages = Messages(buffer = ((this.buffer).slice(0 until this.length)), current = null)
+    public open fun messages(): Messages = Messages(buffer = ((this.buffer).subList(0, this.length)), current = null)
 
     /**
      * Is `true` if during a recv operation the ancillary was truncated.

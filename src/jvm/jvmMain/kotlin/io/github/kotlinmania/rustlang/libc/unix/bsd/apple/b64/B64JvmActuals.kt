@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.libc.*
 
-private object UnixBsdAppleB64JniBridge {
+private object LibcUnixBsdAppleB64JniBridge {
     init {
         loadNativeLibrary()
     }
@@ -43,8 +43,8 @@ private object UnixBsdAppleB64JniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = UnixBsdAppleB64JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = LibcUnixBsdAppleB64JniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -61,8 +61,8 @@ private object UnixBsdAppleB64JniBridge {
     }
 
     @JvmStatic
-    external fun libcUnixBsdAppleB64Exchangedata(path1: Long, path2: Long, options: Int): Int
+    external fun rustlangLibcUnixBsdAppleB64Exchangedata(path1: Long, path2: Long, options: Int): Int
 }
 
 public actual fun exchangedata(path1: ConstPtr, path2: ConstPtr, options: CUint): CInt =
-    UnixBsdAppleB64JniBridge.libcUnixBsdAppleB64Exchangedata(path1.rawAddress, path2.rawAddress, options.toInt())
+    LibcUnixBsdAppleB64JniBridge.rustlangLibcUnixBsdAppleB64Exchangedata(path1.rawAddress, path2.rawAddress, options.toInt())

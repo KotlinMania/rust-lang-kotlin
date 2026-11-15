@@ -1,7 +1,7 @@
 // port-lint: source pin/unsafe_pinned.rs
 package io.github.kotlinmania.rustlang.core.pin.unsafepinned
 
-import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell

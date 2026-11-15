@@ -1,7 +1,6 @@
 // port-lint: source mem/impls.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.mem.impls
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.coldPath
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
@@ -13,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.support.coldPath
 
 public val WORD_SIZE: Int = sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)
 

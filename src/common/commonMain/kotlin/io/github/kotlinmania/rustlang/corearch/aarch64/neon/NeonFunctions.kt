@@ -1,16 +1,18 @@
 package io.github.kotlinmania.rustlang.corearch.aarch64.neon
 
+import io.github.kotlinmania.rustlang.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.aarch64.neon.vld1F64
+import io.github.kotlinmania.rustlang.armshared.neon.Int64x1T
+import io.github.kotlinmania.rustlang.armshared.neon.P64
+import io.github.kotlinmania.rustlang.armshared.neon.Poly64x1T
+import io.github.kotlinmania.rustlang.armshared.neon.Poly64x2T
+import io.github.kotlinmania.rustlang.armshared.neon.Uint64x1T
+import io.github.kotlinmania.rustlang.armshared.neon.Uint64x2T
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int64x1T
-import io.github.kotlinmania.rustlang.corearch.armshared.neon.P64
-import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly64x1T
-import io.github.kotlinmania.rustlang.corearch.armshared.neon.Poly64x2T
-import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint64x1T
-import io.github.kotlinmania.rustlang.corearch.armshared.neon.Uint64x2T
-import io.github.kotlinmania.rustlang.corearch.simd.Simd
+import io.github.kotlinmania.rustlang.simd.Simd
 
 /**
  * Load multiple single-element structures to one, two, three, or four registers

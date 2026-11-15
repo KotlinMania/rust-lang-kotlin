@@ -1,8 +1,8 @@
 // port-lint: source sys/platform_version/darwin/public_extern.rs
 package io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.publicextern
 
-import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.currentVersion
-import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.packI32OsVersion
+import io.github.kotlinmania.rustlang.sys.platformversion.darwin.currentVersion
+import io.github.kotlinmania.rustlang.sys.platformversion.darwin.packI32OsVersion
 
 // # Runtime version checking ABI for other compilers.
 //

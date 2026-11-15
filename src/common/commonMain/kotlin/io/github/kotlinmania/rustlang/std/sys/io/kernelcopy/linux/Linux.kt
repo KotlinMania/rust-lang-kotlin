@@ -15,6 +15,13 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.fs.File
+import io.github.kotlinmania.rustlang.fs.Metadata
+import io.github.kotlinmania.rustlang.io.pipe.PipeReader
+import io.github.kotlinmania.rustlang.io.pipe.PipeWriter
+import io.github.kotlinmania.rustlang.io.stdio.StderrLock
+import io.github.kotlinmania.rustlang.io.stdio.StdinLock
+import io.github.kotlinmania.rustlang.io.stdio.StdoutLock
 import io.github.kotlinmania.rustlang.libc.Splice
 import io.github.kotlinmania.rustlang.libc.wasi.EBADF
 import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
@@ -23,23 +30,16 @@ import io.github.kotlinmania.rustlang.libc.wasi.EOPNOTSUPP
 import io.github.kotlinmania.rustlang.libc.wasi.EOVERFLOW
 import io.github.kotlinmania.rustlang.libc.wasi.EPERM
 import io.github.kotlinmania.rustlang.libc.wasi.EXDEV
-import io.github.kotlinmania.rustlang.std.fs.File
-import io.github.kotlinmania.rustlang.std.fs.Metadata
-import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
-import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
-import io.github.kotlinmania.rustlang.std.io.stdio.StderrLock
-import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
-import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
-import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
-import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
-import io.github.kotlinmania.rustlang.std.process.ChildStderr
-import io.github.kotlinmania.rustlang.std.process.ChildStdin
-import io.github.kotlinmania.rustlang.std.process.ChildStdout
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.cfm.CachedFileMetadata
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.std.sys.weak.syscall
+import io.github.kotlinmania.rustlang.net.tcp.TcpStream
+import io.github.kotlinmania.rustlang.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.os.fd.RawFd
+import io.github.kotlinmania.rustlang.os.unix.net.UnixStream
+import io.github.kotlinmania.rustlang.process.ChildStderr
+import io.github.kotlinmania.rustlang.process.ChildStdin
+import io.github.kotlinmania.rustlang.process.ChildStdout
+import io.github.kotlinmania.rustlang.sys.fs.unix.CachedFileMetadata
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.sys.weak.syscall
 import io.github.kotlinmania.rustlang.libc.sendfile as sendfile64
 
 // This module contains specializations that can offload `io.copy()` operations on file descriptor
@@ -217,9 +217,9 @@ public open class Copier<R : Read, W : Write>(
         // before direct operations on file descriptors ensure that all source and sink buffers are empty
         var flush =
             closure@{
-                val bytes = when (val tryResult = reader.drainTo(writer, ULong.MAX_VALUE)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                val bytes = when (val tryResult = reader.drainTo(writer, ULong.MAX_VALUE)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
                 // BufWriter buffered bytes have already been accounted for in earlier write() calls
-                when (val tryResult = writer.flush()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = writer.flush()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
                 Result.Ok(bytes)
             }
         var written = 0uL
@@ -228,7 +228,7 @@ public open class Copier<R : Read, W : Write>(
             val readfd = (Pair(rCfg, wCfg).first as CopyParams).field1
             val (outputMeta, _) = Pair(rCfg, wCfg).second as CopyParams
             val writefd = (Pair(rCfg, wCfg).second as CopyParams).field1
-            written += when (val tryResult = flush()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            written += when (val tryResult = flush()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             val maxWrite = reader.minLimit()
             if (inputMeta.copyFileRangeCandidate(FdHandle.Input) && outputMeta.copyFileRangeCandidate(FdHandle.Output)) {
                 val result = copyRegularFiles(readfd, writefd, maxWrite)
@@ -366,7 +366,7 @@ public fun <W : Write> StdinLock.drainTo(writer: W, outerLimit: ULong): Result<U
     val buf = bufReader.buffer()
     val buf1 = buf[0 until minOf(buf.len(), outerLimit.tryInto().unwrapOr(Int.MAX_VALUE))]
     val bytesDrained = buf1.len()
-    when (val tryResult = writer.writeAll(buf1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = writer.writeAll(buf1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     bufReader.consume(bytesDrained)
     return Result.Ok(bytesDrained.toULong())
 }
@@ -380,7 +380,7 @@ public fun StderrLock.properties(): CopyParams = CopyParams(fdToMeta(this), this
 public fun <T : CopyRead, W : Write> Take<T>.drainTo(writer: W, outerLimit: ULong): Result<ULong> {
     val localLimit = this.limit()
     val combinedLimit = minOf(outerLimit, localLimit)
-    val bytesDrained = when (val tryResult = this.getMut().drainTo(writer, combinedLimit)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val bytesDrained = when (val tryResult = this.getMut().drainTo(writer, combinedLimit)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // update limit since read() was bypassed
     this.setLimit(localLimit - bytesDrained)
     return Result.Ok(bytesDrained)
@@ -399,11 +399,11 @@ public fun <T : CopyRead, W : Write> BufReader<T>.drainTo(writer: W, outerLimit:
     val buf = this.buffer()
     val buf1 = buf[0 until minOf(buf.len(), outerLimit.tryInto().unwrapOr(Int.MAX_VALUE))]
     val bytes = buf1.len()
-    when (val tryResult = writer.writeAll(buf1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = writer.writeAll(buf1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     this.consume(bytes)
     val remaining = outerLimit - bytes.toULong()
     // in case of nested bufreaders we also need to drain the ones closer to the source
-    val innerBytes = when (val tryResult = this.getMut().drainTo(writer, remaining)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val innerBytes = when (val tryResult = this.getMut().drainTo(writer, remaining)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(bytes.toULong() + innerBytes)
 }
 
@@ -424,10 +424,10 @@ public fun <T : AsRawFd> fdToMeta(fd: T): FdMeta {
     val file: File = File.fromRawFd(fd1)
     return run {
         val matchVal = file.metadata()
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val meta = matchVal.value
             FdMeta.Metadata(meta)
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             FdMeta.NoneObtained
         } }
     }
@@ -487,9 +487,9 @@ public fun copyRegularFiles(reader: RawFd, writer: RawFd, maxLen: ULong): CopyRe
         return run {
             val matchVal = cvt(copyFileRange(INVALID_FD, MutPtr(0L), INVALID_FD, MutPtr(0L), 1, 0)).mapErr({ e -> e.rawOsError() })
             when {
-                matchVal is Result.Err<*> && (matchVal.error != null && (matchVal.error == EPERM || matchVal.error == ENOSYS)) -> UNAVAILABLE
-                matchVal is Result.Err<*> && matchVal.error != null && matchVal.error == EBADF -> AVAILABLE
-                matchVal is Result.Ok<*> -> error("unexpected copy_file_range probe success")
+                matchVal is Result.Err<*, *> && (matchVal.error != null && (matchVal.error == EPERM || matchVal.error == ENOSYS)) -> UNAVAILABLE
+                matchVal is Result.Err<*, *> && matchVal.error != null && matchVal.error == EBADF -> AVAILABLE
+                matchVal is Result.Ok<*, *> -> error("unexpected copy_file_range probe success")
                 // Treat other errors as the syscall
                 // being unavailable.
                 else -> UNAVAILABLE
@@ -516,7 +516,7 @@ public fun copyRegularFiles(reader: RawFd, writer: RawFd, maxLen: ULong): CopyRe
             HAS_COPY_FILE_RANGE.store(AVAILABLE, Ordering.Relaxed)
         }
         when {
-            copyResult is Result.Ok<*> && copyResult.value == 0 && written == 0uL -> {
+            copyResult is Result.Ok<*, *> && copyResult.value == 0 && written == 0uL -> {
                 // fallback to work around several kernel bugs where copyFileRange will fail to
                 // copy any bytes and return 0 instead of an error if
                 // - reading virtual files from the proc filesystem which appear to have 0 size
@@ -524,14 +524,14 @@ public fun copyRegularFiles(reader: RawFd, writer: RawFd, maxLen: ULong): CopyRe
                 // - copying from an overlay filesystem in docker. reported to occur on fedora 32.
                 return CopyResult.Fallback(0)
             }
-            copyResult is Result.Ok<*> && copyResult.value == 0 -> { return CopyResult.Ended(written) }
+            copyResult is Result.Ok<*, *> && copyResult.value == 0 -> { return CopyResult.Ended(written) }
             // reached EOF
-            copyResult is Result.Ok<*> -> {
-                val ret = (copyResult as Result.Ok<*>).value
+            copyResult is Result.Ok<*, *> -> {
+                val ret = (copyResult as Result.Ok<*, *>).value
                 written += ret.toULong()
             }
             else -> {
-                val err = (copyResult as Result.Err<*>).error
+                val err = (copyResult as Result.Err<*, *>).error
                 return run {
                     val matchVal = err.rawOsError()
                     when {
@@ -625,14 +625,14 @@ public fun sendfileSplice(mode: SpliceMode, reader: RawFd, writer: RawFd, len: U
                 SpliceMode.Splice -> cvt(Splice(reader, MutPtr(0L), writer, MutPtr(0L), chunkSize, 0))
             }
         when {
-            result is Result.Ok<*> && result.value == 0 -> { break }
+            result is Result.Ok<*, *> && result.value == 0 -> { break }
             // EOF
-            result is Result.Ok<*> -> {
-                val ret = (result as Result.Ok<*>).value
+            result is Result.Ok<*, *> -> {
+                val ret = (result as Result.Ok<*, *>).value
                 written += ret.toULong()
             }
             else -> {
-                val err = (result as Result.Err<*>).error
+                val err = (result as Result.Err<*, *>).error
                 return run {
                     val matchVal = err.rawOsError()
                     when {

@@ -1,17 +1,16 @@
 package io.github.kotlinmania.rustlang.test.term.terminfo
 
-import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.test.term.Terminal
-import io.github.kotlinmania.rustlang.test.term.color.Color
+import io.github.kotlinmania.rustlang.term.Terminal
+import io.github.kotlinmania.rustlang.term.color.Color
+import io.github.kotlinmania.rustlang.term.terminfo.parser.compiled.msysTerminfo
 import io.github.kotlinmania.rustlang.test.term.terminfo.Error.*
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.Param
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.Variables
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.expand
-import io.github.kotlinmania.rustlang.test.term.terminfo.parser.compiled.msysTerminfo
 import io.github.kotlinmania.rustlang.test.term.terminfo.searcher.getDbpathForTerm
 
 /**
@@ -43,10 +42,10 @@ public open class TermInfo(
             val term =
                 run {
                     val matchVal = Env.variable("TERM")
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val name = matchVal.value
                         TermInfo.fromName(name)
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         return Result.Err(Error.TermUnset)
                     } }
                 }
@@ -115,12 +114,12 @@ public open class TerminfoTerminal<T>(
                     val op = matchVal
                     run {
                         val matchVal1 = expand(op, listOf(), Variables.new())
-                        when (matchVal1) { is Result.Ok<*> -> {
+                        when (matchVal1) { is Result.Ok<*, *> -> {
                             val cmd = matchVal1.value
                             cmd
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err<*, *> -> {
                             val e = matchVal1.error
-                            return Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
+                            return Result.Err(Error.new(ErrorKind.InvalidData, e))
                         } }
                     }
                 }
@@ -142,12 +141,12 @@ public open class TerminfoTerminal<T>(
                 val cmd1 = matchVal
                 run {
                     val matchVal1 = expand(cmd1, params, Variables.new())
-                    when (matchVal1) { is Result.Ok<*> -> {
+                    when (matchVal1) { is Result.Ok<*, *> -> {
                         val s = matchVal1.value
                         this.out.writeAll(s).and(Result.Ok(true))
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         val e = matchVal1.error
-                        Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
+                        Result.Err(Error.new(ErrorKind.InvalidData, e))
                     } }
                 }
             }

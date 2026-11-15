@@ -9,7 +9,8 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.helenos.SizeT
+import io.github.kotlinmania.rustlang.io.ErrorKind
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.wasi.E2BIG
 import io.github.kotlinmania.rustlang.libc.wasi.EACCES
 import io.github.kotlinmania.rustlang.libc.wasi.EADDRINUSE
@@ -54,8 +55,7 @@ import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
 import io.github.kotlinmania.rustlang.libc.wasi.ETXTBSY
 import io.github.kotlinmania.rustlang.libc.wasi.EWOULDBLOCK
 import io.github.kotlinmania.rustlang.libc.wasi.EXDEV
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.WouldBlock
+import io.github.kotlinmania.rustlang.sync.nonpoison.WouldBlock
 
 // SAFETY: this will always return the same pointer on a given thread.
 public expect fun errnoLocation(): MutPtr
@@ -74,7 +74,7 @@ public fun setErrno(e: Int) {
     (ObjectSlotLayout<CInt>()).writeNative((errnoLocation()).rawAddress, e)
 }
 
-public expect var LIBC_ERRNO: CInt
+public expect var LIBC_ERRNO: io.github.kotlinmania.rustlang.libc.CInt
 
 public fun isInterrupted(errno: Int): Boolean = (errno == EINTR).toUByte()
 

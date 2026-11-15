@@ -1,19 +1,19 @@
 // port-lint: source new/apple/xnu/net/bpf.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.net.bpf
 
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.ior
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.iow
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.iowr
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.ior
+import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.iow
+import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.iowr
+import io.github.kotlinmania.rustlang.unix.SizeT
 
 // Header: `net / bpf.h`
 //

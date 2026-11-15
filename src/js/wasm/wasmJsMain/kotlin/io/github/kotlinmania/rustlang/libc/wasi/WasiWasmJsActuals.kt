@@ -2,1020 +2,1020 @@
 
 package io.github.kotlinmania.rustlang.libc.wasi
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
 
 @JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
-private external fun initWasiNapiAddon(): Boolean
+private external fun initLibcWasiNapiAddon(): Boolean
 
-private val wasiNapiAvailable: Boolean = initWasiNapiAddon()
+private val libcWasiNapiAvailable: Boolean = initLibcWasiNapiAddon()
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiGetENVIRON()")
-private external fun wasmLibcWasiGetENVIRON(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiGetENVIRON()")
+private external fun wasmRustlangLibcWasiGetENVIRON(): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiSetENVIRON(p0)")
-private external fun wasmLibcWasiSetENVIRON(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiSetENVIRON(p0)")
+private external fun wasmRustlangLibcWasiSetENVIRON(p0: String)
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiGetCLOCKMONOTONIC1()")
-private external fun wasmLibcWasiGetCLOCKMONOTONIC1(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiGetCLOCKMONOTONIC1()")
+private external fun wasmRustlangLibcWasiGetCLOCKMONOTONIC1(): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiGetCLOCKREALTIME1()")
-private external fun wasmLibcWasiGetCLOCKREALTIME1(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiGetCLOCKREALTIME1()")
+private external fun wasmRustlangLibcWasiGetCLOCKREALTIME1(): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiExit(p0)")
-private external fun wasmLibcWasiExit(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiExit(p0)")
+private external fun wasmRustlangLibcWasiExit(p0: Int)
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiAbort()")
-private external fun wasmLibcWasiAbort()
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiAbort()")
+private external fun wasmRustlangLibcWasiAbort()
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiAlignedAlloc(p0, p1)")
-private external fun wasmLibcWasiAlignedAlloc(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiAlignedAlloc(p0, p1)")
+private external fun wasmRustlangLibcWasiAlignedAlloc(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiCalloc(p0, p1)")
-private external fun wasmLibcWasiCalloc(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiCalloc(p0, p1)")
+private external fun wasmRustlangLibcWasiCalloc(p0: String, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFree(p0)")
-private external fun wasmLibcWasiFree(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFree(p0)")
+private external fun wasmRustlangLibcWasiFree(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiGetenv(p0)")
-private external fun wasmLibcWasiGetenv(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiGetenv(p0)")
+private external fun wasmRustlangLibcWasiGetenv(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiMalloc(p0)")
-private external fun wasmLibcWasiMalloc(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiMalloc(p0)")
+private external fun wasmRustlangLibcWasiMalloc(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiMallocUsableSize(p0)")
-private external fun wasmLibcWasiMallocUsableSize(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiMallocUsableSize(p0)")
+private external fun wasmRustlangLibcWasiMallocUsableSize(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiSbrk(p0)")
-private external fun wasmLibcWasiSbrk(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiSbrk(p0)")
+private external fun wasmRustlangLibcWasiSbrk(p0: String): String
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiRand()")
-private external fun wasmLibcWasiRand(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiRand()")
+private external fun wasmRustlangLibcWasiRand(): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiRead(p0, p1, p2)")
-private external fun wasmLibcWasiRead(p0: Int, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiRead(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiRead(p0: Int, p1: String, p2: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiRealloc(p0, p1)")
-private external fun wasmLibcWasiRealloc(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiRealloc(p0, p1)")
+private external fun wasmRustlangLibcWasiRealloc(p0: String, p1: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiSetenv(p0, p1, p2)")
-private external fun wasmLibcWasiSetenv(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiSetenv(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiSetenv(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiUnsetenv(p0)")
-private external fun wasmLibcWasiUnsetenv(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiUnsetenv(p0)")
+private external fun wasmRustlangLibcWasiUnsetenv(p0: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiClearenv()")
-private external fun wasmLibcWasiClearenv(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiClearenv()")
+private external fun wasmRustlangLibcWasiClearenv(): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiWrite(p0, p1, p2)")
-private external fun wasmLibcWasiWrite(p0: Int, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiWrite(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiWrite(p0: Int, p1: String, p2: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiFopen(p0, p1)")
-private external fun wasmLibcWasiFopen(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiFopen(p0, p1)")
+private external fun wasmRustlangLibcWasiFopen(p0: String, p1: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiFreopen(p0, p1, p2)")
-private external fun wasmLibcWasiFreopen(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiFreopen(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiFreopen(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFclose(p0)")
-private external fun wasmLibcWasiFclose(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFclose(p0)")
+private external fun wasmRustlangLibcWasiFclose(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiRemove(p0)")
-private external fun wasmLibcWasiRemove(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiRemove(p0)")
+private external fun wasmRustlangLibcWasiRemove(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiRename(p0, p1)")
-private external fun wasmLibcWasiRename(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiRename(p0, p1)")
+private external fun wasmRustlangLibcWasiRename(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFeof(p0)")
-private external fun wasmLibcWasiFeof(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFeof(p0)")
+private external fun wasmRustlangLibcWasiFeof(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFerror(p0)")
-private external fun wasmLibcWasiFerror(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFerror(p0)")
+private external fun wasmRustlangLibcWasiFerror(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFflush(p0)")
-private external fun wasmLibcWasiFflush(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFflush(p0)")
+private external fun wasmRustlangLibcWasiFflush(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiClearerr(p0)")
-private external fun wasmLibcWasiClearerr(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiClearerr(p0)")
+private external fun wasmRustlangLibcWasiClearerr(p0: String)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiFseek(p0, p1, p2)")
-private external fun wasmLibcWasiFseek(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiFseek(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiFseek(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFtell(p0)")
-private external fun wasmLibcWasiFtell(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFtell(p0)")
+private external fun wasmRustlangLibcWasiFtell(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiRewind(p0)")
-private external fun wasmLibcWasiRewind(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiRewind(p0)")
+private external fun wasmRustlangLibcWasiRewind(p0: String)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiFgetpos(p0, p1)")
-private external fun wasmLibcWasiFgetpos(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiFgetpos(p0, p1)")
+private external fun wasmRustlangLibcWasiFgetpos(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiFsetpos(p0, p1)")
-private external fun wasmLibcWasiFsetpos(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiFsetpos(p0, p1)")
+private external fun wasmRustlangLibcWasiFsetpos(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiFread(p0, p1, p2, p3)")
-private external fun wasmLibcWasiFread(p0: String, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiFread(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiFread(p0: String, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiFwrite(p0, p1, p2, p3)")
-private external fun wasmLibcWasiFwrite(p0: String, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiFwrite(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiFwrite(p0: String, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFgetc(p0)")
-private external fun wasmLibcWasiFgetc(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFgetc(p0)")
+private external fun wasmRustlangLibcWasiFgetc(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiGetc(p0)")
-private external fun wasmLibcWasiGetc(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiGetc(p0)")
+private external fun wasmRustlangLibcWasiGetc(p0: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiGetchar()")
-private external fun wasmLibcWasiGetchar(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiGetchar()")
+private external fun wasmRustlangLibcWasiGetchar(): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiUngetc(p0, p1)")
-private external fun wasmLibcWasiUngetc(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiUngetc(p0, p1)")
+private external fun wasmRustlangLibcWasiUngetc(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiFputc(p0, p1)")
-private external fun wasmLibcWasiFputc(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiFputc(p0, p1)")
+private external fun wasmRustlangLibcWasiFputc(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPutc(p0, p1)")
-private external fun wasmLibcWasiPutc(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPutc(p0, p1)")
+private external fun wasmRustlangLibcWasiPutc(p0: Int, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPutchar(p0)")
-private external fun wasmLibcWasiPutchar(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPutchar(p0)")
+private external fun wasmRustlangLibcWasiPutchar(p0: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiFputs(p0, p1)")
-private external fun wasmLibcWasiFputs(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiFputs(p0, p1)")
+private external fun wasmRustlangLibcWasiFputs(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPuts(p0)")
-private external fun wasmLibcWasiPuts(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPuts(p0)")
+private external fun wasmRustlangLibcWasiPuts(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPerror(p0)")
-private external fun wasmLibcWasiPerror(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPerror(p0)")
+private external fun wasmRustlangLibcWasiPerror(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiSrand(p0)")
-private external fun wasmLibcWasiSrand(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiSrand(p0)")
+private external fun wasmRustlangLibcWasiSrand(p0: Int)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiAtexit(p0)")
-private external fun wasmLibcWasiAtexit(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiAtexit(p0)")
+private external fun wasmRustlangLibcWasiAtexit(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiAtQuickExit(p0)")
-private external fun wasmLibcWasiAtQuickExit(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiAtQuickExit(p0)")
+private external fun wasmRustlangLibcWasiAtQuickExit(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiQuickExit(p0)")
-private external fun wasmLibcWasiQuickExit(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiQuickExit(p0)")
+private external fun wasmRustlangLibcWasiQuickExit(p0: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiPosixMemalign(p0, p1, p2)")
-private external fun wasmLibcWasiPosixMemalign(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiPosixMemalign(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiPosixMemalign(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiRandR(p0)")
-private external fun wasmLibcWasiRandR(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiRandR(p0)")
+private external fun wasmRustlangLibcWasiRandR(p0: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiRandom()")
-private external fun wasmLibcWasiRandom(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiRandom()")
+private external fun wasmRustlangLibcWasiRandom(): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiSrandom(p0)")
-private external fun wasmLibcWasiSrandom(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiSrandom(p0)")
+private external fun wasmRustlangLibcWasiSrandom(p0: Int)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPutenv(p0)")
-private external fun wasmLibcWasiPutenv(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPutenv(p0)")
+private external fun wasmRustlangLibcWasiPutenv(p0: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiClock()")
-private external fun wasmLibcWasiClock(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiClock()")
+private external fun wasmRustlangLibcWasiClock(): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiTime(p0)")
-private external fun wasmLibcWasiTime(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiTime(p0)")
+private external fun wasmRustlangLibcWasiTime(p0: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiDifftime(p0, p1)")
-private external fun wasmLibcWasiDifftime(p0: String, p1: String): Double
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiDifftime(p0, p1)")
+private external fun wasmRustlangLibcWasiDifftime(p0: String, p1: String): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiMktime(p0)")
-private external fun wasmLibcWasiMktime(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiMktime(p0)")
+private external fun wasmRustlangLibcWasiMktime(p0: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiStrftime(p0, p1, p2, p3)")
-private external fun wasmLibcWasiStrftime(p0: String, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrftime(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiStrftime(p0: String, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiGmtime(p0)")
-private external fun wasmLibcWasiGmtime(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiGmtime(p0)")
+private external fun wasmRustlangLibcWasiGmtime(p0: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiGmtimeR(p0, p1)")
-private external fun wasmLibcWasiGmtimeR(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiGmtimeR(p0, p1)")
+private external fun wasmRustlangLibcWasiGmtimeR(p0: String, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiLocaltime(p0)")
-private external fun wasmLibcWasiLocaltime(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiLocaltime(p0)")
+private external fun wasmRustlangLibcWasiLocaltime(p0: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiLocaltimeR(p0, p1)")
-private external fun wasmLibcWasiLocaltimeR(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiLocaltimeR(p0, p1)")
+private external fun wasmRustlangLibcWasiLocaltimeR(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiAsctimeR(p0, p1)")
-private external fun wasmLibcWasiAsctimeR(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiAsctimeR(p0, p1)")
+private external fun wasmRustlangLibcWasiAsctimeR(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiCtimeR(p0, p1)")
-private external fun wasmLibcWasiCtimeR(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiCtimeR(p0, p1)")
+private external fun wasmRustlangLibcWasiCtimeR(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiNanosleep(p0, p1)")
-private external fun wasmLibcWasiNanosleep(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiNanosleep(p0, p1)")
+private external fun wasmRustlangLibcWasiNanosleep(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIsalnum(p0)")
-private external fun wasmLibcWasiIsalnum(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIsalnum(p0)")
+private external fun wasmRustlangLibcWasiIsalnum(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIsalpha(p0)")
-private external fun wasmLibcWasiIsalpha(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIsalpha(p0)")
+private external fun wasmRustlangLibcWasiIsalpha(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIscntrl(p0)")
-private external fun wasmLibcWasiIscntrl(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIscntrl(p0)")
+private external fun wasmRustlangLibcWasiIscntrl(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIsdigit(p0)")
-private external fun wasmLibcWasiIsdigit(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIsdigit(p0)")
+private external fun wasmRustlangLibcWasiIsdigit(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIsgraph(p0)")
-private external fun wasmLibcWasiIsgraph(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIsgraph(p0)")
+private external fun wasmRustlangLibcWasiIsgraph(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIslower(p0)")
-private external fun wasmLibcWasiIslower(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIslower(p0)")
+private external fun wasmRustlangLibcWasiIslower(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIsprint(p0)")
-private external fun wasmLibcWasiIsprint(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIsprint(p0)")
+private external fun wasmRustlangLibcWasiIsprint(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIspunct(p0)")
-private external fun wasmLibcWasiIspunct(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIspunct(p0)")
+private external fun wasmRustlangLibcWasiIspunct(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIsspace(p0)")
-private external fun wasmLibcWasiIsspace(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIsspace(p0)")
+private external fun wasmRustlangLibcWasiIsspace(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIsupper(p0)")
-private external fun wasmLibcWasiIsupper(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIsupper(p0)")
+private external fun wasmRustlangLibcWasiIsupper(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIsxdigit(p0)")
-private external fun wasmLibcWasiIsxdigit(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIsxdigit(p0)")
+private external fun wasmRustlangLibcWasiIsxdigit(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIsblank(p0)")
-private external fun wasmLibcWasiIsblank(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIsblank(p0)")
+private external fun wasmRustlangLibcWasiIsblank(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiTolower(p0)")
-private external fun wasmLibcWasiTolower(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiTolower(p0)")
+private external fun wasmRustlangLibcWasiTolower(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiToupper(p0)")
-private external fun wasmLibcWasiToupper(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiToupper(p0)")
+private external fun wasmRustlangLibcWasiToupper(p0: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiSetvbuf(p0, p1, p2, p3)")
-private external fun wasmLibcWasiSetvbuf(p0: String, p1: String, p2: Int, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiSetvbuf(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiSetvbuf(p0: String, p1: String, p2: Int, p3: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiSetbuf(p0, p1)")
-private external fun wasmLibcWasiSetbuf(p0: String, p1: String)
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiSetbuf(p0, p1)")
+private external fun wasmRustlangLibcWasiSetbuf(p0: String, p1: String)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiFgets(p0, p1, p2)")
-private external fun wasmLibcWasiFgets(p0: String, p1: Int, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiFgets(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiFgets(p0: String, p1: Int, p2: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiAtof(p0)")
-private external fun wasmLibcWasiAtof(p0: String): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiAtof(p0)")
+private external fun wasmRustlangLibcWasiAtof(p0: String): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiAtoi(p0)")
-private external fun wasmLibcWasiAtoi(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiAtoi(p0)")
+private external fun wasmRustlangLibcWasiAtoi(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiAtol(p0)")
-private external fun wasmLibcWasiAtol(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiAtol(p0)")
+private external fun wasmRustlangLibcWasiAtol(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiAtoll(p0)")
-private external fun wasmLibcWasiAtoll(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiAtoll(p0)")
+private external fun wasmRustlangLibcWasiAtoll(p0: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrtod(p0, p1)")
-private external fun wasmLibcWasiStrtod(p0: String, p1: String): Double
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrtod(p0, p1)")
+private external fun wasmRustlangLibcWasiStrtod(p0: String, p1: String): Double
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrtof(p0, p1)")
-private external fun wasmLibcWasiStrtof(p0: String, p1: String): Double
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrtof(p0, p1)")
+private external fun wasmRustlangLibcWasiStrtof(p0: String, p1: String): Double
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiStrtol(p0, p1, p2)")
-private external fun wasmLibcWasiStrtol(p0: String, p1: String, p2: Int): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrtol(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiStrtol(p0: String, p1: String, p2: Int): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiStrtoll(p0, p1, p2)")
-private external fun wasmLibcWasiStrtoll(p0: String, p1: String, p2: Int): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrtoll(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiStrtoll(p0: String, p1: String, p2: Int): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiStrtoul(p0, p1, p2)")
-private external fun wasmLibcWasiStrtoul(p0: String, p1: String, p2: Int): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrtoul(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiStrtoul(p0: String, p1: String, p2: Int): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiStrtoull(p0, p1, p2)")
-private external fun wasmLibcWasiStrtoull(p0: String, p1: String, p2: Int): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrtoull(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiStrtoull(p0: String, p1: String, p2: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrcpy(p0, p1)")
-private external fun wasmLibcWasiStrcpy(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrcpy(p0, p1)")
+private external fun wasmRustlangLibcWasiStrcpy(p0: String, p1: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiStrncpy(p0, p1, p2)")
-private external fun wasmLibcWasiStrncpy(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrncpy(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiStrncpy(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrcat(p0, p1)")
-private external fun wasmLibcWasiStrcat(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrcat(p0, p1)")
+private external fun wasmRustlangLibcWasiStrcat(p0: String, p1: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiStrncat(p0, p1, p2)")
-private external fun wasmLibcWasiStrncat(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrncat(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiStrncat(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrcmp(p0, p1)")
-private external fun wasmLibcWasiStrcmp(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrcmp(p0, p1)")
+private external fun wasmRustlangLibcWasiStrcmp(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiStrncmp(p0, p1, p2)")
-private external fun wasmLibcWasiStrncmp(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrncmp(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiStrncmp(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrcoll(p0, p1)")
-private external fun wasmLibcWasiStrcoll(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrcoll(p0, p1)")
+private external fun wasmRustlangLibcWasiStrcoll(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrchr(p0, p1)")
-private external fun wasmLibcWasiStrchr(p0: String, p1: Int): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrchr(p0, p1)")
+private external fun wasmRustlangLibcWasiStrchr(p0: String, p1: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrrchr(p0, p1)")
-private external fun wasmLibcWasiStrrchr(p0: String, p1: Int): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrrchr(p0, p1)")
+private external fun wasmRustlangLibcWasiStrrchr(p0: String, p1: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrspn(p0, p1)")
-private external fun wasmLibcWasiStrspn(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrspn(p0, p1)")
+private external fun wasmRustlangLibcWasiStrspn(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrcspn(p0, p1)")
-private external fun wasmLibcWasiStrcspn(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrcspn(p0, p1)")
+private external fun wasmRustlangLibcWasiStrcspn(p0: String, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiStrdup(p0)")
-private external fun wasmLibcWasiStrdup(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrdup(p0)")
+private external fun wasmRustlangLibcWasiStrdup(p0: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrndup(p0, p1)")
-private external fun wasmLibcWasiStrndup(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrndup(p0, p1)")
+private external fun wasmRustlangLibcWasiStrndup(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrpbrk(p0, p1)")
-private external fun wasmLibcWasiStrpbrk(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrpbrk(p0, p1)")
+private external fun wasmRustlangLibcWasiStrpbrk(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrstr(p0, p1)")
-private external fun wasmLibcWasiStrstr(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrstr(p0, p1)")
+private external fun wasmRustlangLibcWasiStrstr(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrcasecmp(p0, p1)")
-private external fun wasmLibcWasiStrcasecmp(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrcasecmp(p0, p1)")
+private external fun wasmRustlangLibcWasiStrcasecmp(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiStrncasecmp(p0, p1, p2)")
-private external fun wasmLibcWasiStrncasecmp(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrncasecmp(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiStrncasecmp(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiStrlen(p0)")
-private external fun wasmLibcWasiStrlen(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrlen(p0)")
+private external fun wasmRustlangLibcWasiStrlen(p0: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrnlen(p0, p1)")
-private external fun wasmLibcWasiStrnlen(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrnlen(p0, p1)")
+private external fun wasmRustlangLibcWasiStrnlen(p0: String, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiStrerror(p0)")
-private external fun wasmLibcWasiStrerror(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrerror(p0)")
+private external fun wasmRustlangLibcWasiStrerror(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrtok(p0, p1)")
-private external fun wasmLibcWasiStrtok(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrtok(p0, p1)")
+private external fun wasmRustlangLibcWasiStrtok(p0: String, p1: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiStrxfrm(p0, p1, p2)")
-private external fun wasmLibcWasiStrxfrm(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrxfrm(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiStrxfrm(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiMemchr(p0, p1, p2)")
-private external fun wasmLibcWasiMemchr(p0: String, p1: Int, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiMemchr(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiMemchr(p0: String, p1: Int, p2: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiMemcmp(p0, p1, p2)")
-private external fun wasmLibcWasiMemcmp(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiMemcmp(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiMemcmp(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiMemcpy(p0, p1, p2)")
-private external fun wasmLibcWasiMemcpy(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiMemcpy(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiMemcpy(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiMemmove(p0, p1, p2)")
-private external fun wasmLibcWasiMemmove(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiMemmove(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiMemmove(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiMemset(p0, p1, p2)")
-private external fun wasmLibcWasiMemset(p0: String, p1: Int, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiMemset(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiMemset(p0: String, p1: Int, p2: String): String
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.libcWasiFprintf(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmLibcWasiFprintf(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangLibcWasiFprintf(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangLibcWasiFprintf(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.libcWasiPrintf(p0, p1, p2, p3, p4, p5)")
-private external fun wasmLibcWasiPrintf(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangLibcWasiPrintf(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangLibcWasiPrintf(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.libcWasiSnprintf(p0, p1, p2, p3, p4, p5, p6, p7)")
-private external fun wasmLibcWasiSnprintf(p0: String, p1: String, p2: String, p3: Int, p4: String, p5: String, p6: String, p7: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.rustlangLibcWasiSnprintf(p0, p1, p2, p3, p4, p5, p6, p7)")
+private external fun wasmRustlangLibcWasiSnprintf(p0: String, p1: String, p2: String, p3: Int, p4: String, p5: String, p6: String, p7: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.libcWasiSprintf(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmLibcWasiSprintf(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangLibcWasiSprintf(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangLibcWasiSprintf(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.libcWasiFscanf(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmLibcWasiFscanf(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangLibcWasiFscanf(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangLibcWasiFscanf(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.libcWasiScanf(p0, p1, p2, p3, p4, p5)")
-private external fun wasmLibcWasiScanf(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangLibcWasiScanf(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangLibcWasiScanf(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.libcWasiSscanf(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmLibcWasiSscanf(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangLibcWasiSscanf(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangLibcWasiSscanf(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiGetcharUnlocked()")
-private external fun wasmLibcWasiGetcharUnlocked(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiGetcharUnlocked()")
+private external fun wasmRustlangLibcWasiGetcharUnlocked(): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPutcharUnlocked(p0)")
-private external fun wasmLibcWasiPutcharUnlocked(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPutcharUnlocked(p0)")
+private external fun wasmRustlangLibcWasiPutcharUnlocked(p0: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiShutdown(p0, p1)")
-private external fun wasmLibcWasiShutdown(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiShutdown(p0, p1)")
+private external fun wasmRustlangLibcWasiShutdown(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiFstat(p0, p1)")
-private external fun wasmLibcWasiFstat(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiFstat(p0, p1)")
+private external fun wasmRustlangLibcWasiFstat(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiMkdir(p0, p1)")
-private external fun wasmLibcWasiMkdir(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiMkdir(p0, p1)")
+private external fun wasmRustlangLibcWasiMkdir(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStat(p0, p1)")
-private external fun wasmLibcWasiStat(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStat(p0, p1)")
+private external fun wasmRustlangLibcWasiStat(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiFdopen(p0, p1)")
-private external fun wasmLibcWasiFdopen(p0: Int, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiFdopen(p0, p1)")
+private external fun wasmRustlangLibcWasiFdopen(p0: Int, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFileno(p0)")
-private external fun wasmLibcWasiFileno(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFileno(p0)")
+private external fun wasmRustlangLibcWasiFileno(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.libcWasiOpen(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmLibcWasiOpen(p0: String, p1: Int, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangLibcWasiOpen(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangLibcWasiOpen(p0: String, p1: Int, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiCreat(p0, p1)")
-private external fun wasmLibcWasiCreat(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiCreat(p0, p1)")
+private external fun wasmRustlangLibcWasiCreat(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.libcWasiFcntl(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmLibcWasiFcntl(p0: Int, p1: Int, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangLibcWasiFcntl(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangLibcWasiFcntl(p0: Int, p1: Int, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiOpendir(p0)")
-private external fun wasmLibcWasiOpendir(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiOpendir(p0)")
+private external fun wasmRustlangLibcWasiOpendir(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFdopendir(p0)")
-private external fun wasmLibcWasiFdopendir(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFdopendir(p0)")
+private external fun wasmRustlangLibcWasiFdopendir(p0: Int): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiReaddir(p0)")
-private external fun wasmLibcWasiReaddir(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiReaddir(p0)")
+private external fun wasmRustlangLibcWasiReaddir(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiClosedir(p0)")
-private external fun wasmLibcWasiClosedir(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiClosedir(p0)")
+private external fun wasmRustlangLibcWasiClosedir(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiRewinddir(p0)")
-private external fun wasmLibcWasiRewinddir(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiRewinddir(p0)")
+private external fun wasmRustlangLibcWasiRewinddir(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiDirfd(p0)")
-private external fun wasmLibcWasiDirfd(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiDirfd(p0)")
+private external fun wasmRustlangLibcWasiDirfd(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiSeekdir(p0, p1)")
-private external fun wasmLibcWasiSeekdir(p0: String, p1: String)
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiSeekdir(p0, p1)")
+private external fun wasmRustlangLibcWasiSeekdir(p0: String, p1: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiTelldir(p0)")
-private external fun wasmLibcWasiTelldir(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiTelldir(p0)")
+private external fun wasmRustlangLibcWasiTelldir(p0: String): String
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.libcWasiOpenat(p0, p1, p2, p3, p4, p5, p6, p7)")
-private external fun wasmLibcWasiOpenat(p0: Int, p1: String, p2: Int, p3: Int, p4: String, p5: String, p6: String, p7: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.rustlangLibcWasiOpenat(p0, p1, p2, p3, p4, p5, p6, p7)")
+private external fun wasmRustlangLibcWasiOpenat(p0: Int, p1: String, p2: Int, p3: Int, p4: String, p5: String, p6: String, p7: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiFstatat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiFstatat(p0: Int, p1: String, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiFstatat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiFstatat(p0: Int, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcWasiLinkat(p0, p1, p2, p3, p4)")
-private external fun wasmLibcWasiLinkat(p0: Int, p1: String, p2: Int, p3: String, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcWasiLinkat(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcWasiLinkat(p0: Int, p1: String, p2: Int, p3: String, p4: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiMkdirat(p0, p1, p2)")
-private external fun wasmLibcWasiMkdirat(p0: Int, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiMkdirat(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiMkdirat(p0: Int, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiReadlinkat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiReadlinkat(p0: Int, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiReadlinkat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiReadlinkat(p0: Int, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiRenameat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiRenameat(p0: Int, p1: String, p2: Int, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiRenameat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiRenameat(p0: Int, p1: String, p2: Int, p3: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiSymlinkat(p0, p1, p2)")
-private external fun wasmLibcWasiSymlinkat(p0: String, p1: Int, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiSymlinkat(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiSymlinkat(p0: String, p1: Int, p2: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiUnlinkat(p0, p1, p2)")
-private external fun wasmLibcWasiUnlinkat(p0: Int, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiUnlinkat(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiUnlinkat(p0: Int, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiAccess(p0, p1)")
-private external fun wasmLibcWasiAccess(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiAccess(p0, p1)")
+private external fun wasmRustlangLibcWasiAccess(p0: String, p1: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiClose(p0)")
-private external fun wasmLibcWasiClose(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiClose(p0)")
+private external fun wasmRustlangLibcWasiClose(p0: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiFpathconf(p0, p1)")
-private external fun wasmLibcWasiFpathconf(p0: Int, p1: Int): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiFpathconf(p0, p1)")
+private external fun wasmRustlangLibcWasiFpathconf(p0: Int, p1: Int): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiGetopt(p0, p1, p2)")
-private external fun wasmLibcWasiGetopt(p0: Int, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiGetopt(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiGetopt(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiIsatty(p0)")
-private external fun wasmLibcWasiIsatty(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiIsatty(p0)")
+private external fun wasmRustlangLibcWasiIsatty(p0: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiLink(p0, p1)")
-private external fun wasmLibcWasiLink(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiLink(p0, p1)")
+private external fun wasmRustlangLibcWasiLink(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiLseek(p0, p1, p2)")
-private external fun wasmLibcWasiLseek(p0: Int, p1: String, p2: Int): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiLseek(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiLseek(p0: Int, p1: String, p2: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPathconf(p0, p1)")
-private external fun wasmLibcWasiPathconf(p0: String, p1: Int): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPathconf(p0, p1)")
+private external fun wasmRustlangLibcWasiPathconf(p0: String, p1: Int): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiRmdir(p0)")
-private external fun wasmLibcWasiRmdir(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiRmdir(p0)")
+private external fun wasmRustlangLibcWasiRmdir(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiSleep(p0)")
-private external fun wasmLibcWasiSleep(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiSleep(p0)")
+private external fun wasmRustlangLibcWasiSleep(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiUnlink(p0)")
-private external fun wasmLibcWasiUnlink(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiUnlink(p0)")
+private external fun wasmRustlangLibcWasiUnlink(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiPread(p0, p1, p2, p3)")
-private external fun wasmLibcWasiPread(p0: Int, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiPread(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiPread(p0: Int, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiPwrite(p0, p1, p2, p3)")
-private external fun wasmLibcWasiPwrite(p0: Int, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiPwrite(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiPwrite(p0: Int, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiLstat(p0, p1)")
-private external fun wasmLibcWasiLstat(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiLstat(p0, p1)")
+private external fun wasmRustlangLibcWasiLstat(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFsync(p0)")
-private external fun wasmLibcWasiFsync(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFsync(p0)")
+private external fun wasmRustlangLibcWasiFsync(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFdatasync(p0)")
-private external fun wasmLibcWasiFdatasync(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFdatasync(p0)")
+private external fun wasmRustlangLibcWasiFdatasync(p0: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiSymlink(p0, p1)")
-private external fun wasmLibcWasiSymlink(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiSymlink(p0, p1)")
+private external fun wasmRustlangLibcWasiSymlink(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiTruncate(p0, p1)")
-private external fun wasmLibcWasiTruncate(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiTruncate(p0, p1)")
+private external fun wasmRustlangLibcWasiTruncate(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiFtruncate(p0, p1)")
-private external fun wasmLibcWasiFtruncate(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiFtruncate(p0, p1)")
+private external fun wasmRustlangLibcWasiFtruncate(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiGetrusage(p0, p1)")
-private external fun wasmLibcWasiGetrusage(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiGetrusage(p0, p1)")
+private external fun wasmRustlangLibcWasiGetrusage(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiGettimeofday(p0, p1)")
-private external fun wasmLibcWasiGettimeofday(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiGettimeofday(p0, p1)")
+private external fun wasmRustlangLibcWasiGettimeofday(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiTimes(p0)")
-private external fun wasmLibcWasiTimes(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiTimes(p0)")
+private external fun wasmRustlangLibcWasiTimes(p0: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiStrerrorR(p0, p1, p2)")
-private external fun wasmLibcWasiStrerrorR(p0: Int, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrerrorR(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiStrerrorR(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiUsleep(p0)")
-private external fun wasmLibcWasiUsleep(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiUsleep(p0)")
+private external fun wasmRustlangLibcWasiUsleep(p0: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiSend(p0, p1, p2, p3)")
-private external fun wasmLibcWasiSend(p0: Int, p1: String, p2: String, p3: Int): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiSend(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiSend(p0: Int, p1: String, p2: String, p3: Int): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiRecv(p0, p1, p2, p3)")
-private external fun wasmLibcWasiRecv(p0: Int, p1: String, p2: String, p3: Int): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiRecv(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiRecv(p0: Int, p1: String, p2: String, p3: Int): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiPoll(p0, p1, p2)")
-private external fun wasmLibcWasiPoll(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiPoll(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiPoll(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiSetlocale(p0, p1)")
-private external fun wasmLibcWasiSetlocale(p0: Int, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiSetlocale(p0, p1)")
+private external fun wasmRustlangLibcWasiSetlocale(p0: Int, p1: String): String
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiLocaleconv()")
-private external fun wasmLibcWasiLocaleconv(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiLocaleconv()")
+private external fun wasmRustlangLibcWasiLocaleconv(): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiReadlink(p0, p1, p2)")
-private external fun wasmLibcWasiReadlink(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiReadlink(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiReadlink(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiTimegm(p0)")
-private external fun wasmLibcWasiTimegm(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiTimegm(p0)")
+private external fun wasmRustlangLibcWasiTimegm(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiSysconf(p0)")
-private external fun wasmLibcWasiSysconf(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiSysconf(p0)")
+private external fun wasmRustlangLibcWasiSysconf(p0: Int): String
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.libcWasiIoctl(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmLibcWasiIoctl(p0: Int, p1: Int, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangLibcWasiIoctl(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangLibcWasiIoctl(p0: Int, p1: Int, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiFseeko(p0, p1, p2)")
-private external fun wasmLibcWasiFseeko(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiFseeko(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiFseeko(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFtello(p0)")
-private external fun wasmLibcWasiFtello(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFtello(p0)")
+private external fun wasmRustlangLibcWasiFtello(p0: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiPosixFallocate(p0, p1, p2)")
-private external fun wasmLibcWasiPosixFallocate(p0: Int, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiPosixFallocate(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiPosixFallocate(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiStrcasestr(p0, p1)")
-private external fun wasmLibcWasiStrcasestr(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiStrcasestr(p0, p1)")
+private external fun wasmRustlangLibcWasiStrcasestr(p0: String, p1: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiGetline(p0, p1, p2)")
-private external fun wasmLibcWasiGetline(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiGetline(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiGetline(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiFaccessat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiFaccessat(p0: Int, p1: String, p2: Int, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiFaccessat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiFaccessat(p0: Int, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiWritev(p0, p1, p2)")
-private external fun wasmLibcWasiWritev(p0: Int, p1: String, p2: Int): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiWritev(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiWritev(p0: Int, p1: String, p2: Int): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiReadv(p0, p1, p2)")
-private external fun wasmLibcWasiReadv(p0: Int, p1: String, p2: Int): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiReadv(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiReadv(p0: Int, p1: String, p2: Int): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiPwritev(p0, p1, p2, p3)")
-private external fun wasmLibcWasiPwritev(p0: Int, p1: String, p2: Int, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiPwritev(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiPwritev(p0: Int, p1: String, p2: Int, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiPreadv(p0, p1, p2, p3)")
-private external fun wasmLibcWasiPreadv(p0: Int, p1: String, p2: Int, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiPreadv(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiPreadv(p0: Int, p1: String, p2: Int, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiPosixFadvise(p0, p1, p2, p3)")
-private external fun wasmLibcWasiPosixFadvise(p0: Int, p1: String, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiPosixFadvise(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiPosixFadvise(p0: Int, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiFutimens(p0, p1)")
-private external fun wasmLibcWasiFutimens(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiFutimens(p0, p1)")
+private external fun wasmRustlangLibcWasiFutimens(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiUtimensat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiUtimensat(p0: Int, p1: String, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiUtimensat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiUtimensat(p0: Int, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiGetentropy(p0, p1)")
-private external fun wasmLibcWasiGetentropy(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiGetentropy(p0, p1)")
+private external fun wasmRustlangLibcWasiGetentropy(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiMemrchr(p0, p1, p2)")
-private external fun wasmLibcWasiMemrchr(p0: String, p1: Int, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiMemrchr(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiMemrchr(p0: String, p1: Int, p2: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiAbs(p0)")
-private external fun wasmLibcWasiAbs(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiAbs(p0)")
+private external fun wasmRustlangLibcWasiAbs(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiLabs(p0)")
-private external fun wasmLibcWasiLabs(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiLabs(p0)")
+private external fun wasmRustlangLibcWasiLabs(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiDuplocale(p0)")
-private external fun wasmLibcWasiDuplocale(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiDuplocale(p0)")
+private external fun wasmRustlangLibcWasiDuplocale(p0: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiFreelocale(p0)")
-private external fun wasmLibcWasiFreelocale(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiFreelocale(p0)")
+private external fun wasmRustlangLibcWasiFreelocale(p0: String)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiNewlocale(p0, p1, p2)")
-private external fun wasmLibcWasiNewlocale(p0: Int, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiNewlocale(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiNewlocale(p0: Int, p1: String, p2: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiUselocale(p0)")
-private external fun wasmLibcWasiUselocale(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiUselocale(p0)")
+private external fun wasmRustlangLibcWasiUselocale(p0: String): String
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiSchedYield()")
-private external fun wasmLibcWasiSchedYield(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiSchedYield()")
+private external fun wasmRustlangLibcWasiSchedYield(): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiGetcwd(p0, p1)")
-private external fun wasmLibcWasiGetcwd(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiGetcwd(p0, p1)")
+private external fun wasmRustlangLibcWasiGetcwd(p0: String, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiChdir(p0)")
-private external fun wasmLibcWasiChdir(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiChdir(p0)")
+private external fun wasmRustlangLibcWasiChdir(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiNlLanginfo(p0)")
-private external fun wasmLibcWasiNlLanginfo(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiNlLanginfo(p0)")
+private external fun wasmRustlangLibcWasiNlLanginfo(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiNlLanginfoL(p0, p1)")
-private external fun wasmLibcWasiNlLanginfoL(p0: Int, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiNlLanginfoL(p0, p1)")
+private external fun wasmRustlangLibcWasiNlLanginfoL(p0: Int, p1: String): String
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcWasiSelect(p0, p1, p2, p3, p4)")
-private external fun wasmLibcWasiSelect(p0: Int, p1: String, p2: String, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcWasiSelect(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcWasiSelect(p0: Int, p1: String, p2: String, p3: String, p4: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiWasilibcRegisterPreopenedFd(p0, p1)")
-private external fun wasmLibcWasiWasilibcRegisterPreopenedFd(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcRegisterPreopenedFd(p0, p1)")
+private external fun wasmRustlangLibcWasiWasilibcRegisterPreopenedFd(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiWasilibcFdRenumber(p0, p1)")
-private external fun wasmLibcWasiWasilibcFdRenumber(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcFdRenumber(p0, p1)")
+private external fun wasmRustlangLibcWasiWasilibcFdRenumber(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiWasilibcUnlinkat(p0, p1)")
-private external fun wasmLibcWasiWasilibcUnlinkat(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcUnlinkat(p0, p1)")
+private external fun wasmRustlangLibcWasiWasilibcUnlinkat(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiWasilibcRmdirat(p0, p1)")
-private external fun wasmLibcWasiWasilibcRmdirat(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcRmdirat(p0, p1)")
+private external fun wasmRustlangLibcWasiWasilibcRmdirat(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiWasilibcFindRelpath(p0, p1, p2, p3)")
-private external fun wasmLibcWasiWasilibcFindRelpath(p0: String, p1: String, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcFindRelpath(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiWasilibcFindRelpath(p0: String, p1: String, p2: String, p3: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiWasilibcTell(p0)")
-private external fun wasmLibcWasiWasilibcTell(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcTell(p0)")
+private external fun wasmRustlangLibcWasiWasilibcTell(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdWasilibcUnlinkat(p0, p1)")
-private external fun wasmLibcWasiWasilibcNocwdWasilibcUnlinkat(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdWasilibcUnlinkat(p0, p1)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdWasilibcUnlinkat(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdWasilibcRmdirat(p0, p1)")
-private external fun wasmLibcWasiWasilibcNocwdWasilibcRmdirat(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdWasilibcRmdirat(p0, p1)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdWasilibcRmdirat(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdLinkat(p0, p1, p2, p3, p4)")
-private external fun wasmLibcWasiWasilibcNocwdLinkat(p0: Int, p1: String, p2: Int, p3: String, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdLinkat(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdLinkat(p0: Int, p1: String, p2: Int, p3: String, p4: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdSymlinkat(p0, p1, p2)")
-private external fun wasmLibcWasiWasilibcNocwdSymlinkat(p0: String, p1: Int, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdSymlinkat(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdSymlinkat(p0: String, p1: Int, p2: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdReadlinkat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiWasilibcNocwdReadlinkat(p0: Int, p1: String, p2: String, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdReadlinkat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdReadlinkat(p0: Int, p1: String, p2: String, p3: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdFaccessat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiWasilibcNocwdFaccessat(p0: Int, p1: String, p2: Int, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdFaccessat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdFaccessat(p0: Int, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdRenameat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiWasilibcNocwdRenameat(p0: Int, p1: String, p2: Int, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdRenameat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdRenameat(p0: Int, p1: String, p2: Int, p3: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdOpenatNomode(p0, p1, p2)")
-private external fun wasmLibcWasiWasilibcNocwdOpenatNomode(p0: Int, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdOpenatNomode(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdOpenatNomode(p0: Int, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdFstatat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiWasilibcNocwdFstatat(p0: Int, p1: String, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdFstatat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdFstatat(p0: Int, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdMkdiratNomode(p0, p1)")
-private external fun wasmLibcWasiWasilibcNocwdMkdiratNomode(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdMkdiratNomode(p0, p1)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdMkdiratNomode(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdUtimensat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiWasilibcNocwdUtimensat(p0: Int, p1: String, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdUtimensat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdUtimensat(p0: Int, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiWasilibcNocwdOpendirat(p0, p1)")
-private external fun wasmLibcWasiWasilibcNocwdOpendirat(p0: Int, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcNocwdOpendirat(p0, p1)")
+private external fun wasmRustlangLibcWasiWasilibcNocwdOpendirat(p0: Int, p1: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiWasilibcAccess(p0, p1, p2)")
-private external fun wasmLibcWasiWasilibcAccess(p0: String, p1: Int, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcAccess(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiWasilibcAccess(p0: String, p1: Int, p2: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiWasilibcStat(p0, p1, p2)")
-private external fun wasmLibcWasiWasilibcStat(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcStat(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiWasilibcStat(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiWasilibcUtimens(p0, p1, p2)")
-private external fun wasmLibcWasiWasilibcUtimens(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcUtimens(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiWasilibcUtimens(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiWasilibcLink(p0, p1, p2)")
-private external fun wasmLibcWasiWasilibcLink(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcLink(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiWasilibcLink(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiWasilibcLinkOldat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiWasilibcLinkOldat(p0: Int, p1: String, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcLinkOldat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiWasilibcLinkOldat(p0: Int, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiWasilibcLinkNewat(p0, p1, p2, p3)")
-private external fun wasmLibcWasiWasilibcLinkNewat(p0: String, p1: Int, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcLinkNewat(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiWasilibcLinkNewat(p0: String, p1: Int, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiWasilibcRenameOldat(p0, p1, p2)")
-private external fun wasmLibcWasiWasilibcRenameOldat(p0: Int, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcRenameOldat(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiWasilibcRenameOldat(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiWasilibcRenameNewat(p0, p1, p2)")
-private external fun wasmLibcWasiWasilibcRenameNewat(p0: String, p1: Int, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiWasilibcRenameNewat(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiWasilibcRenameNewat(p0: String, p1: Int, p2: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiArc4random()")
-private external fun wasmLibcWasiArc4random(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiArc4random()")
+private external fun wasmRustlangLibcWasiArc4random(): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiArc4randomBuf(p0, p1)")
-private external fun wasmLibcWasiArc4randomBuf(p0: String, p1: String)
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiArc4randomBuf(p0, p1)")
+private external fun wasmRustlangLibcWasiArc4randomBuf(p0: String, p1: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiArc4randomUniform(p0)")
-private external fun wasmLibcWasiArc4randomUniform(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiArc4randomUniform(p0)")
+private external fun wasmRustlangLibcWasiArc4randomUniform(p0: Int): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiErrnoLocation()")
-private external fun wasmLibcWasiErrnoLocation(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiErrnoLocation()")
+private external fun wasmRustlangLibcWasiErrnoLocation(): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiChmod(p0, p1)")
-private external fun wasmLibcWasiChmod(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiChmod(p0, p1)")
+private external fun wasmRustlangLibcWasiChmod(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiFchmod(p0, p1)")
-private external fun wasmLibcWasiFchmod(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiFchmod(p0, p1)")
+private external fun wasmRustlangLibcWasiFchmod(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiRealpath(p0, p1)")
-private external fun wasmLibcWasiRealpath(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiRealpath(p0, p1)")
+private external fun wasmRustlangLibcWasiRealpath(p0: String, p1: String): String
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiPthreadSelf()")
-private external fun wasmLibcWasiPthreadSelf(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadSelf()")
+private external fun wasmRustlangLibcWasiPthreadSelf(): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.libcWasiPthreadCreate(p0, p1, p2, p3)")
-private external fun wasmLibcWasiPthreadCreate(p0: String, p1: String, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCreate(p0, p1, p2, p3)")
+private external fun wasmRustlangLibcWasiPthreadCreate(p0: String, p1: String, p2: String, p3: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadEqual(p0, p1)")
-private external fun wasmLibcWasiPthreadEqual(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadEqual(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadEqual(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadJoin(p0, p1)")
-private external fun wasmLibcWasiPthreadJoin(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadJoin(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadJoin(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadAttrInit(p0)")
-private external fun wasmLibcWasiPthreadAttrInit(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadAttrInit(p0)")
+private external fun wasmRustlangLibcWasiPthreadAttrInit(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadAttrDestroy(p0)")
-private external fun wasmLibcWasiPthreadAttrDestroy(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadAttrDestroy(p0)")
+private external fun wasmRustlangLibcWasiPthreadAttrDestroy(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadAttrGetstacksize(p0, p1)")
-private external fun wasmLibcWasiPthreadAttrGetstacksize(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadAttrGetstacksize(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadAttrGetstacksize(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadAttrSetstacksize(p0, p1)")
-private external fun wasmLibcWasiPthreadAttrSetstacksize(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadAttrSetstacksize(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadAttrSetstacksize(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadAttrGetdetachstate(p0, p1)")
-private external fun wasmLibcWasiPthreadAttrGetdetachstate(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadAttrGetdetachstate(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadAttrGetdetachstate(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadAttrSetdetachstate(p0, p1)")
-private external fun wasmLibcWasiPthreadAttrSetdetachstate(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadAttrSetdetachstate(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadAttrSetdetachstate(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadAttrGetguardsize(p0, p1)")
-private external fun wasmLibcWasiPthreadAttrGetguardsize(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadAttrGetguardsize(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadAttrGetguardsize(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadAttrSetguardsize(p0, p1)")
-private external fun wasmLibcWasiPthreadAttrSetguardsize(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadAttrSetguardsize(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadAttrSetguardsize(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiPthreadAttrGetstack(p0, p1, p2)")
-private external fun wasmLibcWasiPthreadAttrGetstack(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadAttrGetstack(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiPthreadAttrGetstack(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiPthreadAttrSetstack(p0, p1, p2)")
-private external fun wasmLibcWasiPthreadAttrSetstack(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadAttrSetstack(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiPthreadAttrSetstack(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadDetach(p0)")
-private external fun wasmLibcWasiPthreadDetach(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadDetach(p0)")
+private external fun wasmRustlangLibcWasiPthreadDetach(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadSetcancelstate(p0, p1)")
-private external fun wasmLibcWasiPthreadSetcancelstate(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadSetcancelstate(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadSetcancelstate(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadSetcanceltype(p0, p1)")
-private external fun wasmLibcWasiPthreadSetcanceltype(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadSetcanceltype(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadSetcanceltype(p0: Int, p1: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.libcWasiPthreadTestcancel()")
-private external fun wasmLibcWasiPthreadTestcancel()
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadTestcancel()")
+private external fun wasmRustlangLibcWasiPthreadTestcancel()
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadOnce(p0, p1)")
-private external fun wasmLibcWasiPthreadOnce(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadOnce(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadOnce(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadKeyCreate(p0, p1)")
-private external fun wasmLibcWasiPthreadKeyCreate(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadKeyCreate(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadKeyCreate(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadKeyDelete(p0)")
-private external fun wasmLibcWasiPthreadKeyDelete(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadKeyDelete(p0)")
+private external fun wasmRustlangLibcWasiPthreadKeyDelete(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadGetspecific(p0)")
-private external fun wasmLibcWasiPthreadGetspecific(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadGetspecific(p0)")
+private external fun wasmRustlangLibcWasiPthreadGetspecific(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadSetspecific(p0, p1)")
-private external fun wasmLibcWasiPthreadSetspecific(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadSetspecific(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadSetspecific(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexInit(p0, p1)")
-private external fun wasmLibcWasiPthreadMutexInit(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexInit(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadMutexInit(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexDestroy(p0)")
-private external fun wasmLibcWasiPthreadMutexDestroy(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexDestroy(p0)")
+private external fun wasmRustlangLibcWasiPthreadMutexDestroy(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexLock(p0)")
-private external fun wasmLibcWasiPthreadMutexLock(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexLock(p0)")
+private external fun wasmRustlangLibcWasiPthreadMutexLock(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexTrylock(p0)")
-private external fun wasmLibcWasiPthreadMutexTrylock(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexTrylock(p0)")
+private external fun wasmRustlangLibcWasiPthreadMutexTrylock(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexUnlock(p0)")
-private external fun wasmLibcWasiPthreadMutexUnlock(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexUnlock(p0)")
+private external fun wasmRustlangLibcWasiPthreadMutexUnlock(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexTimedlock(p0, p1)")
-private external fun wasmLibcWasiPthreadMutexTimedlock(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexTimedlock(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadMutexTimedlock(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexConsistent(p0)")
-private external fun wasmLibcWasiPthreadMutexConsistent(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexConsistent(p0)")
+private external fun wasmRustlangLibcWasiPthreadMutexConsistent(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexGetprioceiling(p0, p1)")
-private external fun wasmLibcWasiPthreadMutexGetprioceiling(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexGetprioceiling(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadMutexGetprioceiling(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexattrInit(p0)")
-private external fun wasmLibcWasiPthreadMutexattrInit(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexattrInit(p0)")
+private external fun wasmRustlangLibcWasiPthreadMutexattrInit(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexattrDestroy(p0)")
-private external fun wasmLibcWasiPthreadMutexattrDestroy(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexattrDestroy(p0)")
+private external fun wasmRustlangLibcWasiPthreadMutexattrDestroy(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexattrSettype(p0, p1)")
-private external fun wasmLibcWasiPthreadMutexattrSettype(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexattrSettype(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadMutexattrSettype(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexattrGetprotocol(p0, p1)")
-private external fun wasmLibcWasiPthreadMutexattrGetprotocol(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexattrGetprotocol(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadMutexattrGetprotocol(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexattrGetpshared(p0, p1)")
-private external fun wasmLibcWasiPthreadMutexattrGetpshared(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexattrGetpshared(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadMutexattrGetpshared(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexattrGetrobust(p0, p1)")
-private external fun wasmLibcWasiPthreadMutexattrGetrobust(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexattrGetrobust(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadMutexattrGetrobust(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexattrGettype(p0, p1)")
-private external fun wasmLibcWasiPthreadMutexattrGettype(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexattrGettype(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadMutexattrGettype(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexattrSetprotocol(p0, p1)")
-private external fun wasmLibcWasiPthreadMutexattrSetprotocol(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexattrSetprotocol(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadMutexattrSetprotocol(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexattrSetpshared(p0, p1)")
-private external fun wasmLibcWasiPthreadMutexattrSetpshared(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexattrSetpshared(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadMutexattrSetpshared(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadMutexattrSetrobust(p0, p1)")
-private external fun wasmLibcWasiPthreadMutexattrSetrobust(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadMutexattrSetrobust(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadMutexattrSetrobust(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadCondInit(p0, p1)")
-private external fun wasmLibcWasiPthreadCondInit(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCondInit(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadCondInit(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadCondWait(p0, p1)")
-private external fun wasmLibcWasiPthreadCondWait(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCondWait(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadCondWait(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiPthreadCondTimedwait(p0, p1, p2)")
-private external fun wasmLibcWasiPthreadCondTimedwait(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCondTimedwait(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiPthreadCondTimedwait(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadCondSignal(p0)")
-private external fun wasmLibcWasiPthreadCondSignal(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCondSignal(p0)")
+private external fun wasmRustlangLibcWasiPthreadCondSignal(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadCondBroadcast(p0)")
-private external fun wasmLibcWasiPthreadCondBroadcast(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCondBroadcast(p0)")
+private external fun wasmRustlangLibcWasiPthreadCondBroadcast(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadCondDestroy(p0)")
-private external fun wasmLibcWasiPthreadCondDestroy(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCondDestroy(p0)")
+private external fun wasmRustlangLibcWasiPthreadCondDestroy(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadCondattrInit(p0)")
-private external fun wasmLibcWasiPthreadCondattrInit(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCondattrInit(p0)")
+private external fun wasmRustlangLibcWasiPthreadCondattrInit(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadCondattrDestroy(p0)")
-private external fun wasmLibcWasiPthreadCondattrDestroy(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCondattrDestroy(p0)")
+private external fun wasmRustlangLibcWasiPthreadCondattrDestroy(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadCondattrGetclock(p0, p1)")
-private external fun wasmLibcWasiPthreadCondattrGetclock(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCondattrGetclock(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadCondattrGetclock(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadCondattrSetpshared(p0, p1)")
-private external fun wasmLibcWasiPthreadCondattrSetpshared(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCondattrSetpshared(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadCondattrSetpshared(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadCondattrGetpshared(p0, p1)")
-private external fun wasmLibcWasiPthreadCondattrGetpshared(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadCondattrGetpshared(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadCondattrGetpshared(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockInit(p0, p1)")
-private external fun wasmLibcWasiPthreadRwlockInit(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockInit(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadRwlockInit(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockDestroy(p0)")
-private external fun wasmLibcWasiPthreadRwlockDestroy(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockDestroy(p0)")
+private external fun wasmRustlangLibcWasiPthreadRwlockDestroy(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockRdlock(p0)")
-private external fun wasmLibcWasiPthreadRwlockRdlock(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockRdlock(p0)")
+private external fun wasmRustlangLibcWasiPthreadRwlockRdlock(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockTryrdlock(p0)")
-private external fun wasmLibcWasiPthreadRwlockTryrdlock(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockTryrdlock(p0)")
+private external fun wasmRustlangLibcWasiPthreadRwlockTryrdlock(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockWrlock(p0)")
-private external fun wasmLibcWasiPthreadRwlockWrlock(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockWrlock(p0)")
+private external fun wasmRustlangLibcWasiPthreadRwlockWrlock(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockTrywrlock(p0)")
-private external fun wasmLibcWasiPthreadRwlockTrywrlock(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockTrywrlock(p0)")
+private external fun wasmRustlangLibcWasiPthreadRwlockTrywrlock(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockUnlock(p0)")
-private external fun wasmLibcWasiPthreadRwlockUnlock(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockUnlock(p0)")
+private external fun wasmRustlangLibcWasiPthreadRwlockUnlock(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockTimedrdlock(p0, p1)")
-private external fun wasmLibcWasiPthreadRwlockTimedrdlock(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockTimedrdlock(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadRwlockTimedrdlock(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockTimedwrlock(p0, p1)")
-private external fun wasmLibcWasiPthreadRwlockTimedwrlock(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockTimedwrlock(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadRwlockTimedwrlock(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockattrInit(p0)")
-private external fun wasmLibcWasiPthreadRwlockattrInit(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockattrInit(p0)")
+private external fun wasmRustlangLibcWasiPthreadRwlockattrInit(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockattrDestroy(p0)")
-private external fun wasmLibcWasiPthreadRwlockattrDestroy(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockattrDestroy(p0)")
+private external fun wasmRustlangLibcWasiPthreadRwlockattrDestroy(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockattrSetpshared(p0, p1)")
-private external fun wasmLibcWasiPthreadRwlockattrSetpshared(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockattrSetpshared(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadRwlockattrSetpshared(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadRwlockattrGetpshared(p0, p1)")
-private external fun wasmLibcWasiPthreadRwlockattrGetpshared(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadRwlockattrGetpshared(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadRwlockattrGetpshared(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadSpinInit(p0, p1)")
-private external fun wasmLibcWasiPthreadSpinInit(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadSpinInit(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadSpinInit(p0: String, p1: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadSpinDestroy(p0)")
-private external fun wasmLibcWasiPthreadSpinDestroy(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadSpinDestroy(p0)")
+private external fun wasmRustlangLibcWasiPthreadSpinDestroy(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadSpinLock(p0)")
-private external fun wasmLibcWasiPthreadSpinLock(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadSpinLock(p0)")
+private external fun wasmRustlangLibcWasiPthreadSpinLock(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadSpinTrylock(p0)")
-private external fun wasmLibcWasiPthreadSpinTrylock(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadSpinTrylock(p0)")
+private external fun wasmRustlangLibcWasiPthreadSpinTrylock(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadSpinUnlock(p0)")
-private external fun wasmLibcWasiPthreadSpinUnlock(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadSpinUnlock(p0)")
+private external fun wasmRustlangLibcWasiPthreadSpinUnlock(p0: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.libcWasiPthreadBarrierInit(p0, p1, p2)")
-private external fun wasmLibcWasiPthreadBarrierInit(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadBarrierInit(p0, p1, p2)")
+private external fun wasmRustlangLibcWasiPthreadBarrierInit(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadBarrierDestroy(p0)")
-private external fun wasmLibcWasiPthreadBarrierDestroy(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadBarrierDestroy(p0)")
+private external fun wasmRustlangLibcWasiPthreadBarrierDestroy(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadBarrierWait(p0)")
-private external fun wasmLibcWasiPthreadBarrierWait(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadBarrierWait(p0)")
+private external fun wasmRustlangLibcWasiPthreadBarrierWait(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadBarrierattrInit(p0)")
-private external fun wasmLibcWasiPthreadBarrierattrInit(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadBarrierattrInit(p0)")
+private external fun wasmRustlangLibcWasiPthreadBarrierattrInit(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.libcWasiPthreadBarrierattrDestroy(p0)")
-private external fun wasmLibcWasiPthreadBarrierattrDestroy(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadBarrierattrDestroy(p0)")
+private external fun wasmRustlangLibcWasiPthreadBarrierattrDestroy(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadBarrierattrSetpshared(p0, p1)")
-private external fun wasmLibcWasiPthreadBarrierattrSetpshared(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadBarrierattrSetpshared(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadBarrierattrSetpshared(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadBarrierattrGetpshared(p0, p1)")
-private external fun wasmLibcWasiPthreadBarrierattrGetpshared(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadBarrierattrGetpshared(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadBarrierattrGetpshared(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.libcWasiPthreadGetattrNp(p0, p1)")
-private external fun wasmLibcWasiPthreadGetattrNp(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangLibcWasiPthreadGetattrNp(p0, p1)")
+private external fun wasmRustlangLibcWasiPthreadGetattrNp(p0: String, p1: String): Int
 
 public actual var ENVIRON: MutPtr
-    get() = if (wasiNapiAvailable) MutPtr(wasmLibcWasiGetENVIRON().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    get() = if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiGetENVIRON().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
     set(value) {
-        if (wasiNapiAvailable) {
-            wasmLibcWasiSetENVIRON(value.rawAddress.toString())
+        if (libcWasiNapiAvailable) {
+            wasmRustlangLibcWasiSetENVIRON(value.rawAddress.toString())
         } else {
             throw UnsupportedOperationException("Native FFI addon is not available")
         }
     }
 
 public actual val CLOCK_MONOTONIC1: UByte
-    get() = if (wasiNapiAvailable) wasmLibcWasiGetCLOCKMONOTONIC1().toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
+    get() = if (libcWasiNapiAvailable) wasmRustlangLibcWasiGetCLOCKMONOTONIC1().toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual val CLOCK_REALTIME1: UByte
-    get() = if (wasiNapiAvailable) wasmLibcWasiGetCLOCKREALTIME1().toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
+    get() = if (libcWasiNapiAvailable) wasmRustlangLibcWasiGetCLOCKREALTIME1().toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun exit(code: CInt): Nothing {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiExit(code)
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiExit(code)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
@@ -1023,8 +1023,8 @@ public actual fun exit(code: CInt): Nothing {
 }
 
 public actual fun abort(): Nothing {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiAbort()
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiAbort()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
@@ -1032,162 +1032,162 @@ public actual fun abort(): Nothing {
 }
 
 public actual fun alignedAlloc(a: SizeT, b: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiAlignedAlloc(a.toString(), b.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiAlignedAlloc(a.toString(), b.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun calloc(amt: SizeT, amt2: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiCalloc(amt.toString(), amt2.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiCalloc(amt.toString(), amt2.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun free(ptr: MutPtr) {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiFree(ptr.rawAddress.toString())
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiFree(ptr.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun getenv(s: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiGetenv(s.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiGetenv(s.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun malloc(amt: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiMalloc(amt.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiMalloc(amt.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun mallocUsableSize(ptr: MutPtr): SizeT =
-    if (wasiNapiAvailable) wasmLibcWasiMallocUsableSize(ptr.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiMallocUsableSize(ptr.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sbrk(increment: IntptrT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiSbrk(increment.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiSbrk(increment.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun rand(): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiRand() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiRand() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun read(fd: CInt, ptr: MutPtr, size: SizeT): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiRead(fd, ptr.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiRead(fd, ptr.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun realloc(ptr: MutPtr, amt: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiRealloc(ptr.rawAddress.toString(), amt.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiRealloc(ptr.rawAddress.toString(), amt.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setenv(k: ConstPtr, v: ConstPtr, a: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiSetenv(k.rawAddress.toString(), v.rawAddress.toString(), a) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSetenv(k.rawAddress.toString(), v.rawAddress.toString(), a) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun unsetenv(k: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiUnsetenv(k.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiUnsetenv(k.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun clearenv(): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiClearenv() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiClearenv() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun write(fd: CInt, ptr: ConstPtr, size: SizeT): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiWrite(fd, ptr.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWrite(fd, ptr.rawAddress.toString(), size.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fopen(a: ConstPtr, b: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiFopen(a.rawAddress.toString(), b.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiFopen(a.rawAddress.toString(), b.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun freopen(a: ConstPtr, b: ConstPtr, f: MutPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiFreopen(a.rawAddress.toString(), b.rawAddress.toString(), f.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiFreopen(a.rawAddress.toString(), b.rawAddress.toString(), f.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fclose(f: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFclose(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFclose(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun remove(a: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiRemove(a.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiRemove(a.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun rename(a: ConstPtr, b: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiRename(a.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiRename(a.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun feof(f: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFeof(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFeof(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ferror(f: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFerror(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFerror(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fflush(f: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFflush(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFflush(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun clearerr(f: MutPtr) {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiClearerr(f.rawAddress.toString())
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiClearerr(f.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun fseek(f: MutPtr, b: CLong, c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFseek(f.rawAddress.toString(), b.toString(), c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFseek(f.rawAddress.toString(), b.toString(), c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ftell(f: MutPtr): CLong =
-    if (wasiNapiAvailable) wasmLibcWasiFtell(f.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFtell(f.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun rewind(f: MutPtr) {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiRewind(f.rawAddress.toString())
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiRewind(f.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun fgetpos(f: MutPtr, pos: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFgetpos(f.rawAddress.toString(), pos.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFgetpos(f.rawAddress.toString(), pos.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fsetpos(f: MutPtr, pos: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFsetpos(f.rawAddress.toString(), pos.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFsetpos(f.rawAddress.toString(), pos.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fread(buf: MutPtr, a: SizeT, b: SizeT, f: MutPtr): SizeT =
-    if (wasiNapiAvailable) wasmLibcWasiFread(buf.rawAddress.toString(), a.toString(), b.toString(), f.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFread(buf.rawAddress.toString(), a.toString(), b.toString(), f.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fwrite(buf: ConstPtr, a: SizeT, b: SizeT, f: MutPtr): SizeT =
-    if (wasiNapiAvailable) wasmLibcWasiFwrite(buf.rawAddress.toString(), a.toString(), b.toString(), f.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFwrite(buf.rawAddress.toString(), a.toString(), b.toString(), f.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fgetc(f: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFgetc(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFgetc(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getc(f: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiGetc(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiGetc(f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getchar(): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiGetchar() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiGetchar() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ungetc(a: CInt, f: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiUngetc(a, f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiUngetc(a, f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fputc(a: CInt, f: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFputc(a, f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFputc(a, f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun putc(a: CInt, f: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPutc(a, f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPutc(a, f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun putchar(a: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPutchar(a) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPutchar(a) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fputs(a: ConstPtr, f: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFputs(a.rawAddress.toString(), f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFputs(a.rawAddress.toString(), f.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun puts(a: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPuts(a.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPuts(a.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun perror(a: ConstPtr) {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiPerror(a.rawAddress.toString())
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiPerror(a.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun srand(a: CUint) {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiSrand(a.toInt())
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiSrand(a.toInt())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun atexit(a: AtexitACallback): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiAtexit(0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiAtexit(0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun atQuickExit(a: AtexitACallback): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiAtQuickExit(0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiAtQuickExit(0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun quickExit(a: CInt): Nothing {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiQuickExit(a)
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiQuickExit(a)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
@@ -1195,60 +1195,60 @@ public actual fun quickExit(a: CInt): Nothing {
 }
 
 public actual fun posixMemalign(a: MutPtr, b: SizeT, c: SizeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPosixMemalign(a.rawAddress.toString(), b.toString(), c.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPosixMemalign(a.rawAddress.toString(), b.toString(), c.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun randR(a: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiRandR(a.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiRandR(a.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun random(): CLong =
-    if (wasiNapiAvailable) wasmLibcWasiRandom().toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiRandom().toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun srandom(a: CUint) {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiSrandom(a.toInt())
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiSrandom(a.toInt())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun putenv(a: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPutenv(a.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPutenv(a.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun clock(): ClockT =
-    if (wasiNapiAvailable) wasmLibcWasiClock().toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiClock().toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun time(a: MutPtr): TimeT =
-    if (wasiNapiAvailable) wasmLibcWasiTime(a.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiTime(a.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun difftime(a: TimeT, b: TimeT): CDouble =
-    if (wasiNapiAvailable) wasmLibcWasiDifftime(a.toString(), b.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiDifftime(a.toString(), b.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun mktime(a: MutPtr): TimeT =
-    if (wasiNapiAvailable) wasmLibcWasiMktime(a.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiMktime(a.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strftime(a: MutPtr, b: SizeT, c: ConstPtr, d: ConstPtr): SizeT =
-    if (wasiNapiAvailable) wasmLibcWasiStrftime(a.rawAddress.toString(), b.toString(), c.rawAddress.toString(), d.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrftime(a.rawAddress.toString(), b.toString(), c.rawAddress.toString(), d.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun gmtime(a: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiGmtime(a.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiGmtime(a.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun gmtimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiGmtimeR(a.rawAddress.toString(), b.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiGmtimeR(a.rawAddress.toString(), b.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun localtime(a: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiLocaltime(a.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiLocaltime(a.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun localtimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiLocaltimeR(a.rawAddress.toString(), b.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiLocaltimeR(a.rawAddress.toString(), b.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun asctimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiAsctimeR(a.rawAddress.toString(), b.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiAsctimeR(a.rawAddress.toString(), b.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ctimeR(a: ConstPtr, b: MutPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiCtimeR(a.rawAddress.toString(), b.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiCtimeR(a.rawAddress.toString(), b.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun nanosleep(a: ConstPtr, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiNanosleep(a.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiNanosleep(a.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun clockGetres(a: ClockidT, b: MutPtr): CInt =
     throw UnsupportedOperationException("Native FFI addon is not available")
@@ -1260,811 +1260,811 @@ public actual fun clockNanosleep(a: ClockidT, a2: CInt, b: ConstPtr, c: MutPtr):
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isalnum(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIsalnum(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIsalnum(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isalpha(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIsalpha(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIsalpha(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun iscntrl(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIscntrl(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIscntrl(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isdigit(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIsdigit(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIsdigit(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isgraph(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIsgraph(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIsgraph(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun islower(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIslower(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIslower(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isprint(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIsprint(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIsprint(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ispunct(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIspunct(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIspunct(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isspace(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIsspace(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIsspace(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isupper(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIsupper(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIsupper(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isxdigit(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIsxdigit(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIsxdigit(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isblank(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIsblank(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIsblank(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tolower(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiTolower(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiTolower(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun toupper(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiToupper(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiToupper(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setvbuf(stream: MutPtr, buffer: MutPtr, mode: CInt, size: SizeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiSetvbuf(stream.rawAddress.toString(), buffer.rawAddress.toString(), mode, size.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSetvbuf(stream.rawAddress.toString(), buffer.rawAddress.toString(), mode, size.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setbuf(stream: MutPtr, buf: MutPtr) {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiSetbuf(stream.rawAddress.toString(), buf.rawAddress.toString())
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiSetbuf(stream.rawAddress.toString(), buf.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun fgets(buf: MutPtr, n: CInt, stream: MutPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiFgets(buf.rawAddress.toString(), n, stream.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiFgets(buf.rawAddress.toString(), n, stream.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun atof(s: ConstPtr): CDouble =
-    if (wasiNapiAvailable) wasmLibcWasiAtof(s.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiAtof(s.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun atoi(s: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiAtoi(s.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiAtoi(s.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun atol(s: ConstPtr): CLong =
-    if (wasiNapiAvailable) wasmLibcWasiAtol(s.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiAtol(s.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun atoll(s: ConstPtr): CLonglong =
-    if (wasiNapiAvailable) wasmLibcWasiAtoll(s.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiAtoll(s.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strtod(s: ConstPtr, endp: MutPtr): CDouble =
-    if (wasiNapiAvailable) wasmLibcWasiStrtod(s.rawAddress.toString(), endp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrtod(s.rawAddress.toString(), endp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strtof(s: ConstPtr, endp: MutPtr): CFloat =
-    if (wasiNapiAvailable) wasmLibcWasiStrtof(s.rawAddress.toString(), endp.rawAddress.toString()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrtof(s.rawAddress.toString(), endp.rawAddress.toString()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strtol(s: ConstPtr, endp: MutPtr, base: CInt): CLong =
-    if (wasiNapiAvailable) wasmLibcWasiStrtol(s.rawAddress.toString(), endp.rawAddress.toString(), base).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrtol(s.rawAddress.toString(), endp.rawAddress.toString(), base).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strtoll(s: ConstPtr, endp: MutPtr, base: CInt): CLonglong =
-    if (wasiNapiAvailable) wasmLibcWasiStrtoll(s.rawAddress.toString(), endp.rawAddress.toString(), base).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrtoll(s.rawAddress.toString(), endp.rawAddress.toString(), base).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strtoul(s: ConstPtr, endp: MutPtr, base: CInt): CUlong =
-    if (wasiNapiAvailable) wasmLibcWasiStrtoul(s.rawAddress.toString(), endp.rawAddress.toString(), base).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrtoul(s.rawAddress.toString(), endp.rawAddress.toString(), base).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strtoull(s: ConstPtr, endp: MutPtr, base: CInt): CUlonglong =
-    if (wasiNapiAvailable) wasmLibcWasiStrtoull(s.rawAddress.toString(), endp.rawAddress.toString(), base).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrtoull(s.rawAddress.toString(), endp.rawAddress.toString(), base).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strcpy(dst: MutPtr, src: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrcpy(dst.rawAddress.toString(), src.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrcpy(dst.rawAddress.toString(), src.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrncpy(dst.rawAddress.toString(), src.rawAddress.toString(), n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrncpy(dst.rawAddress.toString(), src.rawAddress.toString(), n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strcat(s: MutPtr, ct: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrcat(s.rawAddress.toString(), ct.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrcat(s.rawAddress.toString(), ct.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strncat(s: MutPtr, ct: ConstPtr, n: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrncat(s.rawAddress.toString(), ct.rawAddress.toString(), n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrncat(s.rawAddress.toString(), ct.rawAddress.toString(), n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strcmp(cs: ConstPtr, ct: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiStrcmp(cs.rawAddress.toString(), ct.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrcmp(cs.rawAddress.toString(), ct.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strncmp(cs: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiStrncmp(cs.rawAddress.toString(), ct.rawAddress.toString(), n.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrncmp(cs.rawAddress.toString(), ct.rawAddress.toString(), n.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strcoll(cs: ConstPtr, ct: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiStrcoll(cs.rawAddress.toString(), ct.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrcoll(cs.rawAddress.toString(), ct.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strchr(cs: ConstPtr, c: CInt): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrchr(cs.rawAddress.toString(), c).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrchr(cs.rawAddress.toString(), c).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strrchr(cs: ConstPtr, c: CInt): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrrchr(cs.rawAddress.toString(), c).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrrchr(cs.rawAddress.toString(), c).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    if (wasiNapiAvailable) wasmLibcWasiStrspn(cs.rawAddress.toString(), ct.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrspn(cs.rawAddress.toString(), ct.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strcspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    if (wasiNapiAvailable) wasmLibcWasiStrcspn(cs.rawAddress.toString(), ct.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrcspn(cs.rawAddress.toString(), ct.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strdup(cs: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrdup(cs.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrdup(cs.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strndup(cs: ConstPtr, n: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrndup(cs.rawAddress.toString(), n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrndup(cs.rawAddress.toString(), n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strpbrk(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrpbrk(cs.rawAddress.toString(), ct.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrpbrk(cs.rawAddress.toString(), ct.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strstr(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrstr(cs.rawAddress.toString(), ct.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrstr(cs.rawAddress.toString(), ct.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strcasecmp(s1: ConstPtr, s2: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiStrcasecmp(s1.rawAddress.toString(), s2.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrcasecmp(s1.rawAddress.toString(), s2.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strncasecmp(s1: ConstPtr, s2: ConstPtr, n: SizeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiStrncasecmp(s1.rawAddress.toString(), s2.rawAddress.toString(), n.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrncasecmp(s1.rawAddress.toString(), s2.rawAddress.toString(), n.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strlen(cs: ConstPtr): SizeT =
-    if (wasiNapiAvailable) wasmLibcWasiStrlen(cs.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrlen(cs.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strnlen(cs: ConstPtr, maxlen: SizeT): SizeT =
-    if (wasiNapiAvailable) wasmLibcWasiStrnlen(cs.rawAddress.toString(), maxlen.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrnlen(cs.rawAddress.toString(), maxlen.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strerror(n: CInt): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrerror(n).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrerror(n).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strtok(s: MutPtr, t: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrtok(s.rawAddress.toString(), t.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrtok(s.rawAddress.toString(), t.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strxfrm(s: MutPtr, ct: ConstPtr, n: SizeT): SizeT =
-    if (wasiNapiAvailable) wasmLibcWasiStrxfrm(s.rawAddress.toString(), ct.rawAddress.toString(), n.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrxfrm(s.rawAddress.toString(), ct.rawAddress.toString(), n.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun memchr(cx: ConstPtr, c: CInt, n: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiMemchr(cx.rawAddress.toString(), c, n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiMemchr(cx.rawAddress.toString(), c, n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun memcmp(cx: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiMemcmp(cx.rawAddress.toString(), ct.rawAddress.toString(), n.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiMemcmp(cx.rawAddress.toString(), ct.rawAddress.toString(), n.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun memcpy(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiMemcpy(dest.rawAddress.toString(), src.rawAddress.toString(), n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiMemcpy(dest.rawAddress.toString(), src.rawAddress.toString(), n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun memmove(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiMemmove(dest.rawAddress.toString(), src.rawAddress.toString(), n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiMemmove(dest.rawAddress.toString(), src.rawAddress.toString(), n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun memset(dest: MutPtr, c: CInt, n: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiMemset(dest.rawAddress.toString(), c, n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiMemset(dest.rawAddress.toString(), c, n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFprintf(stream.rawAddress.toString(), format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFprintf(stream.rawAddress.toString(), format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun printf(format: ConstPtr, vararg variadicArgs: Long): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPrintf(format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPrintf(format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun snprintf(s: MutPtr, n: SizeT, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiSnprintf(s.rawAddress.toString(), n.toString(), format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSnprintf(s.rawAddress.toString(), n.toString(), format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sprintf(s: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiSprintf(s.rawAddress.toString(), format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSprintf(s.rawAddress.toString(), format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fscanf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFscanf(stream.rawAddress.toString(), format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFscanf(stream.rawAddress.toString(), format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun scanf(format: ConstPtr, vararg variadicArgs: Long): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiScanf(format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiScanf(format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sscanf(s: ConstPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiSscanf(s.rawAddress.toString(), format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSscanf(s.rawAddress.toString(), format.rawAddress.toString(), variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getcharUnlocked(): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiGetcharUnlocked() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiGetcharUnlocked() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun putcharUnlocked(c: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPutcharUnlocked(c) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPutcharUnlocked(c) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun shutdown(socket: CInt, how: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiShutdown(socket, how) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiShutdown(socket, how) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fstat(fildes: CInt, buf: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFstat(fildes, buf.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFstat(fildes, buf.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun mkdir(path: ConstPtr, mode: ModeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiMkdir(path.rawAddress.toString(), mode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiMkdir(path.rawAddress.toString(), mode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun stat(path: ConstPtr, buf: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiStat(path.rawAddress.toString(), buf.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStat(path.rawAddress.toString(), buf.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fdopen(fd: CInt, mode: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiFdopen(fd, mode.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiFdopen(fd, mode.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fileno(stream: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFileno(stream.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFileno(stream.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun open(path: ConstPtr, oflag: CInt, vararg variadicArgs: Long): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiOpen(path.rawAddress.toString(), oflag, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiOpen(path.rawAddress.toString(), oflag, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun creat(path: ConstPtr, mode: ModeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiCreat(path.rawAddress.toString(), mode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiCreat(path.rawAddress.toString(), mode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fcntl(fd: CInt, cmd: CInt, vararg variadicArgs: Long): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFcntl(fd, cmd, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFcntl(fd, cmd, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun opendir(dirname: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiOpendir(dirname.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiOpendir(dirname.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fdopendir(fd: CInt): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiFdopendir(fd).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiFdopendir(fd).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun readdir(dirp: MutPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiReaddir(dirp.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiReaddir(dirp.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun closedir(dirp: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiClosedir(dirp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiClosedir(dirp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun rewinddir(dirp: MutPtr) {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiRewinddir(dirp.rawAddress.toString())
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiRewinddir(dirp.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun dirfd(dirp: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiDirfd(dirp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiDirfd(dirp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun seekdir(dirp: MutPtr, loc: CLong) {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiSeekdir(dirp.rawAddress.toString(), loc.toString())
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiSeekdir(dirp.rawAddress.toString(), loc.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun telldir(dirp: MutPtr): CLong =
-    if (wasiNapiAvailable) wasmLibcWasiTelldir(dirp.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiTelldir(dirp.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun openat(dirfd: CInt, pathname: ConstPtr, flags: CInt, vararg variadicArgs: Long): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiOpenat(dirfd, pathname.rawAddress.toString(), flags, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiOpenat(dirfd, pathname.rawAddress.toString(), flags, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fstatat(dirfd: CInt, pathname: ConstPtr, buf: MutPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFstatat(dirfd, pathname.rawAddress.toString(), buf.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFstatat(dirfd, pathname.rawAddress.toString(), buf.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun linkat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiLinkat(olddirfd, oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiLinkat(olddirfd, oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun mkdirat(dirfd: CInt, pathname: ConstPtr, mode: ModeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiMkdirat(dirfd, pathname.rawAddress.toString(), mode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiMkdirat(dirfd, pathname.rawAddress.toString(), mode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun readlinkat(dirfd: CInt, pathname: ConstPtr, buf: MutPtr, bufsiz: SizeT): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiReadlinkat(dirfd, pathname.rawAddress.toString(), buf.rawAddress.toString(), bufsiz.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiReadlinkat(dirfd, pathname.rawAddress.toString(), buf.rawAddress.toString(), bufsiz.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun renameat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiRenameat(olddirfd, oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiRenameat(olddirfd, oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun symlinkat(target: ConstPtr, newdirfd: CInt, linkpath: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiSymlinkat(target.rawAddress.toString(), newdirfd, linkpath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSymlinkat(target.rawAddress.toString(), newdirfd, linkpath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun unlinkat(dirfd: CInt, pathname: ConstPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiUnlinkat(dirfd, pathname.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiUnlinkat(dirfd, pathname.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun access(path: ConstPtr, amode: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiAccess(path.rawAddress.toString(), amode) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiAccess(path.rawAddress.toString(), amode) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun close(fd: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiClose(fd) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiClose(fd) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fpathconf(filedes: CInt, name: CInt): CLong =
-    if (wasiNapiAvailable) wasmLibcWasiFpathconf(filedes, name).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFpathconf(filedes, name).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getopt(argc: CInt, argv: ConstPtr, optstr: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiGetopt(argc, argv.rawAddress.toString(), optstr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiGetopt(argc, argv.rawAddress.toString(), optstr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isatty(fd: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIsatty(fd) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIsatty(fd) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun link(src: ConstPtr, dst: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiLink(src.rawAddress.toString(), dst.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiLink(src.rawAddress.toString(), dst.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lseek(fd: CInt, offset: OffT, whence: CInt): OffT =
-    if (wasiNapiAvailable) wasmLibcWasiLseek(fd, offset.toString(), whence).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiLseek(fd, offset.toString(), whence).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pathconf(path: ConstPtr, name: CInt): CLong =
-    if (wasiNapiAvailable) wasmLibcWasiPathconf(path.rawAddress.toString(), name).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPathconf(path.rawAddress.toString(), name).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun rmdir(path: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiRmdir(path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiRmdir(path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sleep(secs: CUint): CUint =
-    if (wasiNapiAvailable) wasmLibcWasiSleep(secs.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSleep(secs.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun unlink(c: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiUnlink(c.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiUnlink(c.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pread(fd: CInt, buf: MutPtr, count: SizeT, offset: OffT): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiPread(fd, buf.rawAddress.toString(), count.toString(), offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPread(fd, buf.rawAddress.toString(), count.toString(), offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pwrite(fd: CInt, buf: ConstPtr, count: SizeT, offset: OffT): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiPwrite(fd, buf.rawAddress.toString(), count.toString(), offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPwrite(fd, buf.rawAddress.toString(), count.toString(), offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lstat(path: ConstPtr, buf: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiLstat(path.rawAddress.toString(), buf.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiLstat(path.rawAddress.toString(), buf.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fsync(fd: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFsync(fd) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFsync(fd) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fdatasync(fd: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFdatasync(fd) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFdatasync(fd) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun symlink(path1: ConstPtr, path2: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiSymlink(path1.rawAddress.toString(), path2.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSymlink(path1.rawAddress.toString(), path2.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun truncate(path: ConstPtr, length: OffT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiTruncate(path.rawAddress.toString(), length.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiTruncate(path.rawAddress.toString(), length.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ftruncate(fd: CInt, length: OffT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFtruncate(fd, length.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFtruncate(fd, length.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getrusage(resource: CInt, usage: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiGetrusage(resource, usage.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiGetrusage(resource, usage.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun gettimeofday(tp: MutPtr, tz: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiGettimeofday(tp.rawAddress.toString(), tz.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiGettimeofday(tp.rawAddress.toString(), tz.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun times(buf: MutPtr): io.github.kotlinmania.rustlang.libc.ClockT =
-    if (wasiNapiAvailable) wasmLibcWasiTimes(buf.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun times(buf: MutPtr): io.github.kotlinmania.rustlang.wasi.ClockT =
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiTimes(buf.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strerrorR(errnum: CInt, buf: MutPtr, buflen: SizeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiStrerrorR(errnum, buf.rawAddress.toString(), buflen.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiStrerrorR(errnum, buf.rawAddress.toString(), buflen.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun usleep(secs: CUint): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiUsleep(secs.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiUsleep(secs.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun send(socket: CInt, buf: ConstPtr, len: SizeT, flags: CInt): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiSend(socket, buf.rawAddress.toString(), len.toString(), flags).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSend(socket, buf.rawAddress.toString(), len.toString(), flags).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun recv(socket: CInt, buf: MutPtr, len: SizeT, flags: CInt): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiRecv(socket, buf.rawAddress.toString(), len.toString(), flags).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiRecv(socket, buf.rawAddress.toString(), len.toString(), flags).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun poll(fds: MutPtr, nfds: NfdsT, timeout: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPoll(fds.rawAddress.toString(), nfds.toString(), timeout) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPoll(fds.rawAddress.toString(), nfds.toString(), timeout) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setlocale(category: CInt, locale: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiSetlocale(category, locale.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiSetlocale(category, locale.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun localeconv(): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiLocaleconv().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiLocaleconv().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun readlink(path: ConstPtr, buf: MutPtr, bufsz: SizeT): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiReadlink(path.rawAddress.toString(), buf.rawAddress.toString(), bufsz.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiReadlink(path.rawAddress.toString(), buf.rawAddress.toString(), bufsz.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timegm(tm: MutPtr): TimeT =
-    if (wasiNapiAvailable) wasmLibcWasiTimegm(tm.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiTimegm(tm.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sysconf(name: CInt): CLong =
-    if (wasiNapiAvailable) wasmLibcWasiSysconf(name).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSysconf(name).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ioctl(fd: CInt, request: CInt, vararg variadicArgs: Long): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiIoctl(fd, request, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiIoctl(fd, request, variadicArgs.size.coerceAtMost(4), (if (variadicArgs.size > 0) variadicArgs[0] else 0L).toString(), (if (variadicArgs.size > 1) variadicArgs[1] else 0L).toString(), (if (variadicArgs.size > 2) variadicArgs[2] else 0L).toString(), (if (variadicArgs.size > 3) variadicArgs[3] else 0L).toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fseeko(stream: MutPtr, offset: OffT, whence: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFseeko(stream.rawAddress.toString(), offset.toString(), whence) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFseeko(stream.rawAddress.toString(), offset.toString(), whence) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ftello(stream: MutPtr): OffT =
-    if (wasiNapiAvailable) wasmLibcWasiFtello(stream.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFtello(stream.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun posixFallocate(fd: CInt, offset: OffT, len: OffT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPosixFallocate(fd, offset.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPosixFallocate(fd, offset.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strcasestr(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiStrcasestr(cs.rawAddress.toString(), ct.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiStrcasestr(cs.rawAddress.toString(), ct.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getline(lineptr: MutPtr, n: MutPtr, stream: MutPtr): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiGetline(lineptr.rawAddress.toString(), n.rawAddress.toString(), stream.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiGetline(lineptr.rawAddress.toString(), n.rawAddress.toString(), stream.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun faccessat(dirfd: CInt, pathname: ConstPtr, mode: CInt, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFaccessat(dirfd, pathname.rawAddress.toString(), mode, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFaccessat(dirfd, pathname.rawAddress.toString(), mode, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun writev(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiWritev(fd, iov.rawAddress.toString(), iovcnt).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWritev(fd, iov.rawAddress.toString(), iovcnt).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun readv(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiReadv(fd, iov.rawAddress.toString(), iovcnt).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiReadv(fd, iov.rawAddress.toString(), iovcnt).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pwritev(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiPwritev(fd, iov.rawAddress.toString(), iovcnt, offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPwritev(fd, iov.rawAddress.toString(), iovcnt, offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun preadv(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT): SsizeT =
-    if (wasiNapiAvailable) wasmLibcWasiPreadv(fd, iov.rawAddress.toString(), iovcnt, offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPreadv(fd, iov.rawAddress.toString(), iovcnt, offset.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun posixFadvise(fd: CInt, offset: OffT, len: OffT, advise: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPosixFadvise(fd, offset.toString(), len.toString(), advise) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPosixFadvise(fd, offset.toString(), len.toString(), advise) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun futimens(fd: CInt, times: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFutimens(fd, times.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFutimens(fd, times.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun utimensat(dirfd: CInt, path: ConstPtr, times: ConstPtr, flag: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiUtimensat(dirfd, path.rawAddress.toString(), times.rawAddress.toString(), flag) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiUtimensat(dirfd, path.rawAddress.toString(), times.rawAddress.toString(), flag) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getentropy(buf: MutPtr, buflen: SizeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiGetentropy(buf.rawAddress.toString(), buflen.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiGetentropy(buf.rawAddress.toString(), buflen.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun memrchr(cx: ConstPtr, c: CInt, n: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiMemrchr(cx.rawAddress.toString(), c, n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiMemrchr(cx.rawAddress.toString(), c, n.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun abs(i: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiAbs(i) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiAbs(i) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun labs(i: CLong): CLong =
-    if (wasiNapiAvailable) wasmLibcWasiLabs(i.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiLabs(i.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun duplocale(base: io.github.kotlinmania.rustlang.libc.LocaleT): io.github.kotlinmania.rustlang.libc.LocaleT =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiDuplocale(base.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun duplocale(base: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT =
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiDuplocale(base.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun freelocale(loc: io.github.kotlinmania.rustlang.libc.LocaleT) {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiFreelocale(loc.rawAddress.toString())
+public actual fun freelocale(loc: io.github.kotlinmania.rustlang.wasi.LocaleT) {
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiFreelocale(loc.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun newlocale(mask: CInt, locale: ConstPtr, base: io.github.kotlinmania.rustlang.libc.LocaleT): io.github.kotlinmania.rustlang.libc.LocaleT =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiNewlocale(mask, locale.rawAddress.toString(), base.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun newlocale(mask: CInt, locale: ConstPtr, base: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT =
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiNewlocale(mask, locale.rawAddress.toString(), base.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun uselocale(loc: io.github.kotlinmania.rustlang.libc.LocaleT): io.github.kotlinmania.rustlang.libc.LocaleT =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiUselocale(loc.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun uselocale(loc: io.github.kotlinmania.rustlang.wasi.LocaleT): io.github.kotlinmania.rustlang.wasi.LocaleT =
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiUselocale(loc.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedYield(): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiSchedYield() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSchedYield() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getcwd(buf: MutPtr, size: SizeT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiGetcwd(buf.rawAddress.toString(), size.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiGetcwd(buf.rawAddress.toString(), size.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun chdir(dir: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiChdir(dir.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiChdir(dir.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun nlLanginfo(item: io.github.kotlinmania.rustlang.libc.NlItem): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiNlLanginfo(item).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun nlLanginfo(item: io.github.kotlinmania.rustlang.wasi.NlItem): MutPtr =
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiNlLanginfo(item).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun nlLanginfoL(item: io.github.kotlinmania.rustlang.libc.NlItem, loc: io.github.kotlinmania.rustlang.libc.LocaleT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiNlLanginfoL(item, loc.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun nlLanginfoL(item: io.github.kotlinmania.rustlang.wasi.NlItem, loc: io.github.kotlinmania.rustlang.wasi.LocaleT): MutPtr =
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiNlLanginfoL(item, loc.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun select(nfds: CInt, readfds: MutPtr, writefds: MutPtr, errorfds: MutPtr, timeout: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiSelect(nfds, readfds.rawAddress.toString(), writefds.rawAddress.toString(), errorfds.rawAddress.toString(), timeout.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiSelect(nfds, readfds.rawAddress.toString(), writefds.rawAddress.toString(), errorfds.rawAddress.toString(), timeout.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcRegisterPreopenedFd(fd: CInt, path: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcRegisterPreopenedFd(fd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcRegisterPreopenedFd(fd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcFdRenumber(fd: CInt, newfd: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcFdRenumber(fd, newfd) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcFdRenumber(fd, newfd) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcUnlinkat(fd: CInt, path: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcUnlinkat(fd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcUnlinkat(fd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcRmdirat(fd: CInt, path: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcRmdirat(fd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcRmdirat(fd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcFindRelpath(path: ConstPtr, absPrefix: MutPtr, relativePath: MutPtr, relativePathLen: ULong): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcFindRelpath(path.rawAddress.toString(), absPrefix.rawAddress.toString(), relativePath.rawAddress.toString(), relativePathLen.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcFindRelpath(path.rawAddress.toString(), absPrefix.rawAddress.toString(), relativePath.rawAddress.toString(), relativePathLen.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcTell(fd: CInt): OffT =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcTell(fd).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcTell(fd).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdWasilibcUnlinkat(dirfd: CInt, path: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcNocwdWasilibcUnlinkat(dirfd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcNocwdWasilibcUnlinkat(dirfd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdWasilibcRmdirat(dirfd: CInt, path: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcNocwdWasilibcRmdirat(dirfd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcNocwdWasilibcRmdirat(dirfd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdLinkat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcNocwdLinkat(olddirfd, oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcNocwdLinkat(olddirfd, oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdSymlinkat(target: ConstPtr, dirfd: CInt, path: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcNocwdSymlinkat(target.rawAddress.toString(), dirfd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcNocwdSymlinkat(target.rawAddress.toString(), dirfd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdReadlinkat(dirfd: CInt, path: ConstPtr, buf: MutPtr, bufsize: ULong): Long =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcNocwdReadlinkat(dirfd, path.rawAddress.toString(), buf.rawAddress.toString(), bufsize.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcNocwdReadlinkat(dirfd, path.rawAddress.toString(), buf.rawAddress.toString(), bufsize.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdFaccessat(dirfd: CInt, path: ConstPtr, mode: CInt, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcNocwdFaccessat(dirfd, path.rawAddress.toString(), mode, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcNocwdFaccessat(dirfd, path.rawAddress.toString(), mode, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdRenameat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcNocwdRenameat(olddirfd, oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcNocwdRenameat(olddirfd, oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdOpenatNomode(dirfd: CInt, path: ConstPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcNocwdOpenatNomode(dirfd, path.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcNocwdOpenatNomode(dirfd, path.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdFstatat(dirfd: CInt, path: ConstPtr, buf: MutPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcNocwdFstatat(dirfd, path.rawAddress.toString(), buf.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcNocwdFstatat(dirfd, path.rawAddress.toString(), buf.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdMkdiratNomode(dirfd: CInt, path: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcNocwdMkdiratNomode(dirfd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcNocwdMkdiratNomode(dirfd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdUtimensat(dirfd: CInt, path: ConstPtr, times: ConstPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcNocwdUtimensat(dirfd, path.rawAddress.toString(), times.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcNocwdUtimensat(dirfd, path.rawAddress.toString(), times.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcNocwdOpendirat(dirfd: CInt, path: ConstPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiWasilibcNocwdOpendirat(dirfd, path.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiWasilibcNocwdOpendirat(dirfd, path.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcAccess(pathname: ConstPtr, mode: CInt, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcAccess(pathname.rawAddress.toString(), mode, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcAccess(pathname.rawAddress.toString(), mode, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcStat(pathname: ConstPtr, buf: MutPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcStat(pathname.rawAddress.toString(), buf.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcStat(pathname.rawAddress.toString(), buf.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcUtimens(pathname: ConstPtr, times: ConstPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcUtimens(pathname.rawAddress.toString(), times.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcUtimens(pathname.rawAddress.toString(), times.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcLink(oldpath: ConstPtr, newpath: ConstPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcLink(oldpath.rawAddress.toString(), newpath.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcLink(oldpath.rawAddress.toString(), newpath.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcLinkOldat(olddirfd: CInt, oldpath: ConstPtr, newpath: ConstPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcLinkOldat(olddirfd, oldpath.rawAddress.toString(), newpath.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcLinkOldat(olddirfd, oldpath.rawAddress.toString(), newpath.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcLinkNewat(oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcLinkNewat(oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcLinkNewat(oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcRenameOldat(olddirfd: CInt, oldpath: ConstPtr, newpath: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcRenameOldat(olddirfd, oldpath.rawAddress.toString(), newpath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcRenameOldat(olddirfd, oldpath.rawAddress.toString(), newpath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wasilibcRenameNewat(oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiWasilibcRenameNewat(oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiWasilibcRenameNewat(oldpath.rawAddress.toString(), newdirfd, newpath.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun arc4random(): UInt =
-    if (wasiNapiAvailable) wasmLibcWasiArc4random().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiArc4random().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun arc4randomBuf(a: MutPtr, b: SizeT) {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiArc4randomBuf(a.rawAddress.toString(), b.toString())
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiArc4randomBuf(a.rawAddress.toString(), b.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun arc4randomUniform(a: UInt): UInt =
-    if (wasiNapiAvailable) wasmLibcWasiArc4randomUniform(a.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiArc4randomUniform(a.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun errnoLocation(): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiErrnoLocation().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiErrnoLocation().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun chmod(path: ConstPtr, mode: ModeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiChmod(path.rawAddress.toString(), mode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiChmod(path.rawAddress.toString(), mode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fchmod(fd: CInt, mode: ModeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiFchmod(fd, mode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiFchmod(fd, mode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun realpath(pathname: ConstPtr, resolved: MutPtr): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiRealpath(pathname.rawAddress.toString(), resolved.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiRealpath(pathname.rawAddress.toString(), resolved.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSelf(): PthreadT =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiPthreadSelf().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiPthreadSelf().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCreate(native: MutPtr, attr: ConstPtr, f: PthreadCreateFCallback, value: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCreate(native.rawAddress.toString(), attr.rawAddress.toString(), 0L.toString(), value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCreate(native.rawAddress.toString(), attr.rawAddress.toString(), 0L.toString(), value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadEqual(t1: PthreadT, t2: PthreadT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadEqual(t1.rawAddress.toString(), t2.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadEqual(t1.rawAddress.toString(), t2.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadJoin(native: PthreadT, value: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadJoin(native.rawAddress.toString(), value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadJoin(native.rawAddress.toString(), value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadAttrInit(attr: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadAttrInit(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadAttrInit(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadAttrDestroy(attr: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadAttrDestroy(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadAttrDestroy(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadAttrGetstacksize(attr: ConstPtr, stacksize: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadAttrGetstacksize(attr.rawAddress.toString(), stacksize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadAttrGetstacksize(attr.rawAddress.toString(), stacksize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadAttrSetstacksize(attr: MutPtr, stackSize: SizeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadAttrSetstacksize(attr.rawAddress.toString(), stackSize.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadAttrSetstacksize(attr.rawAddress.toString(), stackSize.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadAttrGetdetachstate(attr: ConstPtr, state: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadAttrGetdetachstate(attr.rawAddress.toString(), state.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadAttrGetdetachstate(attr.rawAddress.toString(), state.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadAttrSetdetachstate(attr: MutPtr, state: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadAttrSetdetachstate(attr.rawAddress.toString(), state) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadAttrSetdetachstate(attr.rawAddress.toString(), state) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadAttrGetguardsize(attr: ConstPtr, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadAttrGetguardsize(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadAttrGetguardsize(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadAttrSetguardsize(attr: MutPtr, b: SizeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadAttrSetguardsize(attr.rawAddress.toString(), b.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadAttrSetguardsize(attr.rawAddress.toString(), b.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadAttrGetstack(attr: ConstPtr, b: MutPtr, c: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadAttrGetstack(attr.rawAddress.toString(), b.rawAddress.toString(), c.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadAttrGetstack(attr.rawAddress.toString(), b.rawAddress.toString(), c.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadAttrSetstack(attr: MutPtr, b: MutPtr, c: SizeT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadAttrSetstack(attr.rawAddress.toString(), b.rawAddress.toString(), c.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadAttrSetstack(attr.rawAddress.toString(), b.rawAddress.toString(), c.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadDetach(thread: PthreadT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadDetach(thread.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadDetach(thread.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSetcancelstate(a: CInt, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadSetcancelstate(a, b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadSetcancelstate(a, b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSetcanceltype(a: CInt, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadSetcanceltype(a, b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadSetcanceltype(a, b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadTestcancel() {
-    if (wasiNapiAvailable) {
-        wasmLibcWasiPthreadTestcancel()
+    if (libcWasiNapiAvailable) {
+        wasmRustlangLibcWasiPthreadTestcancel()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun pthreadOnce(a: MutPtr, b: AtexitACallback): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadOnce(a.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadOnce(a.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadKeyCreate(key: MutPtr, dtor: PthreadKeyCreateDtorCallback?): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadKeyCreate(key.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadKeyCreate(key.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadKeyDelete(key: PthreadKeyT): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadKeyDelete(key.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadKeyDelete(key.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadGetspecific(key: PthreadKeyT): MutPtr =
-    if (wasiNapiAvailable) MutPtr(wasmLibcWasiPthreadGetspecific(key.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) MutPtr(wasmRustlangLibcWasiPthreadGetspecific(key.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSetspecific(key: PthreadKeyT, value: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadSetspecific(key.toInt(), value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadSetspecific(key.toInt(), value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexInit(lock: MutPtr, attr: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexInit(lock.rawAddress.toString(), attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexInit(lock.rawAddress.toString(), attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexDestroy(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexDestroy(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexDestroy(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexLock(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexLock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexLock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexTrylock(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexTrylock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexTrylock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexUnlock(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexUnlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexUnlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexTimedlock(lock: MutPtr, ts: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexTimedlock(lock.rawAddress.toString(), ts.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexTimedlock(lock.rawAddress.toString(), ts.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexConsistent(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexConsistent(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexConsistent(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexGetprioceiling(lock: MutPtr, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexGetprioceiling(lock.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexGetprioceiling(lock.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexattrInit(attr: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexattrInit(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexattrInit(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexattrDestroy(attr: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexattrDestroy(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexattrDestroy(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexattrSettype(attr: MutPtr, type: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexattrSettype(attr.rawAddress.toString(), type) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexattrSettype(attr.rawAddress.toString(), type) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexattrGetprotocol(attr: ConstPtr, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexattrGetprotocol(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexattrGetprotocol(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexattrGetpshared(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexattrGetpshared(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexattrGetrobust(attr: ConstPtr, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexattrGetrobust(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexattrGetrobust(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexattrGettype(attr: ConstPtr, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexattrGettype(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexattrGettype(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexattrSetprotocol(attr: ConstPtr, b: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexattrSetprotocol(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexattrSetprotocol(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexattrSetpshared(attr: ConstPtr, b: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexattrSetpshared(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexattrSetpshared(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexattrSetrobust(attr: ConstPtr, b: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadMutexattrSetrobust(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadMutexattrSetrobust(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondInit(cond: MutPtr, attr: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCondInit(cond.rawAddress.toString(), attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCondInit(cond.rawAddress.toString(), attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondWait(cond: MutPtr, lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCondWait(cond.rawAddress.toString(), lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCondWait(cond.rawAddress.toString(), lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondTimedwait(cond: MutPtr, lock: MutPtr, abstime: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCondTimedwait(cond.rawAddress.toString(), lock.rawAddress.toString(), abstime.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCondTimedwait(cond.rawAddress.toString(), lock.rawAddress.toString(), abstime.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondSignal(cond: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCondSignal(cond.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCondSignal(cond.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondBroadcast(cond: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCondBroadcast(cond.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCondBroadcast(cond.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondDestroy(cond: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCondDestroy(cond.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCondDestroy(cond.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondattrInit(attr: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCondattrInit(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCondattrInit(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondattrDestroy(attr: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCondattrDestroy(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCondattrDestroy(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondattrSetclock(attr: MutPtr, clockId: ClockidT): CInt =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondattrGetclock(attr: ConstPtr, clockId: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCondattrGetclock(attr.rawAddress.toString(), clockId.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCondattrGetclock(attr.rawAddress.toString(), clockId.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondattrSetpshared(attr: MutPtr, b: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCondattrSetpshared(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCondattrSetpshared(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadCondattrGetpshared(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadCondattrGetpshared(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockInit(lock: MutPtr, attr: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockInit(lock.rawAddress.toString(), attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockInit(lock.rawAddress.toString(), attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockDestroy(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockDestroy(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockDestroy(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockRdlock(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockRdlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockRdlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockTryrdlock(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockTryrdlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockTryrdlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockWrlock(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockWrlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockWrlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockTrywrlock(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockTrywrlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockTrywrlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockUnlock(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockUnlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockUnlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockTimedrdlock(lock: MutPtr, at: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockTimedrdlock(lock.rawAddress.toString(), at.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockTimedrdlock(lock.rawAddress.toString(), at.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockTimedwrlock(lock: MutPtr, at: ConstPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockTimedwrlock(lock.rawAddress.toString(), at.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockTimedwrlock(lock.rawAddress.toString(), at.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockattrInit(attr: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockattrInit(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockattrInit(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockattrDestroy(attr: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockattrDestroy(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockattrDestroy(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockattrSetpshared(attr: MutPtr, b: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockattrSetpshared(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockattrSetpshared(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadRwlockattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadRwlockattrGetpshared(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadRwlockattrGetpshared(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSpinInit(lock: MutPtr, b: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadSpinInit(lock.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadSpinInit(lock.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSpinDestroy(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadSpinDestroy(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadSpinDestroy(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSpinLock(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadSpinLock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadSpinLock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSpinTrylock(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadSpinTrylock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadSpinTrylock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSpinUnlock(lock: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadSpinUnlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadSpinUnlock(lock.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadBarrierInit(barrier: MutPtr, attr: ConstPtr, count: CUint): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadBarrierInit(barrier.rawAddress.toString(), attr.rawAddress.toString(), count.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadBarrierInit(barrier.rawAddress.toString(), attr.rawAddress.toString(), count.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadBarrierDestroy(barrier: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadBarrierDestroy(barrier.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadBarrierDestroy(barrier.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadBarrierWait(barrier: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadBarrierWait(barrier.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadBarrierWait(barrier.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadBarrierattrInit(attr: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadBarrierattrInit(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadBarrierattrInit(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadBarrierattrDestroy(attr: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadBarrierattrDestroy(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadBarrierattrDestroy(attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadBarrierattrSetpshared(attr: MutPtr, b: CInt): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadBarrierattrSetpshared(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadBarrierattrSetpshared(attr.rawAddress.toString(), b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadBarrierattrGetpshared(attr: ConstPtr, b: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadBarrierattrGetpshared(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadBarrierattrGetpshared(attr.rawAddress.toString(), b.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadGetattrNp(thread: PthreadT, attr: MutPtr): CInt =
-    if (wasiNapiAvailable) wasmLibcWasiPthreadGetattrNp(thread.rawAddress.toString(), attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (libcWasiNapiAvailable) wasmRustlangLibcWasiPthreadGetattrNp(thread.rawAddress.toString(), attr.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")

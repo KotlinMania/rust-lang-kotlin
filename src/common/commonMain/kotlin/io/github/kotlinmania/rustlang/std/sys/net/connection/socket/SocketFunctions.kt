@@ -18,13 +18,13 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runWithCstr
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.cvtGai
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.init
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.sys.helpers.smallcstring.runWithCstr
+import io.github.kotlinmania.rustlang.sys.net.connection.socket.unix.Socket
+import io.github.kotlinmania.rustlang.sys.net.connection.socket.unix.cvtGai
+import io.github.kotlinmania.rustlang.sys.net.connection.socket.unix.init
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
 
 // ///////////////////////////////////////////////////////////////////////////
 // address conversions
@@ -107,7 +107,7 @@ public fun <T> setsockopt(sock: Socket, level: CInt, optionName: CInt, optionVal
     // bytes
     // * the value of `optionValue` has a valid type for the given socket option
     // (guaranteed by caller).
-    when (val tryResult = cvt(c.setsockopt(sock.asRaw(), level, optionName, (addrOf(optionValue)), optionLen))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(c.setsockopt(sock.asRaw(), level, optionName, (addrOf(optionValue)), optionLen))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     return Result.Ok(Unit)
 }
 
@@ -124,7 +124,7 @@ public fun <T> getsockopt(sock: Socket, level: CInt, optionName: CInt, typeLayou
     // * `sock` is opened for the duration of this call, as `sock` owns the socket.
     // * the pointer to `optionValue` is writable and the stack allocation has
     // space for `sizeOf<T>` bytes.
-    when (val tryResult = cvt(c.getsockopt(sock.asRaw(), level, optionName, optionValue.asMutPtr().cast(), optionLen))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(c.getsockopt(sock.asRaw(), level, optionName, optionValue.asMutPtr().cast(), optionLen))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // SAFETY: the `getsockopt` call succeeded and the caller guarantees that
     // `T` is the type of this option, thus `optionValue` must have
     // been initialized by the system.
@@ -143,7 +143,7 @@ public fun <T> getsockopt(sock: Socket, level: CInt, optionName: CInt, typeLayou
 public fun sockname(f: (MutPtr, MutPtr) -> CInt): Result<SocketAddr, Error> {
     val storage = MaybeUninit.zeroed(ObjectSlotLayout<c.SockaddrStorage>())
     val len = sizeOf<c.SockaddrStorage>(typeLayoutT = ObjectSlotLayout<c.SockaddrStorage>())
-    when (val tryResult = cvt(f(storage.asMutPtr().cast(), len))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(f(storage.asMutPtr().cast(), len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     // SAFETY:
     // The caller guarantees that the storage has been successfully initialized
     // and its size written to `len` if `f` returns a success.

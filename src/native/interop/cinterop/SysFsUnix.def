@@ -1,7 +1,0 @@
-package = io.github.kotlinmania.rustlang.std.sys.fs.unix.cinterop
-headers = sys_fs_unix_wrapper.h
-headerFilter = sys_fs_unix_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = sys_fs_unix_wrapper.a
-linkerOpts.mingw = -lws2_32
-noStringConversion = stdSysFsUnixOpen

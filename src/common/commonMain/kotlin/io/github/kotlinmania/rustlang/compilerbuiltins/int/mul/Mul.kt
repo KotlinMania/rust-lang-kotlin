@@ -1,12 +1,12 @@
 // port-lint: source int/mul.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.int.mul
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.DInt
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
+import io.github.kotlinmania.rustlang.support.DInt
+import io.github.kotlinmania.rustlang.support.Int
 
 public interface Mul<T> : DInt, Int {
     public fun mul(rhs: T): T

@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.backtrace.symbolize
 import io.github.kotlinmania.rustlang.backtrace.backtrace.Frame
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.backtrace.symbolize.dbghelp as imp
 
 /**
  * Resolve an address to a symbol, passing the symbol to the specified
@@ -127,7 +128,7 @@ public fun adjustIp(a: MutPtr): MutPtr =
  * See information on `resolve` for caveats on `cb` panicking.
  */
 public fun resolveUnsynchronized(addr: MutPtr, cb: (Symbol) -> Unit) {
-    io.github.kotlinmania.rustlang.backtrace.symbolize.noop.resolve(ResolveWhat.Address(addr), cb)
+    imp.resolve(ResolveWhat.Address(addr), cb)
 }
 
 /**
@@ -142,7 +143,7 @@ public fun resolveUnsynchronized(addr: MutPtr, cb: (Symbol) -> Unit) {
  * See information on `resolveFrame` for caveats on `cb` panicking.
  */
 public fun resolveFrameUnsynchronized(frame: Frame, cb: (Symbol) -> Unit) {
-    io.github.kotlinmania.rustlang.backtrace.symbolize.noop.resolve(ResolveWhat.Frame(frame), cb)
+    imp.resolve(ResolveWhat.Frame(frame), cb)
 }
 
 public fun formatSymbolName(fmt: FnCallback, bytes: List<UByte>, f: StringBuilder) {
@@ -150,18 +151,18 @@ public fun formatSymbolName(fmt: FnCallback, bytes: List<UByte>, f: StringBuilde
     while (bytes1.size > 0) {
         run {
             val matchVal = String.fromUtf8(bytes1)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val name = matchVal.value
                 fmt(name, f)
                 break
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val err = matchVal.error
                 fmt("�", f)
                 when (val matchVal1 = err.errorLen()) {
                     null -> { break }
                     else -> {
                         val len = matchVal1
-                        bytes1 = ((bytes1).slice(err.validUpTo() + len until bytes1.size))
+                        bytes1 = ((bytes1).subList(err.validUpTo() + len, (bytes1).size))
                     }
                 }
             } }
@@ -186,6 +187,6 @@ public fun formatSymbolName(fmt: FnCallback, bytes: List<UByte>, f: StringBuilde
  */
 public fun clearSymbolCache() {
     run {
-        io.github.kotlinmania.rustlang.backtrace.symbolize.noop.clearSymbolCache()
+        imp.clearSymbolCache()
     }
 }

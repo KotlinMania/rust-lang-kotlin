@@ -6,17 +6,17 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.I16x8
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I8x16
 
-private object S390xVectorJniBridge {
+private object CorearchS390xVectorJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun corearchS390xVectorLcbb(a: Long, b: Int): Int
+    external fun rustlangCorearchS390xVectorLcbb(a: Long, b: Int): Int
 }
 
 public actual fun nearbyintV4f32(a: VectorFloat): VectorFloat =
@@ -155,7 +155,7 @@ public actual fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr) {
 }
 
 public actual fun lcbb(a: ConstPtr, b: UInt): UInt =
-    S390xVectorJniBridge.corearchS390xVectorLcbb(a.rawAddress, b.toInt()).toUInt()
+    CorearchS390xVectorJniBridge.rustlangCorearchS390xVectorLcbb(a.rawAddress, b.toInt()).toUInt()
 
 public actual fun vlbb(a: ConstPtr, b: UInt): MaybeUninit<VectorSignedChar> =
     MaybeUninit.uninit(VectorSignedChar.typeLayout())

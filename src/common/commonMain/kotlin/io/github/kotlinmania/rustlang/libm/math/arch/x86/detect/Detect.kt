@@ -4,8 +4,8 @@
 package io.github.kotlinmania.rustlang.libm.math.arch.x86.detect
 
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
-import io.github.kotlinmania.rustlang.libm.math.support.featuredetect.Flags
-import io.github.kotlinmania.rustlang.libm.math.support.featuredetect.getOrInitFlagsCache
+import io.github.kotlinmania.rustlang.math.support.featuredetect.Flags
+import io.github.kotlinmania.rustlang.math.support.featuredetect.getOrInitFlagsCache
 
 // Using runtime feature detection requires atomics. Currently there are no x86 targets
 // that support sse but not `AtomicPtr`.

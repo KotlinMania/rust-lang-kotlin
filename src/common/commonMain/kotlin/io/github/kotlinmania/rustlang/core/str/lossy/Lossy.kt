@@ -1,11 +1,12 @@
 // port-lint: source str/lossy.rs
 package io.github.kotlinmania.rustlang.core.str.lossy
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.get
 import io.github.kotlinmania.rustlang.core.str.char.EscapeDebugExtArgs
-import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.validations.utf8CharWidth
+import io.github.kotlinmania.rustlang.fmt.Formatter
+import io.github.kotlinmania.rustlang.str.converts.fromUtf8Unchecked
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -133,7 +134,7 @@ public open class Debug(
             }
             // Broken parts of string as hex escape.
             for (b in chunk.invalid()) {
-                when (val tryResult = f.writeFmt("\\x$b")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = f.writeFmt("\\x$b")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
         }
         return run { f.append('"'); Result.Ok(Unit) }

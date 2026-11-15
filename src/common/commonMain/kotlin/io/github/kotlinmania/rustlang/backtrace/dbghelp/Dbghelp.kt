@@ -3,26 +3,11 @@
 
 package io.github.kotlinmania.rustlang.backtrace.dbghelp
 
-import io.github.kotlinmania.rustlang.backtrace.lock.LOCK
-import io.github.kotlinmania.rustlang.backtrace.windowssys.Bool
-import io.github.kotlinmania.rustlang.backtrace.windowssys.FALSE
-import io.github.kotlinmania.rustlang.backtrace.windowssys.Handle
-import io.github.kotlinmania.rustlang.backtrace.windowssys.Hinstance
-import io.github.kotlinmania.rustlang.backtrace.windowssys.INFINITE
-import io.github.kotlinmania.rustlang.backtrace.windowssys.Pcwstr
-import io.github.kotlinmania.rustlang.backtrace.windowssys.PenumloadedModulesCallbackw64
-import io.github.kotlinmania.rustlang.backtrace.windowssys.PfunctionTableAccessRoutine64
-import io.github.kotlinmania.rustlang.backtrace.windowssys.PgetModuleBaseRoutine64
-import io.github.kotlinmania.rustlang.backtrace.windowssys.PreadProcessMemoryRoutine64
-import io.github.kotlinmania.rustlang.backtrace.windowssys.PtranslateAddressRoutine64
-import io.github.kotlinmania.rustlang.backtrace.windowssys.Pwstr
-import io.github.kotlinmania.rustlang.backtrace.windowssys.SYMOPT_DEFERRED_LOADS
-import io.github.kotlinmania.rustlang.backtrace.windowssys.TRUE
-import io.github.kotlinmania.rustlang.backtrace.windowssys.lstrlenW
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -30,6 +15,22 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
+import io.github.kotlinmania.rustlang.lock.LOCK
+import io.github.kotlinmania.rustlang.windowssys.Bool
+import io.github.kotlinmania.rustlang.windowssys.FALSE
+import io.github.kotlinmania.rustlang.windowssys.Handle
+import io.github.kotlinmania.rustlang.windowssys.Hinstance
+import io.github.kotlinmania.rustlang.windowssys.INFINITE
+import io.github.kotlinmania.rustlang.windowssys.Pcwstr
+import io.github.kotlinmania.rustlang.windowssys.PenumloadedModulesCallbackw64
+import io.github.kotlinmania.rustlang.windowssys.PfunctionTableAccessRoutine64
+import io.github.kotlinmania.rustlang.windowssys.PgetModuleBaseRoutine64
+import io.github.kotlinmania.rustlang.windowssys.PreadProcessMemoryRoutine64
+import io.github.kotlinmania.rustlang.windowssys.PtranslateAddressRoutine64
+import io.github.kotlinmania.rustlang.windowssys.Pwstr
+import io.github.kotlinmania.rustlang.windowssys.SYMOPT_DEFERRED_LOADS
+import io.github.kotlinmania.rustlang.windowssys.TRUE
+import io.github.kotlinmania.rustlang.windowssys.lstrlenW
 
 // A module to assist in managing dbghelp bindings on Windows
 //
@@ -167,7 +168,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetOptions\u0000"
                 this.symGetOptions = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymGetOptions>(this.symGetOptions)
+            transmute(this.symGetOptions)
         }
     }
 
@@ -177,7 +178,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymSetOptions\u0000"
                 this.symSetOptions = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymSetOptions>(this.symSetOptions)
+            transmute(this.symSetOptions)
         }
     }
 
@@ -187,7 +188,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymInitializeW\u0000"
                 this.symInitializeW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymInitializeW>(this.symInitializeW)
+            transmute(this.symInitializeW)
         }
     }
 
@@ -197,7 +198,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetSearchPathW\u0000"
                 this.symGetSearchPathW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymGetSearchPathW>(this.symGetSearchPathW)
+            transmute(this.symGetSearchPathW)
         }
     }
 
@@ -207,7 +208,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymSetSearchPathW\u0000"
                 this.symSetSearchPathW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymSetSearchPathW>(this.symSetSearchPathW)
+            transmute(this.symSetSearchPathW)
         }
     }
 
@@ -217,7 +218,7 @@ public open class Dbghelp internal constructor(
                 val name = "EnumerateLoadedModulesW64\u0000"
                 this.enumerateLoadedModulesW64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, EnumerateLoadedModulesW64>(this.enumerateLoadedModulesW64)
+            transmute(this.enumerateLoadedModulesW64)
         }
     }
 
@@ -227,7 +228,7 @@ public open class Dbghelp internal constructor(
                 val name = "StackWalk64\u0000"
                 this.stackWalk64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, StackWalk64>(this.stackWalk64)
+            transmute(this.stackWalk64)
         }
     }
 
@@ -237,7 +238,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFunctionTableAccess64\u0000"
                 this.symFunctionTableAccess64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymFunctionTableAccess64>(this.symFunctionTableAccess64)
+            transmute(this.symFunctionTableAccess64)
         }
     }
 
@@ -247,7 +248,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetModuleBase64\u0000"
                 this.symGetModuleBase64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymGetModuleBase64>(this.symGetModuleBase64)
+            transmute(this.symGetModuleBase64)
         }
     }
 
@@ -257,7 +258,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFromAddrW\u0000"
                 this.symFromAddrW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymFromAddrW>(this.symFromAddrW)
+            transmute(this.symFromAddrW)
         }
     }
 
@@ -267,7 +268,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetLineFromAddrW64\u0000"
                 this.symGetLineFromAddrW64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymGetLineFromAddrW64>(this.symGetLineFromAddrW64)
+            transmute(this.symGetLineFromAddrW64)
         }
     }
 
@@ -277,7 +278,7 @@ public open class Dbghelp internal constructor(
                 val name = "StackWalkEx\u0000"
                 this.stackWalkEx = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, StackWalkEx>(this.stackWalkEx)
+            transmute(this.stackWalkEx)
         }
     }
 
@@ -287,7 +288,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFromInlineContextW\u0000"
                 this.symFromInlineContextW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymFromInlineContextW>(this.symFromInlineContextW)
+            transmute(this.symFromInlineContextW)
         }
     }
 
@@ -297,7 +298,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetLineFromInlineContextW\u0000"
                 this.symGetLineFromInlineContextW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymGetLineFromInlineContextW>(this.symGetLineFromInlineContextW)
+            transmute(this.symGetLineFromInlineContextW)
         }
     }
 
@@ -307,7 +308,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymAddrIncludeInlineTrace\u0000"
                 this.symAddrIncludeInlineTrace = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymAddrIncludeInlineTrace>(this.symAddrIncludeInlineTrace)
+            transmute(this.symAddrIncludeInlineTrace)
         }
     }
 
@@ -317,7 +318,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymQueryInlineTrace\u0000"
                 this.symQueryInlineTrace = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymQueryInlineTrace>(this.symQueryInlineTrace)
+            transmute(this.symQueryInlineTrace)
         }
     }
 
@@ -588,7 +589,7 @@ public fun init(): Result<Init, Unit> {
         // once, though, so we've got a global boolean indicating whether we're
         // done yet or not.
         // Note: https://github.com/rust-lang/backtrace-rs/issues/678
-        when (val tryResult = DBGHELP.ensureOpen()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = DBGHELP.ensureOpen()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         if (INITIALIZED.inv()) {
             setOptionalOptions(ret.dbghelp())
             INITIALIZED = true

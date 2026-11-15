@@ -2,18 +2,18 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.IpcPerm
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SaFamilyT
-import io.github.kotlinmania.rustlang.libc.Timeval
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.bsd.SaFamilyT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.IpcPerm
 
 public data class SigsetT(
     public var value: ULongArray = ULongArray(16),
@@ -181,12 +181,12 @@ public data class Sysinfo(
 
 public data class MsqidDs(
     public var msgPerm: IpcPerm = IpcPerm(),
-    public var msgStime: io.github.kotlinmania.rustlang.libc.TimeT = 0L,
-    public var msgRtime: io.github.kotlinmania.rustlang.libc.TimeT = 0L,
-    public var msgCtime: io.github.kotlinmania.rustlang.libc.TimeT = 0L,
+    public var msgStime: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT = 0L,
+    public var msgRtime: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT = 0L,
+    public var msgCtime: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT = 0L,
     public var msgCbytes: ULong = 0uL,
-    public var msgQnum: io.github.kotlinmania.rustlang.libc.MsgqnumT = 0uL,
-    public var msgQbytes: io.github.kotlinmania.rustlang.libc.MsglenT = 0uL,
+    public var msgQnum: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.MsgqnumT = 0uL,
+    public var msgQbytes: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.MsglenT = 0uL,
     public var msgLspid: PidT = 0,
     public var msgLrpid: PidT = 0,
     public var glibcReserved4: ULong = 0uL,
@@ -194,14 +194,14 @@ public data class MsqidDs(
 )
 
 public data class SemidDs(
-    public var semPerm: io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.IpcPerm = io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.IpcPerm(),
-    public var semOtime: io.github.kotlinmania.rustlang.libc.TimeT = 0L,
-    public var reserved: SyscallUlongT = 0uL,
-    public var semCtime: io.github.kotlinmania.rustlang.libc.TimeT = 0L,
-    public var reserved2: SyscallUlongT = 0uL,
-    public var semNsems: SyscallUlongT = 0uL,
-    public var glibcReserved3: SyscallUlongT = 0uL,
-    public var glibcReserved4: SyscallUlongT = 0uL,
+    public var semPerm: IpcPerm = IpcPerm(),
+    public var semOtime: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT = 0L,
+    public var reserved: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.SyscallUlongT = 0uL,
+    public var semCtime: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT = 0L,
+    public var reserved2: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.SyscallUlongT = 0uL,
+    public var semNsems: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.SyscallUlongT = 0uL,
+    public var glibcReserved3: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.SyscallUlongT = 0uL,
+    public var glibcReserved4: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.SyscallUlongT = 0uL,
 )
 
 // net/iucv/iucv.h

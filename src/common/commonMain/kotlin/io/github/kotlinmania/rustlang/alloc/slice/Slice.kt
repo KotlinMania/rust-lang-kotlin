@@ -1,9 +1,8 @@
 // port-lint: source slice.rs
 package io.github.kotlinmania.rustlang.alloc.slice
 
-import io.github.kotlinmania.rustlang.alloc.alloc.Global
-import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.vec.Vec
+import io.github.kotlinmania.rustlang.alloc.Global
+import io.github.kotlinmania.rustlang.boxed.Box
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
@@ -16,10 +15,10 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.sort
+import io.github.kotlinmania.rustlang.vec.Vec
 
 // Utilities for the slice primitive type.
 //
@@ -431,7 +430,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
             // which is tracked via `m` - when `m == 0`, we've written `mostSignificantBit(n)`
             // elements to the buffer.
             run {
-                copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
+                ptr.copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
             }
             // `buf` has capacity of `self.len() * n`.
             val bufLen = buf.size
@@ -456,7 +455,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
         // space with copies of the previous `len` elements.
         run {
             // This is non-overlapping since `2 ^ expn> rem`.
-            copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), remLen, typeLayoutT = typeLayoutT)
+            ptr.copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), remLen, typeLayoutT = typeLayoutT)
             // `buf.len() + remLen` equals to `buf.capacity()` (`= self.len() * n`).
             buf.setLen(capacity)
         }
@@ -669,7 +668,7 @@ public fun <T> List<T>.cloneIntoFromTSlice(target: List<T>) {
 // Sorting
 // ///////////////////////////////////////////////////////////////////////////
 public fun <T> stableSort(v: MutableList<T>, isLess: (T, T) -> Boolean) {
-    sort<T, (T, T) -> Boolean, List<T>>(v, isLess)
+    sort.sort<T, (T, T) -> Boolean, List<T>>(v, isLess)
 }
 
 public fun <T> bufGuardWithCapacityVecT(capacity: Int): List<T> = ArrayList(capacity)

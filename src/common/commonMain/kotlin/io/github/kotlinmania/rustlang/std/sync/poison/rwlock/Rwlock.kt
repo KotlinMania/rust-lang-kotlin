@@ -7,13 +7,13 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.TryLockResult
-import io.github.kotlinmania.rustlang.std.sync.poison.Flag
-import io.github.kotlinmania.rustlang.std.sync.poison.Guard
-import io.github.kotlinmania.rustlang.std.sync.poison.LockResult
-import io.github.kotlinmania.rustlang.std.sync.poison.PoisonError
-import io.github.kotlinmania.rustlang.std.sync.poison.TryLockError
-import io.github.kotlinmania.rustlang.std.sync.poison.mapResult
+import io.github.kotlinmania.rustlang.sync.nonpoison.TryLockResult
+import io.github.kotlinmania.rustlang.sync.poison.Flag
+import io.github.kotlinmania.rustlang.sync.poison.Guard
+import io.github.kotlinmania.rustlang.sync.poison.LockResult
+import io.github.kotlinmania.rustlang.sync.poison.PoisonError
+import io.github.kotlinmania.rustlang.sync.poison.TryLockError
+import io.github.kotlinmania.rustlang.sync.poison.mapResult
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -118,7 +118,7 @@ public open class RwLock<T>(
     /**
      * The inner [sys.RwLock] that synchronizes thread access to the protected data.
      */
-    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
+    public var inner: io.github.kotlinmania.rustlang.sys.sync.rwlock.futex.RwLock,
     /**
      * A flag denoting if this `RwLock` has been poisoned.
      */
@@ -156,10 +156,10 @@ public open class RwLock<T>(
     public open fun getCloned(): Result<T, PoisonError<Unit>> =
         run {
             val matchVal = this.read()
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val guard = matchVal.value
                 Result.Ok(guard.clone())
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 Result.Err(PoisonError.new())
             } }
         }
@@ -188,18 +188,18 @@ public open class RwLock<T>(
      * ```
      */
     public open fun set(value: T): Result<Unit, PoisonError<T>> =
-        if (needsDrop<T>()) {
+        if (mem.needsDrop<T>()) {
             // If the contained value has non-trivial destructor, we
             // call that destructor after the lock being released.
             this.replace(value).map({ Unit })
         } else {
             run {
                 val matchVal = this.write()
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val guard = matchVal.value
                     guard = value
                     Result.Ok(Unit)
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     Result.Err(PoisonError.new(value))
                 } }
             }
@@ -230,10 +230,10 @@ public open class RwLock<T>(
     public open fun replace(value: T): LockResult<T> =
         run {
             val matchVal = this.write()
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val guard = matchVal.value
-                Result.Ok(replace(guard, value))
-            }; is Result.Err<*> -> {
+                Result.Ok(mem.replace(guard, value))
+            }; is Result.Err<*, *> -> {
                 Result.Err(PoisonError.new(value))
             } }
         }
@@ -331,7 +331,7 @@ public open class RwLock<T>(
      */
     public open fun tryRead(): TryLockResult<RwLockReadGuard<T>> {
         return if (this.inner.tryRead()) {
-            Result.Ok(when (val tryResult = RwLockReadGuard.new(this)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+            Result.Ok(when (val tryResult = RwLockReadGuard.new(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
         } else {
             Result.Err(TryLockError.WouldBlock)
         }
@@ -415,7 +415,7 @@ public open class RwLock<T>(
      */
     public open fun tryWrite(): TryLockResult<RwLockWriteGuard<T>> {
         return if (this.inner.tryWrite()) {
-            Result.Ok(when (val tryResult = RwLockWriteGuard.new(this)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+            Result.Ok(when (val tryResult = RwLockWriteGuard.new(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
         } else {
             Result.Err(TryLockError.WouldBlock)
         }
@@ -554,11 +554,11 @@ public open class RwLock<T>(
         run {
             val matchVal = this.tryRead()
             when {
-                matchVal is Result.Ok<*> -> {
-                    val guard = (matchVal as Result.Ok<*>).value
+                matchVal is Result.Ok<*, *> -> {
+                    val guard = (matchVal as Result.Ok<*, *>).value
                     d.field("data", guard)
                 }
-                matchVal is Result.Err<*> && matchVal.error is TryLockError.Poisoned -> {
+                matchVal is Result.Err<*, *> && matchVal.error is TryLockError.Poisoned -> {
                     d.field("data", err.getRef())
                 }
                 else -> {
@@ -582,7 +582,7 @@ public open class RwLock<T>(
          * val lock = RwLock.new(5)
          * ```
          */
-        public fun <T> new(t: T): RwLock<T> = RwLock(inner = io.github.kotlinmania.rustlang.std.sys.sync.rwlock.new(), poison = Flag.new(), data = UnsafeCell.new(t))
+        public fun <T> new(t: T): RwLock<T> = RwLock(inner = io.github.kotlinmania.rustlang.sys.sync.rwlock.new(), poison = Flag.new(), data = UnsafeCell.new(t))
 
         /**
          * Creates a new `RwLock<T>`, with the `Default` value for T.
@@ -623,7 +623,7 @@ public open class RwLockReadGuard<T>(
     /**
      * A reference to the internal [sys.RwLock] that we have read-locked.
      */
-    public var innerLock: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
+    public var innerLock: io.github.kotlinmania.rustlang.sys.sync.rwlock.futex.RwLock,
 ) {
     public open fun drop() {
         // SAFETY: the conditions of `RwLockReadGuard.new` were satisfied when created.
@@ -916,7 +916,7 @@ public open class MappedRwLockReadGuard<T>(
     /**
      * A reference to the internal [sys.RwLock] that we have read-locked.
      */
-    public var innerLock: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
+    public var innerLock: io.github.kotlinmania.rustlang.sys.sync.rwlock.futex.RwLock,
 ) {
     public open fun drop() {
         // SAFETY: the conditions of `RwLockReadGuard.new` were satisfied when the original guard
@@ -1028,7 +1028,7 @@ public open class MappedRwLockWriteGuard<T>(
     /**
      * A reference to the internal [sys.RwLock] that we have write-locked.
      */
-    public var innerLock: io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock,
+    public var innerLock: io.github.kotlinmania.rustlang.sys.sync.rwlock.futex.RwLock,
     /**
      * A reference to the original `RwLock`s poison state.
      */

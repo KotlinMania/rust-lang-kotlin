@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key.keybased
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.rt.threadCleanup
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.get
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
+import io.github.kotlinmania.rustlang.rt.threadCleanup
+import io.github.kotlinmania.rustlang.sys.threadlocal.key.racy.LazyKey
+import io.github.kotlinmania.rustlang.sys.threadlocal.key.unix.get
+import io.github.kotlinmania.rustlang.sys.threadlocal.key.unix.set
 
 /**
  * The OS may free the values of the keys without a destructor **before**
@@ -16,7 +16,7 @@ import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
  */
 public val LOCAL_POINTER_NEEDS_DTOR: Boolean = true
 
-public val DEFER: MutPtr = withoutProvenanceMut(1)
+public val DEFER: MutPtr = ptr.withoutProvenanceMut(1)
 
 public var CLEANUP: LazyKey = LazyKey.new(::run)
 
@@ -51,4 +51,4 @@ public fun run(state: MutPtr) {
  */
 public fun cleanupPending(): Boolean = (!((get(CLEANUP.force())).rawAddress == 0L)).toUByte()
 
-public val RUN: MutPtr = withoutProvenanceMut(2)
+public val RUN: MutPtr = ptr.withoutProvenanceMut(2)

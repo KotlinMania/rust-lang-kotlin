@@ -1,7 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.helenos.cinterop
-headers = helenos_wrapper.h
-headerFilter = helenos_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = helenos_wrapper.a
-linkerOpts.mingw = -lws2_32
-noStringConversion = libcHelenosChdir

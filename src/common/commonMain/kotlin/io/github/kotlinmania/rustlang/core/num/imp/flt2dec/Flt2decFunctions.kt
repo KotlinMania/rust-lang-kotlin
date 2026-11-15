@@ -1,16 +1,16 @@
 package io.github.kotlinmania.rustlang.core.num.imp.flt2dec
 
-import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.DecodableFloat
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.Decoded
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.FullDecoded
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.decode
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.option.Option
+import io.github.kotlinmania.rustlang.panicking.assertFailed
 
 /**
  * When `d` contains decimal digits, increase the last digit and propagate carry.
@@ -24,7 +24,7 @@ public fun roundUp(d: MutableList<UByte>): UByte? =
                 val i = matchVal
                 // d[i+1..n] is all nines
                 d[i] += 1u
-                ((d).slice(i + 1 until d.size)).fill(48u)
+                ((d).subList(i + 1, (d).size)).fill(48u)
                 null
             }
             matchVal == null && d.isEmpty() -> {
@@ -34,7 +34,7 @@ public fun roundUp(d: MutableList<UByte>): UByte? =
             else -> {
                 // 999..999 rounds to 1000..000 with an increased exponent
                 d[0] = 49u
-                ((d).slice(1 until d.size)).fill(48u)
+                ((d).subList(1, (d).size)).fill(48u)
                 48u
             }
         }
@@ -75,25 +75,25 @@ public fun digitsToDecStr(buf: List<UByte>, exp: Short, fracDigits: Int, parts: 
         if (fracDigits > buf.size && fracDigits - buf.size > minusExp) {
             parts[3] = MaybeUninit.new(Part.Zero((fracDigits - buf.size) - minusExp), ObjectSlotLayout<Part>())
             // SAFETY: we just initialized the elements `.. 4`.
-            ((parts).slice(0 until 4)).assumeInitRef()
+            ((parts).subList(0, 4)).assumeInitRef()
         } else {
             // SAFETY: we just initialized the elements `.. 3`.
-            ((parts).slice(0 until 3)).assumeInitRef()
+            ((parts).subList(0, 3)).assumeInitRef()
         }
     } else {
         val exp1 = exp.toInt()
         if (exp1 < buf.size) {
             // the decimal point is inside rendered digits: [12][.][34][____]
-            parts[0] = MaybeUninit.new(Part.Copy(((buf).slice(0 until exp1))), ObjectSlotLayout<Part>())
+            parts[0] = MaybeUninit.new(Part.Copy(((buf).subList(0, exp1))), ObjectSlotLayout<Part>())
             parts[1] = MaybeUninit.new(Part.Copy(".".encodeToByteArray()), ObjectSlotLayout<Part>())
-            parts[2] = MaybeUninit.new(Part.Copy(((buf).slice(exp1 until buf.size))), ObjectSlotLayout<Part>())
+            parts[2] = MaybeUninit.new(Part.Copy(((buf).subList(exp1, (buf).size))), ObjectSlotLayout<Part>())
             if (fracDigits > buf.size - exp1) {
                 parts[3] = MaybeUninit.new(Part.Zero(fracDigits - (buf.size - exp1)), ObjectSlotLayout<Part>())
                 // SAFETY: we just initialized the elements `.. 4`.
-                ((parts).slice(0 until 4)).assumeInitRef()
+                ((parts).subList(0, 4)).assumeInitRef()
             } else {
                 // SAFETY: we just initialized the elements `.. 3`.
-                ((parts).slice(0 until 3)).assumeInitRef()
+                ((parts).subList(0, 3)).assumeInitRef()
             }
         } else {
             // the decimal point is after rendered digits: [1234][____0000] or [1234][__][.][__].
@@ -103,10 +103,10 @@ public fun digitsToDecStr(buf: List<UByte>, exp: Short, fracDigits: Int, parts: 
                 parts[2] = MaybeUninit.new(Part.Copy(".".encodeToByteArray()), ObjectSlotLayout<Part>())
                 parts[3] = MaybeUninit.new(Part.Zero(fracDigits), ObjectSlotLayout<Part>())
                 // SAFETY: we just initialized the elements `.. 4`.
-                ((parts).slice(0 until 4)).assumeInitRef()
+                ((parts).subList(0, 4)).assumeInitRef()
             } else {
                 // SAFETY: we just initialized the elements `.. 2`.
-                ((parts).slice(0 until 2)).assumeInitRef()
+                ((parts).subList(0, 2)).assumeInitRef()
             }
         }
     }
@@ -131,7 +131,7 @@ public fun digitsToExpStr(buf: List<UByte>, exp: Short, fracDigits: Int, upper: 
     check(buf[0] > 48u)
     check(parts.size >= 6)
     var n = 0
-    parts[n] = MaybeUninit.new(Part.Copy(((buf).slice(0 until 1))), ObjectSlotLayout<Part>())
+    parts[n] = MaybeUninit.new(Part.Copy(((buf).subList(0, 1))), ObjectSlotLayout<Part>())
     n += 1
     // The first generated digit becomes the integral digit, anything after that is already part of
     // the fractional portion we can emit verbatim.
@@ -142,7 +142,7 @@ public fun digitsToExpStr(buf: List<UByte>, exp: Short, fracDigits: Int, upper: 
         parts[n] = MaybeUninit.new(Part.Copy(".".encodeToByteArray()), ObjectSlotLayout<Part>())
         n += 1
         if (actualFracDigits > 0) {
-            parts[n] = MaybeUninit.new(Part.Copy(((buf).slice(1 until buf.size))), ObjectSlotLayout<Part>())
+            parts[n] = MaybeUninit.new(Part.Copy(((buf).subList(1, (buf).size))), ObjectSlotLayout<Part>())
             n += 1
         }
         if (fracDigits > actualFracDigits) {
@@ -171,7 +171,7 @@ public fun digitsToExpStr(buf: List<UByte>, exp: Short, fracDigits: Int, upper: 
         parts[n + 1] = MaybeUninit.new(Part.Num(exp1.toUShort()), ObjectSlotLayout<Part>())
     }
     // SAFETY: we just initialized the elements `.. n + 2`.
-    return ((parts).slice(0 until n + 2)).assumeInitRef()
+    return ((parts).subList(0, n + 2)).assumeInitRef()
 }
 
 /**
@@ -230,22 +230,22 @@ public fun <T> toShortestStr(formatShortest: (Decoded, MutableList<MaybeUninit<U
         FullDecoded.Nan -> {
             parts[0] = MaybeUninit.new(Part.Copy("NaN".encodeToByteArray()), ObjectSlotLayout<Part>())
             // SAFETY: we just initialized the elements `.. 1`.
-            Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+            Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Infinite -> {
             parts[0] = MaybeUninit.new(Part.Copy("inf".encodeToByteArray()), ObjectSlotLayout<Part>())
             // SAFETY: we just initialized the elements `.. 1`.
-            Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+            Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Zero -> {
             if (fracDigits > 0) {
                 // [0.][0000]
                 parts[0] = MaybeUninit.new(Part.Copy("0.".encodeToByteArray()), ObjectSlotLayout<Part>())
                 parts[1] = MaybeUninit.new(Part.Zero(fracDigits), ObjectSlotLayout<Part>())
-                Formatted(sign = sign1, parts = ((parts).slice(0 until 2)).assumeInitRef())
+                Formatted(sign = sign1, parts = ((parts).subList(0, 2)).assumeInitRef())
             } else {
                 parts[0] = MaybeUninit.new(Part.Copy("0".encodeToByteArray()), ObjectSlotLayout<Part>())
-                Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+                Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
             }
         }
         is FullDecoded.Finite -> {
@@ -288,12 +288,12 @@ public fun <T> toShortestExpStr(formatShortest: (Decoded, MutableList<MaybeUnini
         FullDecoded.Nan -> {
             parts[0] = MaybeUninit.new(Part.Copy("NaN".encodeToByteArray()), ObjectSlotLayout<Part>())
             // SAFETY: we just initialized the elements `.. 1`.
-            Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+            Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Infinite -> {
             parts[0] = MaybeUninit.new(Part.Copy("inf".encodeToByteArray()), ObjectSlotLayout<Part>())
             // SAFETY: we just initialized the elements `.. 1`.
-            Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+            Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Zero -> {
             parts[0] = if (decBounds.first <= 0 && 0 < decBounds.second) {
@@ -306,7 +306,7 @@ public fun <T> toShortestExpStr(formatShortest: (Decoded, MutableList<MaybeUnini
                 }), ObjectSlotLayout<Part>())
             }
             // SAFETY: we just initialized the elements `.. 1`.
-            Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+            Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         is FullDecoded.Finite -> {
             val (decoded) = fullDecoded
@@ -381,12 +381,12 @@ public fun <T> toExactExpStr(formatExact: (Decoded, MutableList<MaybeUninit<UByt
         FullDecoded.Nan -> {
             parts[0] = MaybeUninit.new(Part.Copy("NaN".encodeToByteArray()), ObjectSlotLayout<Part>())
             // SAFETY: we just initialized the elements `.. 1`.
-            Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+            Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Infinite -> {
             parts[0] = MaybeUninit.new(Part.Copy("inf".encodeToByteArray()), ObjectSlotLayout<Part>())
             // SAFETY: we just initialized the elements `.. 1`.
-            Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+            Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Zero -> {
             if (fracDigits > 0) {
@@ -398,14 +398,14 @@ public fun <T> toExactExpStr(formatExact: (Decoded, MutableList<MaybeUninit<UByt
                 } else {
                     "e0".encodeToByteArray()
                 }), ObjectSlotLayout<Part>())
-                Formatted(sign = sign1, parts = ((parts).slice(0 until 3)).assumeInitRef())
+                Formatted(sign = sign1, parts = ((parts).subList(0, 3)).assumeInitRef())
             } else {
                 parts[0] = MaybeUninit.new(Part.Copy(if (upper) {
                     "0E0".encodeToByteArray()
                 } else {
                     "0e0".encodeToByteArray()
                 }), ObjectSlotLayout<Part>())
-                Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+                Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
             }
         }
         is FullDecoded.Finite -> {
@@ -453,22 +453,22 @@ public fun <T> toExactFixedStr(formatExact: (Decoded, MutableList<MaybeUninit<UB
         FullDecoded.Nan -> {
             parts[0] = MaybeUninit.new(Part.Copy("NaN".encodeToByteArray()), ObjectSlotLayout<Part>())
             // SAFETY: we just initialized the elements `.. 1`.
-            Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+            Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Infinite -> {
             parts[0] = MaybeUninit.new(Part.Copy("inf".encodeToByteArray()), ObjectSlotLayout<Part>())
             // SAFETY: we just initialized the elements `.. 1`.
-            Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+            Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Zero -> {
             if (fracDigits > 0) {
                 // [0.][0000]
                 parts[0] = MaybeUninit.new(Part.Copy("0.".encodeToByteArray()), ObjectSlotLayout<Part>())
                 parts[1] = MaybeUninit.new(Part.Zero(fracDigits), ObjectSlotLayout<Part>())
-                Formatted(sign = sign1, parts = ((parts).slice(0 until 2)).assumeInitRef())
+                Formatted(sign = sign1, parts = ((parts).subList(0, 2)).assumeInitRef())
             } else {
                 parts[0] = MaybeUninit.new(Part.Copy("0".encodeToByteArray()), ObjectSlotLayout<Part>())
-                Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+                Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
             }
         }
         is FullDecoded.Finite -> {
@@ -502,10 +502,10 @@ public fun <T> toExactFixedStr(formatExact: (Decoded, MutableList<MaybeUninit<UB
                     // [0.][0000]
                     parts[0] = MaybeUninit.new(Part.Copy("0.".encodeToByteArray()), ObjectSlotLayout<Part>())
                     parts[1] = MaybeUninit.new(Part.Zero(fracDigits), ObjectSlotLayout<Part>())
-                    Formatted(sign = sign1, parts = ((parts).slice(0 until 2)).assumeInitRef())
+                    Formatted(sign = sign1, parts = ((parts).subList(0, 2)).assumeInitRef())
                 } else {
                     parts[0] = MaybeUninit.new(Part.Copy("0".encodeToByteArray()), ObjectSlotLayout<Part>())
-                    Formatted(sign = sign1, parts = ((parts).slice(0 until 1)).assumeInitRef())
+                    Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
                 }
             } else {
                 Formatted(sign = sign1, parts = digitsToDecStr(buf1, exp, fracDigits, parts))

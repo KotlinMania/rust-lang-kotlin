@@ -1,20 +1,22 @@
 // port-lint: source iter/adapters/filter.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.filter
 
-import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.array.iterNextChunk
-import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.array.iter.IntoIter
+import io.github.kotlinmania.rustlang.array.iterNextChunk
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.mem.needsDrop
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.mem.needsDrop
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -56,7 +58,7 @@ public open class Filter<I, P>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
     public var iter: I,
     public var predicate: P,
-) : SourceIter<Any?, Source>, InPlaceIterable, Iterable<Item> {
+) : SourceIter<Source>, InPlaceIterable, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Filter.next()) {

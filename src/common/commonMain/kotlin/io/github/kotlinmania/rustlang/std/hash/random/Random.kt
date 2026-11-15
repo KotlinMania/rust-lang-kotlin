@@ -6,9 +6,9 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.std.hash.BuildHasher
 import io.github.kotlinmania.rustlang.std.hash.SipHasher13
-import io.github.kotlinmania.rustlang.std.sys.random.hashmapRandomKeys
-import io.github.kotlinmania.rustlang.std.thread.LocalKey
-import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
+import io.github.kotlinmania.rustlang.sys.random.hashmapRandomKeys
+import io.github.kotlinmania.rustlang.thread.LocalKey
+import io.github.kotlinmania.rustlang.thread.localimpl.threadLocalInner
 
 // This module exists to isolate [RandomState] and [DefaultHasher] outside of the
 // [collections] module without actually publicly exporting them, so that parts of that

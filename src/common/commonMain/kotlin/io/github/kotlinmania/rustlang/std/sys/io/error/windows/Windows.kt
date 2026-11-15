@@ -8,10 +8,10 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.WouldBlock
-import io.github.kotlinmania.rustlang.std.sys.pal.api
-import io.github.kotlinmania.rustlang.std.sys.pal.c
+import io.github.kotlinmania.rustlang.io.ErrorKind
+import io.github.kotlinmania.rustlang.sync.nonpoison.WouldBlock
+import io.github.kotlinmania.rustlang.sys.pal.api
+import io.github.kotlinmania.rustlang.sys.pal.c
 
 public fun errno(): Int = api.getLastError().code
 
@@ -105,11 +105,11 @@ public fun formatError(errnum: Int, f: StringBuilder) {
         }
         run {
             val matchVal = String.fromUtf16(((buf).sliceArray(0 until res)))
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val msg = matchVal.value
                 // Trim trailing CRLF inserted by FormatMessageW
                 f.append(msg.trimAsciiEnd())
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 f.append("OS Error $errnum1 (FormatMessageW() returned invalid UTF-16)")
             } }
         }

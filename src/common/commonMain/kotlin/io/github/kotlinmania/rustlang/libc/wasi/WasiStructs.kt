@@ -2,12 +2,13 @@
 
 package io.github.kotlinmania.rustlang.libc.wasi
 
-import io.github.kotlinmania.rustlang.core.ffi.CChar
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -15,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
 
 public data class MaxAlignT(
     public var priv: DoubleArray = DoubleArray(4),
@@ -391,7 +391,7 @@ public class Tm internal constructor(
 
 public data class Timeval(
     public var tvSec: TimeT = 0L,
-    public var tvUsec: SusecondsT = 0L,
+    public var tvUsec: SusecondsT = 0,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<Timeval> =
@@ -452,10 +452,10 @@ public data class Timespec(
 }
 
 public data class Tms(
-    public var tmsUtime: ClockT = 0L,
-    public var tmsStime: ClockT = 0L,
-    public var tmsCutime: ClockT = 0L,
-    public var tmsCstime: ClockT = 0L,
+    public var tmsUtime: ClockT = 0uL,
+    public var tmsStime: ClockT = 0uL,
+    public var tmsCutime: ClockT = 0uL,
+    public var tmsCstime: ClockT = 0uL,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<Tms> =
@@ -912,16 +912,16 @@ public data class Rusage(
 }
 
 public data class Stat(
-    public var stDev: DevT = 0uL,
+    public var stDev: DevT = 0,
     public var stIno: InoT = 0uL,
-    public var stNlink: NlinkT = 0uL,
+    public var stNlink: NlinkT = 0u,
     public var stMode: ModeT = 0u,
-    public var stUid: UidT = 0u,
-    public var stGid: GidT = 0u,
+    public var stUid: UidT = 0,
+    public var stGid: GidT = 0,
     public var pad0: CUint = 0u,
-    public var stRdev: DevT = 0uL,
+    public var stRdev: DevT = 0,
     public var stSize: OffT = 0L,
-    public var stBlksize: BlksizeT = 0L,
+    public var stBlksize: BlksizeT = 0,
     public var stBlocks: BlkcntT = 0L,
     public var stAtim: Timespec = Timespec(),
     public var stMtim: Timespec = Timespec(),

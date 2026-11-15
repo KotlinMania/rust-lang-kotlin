@@ -1,9 +1,7 @@
 // port-lint: source num/bfloat.rs
 package io.github.kotlinmania.rustlang.core.num.bfloat
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.fmt.LowerExp
-import io.github.kotlinmania.rustlang.core.fmt.UpperExp
+import io.github.kotlinmania.rustlang.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout

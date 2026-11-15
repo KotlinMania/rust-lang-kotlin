@@ -3,10 +3,10 @@ package io.github.kotlinmania.rustlang.libm.math.support.inttraits.narrowingdiv
 
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.libm.math.support.big.U256
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.DInt
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.HInt
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.MinInt
+import io.github.kotlinmania.rustlang.math.support.big.U256
+import io.github.kotlinmania.rustlang.math.support.inttraits.DInt
+import io.github.kotlinmania.rustlang.math.support.inttraits.HInt
+import io.github.kotlinmania.rustlang.math.support.inttraits.MinInt
 
 /**
  * Trait for unsigned division of a double-wide integer

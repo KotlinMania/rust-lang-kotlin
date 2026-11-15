@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.atanh
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.libm.math.log1p.log1p
+import io.github.kotlinmania.rustlang.math.log1p.log1p
 
 // atanh(x) = log((1+x)/(1-x))/2 = log1p(2x/(1-x))/2 ~= x + x^3/3 + o(x^5)
 

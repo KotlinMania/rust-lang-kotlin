@@ -1,6 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.new.helenos.direntmod.cinterop
-headers = new_helenos_direntmod_dirent_mod_wrapper.h
-headerFilter = new_helenos_direntmod_dirent_mod_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = new_helenos_direntmod_dirent_mod_wrapper.a
-noStringConversion = libcNewHelenosDirentmodDirentModOpendir

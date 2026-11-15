@@ -3,15 +3,15 @@
 
 package io.github.kotlinmania.rustlang.core.slice.specialize
 
+import io.github.kotlinmania.rustlang.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.ptr.read
 
 public interface SpecFill<T> {
     public fun specFill(value: T)

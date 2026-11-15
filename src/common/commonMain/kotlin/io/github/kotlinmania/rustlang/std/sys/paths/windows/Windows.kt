@@ -4,20 +4,20 @@ package io.github.kotlinmania.rustlang.std.sys.paths.windows
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.env.varOs
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.env.varOs
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.os.windows.ffi.EncodeWide
+import io.github.kotlinmania.rustlang.os.windows.ffi.OsStringExt
+import io.github.kotlinmania.rustlang.path.PathBuf
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.os.windows.ffi.EncodeWide
-import io.github.kotlinmania.rustlang.std.os.windows.ffi.OsStringExt
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.std.sys.pal.c
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.os2path
+import io.github.kotlinmania.rustlang.sys.pal.c
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.sys.pal.windows.api.WinError
+import io.github.kotlinmania.rustlang.sys.pal.windows.fillUtf16Buf
+import io.github.kotlinmania.rustlang.sys.pal.windows.os2path
 
 // Implementation of `std.os` functionality for Windows.
 
@@ -74,8 +74,8 @@ public fun splitPaths(unparsed: OsStr): SplitPaths = SplitPaths(data = unparsed.
 public open class SplitPathsRef(
     public var field0: Nothing,
     public var field1: Unit,
-) : Iterable<Path> {
-    override fun iterator(): Iterator<Path> = object : AbstractIterator<Path>() {
+) : Iterable<path.Path> {
+    override fun iterator(): Iterator<path.Path> = object : AbstractIterator<path.Path>() {
         override fun computeNext() {
             when (val v = this@SplitPathsRef.next()) {
                 null -> done()
@@ -84,7 +84,7 @@ public open class SplitPathsRef(
         }
     }
 
-    public open fun next(): Path? = this.field0
+    public open fun next(): path.Path? = this.field0
 }
 
 public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? = null
@@ -137,7 +137,7 @@ public fun currentExe(): Result<PathBuf, Error> = fillUtf16Buf({ buf, sz -> c.Ge
 
 public fun getcwd(): Result<PathBuf, Error> = fillUtf16Buf({ buf, sz -> c.GetCurrentDirectoryW(sz, buf) }, os2path)
 
-public fun chdir(p: Path): Result<Unit, Error> {
+public fun chdir(p: path.Path): Result<Unit, Error> {
     val p1: OsStr = p.asRef()
     val p2 = p1.encodeWide().collect<Vec>()
     p2.push(0)
@@ -154,7 +154,7 @@ public fun homeDirCrt(): PathBuf? =
             // GetUserProfileDirectoryW does not quite use the usual protocol for
             // negotiating the buffer size, so we have to translate.
             run {
-                val matchVal = c.GetUserProfileDirectoryW(withoutProvenanceMut(CURRENT_PROCESS_TOKEN), buf, sz)
+                val matchVal = c.GetUserProfileDirectoryW(ptr.withoutProvenanceMut(CURRENT_PROCESS_TOKEN), buf, sz)
                 when {
                     matchVal == 0 && api.getLastError() != WinError.INSUFFICIENT_BUFFER -> 0
                     matchVal == 0 -> sz
@@ -164,4 +164,4 @@ public fun homeDirCrt(): PathBuf? =
         }, os2path).ok()
     }
 
-public fun homeDir(): PathBuf? = (varOs("USERPROFILE").filter({ s -> !s.isEmpty() })?.let(PathBuf::from) ?: .homeDirCrt())
+public fun homeDir(): PathBuf? = varOs("USERPROFILE").filter({ s -> !s.isEmpty() }).map(PathBuf::from).orElse(::homeDirCrt)

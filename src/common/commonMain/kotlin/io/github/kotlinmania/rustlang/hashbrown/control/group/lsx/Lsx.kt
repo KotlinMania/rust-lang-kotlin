@@ -1,14 +1,14 @@
 // port-lint: source control/group/lsx.rs
 package io.github.kotlinmania.rustlang.hashbrown.control.group.lsx
 
+import io.github.kotlinmania.rustlang.control.bitmask.BitMask
+import io.github.kotlinmania.rustlang.control.tag.Tag
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZeroU16
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.hashbrown.control.bitmask.BitMask
-import io.github.kotlinmania.rustlang.hashbrown.control.tag.Tag
 
 public typealias BitMaskWord = UShort
 

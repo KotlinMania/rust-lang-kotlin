@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.libm.math.support.modular
 
 import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.HInt
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
+import io.github.kotlinmania.rustlang.math.support.inttraits.HInt
+import io.github.kotlinmania.rustlang.math.support.inttraits.Int
 
 // This module provides accelerated modular multiplication by large powers
 // of two, which is needed for computing floating point remainders in `fmod`

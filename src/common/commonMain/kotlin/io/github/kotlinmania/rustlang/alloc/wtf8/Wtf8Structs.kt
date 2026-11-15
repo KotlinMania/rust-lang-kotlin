@@ -1,8 +1,8 @@
 package io.github.kotlinmania.rustlang.alloc.wtf8
 
-import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
-import io.github.kotlinmania.rustlang.alloc.string.String
+import io.github.kotlinmania.rustlang.collections.TryReserveError
 import io.github.kotlinmania.rustlang.core.char.methods.encodeUtf8Raw
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.wtf8.CodePoint
 import io.github.kotlinmania.rustlang.core.wtf8.Wtf8
@@ -199,7 +199,7 @@ public open class Wtf8Buf(
                     val trail = matchVal.second
                     val lenWithoutLeadSurrogate = this.len() - 3
                     this.bytes.truncate(lenWithoutLeadSurrogate)
-                    val otherWithoutTrailSurrogate = ((other.asBytes()).slice(3 until other.asBytes().size))
+                    val otherWithoutTrailSurrogate = ((other.asBytes()).subList(3, (other.asBytes()).size))
                     // 4 bytes for the supplementary code point
                     this.bytes.reserve(4 + otherWithoutTrailSurrogate.size)
                     this.pushChar(decodeSurrogatePair(lead, trail))
@@ -428,10 +428,10 @@ public open class Wtf8Buf(
         public fun fromWide(v: List<UShort>): Wtf8Buf {
             val string = Wtf8Buf.withCapacity(v.size)
             for (item in Char.decodeUtf16(v.iter().cloned())) {
-                when (item) { is Result.Ok<*> -> {
+                when (item) { is Result.Ok<*, *> -> {
                     val ch = item.value
                     string.pushChar(ch)
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val surrogate = item.error
                     val surrogate1 = surrogate.unpairedSurrogate()
                     // SAFETY: Surrogates are known to be in the code point range.

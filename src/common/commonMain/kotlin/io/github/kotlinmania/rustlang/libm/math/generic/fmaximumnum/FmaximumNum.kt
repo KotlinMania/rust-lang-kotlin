@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.generic.fmaximumnum
 
 import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.floattraits.Float
 
 // IEEE 754-2019 `maximumNumber`.
 //

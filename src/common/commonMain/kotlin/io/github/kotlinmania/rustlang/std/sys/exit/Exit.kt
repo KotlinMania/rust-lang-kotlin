@@ -6,9 +6,9 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.libc.pause
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sys.io.error.unix.errnoLocation
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.sys.io.error.unix.errnoLocation
 
 /**
  * Mitigation for <https://github.com/rust-lang/rust/issues/126600>
@@ -43,12 +43,12 @@ public fun uniqueThreadExit() {
     run {
         val matchVal = EXITING_THREAD_ID.compareExchange(MutPtr(0L), thisThreadId, Acquire, Relaxed)
         when {
-            matchVal is Result.Ok<*> -> {
+            matchVal is Result.Ok<*, *> -> {
                 // This is the first thread to call `uniqueThreadExit`,
                 // and this is the first time it is called. Continue exiting.
             }
-            matchVal is Result.Err<*> && (((matchVal as Result.Err<*>).error).rawAddress.toULong() == (thisThreadId).rawAddress.toULong()) -> {
-                val exitingThreadId = (matchVal as Result.Err<*>).error
+            matchVal is Result.Err<*, *> && (((matchVal as Result.Err<*, *>).error).rawAddress.toULong() == (thisThreadId).rawAddress.toULong()) -> {
+                val exitingThreadId = (matchVal as Result.Err<*, *>).error
                 // This is the first thread to call `uniqueThreadExit`,
                 // but this is the second time it is called.
                 // Abort the process.

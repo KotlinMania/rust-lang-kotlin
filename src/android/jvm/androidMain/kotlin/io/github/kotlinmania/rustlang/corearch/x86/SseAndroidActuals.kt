@@ -4,23 +4,24 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.x86.M128
 
-private object X86SseJniBridge {
+private object CorearchX86SseJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun corearchX86SseSfence()
+    external fun rustlangCorearchX86SseSfence()
 
     @JvmStatic
-    external fun corearchX86SseStmxcsr(p: Long)
+    external fun rustlangCorearchX86SseStmxcsr(p: Long)
 
     @JvmStatic
-    external fun corearchX86SseLdmxcsr(p: Long)
+    external fun rustlangCorearchX86SseLdmxcsr(p: Long)
 
     @JvmStatic
-    external fun corearchX86SsePrefetch(p: Long, rw: Int, loc: Int, ty: Int)
+    external fun rustlangCorearchX86SsePrefetch(p: Long, rw: Int, loc: Int, ty: Int)
 }
 
 public actual fun rcpss(a: M128): M128 =
@@ -93,19 +94,19 @@ public actual fun cvttss2si(a: M128): Int =
     0
 
 public actual fun sfence() {
-    X86SseJniBridge.corearchX86SseSfence()
+    CorearchX86SseJniBridge.rustlangCorearchX86SseSfence()
 }
 
 public actual fun stmxcsr(p: MutPtr) {
-    X86SseJniBridge.corearchX86SseStmxcsr(p.rawAddress)
+    CorearchX86SseJniBridge.rustlangCorearchX86SseStmxcsr(p.rawAddress)
 }
 
 public actual fun ldmxcsr(p: ConstPtr) {
-    X86SseJniBridge.corearchX86SseLdmxcsr(p.rawAddress)
+    CorearchX86SseJniBridge.rustlangCorearchX86SseLdmxcsr(p.rawAddress)
 }
 
 public actual fun prefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int) {
-    X86SseJniBridge.corearchX86SsePrefetch(p.rawAddress, rw, loc, ty)
+    CorearchX86SseJniBridge.rustlangCorearchX86SsePrefetch(p.rawAddress, rw, loc, ty)
 }
 
 public actual fun cmpss(a: M128, b: M128, imm8: Byte): M128 =

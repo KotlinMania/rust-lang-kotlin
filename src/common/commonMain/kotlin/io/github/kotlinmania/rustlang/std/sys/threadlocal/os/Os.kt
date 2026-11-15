@@ -1,8 +1,8 @@
 // port-lint: source sys/thread_local/os.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.os
 
+import io.github.kotlinmania.rustlang.alloc.System
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -15,17 +15,16 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.alloc.System
-import io.github.kotlinmania.rustlang.std.panic.catchUnwind
-import io.github.kotlinmania.rustlang.std.panic.resumeUnwind
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sync.poison.Guard
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.abortOnDtorUnwind
+import io.github.kotlinmania.rustlang.panic.catchUnwind
+import io.github.kotlinmania.rustlang.panic.resumeUnwind
+import io.github.kotlinmania.rustlang.process.abort
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.Key
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.LazyKey
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.get
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.set
+import io.github.kotlinmania.rustlang.sync.poison.Guard
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.sys.threadlocal.abortOnDtorUnwind
 
 public fun interface NewDtorCallback {
     public operator fun invoke(arg0: MutPtr)
@@ -98,8 +97,8 @@ public open class AlignedSystemBox<T> internal constructor(
 public fun <T> AlignedSystemBox.Companion.new(v: Value<T>, align: Int, typeLayoutT: TypeLayout<T>): AlignedSystemBox<T, Align> {
     val layout =
         when (val matchVal = Layout.new<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT)).alignTo(align)) {
-            is Result.Ok<*> -> {
-                val v1 = matchVal.value
+            is Result.Ok<*, *> -> {
+                val v1 = (matchVal as Result.Ok<*, *>).value
                 v1
             }
             else -> {
@@ -152,8 +151,8 @@ public fun <T> AlignedSystemBox<T, Align>.deref(align: Int): Value<T> = (this.pt
 public fun <T> AlignedSystemBox<T, Align>.drop(align: Int, typeLayoutT: TypeLayout<T>) {
     val layout =
         when (val matchVal = Layout.new<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT)).alignTo(align)) {
-            is Result.Ok<*> -> {
-                val v = matchVal.value
+            is Result.Ok<*, *> -> {
+                val v = (matchVal as Result.Ok<*, *>).value
                 v
             }
             else -> {
@@ -177,8 +176,8 @@ public fun <T> AlignedSystemBox<T, Align>.drop(align: Int, typeLayoutT: TypeLayo
     run {
         val unwindResult = catchUnwind(AssertUnwindSafe({ this.ptr.dropInPlace() }))
         System.dealloc(this.ptr.asPtr().cast(), layout)
-        if (unwindResult is Result.Err<*>) {
-            val payload = (unwindResult as Result.Err<*>).error
+        if (unwindResult is Result.Err<*, *>) {
+            val payload = (unwindResult as Result.Err<*, *>).error
             resumeUnwind(payload)
         }
     }
@@ -255,7 +254,7 @@ public fun destroyValue(ptr: MutPtr, align: Int) {
         val ptr1 = AlignedSystemBox.fromRaw(MutPtr(ptr.rawAddress, ptr.rawMeta))
         val key = ptr1.key
         // SAFETY: `key` is the TLS key `ptr` was stored under.
-        set(key, withoutProvenanceMut(1))
+        set(key, ptr.withoutProvenanceMut(1))
         (ptr1).let { }
         // SAFETY: `key` is the TLS key `ptr` was stored under.
         set(key, MutPtr(0L))

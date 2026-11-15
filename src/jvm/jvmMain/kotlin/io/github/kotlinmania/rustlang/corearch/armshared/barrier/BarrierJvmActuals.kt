@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.armshared.barrier
 
-private object ArmsharedBarrierJniBridge {
+private object CorearchArmsharedBarrierJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,8 +38,8 @@ private object ArmsharedBarrierJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = ArmsharedBarrierJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = CorearchArmsharedBarrierJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -56,23 +56,23 @@ private object ArmsharedBarrierJniBridge {
     }
 
     @JvmStatic
-    external fun corearchArmsharedBarrierDmb(arg0: Int)
+    external fun rustlangCorearchArmsharedBarrierDmb(arg0: Int)
 
     @JvmStatic
-    external fun corearchArmsharedBarrierDsb(arg0: Int)
+    external fun rustlangCorearchArmsharedBarrierDsb(arg0: Int)
 
     @JvmStatic
-    external fun corearchArmsharedBarrierIsb(arg0: Int)
+    external fun rustlangCorearchArmsharedBarrierIsb(arg0: Int)
 }
 
 public actual fun dmb(arg0: Int) {
-    ArmsharedBarrierJniBridge.corearchArmsharedBarrierDmb(arg0)
+    CorearchArmsharedBarrierJniBridge.rustlangCorearchArmsharedBarrierDmb(arg0)
 }
 
 public actual fun dsb(arg0: Int) {
-    ArmsharedBarrierJniBridge.corearchArmsharedBarrierDsb(arg0)
+    CorearchArmsharedBarrierJniBridge.rustlangCorearchArmsharedBarrierDsb(arg0)
 }
 
 public actual fun isb(arg0: Int) {
-    ArmsharedBarrierJniBridge.corearchArmsharedBarrierIsb(arg0)
+    CorearchArmsharedBarrierJniBridge.rustlangCorearchArmsharedBarrierIsb(arg0)
 }

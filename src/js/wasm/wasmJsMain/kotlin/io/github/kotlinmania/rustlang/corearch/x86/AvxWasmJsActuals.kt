@@ -3,22 +3,26 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I32x8
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I64x4
-import io.github.kotlinmania.rustlang.corearch.simd.I8x32
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I32x8
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I64x4
+import io.github.kotlinmania.rustlang.simd.I8x32
+import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.x86.M128d
+import io.github.kotlinmania.rustlang.x86.M256
+import io.github.kotlinmania.rustlang.x86.M256d
 
 @JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
-private external fun initX86AvxNapiAddon(): Boolean
+private external fun initCorearchX86AvxNapiAddon(): Boolean
 
-private val x86AvxNapiAvailable: Boolean = initX86AvxNapiAddon()
+private val corearchX86AvxNapiAvailable: Boolean = initCorearchX86AvxNapiAddon()
 
-@JsFun("() => globalThis.__km_napi_kmcore.corearchX86AvxVzeroall()")
-private external fun wasmCorearchX86AvxVzeroall()
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangCorearchX86AvxVzeroall()")
+private external fun wasmRustlangCorearchX86AvxVzeroall()
 
-@JsFun("() => globalThis.__km_napi_kmcore.corearchX86AvxVzeroupper()")
-private external fun wasmCorearchX86AvxVzeroupper()
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangCorearchX86AvxVzeroupper()")
+private external fun wasmRustlangCorearchX86AvxVzeroupper()
 
 public actual fun roundpd256(a: M256d, b: Int): M256d =
     throw UnsupportedOperationException("Native FFI addon is not available")
@@ -60,16 +64,16 @@ public actual fun vcvttps2dq(a: M256): I32x8 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vzeroall() {
-    if (x86AvxNapiAvailable) {
-        wasmCorearchX86AvxVzeroall()
+    if (corearchX86AvxNapiAvailable) {
+        wasmRustlangCorearchX86AvxVzeroall()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun vzeroupper() {
-    if (x86AvxNapiAvailable) {
-        wasmCorearchX86AvxVzeroupper()
+    if (corearchX86AvxNapiAvailable) {
+        wasmRustlangCorearchX86AvxVzeroupper()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

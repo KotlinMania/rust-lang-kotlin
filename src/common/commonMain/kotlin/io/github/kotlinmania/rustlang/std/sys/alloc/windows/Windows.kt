@@ -7,9 +7,8 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.sys.alloc.MIN_ALIGN
-import io.github.kotlinmania.rustlang.std.sys.alloc.reallocFallback
-import io.github.kotlinmania.rustlang.std.sys.c
+import io.github.kotlinmania.rustlang.sys.alloc.MIN_ALIGN
+import io.github.kotlinmania.rustlang.sys.alloc.reallocFallback
 
 // Implements `System` on Windows.
 //
@@ -35,7 +34,7 @@ public val HEAP_ZERO_MEMORY: UInt = 0x00000008u
 // always return the same handle, which remains valid for the entire scope of the process.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-getprocessheap
-public expect fun getProcessHeap(): c.Handle
+public expect fun getProcessHeap(): Handle
 
 // Allocate a block of `dwBytes` bytes of memory from a given heap `hHeap`.
 // The allocated memory may be uninitialized, or zeroed if `dwFlags` is
@@ -51,7 +50,7 @@ public expect fun getProcessHeap(): c.Handle
 // Note that `dwBytes` is allowed to be zero, contrary to some other allocators.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-heapalloc
-public expect fun heapAlloc(hheap: c.Handle, dwflags: UInt, dwbytes: ULong): MutPtr
+public expect fun heapAlloc(hheap: Handle, dwflags: UInt, dwbytes: ULong): MutPtr
 
 // Reallocate a block of memory behind a given pointer `lpMem` from a given heap `hHeap`,
 // to a block of at least `dwBytes` bytes, either shrinking the block in place,
@@ -72,7 +71,7 @@ public expect fun heapAlloc(hheap: c.Handle, dwflags: UInt, dwbytes: ULong): Mut
 // Note that `dwBytes` is allowed to be zero, contrary to some other allocators.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-heaprealloc
-public expect fun heapReAlloc(hheap: c.Handle, dwflags: UInt, lpmem: ConstPtr, dwbytes: ULong): MutPtr
+public expect fun heapReAlloc(hheap: Handle, dwflags: UInt, lpmem: ConstPtr, dwbytes: ULong): MutPtr
 
 // Free a block of memory behind a given pointer `lpMem` from a given heap `hHeap`.
 // Returns a nonzero value if the operation is successful, and zero if the operation fails.
@@ -88,14 +87,14 @@ public expect fun heapReAlloc(hheap: c.Handle, dwflags: UInt, lpmem: ConstPtr, d
 // Note that `lpMem` is allowed to be null, which will not cause the operation to fail.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-heapfree
-public expect fun heapFree(hheap: c.Handle, dwflags: UInt, lpmem: ConstPtr): c.Bool
+public expect fun heapFree(hheap: Handle, dwflags: UInt, lpmem: ConstPtr): Bool
 
 public fun getProcessHeap(): MutPtr {
     // SAFETY: GetProcessHeap simply returns a valid handle or NULL so is always safe to call.
     return GetProcessHeap()
 }
 
-public fun processHeapAlloc(heap: MaybeUninit<c.Handle>, flags: UInt, bytes: Int): MutPtr {
+public fun processHeapAlloc(heap: MaybeUninit<Handle>, flags: UInt, bytes: Int): MutPtr {
     val heap = getProcessHeap()
     if (((heap).rawAddress == 0L)) {
         return MutPtr(0L)
@@ -190,7 +189,7 @@ public fun allocate(layout: Layout, zeroed: Boolean): MutPtr {
         // SAFETY: Because the size and alignment of a header is <= `MIN_ALIGN` and `aligned`
         // is aligned to at least `MIN_ALIGN` and has at least `MIN_ALIGN` bytes of padding before
         // it, it is safe to write a header directly before it.
-        write(MutPtr(((MutPtr(aligned.rawAddress, aligned.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), Header(ptr), typeLayoutT = Header.typeLayout())
+        ptr.write(MutPtr(((MutPtr(aligned.rawAddress, aligned.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), Header(ptr), typeLayoutT = Header.typeLayout())
         // SAFETY: The returned pointer does not point to the start of an allocated block,
         // but there is a header readable directly before it containing the location of the start
         // of the block.
@@ -217,7 +216,7 @@ public fun dealloc(ptr: MutPtr, layout: Layout) {
         // The location of the start of the block is stored in the padding before `ptr`.
         // SAFETY: Because of the contract of `System`, `ptr` is guaranteed to be non-null
         // and have a header readable directly before it.
-        read(MutPtr(((MutPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), typeLayoutT = Header.typeLayout()).first
+        ptr.read(MutPtr(((MutPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), typeLayoutT = Header.typeLayout()).first
     }
     // because `ptr` has been successfully allocated with this allocator,
     // there must be a valid process heap.

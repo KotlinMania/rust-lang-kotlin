@@ -2,30 +2,30 @@
 
 package io.github.kotlinmania.rustlang.libc.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockT
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.PthreadKeyT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.SpeedT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.NfdsT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.WcharT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.NfdsT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.PthreadKeyT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.ClockT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.WcharT
 
-private object UnixJniBridge {
+private object LibcUnixJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -61,8 +61,8 @@ private object UnixJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = UnixJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = LibcUnixJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -79,1093 +79,1093 @@ private object UnixJniBridge {
     }
 
     @JvmStatic
-    external fun libcUnixIsalnum(c: Int): Int
+    external fun rustlangLibcUnixIsalnum(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixIsalpha(c: Int): Int
+    external fun rustlangLibcUnixIsalpha(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixIscntrl(c: Int): Int
+    external fun rustlangLibcUnixIscntrl(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixIsdigit(c: Int): Int
+    external fun rustlangLibcUnixIsdigit(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixIsgraph(c: Int): Int
+    external fun rustlangLibcUnixIsgraph(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixIslower(c: Int): Int
+    external fun rustlangLibcUnixIslower(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixIsprint(c: Int): Int
+    external fun rustlangLibcUnixIsprint(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixIspunct(c: Int): Int
+    external fun rustlangLibcUnixIspunct(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixIsspace(c: Int): Int
+    external fun rustlangLibcUnixIsspace(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixIsupper(c: Int): Int
+    external fun rustlangLibcUnixIsupper(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixIsxdigit(c: Int): Int
+    external fun rustlangLibcUnixIsxdigit(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixIsblank(c: Int): Int
+    external fun rustlangLibcUnixIsblank(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixTolower(c: Int): Int
+    external fun rustlangLibcUnixTolower(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixToupper(c: Int): Int
+    external fun rustlangLibcUnixToupper(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixQsort(base: Long, num: Long, size: Long, compar: Long)
+    external fun rustlangLibcUnixQsort(base: Long, num: Long, size: Long, compar: Long)
 
     @JvmStatic
-    external fun libcUnixBsearch(key: Long, base: Long, num: Long, size: Long, compar: Long): Long
+    external fun rustlangLibcUnixBsearch(key: Long, base: Long, num: Long, size: Long, compar: Long): Long
 
     @JvmStatic
-    external fun libcUnixFopen(filename: Long, mode: Long): Long
+    external fun rustlangLibcUnixFopen(filename: Long, mode: Long): Long
 
     @JvmStatic
-    external fun libcUnixFreopen(filename: Long, mode: Long, file: Long): Long
+    external fun rustlangLibcUnixFreopen(filename: Long, mode: Long, file: Long): Long
 
     @JvmStatic
-    external fun libcUnixFflush(file: Long): Int
+    external fun rustlangLibcUnixFflush(file: Long): Int
 
     @JvmStatic
-    external fun libcUnixFclose(file: Long): Int
+    external fun rustlangLibcUnixFclose(file: Long): Int
 
     @JvmStatic
-    external fun libcUnixRemove(filename: Long): Int
+    external fun rustlangLibcUnixRemove(filename: Long): Int
 
     @JvmStatic
-    external fun libcUnixRename(oldname: Long, newname: Long): Int
+    external fun rustlangLibcUnixRename(oldname: Long, newname: Long): Int
 
     @JvmStatic
-    external fun libcUnixTmpfile(): Long
+    external fun rustlangLibcUnixTmpfile(): Long
 
     @JvmStatic
-    external fun libcUnixSetvbuf(stream: Long, buffer: Long, mode: Int, size: Long): Int
+    external fun rustlangLibcUnixSetvbuf(stream: Long, buffer: Long, mode: Int, size: Long): Int
 
     @JvmStatic
-    external fun libcUnixSetbuf(stream: Long, buf: Long)
+    external fun rustlangLibcUnixSetbuf(stream: Long, buf: Long)
 
     @JvmStatic
-    external fun libcUnixGetchar(): Int
+    external fun rustlangLibcUnixGetchar(): Int
 
     @JvmStatic
-    external fun libcUnixPutchar(c: Int): Int
+    external fun rustlangLibcUnixPutchar(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixFgetc(stream: Long): Int
+    external fun rustlangLibcUnixFgetc(stream: Long): Int
 
     @JvmStatic
-    external fun libcUnixFgets(buf: Long, n: Int, stream: Long): Long
+    external fun rustlangLibcUnixFgets(buf: Long, n: Int, stream: Long): Long
 
     @JvmStatic
-    external fun libcUnixFputc(c: Int, stream: Long): Int
+    external fun rustlangLibcUnixFputc(c: Int, stream: Long): Int
 
     @JvmStatic
-    external fun libcUnixFputs(s: Long, stream: Long): Int
+    external fun rustlangLibcUnixFputs(s: Long, stream: Long): Int
 
     @JvmStatic
-    external fun libcUnixPuts(s: Long): Int
+    external fun rustlangLibcUnixPuts(s: Long): Int
 
     @JvmStatic
-    external fun libcUnixUngetc(c: Int, stream: Long): Int
+    external fun rustlangLibcUnixUngetc(c: Int, stream: Long): Int
 
     @JvmStatic
-    external fun libcUnixFread(ptr: Long, size: Long, nobj: Long, stream: Long): Long
+    external fun rustlangLibcUnixFread(ptr: Long, size: Long, nobj: Long, stream: Long): Long
 
     @JvmStatic
-    external fun libcUnixFwrite(ptr: Long, size: Long, nobj: Long, stream: Long): Long
+    external fun rustlangLibcUnixFwrite(ptr: Long, size: Long, nobj: Long, stream: Long): Long
 
     @JvmStatic
-    external fun libcUnixFseek(stream: Long, offset: Long, whence: Int): Int
+    external fun rustlangLibcUnixFseek(stream: Long, offset: Long, whence: Int): Int
 
     @JvmStatic
-    external fun libcUnixFtell(stream: Long): Long
+    external fun rustlangLibcUnixFtell(stream: Long): Long
 
     @JvmStatic
-    external fun libcUnixRewind(stream: Long)
+    external fun rustlangLibcUnixRewind(stream: Long)
 
     @JvmStatic
-    external fun libcUnixFgetpos(stream: Long, ptr: Long): Int
+    external fun rustlangLibcUnixFgetpos(stream: Long, ptr: Long): Int
 
     @JvmStatic
-    external fun libcUnixFsetpos(stream: Long, ptr: Long): Int
+    external fun rustlangLibcUnixFsetpos(stream: Long, ptr: Long): Int
 
     @JvmStatic
-    external fun libcUnixFeof(stream: Long): Int
+    external fun rustlangLibcUnixFeof(stream: Long): Int
 
     @JvmStatic
-    external fun libcUnixFerror(stream: Long): Int
+    external fun rustlangLibcUnixFerror(stream: Long): Int
 
     @JvmStatic
-    external fun libcUnixClearerr(stream: Long)
+    external fun rustlangLibcUnixClearerr(stream: Long)
 
     @JvmStatic
-    external fun libcUnixPerror(s: Long)
+    external fun rustlangLibcUnixPerror(s: Long)
 
     @JvmStatic
-    external fun libcUnixAtof(s: Long): Double
+    external fun rustlangLibcUnixAtof(s: Long): Double
 
     @JvmStatic
-    external fun libcUnixAtoi(s: Long): Int
+    external fun rustlangLibcUnixAtoi(s: Long): Int
 
     @JvmStatic
-    external fun libcUnixAtol(s: Long): Long
+    external fun rustlangLibcUnixAtol(s: Long): Long
 
     @JvmStatic
-    external fun libcUnixAtoll(s: Long): Long
+    external fun rustlangLibcUnixAtoll(s: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrtod(s: Long, endp: Long): Double
+    external fun rustlangLibcUnixStrtod(s: Long, endp: Long): Double
 
     @JvmStatic
-    external fun libcUnixStrtof(s: Long, endp: Long): Float
+    external fun rustlangLibcUnixStrtof(s: Long, endp: Long): Float
 
     @JvmStatic
-    external fun libcUnixStrtol(s: Long, endp: Long, base: Int): Long
+    external fun rustlangLibcUnixStrtol(s: Long, endp: Long, base: Int): Long
 
     @JvmStatic
-    external fun libcUnixStrtoll(s: Long, endp: Long, base: Int): Long
+    external fun rustlangLibcUnixStrtoll(s: Long, endp: Long, base: Int): Long
 
     @JvmStatic
-    external fun libcUnixStrtoul(s: Long, endp: Long, base: Int): Long
+    external fun rustlangLibcUnixStrtoul(s: Long, endp: Long, base: Int): Long
 
     @JvmStatic
-    external fun libcUnixStrtoull(s: Long, endp: Long, base: Int): Long
+    external fun rustlangLibcUnixStrtoull(s: Long, endp: Long, base: Int): Long
 
     @JvmStatic
-    external fun libcUnixCalloc(nobj: Long, size: Long): Long
+    external fun rustlangLibcUnixCalloc(nobj: Long, size: Long): Long
 
     @JvmStatic
-    external fun libcUnixMalloc(size: Long): Long
+    external fun rustlangLibcUnixMalloc(size: Long): Long
 
     @JvmStatic
-    external fun libcUnixRealloc(p: Long, size: Long): Long
+    external fun rustlangLibcUnixRealloc(p: Long, size: Long): Long
 
     @JvmStatic
-    external fun libcUnixFree(p: Long)
+    external fun rustlangLibcUnixFree(p: Long)
 
     @JvmStatic
-    external fun libcUnixAbort()
+    external fun rustlangLibcUnixAbort()
 
     @JvmStatic
-    external fun libcUnixExit(status: Int)
+    external fun rustlangLibcUnixExit(status: Int)
 
     @JvmStatic
-    external fun libcUnixSystem(s: Long): Int
+    external fun rustlangLibcUnixSystem(s: Long): Int
 
     @JvmStatic
-    external fun libcUnixGetenv(s: Long): Long
+    external fun rustlangLibcUnixGetenv(s: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrcpy(dst: Long, src: Long): Long
+    external fun rustlangLibcUnixStrcpy(dst: Long, src: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrncpy(dst: Long, src: Long, n: Long): Long
+    external fun rustlangLibcUnixStrncpy(dst: Long, src: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixStpcpy(dst: Long, src: Long): Long
+    external fun rustlangLibcUnixStpcpy(dst: Long, src: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrcat(s: Long, ct: Long): Long
+    external fun rustlangLibcUnixStrcat(s: Long, ct: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrncat(s: Long, ct: Long, n: Long): Long
+    external fun rustlangLibcUnixStrncat(s: Long, ct: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrcmp(cs: Long, ct: Long): Int
+    external fun rustlangLibcUnixStrcmp(cs: Long, ct: Long): Int
 
     @JvmStatic
-    external fun libcUnixStrncmp(cs: Long, ct: Long, n: Long): Int
+    external fun rustlangLibcUnixStrncmp(cs: Long, ct: Long, n: Long): Int
 
     @JvmStatic
-    external fun libcUnixStrcoll(cs: Long, ct: Long): Int
+    external fun rustlangLibcUnixStrcoll(cs: Long, ct: Long): Int
 
     @JvmStatic
-    external fun libcUnixStrchr(cs: Long, c: Int): Long
+    external fun rustlangLibcUnixStrchr(cs: Long, c: Int): Long
 
     @JvmStatic
-    external fun libcUnixStrrchr(cs: Long, c: Int): Long
+    external fun rustlangLibcUnixStrrchr(cs: Long, c: Int): Long
 
     @JvmStatic
-    external fun libcUnixStrspn(cs: Long, ct: Long): Long
+    external fun rustlangLibcUnixStrspn(cs: Long, ct: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrcspn(cs: Long, ct: Long): Long
+    external fun rustlangLibcUnixStrcspn(cs: Long, ct: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrdup(cs: Long): Long
+    external fun rustlangLibcUnixStrdup(cs: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrndup(cs: Long, n: Long): Long
+    external fun rustlangLibcUnixStrndup(cs: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrpbrk(cs: Long, ct: Long): Long
+    external fun rustlangLibcUnixStrpbrk(cs: Long, ct: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrstr(cs: Long, ct: Long): Long
+    external fun rustlangLibcUnixStrstr(cs: Long, ct: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrcasecmp(s1: Long, s2: Long): Int
+    external fun rustlangLibcUnixStrcasecmp(s1: Long, s2: Long): Int
 
     @JvmStatic
-    external fun libcUnixStrncasecmp(s1: Long, s2: Long, n: Long): Int
+    external fun rustlangLibcUnixStrncasecmp(s1: Long, s2: Long, n: Long): Int
 
     @JvmStatic
-    external fun libcUnixStrlen(cs: Long): Long
+    external fun rustlangLibcUnixStrlen(cs: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrnlen(cs: Long, maxlen: Long): Long
+    external fun rustlangLibcUnixStrnlen(cs: Long, maxlen: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrerror(n: Int): Long
+    external fun rustlangLibcUnixStrerror(n: Int): Long
 
     @JvmStatic
-    external fun libcUnixStrtok(s: Long, t: Long): Long
+    external fun rustlangLibcUnixStrtok(s: Long, t: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrtokR(s: Long, t: Long, p: Long): Long
+    external fun rustlangLibcUnixStrtokR(s: Long, t: Long, p: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrxfrm(s: Long, ct: Long, n: Long): Long
+    external fun rustlangLibcUnixStrxfrm(s: Long, ct: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixStrsignal(sig: Int): Long
+    external fun rustlangLibcUnixStrsignal(sig: Int): Long
 
     @JvmStatic
-    external fun libcUnixWcslen(buf: Long): Long
+    external fun rustlangLibcUnixWcslen(buf: Long): Long
 
     @JvmStatic
-    external fun libcUnixWcstombs(dest: Long, src: Long, n: Long): Long
+    external fun rustlangLibcUnixWcstombs(dest: Long, src: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixMemchr(cx: Long, c: Int, n: Long): Long
+    external fun rustlangLibcUnixMemchr(cx: Long, c: Int, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixWmemchr(cx: Long, c: Int, n: Long): Long
+    external fun rustlangLibcUnixWmemchr(cx: Long, c: Int, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixMemcmp(cx: Long, ct: Long, n: Long): Int
+    external fun rustlangLibcUnixMemcmp(cx: Long, ct: Long, n: Long): Int
 
     @JvmStatic
-    external fun libcUnixMemcpy(dest: Long, src: Long, n: Long): Long
+    external fun rustlangLibcUnixMemcpy(dest: Long, src: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixMemmove(dest: Long, src: Long, n: Long): Long
+    external fun rustlangLibcUnixMemmove(dest: Long, src: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixMemset(dest: Long, c: Int, n: Long): Long
+    external fun rustlangLibcUnixMemset(dest: Long, c: Int, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixMemccpy(dest: Long, src: Long, c: Int, n: Long): Long
+    external fun rustlangLibcUnixMemccpy(dest: Long, src: Long, c: Int, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixGetpwnam(name: Long): Long
+    external fun rustlangLibcUnixGetpwnam(name: Long): Long
 
     @JvmStatic
-    external fun libcUnixGetpwuid(uid: Int): Long
+    external fun rustlangLibcUnixGetpwuid(uid: Int): Long
 
     @JvmStatic
-    external fun libcUnixFprintf(stream: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixFprintf(stream: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixPrintf(format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixPrintf(format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixSnprintf(s: Long, n: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixSnprintf(s: Long, n: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixSprintf(s: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixSprintf(s: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixFscanf(stream: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixFscanf(stream: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixScanf(format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixScanf(format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixSscanf(s: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixSscanf(s: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixGetcharUnlocked(): Int
+    external fun rustlangLibcUnixGetcharUnlocked(): Int
 
     @JvmStatic
-    external fun libcUnixPutcharUnlocked(c: Int): Int
+    external fun rustlangLibcUnixPutcharUnlocked(c: Int): Int
 
     @JvmStatic
-    external fun libcUnixSocket(domain: Int, ty: Int, protocol: Int): Int
+    external fun rustlangLibcUnixSocket(domain: Int, ty: Int, protocol: Int): Int
 
     @JvmStatic
-    external fun libcUnixConnect(socket: Int, address: Long, len: Int): Int
+    external fun rustlangLibcUnixConnect(socket: Int, address: Long, len: Int): Int
 
     @JvmStatic
-    external fun libcUnixListen(socket: Int, backlog: Int): Int
+    external fun rustlangLibcUnixListen(socket: Int, backlog: Int): Int
 
     @JvmStatic
-    external fun libcUnixAccept(socket: Int, address: Long, addressLen: Long): Int
+    external fun rustlangLibcUnixAccept(socket: Int, address: Long, addressLen: Long): Int
 
     @JvmStatic
-    external fun libcUnixGetpeername(socket: Int, address: Long, addressLen: Long): Int
+    external fun rustlangLibcUnixGetpeername(socket: Int, address: Long, addressLen: Long): Int
 
     @JvmStatic
-    external fun libcUnixGetsockname(socket: Int, address: Long, addressLen: Long): Int
+    external fun rustlangLibcUnixGetsockname(socket: Int, address: Long, addressLen: Long): Int
 
     @JvmStatic
-    external fun libcUnixSetsockopt(socket: Int, level: Int, name: Int, value: Long, optionLen: Int): Int
+    external fun rustlangLibcUnixSetsockopt(socket: Int, level: Int, name: Int, value: Long, optionLen: Int): Int
 
     @JvmStatic
-    external fun libcUnixSocketpair(domain: Int, type: Int, protocol: Int, socketVector: Long): Int
+    external fun rustlangLibcUnixSocketpair(domain: Int, type: Int, protocol: Int, socketVector: Long): Int
 
     @JvmStatic
-    external fun libcUnixSendto(socket: Int, buf: Long, len: Long, flags: Int, addr: Long, addrlen: Int): Long
+    external fun rustlangLibcUnixSendto(socket: Int, buf: Long, len: Long, flags: Int, addr: Long, addrlen: Int): Long
 
     @JvmStatic
-    external fun libcUnixShutdown(socket: Int, how: Int): Int
+    external fun rustlangLibcUnixShutdown(socket: Int, how: Int): Int
 
     @JvmStatic
-    external fun libcUnixChmod(path: Long, mode: Int): Int
+    external fun rustlangLibcUnixChmod(path: Long, mode: Int): Int
 
     @JvmStatic
-    external fun libcUnixFchmod(fd: Int, mode: Int): Int
+    external fun rustlangLibcUnixFchmod(fd: Int, mode: Int): Int
 
     @JvmStatic
-    external fun libcUnixFstat(fildes: Int, buf: Long): Int
+    external fun rustlangLibcUnixFstat(fildes: Int, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixMkdir(path: Long, mode: Int): Int
+    external fun rustlangLibcUnixMkdir(path: Long, mode: Int): Int
 
     @JvmStatic
-    external fun libcUnixStat(path: Long, buf: Long): Int
+    external fun rustlangLibcUnixStat(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixPclose(stream: Long): Int
+    external fun rustlangLibcUnixPclose(stream: Long): Int
 
     @JvmStatic
-    external fun libcUnixFdopen(fd: Int, mode: Long): Long
+    external fun rustlangLibcUnixFdopen(fd: Int, mode: Long): Long
 
     @JvmStatic
-    external fun libcUnixFileno(stream: Long): Int
+    external fun rustlangLibcUnixFileno(stream: Long): Int
 
     @JvmStatic
-    external fun libcUnixOpen(path: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixOpen(path: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixCreat(path: Long, mode: Int): Int
+    external fun rustlangLibcUnixCreat(path: Long, mode: Int): Int
 
     @JvmStatic
-    external fun libcUnixFcntl(fd: Int, cmd: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixFcntl(fd: Int, cmd: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixOpendir(dirname: Long): Long
+    external fun rustlangLibcUnixOpendir(dirname: Long): Long
 
     @JvmStatic
-    external fun libcUnixFdopendir(fd: Int): Long
+    external fun rustlangLibcUnixFdopendir(fd: Int): Long
 
     @JvmStatic
-    external fun libcUnixReaddir(dirp: Long): Long
+    external fun rustlangLibcUnixReaddir(dirp: Long): Long
 
     @JvmStatic
-    external fun libcUnixClosedir(dirp: Long): Int
+    external fun rustlangLibcUnixClosedir(dirp: Long): Int
 
     @JvmStatic
-    external fun libcUnixRewinddir(dirp: Long)
+    external fun rustlangLibcUnixRewinddir(dirp: Long)
 
     @JvmStatic
-    external fun libcUnixFchmodat(dirfd: Int, pathname: Long, mode: Int, flags: Int): Int
+    external fun rustlangLibcUnixFchmodat(dirfd: Int, pathname: Long, mode: Int, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixFchown(fd: Int, owner: Int, group: Int): Int
+    external fun rustlangLibcUnixFchown(fd: Int, owner: Int, group: Int): Int
 
     @JvmStatic
-    external fun libcUnixFchownat(dirfd: Int, pathname: Long, owner: Int, group: Int, flags: Int): Int
+    external fun rustlangLibcUnixFchownat(dirfd: Int, pathname: Long, owner: Int, group: Int, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixOpenat(dirfd: Int, pathname: Long, flags: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixOpenat(dirfd: Int, pathname: Long, flags: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixFstatat(dirfd: Int, pathname: Long, buf: Long, flags: Int): Int
+    external fun rustlangLibcUnixFstatat(dirfd: Int, pathname: Long, buf: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixLinkat(olddirfd: Int, oldpath: Long, newdirfd: Int, newpath: Long, flags: Int): Int
+    external fun rustlangLibcUnixLinkat(olddirfd: Int, oldpath: Long, newdirfd: Int, newpath: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixMkdirat(dirfd: Int, pathname: Long, mode: Int): Int
+    external fun rustlangLibcUnixMkdirat(dirfd: Int, pathname: Long, mode: Int): Int
 
     @JvmStatic
-    external fun libcUnixRenameat(olddirfd: Int, oldpath: Long, newdirfd: Int, newpath: Long): Int
+    external fun rustlangLibcUnixRenameat(olddirfd: Int, oldpath: Long, newdirfd: Int, newpath: Long): Int
 
     @JvmStatic
-    external fun libcUnixSymlinkat(target: Long, newdirfd: Int, linkpath: Long): Int
+    external fun rustlangLibcUnixSymlinkat(target: Long, newdirfd: Int, linkpath: Long): Int
 
     @JvmStatic
-    external fun libcUnixUnlinkat(dirfd: Int, pathname: Long, flags: Int): Int
+    external fun rustlangLibcUnixUnlinkat(dirfd: Int, pathname: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixAccess(path: Long, amode: Int): Int
+    external fun rustlangLibcUnixAccess(path: Long, amode: Int): Int
 
     @JvmStatic
-    external fun libcUnixAlarm(seconds: Int): Int
+    external fun rustlangLibcUnixAlarm(seconds: Int): Int
 
     @JvmStatic
-    external fun libcUnixChdir(dir: Long): Int
+    external fun rustlangLibcUnixChdir(dir: Long): Int
 
     @JvmStatic
-    external fun libcUnixFchdir(dirfd: Int): Int
+    external fun rustlangLibcUnixFchdir(dirfd: Int): Int
 
     @JvmStatic
-    external fun libcUnixChown(path: Long, uid: Int, gid: Int): Int
+    external fun rustlangLibcUnixChown(path: Long, uid: Int, gid: Int): Int
 
     @JvmStatic
-    external fun libcUnixLchown(path: Long, uid: Int, gid: Int): Int
+    external fun rustlangLibcUnixLchown(path: Long, uid: Int, gid: Int): Int
 
     @JvmStatic
-    external fun libcUnixClose(fd: Int): Int
+    external fun rustlangLibcUnixClose(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixDup(fd: Int): Int
+    external fun rustlangLibcUnixDup(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixDup2(src: Int, dst: Int): Int
+    external fun rustlangLibcUnixDup2(src: Int, dst: Int): Int
 
     @JvmStatic
-    external fun libcUnixExecl(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixExecl(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixExecle(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixExecle(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixExeclp(file: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixExeclp(file: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixExecv(prog: Long, argv: Long): Int
+    external fun rustlangLibcUnixExecv(prog: Long, argv: Long): Int
 
     @JvmStatic
-    external fun libcUnixExecve(prog: Long, argv: Long, envp: Long): Int
+    external fun rustlangLibcUnixExecve(prog: Long, argv: Long, envp: Long): Int
 
     @JvmStatic
-    external fun libcUnixExecvp(c: Long, argv: Long): Int
+    external fun rustlangLibcUnixExecvp(c: Long, argv: Long): Int
 
     @JvmStatic
-    external fun libcUnixFork(): Int
+    external fun rustlangLibcUnixFork(): Int
 
     @JvmStatic
-    external fun libcUnixFpathconf(filedes: Int, name: Int): Long
+    external fun rustlangLibcUnixFpathconf(filedes: Int, name: Int): Long
 
     @JvmStatic
-    external fun libcUnixGetcwd(buf: Long, size: Long): Long
+    external fun rustlangLibcUnixGetcwd(buf: Long, size: Long): Long
 
     @JvmStatic
-    external fun libcUnixGetegid(): Int
+    external fun rustlangLibcUnixGetegid(): Int
 
     @JvmStatic
-    external fun libcUnixGeteuid(): Int
+    external fun rustlangLibcUnixGeteuid(): Int
 
     @JvmStatic
-    external fun libcUnixGetgid(): Int
+    external fun rustlangLibcUnixGetgid(): Int
 
     @JvmStatic
-    external fun libcUnixGetgroups(ngroupsMax: Int, groups: Long): Int
+    external fun rustlangLibcUnixGetgroups(ngroupsMax: Int, groups: Long): Int
 
     @JvmStatic
-    external fun libcUnixGetlogin(): Long
+    external fun rustlangLibcUnixGetlogin(): Long
 
     @JvmStatic
-    external fun libcUnixGetopt(argc: Int, argv: Long, optstr: Long): Int
+    external fun rustlangLibcUnixGetopt(argc: Int, argv: Long, optstr: Long): Int
 
     @JvmStatic
-    external fun libcUnixGetpgid(pid: Int): Int
+    external fun rustlangLibcUnixGetpgid(pid: Int): Int
 
     @JvmStatic
-    external fun libcUnixGetpgrp(): Int
+    external fun rustlangLibcUnixGetpgrp(): Int
 
     @JvmStatic
-    external fun libcUnixGetpid(): Int
+    external fun rustlangLibcUnixGetpid(): Int
 
     @JvmStatic
-    external fun libcUnixGetppid(): Int
+    external fun rustlangLibcUnixGetppid(): Int
 
     @JvmStatic
-    external fun libcUnixGetuid(): Int
+    external fun rustlangLibcUnixGetuid(): Int
 
     @JvmStatic
-    external fun libcUnixIsatty(fd: Int): Int
+    external fun rustlangLibcUnixIsatty(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixLink(src: Long, dst: Long): Int
+    external fun rustlangLibcUnixLink(src: Long, dst: Long): Int
 
     @JvmStatic
-    external fun libcUnixLseek(fd: Int, offset: Long, whence: Int): Long
+    external fun rustlangLibcUnixLseek(fd: Int, offset: Long, whence: Int): Long
 
     @JvmStatic
-    external fun libcUnixPathconf(path: Long, name: Int): Long
+    external fun rustlangLibcUnixPathconf(path: Long, name: Int): Long
 
     @JvmStatic
-    external fun libcUnixPause(): Int
+    external fun rustlangLibcUnixPause(): Int
 
     @JvmStatic
-    external fun libcUnixPipe(fds: Long): Int
+    external fun rustlangLibcUnixPipe(fds: Long): Int
 
     @JvmStatic
-    external fun libcUnixPosixMemalign(memptr: Long, align: Long, size: Long): Int
+    external fun rustlangLibcUnixPosixMemalign(memptr: Long, align: Long, size: Long): Int
 
     @JvmStatic
-    external fun libcUnixAlignedAlloc(alignment: Long, size: Long): Long
+    external fun rustlangLibcUnixAlignedAlloc(alignment: Long, size: Long): Long
 
     @JvmStatic
-    external fun libcUnixRead(fd: Int, buf: Long, count: Long): Long
+    external fun rustlangLibcUnixRead(fd: Int, buf: Long, count: Long): Long
 
     @JvmStatic
-    external fun libcUnixRmdir(path: Long): Int
+    external fun rustlangLibcUnixRmdir(path: Long): Int
 
     @JvmStatic
-    external fun libcUnixSeteuid(uid: Int): Int
+    external fun rustlangLibcUnixSeteuid(uid: Int): Int
 
     @JvmStatic
-    external fun libcUnixSetegid(gid: Int): Int
+    external fun rustlangLibcUnixSetegid(gid: Int): Int
 
     @JvmStatic
-    external fun libcUnixSetgid(gid: Int): Int
+    external fun rustlangLibcUnixSetgid(gid: Int): Int
 
     @JvmStatic
-    external fun libcUnixSetpgid(pid: Int, pgid: Int): Int
+    external fun rustlangLibcUnixSetpgid(pid: Int, pgid: Int): Int
 
     @JvmStatic
-    external fun libcUnixSetsid(): Int
+    external fun rustlangLibcUnixSetsid(): Int
 
     @JvmStatic
-    external fun libcUnixSetuid(uid: Int): Int
+    external fun rustlangLibcUnixSetuid(uid: Int): Int
 
     @JvmStatic
-    external fun libcUnixSetreuid(ruid: Int, euid: Int): Int
+    external fun rustlangLibcUnixSetreuid(ruid: Int, euid: Int): Int
 
     @JvmStatic
-    external fun libcUnixSetregid(rgid: Int, egid: Int): Int
+    external fun rustlangLibcUnixSetregid(rgid: Int, egid: Int): Int
 
     @JvmStatic
-    external fun libcUnixSleep(secs: Int): Int
+    external fun rustlangLibcUnixSleep(secs: Int): Int
 
     @JvmStatic
-    external fun libcUnixNanosleep(rqtp: Long, rmtp: Long): Int
+    external fun rustlangLibcUnixNanosleep(rqtp: Long, rmtp: Long): Int
 
     @JvmStatic
-    external fun libcUnixTcgetpgrp(fd: Int): Int
+    external fun rustlangLibcUnixTcgetpgrp(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixTcsetpgrp(fd: Int, pgrp: Int): Int
+    external fun rustlangLibcUnixTcsetpgrp(fd: Int, pgrp: Int): Int
 
     @JvmStatic
-    external fun libcUnixTtyname(fd: Int): Long
+    external fun rustlangLibcUnixTtyname(fd: Int): Long
 
     @JvmStatic
-    external fun libcUnixTtynameR(fd: Int, buf: Long, buflen: Long): Int
+    external fun rustlangLibcUnixTtynameR(fd: Int, buf: Long, buflen: Long): Int
 
     @JvmStatic
-    external fun libcUnixUnlink(c: Long): Int
+    external fun rustlangLibcUnixUnlink(c: Long): Int
 
     @JvmStatic
-    external fun libcUnixWait(status: Long): Int
+    external fun rustlangLibcUnixWait(status: Long): Int
 
     @JvmStatic
-    external fun libcUnixWaitpid(pid: Int, status: Long, options: Int): Int
+    external fun rustlangLibcUnixWaitpid(pid: Int, status: Long, options: Int): Int
 
     @JvmStatic
-    external fun libcUnixWrite(fd: Int, buf: Long, count: Long): Long
+    external fun rustlangLibcUnixWrite(fd: Int, buf: Long, count: Long): Long
 
     @JvmStatic
-    external fun libcUnixPread(fd: Int, buf: Long, count: Long, offset: Long): Long
+    external fun rustlangLibcUnixPread(fd: Int, buf: Long, count: Long, offset: Long): Long
 
     @JvmStatic
-    external fun libcUnixPwrite(fd: Int, buf: Long, count: Long, offset: Long): Long
+    external fun rustlangLibcUnixPwrite(fd: Int, buf: Long, count: Long, offset: Long): Long
 
     @JvmStatic
-    external fun libcUnixUmask(mask: Int): Int
+    external fun rustlangLibcUnixUmask(mask: Int): Int
 
     @JvmStatic
-    external fun libcUnixUtime(file: Long, buf: Long): Int
+    external fun rustlangLibcUnixUtime(file: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixKill(pid: Int, sig: Int): Int
+    external fun rustlangLibcUnixKill(pid: Int, sig: Int): Int
 
     @JvmStatic
-    external fun libcUnixKillpg(pgrp: Int, sig: Int): Int
+    external fun rustlangLibcUnixKillpg(pgrp: Int, sig: Int): Int
 
     @JvmStatic
-    external fun libcUnixMlock(addr: Long, len: Long): Int
+    external fun rustlangLibcUnixMlock(addr: Long, len: Long): Int
 
     @JvmStatic
-    external fun libcUnixMunlock(addr: Long, len: Long): Int
+    external fun rustlangLibcUnixMunlock(addr: Long, len: Long): Int
 
     @JvmStatic
-    external fun libcUnixMlockall(flags: Int): Int
+    external fun rustlangLibcUnixMlockall(flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixMunlockall(): Int
+    external fun rustlangLibcUnixMunlockall(): Int
 
     @JvmStatic
-    external fun libcUnixMmap(addr: Long, len: Long, prot: Int, flags: Int, fd: Int, offset: Long): Long
+    external fun rustlangLibcUnixMmap(addr: Long, len: Long, prot: Int, flags: Int, fd: Int, offset: Long): Long
 
     @JvmStatic
-    external fun libcUnixMunmap(addr: Long, len: Long): Int
+    external fun rustlangLibcUnixMunmap(addr: Long, len: Long): Int
 
     @JvmStatic
-    external fun libcUnixIfNametoindex(ifname: Long): Int
+    external fun rustlangLibcUnixIfNametoindex(ifname: Long): Int
 
     @JvmStatic
-    external fun libcUnixIfIndextoname(ifindex: Int, ifname: Long): Long
+    external fun rustlangLibcUnixIfIndextoname(ifindex: Int, ifname: Long): Long
 
     @JvmStatic
-    external fun libcUnixLstat(path: Long, buf: Long): Int
+    external fun rustlangLibcUnixLstat(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixFsync(fd: Int): Int
+    external fun rustlangLibcUnixFsync(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixSetenv(name: Long, value: Long, overwrite: Int): Int
+    external fun rustlangLibcUnixSetenv(name: Long, value: Long, overwrite: Int): Int
 
     @JvmStatic
-    external fun libcUnixUnsetenv(name: Long): Int
+    external fun rustlangLibcUnixUnsetenv(name: Long): Int
 
     @JvmStatic
-    external fun libcUnixSymlink(path1: Long, path2: Long): Int
+    external fun rustlangLibcUnixSymlink(path1: Long, path2: Long): Int
 
     @JvmStatic
-    external fun libcUnixTruncate(path: Long, length: Long): Int
+    external fun rustlangLibcUnixTruncate(path: Long, length: Long): Int
 
     @JvmStatic
-    external fun libcUnixFtruncate(fd: Int, length: Long): Int
+    external fun rustlangLibcUnixFtruncate(fd: Int, length: Long): Int
 
     @JvmStatic
-    external fun libcUnixSignal(signum: Int, handler: Long): Long
+    external fun rustlangLibcUnixSignal(signum: Int, handler: Long): Long
 
     @JvmStatic
-    external fun libcUnixGetrusage(resource: Int, usage: Long): Int
+    external fun rustlangLibcUnixGetrusage(resource: Int, usage: Long): Int
 
     @JvmStatic
-    external fun libcUnixRealpath(pathname: Long, resolved: Long): Long
+    external fun rustlangLibcUnixRealpath(pathname: Long, resolved: Long): Long
 
     @JvmStatic
-    external fun libcUnixTimes(buf: Long): Long
+    external fun rustlangLibcUnixTimes(buf: Long): Long
 
     @JvmStatic
-    external fun libcUnixPthreadSelf(): Long
+    external fun rustlangLibcUnixPthreadSelf(): Long
 
     @JvmStatic
-    external fun libcUnixPthreadEqual(t1: Long, t2: Long): Int
+    external fun rustlangLibcUnixPthreadEqual(t1: Long, t2: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadJoin(native: Long, value: Long): Int
+    external fun rustlangLibcUnixPthreadJoin(native: Long, value: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadExit(value: Long)
+    external fun rustlangLibcUnixPthreadExit(value: Long)
 
     @JvmStatic
-    external fun libcUnixPthreadAttrInit(attr: Long): Int
+    external fun rustlangLibcUnixPthreadAttrInit(attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadAttrDestroy(attr: Long): Int
+    external fun rustlangLibcUnixPthreadAttrDestroy(attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadAttrGetstacksize(attr: Long, stacksize: Long): Int
+    external fun rustlangLibcUnixPthreadAttrGetstacksize(attr: Long, stacksize: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadAttrSetstacksize(attr: Long, stackSize: Long): Int
+    external fun rustlangLibcUnixPthreadAttrSetstacksize(attr: Long, stackSize: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadAttrSetdetachstate(attr: Long, state: Int): Int
+    external fun rustlangLibcUnixPthreadAttrSetdetachstate(attr: Long, state: Int): Int
 
     @JvmStatic
-    external fun libcUnixPthreadDetach(thread: Long): Int
+    external fun rustlangLibcUnixPthreadDetach(thread: Long): Int
 
     @JvmStatic
-    external fun libcUnixSchedYield(): Int
+    external fun rustlangLibcUnixSchedYield(): Int
 
     @JvmStatic
-    external fun libcUnixPthreadKeyCreate(key: Long, dtor: Long): Int
+    external fun rustlangLibcUnixPthreadKeyCreate(key: Long, dtor: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadKeyDelete(key: Int): Int
+    external fun rustlangLibcUnixPthreadKeyDelete(key: Int): Int
 
     @JvmStatic
-    external fun libcUnixPthreadGetspecific(key: Int): Long
+    external fun rustlangLibcUnixPthreadGetspecific(key: Int): Long
 
     @JvmStatic
-    external fun libcUnixPthreadSetspecific(key: Int, value: Long): Int
+    external fun rustlangLibcUnixPthreadSetspecific(key: Int, value: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadMutexInit(lock: Long, attr: Long): Int
+    external fun rustlangLibcUnixPthreadMutexInit(lock: Long, attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadMutexDestroy(lock: Long): Int
+    external fun rustlangLibcUnixPthreadMutexDestroy(lock: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadMutexLock(lock: Long): Int
+    external fun rustlangLibcUnixPthreadMutexLock(lock: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadMutexTrylock(lock: Long): Int
+    external fun rustlangLibcUnixPthreadMutexTrylock(lock: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadMutexUnlock(lock: Long): Int
+    external fun rustlangLibcUnixPthreadMutexUnlock(lock: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadMutexattrInit(attr: Long): Int
+    external fun rustlangLibcUnixPthreadMutexattrInit(attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadMutexattrDestroy(attr: Long): Int
+    external fun rustlangLibcUnixPthreadMutexattrDestroy(attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadMutexattrSettype(attr: Long, type: Int): Int
+    external fun rustlangLibcUnixPthreadMutexattrSettype(attr: Long, type: Int): Int
 
     @JvmStatic
-    external fun libcUnixPthreadCondInit(cond: Long, attr: Long): Int
+    external fun rustlangLibcUnixPthreadCondInit(cond: Long, attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadCondWait(cond: Long, lock: Long): Int
+    external fun rustlangLibcUnixPthreadCondWait(cond: Long, lock: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadCondTimedwait(cond: Long, lock: Long, abstime: Long): Int
+    external fun rustlangLibcUnixPthreadCondTimedwait(cond: Long, lock: Long, abstime: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadCondSignal(cond: Long): Int
+    external fun rustlangLibcUnixPthreadCondSignal(cond: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadCondBroadcast(cond: Long): Int
+    external fun rustlangLibcUnixPthreadCondBroadcast(cond: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadCondDestroy(cond: Long): Int
+    external fun rustlangLibcUnixPthreadCondDestroy(cond: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadCondattrInit(attr: Long): Int
+    external fun rustlangLibcUnixPthreadCondattrInit(attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadCondattrDestroy(attr: Long): Int
+    external fun rustlangLibcUnixPthreadCondattrDestroy(attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadRwlockInit(lock: Long, attr: Long): Int
+    external fun rustlangLibcUnixPthreadRwlockInit(lock: Long, attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadRwlockDestroy(lock: Long): Int
+    external fun rustlangLibcUnixPthreadRwlockDestroy(lock: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadRwlockRdlock(lock: Long): Int
+    external fun rustlangLibcUnixPthreadRwlockRdlock(lock: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadRwlockTryrdlock(lock: Long): Int
+    external fun rustlangLibcUnixPthreadRwlockTryrdlock(lock: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadRwlockWrlock(lock: Long): Int
+    external fun rustlangLibcUnixPthreadRwlockWrlock(lock: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadRwlockTrywrlock(lock: Long): Int
+    external fun rustlangLibcUnixPthreadRwlockTrywrlock(lock: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadRwlockUnlock(lock: Long): Int
+    external fun rustlangLibcUnixPthreadRwlockUnlock(lock: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadRwlockattrInit(attr: Long): Int
+    external fun rustlangLibcUnixPthreadRwlockattrInit(attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixPthreadRwlockattrDestroy(attr: Long): Int
+    external fun rustlangLibcUnixPthreadRwlockattrDestroy(attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixGetsockopt(sockfd: Int, level: Int, optname: Int, optval: Long, optlen: Long): Int
+    external fun rustlangLibcUnixGetsockopt(sockfd: Int, level: Int, optname: Int, optval: Long, optlen: Long): Int
 
     @JvmStatic
-    external fun libcUnixRaise(signum: Int): Int
+    external fun rustlangLibcUnixRaise(signum: Int): Int
 
     @JvmStatic
-    external fun libcUnixUtimes(filename: Long, times: Long): Int
+    external fun rustlangLibcUnixUtimes(filename: Long, times: Long): Int
 
     @JvmStatic
-    external fun libcUnixDlopen(filename: Long, flag: Int): Long
+    external fun rustlangLibcUnixDlopen(filename: Long, flag: Int): Long
 
     @JvmStatic
-    external fun libcUnixDlerror(): Long
+    external fun rustlangLibcUnixDlerror(): Long
 
     @JvmStatic
-    external fun libcUnixDlsym(handle: Long, symbol: Long): Long
+    external fun rustlangLibcUnixDlsym(handle: Long, symbol: Long): Long
 
     @JvmStatic
-    external fun libcUnixDlclose(handle: Long): Int
+    external fun rustlangLibcUnixDlclose(handle: Long): Int
 
     @JvmStatic
-    external fun libcUnixGetaddrinfo(node: Long, service: Long, hints: Long, res: Long): Int
+    external fun rustlangLibcUnixGetaddrinfo(node: Long, service: Long, hints: Long, res: Long): Int
 
     @JvmStatic
-    external fun libcUnixFreeaddrinfo(res: Long)
+    external fun rustlangLibcUnixFreeaddrinfo(res: Long)
 
     @JvmStatic
-    external fun libcUnixHstrerror(errcode: Int): Long
+    external fun rustlangLibcUnixHstrerror(errcode: Int): Long
 
     @JvmStatic
-    external fun libcUnixGaiStrerror(errcode: Int): Long
+    external fun rustlangLibcUnixGaiStrerror(errcode: Int): Long
 
     @JvmStatic
-    external fun libcUnixResInit(): Int
+    external fun rustlangLibcUnixResInit(): Int
 
     @JvmStatic
-    external fun libcUnixGmtimeR(timeP: Long, result: Long): Long
+    external fun rustlangLibcUnixGmtimeR(timeP: Long, result: Long): Long
 
     @JvmStatic
-    external fun libcUnixLocaltimeR(timeP: Long, result: Long): Long
+    external fun rustlangLibcUnixLocaltimeR(timeP: Long, result: Long): Long
 
     @JvmStatic
-    external fun libcUnixMktime(tm: Long): Long
+    external fun rustlangLibcUnixMktime(tm: Long): Long
 
     @JvmStatic
-    external fun libcUnixTime(time: Long): Long
+    external fun rustlangLibcUnixTime(time: Long): Long
 
     @JvmStatic
-    external fun libcUnixGmtime(timeP: Long): Long
+    external fun rustlangLibcUnixGmtime(timeP: Long): Long
 
     @JvmStatic
-    external fun libcUnixLocaltime(timeP: Long): Long
+    external fun rustlangLibcUnixLocaltime(timeP: Long): Long
 
     @JvmStatic
-    external fun libcUnixDifftime(time1: Long, time0: Long): Double
+    external fun rustlangLibcUnixDifftime(time1: Long, time0: Long): Double
 
     @JvmStatic
-    external fun libcUnixTimegm(tm: Long): Long
+    external fun rustlangLibcUnixTimegm(tm: Long): Long
 
     @JvmStatic
-    external fun libcUnixMknod(pathname: Long, mode: Int, dev: Int): Int
+    external fun rustlangLibcUnixMknod(pathname: Long, mode: Int, dev: Int): Int
 
     @JvmStatic
-    external fun libcUnixGethostname(name: Long, len: Long): Int
+    external fun rustlangLibcUnixGethostname(name: Long, len: Long): Int
 
     @JvmStatic
-    external fun libcUnixEndservent()
+    external fun rustlangLibcUnixEndservent()
 
     @JvmStatic
-    external fun libcUnixGetservbyname(name: Long, proto: Long): Long
+    external fun rustlangLibcUnixGetservbyname(name: Long, proto: Long): Long
 
     @JvmStatic
-    external fun libcUnixGetservbyport(port: Int, proto: Long): Long
+    external fun rustlangLibcUnixGetservbyport(port: Int, proto: Long): Long
 
     @JvmStatic
-    external fun libcUnixGetservent(): Long
+    external fun rustlangLibcUnixGetservent(): Long
 
     @JvmStatic
-    external fun libcUnixSetservent(stayopen: Int)
+    external fun rustlangLibcUnixSetservent(stayopen: Int)
 
     @JvmStatic
-    external fun libcUnixGetprotobyname(name: Long): Long
+    external fun rustlangLibcUnixGetprotobyname(name: Long): Long
 
     @JvmStatic
-    external fun libcUnixGetprotobynumber(proto: Int): Long
+    external fun rustlangLibcUnixGetprotobynumber(proto: Int): Long
 
     @JvmStatic
-    external fun libcUnixChroot(name: Long): Int
+    external fun rustlangLibcUnixChroot(name: Long): Int
 
     @JvmStatic
-    external fun libcUnixUsleep(secs: Int): Int
+    external fun rustlangLibcUnixUsleep(secs: Int): Int
 
     @JvmStatic
-    external fun libcUnixSend(socket: Int, buf: Long, len: Long, flags: Int): Long
+    external fun rustlangLibcUnixSend(socket: Int, buf: Long, len: Long, flags: Int): Long
 
     @JvmStatic
-    external fun libcUnixRecv(socket: Int, buf: Long, len: Long, flags: Int): Long
+    external fun rustlangLibcUnixRecv(socket: Int, buf: Long, len: Long, flags: Int): Long
 
     @JvmStatic
-    external fun libcUnixPutenv(string: Long): Int
+    external fun rustlangLibcUnixPutenv(string: Long): Int
 
     @JvmStatic
-    external fun libcUnixPoll(fds: Long, nfds: Long, timeout: Int): Int
+    external fun rustlangLibcUnixPoll(fds: Long, nfds: Long, timeout: Int): Int
 
     @JvmStatic
-    external fun libcUnixSelect(nfds: Int, readfds: Long, writefds: Long, errorfds: Long, timeout: Long): Int
+    external fun rustlangLibcUnixSelect(nfds: Int, readfds: Long, writefds: Long, errorfds: Long, timeout: Long): Int
 
     @JvmStatic
-    external fun libcUnixSetlocale(category: Int, locale: Long): Long
+    external fun rustlangLibcUnixSetlocale(category: Int, locale: Long): Long
 
     @JvmStatic
-    external fun libcUnixLocaleconv(): Long
+    external fun rustlangLibcUnixLocaleconv(): Long
 
     @JvmStatic
-    external fun libcUnixSemWait(sem: Long): Int
+    external fun rustlangLibcUnixSemWait(sem: Long): Int
 
     @JvmStatic
-    external fun libcUnixSemTrywait(sem: Long): Int
+    external fun rustlangLibcUnixSemTrywait(sem: Long): Int
 
     @JvmStatic
-    external fun libcUnixSemPost(sem: Long): Int
+    external fun rustlangLibcUnixSemPost(sem: Long): Int
 
     @JvmStatic
-    external fun libcUnixStatvfs(path: Long, buf: Long): Int
+    external fun rustlangLibcUnixStatvfs(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixFstatvfs(fd: Int, buf: Long): Int
+    external fun rustlangLibcUnixFstatvfs(fd: Int, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixSigemptyset(set: Long): Int
+    external fun rustlangLibcUnixSigemptyset(set: Long): Int
 
     @JvmStatic
-    external fun libcUnixSigaddset(set: Long, signum: Int): Int
+    external fun rustlangLibcUnixSigaddset(set: Long, signum: Int): Int
 
     @JvmStatic
-    external fun libcUnixSigfillset(set: Long): Int
+    external fun rustlangLibcUnixSigfillset(set: Long): Int
 
     @JvmStatic
-    external fun libcUnixSigdelset(set: Long, signum: Int): Int
+    external fun rustlangLibcUnixSigdelset(set: Long, signum: Int): Int
 
     @JvmStatic
-    external fun libcUnixSigismember(set: Long, signum: Int): Int
+    external fun rustlangLibcUnixSigismember(set: Long, signum: Int): Int
 
     @JvmStatic
-    external fun libcUnixSigprocmask(how: Int, set: Long, oldset: Long): Int
+    external fun rustlangLibcUnixSigprocmask(how: Int, set: Long, oldset: Long): Int
 
     @JvmStatic
-    external fun libcUnixSigpending(set: Long): Int
+    external fun rustlangLibcUnixSigpending(set: Long): Int
 
     @JvmStatic
-    external fun libcUnixSysconf(name: Int): Long
+    external fun rustlangLibcUnixSysconf(name: Int): Long
 
     @JvmStatic
-    external fun libcUnixMkfifo(path: Long, mode: Int): Int
+    external fun rustlangLibcUnixMkfifo(path: Long, mode: Int): Int
 
     @JvmStatic
-    external fun libcUnixFseeko(stream: Long, offset: Long, whence: Int): Int
+    external fun rustlangLibcUnixFseeko(stream: Long, offset: Long, whence: Int): Int
 
     @JvmStatic
-    external fun libcUnixFtello(stream: Long): Long
+    external fun rustlangLibcUnixFtello(stream: Long): Long
 
     @JvmStatic
-    external fun libcUnixTcdrain(fd: Int): Int
+    external fun rustlangLibcUnixTcdrain(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixCfgetispeed(termios: Long): Long
+    external fun rustlangLibcUnixCfgetispeed(termios: Long): Long
 
     @JvmStatic
-    external fun libcUnixCfgetospeed(termios: Long): Long
+    external fun rustlangLibcUnixCfgetospeed(termios: Long): Long
 
     @JvmStatic
-    external fun libcUnixCfsetispeed(termios: Long, speed: Long): Int
+    external fun rustlangLibcUnixCfsetispeed(termios: Long, speed: Long): Int
 
     @JvmStatic
-    external fun libcUnixCfsetospeed(termios: Long, speed: Long): Int
+    external fun rustlangLibcUnixCfsetospeed(termios: Long, speed: Long): Int
 
     @JvmStatic
-    external fun libcUnixTcgetattr(fd: Int, termios: Long): Int
+    external fun rustlangLibcUnixTcgetattr(fd: Int, termios: Long): Int
 
     @JvmStatic
-    external fun libcUnixTcsetattr(fd: Int, optionalActions: Int, termios: Long): Int
+    external fun rustlangLibcUnixTcsetattr(fd: Int, optionalActions: Int, termios: Long): Int
 
     @JvmStatic
-    external fun libcUnixTcflow(fd: Int, action: Int): Int
+    external fun rustlangLibcUnixTcflow(fd: Int, action: Int): Int
 
     @JvmStatic
-    external fun libcUnixTcflush(fd: Int, action: Int): Int
+    external fun rustlangLibcUnixTcflush(fd: Int, action: Int): Int
 
     @JvmStatic
-    external fun libcUnixTcgetsid(fd: Int): Int
+    external fun rustlangLibcUnixTcgetsid(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixTcsendbreak(fd: Int, duration: Int): Int
+    external fun rustlangLibcUnixTcsendbreak(fd: Int, duration: Int): Int
 
     @JvmStatic
-    external fun libcUnixMkstemp(template: Long): Int
+    external fun rustlangLibcUnixMkstemp(template: Long): Int
 
     @JvmStatic
-    external fun libcUnixMkdtemp(template: Long): Long
+    external fun rustlangLibcUnixMkdtemp(template: Long): Long
 
     @JvmStatic
-    external fun libcUnixTmpnam(ptr: Long): Long
+    external fun rustlangLibcUnixTmpnam(ptr: Long): Long
 
     @JvmStatic
-    external fun libcUnixOpenlog(ident: Long, logopt: Int, facility: Int)
+    external fun rustlangLibcUnixOpenlog(ident: Long, logopt: Int, facility: Int)
 
     @JvmStatic
-    external fun libcUnixCloselog()
+    external fun rustlangLibcUnixCloselog()
 
     @JvmStatic
-    external fun libcUnixSetlogmask(maskpri: Int): Int
+    external fun rustlangLibcUnixSetlogmask(maskpri: Int): Int
 
     @JvmStatic
-    external fun libcUnixSyslog(priority: Int, message: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long)
+    external fun rustlangLibcUnixSyslog(priority: Int, message: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long)
 
     @JvmStatic
-    external fun libcUnixNice(incr: Int): Int
+    external fun rustlangLibcUnixNice(incr: Int): Int
 
     @JvmStatic
-    external fun libcUnixGrantpt(fd: Int): Int
+    external fun rustlangLibcUnixGrantpt(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixPosixOpenpt(flags: Int): Int
+    external fun rustlangLibcUnixPosixOpenpt(flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixPtsname(fd: Int): Long
+    external fun rustlangLibcUnixPtsname(fd: Int): Long
 
     @JvmStatic
-    external fun libcUnixUnlockpt(fd: Int): Int
+    external fun rustlangLibcUnixUnlockpt(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixStrcasestr(cs: Long, ct: Long): Long
+    external fun rustlangLibcUnixStrcasestr(cs: Long, ct: Long): Long
 
     @JvmStatic
-    external fun libcUnixGetline(lineptr: Long, n: Long, stream: Long): Long
+    external fun rustlangLibcUnixGetline(lineptr: Long, n: Long, stream: Long): Long
 
     @JvmStatic
-    external fun libcUnixLockf(fd: Int, cmd: Int, len: Long): Int
+    external fun rustlangLibcUnixLockf(fd: Int, cmd: Int, len: Long): Int
 
     @JvmStatic
-    external fun libcUnixAdjtime(delta: Long, olddelta: Long): Int
+    external fun rustlangLibcUnixAdjtime(delta: Long, olddelta: Long): Int
 
     @JvmStatic
-    external fun libcUnixStpncpy(dst: Long, src: Long, n: Long): Long
+    external fun rustlangLibcUnixStpncpy(dst: Long, src: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcUnixConfstr(name: Int, buf: Long, len: Long): Long
+    external fun rustlangLibcUnixConfstr(name: Int, buf: Long, len: Long): Long
 
     @JvmStatic
-    external fun libcUnixDladdr(addr: Long, info: Long): Int
+    external fun rustlangLibcUnixDladdr(addr: Long, info: Long): Int
 
     @JvmStatic
-    external fun libcUnixFlock(fd: Int, operation: Int): Int
+    external fun rustlangLibcUnixFlock(fd: Int, operation: Int): Int
 
     @JvmStatic
-    external fun libcUnixOpenWmemstream(ptr: Long, sizeloc: Long): Long
+    external fun rustlangLibcUnixOpenWmemstream(ptr: Long, sizeloc: Long): Long
 
     @JvmStatic
-    external fun libcUnixGetsid(pid: Int): Int
+    external fun rustlangLibcUnixGetsid(pid: Int): Int
 
     @JvmStatic
-    external fun libcUnixReaddirR(dirp: Long, entry: Long, result: Long): Int
+    external fun rustlangLibcUnixReaddirR(dirp: Long, entry: Long, result: Long): Int
 
     @JvmStatic
-    external fun libcUnixReadlinkat(dirfd: Int, pathname: Long, buf: Long, bufsiz: Long): Int
+    external fun rustlangLibcUnixReadlinkat(dirfd: Int, pathname: Long, buf: Long, bufsiz: Long): Int
 
     @JvmStatic
-    external fun libcUnixReadlink(path: Long, buf: Long, bufsz: Long): Int
+    external fun rustlangLibcUnixReadlink(path: Long, buf: Long, bufsz: Long): Int
 
     @JvmStatic
-    external fun libcUnixPselect(nfds: Int, readfds: Long, writefds: Long, errorfds: Long, timeout: Long, sigmask: Long): Int
+    external fun rustlangLibcUnixPselect(nfds: Int, readfds: Long, writefds: Long, errorfds: Long, timeout: Long, sigmask: Long): Int
 
     @JvmStatic
-    external fun libcUnixSigaction(signum: Int, act: Long, oldact: Long): Int
+    external fun rustlangLibcUnixSigaction(signum: Int, act: Long, oldact: Long): Int
 
     @JvmStatic
-    external fun libcUnixFmemopen(buf: Long, size: Long, mode: Long): Long
+    external fun rustlangLibcUnixFmemopen(buf: Long, size: Long, mode: Long): Long
 
     @JvmStatic
-    external fun libcUnixOpenMemstream(ptr: Long, sizeloc: Long): Long
+    external fun rustlangLibcUnixOpenMemstream(ptr: Long, sizeloc: Long): Long
 
     @JvmStatic
-    external fun libcUnixAtexit(cb: Long): Int
+    external fun rustlangLibcUnixAtexit(cb: Long): Int
 
     @JvmStatic
-    external fun libcUnixCfmakeraw(termios: Long)
+    external fun rustlangLibcUnixCfmakeraw(termios: Long)
 
     @JvmStatic
-    external fun libcUnixCfsetspeed(termios: Long, speed: Long): Int
+    external fun rustlangLibcUnixCfsetspeed(termios: Long, speed: Long): Int
 
     @JvmStatic
-    external fun libcUnixFnmatch(pattern: Long, name: Long, flags: Int): Int
+    external fun rustlangLibcUnixFnmatch(pattern: Long, name: Long, flags: Int): Int
 }
 
 public actual val IN6ADDR_LOOPBACK: In6Addr
@@ -1175,1113 +1175,1113 @@ public actual val IN6ADDR_ANY: In6Addr
     get() = In6Addr()
 
 public actual fun isalnum(c: CInt): CInt =
-    UnixJniBridge.libcUnixIsalnum(c)
+    LibcUnixJniBridge.rustlangLibcUnixIsalnum(c)
 
 public actual fun isalpha(c: CInt): CInt =
-    UnixJniBridge.libcUnixIsalpha(c)
+    LibcUnixJniBridge.rustlangLibcUnixIsalpha(c)
 
 public actual fun iscntrl(c: CInt): CInt =
-    UnixJniBridge.libcUnixIscntrl(c)
+    LibcUnixJniBridge.rustlangLibcUnixIscntrl(c)
 
 public actual fun isdigit(c: CInt): CInt =
-    UnixJniBridge.libcUnixIsdigit(c)
+    LibcUnixJniBridge.rustlangLibcUnixIsdigit(c)
 
 public actual fun isgraph(c: CInt): CInt =
-    UnixJniBridge.libcUnixIsgraph(c)
+    LibcUnixJniBridge.rustlangLibcUnixIsgraph(c)
 
 public actual fun islower(c: CInt): CInt =
-    UnixJniBridge.libcUnixIslower(c)
+    LibcUnixJniBridge.rustlangLibcUnixIslower(c)
 
 public actual fun isprint(c: CInt): CInt =
-    UnixJniBridge.libcUnixIsprint(c)
+    LibcUnixJniBridge.rustlangLibcUnixIsprint(c)
 
 public actual fun ispunct(c: CInt): CInt =
-    UnixJniBridge.libcUnixIspunct(c)
+    LibcUnixJniBridge.rustlangLibcUnixIspunct(c)
 
 public actual fun isspace(c: CInt): CInt =
-    UnixJniBridge.libcUnixIsspace(c)
+    LibcUnixJniBridge.rustlangLibcUnixIsspace(c)
 
 public actual fun isupper(c: CInt): CInt =
-    UnixJniBridge.libcUnixIsupper(c)
+    LibcUnixJniBridge.rustlangLibcUnixIsupper(c)
 
 public actual fun isxdigit(c: CInt): CInt =
-    UnixJniBridge.libcUnixIsxdigit(c)
+    LibcUnixJniBridge.rustlangLibcUnixIsxdigit(c)
 
 public actual fun isblank(c: CInt): CInt =
-    UnixJniBridge.libcUnixIsblank(c)
+    LibcUnixJniBridge.rustlangLibcUnixIsblank(c)
 
 public actual fun tolower(c: CInt): CInt =
-    UnixJniBridge.libcUnixTolower(c)
+    LibcUnixJniBridge.rustlangLibcUnixTolower(c)
 
 public actual fun toupper(c: CInt): CInt =
-    UnixJniBridge.libcUnixToupper(c)
+    LibcUnixJniBridge.rustlangLibcUnixToupper(c)
 
 public actual fun qsort(base: MutPtr, num: SizeT, size: SizeT, compar: QsortComparCallback?) {
-    UnixJniBridge.libcUnixQsort(base.rawAddress, num.toLong(), size.toLong(), 0L)
+    LibcUnixJniBridge.rustlangLibcUnixQsort(base.rawAddress, num.toLong(), size.toLong(), 0L)
 }
 
 public actual fun bsearch(key: ConstPtr, base: ConstPtr, num: SizeT, size: SizeT, compar: QsortComparCallback?): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixBsearch(key.rawAddress, base.rawAddress, num.toLong(), size.toLong(), 0L))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixBsearch(key.rawAddress, base.rawAddress, num.toLong(), size.toLong(), 0L))
 
 public actual fun fopen(filename: ConstPtr, mode: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixFopen(filename.rawAddress, mode.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixFopen(filename.rawAddress, mode.rawAddress))
 
 public actual fun freopen(filename: ConstPtr, mode: ConstPtr, file: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixFreopen(filename.rawAddress, mode.rawAddress, file.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixFreopen(filename.rawAddress, mode.rawAddress, file.rawAddress))
 
 public actual fun fflush(file: MutPtr): CInt =
-    UnixJniBridge.libcUnixFflush(file.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFflush(file.rawAddress)
 
 public actual fun fclose(file: MutPtr): CInt =
-    UnixJniBridge.libcUnixFclose(file.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFclose(file.rawAddress)
 
 public actual fun remove(filename: ConstPtr): CInt =
-    UnixJniBridge.libcUnixRemove(filename.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixRemove(filename.rawAddress)
 
 public actual fun rename(oldname: ConstPtr, newname: ConstPtr): CInt =
-    UnixJniBridge.libcUnixRename(oldname.rawAddress, newname.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixRename(oldname.rawAddress, newname.rawAddress)
 
 public actual fun tmpfile(): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixTmpfile())
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixTmpfile())
 
 public actual fun setvbuf(stream: MutPtr, buffer: MutPtr, mode: CInt, size: SizeT): CInt =
-    UnixJniBridge.libcUnixSetvbuf(stream.rawAddress, buffer.rawAddress, mode, size.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixSetvbuf(stream.rawAddress, buffer.rawAddress, mode, size.toLong())
 
 public actual fun setbuf(stream: MutPtr, buf: MutPtr) {
-    UnixJniBridge.libcUnixSetbuf(stream.rawAddress, buf.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSetbuf(stream.rawAddress, buf.rawAddress)
 }
 
 public actual fun getchar(): CInt =
-    UnixJniBridge.libcUnixGetchar()
+    LibcUnixJniBridge.rustlangLibcUnixGetchar()
 
 public actual fun putchar(c: CInt): CInt =
-    UnixJniBridge.libcUnixPutchar(c)
+    LibcUnixJniBridge.rustlangLibcUnixPutchar(c)
 
 public actual fun fgetc(stream: MutPtr): CInt =
-    UnixJniBridge.libcUnixFgetc(stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFgetc(stream.rawAddress)
 
 public actual fun fgets(buf: MutPtr, n: CInt, stream: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixFgets(buf.rawAddress, n, stream.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixFgets(buf.rawAddress, n, stream.rawAddress))
 
 public actual fun fputc(c: CInt, stream: MutPtr): CInt =
-    UnixJniBridge.libcUnixFputc(c, stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFputc(c, stream.rawAddress)
 
 public actual fun fputs(s: ConstPtr, stream: MutPtr): CInt =
-    UnixJniBridge.libcUnixFputs(s.rawAddress, stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFputs(s.rawAddress, stream.rawAddress)
 
 public actual fun puts(s: ConstPtr): CInt =
-    UnixJniBridge.libcUnixPuts(s.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPuts(s.rawAddress)
 
 public actual fun ungetc(c: CInt, stream: MutPtr): CInt =
-    UnixJniBridge.libcUnixUngetc(c, stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixUngetc(c, stream.rawAddress)
 
 public actual fun fread(ptr: MutPtr, size: SizeT, nobj: SizeT, stream: MutPtr): SizeT =
-    UnixJniBridge.libcUnixFread(ptr.rawAddress, size.toLong(), nobj.toLong(), stream.rawAddress).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixFread(ptr.rawAddress, size.toLong(), nobj.toLong(), stream.rawAddress).toULong()
 
 public actual fun fwrite(ptr: ConstPtr, size: SizeT, nobj: SizeT, stream: MutPtr): SizeT =
-    UnixJniBridge.libcUnixFwrite(ptr.rawAddress, size.toLong(), nobj.toLong(), stream.rawAddress).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixFwrite(ptr.rawAddress, size.toLong(), nobj.toLong(), stream.rawAddress).toULong()
 
 public actual fun fseek(stream: MutPtr, offset: CLong, whence: CInt): CInt =
-    UnixJniBridge.libcUnixFseek(stream.rawAddress, offset, whence)
+    LibcUnixJniBridge.rustlangLibcUnixFseek(stream.rawAddress, offset, whence)
 
 public actual fun ftell(stream: MutPtr): CLong =
-    UnixJniBridge.libcUnixFtell(stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFtell(stream.rawAddress)
 
 public actual fun rewind(stream: MutPtr) {
-    UnixJniBridge.libcUnixRewind(stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixRewind(stream.rawAddress)
 }
 
 public actual fun fgetpos(stream: MutPtr, ptr: MutPtr): CInt =
-    UnixJniBridge.libcUnixFgetpos(stream.rawAddress, ptr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFgetpos(stream.rawAddress, ptr.rawAddress)
 
 public actual fun fsetpos(stream: MutPtr, ptr: ConstPtr): CInt =
-    UnixJniBridge.libcUnixFsetpos(stream.rawAddress, ptr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFsetpos(stream.rawAddress, ptr.rawAddress)
 
 public actual fun feof(stream: MutPtr): CInt =
-    UnixJniBridge.libcUnixFeof(stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFeof(stream.rawAddress)
 
 public actual fun ferror(stream: MutPtr): CInt =
-    UnixJniBridge.libcUnixFerror(stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFerror(stream.rawAddress)
 
 public actual fun clearerr(stream: MutPtr) {
-    UnixJniBridge.libcUnixClearerr(stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixClearerr(stream.rawAddress)
 }
 
 public actual fun perror(s: ConstPtr) {
-    UnixJniBridge.libcUnixPerror(s.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPerror(s.rawAddress)
 }
 
 public actual fun atof(s: ConstPtr): CDouble =
-    UnixJniBridge.libcUnixAtof(s.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixAtof(s.rawAddress)
 
 public actual fun atoi(s: ConstPtr): CInt =
-    UnixJniBridge.libcUnixAtoi(s.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixAtoi(s.rawAddress)
 
 public actual fun atol(s: ConstPtr): CLong =
-    UnixJniBridge.libcUnixAtol(s.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixAtol(s.rawAddress)
 
 public actual fun atoll(s: ConstPtr): CLonglong =
-    UnixJniBridge.libcUnixAtoll(s.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixAtoll(s.rawAddress)
 
 public actual fun strtod(s: ConstPtr, endp: MutPtr): CDouble =
-    UnixJniBridge.libcUnixStrtod(s.rawAddress, endp.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixStrtod(s.rawAddress, endp.rawAddress)
 
 public actual fun strtof(s: ConstPtr, endp: MutPtr): CFloat =
-    UnixJniBridge.libcUnixStrtof(s.rawAddress, endp.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixStrtof(s.rawAddress, endp.rawAddress)
 
 public actual fun strtol(s: ConstPtr, endp: MutPtr, base: CInt): CLong =
-    UnixJniBridge.libcUnixStrtol(s.rawAddress, endp.rawAddress, base)
+    LibcUnixJniBridge.rustlangLibcUnixStrtol(s.rawAddress, endp.rawAddress, base)
 
 public actual fun strtoll(s: ConstPtr, endp: MutPtr, base: CInt): CLonglong =
-    UnixJniBridge.libcUnixStrtoll(s.rawAddress, endp.rawAddress, base)
+    LibcUnixJniBridge.rustlangLibcUnixStrtoll(s.rawAddress, endp.rawAddress, base)
 
 public actual fun strtoul(s: ConstPtr, endp: MutPtr, base: CInt): CUlong =
-    UnixJniBridge.libcUnixStrtoul(s.rawAddress, endp.rawAddress, base).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixStrtoul(s.rawAddress, endp.rawAddress, base).toULong()
 
 public actual fun strtoull(s: ConstPtr, endp: MutPtr, base: CInt): CUlonglong =
-    UnixJniBridge.libcUnixStrtoull(s.rawAddress, endp.rawAddress, base).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixStrtoull(s.rawAddress, endp.rawAddress, base).toULong()
 
 public actual fun calloc(nobj: SizeT, size: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixCalloc(nobj.toLong(), size.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixCalloc(nobj.toLong(), size.toLong()))
 
 public actual fun malloc(size: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixMalloc(size.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixMalloc(size.toLong()))
 
 public actual fun realloc(p: MutPtr, size: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixRealloc(p.rawAddress, size.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixRealloc(p.rawAddress, size.toLong()))
 
 public actual fun free(p: MutPtr) {
-    UnixJniBridge.libcUnixFree(p.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFree(p.rawAddress)
 }
 
 public actual fun abort(): Nothing {
-    UnixJniBridge.libcUnixAbort()
+    LibcUnixJniBridge.rustlangLibcUnixAbort()
     error("Unreachable noreturn C function abort")
 }
 
 public actual fun exit(status: CInt): Nothing {
-    UnixJniBridge.libcUnixExit(status)
+    LibcUnixJniBridge.rustlangLibcUnixExit(status)
     error("Unreachable noreturn C function exit")
 }
 
 public actual fun system(s: ConstPtr): CInt =
-    UnixJniBridge.libcUnixSystem(s.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSystem(s.rawAddress)
 
 public actual fun getenv(s: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGetenv(s.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGetenv(s.rawAddress))
 
 public actual fun strcpy(dst: MutPtr, src: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrcpy(dst.rawAddress, src.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrcpy(dst.rawAddress, src.rawAddress))
 
 public actual fun strncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrncpy(dst.rawAddress, src.rawAddress, n.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrncpy(dst.rawAddress, src.rawAddress, n.toLong()))
 
 public actual fun stpcpy(dst: MutPtr, src: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStpcpy(dst.rawAddress, src.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStpcpy(dst.rawAddress, src.rawAddress))
 
 public actual fun strcat(s: MutPtr, ct: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrcat(s.rawAddress, ct.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrcat(s.rawAddress, ct.rawAddress))
 
 public actual fun strncat(s: MutPtr, ct: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrncat(s.rawAddress, ct.rawAddress, n.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrncat(s.rawAddress, ct.rawAddress, n.toLong()))
 
 public actual fun strcmp(cs: ConstPtr, ct: ConstPtr): CInt =
-    UnixJniBridge.libcUnixStrcmp(cs.rawAddress, ct.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixStrcmp(cs.rawAddress, ct.rawAddress)
 
 public actual fun strncmp(cs: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    UnixJniBridge.libcUnixStrncmp(cs.rawAddress, ct.rawAddress, n.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixStrncmp(cs.rawAddress, ct.rawAddress, n.toLong())
 
 public actual fun strcoll(cs: ConstPtr, ct: ConstPtr): CInt =
-    UnixJniBridge.libcUnixStrcoll(cs.rawAddress, ct.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixStrcoll(cs.rawAddress, ct.rawAddress)
 
 public actual fun strchr(cs: ConstPtr, c: CInt): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrchr(cs.rawAddress, c))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrchr(cs.rawAddress, c))
 
 public actual fun strrchr(cs: ConstPtr, c: CInt): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrrchr(cs.rawAddress, c))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrrchr(cs.rawAddress, c))
 
 public actual fun strspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    UnixJniBridge.libcUnixStrspn(cs.rawAddress, ct.rawAddress).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixStrspn(cs.rawAddress, ct.rawAddress).toULong()
 
 public actual fun strcspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    UnixJniBridge.libcUnixStrcspn(cs.rawAddress, ct.rawAddress).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixStrcspn(cs.rawAddress, ct.rawAddress).toULong()
 
 public actual fun strdup(cs: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrdup(cs.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrdup(cs.rawAddress))
 
 public actual fun strndup(cs: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrndup(cs.rawAddress, n.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrndup(cs.rawAddress, n.toLong()))
 
 public actual fun strpbrk(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrpbrk(cs.rawAddress, ct.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrpbrk(cs.rawAddress, ct.rawAddress))
 
 public actual fun strstr(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrstr(cs.rawAddress, ct.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrstr(cs.rawAddress, ct.rawAddress))
 
 public actual fun strcasecmp(s1: ConstPtr, s2: ConstPtr): CInt =
-    UnixJniBridge.libcUnixStrcasecmp(s1.rawAddress, s2.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixStrcasecmp(s1.rawAddress, s2.rawAddress)
 
 public actual fun strncasecmp(s1: ConstPtr, s2: ConstPtr, n: SizeT): CInt =
-    UnixJniBridge.libcUnixStrncasecmp(s1.rawAddress, s2.rawAddress, n.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixStrncasecmp(s1.rawAddress, s2.rawAddress, n.toLong())
 
 public actual fun strlen(cs: ConstPtr): SizeT =
-    UnixJniBridge.libcUnixStrlen(cs.rawAddress).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixStrlen(cs.rawAddress).toULong()
 
 public actual fun strnlen(cs: ConstPtr, maxlen: SizeT): SizeT =
-    UnixJniBridge.libcUnixStrnlen(cs.rawAddress, maxlen.toLong()).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixStrnlen(cs.rawAddress, maxlen.toLong()).toULong()
 
 public actual fun strerror(n: CInt): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrerror(n))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrerror(n))
 
 public actual fun strtok(s: MutPtr, t: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrtok(s.rawAddress, t.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrtok(s.rawAddress, t.rawAddress))
 
 public actual fun strtokR(s: MutPtr, t: ConstPtr, p: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrtokR(s.rawAddress, t.rawAddress, p.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrtokR(s.rawAddress, t.rawAddress, p.rawAddress))
 
 public actual fun strxfrm(s: MutPtr, ct: ConstPtr, n: SizeT): SizeT =
-    UnixJniBridge.libcUnixStrxfrm(s.rawAddress, ct.rawAddress, n.toLong()).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixStrxfrm(s.rawAddress, ct.rawAddress, n.toLong()).toULong()
 
 public actual fun strsignal(sig: CInt): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrsignal(sig))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrsignal(sig))
 
 public actual fun wcslen(buf: ConstPtr): SizeT =
-    UnixJniBridge.libcUnixWcslen(buf.rawAddress).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixWcslen(buf.rawAddress).toULong()
 
 public actual fun wcstombs(dest: MutPtr, src: ConstPtr, n: SizeT): SizeT =
-    UnixJniBridge.libcUnixWcstombs(dest.rawAddress, src.rawAddress, n.toLong()).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixWcstombs(dest.rawAddress, src.rawAddress, n.toLong()).toULong()
 
 public actual fun memchr(cx: ConstPtr, c: CInt, n: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixMemchr(cx.rawAddress, c, n.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixMemchr(cx.rawAddress, c, n.toLong()))
 
 public actual fun wmemchr(cx: ConstPtr, c: WcharT, n: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixWmemchr(cx.rawAddress, c.toInt(), n.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixWmemchr(cx.rawAddress, c.toInt(), n.toLong()))
 
 public actual fun memcmp(cx: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    UnixJniBridge.libcUnixMemcmp(cx.rawAddress, ct.rawAddress, n.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixMemcmp(cx.rawAddress, ct.rawAddress, n.toLong())
 
 public actual fun memcpy(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixMemcpy(dest.rawAddress, src.rawAddress, n.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixMemcpy(dest.rawAddress, src.rawAddress, n.toLong()))
 
 public actual fun memmove(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixMemmove(dest.rawAddress, src.rawAddress, n.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixMemmove(dest.rawAddress, src.rawAddress, n.toLong()))
 
 public actual fun memset(dest: MutPtr, c: CInt, n: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixMemset(dest.rawAddress, c, n.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixMemset(dest.rawAddress, c, n.toLong()))
 
 public actual fun memccpy(dest: MutPtr, src: ConstPtr, c: CInt, n: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixMemccpy(dest.rawAddress, src.rawAddress, c, n.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixMemccpy(dest.rawAddress, src.rawAddress, c, n.toLong()))
 
 public actual fun getpwnam(name: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGetpwnam(name.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGetpwnam(name.rawAddress))
 
-public actual fun getpwuid(uid: io.github.kotlinmania.rustlang.libc.UidT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGetpwuid(uid))
+public actual fun getpwuid(uid: io.github.kotlinmania.rustlang.unix.UidT): MutPtr =
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGetpwuid(uid))
 
 public actual fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixFprintf(stream.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixFprintf(stream.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun printf(format: ConstPtr, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixPrintf(format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixPrintf(format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun snprintf(s: MutPtr, n: SizeT, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixSnprintf(s.rawAddress, n.toLong(), format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixSnprintf(s.rawAddress, n.toLong(), format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun sprintf(s: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixSprintf(s.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixSprintf(s.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun fscanf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixFscanf(stream.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixFscanf(stream.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun scanf(format: ConstPtr, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixScanf(format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixScanf(format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun sscanf(s: ConstPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixSscanf(s.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixSscanf(s.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun getcharUnlocked(): CInt =
-    UnixJniBridge.libcUnixGetcharUnlocked()
+    LibcUnixJniBridge.rustlangLibcUnixGetcharUnlocked()
 
 public actual fun putcharUnlocked(c: CInt): CInt =
-    UnixJniBridge.libcUnixPutcharUnlocked(c)
+    LibcUnixJniBridge.rustlangLibcUnixPutcharUnlocked(c)
 
 public actual fun socket(domain: CInt, ty: CInt, protocol: CInt): CInt =
-    UnixJniBridge.libcUnixSocket(domain, ty, protocol)
+    LibcUnixJniBridge.rustlangLibcUnixSocket(domain, ty, protocol)
 
 public actual fun connect(socket: CInt, address: ConstPtr, len: SocklenT): CInt =
-    UnixJniBridge.libcUnixConnect(socket, address.rawAddress, len.toInt())
+    LibcUnixJniBridge.rustlangLibcUnixConnect(socket, address.rawAddress, len.toInt())
 
 public actual fun listen(socket: CInt, backlog: CInt): CInt =
-    UnixJniBridge.libcUnixListen(socket, backlog)
+    LibcUnixJniBridge.rustlangLibcUnixListen(socket, backlog)
 
 public actual fun accept(socket: CInt, address: MutPtr, addressLen: MutPtr): CInt =
-    UnixJniBridge.libcUnixAccept(socket, address.rawAddress, addressLen.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixAccept(socket, address.rawAddress, addressLen.rawAddress)
 
 public actual fun getpeername(socket: CInt, address: MutPtr, addressLen: MutPtr): CInt =
-    UnixJniBridge.libcUnixGetpeername(socket, address.rawAddress, addressLen.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixGetpeername(socket, address.rawAddress, addressLen.rawAddress)
 
 public actual fun getsockname(socket: CInt, address: MutPtr, addressLen: MutPtr): CInt =
-    UnixJniBridge.libcUnixGetsockname(socket, address.rawAddress, addressLen.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixGetsockname(socket, address.rawAddress, addressLen.rawAddress)
 
 public actual fun setsockopt(socket: CInt, level: CInt, name: CInt, value: ConstPtr, optionLen: SocklenT): CInt =
-    UnixJniBridge.libcUnixSetsockopt(socket, level, name, value.rawAddress, optionLen.toInt())
+    LibcUnixJniBridge.rustlangLibcUnixSetsockopt(socket, level, name, value.rawAddress, optionLen.toInt())
 
 public actual fun socketpair(domain: CInt, type: CInt, protocol: CInt, socketVector: MutPtr): CInt =
-    UnixJniBridge.libcUnixSocketpair(domain, type, protocol, socketVector.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSocketpair(domain, type, protocol, socketVector.rawAddress)
 
 public actual fun sendto(socket: CInt, buf: ConstPtr, len: SizeT, flags: CInt, addr: ConstPtr, addrlen: SocklenT): SsizeT =
-    UnixJniBridge.libcUnixSendto(socket, buf.rawAddress, len.toLong(), flags, addr.rawAddress, addrlen.toInt())
+    LibcUnixJniBridge.rustlangLibcUnixSendto(socket, buf.rawAddress, len.toLong(), flags, addr.rawAddress, addrlen.toInt())
 
 public actual fun shutdown(socket: CInt, how: CInt): CInt =
-    UnixJniBridge.libcUnixShutdown(socket, how)
+    LibcUnixJniBridge.rustlangLibcUnixShutdown(socket, how)
 
 public actual fun chmod(path: ConstPtr, mode: ModeT): CInt =
-    UnixJniBridge.libcUnixChmod(path.rawAddress, mode.toInt())
+    LibcUnixJniBridge.rustlangLibcUnixChmod(path.rawAddress, mode.toInt())
 
 public actual fun fchmod(fd: CInt, mode: ModeT): CInt =
-    UnixJniBridge.libcUnixFchmod(fd, mode.toInt())
+    LibcUnixJniBridge.rustlangLibcUnixFchmod(fd, mode.toInt())
 
 public actual fun fstat(fildes: CInt, buf: MutPtr): CInt =
-    UnixJniBridge.libcUnixFstat(fildes, buf.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFstat(fildes, buf.rawAddress)
 
 public actual fun mkdir(path: ConstPtr, mode: ModeT): CInt =
-    UnixJniBridge.libcUnixMkdir(path.rawAddress, mode.toInt())
+    LibcUnixJniBridge.rustlangLibcUnixMkdir(path.rawAddress, mode.toInt())
 
 public actual fun stat(path: ConstPtr, buf: MutPtr): CInt =
-    UnixJniBridge.libcUnixStat(path.rawAddress, buf.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixStat(path.rawAddress, buf.rawAddress)
 
 public actual fun pclose(stream: MutPtr): CInt =
-    UnixJniBridge.libcUnixPclose(stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPclose(stream.rawAddress)
 
 public actual fun fdopen(fd: CInt, mode: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixFdopen(fd, mode.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixFdopen(fd, mode.rawAddress))
 
 public actual fun fileno(stream: MutPtr): CInt =
-    UnixJniBridge.libcUnixFileno(stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFileno(stream.rawAddress)
 
 public actual fun open(path: ConstPtr, oflag: CInt, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixOpen(path.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixOpen(path.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun creat(path: ConstPtr, mode: ModeT): CInt =
-    UnixJniBridge.libcUnixCreat(path.rawAddress, mode.toInt())
+    LibcUnixJniBridge.rustlangLibcUnixCreat(path.rawAddress, mode.toInt())
 
 public actual fun fcntl(fd: CInt, cmd: CInt, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixFcntl(fd, cmd, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixFcntl(fd, cmd, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun opendir(dirname: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixOpendir(dirname.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixOpendir(dirname.rawAddress))
 
 public actual fun fdopendir(fd: CInt): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixFdopendir(fd))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixFdopendir(fd))
 
 public actual fun readdir(dirp: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixReaddir(dirp.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixReaddir(dirp.rawAddress))
 
 public actual fun closedir(dirp: MutPtr): CInt =
-    UnixJniBridge.libcUnixClosedir(dirp.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixClosedir(dirp.rawAddress)
 
 public actual fun rewinddir(dirp: MutPtr) {
-    UnixJniBridge.libcUnixRewinddir(dirp.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixRewinddir(dirp.rawAddress)
 }
 
 public actual fun fchmodat(dirfd: CInt, pathname: ConstPtr, mode: ModeT, flags: CInt): CInt =
-    UnixJniBridge.libcUnixFchmodat(dirfd, pathname.rawAddress, mode.toInt(), flags)
+    LibcUnixJniBridge.rustlangLibcUnixFchmodat(dirfd, pathname.rawAddress, mode.toInt(), flags)
 
-public actual fun fchown(fd: CInt, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT): CInt =
-    UnixJniBridge.libcUnixFchown(fd, owner, group)
+public actual fun fchown(fd: CInt, owner: io.github.kotlinmania.rustlang.unix.UidT, group: io.github.kotlinmania.rustlang.unix.GidT): CInt =
+    LibcUnixJniBridge.rustlangLibcUnixFchown(fd, owner, group)
 
-public actual fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT, flags: CInt): CInt =
-    UnixJniBridge.libcUnixFchownat(dirfd, pathname.rawAddress, owner, group, flags)
+public actual fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: io.github.kotlinmania.rustlang.unix.UidT, group: io.github.kotlinmania.rustlang.unix.GidT, flags: CInt): CInt =
+    LibcUnixJniBridge.rustlangLibcUnixFchownat(dirfd, pathname.rawAddress, owner, group, flags)
 
 public actual fun openat(dirfd: CInt, pathname: ConstPtr, flags: CInt, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixOpenat(dirfd, pathname.rawAddress, flags, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixOpenat(dirfd, pathname.rawAddress, flags, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun fstatat(dirfd: CInt, pathname: ConstPtr, buf: MutPtr, flags: CInt): CInt =
-    UnixJniBridge.libcUnixFstatat(dirfd, pathname.rawAddress, buf.rawAddress, flags)
+    LibcUnixJniBridge.rustlangLibcUnixFstatat(dirfd, pathname.rawAddress, buf.rawAddress, flags)
 
 public actual fun linkat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr, flags: CInt): CInt =
-    UnixJniBridge.libcUnixLinkat(olddirfd, oldpath.rawAddress, newdirfd, newpath.rawAddress, flags)
+    LibcUnixJniBridge.rustlangLibcUnixLinkat(olddirfd, oldpath.rawAddress, newdirfd, newpath.rawAddress, flags)
 
 public actual fun mkdirat(dirfd: CInt, pathname: ConstPtr, mode: ModeT): CInt =
-    UnixJniBridge.libcUnixMkdirat(dirfd, pathname.rawAddress, mode.toInt())
+    LibcUnixJniBridge.rustlangLibcUnixMkdirat(dirfd, pathname.rawAddress, mode.toInt())
 
 public actual fun renameat(olddirfd: CInt, oldpath: ConstPtr, newdirfd: CInt, newpath: ConstPtr): CInt =
-    UnixJniBridge.libcUnixRenameat(olddirfd, oldpath.rawAddress, newdirfd, newpath.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixRenameat(olddirfd, oldpath.rawAddress, newdirfd, newpath.rawAddress)
 
 public actual fun symlinkat(target: ConstPtr, newdirfd: CInt, linkpath: ConstPtr): CInt =
-    UnixJniBridge.libcUnixSymlinkat(target.rawAddress, newdirfd, linkpath.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSymlinkat(target.rawAddress, newdirfd, linkpath.rawAddress)
 
 public actual fun unlinkat(dirfd: CInt, pathname: ConstPtr, flags: CInt): CInt =
-    UnixJniBridge.libcUnixUnlinkat(dirfd, pathname.rawAddress, flags)
+    LibcUnixJniBridge.rustlangLibcUnixUnlinkat(dirfd, pathname.rawAddress, flags)
 
 public actual fun access(path: ConstPtr, amode: CInt): CInt =
-    UnixJniBridge.libcUnixAccess(path.rawAddress, amode)
+    LibcUnixJniBridge.rustlangLibcUnixAccess(path.rawAddress, amode)
 
 public actual fun alarm(seconds: CUint): CUint =
-    UnixJniBridge.libcUnixAlarm(seconds.toInt()).toUInt()
+    LibcUnixJniBridge.rustlangLibcUnixAlarm(seconds.toInt()).toUInt()
 
 public actual fun chdir(dir: ConstPtr): CInt =
-    UnixJniBridge.libcUnixChdir(dir.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixChdir(dir.rawAddress)
 
 public actual fun fchdir(dirfd: CInt): CInt =
-    UnixJniBridge.libcUnixFchdir(dirfd)
+    LibcUnixJniBridge.rustlangLibcUnixFchdir(dirfd)
 
 public actual fun chown(path: ConstPtr, uid: UidT, gid: GidT): CInt =
-    UnixJniBridge.libcUnixChown(path.rawAddress, uid, gid)
+    LibcUnixJniBridge.rustlangLibcUnixChown(path.rawAddress, uid, gid)
 
 public actual fun lchown(path: ConstPtr, uid: UidT, gid: GidT): CInt =
-    UnixJniBridge.libcUnixLchown(path.rawAddress, uid, gid)
+    LibcUnixJniBridge.rustlangLibcUnixLchown(path.rawAddress, uid, gid)
 
 public actual fun close(fd: CInt): CInt =
-    UnixJniBridge.libcUnixClose(fd)
+    LibcUnixJniBridge.rustlangLibcUnixClose(fd)
 
 public actual fun dup(fd: CInt): CInt =
-    UnixJniBridge.libcUnixDup(fd)
+    LibcUnixJniBridge.rustlangLibcUnixDup(fd)
 
 public actual fun dup2(src: CInt, dst: CInt): CInt =
-    UnixJniBridge.libcUnixDup2(src, dst)
+    LibcUnixJniBridge.rustlangLibcUnixDup2(src, dst)
 
 public actual fun execl(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixExecl(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixExecl(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun execle(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixExecle(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixExecle(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun execlp(file: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): CInt =
-    UnixJniBridge.libcUnixExeclp(file.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixExeclp(file.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun execv(prog: ConstPtr, argv: ConstPtr): CInt =
-    UnixJniBridge.libcUnixExecv(prog.rawAddress, argv.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixExecv(prog.rawAddress, argv.rawAddress)
 
 public actual fun execve(prog: ConstPtr, argv: ConstPtr, envp: ConstPtr): CInt =
-    UnixJniBridge.libcUnixExecve(prog.rawAddress, argv.rawAddress, envp.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixExecve(prog.rawAddress, argv.rawAddress, envp.rawAddress)
 
 public actual fun execvp(c: ConstPtr, argv: ConstPtr): CInt =
-    UnixJniBridge.libcUnixExecvp(c.rawAddress, argv.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixExecvp(c.rawAddress, argv.rawAddress)
 
 public actual fun fork(): PidT =
-    UnixJniBridge.libcUnixFork()
+    LibcUnixJniBridge.rustlangLibcUnixFork()
 
 public actual fun fpathconf(filedes: CInt, name: CInt): CLong =
-    UnixJniBridge.libcUnixFpathconf(filedes, name)
+    LibcUnixJniBridge.rustlangLibcUnixFpathconf(filedes, name)
 
 public actual fun getcwd(buf: MutPtr, size: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGetcwd(buf.rawAddress, size.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGetcwd(buf.rawAddress, size.toLong()))
 
 public actual fun getegid(): GidT =
-    UnixJniBridge.libcUnixGetegid()
+    LibcUnixJniBridge.rustlangLibcUnixGetegid()
 
 public actual fun geteuid(): UidT =
-    UnixJniBridge.libcUnixGeteuid()
+    LibcUnixJniBridge.rustlangLibcUnixGeteuid()
 
 public actual fun getgid(): GidT =
-    UnixJniBridge.libcUnixGetgid()
+    LibcUnixJniBridge.rustlangLibcUnixGetgid()
 
 public actual fun getgroups(ngroupsMax: CInt, groups: MutPtr): CInt =
-    UnixJniBridge.libcUnixGetgroups(ngroupsMax, groups.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixGetgroups(ngroupsMax, groups.rawAddress)
 
 public actual fun getlogin(): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGetlogin())
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGetlogin())
 
 public actual fun getopt(argc: CInt, argv: ConstPtr, optstr: ConstPtr): CInt =
-    UnixJniBridge.libcUnixGetopt(argc, argv.rawAddress, optstr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixGetopt(argc, argv.rawAddress, optstr.rawAddress)
 
 public actual fun getpgid(pid: PidT): PidT =
-    UnixJniBridge.libcUnixGetpgid(pid)
+    LibcUnixJniBridge.rustlangLibcUnixGetpgid(pid)
 
 public actual fun getpgrp(): PidT =
-    UnixJniBridge.libcUnixGetpgrp()
+    LibcUnixJniBridge.rustlangLibcUnixGetpgrp()
 
 public actual fun getpid(): PidT =
-    UnixJniBridge.libcUnixGetpid()
+    LibcUnixJniBridge.rustlangLibcUnixGetpid()
 
 public actual fun getppid(): PidT =
-    UnixJniBridge.libcUnixGetppid()
+    LibcUnixJniBridge.rustlangLibcUnixGetppid()
 
 public actual fun getuid(): UidT =
-    UnixJniBridge.libcUnixGetuid()
+    LibcUnixJniBridge.rustlangLibcUnixGetuid()
 
 public actual fun isatty(fd: CInt): CInt =
-    UnixJniBridge.libcUnixIsatty(fd)
+    LibcUnixJniBridge.rustlangLibcUnixIsatty(fd)
 
 public actual fun link(src: ConstPtr, dst: ConstPtr): CInt =
-    UnixJniBridge.libcUnixLink(src.rawAddress, dst.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixLink(src.rawAddress, dst.rawAddress)
 
 public actual fun lseek(fd: CInt, offset: OffT, whence: CInt): OffT =
-    UnixJniBridge.libcUnixLseek(fd, offset, whence)
+    LibcUnixJniBridge.rustlangLibcUnixLseek(fd, offset, whence)
 
 public actual fun pathconf(path: ConstPtr, name: CInt): CLong =
-    UnixJniBridge.libcUnixPathconf(path.rawAddress, name)
+    LibcUnixJniBridge.rustlangLibcUnixPathconf(path.rawAddress, name)
 
 public actual fun pause(): CInt =
-    UnixJniBridge.libcUnixPause()
+    LibcUnixJniBridge.rustlangLibcUnixPause()
 
 public actual fun pipe(fds: MutPtr): CInt =
-    UnixJniBridge.libcUnixPipe(fds.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPipe(fds.rawAddress)
 
 public actual fun posixMemalign(memptr: MutPtr, align: SizeT, size: SizeT): CInt =
-    UnixJniBridge.libcUnixPosixMemalign(memptr.rawAddress, align.toLong(), size.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixPosixMemalign(memptr.rawAddress, align.toLong(), size.toLong())
 
 public actual fun alignedAlloc(alignment: SizeT, size: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixAlignedAlloc(alignment.toLong(), size.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixAlignedAlloc(alignment.toLong(), size.toLong()))
 
 public actual fun read(fd: CInt, buf: MutPtr, count: SizeT): SsizeT =
-    UnixJniBridge.libcUnixRead(fd, buf.rawAddress, count.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixRead(fd, buf.rawAddress, count.toLong())
 
 public actual fun rmdir(path: ConstPtr): CInt =
-    UnixJniBridge.libcUnixRmdir(path.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixRmdir(path.rawAddress)
 
 public actual fun seteuid(uid: UidT): CInt =
-    UnixJniBridge.libcUnixSeteuid(uid)
+    LibcUnixJniBridge.rustlangLibcUnixSeteuid(uid)
 
 public actual fun setegid(gid: GidT): CInt =
-    UnixJniBridge.libcUnixSetegid(gid)
+    LibcUnixJniBridge.rustlangLibcUnixSetegid(gid)
 
 public actual fun setgid(gid: GidT): CInt =
-    UnixJniBridge.libcUnixSetgid(gid)
+    LibcUnixJniBridge.rustlangLibcUnixSetgid(gid)
 
 public actual fun setpgid(pid: PidT, pgid: PidT): CInt =
-    UnixJniBridge.libcUnixSetpgid(pid, pgid)
+    LibcUnixJniBridge.rustlangLibcUnixSetpgid(pid, pgid)
 
 public actual fun setsid(): PidT =
-    UnixJniBridge.libcUnixSetsid()
+    LibcUnixJniBridge.rustlangLibcUnixSetsid()
 
 public actual fun setuid(uid: UidT): CInt =
-    UnixJniBridge.libcUnixSetuid(uid)
+    LibcUnixJniBridge.rustlangLibcUnixSetuid(uid)
 
 public actual fun setreuid(ruid: UidT, euid: UidT): CInt =
-    UnixJniBridge.libcUnixSetreuid(ruid, euid)
+    LibcUnixJniBridge.rustlangLibcUnixSetreuid(ruid, euid)
 
 public actual fun setregid(rgid: GidT, egid: GidT): CInt =
-    UnixJniBridge.libcUnixSetregid(rgid, egid)
+    LibcUnixJniBridge.rustlangLibcUnixSetregid(rgid, egid)
 
 public actual fun sleep(secs: CUint): CUint =
-    UnixJniBridge.libcUnixSleep(secs.toInt()).toUInt()
+    LibcUnixJniBridge.rustlangLibcUnixSleep(secs.toInt()).toUInt()
 
 public actual fun nanosleep(rqtp: ConstPtr, rmtp: MutPtr): CInt =
-    UnixJniBridge.libcUnixNanosleep(rqtp.rawAddress, rmtp.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixNanosleep(rqtp.rawAddress, rmtp.rawAddress)
 
 public actual fun tcgetpgrp(fd: CInt): PidT =
-    UnixJniBridge.libcUnixTcgetpgrp(fd)
+    LibcUnixJniBridge.rustlangLibcUnixTcgetpgrp(fd)
 
-public actual fun tcsetpgrp(fd: CInt, pgrp: io.github.kotlinmania.rustlang.libc.PidT): CInt =
-    UnixJniBridge.libcUnixTcsetpgrp(fd, pgrp)
+public actual fun tcsetpgrp(fd: CInt, pgrp: io.github.kotlinmania.rustlang.unix.PidT): CInt =
+    LibcUnixJniBridge.rustlangLibcUnixTcsetpgrp(fd, pgrp)
 
 public actual fun ttyname(fd: CInt): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixTtyname(fd))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixTtyname(fd))
 
 public actual fun ttynameR(fd: CInt, buf: MutPtr, buflen: SizeT): CInt =
-    UnixJniBridge.libcUnixTtynameR(fd, buf.rawAddress, buflen.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixTtynameR(fd, buf.rawAddress, buflen.toLong())
 
 public actual fun unlink(c: ConstPtr): CInt =
-    UnixJniBridge.libcUnixUnlink(c.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixUnlink(c.rawAddress)
 
 public actual fun wait(status: MutPtr): PidT =
-    UnixJniBridge.libcUnixWait(status.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixWait(status.rawAddress)
 
 public actual fun waitpid(pid: PidT, status: MutPtr, options: CInt): PidT =
-    UnixJniBridge.libcUnixWaitpid(pid, status.rawAddress, options)
+    LibcUnixJniBridge.rustlangLibcUnixWaitpid(pid, status.rawAddress, options)
 
 public actual fun write(fd: CInt, buf: ConstPtr, count: SizeT): SsizeT =
-    UnixJniBridge.libcUnixWrite(fd, buf.rawAddress, count.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixWrite(fd, buf.rawAddress, count.toLong())
 
 public actual fun pread(fd: CInt, buf: MutPtr, count: SizeT, offset: OffT): SsizeT =
-    UnixJniBridge.libcUnixPread(fd, buf.rawAddress, count.toLong(), offset)
+    LibcUnixJniBridge.rustlangLibcUnixPread(fd, buf.rawAddress, count.toLong(), offset)
 
 public actual fun pwrite(fd: CInt, buf: ConstPtr, count: SizeT, offset: OffT): SsizeT =
-    UnixJniBridge.libcUnixPwrite(fd, buf.rawAddress, count.toLong(), offset)
+    LibcUnixJniBridge.rustlangLibcUnixPwrite(fd, buf.rawAddress, count.toLong(), offset)
 
 public actual fun umask(mask: ModeT): ModeT =
-    UnixJniBridge.libcUnixUmask(mask.toInt()).toUInt()
+    LibcUnixJniBridge.rustlangLibcUnixUmask(mask.toInt()).toUInt()
 
 public actual fun utime(file: ConstPtr, buf: ConstPtr): CInt =
-    UnixJniBridge.libcUnixUtime(file.rawAddress, buf.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixUtime(file.rawAddress, buf.rawAddress)
 
 public actual fun kill(pid: PidT, sig: CInt): CInt =
-    UnixJniBridge.libcUnixKill(pid, sig)
+    LibcUnixJniBridge.rustlangLibcUnixKill(pid, sig)
 
 public actual fun killpg(pgrp: PidT, sig: CInt): CInt =
-    UnixJniBridge.libcUnixKillpg(pgrp, sig)
+    LibcUnixJniBridge.rustlangLibcUnixKillpg(pgrp, sig)
 
 public actual fun mlock(addr: ConstPtr, len: SizeT): CInt =
-    UnixJniBridge.libcUnixMlock(addr.rawAddress, len.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixMlock(addr.rawAddress, len.toLong())
 
 public actual fun munlock(addr: ConstPtr, len: SizeT): CInt =
-    UnixJniBridge.libcUnixMunlock(addr.rawAddress, len.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixMunlock(addr.rawAddress, len.toLong())
 
 public actual fun mlockall(flags: CInt): CInt =
-    UnixJniBridge.libcUnixMlockall(flags)
+    LibcUnixJniBridge.rustlangLibcUnixMlockall(flags)
 
 public actual fun munlockall(): CInt =
-    UnixJniBridge.libcUnixMunlockall()
+    LibcUnixJniBridge.rustlangLibcUnixMunlockall()
 
 public actual fun mmap(addr: MutPtr, len: SizeT, prot: CInt, flags: CInt, fd: CInt, offset: OffT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixMmap(addr.rawAddress, len.toLong(), prot, flags, fd, offset))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixMmap(addr.rawAddress, len.toLong(), prot, flags, fd, offset))
 
 public actual fun munmap(addr: MutPtr, len: SizeT): CInt =
-    UnixJniBridge.libcUnixMunmap(addr.rawAddress, len.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixMunmap(addr.rawAddress, len.toLong())
 
 public actual fun ifNametoindex(ifname: ConstPtr): CUint =
-    UnixJniBridge.libcUnixIfNametoindex(ifname.rawAddress).toUInt()
+    LibcUnixJniBridge.rustlangLibcUnixIfNametoindex(ifname.rawAddress).toUInt()
 
 public actual fun ifIndextoname(ifindex: CUint, ifname: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixIfIndextoname(ifindex.toInt(), ifname.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixIfIndextoname(ifindex.toInt(), ifname.rawAddress))
 
 public actual fun lstat(path: ConstPtr, buf: MutPtr): CInt =
-    UnixJniBridge.libcUnixLstat(path.rawAddress, buf.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixLstat(path.rawAddress, buf.rawAddress)
 
 public actual fun fsync(fd: CInt): CInt =
-    UnixJniBridge.libcUnixFsync(fd)
+    LibcUnixJniBridge.rustlangLibcUnixFsync(fd)
 
 public actual fun setenv(name: ConstPtr, value: ConstPtr, overwrite: CInt): CInt =
-    UnixJniBridge.libcUnixSetenv(name.rawAddress, value.rawAddress, overwrite)
+    LibcUnixJniBridge.rustlangLibcUnixSetenv(name.rawAddress, value.rawAddress, overwrite)
 
 public actual fun unsetenv(name: ConstPtr): CInt =
-    UnixJniBridge.libcUnixUnsetenv(name.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixUnsetenv(name.rawAddress)
 
 public actual fun symlink(path1: ConstPtr, path2: ConstPtr): CInt =
-    UnixJniBridge.libcUnixSymlink(path1.rawAddress, path2.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSymlink(path1.rawAddress, path2.rawAddress)
 
 public actual fun truncate(path: ConstPtr, length: OffT): CInt =
-    UnixJniBridge.libcUnixTruncate(path.rawAddress, length)
+    LibcUnixJniBridge.rustlangLibcUnixTruncate(path.rawAddress, length)
 
 public actual fun ftruncate(fd: CInt, length: OffT): CInt =
-    UnixJniBridge.libcUnixFtruncate(fd, length)
+    LibcUnixJniBridge.rustlangLibcUnixFtruncate(fd, length)
 
 public actual fun signal(signum: CInt, handler: SighandlerT): SighandlerT =
-    UnixJniBridge.libcUnixSignal(signum, handler.toLong()).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixSignal(signum, handler.toLong()).toULong()
 
 public actual fun getrusage(resource: CInt, usage: MutPtr): CInt =
-    UnixJniBridge.libcUnixGetrusage(resource, usage.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixGetrusage(resource, usage.rawAddress)
 
 public actual fun realpath(pathname: ConstPtr, resolved: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixRealpath(pathname.rawAddress, resolved.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixRealpath(pathname.rawAddress, resolved.rawAddress))
 
 public actual fun times(buf: MutPtr): ClockT =
-    UnixJniBridge.libcUnixTimes(buf.rawAddress).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixTimes(buf.rawAddress)
 
 public actual fun pthreadSelf(): PthreadT =
-    MutPtr(UnixJniBridge.libcUnixPthreadSelf())
+    LibcUnixJniBridge.rustlangLibcUnixPthreadSelf().toULong()
 
 public actual fun pthreadEqual(t1: PthreadT, t2: PthreadT): CInt =
-    UnixJniBridge.libcUnixPthreadEqual(t1.rawAddress, t2.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadEqual(t1.toLong(), t2.toLong())
 
 public actual fun pthreadJoin(native: PthreadT, value: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadJoin(native.rawAddress, value.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadJoin(native.toLong(), value.rawAddress)
 
 public actual fun pthreadExit(value: MutPtr): Nothing {
-    UnixJniBridge.libcUnixPthreadExit(value.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadExit(value.rawAddress)
     error("Unreachable noreturn C function pthreadExit")
 }
 
 public actual fun pthreadAttrInit(attr: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadAttrInit(attr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadAttrInit(attr.rawAddress)
 
 public actual fun pthreadAttrDestroy(attr: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadAttrDestroy(attr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadAttrDestroy(attr.rawAddress)
 
 public actual fun pthreadAttrGetstacksize(attr: ConstPtr, stacksize: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadAttrGetstacksize(attr.rawAddress, stacksize.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadAttrGetstacksize(attr.rawAddress, stacksize.rawAddress)
 
 public actual fun pthreadAttrSetstacksize(attr: MutPtr, stackSize: SizeT): CInt =
-    UnixJniBridge.libcUnixPthreadAttrSetstacksize(attr.rawAddress, stackSize.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixPthreadAttrSetstacksize(attr.rawAddress, stackSize.toLong())
 
 public actual fun pthreadAttrSetdetachstate(attr: MutPtr, state: CInt): CInt =
-    UnixJniBridge.libcUnixPthreadAttrSetdetachstate(attr.rawAddress, state)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadAttrSetdetachstate(attr.rawAddress, state)
 
 public actual fun pthreadDetach(thread: PthreadT): CInt =
-    UnixJniBridge.libcUnixPthreadDetach(thread.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadDetach(thread.toLong())
 
 public actual fun schedYield(): CInt =
-    UnixJniBridge.libcUnixSchedYield()
+    LibcUnixJniBridge.rustlangLibcUnixSchedYield()
 
 public actual fun pthreadKeyCreate(key: MutPtr, dtor: PthreadKeyCreateDtorCallback?): CInt =
-    UnixJniBridge.libcUnixPthreadKeyCreate(key.rawAddress, 0L)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadKeyCreate(key.rawAddress, 0L)
 
 public actual fun pthreadKeyDelete(key: PthreadKeyT): CInt =
-    UnixJniBridge.libcUnixPthreadKeyDelete(key)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadKeyDelete(key.toInt())
 
 public actual fun pthreadGetspecific(key: PthreadKeyT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixPthreadGetspecific(key))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixPthreadGetspecific(key.toInt()))
 
 public actual fun pthreadSetspecific(key: PthreadKeyT, value: ConstPtr): CInt =
-    UnixJniBridge.libcUnixPthreadSetspecific(key, value.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadSetspecific(key.toInt(), value.rawAddress)
 
 public actual fun pthreadMutexInit(lock: MutPtr, attr: ConstPtr): CInt =
-    UnixJniBridge.libcUnixPthreadMutexInit(lock.rawAddress, attr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadMutexInit(lock.rawAddress, attr.rawAddress)
 
 public actual fun pthreadMutexDestroy(lock: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadMutexDestroy(lock.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadMutexDestroy(lock.rawAddress)
 
 public actual fun pthreadMutexLock(lock: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadMutexLock(lock.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadMutexLock(lock.rawAddress)
 
 public actual fun pthreadMutexTrylock(lock: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadMutexTrylock(lock.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadMutexTrylock(lock.rawAddress)
 
 public actual fun pthreadMutexUnlock(lock: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadMutexUnlock(lock.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadMutexUnlock(lock.rawAddress)
 
 public actual fun pthreadMutexattrInit(attr: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadMutexattrInit(attr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadMutexattrInit(attr.rawAddress)
 
 public actual fun pthreadMutexattrDestroy(attr: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadMutexattrDestroy(attr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadMutexattrDestroy(attr.rawAddress)
 
 public actual fun pthreadMutexattrSettype(attr: MutPtr, type: CInt): CInt =
-    UnixJniBridge.libcUnixPthreadMutexattrSettype(attr.rawAddress, type)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadMutexattrSettype(attr.rawAddress, type)
 
 public actual fun pthreadCondInit(cond: MutPtr, attr: ConstPtr): CInt =
-    UnixJniBridge.libcUnixPthreadCondInit(cond.rawAddress, attr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadCondInit(cond.rawAddress, attr.rawAddress)
 
 public actual fun pthreadCondWait(cond: MutPtr, lock: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadCondWait(cond.rawAddress, lock.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadCondWait(cond.rawAddress, lock.rawAddress)
 
 public actual fun pthreadCondTimedwait(cond: MutPtr, lock: MutPtr, abstime: ConstPtr): CInt =
-    UnixJniBridge.libcUnixPthreadCondTimedwait(cond.rawAddress, lock.rawAddress, abstime.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadCondTimedwait(cond.rawAddress, lock.rawAddress, abstime.rawAddress)
 
 public actual fun pthreadCondSignal(cond: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadCondSignal(cond.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadCondSignal(cond.rawAddress)
 
 public actual fun pthreadCondBroadcast(cond: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadCondBroadcast(cond.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadCondBroadcast(cond.rawAddress)
 
 public actual fun pthreadCondDestroy(cond: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadCondDestroy(cond.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadCondDestroy(cond.rawAddress)
 
 public actual fun pthreadCondattrInit(attr: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadCondattrInit(attr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadCondattrInit(attr.rawAddress)
 
 public actual fun pthreadCondattrDestroy(attr: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadCondattrDestroy(attr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadCondattrDestroy(attr.rawAddress)
 
 public actual fun pthreadRwlockInit(lock: MutPtr, attr: ConstPtr): CInt =
-    UnixJniBridge.libcUnixPthreadRwlockInit(lock.rawAddress, attr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadRwlockInit(lock.rawAddress, attr.rawAddress)
 
 public actual fun pthreadRwlockDestroy(lock: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadRwlockDestroy(lock.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadRwlockDestroy(lock.rawAddress)
 
 public actual fun pthreadRwlockRdlock(lock: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadRwlockRdlock(lock.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadRwlockRdlock(lock.rawAddress)
 
 public actual fun pthreadRwlockTryrdlock(lock: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadRwlockTryrdlock(lock.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadRwlockTryrdlock(lock.rawAddress)
 
 public actual fun pthreadRwlockWrlock(lock: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadRwlockWrlock(lock.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadRwlockWrlock(lock.rawAddress)
 
 public actual fun pthreadRwlockTrywrlock(lock: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadRwlockTrywrlock(lock.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadRwlockTrywrlock(lock.rawAddress)
 
 public actual fun pthreadRwlockUnlock(lock: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadRwlockUnlock(lock.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadRwlockUnlock(lock.rawAddress)
 
 public actual fun pthreadRwlockattrInit(attr: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadRwlockattrInit(attr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadRwlockattrInit(attr.rawAddress)
 
 public actual fun pthreadRwlockattrDestroy(attr: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadRwlockattrDestroy(attr.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPthreadRwlockattrDestroy(attr.rawAddress)
 
 public actual fun getsockopt(sockfd: CInt, level: CInt, optname: CInt, optval: MutPtr, optlen: MutPtr): CInt =
-    UnixJniBridge.libcUnixGetsockopt(sockfd, level, optname, optval.rawAddress, optlen.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixGetsockopt(sockfd, level, optname, optval.rawAddress, optlen.rawAddress)
 
 public actual fun raise(signum: CInt): CInt =
-    UnixJniBridge.libcUnixRaise(signum)
+    LibcUnixJniBridge.rustlangLibcUnixRaise(signum)
 
 public actual fun utimes(filename: ConstPtr, times: ConstPtr): CInt =
-    UnixJniBridge.libcUnixUtimes(filename.rawAddress, times.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixUtimes(filename.rawAddress, times.rawAddress)
 
 public actual fun dlopen(filename: ConstPtr, flag: CInt): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixDlopen(filename.rawAddress, flag))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixDlopen(filename.rawAddress, flag))
 
 public actual fun dlerror(): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixDlerror())
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixDlerror())
 
 public actual fun dlsym(handle: MutPtr, symbol: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixDlsym(handle.rawAddress, symbol.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixDlsym(handle.rawAddress, symbol.rawAddress))
 
 public actual fun dlclose(handle: MutPtr): CInt =
-    UnixJniBridge.libcUnixDlclose(handle.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixDlclose(handle.rawAddress)
 
 public actual fun getaddrinfo(node: ConstPtr, service: ConstPtr, hints: ConstPtr, res: MutPtr): CInt =
-    UnixJniBridge.libcUnixGetaddrinfo(node.rawAddress, service.rawAddress, hints.rawAddress, res.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixGetaddrinfo(node.rawAddress, service.rawAddress, hints.rawAddress, res.rawAddress)
 
 public actual fun freeaddrinfo(res: MutPtr) {
-    UnixJniBridge.libcUnixFreeaddrinfo(res.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFreeaddrinfo(res.rawAddress)
 }
 
 public actual fun hstrerror(errcode: CInt): ConstPtr =
-    ConstPtr(UnixJniBridge.libcUnixHstrerror(errcode))
+    ConstPtr(LibcUnixJniBridge.rustlangLibcUnixHstrerror(errcode))
 
 public actual fun gaiStrerror(errcode: CInt): ConstPtr =
-    ConstPtr(UnixJniBridge.libcUnixGaiStrerror(errcode))
+    ConstPtr(LibcUnixJniBridge.rustlangLibcUnixGaiStrerror(errcode))
 
 public actual fun resInit(): CInt =
-    UnixJniBridge.libcUnixResInit()
+    LibcUnixJniBridge.rustlangLibcUnixResInit()
 
 public actual fun gmtimeR(timeP: ConstPtr, result: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGmtimeR(timeP.rawAddress, result.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGmtimeR(timeP.rawAddress, result.rawAddress))
 
 public actual fun localtimeR(timeP: ConstPtr, result: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixLocaltimeR(timeP.rawAddress, result.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixLocaltimeR(timeP.rawAddress, result.rawAddress))
 
 public actual fun mktime(tm: MutPtr): TimeT =
-    UnixJniBridge.libcUnixMktime(tm.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixMktime(tm.rawAddress)
 
 public actual fun time(time: MutPtr): TimeT =
-    UnixJniBridge.libcUnixTime(time.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixTime(time.rawAddress)
 
 public actual fun gmtime(timeP: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGmtime(timeP.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGmtime(timeP.rawAddress))
 
 public actual fun localtime(timeP: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixLocaltime(timeP.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixLocaltime(timeP.rawAddress))
 
 public actual fun difftime(time1: TimeT, time0: TimeT): CDouble =
-    UnixJniBridge.libcUnixDifftime(time1, time0)
+    LibcUnixJniBridge.rustlangLibcUnixDifftime(time1, time0)
 
 public actual fun timegm(tm: MutPtr): TimeT =
-    UnixJniBridge.libcUnixTimegm(tm.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixTimegm(tm.rawAddress)
 
 public actual fun mknod(pathname: ConstPtr, mode: ModeT, dev: DevT): CInt =
-    UnixJniBridge.libcUnixMknod(pathname.rawAddress, mode.toInt(), dev)
+    LibcUnixJniBridge.rustlangLibcUnixMknod(pathname.rawAddress, mode.toInt(), dev)
 
 public actual fun gethostname(name: MutPtr, len: SizeT): CInt =
-    UnixJniBridge.libcUnixGethostname(name.rawAddress, len.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixGethostname(name.rawAddress, len.toLong())
 
 public actual fun endservent() {
-    UnixJniBridge.libcUnixEndservent()
+    LibcUnixJniBridge.rustlangLibcUnixEndservent()
 }
 
 public actual fun getservbyname(name: ConstPtr, proto: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGetservbyname(name.rawAddress, proto.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGetservbyname(name.rawAddress, proto.rawAddress))
 
 public actual fun getservbyport(port: CInt, proto: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGetservbyport(port, proto.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGetservbyport(port, proto.rawAddress))
 
 public actual fun getservent(): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGetservent())
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGetservent())
 
 public actual fun setservent(stayopen: CInt) {
-    UnixJniBridge.libcUnixSetservent(stayopen)
+    LibcUnixJniBridge.rustlangLibcUnixSetservent(stayopen)
 }
 
 public actual fun getprotobyname(name: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGetprotobyname(name.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGetprotobyname(name.rawAddress))
 
 public actual fun getprotobynumber(proto: CInt): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixGetprotobynumber(proto))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixGetprotobynumber(proto))
 
 public actual fun chroot(name: ConstPtr): CInt =
-    UnixJniBridge.libcUnixChroot(name.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixChroot(name.rawAddress)
 
 public actual fun usleep(secs: CUint): CInt =
-    UnixJniBridge.libcUnixUsleep(secs.toInt())
+    LibcUnixJniBridge.rustlangLibcUnixUsleep(secs.toInt())
 
 public actual fun send(socket: CInt, buf: ConstPtr, len: SizeT, flags: CInt): SsizeT =
-    UnixJniBridge.libcUnixSend(socket, buf.rawAddress, len.toLong(), flags)
+    LibcUnixJniBridge.rustlangLibcUnixSend(socket, buf.rawAddress, len.toLong(), flags)
 
 public actual fun recv(socket: CInt, buf: MutPtr, len: SizeT, flags: CInt): SsizeT =
-    UnixJniBridge.libcUnixRecv(socket, buf.rawAddress, len.toLong(), flags)
+    LibcUnixJniBridge.rustlangLibcUnixRecv(socket, buf.rawAddress, len.toLong(), flags)
 
 public actual fun putenv(string: MutPtr): CInt =
-    UnixJniBridge.libcUnixPutenv(string.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPutenv(string.rawAddress)
 
 public actual fun poll(fds: MutPtr, nfds: NfdsT, timeout: CInt): CInt =
-    UnixJniBridge.libcUnixPoll(fds.rawAddress, nfds.toLong(), timeout)
+    LibcUnixJniBridge.rustlangLibcUnixPoll(fds.rawAddress, nfds.toLong(), timeout)
 
 public actual fun select(nfds: CInt, readfds: MutPtr, writefds: MutPtr, errorfds: MutPtr, timeout: MutPtr): CInt =
-    UnixJniBridge.libcUnixSelect(nfds, readfds.rawAddress, writefds.rawAddress, errorfds.rawAddress, timeout.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSelect(nfds, readfds.rawAddress, writefds.rawAddress, errorfds.rawAddress, timeout.rawAddress)
 
 public actual fun setlocale(category: CInt, locale: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixSetlocale(category, locale.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixSetlocale(category, locale.rawAddress))
 
 public actual fun localeconv(): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixLocaleconv())
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixLocaleconv())
 
 public actual fun semWait(sem: MutPtr): CInt =
-    UnixJniBridge.libcUnixSemWait(sem.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSemWait(sem.rawAddress)
 
 public actual fun semTrywait(sem: MutPtr): CInt =
-    UnixJniBridge.libcUnixSemTrywait(sem.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSemTrywait(sem.rawAddress)
 
 public actual fun semPost(sem: MutPtr): CInt =
-    UnixJniBridge.libcUnixSemPost(sem.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSemPost(sem.rawAddress)
 
 public actual fun statvfs(path: ConstPtr, buf: MutPtr): CInt =
-    UnixJniBridge.libcUnixStatvfs(path.rawAddress, buf.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixStatvfs(path.rawAddress, buf.rawAddress)
 
 public actual fun fstatvfs(fd: CInt, buf: MutPtr): CInt =
-    UnixJniBridge.libcUnixFstatvfs(fd, buf.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFstatvfs(fd, buf.rawAddress)
 
 public actual fun sigemptyset(set: MutPtr): CInt =
-    UnixJniBridge.libcUnixSigemptyset(set.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSigemptyset(set.rawAddress)
 
 public actual fun sigaddset(set: MutPtr, signum: CInt): CInt =
-    UnixJniBridge.libcUnixSigaddset(set.rawAddress, signum)
+    LibcUnixJniBridge.rustlangLibcUnixSigaddset(set.rawAddress, signum)
 
 public actual fun sigfillset(set: MutPtr): CInt =
-    UnixJniBridge.libcUnixSigfillset(set.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSigfillset(set.rawAddress)
 
 public actual fun sigdelset(set: MutPtr, signum: CInt): CInt =
-    UnixJniBridge.libcUnixSigdelset(set.rawAddress, signum)
+    LibcUnixJniBridge.rustlangLibcUnixSigdelset(set.rawAddress, signum)
 
 public actual fun sigismember(set: ConstPtr, signum: CInt): CInt =
-    UnixJniBridge.libcUnixSigismember(set.rawAddress, signum)
+    LibcUnixJniBridge.rustlangLibcUnixSigismember(set.rawAddress, signum)
 
 public actual fun sigprocmask(how: CInt, set: ConstPtr, oldset: MutPtr): CInt =
-    UnixJniBridge.libcUnixSigprocmask(how, set.rawAddress, oldset.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSigprocmask(how, set.rawAddress, oldset.rawAddress)
 
 public actual fun sigpending(set: MutPtr): CInt =
-    UnixJniBridge.libcUnixSigpending(set.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSigpending(set.rawAddress)
 
 public actual fun sysconf(name: CInt): CLong =
-    UnixJniBridge.libcUnixSysconf(name)
+    LibcUnixJniBridge.rustlangLibcUnixSysconf(name)
 
 public actual fun mkfifo(path: ConstPtr, mode: ModeT): CInt =
-    UnixJniBridge.libcUnixMkfifo(path.rawAddress, mode.toInt())
+    LibcUnixJniBridge.rustlangLibcUnixMkfifo(path.rawAddress, mode.toInt())
 
 public actual fun fseeko(stream: MutPtr, offset: OffT, whence: CInt): CInt =
-    UnixJniBridge.libcUnixFseeko(stream.rawAddress, offset, whence)
+    LibcUnixJniBridge.rustlangLibcUnixFseeko(stream.rawAddress, offset, whence)
 
 public actual fun ftello(stream: MutPtr): OffT =
-    UnixJniBridge.libcUnixFtello(stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixFtello(stream.rawAddress)
 
 public actual fun tcdrain(fd: CInt): CInt =
-    UnixJniBridge.libcUnixTcdrain(fd)
+    LibcUnixJniBridge.rustlangLibcUnixTcdrain(fd)
 
 public actual fun cfgetispeed(termios: ConstPtr): SpeedT =
-    UnixJniBridge.libcUnixCfgetispeed(termios.rawAddress).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixCfgetispeed(termios.rawAddress).toULong()
 
 public actual fun cfgetospeed(termios: ConstPtr): SpeedT =
-    UnixJniBridge.libcUnixCfgetospeed(termios.rawAddress).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixCfgetospeed(termios.rawAddress).toULong()
 
 public actual fun cfsetispeed(termios: MutPtr, speed: SpeedT): CInt =
-    UnixJniBridge.libcUnixCfsetispeed(termios.rawAddress, speed.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixCfsetispeed(termios.rawAddress, speed.toLong())
 
 public actual fun cfsetospeed(termios: MutPtr, speed: SpeedT): CInt =
-    UnixJniBridge.libcUnixCfsetospeed(termios.rawAddress, speed.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixCfsetospeed(termios.rawAddress, speed.toLong())
 
 public actual fun tcgetattr(fd: CInt, termios: MutPtr): CInt =
-    UnixJniBridge.libcUnixTcgetattr(fd, termios.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixTcgetattr(fd, termios.rawAddress)
 
 public actual fun tcsetattr(fd: CInt, optionalActions: CInt, termios: ConstPtr): CInt =
-    UnixJniBridge.libcUnixTcsetattr(fd, optionalActions, termios.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixTcsetattr(fd, optionalActions, termios.rawAddress)
 
 public actual fun tcflow(fd: CInt, action: CInt): CInt =
-    UnixJniBridge.libcUnixTcflow(fd, action)
+    LibcUnixJniBridge.rustlangLibcUnixTcflow(fd, action)
 
 public actual fun tcflush(fd: CInt, action: CInt): CInt =
-    UnixJniBridge.libcUnixTcflush(fd, action)
+    LibcUnixJniBridge.rustlangLibcUnixTcflush(fd, action)
 
-public actual fun tcgetsid(fd: CInt): io.github.kotlinmania.rustlang.libc.PidT =
-    UnixJniBridge.libcUnixTcgetsid(fd)
+public actual fun tcgetsid(fd: CInt): io.github.kotlinmania.rustlang.unix.PidT =
+    LibcUnixJniBridge.rustlangLibcUnixTcgetsid(fd)
 
 public actual fun tcsendbreak(fd: CInt, duration: CInt): CInt =
-    UnixJniBridge.libcUnixTcsendbreak(fd, duration)
+    LibcUnixJniBridge.rustlangLibcUnixTcsendbreak(fd, duration)
 
 public actual fun mkstemp(template: MutPtr): CInt =
-    UnixJniBridge.libcUnixMkstemp(template.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixMkstemp(template.rawAddress)
 
 public actual fun mkdtemp(template: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixMkdtemp(template.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixMkdtemp(template.rawAddress))
 
 public actual fun tmpnam(ptr: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixTmpnam(ptr.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixTmpnam(ptr.rawAddress))
 
 public actual fun openlog(ident: ConstPtr, logopt: CInt, facility: CInt) {
-    UnixJniBridge.libcUnixOpenlog(ident.rawAddress, logopt, facility)
+    LibcUnixJniBridge.rustlangLibcUnixOpenlog(ident.rawAddress, logopt, facility)
 }
 
 public actual fun closelog() {
-    UnixJniBridge.libcUnixCloselog()
+    LibcUnixJniBridge.rustlangLibcUnixCloselog()
 }
 
 public actual fun setlogmask(maskpri: CInt): CInt =
-    UnixJniBridge.libcUnixSetlogmask(maskpri)
+    LibcUnixJniBridge.rustlangLibcUnixSetlogmask(maskpri)
 
 public actual fun syslog(priority: CInt, message: ConstPtr, vararg variadicArgs: Long) {
-    UnixJniBridge.libcUnixSyslog(priority, message.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixJniBridge.rustlangLibcUnixSyslog(priority, message.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 }
 
 public actual fun nice(incr: CInt): CInt =
-    UnixJniBridge.libcUnixNice(incr)
+    LibcUnixJniBridge.rustlangLibcUnixNice(incr)
 
 public actual fun grantpt(fd: CInt): CInt =
-    UnixJniBridge.libcUnixGrantpt(fd)
+    LibcUnixJniBridge.rustlangLibcUnixGrantpt(fd)
 
 public actual fun posixOpenpt(flags: CInt): CInt =
-    UnixJniBridge.libcUnixPosixOpenpt(flags)
+    LibcUnixJniBridge.rustlangLibcUnixPosixOpenpt(flags)
 
 public actual fun ptsname(fd: CInt): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixPtsname(fd))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixPtsname(fd))
 
 public actual fun unlockpt(fd: CInt): CInt =
-    UnixJniBridge.libcUnixUnlockpt(fd)
+    LibcUnixJniBridge.rustlangLibcUnixUnlockpt(fd)
 
 public actual fun strcasestr(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStrcasestr(cs.rawAddress, ct.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStrcasestr(cs.rawAddress, ct.rawAddress))
 
 public actual fun getline(lineptr: MutPtr, n: MutPtr, stream: MutPtr): SsizeT =
-    UnixJniBridge.libcUnixGetline(lineptr.rawAddress, n.rawAddress, stream.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixGetline(lineptr.rawAddress, n.rawAddress, stream.rawAddress)
 
 public actual fun lockf(fd: CInt, cmd: CInt, len: OffT): CInt =
-    UnixJniBridge.libcUnixLockf(fd, cmd, len)
+    LibcUnixJniBridge.rustlangLibcUnixLockf(fd, cmd, len)
 
 public actual fun adjtime(delta: ConstPtr, olddelta: MutPtr): CInt =
-    UnixJniBridge.libcUnixAdjtime(delta.rawAddress, olddelta.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixAdjtime(delta.rawAddress, olddelta.rawAddress)
 
 public actual fun stpncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixStpncpy(dst.rawAddress, src.rawAddress, n.toLong()))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixStpncpy(dst.rawAddress, src.rawAddress, n.toLong()))
 
-public actual fun sigqueue(pid: PidT, sig: CInt, value: io.github.kotlinmania.rustlang.libc.Sigval): CInt =
+public actual fun sigqueue(pid: PidT, sig: CInt, value: io.github.kotlinmania.rustlang.unix.Sigval): CInt =
     0
 
 public actual fun confstr(name: CInt, buf: MutPtr, len: SizeT): SizeT =
-    UnixJniBridge.libcUnixConfstr(name, buf.rawAddress, len.toLong()).toULong()
+    LibcUnixJniBridge.rustlangLibcUnixConfstr(name, buf.rawAddress, len.toLong()).toULong()
 
 public actual fun dladdr(addr: ConstPtr, info: MutPtr): CInt =
-    UnixJniBridge.libcUnixDladdr(addr.rawAddress, info.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixDladdr(addr.rawAddress, info.rawAddress)
 
 public actual fun flock(fd: CInt, operation: CInt): CInt =
-    UnixJniBridge.libcUnixFlock(fd, operation)
+    LibcUnixJniBridge.rustlangLibcUnixFlock(fd, operation)
 
 public actual fun openWmemstream(ptr: MutPtr, sizeloc: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixOpenWmemstream(ptr.rawAddress, sizeloc.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixOpenWmemstream(ptr.rawAddress, sizeloc.rawAddress))
 
 public actual fun getsid(pid: PidT): PidT =
-    UnixJniBridge.libcUnixGetsid(pid)
+    LibcUnixJniBridge.rustlangLibcUnixGetsid(pid)
 
 public actual fun readdirR(dirp: MutPtr, entry: MutPtr, result: MutPtr): CInt =
-    UnixJniBridge.libcUnixReaddirR(dirp.rawAddress, entry.rawAddress, result.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixReaddirR(dirp.rawAddress, entry.rawAddress, result.rawAddress)
 
 public actual fun readlinkat(dirfd: CInt, pathname: ConstPtr, buf: MutPtr, bufsiz: SizeT): CInt =
-    UnixJniBridge.libcUnixReadlinkat(dirfd, pathname.rawAddress, buf.rawAddress, bufsiz.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixReadlinkat(dirfd, pathname.rawAddress, buf.rawAddress, bufsiz.toLong())
 
 public actual fun readlink(path: ConstPtr, buf: MutPtr, bufsz: SizeT): CInt =
-    UnixJniBridge.libcUnixReadlink(path.rawAddress, buf.rawAddress, bufsz.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixReadlink(path.rawAddress, buf.rawAddress, bufsz.toLong())
 
 public actual fun pselect(nfds: CInt, readfds: MutPtr, writefds: MutPtr, errorfds: MutPtr, timeout: MutPtr, sigmask: ConstPtr): CInt =
-    UnixJniBridge.libcUnixPselect(nfds, readfds.rawAddress, writefds.rawAddress, errorfds.rawAddress, timeout.rawAddress, sigmask.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixPselect(nfds, readfds.rawAddress, writefds.rawAddress, errorfds.rawAddress, timeout.rawAddress, sigmask.rawAddress)
 
 public actual fun sigaction(signum: CInt, act: ConstPtr, oldact: MutPtr): CInt =
-    UnixJniBridge.libcUnixSigaction(signum, act.rawAddress, oldact.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixSigaction(signum, act.rawAddress, oldact.rawAddress)
 
 public actual fun fmemopen(buf: MutPtr, size: SizeT, mode: ConstPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixFmemopen(buf.rawAddress, size.toLong(), mode.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixFmemopen(buf.rawAddress, size.toLong(), mode.rawAddress))
 
 public actual fun openMemstream(ptr: MutPtr, sizeloc: MutPtr): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixOpenMemstream(ptr.rawAddress, sizeloc.rawAddress))
+    MutPtr(LibcUnixJniBridge.rustlangLibcUnixOpenMemstream(ptr.rawAddress, sizeloc.rawAddress))
 
 public actual fun atexit(cb: AtexitCbCallback): CInt =
-    UnixJniBridge.libcUnixAtexit(0L)
+    LibcUnixJniBridge.rustlangLibcUnixAtexit(0L)
 
 public actual fun cfmakeraw(termios: MutPtr) {
-    UnixJniBridge.libcUnixCfmakeraw(termios.rawAddress)
+    LibcUnixJniBridge.rustlangLibcUnixCfmakeraw(termios.rawAddress)
 }
 
 public actual fun cfsetspeed(termios: MutPtr, speed: SpeedT): CInt =
-    UnixJniBridge.libcUnixCfsetspeed(termios.rawAddress, speed.toLong())
+    LibcUnixJniBridge.rustlangLibcUnixCfsetspeed(termios.rawAddress, speed.toLong())
 
 public actual fun fnmatch(pattern: ConstPtr, name: ConstPtr, flags: CInt): CInt =
-    UnixJniBridge.libcUnixFnmatch(pattern.rawAddress, name.rawAddress, flags)
+    LibcUnixJniBridge.rustlangLibcUnixFnmatch(pattern.rawAddress, name.rawAddress, flags)

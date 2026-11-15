@@ -1,17 +1,16 @@
 // port-lint: source io/util.rs
 package io.github.kotlinmania.rustlang.core.io.util
 
-import io.github.kotlinmania.rustlang.core.fmt.Arguments
-import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
-import io.github.kotlinmania.rustlang.core.io.error.Result
-import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
-import io.github.kotlinmania.rustlang.core.io.seek.Seek
-import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
-import io.github.kotlinmania.rustlang.core.io.sizehint.SizeHint
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.io.error.Result
+import io.github.kotlinmania.rustlang.io.ioslice.IoSlice
+import io.github.kotlinmania.rustlang.io.seek.Seek
+import io.github.kotlinmania.rustlang.io.seek.SeekFrom
+import io.github.kotlinmania.rustlang.io.sizehint.SizeHint
+import io.github.kotlinmania.rustlang.io.write.Write
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -569,7 +568,7 @@ public open class Take<T>(
                 null -> {}
                 else -> {
                     val offset = matchVal
-                    when (val tryResult = this.inner.seekRelative(offset)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.inner.seekRelative(offset)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                     this.limit = (this.limit - (offset.toULong()))
                     break
                 }
@@ -580,7 +579,7 @@ public open class Take<T>(
                 } else {
                     Long.MIN_VALUE
                 }
-            when (val tryResult = this.inner.seekRelative(offset1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.inner.seekRelative(offset1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             this.limit = (this.limit - (offset1.toULong()))
         }
         return Result.Ok(newPosition1)
@@ -594,7 +593,7 @@ public open class Take<T>(
         if (!this.position().checkedAddSigned(offset).isSomeAnd({ p -> p <= this.len })) {
             return Result.Err(ErrorKind.InvalidInput.into())
         }
-        when (val tryResult = this.inner.seekRelative(offset)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.inner.seekRelative(offset)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         this.limit = (this.limit - (offset.toULong()))
         return Result.Ok(Unit)
     }

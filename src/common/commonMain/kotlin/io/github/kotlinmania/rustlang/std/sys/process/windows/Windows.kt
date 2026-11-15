@@ -2,6 +2,9 @@
 package io.github.kotlinmania.rustlang.std.sys.process.windows
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
@@ -17,38 +20,36 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.iter.Iter
-import io.github.kotlinmania.rustlang.std.env.consts.EXE_EXTENSION
-import io.github.kotlinmania.rustlang.std.env.consts.EXE_SUFFIX
-import io.github.kotlinmania.rustlang.std.env.currentExe
-import io.github.kotlinmania.rustlang.std.env.splitPaths
-import io.github.kotlinmania.rustlang.std.env.varOs
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
-import io.github.kotlinmania.rustlang.std.io.constError
-import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
-import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
-import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
-import io.github.kotlinmania.rustlang.std.os.windows.process.ProcThreadAttributeList
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.std.process.StdioPipes
-import io.github.kotlinmania.rustlang.std.sys.args.windows.Arg
-import io.github.kotlinmania.rustlang.std.sys.env.windows.env
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
-import io.github.kotlinmania.rustlang.std.sys.pal.api.utf16
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.ensureNoNuls
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
+import io.github.kotlinmania.rustlang.core.slice.get
+import io.github.kotlinmania.rustlang.env.consts.EXE_EXTENSION
+import io.github.kotlinmania.rustlang.env.consts.EXE_SUFFIX
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.io.ErrorKind
+import io.github.kotlinmania.rustlang.io.constError
+import io.github.kotlinmania.rustlang.io.stdio.Stderr
+import io.github.kotlinmania.rustlang.io.stdio.Stdout
+import io.github.kotlinmania.rustlang.os.windows.io.BorrowedHandle
+import io.github.kotlinmania.rustlang.os.windows.process.ProcThreadAttributeList
+import io.github.kotlinmania.rustlang.os.windows.raw.Handle
+import io.github.kotlinmania.rustlang.path.Iter
+import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.path.PathBuf
+import io.github.kotlinmania.rustlang.process.StdioPipes
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnv
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.windows.childpipe.ChildPipe
-import io.github.kotlinmania.rustlang.std.sys.process.windows.childpipe.spawnPipeRelay
+import io.github.kotlinmania.rustlang.sys.args.windows.Arg
+import io.github.kotlinmania.rustlang.sys.env.windows.env
+import io.github.kotlinmania.rustlang.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.sys.fs.unix.OpenOptions
+import io.github.kotlinmania.rustlang.sys.pal.api.utf16
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.sys.pal.windows.api.WinError
+import io.github.kotlinmania.rustlang.sys.pal.windows.ensureNoNuls
+import io.github.kotlinmania.rustlang.sys.pal.windows.fillUtf16Buf
+import io.github.kotlinmania.rustlang.sys.process.windows.childpipe.spawnPipeRelay
 
 // ///////////////////////////////////////////////////////////////////////////
 // Command
@@ -83,34 +84,34 @@ public open class EnvKey(
     // [2] https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices-strings#stringtoupper-and-stringtolower
     // [3] https://docs.microsoft.com/en-us/dotnet/api/system.stringcomparison?view=net-5.0#SystemStringComparisonOrdinal
     // [4] https://docs.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-comparestringordinal
-    public open fun cmp(other: EnvKey): Ordering =
+    public open fun cmp(other: EnvKey): cmp.Ordering =
         run {
-            val result = c.CompareStringOrdinal(this.utf16.asPtr(), ((this.utf16.size as Any?) as Ordering), other.utf16.asPtr(), ((other.utf16.size as Any?) as Ordering), c.TRUE)
+            val result = CompareStringOrdinal(this.utf16.asPtr(), ((this.utf16.size as Any?) as cmp.Ordering), other.utf16.asPtr(), ((other.utf16.size as Any?) as cmp.Ordering), TRUE)
             when (result) {
-                c.cstrLessThan -> Ordering.Less
-                c.cstrEqual -> Ordering.Equal
-                c.cstrGreaterThan -> Ordering.Greater
+                cstrLessThan -> cmp.Ordering.Less
+                cstrEqual -> cmp.Ordering.Equal
+                cstrGreaterThan -> cmp.Ordering.Greater
                 // `CompareStringOrdinal` should never fail so long as the parameters are correct.
                 else -> error("comparing environment keys failed: ${Error.lastOsError()}")
             }
         }
 
-    public open fun partialCmp(other: EnvKey): Ordering? = this.cmp(other)
+    public open fun partialCmp(other: EnvKey): cmp.Ordering? = this.cmp(other)
 
     public open fun eq(other: EnvKey): Boolean =
         if (this.utf16.size != other.utf16.size) {
             false
         } else {
-            this.cmp(other) == Ordering.Equal
+            this.cmp(other) == cmp.Ordering.Equal
         }
 
-    public open fun partialCmp(other: String): Ordering? = this.cmp(EnvKey.new(other))
+    public open fun partialCmp(other: String): cmp.Ordering? = this.cmp(EnvKey.new(other))
 
     public open fun eq(other: String): Boolean =
         if (this.osString.len() != other.length) {
             false
         } else {
-            this.cmp(EnvKey.new(other)) == Ordering.Equal
+            this.cmp(EnvKey.new(other)) == cmp.Ordering.Equal
         }
 
     public open fun asRef(): OsStr = this.osString
@@ -242,7 +243,7 @@ public open class Command(
             } else {
                 null
             }
-        val program = when (val tryResult = resolveExe(this.program, { varOs("PATH") }, childPaths)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val program = when (val tryResult = resolveExe(this.program, { env.varOs("PATH") }, childPaths)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         val hasBatExtension =
             { program1: List<UShort> ->
                 run {
@@ -257,25 +258,25 @@ public open class Command(
             if (Path.isVerbatim(program)) {
                 hasBatExtension(program[0 until program.len() - 1])
             } else {
-                when (val tryResult = fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(program.asPtr(), size, buffer, MutPtr(0L)) }, { program1 -> hasBatExtension(program1) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = fillUtf16Buf({ buffer, size -> GetFullPathNameW(program.asPtr(), size, buffer, MutPtr(0L)) }, { program1 -> hasBatExtension(program1) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             }
         var (program1, cmdStr1) =
             if (isBatchFile) {
-                Pair(when (val tryResult = commandPrompt()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, when (val tryResult = args.makeBatCommandLine(program, this.args, this.forceQuotesEnabled)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+                Pair(when (val tryResult = commandPrompt()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, when (val tryResult = args.makeBatCommandLine(program, this.args, this.forceQuotesEnabled)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
             } else {
-                val cmdStr = when (val tryResult = makeCommandLine(this.program, this.args, this.forceQuotesEnabled)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val cmdStr = when (val tryResult = makeCommandLine(this.program, this.args, this.forceQuotesEnabled)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 Pair(program, cmdStr)
             }
         cmdStr1.push(0)
         // add null terminator
         // stolen from the libuv code.
-        var flags = this.flags or c.CREATE_UNICODE_ENVIRONMENT
+        var flags = this.flags or CREATE_UNICODE_ENVIRONMENT
         if (this.detach) {
-            flags = flags or (c.DETACHED_PROCESS or c.CREATE_NEW_PROCESS_GROUP)
+            flags = flags or (DETACHED_PROCESS or CREATE_NEW_PROCESS_GROUP)
         }
         val inheritHandles = this.inheritHandles.toInt()
-        val (envp, data) = when (val tryResult = makeEnvp(maybeEnv)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        val (dirp, data1) = when (val tryResult = makeDirp(this.cwd)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val (envp, data) = when (val tryResult = makeEnvp(maybeEnv)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val (dirp, data1) = when (val tryResult = makeDirp(this.cwd)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         val pi = zeroedProcessInformation()
         val pipes = StdioPipes(stdin = null, stdout = null, stderr = null)
         val nullVal = Stdio.Null
@@ -288,10 +289,10 @@ public open class Command(
         val stdin = (this.stdin ?: defaultStdin)
         val stdout = (this.stdout ?: default)
         val stderr = (this.stderr ?: default)
-        val stdin1 = when (val tryResult = stdin.toHandle(c.STD_INPUT_HANDLE, pipes.stdin)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        val stdout1 = when (val tryResult = stdout.toHandle(c.STD_OUTPUT_HANDLE, pipes.stdout)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        val stderr1 = when (val tryResult = stderr.toHandle(c.STD_ERROR_HANDLE, pipes.stderr)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        val localStorageL364C8 = AddressableLocal(zeroedStartupinfo(), ObjectSlotLayout<c.Startupinfow>())
+        val stdin1 = when (val tryResult = stdin.toHandle(STD_INPUT_HANDLE, pipes.stdin)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val stdout1 = when (val tryResult = stdout.toHandle(STD_OUTPUT_HANDLE, pipes.stdout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val stderr1 = when (val tryResult = stderr.toHandle(STD_ERROR_HANDLE, pipes.stderr)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val localStorageL364C8 = AddressableLocal(zeroedStartupinfo(), ObjectSlotLayout<Startupinfow>())
         val si by localStorageL364C8
         // If at least one of stdin, stdout or stderr are set (i.e. are non null)
         // then set the `hStd` fields in `STARTUPINFO`.
@@ -299,7 +300,7 @@ public open class Command(
         // This provides more consistent behavior between Win7 and Win8+.
         val isSet = { stdio: Handle -> !stdio.asRawHandle().isNull() }
         if (isSet(stderr1) || isSet(stdout1) || isSet(stdin1)) {
-            si.dwFlags = si.dwFlags or c.STARTF_USESTDHANDLES
+            si.dwFlags = si.dwFlags or STARTF_USESTDHANDLES
             si.hStdInput = stdin1.asRawHandle()
             si.hStdOutput = stdout1.asRawHandle()
             si.hStdError = stderr1.asRawHandle()
@@ -308,22 +309,22 @@ public open class Command(
             null -> {}
             else -> {
                 val cmdShow = matchVal
-                si.dwFlags = si.dwFlags or c.STARTF_USESHOWWINDOW
+                si.dwFlags = si.dwFlags or STARTF_USESHOWWINDOW
                 si.wShowWindow = cmdShow
             }
         }
         if (this.startupinfoFullscreen) {
-            si.dwFlags = si.dwFlags or c.STARTF_RUNFULLSCREEN
+            si.dwFlags = si.dwFlags or STARTF_RUNFULLSCREEN
         }
         if (this.startupinfoUntrustedSource) {
-            si.dwFlags = si.dwFlags or c.STARTF_UNTRUSTEDSOURCE
+            si.dwFlags = si.dwFlags or STARTF_UNTRUSTEDSOURCE
         }
         when (val matchVal1 = this.startupinfoForceFeedback) {
             true -> {
-                si.dwFlags = si.dwFlags or c.STARTF_FORCEONFEEDBACK
+                si.dwFlags = si.dwFlags or STARTF_FORCEONFEEDBACK
             }
             false -> {
-                si.dwFlags = si.dwFlags or c.STARTF_FORCEOFFFEEDBACK
+                si.dwFlags = si.dwFlags or STARTF_FORCEOFFFEEDBACK
             }
             null -> {}
         }
@@ -338,15 +339,15 @@ public open class Command(
         var siEx: Any?
         if (procThreadAttributeList != null) {
             val procThreadAttributeList1 = procThreadAttributeList
-            si.cb = sizeOf<c.Startupinfoexw>(typeLayoutT = ObjectSlotLayout<c.Startupinfoexw>()).toUInt()
-            flags = flags or c.EXTENDED_STARTUPINFO_PRESENT
+            si.cb = sizeOf<Startupinfoexw>(typeLayoutT = ObjectSlotLayout<Startupinfoexw>()).toUInt()
+            flags = flags or EXTENDED_STARTUPINFO_PRESENT
             siEx = c.Startupinfoexw(startupInfo = si, lpAttributeList = procThreadAttributeList1.asPtr().cast().castMut())
             siPtr = mutPtrFromRustCast((addrOfMut(siEx)))
         } else {
-            si.cb = sizeOf<c.Startupinfow>(typeLayoutT = ObjectSlotLayout<c.Startupinfow>()).toUInt()
+            si.cb = sizeOf<Startupinfow>(typeLayoutT = ObjectSlotLayout<Startupinfow>()).toUInt()
             siPtr = (localStorageL364C8.asMutPtr())
         }
-        when (val tryResult = cvt(c.CreateProcessW(program1.asPtr(), cmdStr1.asMutPtr(), MutPtr(0L), MutPtr(0L), inheritHandles, flags, envp, dirp, siPtr, pi))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(CreateProcessW(program1.asPtr(), cmdStr1.asMutPtr(), MutPtr(0L), MutPtr(0L), inheritHandles, flags, envp, dirp, siPtr, pi))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Pair(Process(handle = Handle.fromRawHandle(pi.hProcess), mainThreadHandle = Handle.fromRawHandle(pi.hThread)), pipes))
     }
 
@@ -433,16 +434,16 @@ public sealed class Stdio {
         val useStdioId =
             { stdioId1 -> run {
                 val matchVal = Stdio.getHandle(stdioId1)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val io = matchVal.value
                     run {
                         val io1 = Handle.fromRawHandle(io)
-                        val ret = io1.duplicate(0, true, c.DUPLICATE_SAME_ACCESS)
+                        val ret = io1.duplicate(0, true, DUPLICATE_SAME_ACCESS)
                         io1.intoRawHandle()
                         // Don't close the handle
                         ret
                     }
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     Result.Ok(Handle.fromRawHandle(MutPtr(0L)))
                 } }
             } }
@@ -453,27 +454,27 @@ public sealed class Stdio {
                 useStdioId(fromStdioId)
             }
             Stdio.MakePipe -> {
-                val oursReadable = stdioId != c.STD_INPUT_HANDLE
-                val pipes = when (val tryResult = ChildPipe(oursReadable, true)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val oursReadable = stdioId != STD_INPUT_HANDLE
+                val pipes = when (val tryResult = ChildPipe(oursReadable, true)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 pipe1 = pipes.ours
                 Result.Ok(pipes.theirs.intoHandle())
             }
             is Stdio.Pipe -> {
                 val (source) = this
-                val oursReadable1 = stdioId != c.STD_INPUT_HANDLE
+                val oursReadable1 = stdioId != STD_INPUT_HANDLE
                 spawnPipeRelay(source, oursReadable1, true).map(ChildPipe::intoHandle)
             }
             is Stdio.Handle -> {
                 val (handle) = this
-                handle.duplicate(0, true, c.DUPLICATE_SAME_ACCESS)
+                handle.duplicate(0, true, DUPLICATE_SAME_ACCESS)
             }
             // Open up a reference to NUL with appropriate read/write
             // permissions as well as the ability to be inherited to child
             // processes (as this is about to be inherited).
             Stdio.Null -> {
                 val opts = OpenOptions.new()
-                opts.read(stdioId == c.STD_INPUT_HANDLE)
-                opts.write(stdioId != c.STD_INPUT_HANDLE)
+                opts.read(stdioId == STD_INPUT_HANDLE)
+                opts.write(stdioId != STD_INPUT_HANDLE)
                 opts.inheritHandle(true)
                 File.open(Path.new("\\\\.\\NUL"), opts).map({ file -> file.intoInner() }).mapErr({ e ->
                     // A raw `NotFound` here is easily mistaken for the program
@@ -482,9 +483,9 @@ public sealed class Stdio {
                     // anything else as a number rather than mislabeling it.
                     val stream =
                         when (stdioId) {
-                            c.stdInputHandle -> "stdin".toString()
-                            c.stdOutputHandle -> "stdout".toString()
-                            c.stdErrorHandle -> "stderr".toString()
+                            stdInputHandle -> "stdin".toString()
+                            stdOutputHandle -> "stdout".toString()
+                            stdErrorHandle -> "stderr".toString()
                             else -> {
                                 val id = stdioId
                                 "stdio handle $id"
@@ -503,9 +504,9 @@ public sealed class Stdio {
 
         public fun from(file: File): Stdio = Stdio.Handle(file.intoInner())
 
-        public fun from(arg0: Stdout): Stdio = Stdio.InheritSpecific(fromStdioId = c.STD_OUTPUT_HANDLE)
+        public fun from(arg0: Stdout): Stdio = Stdio.InheritSpecific(fromStdioId = STD_OUTPUT_HANDLE)
 
-        public fun from(arg0: Stderr): Stdio = Stdio.InheritSpecific(fromStdioId = c.STD_ERROR_HANDLE)
+        public fun from(arg0: Stderr): Stdio = Stdio.InheritSpecific(fromStdioId = STD_ERROR_HANDLE)
     }
 }
 
@@ -557,7 +558,7 @@ public fun resolveExe(exePath: OsStr, parentPaths: () -> OsString?, childPaths: 
             }
         }
     } else {
-        when (val tryResult = ensureNoNuls(exePath)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = ensureNoNuls(exePath)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         // From the `CreateProcessW` docs:
         // > If the file name does not contain an extension, .exe is appended.
         // Note that this rule only applies when searching paths.
@@ -587,7 +588,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
     // This is for consistency with Rust's historic behavior.
     if (childPaths != null) {
         val paths = childPaths
-        for (path in splitPaths(paths).filter({ p -> !p.asOsStr().isEmpty() })) {
+        for (path in env.splitPaths(paths).filter({ p -> !p.asOsStr().isEmpty() })) {
             when (val matchVal = exists(path)) {
                 null -> {}
                 else -> {
@@ -598,7 +599,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
         }
     }
     // 2. Application path
-    when (val matchVal1 = currentExe()) {
+    when (val matchVal1 = env.currentExe()) {
         is Ok -> {
             val appPath = matchVal1.value
             appPath.pop()
@@ -616,14 +617,14 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
     // SAFETY: This uses `fillUtf16Buf` to safely call the OS functions.
     run {
         run {
-            val matchVal3 = fillUtf16Buf({ buf, size -> c.GetSystemDirectoryW(buf, size) }, { buf -> exists(PathBuf.from(OsString.fromWide(buf))) })
-            if (matchVal3 is Result.Ok<*> && matchVal3.value != null) {
+            val matchVal3 = fillUtf16Buf({ buf, size -> GetSystemDirectoryW(buf, size) }, { buf -> exists(PathBuf.from(OsString.fromWide(buf))) })
+            if (matchVal3 is Result.Ok<*, *> && matchVal3.value != null) {
                 return path
             }
         }
         run {
-            val matchVal4 = fillUtf16Buf({ buf, size -> c.GetWindowsDirectoryW(buf, size) }, { buf -> exists(PathBuf.from(OsString.fromWide(buf))) })
-            if (matchVal4 is Result.Ok<*> && matchVal4.value != null) {
+            val matchVal4 = fillUtf16Buf({ buf, size -> GetWindowsDirectoryW(buf, size) }, { buf -> exists(PathBuf.from(OsString.fromWide(buf))) })
+            if (matchVal4 is Result.Ok<*, *> && matchVal4.value != null) {
                 return path
             }
         }
@@ -633,7 +634,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
         null -> {}
         else -> {
             val parentPaths1 = matchVal5
-            for (path3 in splitPaths(parentPaths1).filter({ p -> !p.asOsStr().isEmpty() })) {
+            for (path3 in env.splitPaths(parentPaths1).filter({ p -> !p.asOsStr().isEmpty() })) {
                 when (val matchVal6 = exists(path3)) {
                     null -> {}
                     else -> {
@@ -657,7 +658,7 @@ public fun programExists(path: Path): List<UShort>? {
         // and it will almost always be successful if the link exists.
         // There are some exceptions for special system files (e.g. the pagefile)
         // but these are not executable.
-        if (c.GetFileAttributesW(path1.asPtr()) == c.INVALID_FILE_ATTRIBUTES) {
+        if (GetFileAttributesW(path1.asPtr()) == INVALID_FILE_ATTRIBUTES) {
             null
         } else {
             path1
@@ -687,48 +688,48 @@ public open class Process internal constructor(
         internal set
 
     public open fun kill(): Result<Unit, Error> {
-        val result = c.TerminateProcess(this.handle.asRawHandle(), 1)
-        if (result == c.FALSE) {
+        val result = TerminateProcess(this.handle.asRawHandle(), 1)
+        if (result == FALSE) {
             val error = api.getLastError()
             // TerminateProcess returns ERROR_ACCESS_DENIED if the process has already been
             // terminated (by us, or for any other reason). So check if the process was actually
             // terminated, and if so, do not return an error.
             if (error != WinError.ACCESS_DENIED || this.tryWait().isErr()) {
-                return Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.fromRawOsError(error.code))
+                return Result.Err(io.Error.fromRawOsError(error.code))
             }
         }
         return Result.Ok(Unit)
     }
 
-    public open fun id(): UInt = c.GetProcessId(this.handle.asRawHandle())
+    public open fun id(): UInt = GetProcessId(this.handle.asRawHandle())
 
     public open fun mainThreadHandle(): BorrowedHandle = this.mainThreadHandle.asHandle()
 
     public open fun wait(): Result<ExitStatus, Error> {
         return run {
-            val res = c.WaitForSingleObject(this.handle.asRawHandle(), c.INFINITE)
-            if (res != c.WAIT_OBJECT_0) {
+            val res = WaitForSingleObject(this.handle.asRawHandle(), INFINITE)
+            if (res != WAIT_OBJECT_0) {
                 return Result.Err(Error.lastOsError())
             }
             val localStorageL753C12 = AddressableLocal(0, PrimitiveLayouts.I32)
             val status by localStorageL753C12
-            when (val tryResult = cvt(c.GetExitCodeProcess(this.handle.asRawHandle(), RustMutableReference(localStorageL753C12.asMutPtr(), localStorageL753C12.layout)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = cvt(GetExitCodeProcess(this.handle.asRawHandle(), RustMutableReference(localStorageL753C12.asMutPtr(), localStorageL753C12.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             Result.Ok(ExitStatus(status))
         }
     }
 
     public open fun tryWait(): Result<ExitStatus?, Error> {
         return run {
-            when (c.WaitForSingleObject(this.handle.asRawHandle(), 0)) {
-                c.waitObject0 -> {}
-                c.waitTimeout -> {
+            when (WaitForSingleObject(this.handle.asRawHandle(), 0)) {
+                waitObject0 -> {}
+                waitTimeout -> {
                     return Result.Ok(null)
                 }
-                else -> { return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError()) }
+                else -> { return Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError()) }
             }
             val localStorageL768C12 = AddressableLocal(0, PrimitiveLayouts.I32)
             val status by localStorageL768C12
-            when (val tryResult = cvt(c.GetExitCodeProcess(this.handle.asRawHandle(), RustMutableReference(localStorageL768C12.asMutPtr(), localStorageL768C12.layout)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = cvt(GetExitCodeProcess(this.handle.asRawHandle(), RustMutableReference(localStorageL768C12.asMutPtr(), localStorageL768C12.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             Result.Ok(ExitStatus(status))
         }
     }
@@ -762,10 +763,10 @@ public open class ExitStatus(
     public open fun exitOk(): Result<Unit, ExitStatusError> =
         run {
             val matchVal = NonZero.tryFrom(this.value)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val failure = matchVal.value
                 Result.Err(ExitStatusError(failure))
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 Result.Ok(Unit)
             } }
         }
@@ -884,9 +885,9 @@ public open class ExitCode(
     }
 }
 
-public fun zeroedStartupinfo(): c.Startupinfow = c.Startupinfow(cb = 0u, lpReserved = MutPtr(0L), lpDesktop = MutPtr(0L), lpTitle = MutPtr(0L), dwX = 0u, dwY = 0u, dwXSize = 0u, dwYSize = 0u, dwXCountChars = 0u, dwYCountChars = 0u, dwFillAttribute = 0u, dwFlags = 0u, wShowWindow = 0u, cbReserved2 = 0u, lpReserved2 = MutPtr(0L), hStdInput = MutPtr(0L), hStdOutput = MutPtr(0L), hStdError = MutPtr(0L))
+public fun zeroedStartupinfo(): Startupinfow = c.Startupinfow(cb = 0u, lpReserved = MutPtr(0L), lpDesktop = MutPtr(0L), lpTitle = MutPtr(0L), dwX = 0u, dwY = 0u, dwXSize = 0u, dwYSize = 0u, dwXCountChars = 0u, dwYCountChars = 0u, dwFillAttribute = 0u, dwFlags = 0u, wShowWindow = 0u, cbReserved2 = 0u, lpReserved2 = MutPtr(0L), hStdInput = MutPtr(0L), hStdOutput = MutPtr(0L), hStdError = MutPtr(0L))
 
-public fun zeroedProcessInformation(): c.ProcessInformation = c.ProcessInformation(hProcess = MutPtr(0L), hThread = MutPtr(0L), dwProcessId = 0u, dwThreadId = 0u)
+public fun zeroedProcessInformation(): ProcessInformation = c.ProcessInformation(hProcess = MutPtr(0L), hThread = MutPtr(0L), dwProcessId = 0u, dwThreadId = 0u)
 
 // Produces a wide string *without terminating null*; returns an error if
 // `prog` or any of the `args` contain a nul.
@@ -903,14 +904,14 @@ public fun makeCommandLine(argv0: OsStr, args: List<Arg>, forceQuotes: Boolean):
     cmd.add(34u.toUShort())
     for (arg in args) {
         cmd.add((' ').code.toUShort())
-        when (val tryResult = args.appendArg(cmd, arg, forceQuotes)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = args.appendArg(cmd, arg, forceQuotes)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     }
     return Result.Ok(cmd)
 }
 
 // Get `cmd.exe` for use with bat scripts, encoded as a UTF-16 string.
 public fun commandPrompt(): Result<List<UShort>, Error> {
-    val system: List<UShort>  = when (val tryResult = fillUtf16Buf({ buf, size -> c.GetSystemDirectoryW(buf, size) }, { buf -> buf.into() })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val system: List<UShort>  = when (val tryResult = fillUtf16Buf({ buf, size -> GetSystemDirectoryW(buf, size) }, { buf -> buf.into() })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     system.extend("\\cmd.exe".encodeUtf16().chain(listOf(0)))
     return Result.Ok(system)
 }
@@ -928,10 +929,10 @@ public fun makeEnvp(maybeEnv: MutableMap<EnvKey, OsString>?): Result<Pair<MutPtr
             blk.add(0)
         }
         for ((k, v) in env) {
-            when (val tryResult = ensureNoNuls(k.osString)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = ensureNoNuls(k.osString)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             blk.extend(k.utf16)
             blk.add(('=').code.toUShort())
-            blk.extend(when (val tryResult = ensureNoNuls(v)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.encodeWide())
+            blk.extend(when (val tryResult = ensureNoNuls(v)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.encodeWide())
             blk.add(0)
         }
         blk.add(0)
@@ -946,7 +947,7 @@ public fun makeDirp(d: OsString?): Result<Pair<ConstPtr, List<UShort>>, Error> {
         null -> Result.Ok(Pair(ConstPtr(0L), mutableListOf()))
         else -> {
             val dir = d
-            var dirStr: List<UShort> = (when (val tryResult = ensureNoNuls(dir)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.encodeWide().chain(listOf(0))).toMutableList()
+            var dirStr: List<UShort> = (when (val tryResult = ensureNoNuls(dir)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.encodeWide().chain(listOf(0))).toMutableList()
             // Try to remove the `\\?\` prefix, if any.
             // This is necessary because the current directory does not support verbatim paths.
             // However. this can only be done if it doesn't change how the path will be resolved.
@@ -955,8 +956,8 @@ public fun makeDirp(d: OsString?): Result<Pair<ConstPtr, List<UShort>>, Error> {
                     // Turn the `C` in `UNC` into a `\` so we can then use `\\rest\of\path`.
                     val start = "\\\\?\\UN".len()
                     dirStr[start] = 92u.toUShort()
-                    if (Path.isAbsoluteExact(((dirStr).slice(start until dirStr.size)))) {
-                        ((dirStr).slice(start until dirStr.size)).asPtr()
+                    if (Path.isAbsoluteExact(((dirStr).subList(start, (dirStr).size)))) {
+                        ((dirStr).subList(start, (dirStr).size)).asPtr()
                     } else {
                         // Revert the above change.
                         dirStr[start] = 67u.toUShort()
@@ -965,8 +966,8 @@ public fun makeDirp(d: OsString?): Result<Pair<ConstPtr, List<UShort>>, Error> {
                 } else if (dirStr.startsWith(utf16("\\\\?\\"))) {
                     // Strip the leading `\\?\`
                     val start1 = "\\\\?\\".len()
-                    if (Path.isAbsoluteExact(((dirStr).slice(start1 until dirStr.size)))) {
-                        ((dirStr).slice(start1 until dirStr.size)).asPtr()
+                    if (Path.isAbsoluteExact(((dirStr).subList(start1, (dirStr).size)))) {
+                        ((dirStr).subList(start1, (dirStr).size)).asPtr()
                     } else {
                         dirStr.asPtr()
                     }
@@ -1024,4 +1025,4 @@ public open class CommandArgs internal constructor(
     }
 }
 
-public fun getpid(): UInt = c.GetCurrentProcessId()
+public fun getpid(): UInt = GetCurrentProcessId()

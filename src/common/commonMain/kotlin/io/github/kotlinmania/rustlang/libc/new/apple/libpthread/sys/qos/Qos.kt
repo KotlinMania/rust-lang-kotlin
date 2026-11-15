@@ -1,7 +1,7 @@
 // port-lint: source new/apple/libpthread/sys/qos.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.qos
 
-import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.*
 
 // Header: `sys / qos.h`
 //

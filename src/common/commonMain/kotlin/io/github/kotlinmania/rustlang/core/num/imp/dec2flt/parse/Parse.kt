@@ -5,9 +5,9 @@ import io.github.kotlinmania.rustlang.core.char.isAsciiDigit
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.is8digits
-import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimal.Decimal
-import io.github.kotlinmania.rustlang.core.num.imp.traits.Float
+import io.github.kotlinmania.rustlang.num.imp.dec2flt.common.is8digits
+import io.github.kotlinmania.rustlang.num.imp.dec2flt.decimal.Decimal
+import io.github.kotlinmania.rustlang.num.imp.traits.Float
 
 // Functions to parse floating-point numbers.
 
@@ -47,7 +47,7 @@ public fun tryParseDigits(s: List<UByte>, x: ULong): Pair<List<UByte>, ULong> {
         val num = s1.readU64()
         if (is8digits(num)) {
             x1 = ((x1 * 100000000uL) + parse8digits(num).toULong())
-            s1 = ((s1).slice(8 until s1.size))
+            s1 = ((s1).subList(8, (s1).size))
         } else {
             break
         }
@@ -218,7 +218,7 @@ public fun parsePartialNumber(s: List<UByte>): Pair<Decimal, Int>? {
             // big int
             intEnd.offsetFrom(s2)
         } else {
-            s2 = ((s2).slice(1 until s2.size))
+            s2 = ((s2).subList(1, (s2).size))
             val before1 = s2
             tryParse19digits(s2, RustMutableReference(localStorageL108C4.asMutPtr(), localStorageL108C4.layout))
             -s2.offsetFrom(before1)

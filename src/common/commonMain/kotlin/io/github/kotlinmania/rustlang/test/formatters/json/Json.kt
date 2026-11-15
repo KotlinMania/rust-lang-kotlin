@@ -1,17 +1,18 @@
 // port-lint: source formatters/json.rs
 package io.github.kotlinmania.rustlang.test.formatters.json
 
+import io.github.kotlinmania.rustlang.TestDesc
+import io.github.kotlinmania.rustlang.console.ConsoleTestDiscoveryState
+import io.github.kotlinmania.rustlang.console.ConsoleTestState
+import io.github.kotlinmania.rustlang.console.OutputLocation
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.get
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.test.TestDesc
-import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
-import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
-import io.github.kotlinmania.rustlang.test.console.OutputLocation
-import io.github.kotlinmania.rustlang.test.formatters.OutputFormatter
-import io.github.kotlinmania.rustlang.test.testresult.TestResult
-import io.github.kotlinmania.rustlang.test.time.TestExecTime
+import io.github.kotlinmania.rustlang.formatters.OutputFormatter
+import io.github.kotlinmania.rustlang.testresult.TestResult
+import io.github.kotlinmania.rustlang.time.TestExecTime
 
 public open class JsonFormatter<T>(
     public var out: OutputLocation<T>,
@@ -158,7 +159,7 @@ public open class JsonFormatter<T>(
                 }
             }
         val newline = "\n"
-        when (val tryResult = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"$event\", \"passed\": $passed, \"failed\": $failed, \"ignored\": $ignored, \"measured\": $measured, \"filtered_out\": $filteredOut$execTimeJson }$newline")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"$event\", \"passed\": $passed, \"failed\": $failed, \"ignored\": $ignored, \"measured\": $measured, \"filtered_out\": $filteredOut$execTimeJson }$newline")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(state.failed == 0)
     }
 

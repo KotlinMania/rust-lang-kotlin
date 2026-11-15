@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.mips
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
-import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
+import io.github.kotlinmania.rustlang.detect.arch.Feature
+import io.github.kotlinmania.rustlang.detect.bit.test
+import io.github.kotlinmania.rustlang.detect.cache.Cache
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec
 
 // Run-time feature detection for MIPS on Linux.
 
@@ -23,7 +23,7 @@ public fun detectFeatures(): Initializer {
     // The values are part of the platform-specific [asm/hwcap.h][hwcap]
     //
     // [hwcap]: https://github.com/torvalds/linux/blob/master/arch/mips/include/uapi/asm/hwcap.h
-    when (val matchVal = auxv()) {
+    when (val matchVal = auxvec.auxv()) {
         is Ok -> {
             val auxv = matchVal.value
             enableFeature(value, Feature::msa, test(auxv.hwcap, 1u))

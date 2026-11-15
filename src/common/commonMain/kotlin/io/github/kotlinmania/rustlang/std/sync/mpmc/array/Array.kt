@@ -12,7 +12,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpmc.context.Context
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
@@ -20,10 +19,11 @@ import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Token
 import io.github.kotlinmania.rustlang.std.sync.mpmc.utils.Backoff
 import io.github.kotlinmania.rustlang.std.sync.mpmc.utils.CachePadded
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.SyncWaker
-import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvTimeoutError
-import io.github.kotlinmania.rustlang.std.sync.mpsc.TryRecvError
-import io.github.kotlinmania.rustlang.std.sync.mpsc.TrySendError
-import io.github.kotlinmania.rustlang.std.time.Instant
+import io.github.kotlinmania.rustlang.sync.mpmc.SendTimeoutError
+import io.github.kotlinmania.rustlang.sync.mpsc.RecvTimeoutError
+import io.github.kotlinmania.rustlang.sync.mpsc.TryRecvError
+import io.github.kotlinmania.rustlang.sync.mpsc.TrySendError
+import io.github.kotlinmania.rustlang.time.Instant
 
 // Bounded channel based on a preallocated array.
 //
@@ -209,18 +209,18 @@ public open class Channel<T> internal constructor(
                 // Try moving the tail.
                 run {
                     val matchVal = this.tail.compareExchangeWeak(tail, newTail, Ordering.SeqCst, Ordering.Relaxed)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         // Prepare the token for the follow-up call to `write`.
                         token.array.slot = (constPtrFromRustCast(slot)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
                         token.array.stamp = tail + 1
                         return true
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         backoff.spinLight()
                         tail = this.tail.load(Ordering.Relaxed)
                     } }
                 }
             } else if (stamp.wrappingAdd(this.oneLap) == tail + 1) {
-                atomic.fence(Ordering.SeqCst)
+                fence(Ordering.SeqCst)
                 val head = this.head.load(Ordering.Relaxed)
                 // If the head lags one lap behind the tail as well...
                 if (head.wrappingAdd(this.oneLap) == tail) {
@@ -285,18 +285,18 @@ public open class Channel<T> internal constructor(
                 // Try moving the head.
                 run {
                     val matchVal = this.head.compareExchangeWeak(head, new, Ordering.SeqCst, Ordering.Relaxed)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         // Prepare the token for the follow-up call to `read`.
                         token.array.slot = (constPtrFromRustCast(slot)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
                         token.array.stamp = head.wrappingAdd(this.oneLap)
                         return true
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         backoff.spinLight()
                         head = this.head.load(Ordering.Relaxed)
                     } }
                 }
             } else if (stamp == head) {
-                atomic.fence(Ordering.SeqCst)
+                fence(Ordering.SeqCst)
                 val tail = this.tail.load(Ordering.Relaxed)
                 // If the tail equals the head, that means the channel is empty.
                 if ((tail and this.markBit.inv()) == head) {

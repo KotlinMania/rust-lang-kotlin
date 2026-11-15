@@ -2,7 +2,8 @@
 package io.github.kotlinmania.rustlang.libm.math.exp2m1f
 
 import io.github.kotlinmania.rustlang.libm.math.support.Float
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex
+import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
 
 public class Exp2m1fInlineTests {
     @kotlin.test.Test
@@ -12,7 +13,7 @@ public class Exp2m1fInlineTests {
             run {
                 val l = result
                 val r = expected
-                check(l.biteq(r)) { ("x = $x").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toUInt()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+                check(biteq(l, r)) { ("x = $x").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toUInt()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
             }
         }
         for (x1 in floatArrayOf(kotlin.Float.NaN, kotlin.Float.NEG_NAN, kotlin.Float.SNAN, kotlin.Float.NEG_SNAN)) {

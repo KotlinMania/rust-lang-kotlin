@@ -1,8 +1,8 @@
 // port-lint: source iter/sources/once.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.once
 
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.option.IntoIter
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.option.IntoIter
 
 /**
  * Creates an iterator that yields an element exactly once.

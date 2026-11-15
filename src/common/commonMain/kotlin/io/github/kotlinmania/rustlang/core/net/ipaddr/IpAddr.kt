@@ -3,18 +3,20 @@
 
 package io.github.kotlinmania.rustlang.core.net.ipaddr
 
+import io.github.kotlinmania.rustlang.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.net.displaybuffer.DisplayBuffer
-import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
-import io.github.kotlinmania.rustlang.core.ops.bit.BitAndAssign
-import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
-import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
-import io.github.kotlinmania.rustlang.core.ops.bit.Not
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.mem.transmutability.transmute
+import io.github.kotlinmania.rustlang.ops.bit.BitAnd
+import io.github.kotlinmania.rustlang.ops.bit.BitAndAssign
+import io.github.kotlinmania.rustlang.ops.bit.BitOr
+import io.github.kotlinmania.rustlang.ops.bit.BitOrAssign
+import io.github.kotlinmania.rustlang.ops.bit.Not
 
 /**
  * An IP address, either IPv4 or IPv6.
@@ -542,7 +544,7 @@ public sealed class IpAddr {
  */
 public open class Ipv4Addr(
     public var octets: UByteArray,
-) : Not<Any?, Ipv4Addr>, BitAndAssign<Ipv4Addr>, BitAnd<Ipv4Addr, Any?, Ipv4Addr>, BitOrAssign<Ipv4Addr>, BitOr<Ipv4Addr, Any?, Ipv4Addr> {
+) : Not<Ipv4Addr>, BitAndAssign<Ipv4Addr>, BitAnd<Ipv4Addr, Ipv4Addr>, BitOrAssign<Ipv4Addr>, BitOr<Ipv4Addr, Ipv4Addr> {
     public open fun clone(): Ipv4Addr = Ipv4Addr(octets)
 
     public override fun hashCode(): Int {
@@ -1311,7 +1313,7 @@ public open class Ipv4Addr(
  */
 public open class Ipv6Addr(
     public var octets: UByteArray,
-) : Not<Any?, Ipv6Addr>, BitAndAssign<Ipv6Addr>, BitAnd<Ipv6Addr, Any?, Ipv6Addr>, BitOrAssign<Ipv6Addr>, BitOr<Ipv6Addr, Any?, Ipv6Addr> {
+) : Not<Ipv6Addr>, BitAndAssign<Ipv6Addr>, BitAnd<Ipv6Addr, Ipv6Addr>, BitOrAssign<Ipv6Addr>, BitOr<Ipv6Addr, Ipv6Addr> {
     public open fun clone(): Ipv6Addr = Ipv6Addr(octets)
 
     public override fun hashCode(): Int {
@@ -1365,7 +1367,7 @@ public open class Ipv6Addr(
     public open fun segments(): UShortArray {
         // All elements in `self.octets` must be big endian.
         // SAFETY: `[UByte; 16]` is always safe to reinterpret to `[UShort; 8]`.
-        val (a, b, c, d, e, f, g, h) = transmute<UShortArray>(this.octets)
+        val (a, b, c, d, e, f, g, h) = transmute(this.octets)
         // We want native endian u16
         return listOf((((((a).toUInt() and 0xFFu) shl 8) or (((a).toUInt() shr 8) and 0xFFu)).toUShort()), (((((b).toUInt() and 0xFFu) shl 8) or (((b).toUInt() shr 8) and 0xFFu)).toUShort()), (((((c).toUInt() and 0xFFu) shl 8) or (((c).toUInt() shr 8) and 0xFFu)).toUShort()), (((((d).toUInt() and 0xFFu) shl 8) or (((d).toUInt() shr 8) and 0xFFu)).toUShort()), (((((e).toUInt() and 0xFFu) shl 8) or (((e).toUInt() shr 8) and 0xFFu)).toUShort()), (((((f).toUInt() and 0xFFu) shl 8) or (((f).toUInt() shr 8) and 0xFFu)).toUShort()), (((((g).toUInt() and 0xFFu) shl 8) or (((g).toUInt() shr 8) and 0xFFu)).toUShort()), (((((h).toUInt() and 0xFFu) shl 8) or (((h).toUInt() shr 8) and 0xFFu)).toUShort()))
     }
@@ -2125,7 +2127,7 @@ public open class Ipv6Addr(
          */
         public fun new(a: UShort, b: UShort, c: UShort, d: UShort, e: UShort, f: UShort, g: UShort, h: UShort): Ipv6Addr {
             val addr16 = ushortArrayOf((((((a).toUInt() and 0xFFu) shl 8) or (((a).toUInt() shr 8) and 0xFFu)).toUShort()), (((((b).toUInt() and 0xFFu) shl 8) or (((b).toUInt() shr 8) and 0xFFu)).toUShort()), (((((c).toUInt() and 0xFFu) shl 8) or (((c).toUInt() shr 8) and 0xFFu)).toUShort()), (((((d).toUInt() and 0xFFu) shl 8) or (((d).toUInt() shr 8) and 0xFFu)).toUShort()), (((((e).toUInt() and 0xFFu) shl 8) or (((e).toUInt() shr 8) and 0xFFu)).toUShort()), (((((f).toUInt() and 0xFFu) shl 8) or (((f).toUInt() shr 8) and 0xFFu)).toUShort()), (((((g).toUInt() and 0xFFu) shl 8) or (((g).toUInt() shr 8) and 0xFFu)).toUShort()), (((((h).toUInt() and 0xFFu) shl 8) or (((h).toUInt() shr 8) and 0xFFu)).toUShort()))
-            return Ipv6Addr(octets = transmute<UByteArray>(addr16))
+            return Ipv6Addr(octets = transmute(addr16))
         }
 
         /**

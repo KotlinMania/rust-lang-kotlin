@@ -1,18 +1,19 @@
 package io.github.kotlinmania.rustlang.core.mem
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
-import io.github.kotlinmania.rustlang.core.intrinsics.readViaCopy
-import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.typedSwapNonoverlapping
-import io.github.kotlinmania.rustlang.core.intrinsics.writeViaMove
+import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.panic.constAssert
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.core.ptr.read
-import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
+import io.github.kotlinmania.rustlang.intrinsics.discriminantValue
+import io.github.kotlinmania.rustlang.intrinsics.readViaCopy
+import io.github.kotlinmania.rustlang.intrinsics.typedSwapNonoverlapping
+import io.github.kotlinmania.rustlang.intrinsics.writeViaMove
+import io.github.kotlinmania.rustlang.panic.constAssert
+import io.github.kotlinmania.rustlang.ptr.read
+import io.github.kotlinmania.rustlang.ptr.readUnaligned
 
 /**
  * Takes ownership and "forgets" about the value **without running its destructor**.
@@ -332,7 +333,7 @@ public fun <T> sizeOf(): Int {
  */
 public fun <T> sizeOfVal(value: T): Int {
     // SAFETY: `val` is a reference, so it's a valid raw pointer
-    return io.github.kotlinmania.rustlang.core.intrinsics.sizeOfVal(value)
+    return io.github.kotlinmania.rustlang.intrinsics.sizeOfVal(value)
 }
 
 // NOTE: the reason this is safe is that if an overflow were to occur already with size 0,
@@ -390,7 +391,7 @@ public fun <T> sizeOfVal(value: T): Int {
  */
 public fun sizeOfValRaw(value: ConstPtr): Int {
     // SAFETY: the caller must provide a valid raw pointer
-    return io.github.kotlinmania.rustlang.core.intrinsics.sizeOfVal(value)
+    return io.github.kotlinmania.rustlang.intrinsics.sizeOfVal(value)
 }
 
 /**
@@ -430,7 +431,7 @@ public fun <T> minAlignOf(): Int = sizedTypePropertiesAlignT
  */
 public fun <T> minAlignOfVal(value: T): Int {
     // SAFETY: val is a reference, so it's a valid raw pointer
-    return io.github.kotlinmania.rustlang.core.intrinsics.alignOfVal(value)
+    return io.github.kotlinmania.rustlang.intrinsics.alignOfVal(value)
 }
 
 /**
@@ -488,7 +489,7 @@ public fun <T> alignOf(): Int = sizedTypePropertiesAlignT
  */
 public fun <T> alignOfVal(value: T): Int {
     // SAFETY: val is a reference, so it's a valid raw pointer
-    return io.github.kotlinmania.rustlang.core.intrinsics.alignOfVal(value)
+    return io.github.kotlinmania.rustlang.intrinsics.alignOfVal(value)
 }
 
 // NOTE: the reason this is safe is that if an overflow were to occur already with size 0,
@@ -546,7 +547,7 @@ public fun <T> alignOfVal(value: T): Int {
  */
 public fun alignOfValRaw(value: ConstPtr): Int {
     // SAFETY: the caller must provide a valid raw pointer
-    return io.github.kotlinmania.rustlang.core.intrinsics.alignOfVal(value)
+    return io.github.kotlinmania.rustlang.intrinsics.alignOfVal(value)
 }
 
 /**
@@ -1001,7 +1002,7 @@ public fun <T> copy(x: T): T = x
 public fun <Src, Dst> transmuteCopy(src: Src, typeLayoutDst: TypeLayout<Dst>): Dst {
     // library UB because it's possible for the `Src` to be only a subset of the allocation
     // and thus for a failure to not be immediate language UB
-    assertUnsafePrecondition(checkLibraryUb, "cannot transmute_copy if Dst is larger than Src", srcSize, sizeOfVal, Src, src, dstSize, Dst, SIZE, srcSize, dstSize)
+    Unit
     // If Dst has a higher alignment requirement, src might not be suitably aligned.
     return if (alignOf<Dst>() > alignOfVal<Src>(src)) {
         // SAFETY: `src` is a reference which is guaranteed to be valid for reads.
@@ -1250,7 +1251,7 @@ public fun <T> discriminant(v: T): Discriminant<T> = Discriminant(discriminantVa
  * check(mem.variantCount<Result<Nothing>>() == 2)
  * ```
  */
-public fun <T> variantCount(): Int = io.github.kotlinmania.rustlang.core.intrinsics.variantCount<T>()
+public fun <T> variantCount(): Int = io.github.kotlinmania.rustlang.intrinsics.variantCount<T>()
 
 // typeName() called only at run time
 

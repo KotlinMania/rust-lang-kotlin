@@ -1,12 +1,12 @@
 // port-lint: source new/apple/xnu/sys/_types/_ucontext.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.types.ucontext
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.SigsetT
-import io.github.kotlinmania.rustlang.libc.StackT
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.arm.mcontext.McontextT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.SigsetT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.StackT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.McontextT
 
 // Header: `sys / _types / _ucontext.h`
 
@@ -26,11 +26,11 @@ public class DarwinUcontext internal constructor(
 
     public constructor() : this(
         ucOnstack = 0,
-        ucSigmask = SigsetT(),
+        ucSigmask = 0u,
         ucStack = StackT(),
         ucLinkCtorArg = MutPtr(0L),
         ucMcsize = 0,
-        ucMcontextCtorArg = MutPtr(0L),
+        ucMcontextCtorArg = McontextT(),
     )
 
     public operator fun component1(): CInt = this.ucOnstack
@@ -74,11 +74,11 @@ public class DarwinUcontext internal constructor(
     public companion object {
         public operator fun invoke(
             ucOnstack: CInt = 0,
-            ucSigmask: SigsetT = SigsetT(),
+            ucSigmask: SigsetT = 0u,
             ucStack: StackT = StackT(),
             ucLink: MutPtr = MutPtr(0L),
             ucMcsize: Int = 0,
-            ucMcontext: McontextT = MutPtr(0L),
+            ucMcontext: McontextT = McontextT(),
         ): DarwinUcontext = DarwinUcontext(
             ucOnstack = ucOnstack,
             ucSigmask = ucSigmask,

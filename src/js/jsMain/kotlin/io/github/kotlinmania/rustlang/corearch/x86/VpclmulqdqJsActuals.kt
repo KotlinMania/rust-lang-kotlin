@@ -2,6 +2,9 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.M512i
+
 public actual fun pclmulqdq256(a: M256i, roundKey: M256i, imm8: UByte): M256i =
     throw UnsupportedOperationException("Native FFI addon is not available")
 

@@ -2,12 +2,12 @@
 package io.github.kotlinmania.rustlang.rustcdemangle.legacy
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.rustcdemangle.tryDemangle
+import io.github.kotlinmania.rustlang.tryDemangle
 
 public fun ok(sym: String, expected: String): Boolean =
     run {
         val matchVal = tryDemangle(sym)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val s = matchVal.value
             if (s.toString() == expected) {
                 true
@@ -15,7 +15,7 @@ public fun ok(sym: String, expected: String): Boolean =
                 println("\n$s\n!=\n$expected\n")
                 false
             }
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             println("error demangling")
             false
         } }
@@ -24,10 +24,10 @@ public fun ok(sym: String, expected: String): Boolean =
 public fun okErr(sym: String): Boolean =
     run {
         val matchVal = tryDemangle(sym)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             println("succeeded in demangling")
             false
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             demangle(sym).toString() == sym
         } }
     }

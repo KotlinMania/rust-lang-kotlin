@@ -1,6 +1,17 @@
 // port-lint: tests x86/avx512ifma.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.Mmask8
+import io.github.kotlinmania.rustlang.x86.mm256MaskBlendEpi64
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi64x
+import io.github.kotlinmania.rustlang.x86.mm256SetzeroSi256
+import io.github.kotlinmania.rustlang.x86.mm512MaskBlendEpi64
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi64
+import io.github.kotlinmania.rustlang.x86.mm512SetzeroSi512
+import io.github.kotlinmania.rustlang.x86.mmMaskBlendEpi64
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi64x
+import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
+
 public val K: Mmask8 = 0x6Du
 
 public fun testMm512Madd52hiEpu64() {

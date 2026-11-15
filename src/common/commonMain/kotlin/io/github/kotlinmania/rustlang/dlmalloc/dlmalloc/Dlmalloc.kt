@@ -1,6 +1,7 @@
 // port-lint: source dlmalloc.rs
 package io.github.kotlinmania.rustlang.dlmalloc.dlmalloc
 
+import io.github.kotlinmania.rustlang.Allocator
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
@@ -8,13 +9,10 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
 import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.dlmalloc.Allocator
 
 public open class Dlmalloc<A> internal constructor(
     public var smallmap: UInt,
@@ -326,7 +324,7 @@ public open class Dlmalloc<A> internal constructor(
         val ptr = this.malloc(bytes)
         if (!ptr.isNull()) {
             val oc = Chunk.size(oldp) - this.overheadFor(oldp)
-            copyNonoverlapping(oldmem, ptr, minOf(oc, bytes), typeLayoutT = PrimitiveLayouts.U8)
+            ptr.copyNonoverlapping(oldmem, ptr, minOf(oc, bytes), typeLayoutT = PrimitiveLayouts.U8)
             this.free(oldmem)
         }
         return ptr

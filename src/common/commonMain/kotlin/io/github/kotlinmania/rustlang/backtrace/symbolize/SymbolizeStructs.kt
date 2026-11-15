@@ -1,12 +1,12 @@
 package io.github.kotlinmania.rustlang.backtrace.symbolize
 
 import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
-import io.github.kotlinmania.rustlang.core.fmt.Debug
-import io.github.kotlinmania.rustlang.core.fmt.Display
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.rustcdemangle.Demangle
 import io.github.kotlinmania.rustlang.rustcdemangle.tryDemangle
+import io.github.kotlinmania.rustlang.backtrace.symbolize.dbghelp as imp
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: String, arg1: StringBuilder)
@@ -52,7 +52,7 @@ public open class Symbol(
     // Note: this scope bound needs to be persisted eventually to `Symbol`,
     // but that's currently a breaking change. For now this is safe since
     // `Symbol` is only ever handed out by reference and can't be cloned.
-    public var inner: io.github.kotlinmania.rustlang.backtrace.symbolize.noop.Symbol,
+    public var inner: imp.Symbol,
 ) {
     /**
      * Returns the name of this function.
@@ -143,6 +143,24 @@ public open class Symbol(
     }
 }
 
+// Maybe a parsed C++ symbol, if parsing the mangled symbol as Rust
+// failed.
+public open class OptionCppSymbol(
+    public var value: BorrowedSymbol?,
+) {
+    public var field0: BorrowedSymbol?
+        get() = value
+        set(v) {
+            value = v
+        }
+
+    public companion object {
+        public fun parse(input: List<UByte>): OptionCppSymbol = OptionCppSymbol(BorrowedSymbol.new(input).ok())
+
+        public fun none(): OptionCppSymbol = OptionCppSymbol(null)
+    }
+}
+
 /**
  * A wrapper around a symbol name to provide ergonomic accessors to the
  * demangled name, the raw bytes, the raw string, etc.
@@ -150,6 +168,7 @@ public open class Symbol(
 public open class SymbolName(
     public var bytes: List<UByte>,
     public var demangled: Demangle?,
+    public var cppDemangled: OptionCppSymbol,
 ) {
     /**
      * Returns the raw (mangled) symbol name as a `String` if the symbol is valid utf-8.
@@ -171,7 +190,20 @@ public open class SymbolName(
                 return s.fmt(f)
             }
         }
-        formatSymbolName(Display::fmt, this.bytes, f)
+        when (val matchVal1 = this.cppDemangled.value) {
+            null -> {}
+            else -> {
+                val cpp = matchVal1
+                when (val matchVal2 = cpp.demangle()) {
+                    is Ok -> {
+                        val s1 = matchVal2.value
+                        return s1.fmt(f)
+                    }
+                    else -> {}
+                }
+            }
+        }
+        formatSymbolName(fmt.Display::fmt, this.bytes, f)
     }
 
     public open fun fmtDebug(f: StringBuilder) {
@@ -182,7 +214,20 @@ public open class SymbolName(
                 return s.fmt(f)
             }
         }
-        formatSymbolName(Debug::fmt, this.bytes, f)
+        when (val matchVal1 = this.cppDemangled.value) {
+            null -> {}
+            else -> {
+                val cpp = matchVal1
+                when (val matchVal2 = cpp.demangle()) {
+                    is Ok -> {
+                        val s1 = matchVal2.value
+                        return s1.fmt(f)
+                    }
+                    else -> {}
+                }
+            }
+        }
+        formatSymbolName(fmt.Debug::fmt, this.bytes, f)
     }
 
     public companion object {
@@ -192,6 +237,12 @@ public open class SymbolName(
         public fun new(bytes: List<UByte>): SymbolName {
             val strBytes = String.fromUtf8(bytes).ok()
             val demangled = strBytes.andThen({ s -> tryDemangle(s).ok() })
+            val cpp =
+                if (demangled == null) {
+                    OptionCppSymbol.parse(bytes)
+                } else {
+                    OptionCppSymbol.none()
+                }
             return SymbolName(bytes = bytes, demangled = demangled, cppDemangled = cpp)
         }
     }

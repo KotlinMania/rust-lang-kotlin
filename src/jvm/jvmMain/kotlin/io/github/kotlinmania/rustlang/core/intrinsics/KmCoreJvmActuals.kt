@@ -38,7 +38,7 @@ internal object KmCoreJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/core/native/$hostPlatform-$hostArch/$libFileName"
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
         val stream = KmCoreJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')

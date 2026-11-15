@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.nothreads
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -14,8 +13,8 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.process.abort
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
 
 // On some targets like wasm there's no threads, so no need to generate
 // thread locals and we can instead just use plain statics!
@@ -77,7 +76,7 @@ public open class LazyStorage<T> internal constructor(
             this.state.set(State.Destroying)
             // Safety: we check for no initialization during drop below
             run {
-                dropInPlace(mutPtrFromRustCast(this.value.get()))
+                ptr.dropInPlace(mutPtrFromRustCast(this.value.get()))
             }
             this.state.set(State.Initial)
         }

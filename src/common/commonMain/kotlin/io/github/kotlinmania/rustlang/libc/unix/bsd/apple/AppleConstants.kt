@@ -1,15 +1,15 @@
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.types.u32CastInt
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.types.u32CastInt
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
 
 public val UTX_USERSIZE: Int = 256
 
@@ -57,95 +57,95 @@ public val LC_TIME_MASK: CInt = 1 shl 5
 
 public val LC_ALL_MASK: CInt = LC_COLLATE_MASK or LC_CTYPE_MASK or LC_MESSAGES_MASK or LC_MONETARY_MASK or LC_NUMERIC_MASK or LC_TIME_MASK
 
-public val CODESET: io.github.kotlinmania.rustlang.libc.NlItem = 0
+public val CODESET: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 0
 
-public val D_T_FMT: io.github.kotlinmania.rustlang.libc.NlItem = 1
+public val D_T_FMT: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 1
 
-public val D_FMT: io.github.kotlinmania.rustlang.libc.NlItem = 2
+public val D_FMT: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 2
 
-public val T_FMT: io.github.kotlinmania.rustlang.libc.NlItem = 3
+public val T_FMT: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 3
 
-public val T_FMT_AMPM: io.github.kotlinmania.rustlang.libc.NlItem = 4
+public val T_FMT_AMPM: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 4
 
-public val AM_STR: io.github.kotlinmania.rustlang.libc.NlItem = 5
+public val AM_STR: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 5
 
-public val PM_STR: io.github.kotlinmania.rustlang.libc.NlItem = 6
+public val PM_STR: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 6
 
-public val DAY_1: io.github.kotlinmania.rustlang.libc.NlItem = 7
+public val DAY_1: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 7
 
-public val DAY_2: io.github.kotlinmania.rustlang.libc.NlItem = 8
+public val DAY_2: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 8
 
-public val DAY_3: io.github.kotlinmania.rustlang.libc.NlItem = 9
+public val DAY_3: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 9
 
-public val DAY_4: io.github.kotlinmania.rustlang.libc.NlItem = 10
+public val DAY_4: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 10
 
-public val DAY_5: io.github.kotlinmania.rustlang.libc.NlItem = 11
+public val DAY_5: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 11
 
-public val DAY_6: io.github.kotlinmania.rustlang.libc.NlItem = 12
+public val DAY_6: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 12
 
-public val DAY_7: io.github.kotlinmania.rustlang.libc.NlItem = 13
+public val DAY_7: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 13
 
-public val ABDAY_1: io.github.kotlinmania.rustlang.libc.NlItem = 14
+public val ABDAY_1: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 14
 
-public val ABDAY_2: io.github.kotlinmania.rustlang.libc.NlItem = 15
+public val ABDAY_2: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 15
 
-public val ABDAY_3: io.github.kotlinmania.rustlang.libc.NlItem = 16
+public val ABDAY_3: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 16
 
-public val ABDAY_4: io.github.kotlinmania.rustlang.libc.NlItem = 17
+public val ABDAY_4: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 17
 
-public val ABDAY_5: io.github.kotlinmania.rustlang.libc.NlItem = 18
+public val ABDAY_5: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 18
 
-public val ABDAY_6: io.github.kotlinmania.rustlang.libc.NlItem = 19
+public val ABDAY_6: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 19
 
-public val ABDAY_7: io.github.kotlinmania.rustlang.libc.NlItem = 20
+public val ABDAY_7: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 20
 
-public val MON_1: io.github.kotlinmania.rustlang.libc.NlItem = 21
+public val MON_1: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 21
 
-public val MON_2: io.github.kotlinmania.rustlang.libc.NlItem = 22
+public val MON_2: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 22
 
-public val MON_3: io.github.kotlinmania.rustlang.libc.NlItem = 23
+public val MON_3: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 23
 
-public val MON_4: io.github.kotlinmania.rustlang.libc.NlItem = 24
+public val MON_4: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 24
 
-public val MON_5: io.github.kotlinmania.rustlang.libc.NlItem = 25
+public val MON_5: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 25
 
-public val MON_6: io.github.kotlinmania.rustlang.libc.NlItem = 26
+public val MON_6: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 26
 
-public val MON_7: io.github.kotlinmania.rustlang.libc.NlItem = 27
+public val MON_7: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 27
 
-public val MON_8: io.github.kotlinmania.rustlang.libc.NlItem = 28
+public val MON_8: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 28
 
-public val MON_9: io.github.kotlinmania.rustlang.libc.NlItem = 29
+public val MON_9: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 29
 
-public val MON_10: io.github.kotlinmania.rustlang.libc.NlItem = 30
+public val MON_10: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 30
 
-public val MON_11: io.github.kotlinmania.rustlang.libc.NlItem = 31
+public val MON_11: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 31
 
-public val MON_12: io.github.kotlinmania.rustlang.libc.NlItem = 32
+public val MON_12: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 32
 
-public val ABMON_1: io.github.kotlinmania.rustlang.libc.NlItem = 33
+public val ABMON_1: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 33
 
-public val ABMON_2: io.github.kotlinmania.rustlang.libc.NlItem = 34
+public val ABMON_2: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 34
 
-public val ABMON_3: io.github.kotlinmania.rustlang.libc.NlItem = 35
+public val ABMON_3: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 35
 
-public val ABMON_4: io.github.kotlinmania.rustlang.libc.NlItem = 36
+public val ABMON_4: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 36
 
-public val ABMON_5: io.github.kotlinmania.rustlang.libc.NlItem = 37
+public val ABMON_5: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 37
 
-public val ABMON_6: io.github.kotlinmania.rustlang.libc.NlItem = 38
+public val ABMON_6: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 38
 
-public val ABMON_7: io.github.kotlinmania.rustlang.libc.NlItem = 39
+public val ABMON_7: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 39
 
-public val ABMON_8: io.github.kotlinmania.rustlang.libc.NlItem = 40
+public val ABMON_8: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 40
 
-public val ABMON_9: io.github.kotlinmania.rustlang.libc.NlItem = 41
+public val ABMON_9: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 41
 
-public val ABMON_10: io.github.kotlinmania.rustlang.libc.NlItem = 42
+public val ABMON_10: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 42
 
-public val ABMON_11: io.github.kotlinmania.rustlang.libc.NlItem = 43
+public val ABMON_11: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 43
 
-public val ABMON_12: io.github.kotlinmania.rustlang.libc.NlItem = 44
+public val ABMON_12: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 44
 
 public val REG_BASIC: CInt = 0
 
@@ -211,47 +211,47 @@ public val REG_LARGE: CInt = 512
 
 public val REG_BACKR: CInt = 1024
 
-public val CLOCK_REALTIME: io.github.kotlinmania.rustlang.libc.ClockidT = 0u
+public val CLOCK_REALTIME: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 0u
 
-public val CLOCK_MONOTONIC_RAW: io.github.kotlinmania.rustlang.libc.ClockidT = 4u
+public val CLOCK_MONOTONIC_RAW: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 4u
 
-public val CLOCK_MONOTONIC_RAW_APPROX: io.github.kotlinmania.rustlang.libc.ClockidT = 5u
+public val CLOCK_MONOTONIC_RAW_APPROX: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 5u
 
-public val CLOCK_MONOTONIC: io.github.kotlinmania.rustlang.libc.ClockidT = 6u
+public val CLOCK_MONOTONIC: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 6u
 
-public val CLOCK_UPTIME_RAW: io.github.kotlinmania.rustlang.libc.ClockidT = 8u
+public val CLOCK_UPTIME_RAW: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 8u
 
-public val CLOCK_UPTIME_RAW_APPROX: io.github.kotlinmania.rustlang.libc.ClockidT = 9u
+public val CLOCK_UPTIME_RAW_APPROX: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 9u
 
-public val CLOCK_PROCESS_CPUTIME_ID: io.github.kotlinmania.rustlang.libc.ClockidT = 12u
+public val CLOCK_PROCESS_CPUTIME_ID: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 12u
 
-public val CLOCK_THREAD_CPUTIME_ID: io.github.kotlinmania.rustlang.libc.ClockidT = 16u
+public val CLOCK_THREAD_CPUTIME_ID: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 16u
 
-public val ERA: io.github.kotlinmania.rustlang.libc.NlItem = 45
+public val ERA: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 45
 
-public val ERA_D_FMT: io.github.kotlinmania.rustlang.libc.NlItem = 46
+public val ERA_D_FMT: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 46
 
-public val ERA_D_T_FMT: io.github.kotlinmania.rustlang.libc.NlItem = 47
+public val ERA_D_T_FMT: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 47
 
-public val ERA_T_FMT: io.github.kotlinmania.rustlang.libc.NlItem = 48
+public val ERA_T_FMT: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 48
 
-public val ALT_DIGITS: io.github.kotlinmania.rustlang.libc.NlItem = 49
+public val ALT_DIGITS: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 49
 
-public val RADIXCHAR: io.github.kotlinmania.rustlang.libc.NlItem = 50
+public val RADIXCHAR: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 50
 
-public val THOUSEP: io.github.kotlinmania.rustlang.libc.NlItem = 51
+public val THOUSEP: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 51
 
-public val YESEXPR: io.github.kotlinmania.rustlang.libc.NlItem = 52
+public val YESEXPR: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 52
 
-public val NOEXPR: io.github.kotlinmania.rustlang.libc.NlItem = 53
+public val NOEXPR: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 53
 
-public val YESSTR: io.github.kotlinmania.rustlang.libc.NlItem = 54
+public val YESSTR: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 54
 
-public val NOSTR: io.github.kotlinmania.rustlang.libc.NlItem = 55
+public val NOSTR: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 55
 
-public val CRNCYSTR: io.github.kotlinmania.rustlang.libc.NlItem = 56
+public val CRNCYSTR: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 56
 
-public val D_MD_ORDER: io.github.kotlinmania.rustlang.libc.NlItem = 57
+public val D_MD_ORDER: io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem = 57
 
 public val EXIT_FAILURE: CInt = 1
 
@@ -2236,19 +2236,19 @@ public val SHUT_WR: CInt = 1
 
 public val SHUT_RDWR: CInt = 2
 
-public val SAE_ASSOCID_ANY: io.github.kotlinmania.rustlang.libc.SaeAssocidT = 0u
+public val SAE_ASSOCID_ANY: io.github.kotlinmania.rustlang.unix.bsd.apple.SaeAssocidT = 0u
 
 /**
  * ((saeAssocidT)(-1ULL))
  */
-public val SAE_ASSOCID_ALL: io.github.kotlinmania.rustlang.libc.SaeAssocidT = 0xffffffffu
+public val SAE_ASSOCID_ALL: io.github.kotlinmania.rustlang.unix.bsd.apple.SaeAssocidT = 0xffffffffu
 
-public val SAE_CONNID_ANY: io.github.kotlinmania.rustlang.libc.SaeConnidT = 0u
+public val SAE_CONNID_ANY: io.github.kotlinmania.rustlang.unix.bsd.apple.SaeConnidT = 0u
 
 /**
  * ((saeConnidT)(-1ULL))
  */
-public val SAE_CONNID_ALL: io.github.kotlinmania.rustlang.libc.SaeConnidT = 0xffffffffu
+public val SAE_CONNID_ALL: io.github.kotlinmania.rustlang.unix.bsd.apple.SaeConnidT = 0xffffffffu
 
 // connectx() flag parameters
 
@@ -2500,21 +2500,21 @@ public val CS_DARWIN_USER_CACHE_DIR: CInt = 65538
 
 public val OS_UNFAIR_LOCK_INIT: OsUnfairLock = OsUnfairLock(osUnfairLockOpaque = 0u, nonExhaustive = Unit)
 
-public val OS_LOG_TYPE_DEFAULT: io.github.kotlinmania.rustlang.libc.OsLogTypeT = 0x00u
+public val OS_LOG_TYPE_DEFAULT: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogTypeT = 0x00u
 
-public val OS_LOG_TYPE_INFO: io.github.kotlinmania.rustlang.libc.OsLogTypeT = 0x01u
+public val OS_LOG_TYPE_INFO: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogTypeT = 0x01u
 
-public val OS_LOG_TYPE_DEBUG: io.github.kotlinmania.rustlang.libc.OsLogTypeT = 0x02u
+public val OS_LOG_TYPE_DEBUG: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogTypeT = 0x02u
 
-public val OS_LOG_TYPE_ERROR: io.github.kotlinmania.rustlang.libc.OsLogTypeT = 0x10u
+public val OS_LOG_TYPE_ERROR: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogTypeT = 0x10u
 
-public val OS_LOG_TYPE_FAULT: io.github.kotlinmania.rustlang.libc.OsLogTypeT = 0x11u
+public val OS_LOG_TYPE_FAULT: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogTypeT = 0x11u
 
-public val OS_SIGNPOST_EVENT: io.github.kotlinmania.rustlang.libc.OsSignpostTypeT = 0x00u
+public val OS_SIGNPOST_EVENT: io.github.kotlinmania.rustlang.unix.bsd.apple.OsSignpostTypeT = 0x00u
 
-public val OS_SIGNPOST_INTERVAL_BEGIN: io.github.kotlinmania.rustlang.libc.OsSignpostTypeT = 0x01u
+public val OS_SIGNPOST_INTERVAL_BEGIN: io.github.kotlinmania.rustlang.unix.bsd.apple.OsSignpostTypeT = 0x01u
 
-public val OS_SIGNPOST_INTERVAL_END: io.github.kotlinmania.rustlang.libc.OsSignpostTypeT = 0x02u
+public val OS_SIGNPOST_INTERVAL_END: io.github.kotlinmania.rustlang.unix.bsd.apple.OsSignpostTypeT = 0x02u
 
 public val MINSIGSTKSZ: SizeT = 32768uL
 
@@ -2686,63 +2686,63 @@ public val NOTE_TRACKERR: UInt = 0x00000002u
 
 public val NOTE_CHILD: UInt = 0x00000004u
 
-public val OCRNL: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000010uL
+public val OCRNL: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000010uL
 
-public val ONOCR: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000020uL
+public val ONOCR: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000020uL
 
-public val ONLRET: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000040uL
+public val ONLRET: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000040uL
 
-public val OFILL: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000080uL
+public val OFILL: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000080uL
 
-public val NLDLY: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000300uL
+public val NLDLY: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000300uL
 
-public val TABDLY: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000c04uL
+public val TABDLY: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000c04uL
 
-public val CRDLY: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00003000uL
+public val CRDLY: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00003000uL
 
-public val FFDLY: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00004000uL
+public val FFDLY: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00004000uL
 
-public val BSDLY: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00008000uL
+public val BSDLY: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00008000uL
 
-public val VTDLY: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00010000uL
+public val VTDLY: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00010000uL
 
-public val OFDEL: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00020000uL
+public val OFDEL: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00020000uL
 
-public val NL0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000uL
+public val NL0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000uL
 
-public val NL1: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000100uL
+public val NL1: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000100uL
 
-public val TAB0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000uL
+public val TAB0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000uL
 
-public val TAB1: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000400uL
+public val TAB1: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000400uL
 
-public val TAB2: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000800uL
+public val TAB2: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000800uL
 
-public val CR0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000uL
+public val CR0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000uL
 
-public val CR1: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00001000uL
+public val CR1: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00001000uL
 
-public val CR2: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00002000uL
+public val CR2: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00002000uL
 
-public val CR3: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00003000uL
+public val CR3: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00003000uL
 
-public val FF0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000uL
+public val FF0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000uL
 
-public val FF1: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00004000uL
+public val FF1: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00004000uL
 
-public val BS0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000uL
+public val BS0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000uL
 
-public val BS1: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00008000uL
+public val BS1: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00008000uL
 
-public val TAB3: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000004uL
+public val TAB3: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000004uL
 
-public val VT0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000uL
+public val VT0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000uL
 
-public val VT1: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00010000uL
+public val VT1: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00010000uL
 
-public val IUTF8: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00004000uL
+public val IUTF8: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00004000uL
 
-public val CRTSCTS: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00030000uL
+public val CRTSCTS: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00030000uL
 
 public val NI_MAXHOST: SocklenT = 1025u
 
@@ -3202,13 +3202,13 @@ public val VM_SWAPUSAGE: CInt = 5
 
 public val VM_MAXID: CInt = 6
 
-public val VM_PROT_NONE: io.github.kotlinmania.rustlang.libc.VmProtT = 0x00
+public val VM_PROT_NONE: io.github.kotlinmania.rustlang.unix.bsd.apple.VmProtT = 0x00
 
-public val VM_PROT_READ: io.github.kotlinmania.rustlang.libc.VmProtT = 0x01
+public val VM_PROT_READ: io.github.kotlinmania.rustlang.unix.bsd.apple.VmProtT = 0x01
 
-public val VM_PROT_WRITE: io.github.kotlinmania.rustlang.libc.VmProtT = 0x02
+public val VM_PROT_WRITE: io.github.kotlinmania.rustlang.unix.bsd.apple.VmProtT = 0x02
 
-public val VM_PROT_EXECUTE: io.github.kotlinmania.rustlang.libc.VmProtT = 0x04
+public val VM_PROT_EXECUTE: io.github.kotlinmania.rustlang.unix.bsd.apple.VmProtT = 0x04
 
 public val VM_INHERIT_SHARE: CInt = 0
 
@@ -3218,7 +3218,7 @@ public val VM_INHERIT_NONE: CInt = 2
 
 public val VM_INHERIT_DONATE_COPY: CInt = 3
 
-public val MEMORY_OBJECT_NULL: io.github.kotlinmania.rustlang.libc.MemoryObjectT = 0u
+public val MEMORY_OBJECT_NULL: io.github.kotlinmania.rustlang.unix.bsd.apple.MemoryObjectT = 0u
 
 public val HW_MACHINE: CInt = 1
 

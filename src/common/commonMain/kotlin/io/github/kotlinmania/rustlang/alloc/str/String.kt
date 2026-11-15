@@ -1,9 +1,8 @@
 // port-lint: source str.rs
 package io.github.kotlinmania.rustlang.alloc.str
 
-import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.slice.Join
-import io.github.kotlinmania.rustlang.alloc.string.String
+import io.github.kotlinmania.rustlang.Alloc
+import io.github.kotlinmania.rustlang.boxed.Box
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.isAscii
@@ -18,11 +17,13 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
+import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.pattern.Utf8Pattern
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toCasefold
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toLower
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toUpper
+import io.github.kotlinmania.rustlang.slice.Join
 
 // Utilities for the `String` primitive type.
 //
@@ -290,7 +291,7 @@ public fun String.intoBoxedBytes(): List<UByte> = this.into()
  * check(s == s.replace("cookie monster", "little lamb"))
  * ```
  */
-public fun <P : Pattern> String.replace(from: P, to: String): String {
+public fun <Searcher, P : Pattern<Any?>> String.replace(from: P, to: String): String {
     // Fast path for replacing a single ASCII character with another.
     when (val matchVal2 = when (val matchVal = from.asUtf8Pattern()) {
         is Utf8Pattern.StringPattern -> {
@@ -378,7 +379,7 @@ public fun <P : Pattern> String.replace(from: P, to: String): String {
  * check(s == s.replacen("cookie monster", "little lamb", 10))
  * ```
  */
-public fun <P : Pattern> String.replacen(pat: P, to: String, count: Int): String {
+public fun <Searcher, P : Pattern<Any?>> String.replacen(pat: P, to: String, count: Int): String {
     // Hope to reduce the times of re-allocation
     var result = ""
     var lastEnd = 0
@@ -938,7 +939,7 @@ public fun fromBoxedUtf8Unchecked(v: List<UByte>): String {
  * Internal; same as `fromBoxedUtf8Unchecked` but allocator-generic. Name
  * probably not suitable for being made `public` as-is.
  */
-public fun <A : Allocator> fromBoxedUtf8UncheckedIn(v: List<UByte>): String {
+public fun <A : Alloc.Allocator> fromBoxedUtf8UncheckedIn(v: List<UByte>): String {
     val (ptr, alloc) = Box.intoRawWithAllocator(v)
     // SAFETY: Upheld by caller.
     return Box.fromRawIn(mutPtrFromRustCast(ptr), alloc)

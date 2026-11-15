@@ -3,8 +3,8 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.apple
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.rt.threadCleanup
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests.destructors
+import io.github.kotlinmania.rustlang.rt.threadCleanup
+import io.github.kotlinmania.rustlang.sys.threadlocal.key.tests.destructors
 
 // macOS allows registering destructors through _tlv_atexit. But since calling
 // it while TLS destructors are running is UB, we still need to keep our own

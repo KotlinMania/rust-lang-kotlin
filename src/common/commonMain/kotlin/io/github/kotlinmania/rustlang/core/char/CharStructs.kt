@@ -1,16 +1,16 @@
 package io.github.kotlinmania.rustlang.core.char
 
-import io.github.kotlinmania.rustlang.core.escape.AlwaysEscaped
-import io.github.kotlinmania.rustlang.core.escape.EscapeIterInner
-import io.github.kotlinmania.rustlang.core.escape.MaybeEscaped
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.iteratorGetUnchecked as underlyingIteratorGetUnchecked
+import io.github.kotlinmania.rustlang.escape.AlwaysEscaped
+import io.github.kotlinmania.rustlang.escape.EscapeIterInner
+import io.github.kotlinmania.rustlang.escape.MaybeEscaped
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.iteratorGetUnchecked as underlyingIteratorGetUnchecked
 
 /**
  * Returns an iterator that yields the hexadecimal Unicode escape of a
@@ -127,9 +127,9 @@ public open class EscapeDefault internal constructor(
             valueCtorArg = value,
         )
 
-        public fun printable(c: io.github.kotlinmania.rustlang.core.ascii.Char): EscapeDefault = EscapeDefault(EscapeIterInner.ascii(c.toU8()))
+        public fun printable(c: io.github.kotlinmania.rustlang.ascii.Char): EscapeDefault = EscapeDefault(EscapeIterInner.ascii(c.toU8()))
 
-        public fun backslash(c: io.github.kotlinmania.rustlang.core.ascii.Char): EscapeDefault = EscapeDefault(EscapeIterInner.backslash(c))
+        public fun backslash(c: io.github.kotlinmania.rustlang.ascii.Char): EscapeDefault = EscapeDefault(EscapeIterInner.backslash(c))
 
         public fun unicode(c: Char): EscapeDefault = EscapeDefault(EscapeIterInner.unicode(c))
     }
@@ -188,7 +188,7 @@ public open class EscapeDebug internal constructor(
 
         public fun printable(chr: Char): EscapeDebug = EscapeDebug(EscapeIterInner.printable(chr))
 
-        public fun backslash(c: io.github.kotlinmania.rustlang.core.ascii.Char): EscapeDebug = EscapeDebug(EscapeIterInner.backslash(c))
+        public fun backslash(c: io.github.kotlinmania.rustlang.ascii.Char): EscapeDebug = EscapeDebug(EscapeIterInner.backslash(c))
 
         public fun unicode(c: Char): EscapeDebug = EscapeDebug(EscapeIterInner.unicode(c))
     }

@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unsupported
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.io.Error
+import io.github.kotlinmania.rustlang.io.Error
 
 // SAFETY: must be called only once during runtime initialization.
 // NOTE: this is not guaranteed to run, for example when Rust code is called externally.

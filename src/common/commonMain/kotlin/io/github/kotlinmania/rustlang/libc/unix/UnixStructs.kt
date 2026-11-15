@@ -2,19 +2,19 @@
 
 package io.github.kotlinmania.rustlang.libc.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockT
-import io.github.kotlinmania.rustlang.libc.SusecondsT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.RlimT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.ClockT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.RlimT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.SusecondsT
 
 // Note(1.0): We want to remove these directives and instead expect that no-std users add their
 // own link configuration when required, rather than unconditionally linking everything that may
@@ -43,7 +43,7 @@ public data class DIR(
 public class Group internal constructor(
     grNameCtorArg: MutPtr,
     grPasswdCtorArg: MutPtr,
-    public var grGid: io.github.kotlinmania.rustlang.libc.GidT,
+    public var grGid: io.github.kotlinmania.rustlang.unix.GidT,
     grMemCtorArg: MutPtr,
 ) {
     public var grName: MutPtr = grNameCtorArg
@@ -66,11 +66,11 @@ public class Group internal constructor(
 
     public operator fun component2(): MutPtr = this.grPasswd
 
-    public operator fun component3(): io.github.kotlinmania.rustlang.libc.GidT = this.grGid
+    public operator fun component3(): io.github.kotlinmania.rustlang.unix.GidT = this.grGid
 
     public operator fun component4(): MutPtr = this.grMem
 
-    public fun copy(grName: MutPtr = this.grName, grPasswd: MutPtr = this.grPasswd, grGid: io.github.kotlinmania.rustlang.libc.GidT = this.grGid, grMem: MutPtr = this.grMem): Group = Group(grNameCtorArg = grName, grPasswdCtorArg = grPasswd, grGid = grGid, grMemCtorArg = grMem)
+    public fun copy(grName: MutPtr = this.grName, grPasswd: MutPtr = this.grPasswd, grGid: io.github.kotlinmania.rustlang.unix.GidT = this.grGid, grMem: MutPtr = this.grMem): Group = Group(grNameCtorArg = grName, grPasswdCtorArg = grPasswd, grGid = grGid, grMemCtorArg = grMem)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -128,7 +128,7 @@ public class Group internal constructor(
         public operator fun invoke(
             grName: MutPtr = MutPtr(0L),
             grPasswd: MutPtr = MutPtr(0L),
-            grGid: io.github.kotlinmania.rustlang.libc.GidT = 0,
+            grGid: io.github.kotlinmania.rustlang.unix.GidT = 0,
             grMem: MutPtr = MutPtr(0L),
         ): Group = Group(
             grNameCtorArg = grName,
@@ -174,7 +174,7 @@ public data class Utimbuf(
 // This one is not likely to ever change
 public data class Timeval(
     public var tvSec: TimeT = 0L,
-    public var tvUsec: SusecondsT = 0,
+    public var tvUsec: SusecondsT = 0L,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<Timeval> =
@@ -184,20 +184,20 @@ public data class Timeval(
                 override fun readNative(addr: Long): Timeval =
                     Timeval(
                         (PrimitiveLayouts.I64).readNative(addr),
-                        (PrimitiveLayouts.I32).readNative(addr + 8L),
+                        (PrimitiveLayouts.I64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Timeval) {
                     (PrimitiveLayouts.I64).writeNative(addr, value.tvSec)
-                    (PrimitiveLayouts.I32).writeNative(addr + 8L, value.tvUsec)
+                    (PrimitiveLayouts.I64).writeNative(addr + 8L, value.tvUsec)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Timeval =
                     Timeval(
                         (PrimitiveLayouts.I64).readBytes(buf, offset),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Timeval) {
                     (PrimitiveLayouts.I64).writeBytes(buf, offset, value.tvSec)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.tvUsec)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 8, value.tvUsec)
                 }
             }
     }
@@ -758,8 +758,8 @@ public class Sigval internal constructor(
 
 // Note(exhaustive): review for 1.0
 public data class Itimerval(
-    public var itInterval: io.github.kotlinmania.rustlang.libc.Timeval = io.github.kotlinmania.rustlang.libc.Timeval(),
-    public var itValue: io.github.kotlinmania.rustlang.libc.Timeval = io.github.kotlinmania.rustlang.libc.Timeval(),
+    public var itInterval: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval(),
+    public var itValue: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval(),
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<Itimerval> =
@@ -790,10 +790,10 @@ public data class Itimerval(
 
 // Note(exhaustive): review for 1.0
 public data class Tms(
-    public var tmsUtime: ClockT = 0uL,
-    public var tmsStime: ClockT = 0uL,
-    public var tmsCutime: ClockT = 0uL,
-    public var tmsCstime: ClockT = 0uL,
+    public var tmsUtime: ClockT = 0L,
+    public var tmsStime: ClockT = 0L,
+    public var tmsCutime: ClockT = 0L,
+    public var tmsCstime: ClockT = 0L,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<Tms> =
@@ -802,29 +802,29 @@ public data class Tms(
                 override val sizeBytes: Long = 32L
                 override fun readNative(addr: Long): Tms =
                     Tms(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U64).readNative(addr + 16L),
-                        (PrimitiveLayouts.U64).readNative(addr + 24L),
+                        (PrimitiveLayouts.I64).readNative(addr),
+                        (PrimitiveLayouts.I64).readNative(addr + 8L),
+                        (PrimitiveLayouts.I64).readNative(addr + 16L),
+                        (PrimitiveLayouts.I64).readNative(addr + 24L),
                     )
                 override fun writeNative(addr: Long, value: Tms) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.tmsUtime)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.tmsStime)
-                    (PrimitiveLayouts.U64).writeNative(addr + 16L, value.tmsCutime)
-                    (PrimitiveLayouts.U64).writeNative(addr + 24L, value.tmsCstime)
+                    (PrimitiveLayouts.I64).writeNative(addr, value.tmsUtime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 8L, value.tmsStime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 16L, value.tmsCutime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 24L, value.tmsCstime)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Tms =
                     Tms(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset + 24),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Tms) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.tmsUtime)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.tmsStime)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.tmsCutime)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 24, value.tmsCstime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset, value.tmsUtime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 8, value.tmsStime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 16, value.tmsCutime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 24, value.tmsCstime)
                 }
             }
     }

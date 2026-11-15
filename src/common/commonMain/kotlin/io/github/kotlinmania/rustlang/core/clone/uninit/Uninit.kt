@@ -1,19 +1,19 @@
 // port-lint: source clone/uninit.rs
 package io.github.kotlinmania.rustlang.core.clone.uninit
 
-import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.clone.TrivialClone
+import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.forget
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.mem.forget
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.option.Option
+import io.github.kotlinmania.rustlang.panicking.assertFailed
+import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.ptr.write
 
 /**
  * Private specialization trait used by CloneToUninit, as per
@@ -129,7 +129,7 @@ public open class InitializingSlice<T>(
         // * the pointer is valid because it was made from a mutable reference
         // * `initializedLen` counts the initialized elements as an invariant of this type,
         // so each of the pointed-to elements is initialized and may be dropped.
-        ((this.data).slice(0 until this.initializedLen)).assumeInitDrop()
+        ((this.data).subList(0, this.initializedLen)).assumeInitDrop()
     }
 
     public companion object {

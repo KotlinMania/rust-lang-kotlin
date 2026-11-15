@@ -5,7 +5,7 @@ package io.github.kotlinmania.rustlang.std.sys.alloc.unix
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CSizeT
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-private object SysAllocUnixJniBridge {
+private object StdSysAllocUnixJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -41,8 +41,8 @@ private object SysAllocUnixJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/std/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = SysAllocUnixJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = StdSysAllocUnixJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -59,7 +59,7 @@ private object SysAllocUnixJniBridge {
     }
 
     @JvmStatic
-    external fun stdSysAllocUnixFree(ptr: Long)
+    external fun rustlangStdSysAllocUnixFree(ptr: Long)
 }
 
 public actual fun malloc(size: CSizeT): MutPtr =
@@ -69,5 +69,5 @@ public actual fun realloc(ptr: MutPtr, size: CSizeT): MutPtr =
     MutPtr(0L)
 
 public actual fun free(ptr: MutPtr) {
-    SysAllocUnixJniBridge.stdSysAllocUnixFree(ptr.rawAddress)
+    StdSysAllocUnixJniBridge.rustlangStdSysAllocUnixFree(ptr.rawAddress)
 }

@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.sys.pal.windows.c.windowssys.FdSet
 
 public expect fun acquireSRWLockExclusive(srwlock: MutPtr)
 
@@ -862,7 +863,7 @@ public open class Context(
     public open fun clone(): Context = Context(p1Home, p2Home, p3Home, p4Home, p5Home, p6Home, contextFlags, mxCsr, segCs, segDs, segEs, segFs, segGs, segSs, eFlags, dr0, dr1, dr2, dr3, dr6, dr7, rax, rcx, rdx, rbx, rsp, rbp, rsi, rdi, r8, r9, r10, r11, r12, r13, r14, r15, rip, anonymous, vectorRegister, vectorControl, debugControl, lastBranchToRip, lastBranchFromRip, lastExceptionToRip, lastExceptionFromRip)
 
     public companion object {
-        public fun default(): Context = Arm64NtContext()
+        public fun default(): Context = Context()
     }
 }
 

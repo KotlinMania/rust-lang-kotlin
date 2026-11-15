@@ -3,14 +3,14 @@ package io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Futex
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Primitive
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWait
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWake
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWakeAll
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.Futex
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.Primitive
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWait
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWake
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWakeAll
 
 public open class RwLock(
     // The state consists of a 30-bit reader counter, a readers waiting' flag, and a writers waiting' flag.
@@ -59,9 +59,9 @@ public open class RwLock(
             if ((hasSlept && isReadLockableAfterWakeup(state)) || isReadLockable(state)) {
                 run {
                     val matchVal = this.state.compareExchangeWeak(state, state + READ_LOCKED, Acquire, Relaxed)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         return
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         val s = matchVal.error
                         state = s
                         continue
@@ -134,9 +134,9 @@ public open class RwLock(
             if (isUnlocked(state)) {
                 run {
                     val matchVal = this.state.compareExchangeWeak(state, state or WRITE_LOCKED or otherWritersWaiting, Acquire, Relaxed)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         return
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         val s = matchVal.error
                         state = s
                         continue
@@ -194,10 +194,10 @@ public open class RwLock(
         if (state1 == WRITERS_WAITING) {
             run {
                 val matchVal = this.state.compareExchange(state1, 0, Relaxed, Relaxed)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     this.wakeWriter()
                     return
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val s = matchVal.error
                     // Maybe some readers are now waiting too. So, continue to the next `if`.
                     state1 = s

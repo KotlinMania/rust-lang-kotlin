@@ -1,10 +1,10 @@
 // port-lint: source new/glibc/sysdeps/unix/linux/sparc/bits/sigaction.rs
 package io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.sparc.bits.sigaction
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.SighandlerT
-import io.github.kotlinmania.rustlang.libc.SigsetT
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.unix.SighandlerT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.SigsetT
 
 // Header: `sysdeps / unix / sysv / linux / sparc / bits / sigaction.h`
 

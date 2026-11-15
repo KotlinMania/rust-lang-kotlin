@@ -1,9 +1,9 @@
 // port-lint: source math/acosh.rs
 package io.github.kotlinmania.rustlang.libm.math.acosh
 
-import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrt
-import io.github.kotlinmania.rustlang.libm.math.log.log
-import io.github.kotlinmania.rustlang.libm.math.log1p.log1p
+import io.github.kotlinmania.rustlang.math.arch.aarch64.sqrt.sqrt
+import io.github.kotlinmania.rustlang.math.log.log
+import io.github.kotlinmania.rustlang.math.log1p.log1p
 
 public val LN2: Double = 0.693147180559945309417232121458176568
 

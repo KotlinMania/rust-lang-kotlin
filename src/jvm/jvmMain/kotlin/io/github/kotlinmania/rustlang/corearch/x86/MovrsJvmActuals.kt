@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
-private object X86MovrsJniBridge {
+private object CorearchX86MovrsJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -40,8 +40,8 @@ private object X86MovrsJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = X86MovrsJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = CorearchX86MovrsJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -58,9 +58,9 @@ private object X86MovrsJniBridge {
     }
 
     @JvmStatic
-    external fun corearchX86MovrsPrefetchrs(p: Long)
+    external fun rustlangCorearchX86MovrsPrefetchrs(p: Long)
 }
 
 public actual fun prefetchrs(p: ConstPtr) {
-    X86MovrsJniBridge.corearchX86MovrsPrefetchrs(p.rawAddress)
+    CorearchX86MovrsJniBridge.rustlangCorearchX86MovrsPrefetchrs(p.rawAddress)
 }

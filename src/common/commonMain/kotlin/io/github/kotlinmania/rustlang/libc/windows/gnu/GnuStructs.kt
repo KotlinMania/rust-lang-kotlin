@@ -1,8 +1,8 @@
 package io.github.kotlinmania.rustlang.libc.windows.gnu
 
+import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libc.*
 
 // The below configuration for machines with 32-bit word size aligns with the
 // declaration in the `mingw - w64` headers.

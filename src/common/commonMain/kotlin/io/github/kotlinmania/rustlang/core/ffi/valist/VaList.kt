@@ -1,11 +1,6 @@
 // port-lint: source ffi/va_list.rs
 package io.github.kotlinmania.rustlang.core.ffi.valist
 
-import io.github.kotlinmania.rustlang.core.error.tags.Type
-import io.github.kotlinmania.rustlang.core.intrinsics.vaArg
-import io.github.kotlinmania.rustlang.core.intrinsics.vaCopy
-import io.github.kotlinmania.rustlang.core.intrinsics.vaEnd
-import io.github.kotlinmania.rustlang.core.marker.variance.PhantomCovariantLifetime
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -13,6 +8,11 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.error.Type
+import io.github.kotlinmania.rustlang.intrinsics.vaArg
+import io.github.kotlinmania.rustlang.intrinsics.vaCopy
+import io.github.kotlinmania.rustlang.intrinsics.vaEnd
+import io.github.kotlinmania.rustlang.marker.variance.PhantomCovariantLifetime
 
 // C's "variable arguments"
 //

@@ -1,7 +1,7 @@
 // port-lint: source collections/vec_deque/splice.rs
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.splice
 
-import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.drain.Drain
+import io.github.kotlinmania.rustlang.collections.vecdeque.drain.Drain
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 
 /**

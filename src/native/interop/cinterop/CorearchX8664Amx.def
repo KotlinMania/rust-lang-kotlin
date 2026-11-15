@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.corearch.x8664.cinterop
+headers = corearch_x8664_amx_wrapper.h
+headerFilter = corearch_x8664_amx_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = corearch_x8664_amx_wrapper.a

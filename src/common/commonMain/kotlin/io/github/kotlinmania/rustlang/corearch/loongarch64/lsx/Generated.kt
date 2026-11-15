@@ -1,8 +1,22 @@
 // port-lint: source loongarch64/lsx/generated.rs
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lsx
 
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.loongarch64.lsx.M128
+import io.github.kotlinmania.rustlang.loongarch64.lsx.M128d
+import io.github.kotlinmania.rustlang.loongarch64.lsx.M128i
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V16i8
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V16u8
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V2f64
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V2i64
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V2u64
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V4f32
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V4i32
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V4u32
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V8i16
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V8u16
 
 public expect fun lsxVsrarB(a: V16i8, b: V16i8): V16i8
 

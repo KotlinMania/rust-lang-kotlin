@@ -1,12 +1,12 @@
 // port-lint: source num/imp/diy_float.rs
 package io.github.kotlinmania.rustlang.core.num.imp.diyfloat
 
-import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
+import io.github.kotlinmania.rustlang.option.Option
+import io.github.kotlinmania.rustlang.panicking.assertFailed
 
 // Extended precision "soft float", for internal use only.
 

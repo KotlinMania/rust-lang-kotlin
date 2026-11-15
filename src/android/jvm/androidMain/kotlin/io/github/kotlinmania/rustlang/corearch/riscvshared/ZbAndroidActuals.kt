@@ -2,32 +2,32 @@
 
 package io.github.kotlinmania.rustlang.corearch.riscvshared
 
-private object RiscvsharedZbJniBridge {
+private object CorearchRiscvsharedZbJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun corearchRiscvsharedZbOrcB64(rs1: Long): Long
+    external fun rustlangCorearchRiscvsharedZbOrcB64(rs1: Long): Long
 
     @JvmStatic
-    external fun corearchRiscvsharedZbClmul64(rs1: Long, rs2: Long): Long
+    external fun rustlangCorearchRiscvsharedZbClmul64(rs1: Long, rs2: Long): Long
 
     @JvmStatic
-    external fun corearchRiscvsharedZbClmulh64(rs1: Long, rs2: Long): Long
+    external fun rustlangCorearchRiscvsharedZbClmulh64(rs1: Long, rs2: Long): Long
 
     @JvmStatic
-    external fun corearchRiscvsharedZbClmulr64(rs1: Long, rs2: Long): Long
+    external fun rustlangCorearchRiscvsharedZbClmulr64(rs1: Long, rs2: Long): Long
 }
 
 public actual fun orcB64(rs1: Long): Long =
-    RiscvsharedZbJniBridge.corearchRiscvsharedZbOrcB64(rs1)
+    CorearchRiscvsharedZbJniBridge.rustlangCorearchRiscvsharedZbOrcB64(rs1)
 
 public actual fun clmul64(rs1: Long, rs2: Long): Long =
-    RiscvsharedZbJniBridge.corearchRiscvsharedZbClmul64(rs1, rs2)
+    CorearchRiscvsharedZbJniBridge.rustlangCorearchRiscvsharedZbClmul64(rs1, rs2)
 
 public actual fun clmulh64(rs1: Long, rs2: Long): Long =
-    RiscvsharedZbJniBridge.corearchRiscvsharedZbClmulh64(rs1, rs2)
+    CorearchRiscvsharedZbJniBridge.rustlangCorearchRiscvsharedZbClmulh64(rs1, rs2)
 
 public actual fun clmulr64(rs1: Long, rs2: Long): Long =
-    RiscvsharedZbJniBridge.corearchRiscvsharedZbClmulr64(rs1, rs2)
+    CorearchRiscvsharedZbJniBridge.rustlangCorearchRiscvsharedZbClmulr64(rs1, rs2)

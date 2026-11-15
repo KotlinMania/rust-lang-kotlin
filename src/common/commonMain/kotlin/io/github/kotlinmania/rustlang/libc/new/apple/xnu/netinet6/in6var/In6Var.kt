@@ -3,15 +3,15 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.netinet6.in6var
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.In6Addrlifetime
-import io.github.kotlinmania.rustlang.libc.In6Ifreq
-import io.github.kotlinmania.rustlang.libc.SockaddrIn6
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.iow
-import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.iowr
-import io.github.kotlinmania.rustlang.libc.unix.IFNAMSIZ
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.iow
+import io.github.kotlinmania.rustlang.new.apple.xnu.sys.ioccom.iowr
+import io.github.kotlinmania.rustlang.unix.IFNAMSIZ
+import io.github.kotlinmania.rustlang.unix.bsd.SockaddrIn6
+import io.github.kotlinmania.rustlang.unix.bsd.apple.In6Addrlifetime
+import io.github.kotlinmania.rustlang.unix.bsd.apple.In6Ifreq
 
 // Header: `netinet6 / in6Var.h`
 //

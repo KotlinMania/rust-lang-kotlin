@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.std.random
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.std.random.random as sys
+import io.github.kotlinmania.rustlang.random.random as sys
 
 // Random value generation.
 //

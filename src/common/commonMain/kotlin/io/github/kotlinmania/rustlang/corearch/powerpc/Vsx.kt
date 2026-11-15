@@ -3,20 +3,26 @@
 
 package io.github.kotlinmania.rustlang.corearch.powerpc
 
+import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.powerpc.endian.vecPerm
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.M64x2
-import io.github.kotlinmania.rustlang.corearch.simd.Simd
-import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
+import io.github.kotlinmania.rustlang.powerpc.VectorBoolInt
+import io.github.kotlinmania.rustlang.powerpc.VectorFloat
+import io.github.kotlinmania.rustlang.powerpc.VectorSignedInt
+import io.github.kotlinmania.rustlang.powerpc.VectorUnsignedChar
+import io.github.kotlinmania.rustlang.powerpc.VectorUnsignedInt
+import io.github.kotlinmania.rustlang.powerpc.vecPerm
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.M64x2
+import io.github.kotlinmania.rustlang.simd.Simd
+import io.github.kotlinmania.rustlang.simd.debugSimdFinish
 
 // PowerPC Vector Scalar eXtensions (VSX) intrinsics.
 //

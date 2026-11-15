@@ -3,16 +3,16 @@
 
 package io.github.kotlinmania.rustlang.coresimd
 
+import io.github.kotlinmania.rustlang.Simd
+import io.github.kotlinmania.rustlang.SimdCast
+import io.github.kotlinmania.rustlang.SimdElement
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
 import io.github.kotlinmania.rustlang.core.num.rustReverseBits
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.coresimd.simd.SimdCast
-import io.github.kotlinmania.rustlang.coresimd.simd.SimdElement
 
 // Types and traits associated with masking elements of vectors.
 // Types representing
@@ -58,7 +58,7 @@ public fun ULong.fixEndianness(): ULong =
  * non-`PartialEq` types in the future.
  */
 public interface PrivateMethods<T, out Unsigned> {
-    public fun <Mask> valid(values: Simd<T, N>, n: Int): Boolean
+    public fun <Mask> valid(values: Simd<T>, n: Int): Boolean
 
     public fun eq(other: T): Boolean
 
@@ -79,7 +79,7 @@ public interface PrivateMethods<T, out Unsigned> {
  */
 public interface MaskElement<T> : SimdElement<T>, SimdCast
 
-public fun privateMethodsValidByte(value: Simd<Byte, N>, n: Int): Boolean =
+public fun privateMethodsValidByte(value: Simd<Byte>, n: Int): Boolean =
     run {
         val falses: Simd<Byte> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((0 as Any?) as Boolean)); _simdArg0 }
         val trues: Simd<Byte> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((-1 as Any?) as Boolean)); _simdArg0 }
@@ -97,7 +97,7 @@ public val TRUE: Byte = (-1).toByte()
 
 public val FALSE: Byte = 0
 
-public fun privateMethodsValidShort(value: Simd<Short, N>, n: Int): Boolean =
+public fun privateMethodsValidShort(value: Simd<Short>, n: Int): Boolean =
     run {
         val falses: Simd<Short> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((0 as Any?) as Boolean)); _simdArg0 }
         val trues: Simd<Short> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((-1 as Any?) as Boolean)); _simdArg0 }
@@ -115,7 +115,7 @@ public val TRUE1: Short = (-1).toShort()
 
 public val FALSE1: Short = 0
 
-public fun privateMethodsValidInt(value: Simd<Int, N>, n: Int): Boolean =
+public fun privateMethodsValidInt(value: Simd<Int>, n: Int): Boolean =
     run {
         val falses: Simd<Int> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((0 as Any?) as Boolean)); _simdArg0 }
         val trues: Simd<Int> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((-1 as Any?) as Boolean)); _simdArg0 }
@@ -133,7 +133,7 @@ public val TRUE2: Int = -1
 
 public val FALSE2: Int = 0
 
-public fun privateMethodsValidLong(value: Simd<Long, N>, n: Int): Boolean =
+public fun privateMethodsValidLong(value: Simd<Long>, n: Int): Boolean =
     run {
         val falses: Simd<Long> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((0 as Any?) as Boolean)); _simdArg0 }
         val trues: Simd<Long> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((-1 as Any?) as Boolean)); _simdArg0 }
@@ -197,17 +197,17 @@ public fun <T> Mask<T, N>.clone(n: Int): Mask<T, N> where T : MaskElement<T> = M
 /**
  * Constructs a mask by setting all elements to the given value.
  */
-public fun <T> Mask.Companion.splat(value: Boolean, fieldLayout: TypeLayout<Simd<T, N>>, n: Int): Mask<T, N> where T : MaskElement<T> =
+public fun <T> Mask.Companion.splat(value: Boolean, fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> =
     Mask(Simd.splat(if (value) {
         T.TRUE
     } else {
         T.FALSE
-    }), fieldLayout = ObjectSlotLayout<Simd<T>>())
+    }), fieldLayout = fieldLayout)
 
 /**
  * Converts an array of bools to a SIMD mask.
  */
-public fun <T> Mask.Companion.fromArray(array: BooleanArray, fieldLayout: TypeLayout<Simd<T, N>>, n: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask.Companion.fromArray(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> {
     // SAFETY: Rust's bool has a layout of 1 byte (u8) with a value of
     // true:    0b00000001
     // false:   0b00000000
@@ -217,7 +217,7 @@ public fun <T> Mask.Companion.fromArray(array: BooleanArray, fieldLayout: TypeLa
     return run {
         val bytes: UByteArray = transmuteCopy(array)
         val bools: Simd<Byte> = run { val _simdArg0 = Simd.fromArray(bytes); val _simdArg1 = Simd.splat(0u.toUByte()); _simdArg0 }
-        Mask.fromSimdUnchecked(run { val _simdArg0 = bools; _simdArg0 }, fieldLayout = ObjectSlotLayout<Simd<T>>())
+        Mask.fromSimdUnchecked(run { val _simdArg0 = bools; _simdArg0 }, fieldLayout = fieldLayout)
     }
 }
 
@@ -249,10 +249,10 @@ public fun <T> Mask<T, N>.toArray(n: Int): BooleanArray where T : MaskElement<T>
  * # Safety
  * All elements must be either 0 or -1.
  */
-public fun <T> Mask.Companion.fromSimdUnchecked(value: Simd<T, N>, fieldLayout: TypeLayout<Simd<T, N>>, n: Int, validTFn: (Simd<T, N>) -> Boolean): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask.Companion.fromSimdUnchecked(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>>, n: Int, validTFn: (Simd<T>) -> Boolean): Mask<T, N> where T : MaskElement<T> {
     // Safety: the caller must confirm this invariant
     run {}
-    return Mask(value, fieldLayout = ObjectSlotLayout<Simd<T>>())
+    return Mask(value, fieldLayout = fieldLayout)
 }
 
 /**
@@ -262,10 +262,10 @@ public fun <T> Mask.Companion.fromSimdUnchecked(value: Simd<T, N>, fieldLayout: 
  * # Panics
  * Panics if any element is not 0 or -1.
  */
-public fun <T> Mask.Companion.fromSimd(value: Simd<T, N>, fieldLayout: TypeLayout<Simd<T, N>>, n: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask.Companion.fromSimd(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> {
     check(T.valid(value)) { "all values must be either 0 or -1" }
     // Safety: the validity has been checked
-    return Mask.fromSimdUnchecked(value, fieldLayout = ObjectSlotLayout<Simd<T>>())
+    return Mask.fromSimdUnchecked(value, fieldLayout = fieldLayout)
 }
 
 /**
@@ -384,7 +384,7 @@ public fun <T> Mask<T, N>.toBitmask(n: Int): ULong where T : MaskElement<T> {
  * For each bit, if it is set, the corresponding element in the mask is set to `true`.
  * If the mask contains more than 64 elements, the remainder are set to `false`.
  */
-public fun <T> Mask.Companion.fromBitmask(bitmask: ULong, fieldLayout: TypeLayout<Simd<T, N>>, n: Int): Mask<T, N> where T : MaskElement<T> = Mask(bitmask.select(Simd.splat(T.TRUE), Simd.splat(T.FALSE)), fieldLayout = ObjectSlotLayout<Simd<T>>())
+public fun <T> Mask.Companion.fromBitmask(bitmask: ULong, fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> = Mask(bitmask.select(Simd.splat(T.TRUE), Simd.splat(T.FALSE)), fieldLayout = fieldLayout)
 
 /**
  * Finds the index of the first set element.
@@ -487,11 +487,11 @@ public fun <T> Mask<T, N>.lastSet(n: Int): Int? where T : MaskElement<T> {
 }
 
 // vector/array conversion
-public fun <T> fromMaskTN(array: BooleanArray, fieldLayout: TypeLayout<Simd<T, N>>, n: Int): Mask<T, N> where T : MaskElement<T> = Mask.fromArray(array, fieldLayout = ObjectSlotLayout<Simd<T>>())
+public fun <T> fromMaskTN(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> = Mask.fromArray(array, fieldLayout = fieldLayout)
 
-public fun <T> fromBooleanArrayn(vector: Mask<T, N>, n: Int): BooleanArray where T : MaskElement<T> = vector.toArray()
+public fun <T> fromBooleanArrayn(vector: Mask<T>, n: Int): BooleanArray where T : MaskElement<T> = vector.toArray()
 
-public fun <T> defaultMaskTN(fieldLayout: TypeLayout<Simd<T, N>>, n: Int): Mask<T, N> where T : MaskElement<T> = Mask.splat(false, fieldLayout = ObjectSlotLayout<Simd<T>>())
+public fun <T> defaultMaskTN(fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> = Mask.splat(false, fieldLayout = fieldLayout)
 
 public fun <T> Mask<T, N>.eq(other: Mask<T, N>, n: Int): Boolean where T : MaskElement<T> = this.value == other.value
 
@@ -508,7 +508,7 @@ public fun <T> Mask<T, N>.bitand(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : 
 
 public fun <T> Mask<T, N>.bitand(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this and Mask.splat(rhs, fieldLayout = this.fieldLayout)
 
-public fun <T> Boolean.bitand(rhs: Mask<T, N>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = ObjectSlotLayout<Simd<T>>()) and rhs
+public fun <T> Boolean.bitand(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = ObjectSlotLayout<Simd<T>>()) and rhs
 
 public fun <T> Mask<T, N>.bitor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : MaskElement<T> {
     // Safety: `self` is an integer vector
@@ -517,7 +517,7 @@ public fun <T> Mask<T, N>.bitor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : M
 
 public fun <T> Mask<T, N>.bitor(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this or Mask.splat(rhs, fieldLayout = this.fieldLayout)
 
-public fun <T> Boolean.bitor(rhs: Mask<T, N>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = ObjectSlotLayout<Simd<T>>()) or rhs
+public fun <T> Boolean.bitor(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = ObjectSlotLayout<Simd<T>>()) or rhs
 
 public fun <T> Mask<T, N>.bitxor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : MaskElement<T> {
     // Safety: `self` is an integer vector
@@ -526,7 +526,7 @@ public fun <T> Mask<T, N>.bitxor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : 
 
 public fun <T> Mask<T, N>.bitxor(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this xor Mask.splat(rhs, fieldLayout = this.fieldLayout)
 
-public fun <T> Boolean.bitxor(rhs: Mask<T, N>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = ObjectSlotLayout<Simd<T>>()) xor rhs
+public fun <T> Boolean.bitxor(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = ObjectSlotLayout<Simd<T>>()) xor rhs
 
 public fun <T> Mask<T, N>.not(n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(true, fieldLayout = this.fieldLayout) xor this
 
@@ -554,10 +554,10 @@ public fun <T> Mask<T, N>.bitxorAssign(rhs: Boolean, n: Int) where T : MaskEleme
     this = this xor Mask.splat(rhs, fieldLayout = this.fieldLayout)
 }
 
-public fun fromMaskShortN(value: Mask<Byte, N>, n: Int): Mask<Short, N> = value.cast()
+public fun fromMaskShortN(value: Mask<Byte>, n: Int): Mask<Short, N> = value.cast()
 
-public fun fromMaskIntN(value: Mask<Byte, N>, n: Int): Mask<Int, N> = value.cast()
+public fun fromMaskIntN(value: Mask<Byte>, n: Int): Mask<Int, N> = value.cast()
 
-public fun fromMaskLongN(value: Mask<Byte, N>, n: Int): Mask<Long, N> = value.cast()
+public fun fromMaskLongN(value: Mask<Byte>, n: Int): Mask<Long, N> = value.cast()
 
-public fun fromMaskByteN(value: Mask<Short, N>, n: Int): Mask<Byte, N> = value.cast()
+public fun fromMaskByteN(value: Mask<Short>, n: Int): Mask<Byte, N> = value.cast()

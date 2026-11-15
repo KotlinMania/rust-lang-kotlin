@@ -4,13 +4,25 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
-import io.github.kotlinmania.rustlang.corearch.simd.F32x16
-import io.github.kotlinmania.rustlang.corearch.simd.F32x4
-import io.github.kotlinmania.rustlang.corearch.simd.F32x8
-import io.github.kotlinmania.rustlang.corearch.simd.U16x16
-import io.github.kotlinmania.rustlang.corearch.simd.U16x32
-import io.github.kotlinmania.rustlang.corearch.simd.U16x4
-import io.github.kotlinmania.rustlang.corearch.wasm32.u16x8
+import io.github.kotlinmania.rustlang.simd.F32x16
+import io.github.kotlinmania.rustlang.simd.F32x4
+import io.github.kotlinmania.rustlang.simd.F32x8
+import io.github.kotlinmania.rustlang.simd.U16x16
+import io.github.kotlinmania.rustlang.simd.U16x32
+import io.github.kotlinmania.rustlang.simd.U16x4
+import io.github.kotlinmania.rustlang.wasm32.u16x8
+import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.x86.M128bh
+import io.github.kotlinmania.rustlang.x86.M256
+import io.github.kotlinmania.rustlang.x86.M256bh
+import io.github.kotlinmania.rustlang.x86.M512
+import io.github.kotlinmania.rustlang.x86.M512bh
+import io.github.kotlinmania.rustlang.x86.Mmask16
+import io.github.kotlinmania.rustlang.x86.Mmask32
+import io.github.kotlinmania.rustlang.x86.Mmask8
+import io.github.kotlinmania.rustlang.x86.mm256SetrPs
+import io.github.kotlinmania.rustlang.x86.mm512SetrPs
+import io.github.kotlinmania.rustlang.x86.mmSetrPs
 
 // [AVX512BF16 intrinsics].
 //

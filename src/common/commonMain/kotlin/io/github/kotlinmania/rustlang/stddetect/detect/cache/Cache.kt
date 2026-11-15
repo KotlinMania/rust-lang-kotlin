@@ -11,10 +11,11 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.get
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
-import io.github.kotlinmania.rustlang.stddetect.detect.os.detectFeatures
+import io.github.kotlinmania.rustlang.detect.arch.Feature
+import io.github.kotlinmania.rustlang.detect.os.linux.aarch64.detectFeatures
 
 // Caches run-time feature detection so that it only needs to be computed
 // once.

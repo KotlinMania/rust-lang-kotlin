@@ -1,7 +1,7 @@
 // port-lint: source x86_64/sse.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128
+import io.github.kotlinmania.rustlang.loongarch64.lsx.M128
 
 // `x8664` Streaming SIMD Extensions (SSE)
 

@@ -4,9 +4,11 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.U8x16
+import io.github.kotlinmania.rustlang.x86.M128i
 
 // Streaming SIMD Extensions 4.2 (SSE4.2)
 //

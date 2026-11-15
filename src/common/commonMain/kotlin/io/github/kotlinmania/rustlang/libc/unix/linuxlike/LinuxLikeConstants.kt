@@ -1,19 +1,21 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.types.u32CastInt
-import io.github.kotlinmania.rustlang.libc.types.u32CastLong
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.IdtypeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Ioctl
+import io.github.kotlinmania.rustlang.types.u32CastInt
+import io.github.kotlinmania.rustlang.types.u32CastLong
+import io.github.kotlinmania.rustlang.unix.bsd.apple.IdtypeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.IFF_TAP
+import io.github.kotlinmania.rustlang.unix.linuxlike.IFF_TUN
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Ioctl
 
 // intentionally not public, only used for fdSet
 // https://github.com/search?q=repo%3Atorvalds%2Flinux+%22%23define+_IOC_NONE%22&type=code
@@ -86,27 +88,27 @@ public val PTHREAD_CREATE_JOINABLE: CInt = 0
 
 public val PTHREAD_CREATE_DETACHED: CInt = 1
 
-public val CLOCK_REALTIME: io.github.kotlinmania.rustlang.libc.ClockidT = 0
+public val CLOCK_REALTIME: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 0
 
-public val CLOCK_MONOTONIC: io.github.kotlinmania.rustlang.libc.ClockidT = 1
+public val CLOCK_MONOTONIC: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 1
 
-public val CLOCK_PROCESS_CPUTIME_ID: io.github.kotlinmania.rustlang.libc.ClockidT = 2
+public val CLOCK_PROCESS_CPUTIME_ID: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 2
 
-public val CLOCK_THREAD_CPUTIME_ID: io.github.kotlinmania.rustlang.libc.ClockidT = 3
+public val CLOCK_THREAD_CPUTIME_ID: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 3
 
-public val CLOCK_MONOTONIC_RAW: io.github.kotlinmania.rustlang.libc.ClockidT = 4
+public val CLOCK_MONOTONIC_RAW: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 4
 
-public val CLOCK_REALTIME_COARSE: io.github.kotlinmania.rustlang.libc.ClockidT = 5
+public val CLOCK_REALTIME_COARSE: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 5
 
-public val CLOCK_MONOTONIC_COARSE: io.github.kotlinmania.rustlang.libc.ClockidT = 6
+public val CLOCK_MONOTONIC_COARSE: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 6
 
-public val CLOCK_BOOTTIME: io.github.kotlinmania.rustlang.libc.ClockidT = 7
+public val CLOCK_BOOTTIME: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 7
 
-public val CLOCK_REALTIME_ALARM: io.github.kotlinmania.rustlang.libc.ClockidT = 8
+public val CLOCK_REALTIME_ALARM: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 8
 
-public val CLOCK_BOOTTIME_ALARM: io.github.kotlinmania.rustlang.libc.ClockidT = 9
+public val CLOCK_BOOTTIME_ALARM: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 9
 
-public val CLOCK_TAI: io.github.kotlinmania.rustlang.libc.ClockidT = 11
+public val CLOCK_TAI: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT = 11
 
 public val TIMER_ABSTIME: CInt = 1
 
@@ -1193,19 +1195,19 @@ public val TCOFLUSH: CInt = 1
 
 public val TCIOFLUSH: CInt = 2
 
-public val NL0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000u
+public val NL0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000u
 
-public val NL1: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000100u
+public val NL1: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000100u
 
-public val TAB0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000u
+public val TAB0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000u
 
-public val CR0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000u
+public val CR0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000u
 
-public val FF0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000u
+public val FF0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000u
 
-public val BS0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000u
+public val BS0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000u
 
-public val VT0: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000u
+public val VT0: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000u
 
 public val VERASE: Int = 2
 
@@ -1217,45 +1219,45 @@ public val VQUIT: Int = 1
 
 public val VLNEXT: Int = 15
 
-public val IGNBRK: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000001u
+public val IGNBRK: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000001u
 
-public val BRKINT: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000002u
+public val BRKINT: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000002u
 
-public val IGNPAR: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000004u
+public val IGNPAR: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000004u
 
-public val PARMRK: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000008u
+public val PARMRK: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000008u
 
-public val INPCK: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000010u
+public val INPCK: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000010u
 
-public val ISTRIP: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000020u
+public val ISTRIP: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000020u
 
-public val INLCR: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000040u
+public val INLCR: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000040u
 
-public val IGNCR: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000080u
+public val IGNCR: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000080u
 
-public val ICRNL: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000100u
+public val ICRNL: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000100u
 
-public val IXANY: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000800u
+public val IXANY: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000800u
 
-public val IMAXBEL: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00002000u
+public val IMAXBEL: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00002000u
 
-public val OPOST: io.github.kotlinmania.rustlang.libc.TcflagT = 0x1u
+public val OPOST: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x1u
 
-public val CS5: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000000u
+public val CS5: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000000u
 
-public val CRTSCTS: io.github.kotlinmania.rustlang.libc.TcflagT = 0x80000000u
+public val CRTSCTS: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x80000000u
 
-public val ECHO: io.github.kotlinmania.rustlang.libc.TcflagT = 0x00000008u
+public val ECHO: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 0x00000008u
 
-public val OCRNL: io.github.kotlinmania.rustlang.libc.TcflagT = 8u
+public val OCRNL: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 8u
 
-public val ONOCR: io.github.kotlinmania.rustlang.libc.TcflagT = 16u
+public val ONOCR: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 16u
 
-public val ONLRET: io.github.kotlinmania.rustlang.libc.TcflagT = 32u
+public val ONLRET: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 32u
 
-public val OFILL: io.github.kotlinmania.rustlang.libc.TcflagT = 64u
+public val OFILL: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 64u
 
-public val OFDEL: io.github.kotlinmania.rustlang.libc.TcflagT = 128u
+public val OFDEL: io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT = 128u
 
 public val CLONE_VM: CInt = 0x100
 
@@ -2080,7 +2082,7 @@ public val FS_IOC32_SETVERSION: Ioctl = iow<CInt>('v'.code.toUInt(), 2u, typeLay
 
 public val FICLONE: Ioctl = iow<CInt>(0x94u, 9u, typeLayoutT = ObjectSlotLayout<CInt>())
 
-public val FICLONERANGE: Ioctl = iow<io.github.kotlinmania.rustlang.libc.FileCloneRange>(0x94u, 13u, typeLayoutT = FileCloneRange.typeLayout())
+public val FICLONERANGE: Ioctl = iow<io.github.kotlinmania.rustlang.unix.linuxlike.FileCloneRange>(0x94u, 13u, typeLayoutT = FileCloneRange.typeLayout())
 
 public val BCACHEFS_SUPER_MAGIC: CLong = u32CastLong(0xca451a4eu)
 

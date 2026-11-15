@@ -7,9 +7,8 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.sys.c
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.dur2timeout
+import io.github.kotlinmania.rustlang.sys.pal.windows.api.WinError
+import io.github.kotlinmania.rustlang.sys.pal.windows.dur2timeout
 
 /**
  * An atomic for use as a futex that is at least 32-bits but may be larger
@@ -40,21 +39,21 @@ public fun <Futex, W> waitOnAddress(address: Futex, compare: W, timeout: Duratio
         val addr = address.cast()
         val size = sizeOf<W>(typeLayoutT = typeLayoutW)
         val compareAddr = ConstPtr(((addrOf(compare))).rawAddress)
-        val timeout1 = (timeout?.let(dur2timeout) ?: c.INFINITE)
-        c.WaitOnAddress(addr, compareAddr, size, timeout1) == c.TRUE
+        val timeout1 = (timeout?.let(dur2timeout) ?: INFINITE)
+        WaitOnAddress(addr, compareAddr, size, timeout1) == TRUE
     }
 
 public fun <T : Futexable> wakeByAddressSingle(address: T) {
     run {
         val addr = address.cast()
-        c.WakeByAddressSingle(addr)
+        WakeByAddressSingle(addr)
     }
 }
 
 public fun <T : Futexable> wakeByAddressAll(address: T) {
     run {
         val addr = address.cast()
-        c.WakeByAddressAll(addr)
+        WakeByAddressAll(addr)
     }
 }
 

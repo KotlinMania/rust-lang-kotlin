@@ -1,23 +1,23 @@
 package io.github.kotlinmania.rustlang.libc.unix.bsd
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.LocaleT
-import io.github.kotlinmania.rustlang.libc.ModeT
-import io.github.kotlinmania.rustlang.libc.NlItem
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.UidT
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.GidT
+import io.github.kotlinmania.rustlang.unix.LocaleT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.NlItem
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
 
 public fun interface GlobErrfuncCallback {
     public operator fun invoke(epath: ConstPtr, errnum: CInt): CInt
@@ -149,7 +149,7 @@ public expect fun futimes(fd: CInt, times: ConstPtr): CInt
 
 public expect fun nlLanginfo(item: NlItem): MutPtr
 
-public expect fun bind(socket: CInt, address: ConstPtr, addressLen: io.github.kotlinmania.rustlang.libc.SocklenT): CInt
+public expect fun bind(socket: CInt, address: ConstPtr, addressLen: io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT): CInt
 
 public expect fun writev(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT
 
@@ -180,9 +180,9 @@ public expect fun semOpen(name: ConstPtr, oflag: CInt, vararg variadicArgs: Long
 
 public expect fun getgrnam(name: ConstPtr): MutPtr
 
-public expect fun pthreadCancel(thread: io.github.kotlinmania.rustlang.libc.PthreadT): CInt
+public expect fun pthreadCancel(thread: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT): CInt
 
-public expect fun pthreadKill(thread: io.github.kotlinmania.rustlang.libc.PthreadT, sig: CInt): CInt
+public expect fun pthreadKill(thread: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT, sig: CInt): CInt
 
 public expect fun schedGetPriorityMin(policy: CInt): CInt
 

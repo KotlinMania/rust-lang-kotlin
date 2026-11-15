@@ -2,14 +2,14 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.conf
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.libc.sysconf
 import io.github.kotlinmania.rustlang.libc.wasi.SC_PAGESIZE
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.io.error.Error
 
 public fun pageSize(): Int = sysconf(SC_PAGESIZE).toInt()
@@ -46,7 +46,7 @@ public fun confstr(key: CInt, sizeHint: Int?): Result<OsString, Error> {
     }
     // `confstr` returns 0 in the case of an error.
     if (bytesNeededIncludingNul == 0) {
-        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err(io.github.kotlinmania.rustlang.io.Error.lastOsError())
     }
     // Safety: `confstr(..., buf.asMutPtr(), buf.capacity())` returned a
     // non-zero value, meaning `bytesNeededIncludingNul` bytes were
@@ -84,9 +84,9 @@ public fun parseGlibcVersion(version: String): Pair<Int, Int>? {
     return run {
         val matchVal = Pair(parsedInts.next(), parsedInts.next())
         when {
-            matchVal.first != null && matchVal.first is Result.Ok<*> && matchVal.second != null && matchVal.second is Result.Ok<*> -> {
-                val major = (matchVal.first as Result.Ok<*>).value
-                val minor = (matchVal.second as Result.Ok<*>).value
+            matchVal.first != null && matchVal.first is Result.Ok<*, *> && matchVal.second != null && matchVal.second is Result.Ok<*, *> -> {
+                val major = (matchVal.first as Result.Ok<*, *>).value
+                val minor = (matchVal.second as Result.Ok<*, *>).value
                 Pair(major, minor)
             }
             else -> null

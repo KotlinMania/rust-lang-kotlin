@@ -2,6 +2,9 @@
 package io.github.kotlinmania.rustlang.alloc.collections.btree.mergeiter
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -107,7 +110,7 @@ public open class MergeIterInner<I> internal constructor(
         /**
          * Creates a new core for an iterator merging a pair of sources.
          */
-        public fun <I> new(a: I, b: I): MergeIterInner<I> = MergeIterInner(a = a, b = b, peeked = null)
+        public fun <Item, I> new(a: I, b: I): MergeIterInner<I> = MergeIterInner(a = a, b = b, peeked = null)
     }
 }
 

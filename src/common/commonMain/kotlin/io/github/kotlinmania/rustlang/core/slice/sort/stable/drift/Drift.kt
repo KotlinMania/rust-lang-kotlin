@@ -6,13 +6,13 @@ package io.github.kotlinmania.rustlang.core.slice.sort.stable.drift
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.sort.shared.findExistingRun
-import io.github.kotlinmania.rustlang.core.slice.sort.stable.merge.merge
-import io.github.kotlinmania.rustlang.core.slice.sort.stable.quicksort.quicksort
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.slice.sort.shared.findExistingRun
+import io.github.kotlinmania.rustlang.slice.sort.stable.merge.merge
+import io.github.kotlinmania.rustlang.slice.sort.stable.quicksort.quicksort
 
 // This module contains the hybrid top-level loop combining bottom-up Mergesort with top-down
 // Quicksort.
@@ -216,7 +216,7 @@ public fun <T> createRun(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>
         // SAFETY: findExistingRun promises to return a valid runLen.
         if (runLen >= minGoodRunLen) {
             if (wasReversed) {
-                ((v).slice(0 until runLen)).reverse()
+                ((v).subList(0, runLen)).reverse()
             }
             return DriftsortRun.newSorted(runLen)
         }

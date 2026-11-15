@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.std.os.unix.net.ucred.tests
 import io.github.kotlinmania.rustlang.libc.getegid
 import io.github.kotlinmania.rustlang.libc.geteuid
 import io.github.kotlinmania.rustlang.libc.getpid
-import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
+import io.github.kotlinmania.rustlang.os.unix.net.UnixStream
 
 public class TestsInlineTests {
     @kotlin.test.Test

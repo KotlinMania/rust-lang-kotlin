@@ -2,1636 +2,1645 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.BooleanT
-import io.github.kotlinmania.rustlang.libc.LocaleT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.unix.IntptrT
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
-import io.github.kotlinmania.rustlang.libc.unix.bsd.OffT
+import io.github.kotlinmania.rustlang.unix.IntptrT
+import io.github.kotlinmania.rustlang.unix.LocaleT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.b64.aarch64.BooleanT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
 
-private object UnixBsdAppleJniBridge {
+private object LibcUnixBsdAppleJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetMACHTASKSELF(): Int
+    external fun rustlangLibcUnixBsdAppleGetMACHTASKSELF(): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSetMACHTASKSELF(value: Int)
+    external fun rustlangLibcUnixBsdAppleSetMACHTASKSELF(value: Int)
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetVMPAGESIZE(): Long
+    external fun rustlangLibcUnixBsdAppleGetVMPAGESIZE(): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleSetgrent()
+    external fun rustlangLibcUnixBsdAppleSetgrent()
 
     @JvmStatic
-    external fun libcUnixBsdAppleAioRead(aiocbp: Long): Int
+    external fun rustlangLibcUnixBsdAppleAioRead(aiocbp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleAioWrite(aiocbp: Long): Int
+    external fun rustlangLibcUnixBsdAppleAioWrite(aiocbp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleAioFsync(op: Int, aiocbp: Long): Int
+    external fun rustlangLibcUnixBsdAppleAioFsync(op: Int, aiocbp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleAioError(aiocbp: Long): Int
+    external fun rustlangLibcUnixBsdAppleAioError(aiocbp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleAioReturn(aiocbp: Long): Long
+    external fun rustlangLibcUnixBsdAppleAioReturn(aiocbp: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleAioSuspend(aiocbList: Long, nitems: Int, timeout: Long): Int
+    external fun rustlangLibcUnixBsdAppleAioSuspend(aiocbList: Long, nitems: Int, timeout: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleAioCancel(fd: Int, aiocbp: Long): Int
+    external fun rustlangLibcUnixBsdAppleAioCancel(fd: Int, aiocbp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleChflags(path: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleChflags(path: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleFchflags(fd: Int, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleFchflags(fd: Int, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleLchflags(path: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleLchflags(path: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleLchmod(path: Long, mode: Short): Int
+    external fun rustlangLibcUnixBsdAppleLchmod(path: Long, mode: Short): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleLioListio(mode: Int, aiocbList: Long, nitems: Int, sevp: Long): Int
+    external fun rustlangLibcUnixBsdAppleClockGetres(clkId: Int, tp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleDirfd(dirp: Long): Int
+    external fun rustlangLibcUnixBsdAppleClockGettime(clkId: Int, tp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleLutimes(file: Long, times: Long): Int
+    external fun rustlangLibcUnixBsdAppleLioListio(mode: Int, aiocbList: Long, nitems: Int, sevp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGettimeofday(tp: Long, tz: Long): Int
+    external fun rustlangLibcUnixBsdAppleDirfd(dirp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetutxent(): Long
+    external fun rustlangLibcUnixBsdAppleLutimes(file: Long, times: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetutxid(ut: Long): Long
+    external fun rustlangLibcUnixBsdAppleGettimeofday(tp: Long, tz: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetutxline(ut: Long): Long
+    external fun rustlangLibcUnixBsdAppleGetutxent(): Long
 
     @JvmStatic
-    external fun libcUnixBsdApplePututxline(ut: Long): Long
+    external fun rustlangLibcUnixBsdAppleGetutxid(ut: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleSetutxent()
+    external fun rustlangLibcUnixBsdAppleGetutxline(ut: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleEndutxent()
+    external fun rustlangLibcUnixBsdApplePututxline(ut: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleUtmpxname(file: Long): Int
+    external fun rustlangLibcUnixBsdAppleSetutxent()
 
     @JvmStatic
-    external fun libcUnixBsdAppleAsctime(tm: Long): Long
+    external fun rustlangLibcUnixBsdAppleEndutxent()
 
     @JvmStatic
-    external fun libcUnixBsdAppleCtime(clock: Long): Long
+    external fun rustlangLibcUnixBsdAppleUtmpxname(file: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetdate(datestr: Long): Long
+    external fun rustlangLibcUnixBsdAppleAsctime(tm: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleStrptime(buf: Long, format: Long, timeptr: Long): Long
+    external fun rustlangLibcUnixBsdAppleCtime(clock: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleAsctimeR(tm: Long, result: Long): Long
+    external fun rustlangLibcUnixBsdAppleGetdate(datestr: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleCtimeR(clock: Long, result: Long): Long
+    external fun rustlangLibcUnixBsdAppleStrptime(buf: Long, format: Long, timeptr: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetnameinfo(sa: Long, salen: Int, host: Long, hostlen: Int, serv: Long, servlen: Int, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleAsctimeR(tm: Long, result: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMincore(addr: Long, len: Long, vec: Long): Int
+    external fun rustlangLibcUnixBsdAppleCtimeR(clock: Long, result: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleSysctlnametomib(name: Long, mibp: Long, sizep: Long): Int
+    external fun rustlangLibcUnixBsdAppleGetnameinfo(sa: Long, salen: Int, host: Long, hostlen: Int, serv: Long, servlen: Int, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMprotect(addr: Long, len: Long, prot: Int): Int
+    external fun rustlangLibcUnixBsdAppleMincore(addr: Long, len: Long, vec: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSemget(key: Int, nsems: Int, semflg: Int): Int
+    external fun rustlangLibcUnixBsdAppleSysctlnametomib(name: Long, mibp: Long, sizep: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSemctl(semid: Int, semnum: Int, cmd: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixBsdAppleMprotect(addr: Long, len: Long, prot: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSemop(semid: Int, sops: Long, nsops: Long): Int
+    external fun rustlangLibcUnixBsdAppleSemget(key: Int, nsems: Int, semflg: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleShmOpen(name: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcUnixBsdAppleSemctl(semid: Int, semnum: Int, cmd: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleFtok(pathname: Long, projId: Int): Int
+    external fun rustlangLibcUnixBsdAppleSemop(semid: Int, sops: Long, nsops: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleShmat(shmid: Int, shmaddr: Long, shmflg: Int): Long
+    external fun rustlangLibcUnixBsdAppleShmOpen(name: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleShmdt(shmaddr: Long): Int
+    external fun rustlangLibcUnixBsdAppleFtok(pathname: Long, projId: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleShmctl(shmid: Int, cmd: Int, buf: Long): Int
+    external fun rustlangLibcUnixBsdAppleShmat(shmid: Int, shmaddr: Long, shmflg: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleShmget(key: Int, size: Long, shmflg: Int): Int
+    external fun rustlangLibcUnixBsdAppleShmdt(shmaddr: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSysctl(name: Long, namelen: Int, oldp: Long, oldlenp: Long, newp: Long, newlen: Long): Int
+    external fun rustlangLibcUnixBsdAppleShmctl(shmid: Int, cmd: Int, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSysctlbyname(name: Long, oldp: Long, oldlenp: Long, newp: Long, newlen: Long): Int
+    external fun rustlangLibcUnixBsdAppleShmget(key: Int, size: Long, shmflg: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMachAbsoluteTime(): Long
+    external fun rustlangLibcUnixBsdAppleSysctl(name: Long, namelen: Int, oldp: Long, oldlenp: Long, newp: Long, newlen: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMachTimebaseInfo(info: Long): Int
+    external fun rustlangLibcUnixBsdAppleSysctlbyname(name: Long, oldp: Long, oldlenp: Long, newp: Long, newlen: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMachHostSelf(): Int
+    external fun rustlangLibcUnixBsdAppleMachAbsoluteTime(): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMachThreadSelf(): Int
+    external fun rustlangLibcUnixBsdAppleMachTimebaseInfo(info: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadCondTimedwaitRelativeNp(cond: Long, lock: Long, timeout: Long): Int
+    external fun rustlangLibcUnixBsdAppleMachHostSelf(): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadAttrGetscope(attr: Long, contentionscope: Long): Int
+    external fun rustlangLibcUnixBsdAppleMachThreadSelf(): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadAttrGetstackaddr(attr: Long, stackaddr: Long): Int
+    external fun rustlangLibcUnixBsdApplePthreadCondTimedwaitRelativeNp(cond: Long, lock: Long, timeout: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadAttrGetdetachstate(attr: Long, detachstate: Long): Int
+    external fun rustlangLibcUnixBsdApplePthreadAttrGetscope(attr: Long, contentionscope: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadAttrSetscope(attr: Long, contentionscope: Int): Int
+    external fun rustlangLibcUnixBsdApplePthreadAttrGetstackaddr(attr: Long, stackaddr: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadAttrSetstackaddr(attr: Long, stackaddr: Long): Int
+    external fun rustlangLibcUnixBsdApplePthreadAttrGetdetachstate(attr: Long, detachstate: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadSetnameNp(name: Long): Int
+    external fun rustlangLibcUnixBsdApplePthreadAttrSetscope(attr: Long, contentionscope: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadGetnameNp(thread: Long, name: Long, len: Long): Int
+    external fun rustlangLibcUnixBsdApplePthreadAttrSetstackaddr(attr: Long, stackaddr: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadMachThreadNp(thread: Long): Int
+    external fun rustlangLibcUnixBsdApplePthreadSetnameNp(name: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadFromMachThreadNp(port: Int): Long
+    external fun rustlangLibcUnixBsdApplePthreadGetnameNp(thread: Long, name: Long, len: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadGetStackaddrNp(thread: Long): Long
+    external fun rustlangLibcUnixBsdApplePthreadMachThreadNp(thread: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadGetStacksizeNp(thread: Long): Long
+    external fun rustlangLibcUnixBsdApplePthreadFromMachThreadNp(port: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadMainNp(): Int
+    external fun rustlangLibcUnixBsdApplePthreadGetStackaddrNp(thread: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadThreadidNp(thread: Long, threadId: Long): Int
+    external fun rustlangLibcUnixBsdApplePthreadGetStacksizeNp(thread: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadJitWriteProtectNp(enabled: Int)
+    external fun rustlangLibcUnixBsdApplePthreadMainNp(): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadJitWriteProtectSupportedNp(): Int
+    external fun rustlangLibcUnixBsdApplePthreadThreadidNp(thread: Long, threadId: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadJitWriteWithCallbackNp(callback: Long, ctx: Long): Int
+    external fun rustlangLibcUnixBsdApplePthreadJitWriteProtectNp(enabled: Int)
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadJitWriteFreezeCallbacksNp()
+    external fun rustlangLibcUnixBsdApplePthreadJitWriteProtectSupportedNp(): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePthreadCpuNumberNp(cpuNumberOut: Long): Int
+    external fun rustlangLibcUnixBsdApplePthreadJitWriteWithCallbackNp(callback: Long, ctx: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsSyncWaitOnAddress(addr: Long, value: Long, size: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdApplePthreadJitWriteFreezeCallbacksNp()
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsSyncWaitOnAddressWithDeadline(addr: Long, value: Long, size: Long, flags: Int, clockid: Int, deadline: Long): Int
+    external fun rustlangLibcUnixBsdApplePthreadCpuNumberNp(cpuNumberOut: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsSyncWaitOnAddressWithTimeout(addr: Long, value: Long, size: Long, flags: Int, clockid: Int, timeoutNs: Long): Int
+    external fun rustlangLibcUnixBsdAppleOsSyncWaitOnAddress(addr: Long, value: Long, size: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsSyncWakeByAddressAny(addr: Long, size: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleOsSyncWaitOnAddressWithDeadline(addr: Long, value: Long, size: Long, flags: Int, clockid: Int, deadline: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsSyncWakeByAddressAll(addr: Long, size: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleOsSyncWaitOnAddressWithTimeout(addr: Long, value: Long, size: Long, flags: Int, clockid: Int, timeoutNs: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsUnfairLockLock(lock: Long)
+    external fun rustlangLibcUnixBsdAppleOsSyncWakeByAddressAny(addr: Long, size: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsUnfairLockTrylock(lock: Long): Boolean
+    external fun rustlangLibcUnixBsdAppleOsSyncWakeByAddressAll(addr: Long, size: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsUnfairLockUnlock(lock: Long)
+    external fun rustlangLibcUnixBsdAppleOsUnfairLockLock(lock: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsUnfairLockAssertOwner(lock: Long)
+    external fun rustlangLibcUnixBsdAppleOsUnfairLockTrylock(lock: Long): Boolean
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsUnfairLockAssertNotOwner(lock: Long)
+    external fun rustlangLibcUnixBsdAppleOsUnfairLockUnlock(lock: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsLogCreate(subsystem: Long, category: Long): Long
+    external fun rustlangLibcUnixBsdAppleOsUnfairLockAssertOwner(lock: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsLogTypeEnabled(oslog: Long, tpe: Byte): Boolean
+    external fun rustlangLibcUnixBsdAppleOsUnfairLockAssertNotOwner(lock: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsSignpostIdMakeWithPointer(log: Long, ptr: Long): Long
+    external fun rustlangLibcUnixBsdAppleOsLogCreate(subsystem: Long, category: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsSignpostIdGenerate(log: Long): Long
+    external fun rustlangLibcUnixBsdAppleOsLogTypeEnabled(oslog: Long, tpe: Byte): Boolean
 
     @JvmStatic
-    external fun libcUnixBsdAppleOsSignpostEnabled(log: Long): Boolean
+    external fun rustlangLibcUnixBsdAppleOsSignpostIdMakeWithPointer(log: Long, ptr: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleThreadPolicySet(thread: Int, flavor: Int, policyInfo: Long, count: Int): Int
+    external fun rustlangLibcUnixBsdAppleOsSignpostIdGenerate(log: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleThreadPolicyGet(thread: Int, flavor: Int, policyInfo: Long, count: Long, getDefault: Long): Int
+    external fun rustlangLibcUnixBsdAppleOsSignpostEnabled(log: Long): Boolean
 
     @JvmStatic
-    external fun libcUnixBsdAppleThreadInfo(targetAct: Int, flavor: Int, threadInfoOut: Long, threadInfoOutCnt: Long): Int
+    external fun rustlangLibcUnixBsdAppleThreadPolicySet(thread: Int, flavor: Int, policyInfo: Long, count: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleError(): Long
+    external fun rustlangLibcUnixBsdAppleThreadPolicyGet(thread: Int, flavor: Int, policyInfo: Long, count: Long, getDefault: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleBacktrace(buf: Long, sz: Int): Int
+    external fun rustlangLibcUnixBsdAppleThreadInfo(targetAct: Int, flavor: Int, threadInfoOut: Long, threadInfoOutCnt: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleBacktraceSymbols(addrs: Long, sz: Int): Long
+    external fun rustlangLibcUnixBsdAppleError(): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleBacktraceSymbolsFd(addrs: Long, sz: Int, fd: Int)
+    external fun rustlangLibcUnixBsdAppleBacktrace(buf: Long, sz: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleBacktraceFromFp(startfp: Long, array: Long, size: Int): Int
+    external fun rustlangLibcUnixBsdAppleBacktraceSymbols(addrs: Long, sz: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleBacktraceImageOffsets(array: Long, imageOffsets: Long, size: Int)
+    external fun rustlangLibcUnixBsdAppleBacktraceSymbolsFd(addrs: Long, sz: Int, fd: Int)
 
     @JvmStatic
-    external fun libcUnixBsdAppleBacktraceAsync(array: Long, length: Long, taskId: Long): Long
+    external fun rustlangLibcUnixBsdAppleBacktraceFromFp(startfp: Long, array: Long, size: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleStatfs(path: Long, buf: Long): Int
+    external fun rustlangLibcUnixBsdAppleBacktraceImageOffsets(array: Long, imageOffsets: Long, size: Int)
 
     @JvmStatic
-    external fun libcUnixBsdAppleFstatfs(fd: Int, buf: Long): Int
+    external fun rustlangLibcUnixBsdAppleBacktraceAsync(array: Long, length: Long, taskId: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleKevent(kq: Int, changelist: Long, nchanges: Int, eventlist: Long, nevents: Int, timeout: Long): Int
+    external fun rustlangLibcUnixBsdAppleStatfs(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleKevent64(kq: Int, changelist: Long, nchanges: Int, eventlist: Long, nevents: Int, flags: Int, timeout: Long): Int
+    external fun rustlangLibcUnixBsdAppleFstatfs(fd: Int, buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMount(src: Long, target: Long, flags: Int, data: Long): Int
+    external fun rustlangLibcUnixBsdAppleKevent(kq: Int, changelist: Long, nchanges: Int, eventlist: Long, nevents: Int, timeout: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleFmount(src: Long, fd: Int, flags: Int, data: Long): Int
+    external fun rustlangLibcUnixBsdAppleKevent64(kq: Int, changelist: Long, nchanges: Int, eventlist: Long, nevents: Int, flags: Int, timeout: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePtrace(request: Int, pid: Int, addr: Long, data: Int): Int
+    external fun rustlangLibcUnixBsdAppleMount(src: Long, target: Long, flags: Int, data: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleQuotactl(special: Long, cmd: Int, id: Int, data: Long): Int
+    external fun rustlangLibcUnixBsdAppleFmount(src: Long, fd: Int, flags: Int, data: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSethostname(name: Long, len: Int): Int
+    external fun rustlangLibcUnixBsdApplePtrace(request: Int, pid: Int, addr: Long, data: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSendfile(fd: Int, s: Int, offset: Long, len: Long, hdtr: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleQuotactl(special: Long, cmd: Int, id: Int, data: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleFutimens(fd: Int, times: Long): Int
+    external fun rustlangLibcUnixBsdAppleSethostname(name: Long, len: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleUtimensat(dirfd: Int, path: Long, times: Long, flag: Int): Int
+    external fun rustlangLibcUnixBsdAppleSendfile(fd: Int, s: Int, offset: Long, len: Long, hdtr: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleOpenpty(amaster: Long, aslave: Long, name: Long, termp: Long, winp: Long): Int
+    external fun rustlangLibcUnixBsdAppleFutimens(fd: Int, times: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleForkpty(amaster: Long, name: Long, termp: Long, winp: Long): Int
+    external fun rustlangLibcUnixBsdAppleUtimensat(dirfd: Int, path: Long, times: Long, flag: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleLoginTty(fd: Int): Int
+    external fun rustlangLibcUnixBsdAppleOpenpty(amaster: Long, aslave: Long, name: Long, termp: Long, winp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleDuplocale(base: Long): Long
+    external fun rustlangLibcUnixBsdAppleForkpty(amaster: Long, name: Long, termp: Long, winp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleFreelocale(loc: Long): Int
+    external fun rustlangLibcUnixBsdAppleLoginTty(fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleLocaleconvL(loc: Long): Long
+    external fun rustlangLibcUnixBsdAppleDuplocale(base: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleNewlocale(mask: Int, locale: Long, base: Long): Long
+    external fun rustlangLibcUnixBsdAppleFreelocale(loc: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleUselocale(loc: Long): Long
+    external fun rustlangLibcUnixBsdAppleLocaleconvL(loc: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleQuerylocale(mask: Int, loc: Long): Long
+    external fun rustlangLibcUnixBsdAppleNewlocale(mask: Int, locale: Long, base: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetpriority(which: Int, who: Int): Int
+    external fun rustlangLibcUnixBsdAppleUselocale(loc: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleSetpriority(which: Int, who: Int, prio: Int): Int
+    external fun rustlangLibcUnixBsdAppleQuerylocale(mask: Int, loc: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetdomainname(name: Long, len: Int): Int
+    external fun rustlangLibcUnixBsdAppleGetpriority(which: Int, who: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSetdomainname(name: Long, len: Int): Int
+    external fun rustlangLibcUnixBsdAppleSetpriority(which: Int, who: Int, prio: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePreadv(fd: Int, iov: Long, iovcnt: Int, offset: Long): Long
+    external fun rustlangLibcUnixBsdAppleGetdomainname(name: Long, len: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePwritev(fd: Int, iov: Long, iovcnt: Int, offset: Long): Long
+    external fun rustlangLibcUnixBsdAppleSetdomainname(name: Long, len: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetxattr(path: Long, name: Long, value: Long, size: Long, position: Int, flags: Int): Long
+    external fun rustlangLibcUnixBsdApplePreadv(fd: Int, iov: Long, iovcnt: Int, offset: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleFgetxattr(filedes: Int, name: Long, value: Long, size: Long, position: Int, flags: Int): Long
+    external fun rustlangLibcUnixBsdApplePwritev(fd: Int, iov: Long, iovcnt: Int, offset: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleSetxattr(path: Long, name: Long, value: Long, size: Long, position: Int, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleGetxattr(path: Long, name: Long, value: Long, size: Long, position: Int, flags: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleFsetxattr(filedes: Int, name: Long, value: Long, size: Long, position: Int, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleFgetxattr(filedes: Int, name: Long, value: Long, size: Long, position: Int, flags: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleListxattr(path: Long, list: Long, size: Long, flags: Int): Long
+    external fun rustlangLibcUnixBsdAppleSetxattr(path: Long, name: Long, value: Long, size: Long, position: Int, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleFlistxattr(filedes: Int, list: Long, size: Long, flags: Int): Long
+    external fun rustlangLibcUnixBsdAppleFsetxattr(filedes: Int, name: Long, value: Long, size: Long, position: Int, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleRemovexattr(path: Long, name: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleListxattr(path: Long, list: Long, size: Long, flags: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleRenamexNp(from: Long, to: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleFlistxattr(filedes: Int, list: Long, size: Long, flags: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleRenameatxNp(fromfd: Int, from: Long, tofd: Int, to: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleRemovexattr(path: Long, name: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleFremovexattr(filedes: Int, name: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleRenamexNp(from: Long, to: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetgrouplist(name: Long, basegid: Int, groups: Long, ngroups: Long): Int
+    external fun rustlangLibcUnixBsdAppleRenameatxNp(fromfd: Int, from: Long, tofd: Int, to: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleInitgroups(user: Long, basegroup: Int): Int
+    external fun rustlangLibcUnixBsdAppleFremovexattr(filedes: Int, name: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleWaitid(idtype: Int, id: Int, infop: Long, options: Int): Int
+    external fun rustlangLibcUnixBsdAppleGetgrouplist(name: Long, basegid: Int, groups: Long, ngroups: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleBrk(addr: Long): Long
+    external fun rustlangLibcUnixBsdAppleInitgroups(user: Long, basegroup: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSbrk(increment: Int): Long
+    external fun rustlangLibcUnixBsdAppleWaitid(idtype: Int, id: Int, infop: Long, options: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSettimeofday(tv: Long, tz: Long): Int
+    external fun rustlangLibcUnixBsdAppleBrk(addr: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleDyldImageCount(): Int
+    external fun rustlangLibcUnixBsdAppleSbrk(increment: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleDyldGetImageHeader(imageIndex: Int): Long
+    external fun rustlangLibcUnixBsdAppleSettimeofday(tv: Long, tz: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleDyldGetImageVmaddrSlide(imageIndex: Int): Long
+    external fun rustlangLibcUnixBsdAppleDyldImageCount(): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleDyldGetImageName(imageIndex: Int): Long
+    external fun rustlangLibcUnixBsdAppleDyldGetImageHeader(imageIndex: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawn(pid: Long, path: Long, fileActions: Long, attrp: Long, argv: Long, envp: Long): Int
+    external fun rustlangLibcUnixBsdAppleDyldGetImageVmaddrSlide(imageIndex: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnp(pid: Long, file: Long, fileActions: Long, attrp: Long, argv: Long, envp: Long): Int
+    external fun rustlangLibcUnixBsdAppleDyldGetImageName(imageIndex: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrInit(attr: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawn(pid: Long, path: Long, fileActions: Long, attrp: Long, argv: Long, envp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrDestroy(attr: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnp(pid: Long, file: Long, fileActions: Long, attrp: Long, argv: Long, envp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrGetsigdefault(attr: Long, default: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrInit(attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrSetsigdefault(attr: Long, default: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrDestroy(attr: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrGetsigmask(attr: Long, default: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrGetsigdefault(attr: Long, default: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrSetsigmask(attr: Long, default: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrSetsigdefault(attr: Long, default: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrGetflags(attr: Long, flags: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrGetsigmask(attr: Long, default: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrSetflags(attr: Long, flags: Short): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrSetsigmask(attr: Long, default: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrGetpgroup(attr: Long, flags: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrGetflags(attr: Long, flags: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrSetpgroup(attr: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrSetflags(attr: Long, flags: Short): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrSetarchprefNp(attr: Long, count: Long, pref: Long, subpref: Long, ocount: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrGetpgroup(attr: Long, flags: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrGetarchprefNp(attr: Long, count: Long, pref: Long, subpref: Long, ocount: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrSetpgroup(attr: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrGetbinprefNp(attr: Long, count: Long, pref: Long, ocount: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrSetarchprefNp(attr: Long, count: Long, pref: Long, subpref: Long, ocount: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnattrSetbinprefNp(attr: Long, count: Long, pref: Long, ocount: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrGetarchprefNp(attr: Long, count: Long, pref: Long, subpref: Long, ocount: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnFileActionsInit(actions: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrGetbinprefNp(attr: Long, count: Long, pref: Long, ocount: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnFileActionsDestroy(actions: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnattrSetbinprefNp(attr: Long, count: Long, pref: Long, ocount: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnFileActionsAddopen(actions: Long, fd: Int, path: Long, oflag: Int, mode: Short): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnFileActionsInit(actions: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnFileActionsAddclose(actions: Long, fd: Int): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnFileActionsDestroy(actions: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnFileActionsAdddup2(actions: Long, fd: Int, newfd: Int): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnFileActionsAddopen(actions: Long, fd: Int, path: Long, oflag: Int, mode: Short): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnFileActionsAddchdirNp(actions: Long, path: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnFileActionsAddclose(actions: Long, fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnFileActionsAddfchdirNp(actions: Long, fd: Int): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnFileActionsAdddup2(actions: Long, fd: Int, newfd: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnFileActionsAddchdir(actions: Long, path: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnFileActionsAddchdirNp(actions: Long, path: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdApplePosixSpawnFileActionsAddfchdir(actions: Long, fd: Int): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnFileActionsAddfchdirNp(actions: Long, fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleUname(buf: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnFileActionsAddchdir(actions: Long, path: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleConnectx(socket: Int, endpoints: Long, associd: Int, flags: Int, iov: Long, iovcnt: Int, len: Long, connid: Long): Int
+    external fun rustlangLibcUnixBsdApplePosixSpawnFileActionsAddfchdir(actions: Long, fd: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleDisconnectx(socket: Int, associd: Int, connid: Int): Int
+    external fun rustlangLibcUnixBsdAppleUname(buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleNtpAdjtime(buf: Long): Int
+    external fun rustlangLibcUnixBsdAppleConnectx(socket: Int, endpoints: Long, associd: Int, flags: Int, iov: Long, iovcnt: Int, len: Long, connid: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleNtpGettime(buf: Long): Int
+    external fun rustlangLibcUnixBsdAppleDisconnectx(socket: Int, associd: Int, connid: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetmntinfo(mntbufp: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleNtpAdjtime(buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetfsstat(mntbufp: Long, bufsize: Int, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleNtpGettime(buf: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleClonefile(src: Long, dst: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleGetmntinfo(mntbufp: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleClonefileat(srcDirfd: Int, src: Long, dstDirfd: Int, dst: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleGetfsstat(mntbufp: Long, bufsize: Int, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleFclonefileat(srcfd: Int, dstDirfd: Int, dst: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleClonefile(src: Long, dst: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleCopyfile(from: Long, to: Long, state: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleClonefileat(srcDirfd: Int, src: Long, dstDirfd: Int, dst: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleFcopyfile(from: Int, to: Int, state: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleFclonefileat(srcfd: Int, dstDirfd: Int, dst: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleCopyfileStateFree(s: Long): Int
+    external fun rustlangLibcUnixBsdAppleCopyfile(from: Long, to: Long, state: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleCopyfileStateAlloc(): Long
+    external fun rustlangLibcUnixBsdAppleFcopyfile(from: Int, to: Int, state: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleCopyfileStateGet(s: Long, flags: Int, dst: Long): Int
+    external fun rustlangLibcUnixBsdAppleCopyfileStateFree(s: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleCopyfileStateSet(s: Long, flags: Int, src: Long): Int
+    external fun rustlangLibcUnixBsdAppleCopyfileStateAlloc(): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMachErrorString(errorValue: Int): Long
+    external fun rustlangLibcUnixBsdAppleCopyfileStateGet(s: Long, flags: Int, dst: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMemsetS(s: Long, smax: Long, c: Int, n: Long): Int
+    external fun rustlangLibcUnixBsdAppleCopyfileStateSet(s: Long, flags: Int, src: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMemsetPattern4(b: Long, pattern4: Long, len: Long)
+    external fun rustlangLibcUnixBsdAppleMachErrorString(errorValue: Int): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMemsetPattern8(b: Long, pattern8: Long, len: Long)
+    external fun rustlangLibcUnixBsdAppleMemsetS(s: Long, smax: Long, c: Int, n: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMemsetPattern16(b: Long, pattern16: Long, len: Long)
+    external fun rustlangLibcUnixBsdAppleMemsetPattern4(b: Long, pattern4: Long, len: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleStrtonum(numstr: Long, minval: Long, maxval: Long, errstrp: Long): Long
+    external fun rustlangLibcUnixBsdAppleMemsetPattern8(b: Long, pattern8: Long, len: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocPrintf(format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long)
+    external fun rustlangLibcUnixBsdAppleMemsetPattern16(b: Long, pattern16: Long, len: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocZoneCheck(zone: Long): Int
+    external fun rustlangLibcUnixBsdAppleStrtonum(numstr: Long, minval: Long, maxval: Long, errstrp: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocZonePrint(zone: Long, verbose: Int)
+    external fun rustlangLibcUnixBsdAppleMallocPrintf(format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocZoneStatistics(zone: Long, stats: Long)
+    external fun rustlangLibcUnixBsdAppleMallocZoneCheck(zone: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocZoneLog(zone: Long, address: Long)
+    external fun rustlangLibcUnixBsdAppleMallocZonePrint(zone: Long, verbose: Int)
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocZonePrintPtrInfo(ptr: Long)
+    external fun rustlangLibcUnixBsdAppleMallocZoneStatistics(zone: Long, stats: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocDefaultZone(): Long
+    external fun rustlangLibcUnixBsdAppleMallocZoneLog(zone: Long, address: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocZoneFromPtr(ptr: Long): Long
+    external fun rustlangLibcUnixBsdAppleMallocZonePrintPtrInfo(ptr: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocZoneMalloc(zone: Long, size: Long): Long
+    external fun rustlangLibcUnixBsdAppleMallocDefaultZone(): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocZoneValloc(zone: Long, size: Long): Long
+    external fun rustlangLibcUnixBsdAppleMallocZoneFromPtr(ptr: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocZoneCalloc(zone: Long, numItems: Long, size: Long): Long
+    external fun rustlangLibcUnixBsdAppleMallocZoneMalloc(zone: Long, size: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocZoneRealloc(zone: Long, ptr: Long, size: Long): Long
+    external fun rustlangLibcUnixBsdAppleMallocZoneValloc(zone: Long, size: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocZoneFree(zone: Long, ptr: Long)
+    external fun rustlangLibcUnixBsdAppleMallocZoneCalloc(zone: Long, numItems: Long, size: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleGethostuuid(id: Long, timeout: Long): Int
+    external fun rustlangLibcUnixBsdAppleMallocZoneRealloc(zone: Long, ptr: Long, size: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleGethostid(): Long
+    external fun rustlangLibcUnixBsdAppleMallocZoneFree(zone: Long, ptr: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleSethostid(hostid: Long)
+    external fun rustlangLibcUnixBsdAppleGethostuuid(id: Long, timeout: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleCCRandomGenerateBytes(bytes: Long, size: Long): Int
+    external fun rustlangLibcUnixBsdAppleGethostid(): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetentropy(buf: Long, buflen: Long): Int
+    external fun rustlangLibcUnixBsdAppleSethostid(hostid: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleNsgetExecutablePath(buf: Long, bufsize: Long): Int
+    external fun rustlangLibcUnixBsdAppleCCRandomGenerateBytes(bytes: Long, size: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleNsgetArgv(): Long
+    external fun rustlangLibcUnixBsdAppleGetentropy(buf: Long, buflen: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleNsgetArgc(): Long
+    external fun rustlangLibcUnixBsdAppleNsgetExecutablePath(buf: Long, bufsize: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleNsgetEnviron(): Long
+    external fun rustlangLibcUnixBsdAppleNsgetArgv(): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleNsgetProgname(): Long
+    external fun rustlangLibcUnixBsdAppleNsgetArgc(): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMachVmMap(targetTask: Int, address: Long, size: Long, mask: Long, flags: Int, obj: Int, offset: Long, copy: Int, curProtection: Int, maxProtection: Int, inheritance: Int): Int
+    external fun rustlangLibcUnixBsdAppleNsgetEnviron(): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleVmAllocate(targetTask: Int, address: Long, size: Long, flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleNsgetProgname(): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleVmDeallocate(targetTask: Int, address: Long, size: Long): Int
+    external fun rustlangLibcUnixBsdAppleMachVmMap(targetTask: Int, address: Long, size: Long, mask: Long, flags: Int, obj: Int, offset: Long, copy: Int, curProtection: Int, maxProtection: Int, inheritance: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleHostStatistics64(hostPriv: Int, flavor: Int, hostInfo64Out: Long, hostInfo64OutCnt: Long): Int
+    external fun rustlangLibcUnixBsdAppleVmAllocate(targetTask: Int, address: Long, size: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleHostProcessorInfo(host: Int, flavor: Int, outProcessorCount: Long, outProcessorInfo: Long, outProcessorInfoCnt: Long): Int
+    external fun rustlangLibcUnixBsdAppleVmDeallocate(targetTask: Int, address: Long, size: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleTaskForPid(host: Int, pid: Int, task: Long): Int
+    external fun rustlangLibcUnixBsdAppleHostStatistics64(hostPriv: Int, flavor: Int, hostInfo64Out: Long, hostInfo64OutCnt: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleTaskInfo(host: Int, flavor: Int, taskInfoOut: Long, taskInfoCount: Long): Int
+    external fun rustlangLibcUnixBsdAppleHostProcessorInfo(host: Int, flavor: Int, outProcessorCount: Long, outProcessorInfo: Long, outProcessorInfoCnt: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleTaskCreate(targetTask: Int, ledgers: Long, ledgersCnt: Int, inheritMemory: Int, childTask: Long): Int
+    external fun rustlangLibcUnixBsdAppleTaskForPid(host: Int, pid: Int, task: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleTaskTerminate(targetTask: Int): Int
+    external fun rustlangLibcUnixBsdAppleTaskInfo(host: Int, flavor: Int, taskInfoOut: Long, taskInfoCount: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleTaskThreads(targetTask: Int, actList: Long, actListCnt: Long): Int
+    external fun rustlangLibcUnixBsdAppleTaskCreate(targetTask: Int, ledgers: Long, ledgersCnt: Int, inheritMemory: Int, childTask: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleHostStatistics(hostPriv: Int, flavor: Int, hostInfoOut: Long, hostInfoOutCnt: Long): Int
+    external fun rustlangLibcUnixBsdAppleTaskTerminate(targetTask: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSysdirGetNextSearchPathEnumeration(state: Int, path: Long): Int
+    external fun rustlangLibcUnixBsdAppleTaskThreads(targetTask: Int, actList: Long, actListCnt: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetattrlist(path: Long, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Int): Int
+    external fun rustlangLibcUnixBsdAppleHostStatistics(hostPriv: Int, flavor: Int, hostInfoOut: Long, hostInfoOutCnt: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleFgetattrlist(fd: Int, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Int): Int
+    external fun rustlangLibcUnixBsdAppleSysdirGetNextSearchPathEnumeration(state: Int, path: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetattrlistat(fd: Int, path: Long, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Long): Int
+    external fun rustlangLibcUnixBsdAppleGetattrlist(path: Long, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSetattrlist(path: Long, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Int): Int
+    external fun rustlangLibcUnixBsdAppleFgetattrlist(fd: Int, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleFsetattrlist(fd: Int, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Int): Int
+    external fun rustlangLibcUnixBsdAppleGetattrlistat(fd: Int, path: Long, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleSetattrlistat(dirFd: Int, path: Long, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Int): Int
+    external fun rustlangLibcUnixBsdAppleSetattrlist(path: Long, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleGetattrlistbulk(dirfd: Int, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Long): Int
+    external fun rustlangLibcUnixBsdAppleFsetattrlist(fd: Int, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocSize(ptr: Long): Long
+    external fun rustlangLibcUnixBsdAppleSetattrlistat(dirFd: Int, path: Long, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMallocGoodSize(size: Long): Long
+    external fun rustlangLibcUnixBsdAppleGetattrlistbulk(dirfd: Int, attrList: Long, attrBuf: Long, attrBufSize: Long, options: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleDirname(path: Long): Long
+    external fun rustlangLibcUnixBsdAppleMallocSize(ptr: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleBasename(path: Long): Long
+    external fun rustlangLibcUnixBsdAppleMallocGoodSize(size: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMkfifoat(dirfd: Int, pathname: Long, mode: Short): Int
+    external fun rustlangLibcUnixBsdAppleDirname(path: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleMknodat(dirfd: Int, pathname: Long, mode: Short, dev: Int): Int
+    external fun rustlangLibcUnixBsdAppleBasename(path: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleFreadlink(fd: Int, buf: Long, size: Long): Int
+    external fun rustlangLibcUnixBsdAppleMkfifoat(dirfd: Int, pathname: Long, mode: Short): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleExecvP(file: Long, searchPath: Long, argv: Long): Int
+    external fun rustlangLibcUnixBsdAppleMknodat(dirfd: Int, pathname: Long, mode: Short, dev: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleQsortR(base: Long, num: Long, size: Long, arg: Long, compar: Long)
+    external fun rustlangLibcUnixBsdAppleFreadlink(fd: Int, buf: Long, size: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcListpids(t: Int, typeinfo: Int, buffer: Long, buffersize: Int): Int
+    external fun rustlangLibcUnixBsdAppleExecvP(file: Long, searchPath: Long, argv: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcListallpids(buffer: Long, buffersize: Int): Int
+    external fun rustlangLibcUnixBsdAppleQsortR(base: Long, num: Long, size: Long, arg: Long, compar: Long)
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcListpgrppids(pgrpid: Int, buffer: Long, buffersize: Int): Int
+    external fun rustlangLibcUnixBsdAppleClockSettime(clockId: Int, tp: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcListchildpids(ppid: Int, buffer: Long, buffersize: Int): Int
+    external fun rustlangLibcUnixBsdAppleProcListpids(t: Int, typeinfo: Int, buffer: Long, buffersize: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcPidinfo(pid: Int, flavor: Int, arg: Long, buffer: Long, buffersize: Int): Int
+    external fun rustlangLibcUnixBsdAppleProcListallpids(buffer: Long, buffersize: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcPidfdinfo(pid: Int, fd: Int, flavor: Int, buffer: Long, buffersize: Int): Int
+    external fun rustlangLibcUnixBsdAppleProcListpgrppids(pgrpid: Int, buffer: Long, buffersize: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcPidfileportinfo(pid: Int, fileport: Int, flavor: Int, buffer: Long, buffersize: Int): Int
+    external fun rustlangLibcUnixBsdAppleProcListchildpids(ppid: Int, buffer: Long, buffersize: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcPidpath(pid: Int, buffer: Long, buffersize: Int): Int
+    external fun rustlangLibcUnixBsdAppleProcPidinfo(pid: Int, flavor: Int, arg: Long, buffer: Long, buffersize: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcName(pid: Int, buffer: Long, buffersize: Int): Int
+    external fun rustlangLibcUnixBsdAppleProcPidfdinfo(pid: Int, fd: Int, flavor: Int, buffer: Long, buffersize: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcRegionfilename(pid: Int, address: Long, buffer: Long, buffersize: Int): Int
+    external fun rustlangLibcUnixBsdAppleProcPidfileportinfo(pid: Int, fileport: Int, flavor: Int, buffer: Long, buffersize: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcKmsgbuf(buffer: Long, buffersize: Int): Int
+    external fun rustlangLibcUnixBsdAppleProcPidpath(pid: Int, buffer: Long, buffersize: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcLibversion(major: Long, minor: Long): Int
+    external fun rustlangLibcUnixBsdAppleProcName(pid: Int, buffer: Long, buffersize: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcPidRusage(pid: Int, flavor: Int, buffer: Long): Int
+    external fun rustlangLibcUnixBsdAppleProcRegionfilename(pid: Int, address: Long, buffer: Long, buffersize: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcSetNoSmt(): Int
+    external fun rustlangLibcUnixBsdAppleProcKmsgbuf(buffer: Long, buffersize: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcSetthreadNoSmt(): Int
+    external fun rustlangLibcUnixBsdAppleProcLibversion(major: Long, minor: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcSetCsm(flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleProcPidRusage(pid: Int, flavor: Int, buffer: Long): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleProcSetthreadCsm(flags: Int): Int
+    external fun rustlangLibcUnixBsdAppleProcSetNoSmt(): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleMemmem(haystack: Long, haystacklen: Long, needle: Long, needlelen: Long): Long
+    external fun rustlangLibcUnixBsdAppleProcSetthreadNoSmt(): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleTaskSetInfo(targetTask: Int, flavor: Int, taskInfoIn: Long, taskInfoInCnt: Int): Int
+    external fun rustlangLibcUnixBsdAppleProcSetCsm(flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleIconvOpen(tocode: Long, fromcode: Long): Long
+    external fun rustlangLibcUnixBsdAppleProcSetthreadCsm(flags: Int): Int
 
     @JvmStatic
-    external fun libcUnixBsdAppleIconv(cd: Long, inbuf: Long, inbytesleft: Long, outbuf: Long, outbytesleft: Long): Long
+    external fun rustlangLibcUnixBsdAppleMemmem(haystack: Long, haystacklen: Long, needle: Long, needlelen: Long): Long
 
     @JvmStatic
-    external fun libcUnixBsdAppleIconvClose(cd: Long): Int
+    external fun rustlangLibcUnixBsdAppleTaskSetInfo(targetTask: Int, flavor: Int, taskInfoIn: Long, taskInfoInCnt: Int): Int
+
+    @JvmStatic
+    external fun rustlangLibcUnixBsdAppleIconvOpen(tocode: Long, fromcode: Long): Long
+
+    @JvmStatic
+    external fun rustlangLibcUnixBsdAppleIconv(cd: Long, inbuf: Long, inbytesleft: Long, outbuf: Long, outbytesleft: Long): Long
+
+    @JvmStatic
+    external fun rustlangLibcUnixBsdAppleIconvClose(cd: Long): Int
 }
 
-public actual var MACH_TASK_SELF: io.github.kotlinmania.rustlang.libc.MachPortT
-    get() = UnixBsdAppleJniBridge.libcUnixBsdAppleGetMACHTASKSELF().toUInt()
+public actual var MACH_TASK_SELF: io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT
+    get() = LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetMACHTASKSELF().toUInt()
     set(value) {
-        UnixBsdAppleJniBridge.libcUnixBsdAppleSetMACHTASKSELF(value.toInt())
+        LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSetMACHTASKSELF(value.toInt())
     }
 
 public actual val VM_PAGE_SIZE: VmSizeT
-    get() = UnixBsdAppleJniBridge.libcUnixBsdAppleGetVMPAGESIZE().toULong()
+    get() = LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetVMPAGESIZE().toULong()
 
 public actual fun setgrent() {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSetgrent()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSetgrent()
 }
 
 public actual fun aioRead(aiocbp: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleAioRead(aiocbp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleAioRead(aiocbp.rawAddress)
 
 public actual fun aioWrite(aiocbp: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleAioWrite(aiocbp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleAioWrite(aiocbp.rawAddress)
 
 public actual fun aioFsync(op: CInt, aiocbp: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleAioFsync(op, aiocbp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleAioFsync(op, aiocbp.rawAddress)
 
 public actual fun aioError(aiocbp: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleAioError(aiocbp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleAioError(aiocbp.rawAddress)
 
 public actual fun aioReturn(aiocbp: MutPtr): SsizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleAioReturn(aiocbp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleAioReturn(aiocbp.rawAddress)
 
 public actual fun aioSuspend(aiocbList: ConstPtr, nitems: CInt, timeout: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleAioSuspend(aiocbList.rawAddress, nitems, timeout.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleAioSuspend(aiocbList.rawAddress, nitems, timeout.rawAddress)
 
 public actual fun aioCancel(fd: CInt, aiocbp: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleAioCancel(fd, aiocbp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleAioCancel(fd, aiocbp.rawAddress)
 
 public actual fun chflags(path: ConstPtr, flags: CUint): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleChflags(path.rawAddress, flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleChflags(path.rawAddress, flags.toInt())
 
 public actual fun fchflags(fd: CInt, flags: CUint): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFchflags(fd, flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFchflags(fd, flags.toInt())
 
 public actual fun lchflags(path: ConstPtr, flags: CUint): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleLchflags(path.rawAddress, flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleLchflags(path.rawAddress, flags.toInt())
 
 public actual fun lchmod(path: ConstPtr, mode: ModeT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleLchmod(path.rawAddress, mode.toShort())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleLchmod(path.rawAddress, mode.toShort())
 
-public actual fun clockGetres(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: MutPtr): CInt =
-    0
+public actual fun clockGetres(clkId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: MutPtr): CInt =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleClockGetres(clkId.toInt(), tp.rawAddress)
 
-public actual fun clockGettime(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: MutPtr): CInt =
-    0
+public actual fun clockGettime(clkId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: MutPtr): CInt =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleClockGettime(clkId.toInt(), tp.rawAddress)
 
 public actual fun lioListio(mode: CInt, aiocbList: ConstPtr, nitems: CInt, sevp: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleLioListio(mode, aiocbList.rawAddress, nitems, sevp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleLioListio(mode, aiocbList.rawAddress, nitems, sevp.rawAddress)
 
 public actual fun dirfd(dirp: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleDirfd(dirp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleDirfd(dirp.rawAddress)
 
 public actual fun lutimes(file: ConstPtr, times: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleLutimes(file.rawAddress, times.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleLutimes(file.rawAddress, times.rawAddress)
 
 public actual fun gettimeofday(tp: MutPtr, tz: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGettimeofday(tp.rawAddress, tz.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGettimeofday(tp.rawAddress, tz.rawAddress)
 
 public actual fun getutxent(): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleGetutxent())
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetutxent())
 
 public actual fun getutxid(ut: ConstPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleGetutxid(ut.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetutxid(ut.rawAddress))
 
 public actual fun getutxline(ut: ConstPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleGetutxline(ut.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetutxline(ut.rawAddress))
 
 public actual fun pututxline(ut: ConstPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdApplePututxline(ut.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePututxline(ut.rawAddress))
 
 public actual fun setutxent() {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSetutxent()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSetutxent()
 }
 
 public actual fun endutxent() {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleEndutxent()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleEndutxent()
 }
 
 public actual fun utmpxname(file: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleUtmpxname(file.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleUtmpxname(file.rawAddress)
 
 public actual fun asctime(tm: ConstPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleAsctime(tm.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleAsctime(tm.rawAddress))
 
 public actual fun ctime(clock: ConstPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleCtime(clock.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleCtime(clock.rawAddress))
 
 public actual fun getdate(datestr: ConstPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleGetdate(datestr.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetdate(datestr.rawAddress))
 
 public actual fun strptime(buf: ConstPtr, format: ConstPtr, timeptr: MutPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleStrptime(buf.rawAddress, format.rawAddress, timeptr.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleStrptime(buf.rawAddress, format.rawAddress, timeptr.rawAddress))
 
 public actual fun asctimeR(tm: ConstPtr, result: MutPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleAsctimeR(tm.rawAddress, result.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleAsctimeR(tm.rawAddress, result.rawAddress))
 
 public actual fun ctimeR(clock: ConstPtr, result: MutPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleCtimeR(clock.rawAddress, result.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleCtimeR(clock.rawAddress, result.rawAddress))
 
 public actual fun getnameinfo(sa: ConstPtr, salen: SocklenT, host: MutPtr, hostlen: SocklenT, serv: MutPtr, servlen: SocklenT, flags: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGetnameinfo(sa.rawAddress, salen.toInt(), host.rawAddress, hostlen.toInt(), serv.rawAddress, servlen.toInt(), flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetnameinfo(sa.rawAddress, salen.toInt(), host.rawAddress, hostlen.toInt(), serv.rawAddress, servlen.toInt(), flags)
 
 public actual fun mincore(addr: ConstPtr, len: SizeT, vec: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMincore(addr.rawAddress, len.toLong(), vec.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMincore(addr.rawAddress, len.toLong(), vec.rawAddress)
 
 public actual fun sysctlnametomib(name: ConstPtr, mibp: MutPtr, sizep: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSysctlnametomib(name.rawAddress, mibp.rawAddress, sizep.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSysctlnametomib(name.rawAddress, mibp.rawAddress, sizep.rawAddress)
 
 public actual fun mprotect(addr: MutPtr, len: SizeT, prot: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMprotect(addr.rawAddress, len.toLong(), prot)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMprotect(addr.rawAddress, len.toLong(), prot)
 
 public actual fun semget(key: KeyT, nsems: CInt, semflg: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSemget(key, nsems, semflg)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSemget(key, nsems, semflg)
 
 public actual fun semctl(semid: CInt, semnum: CInt, cmd: CInt, vararg variadicArgs: Long): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSemctl(semid, semnum, cmd, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSemctl(semid, semnum, cmd, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun semop(semid: CInt, sops: MutPtr, nsops: SizeT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSemop(semid, sops.rawAddress, nsops.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSemop(semid, sops.rawAddress, nsops.toLong())
 
 public actual fun shmOpen(name: ConstPtr, oflag: CInt, vararg variadicArgs: Long): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleShmOpen(name.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleShmOpen(name.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun ftok(pathname: ConstPtr, projId: CInt): KeyT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFtok(pathname.rawAddress, projId)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFtok(pathname.rawAddress, projId)
 
 public actual fun shmat(shmid: CInt, shmaddr: ConstPtr, shmflg: CInt): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleShmat(shmid, shmaddr.rawAddress, shmflg))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleShmat(shmid, shmaddr.rawAddress, shmflg))
 
 public actual fun shmdt(shmaddr: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleShmdt(shmaddr.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleShmdt(shmaddr.rawAddress)
 
 public actual fun shmctl(shmid: CInt, cmd: CInt, buf: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleShmctl(shmid, cmd, buf.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleShmctl(shmid, cmd, buf.rawAddress)
 
 public actual fun shmget(key: KeyT, size: SizeT, shmflg: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleShmget(key, size.toLong(), shmflg)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleShmget(key, size.toLong(), shmflg)
 
 public actual fun sysctl(name: MutPtr, namelen: CUint, oldp: MutPtr, oldlenp: MutPtr, newp: MutPtr, newlen: SizeT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSysctl(name.rawAddress, namelen.toInt(), oldp.rawAddress, oldlenp.rawAddress, newp.rawAddress, newlen.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSysctl(name.rawAddress, namelen.toInt(), oldp.rawAddress, oldlenp.rawAddress, newp.rawAddress, newlen.toLong())
 
 public actual fun sysctlbyname(name: ConstPtr, oldp: MutPtr, oldlenp: MutPtr, newp: MutPtr, newlen: SizeT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSysctlbyname(name.rawAddress, oldp.rawAddress, oldlenp.rawAddress, newp.rawAddress, newlen.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSysctlbyname(name.rawAddress, oldp.rawAddress, oldlenp.rawAddress, newp.rawAddress, newlen.toLong())
 
 public actual fun machAbsoluteTime(): ULong =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMachAbsoluteTime().toULong()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMachAbsoluteTime().toULong()
 
 public actual fun machTimebaseInfo(info: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMachTimebaseInfo(info.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMachTimebaseInfo(info.rawAddress)
 
 public actual fun machHostSelf(): MachPortT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMachHostSelf().toUInt()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMachHostSelf().toUInt()
 
 public actual fun machThreadSelf(): MachPortT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMachThreadSelf().toUInt()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMachThreadSelf().toUInt()
 
 public actual fun pthreadCondTimedwaitRelativeNp(cond: MutPtr, lock: MutPtr, timeout: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadCondTimedwaitRelativeNp(cond.rawAddress, lock.rawAddress, timeout.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadCondTimedwaitRelativeNp(cond.rawAddress, lock.rawAddress, timeout.rawAddress)
 
 public actual fun pthreadAttrGetscope(attr: ConstPtr, contentionscope: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadAttrGetscope(attr.rawAddress, contentionscope.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadAttrGetscope(attr.rawAddress, contentionscope.rawAddress)
 
 public actual fun pthreadAttrGetstackaddr(attr: ConstPtr, stackaddr: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadAttrGetstackaddr(attr.rawAddress, stackaddr.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadAttrGetstackaddr(attr.rawAddress, stackaddr.rawAddress)
 
 public actual fun pthreadAttrGetdetachstate(attr: ConstPtr, detachstate: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadAttrGetdetachstate(attr.rawAddress, detachstate.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadAttrGetdetachstate(attr.rawAddress, detachstate.rawAddress)
 
 public actual fun pthreadAttrSetscope(attr: MutPtr, contentionscope: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadAttrSetscope(attr.rawAddress, contentionscope)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadAttrSetscope(attr.rawAddress, contentionscope)
 
 public actual fun pthreadAttrSetstackaddr(attr: MutPtr, stackaddr: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadAttrSetstackaddr(attr.rawAddress, stackaddr.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadAttrSetstackaddr(attr.rawAddress, stackaddr.rawAddress)
 
 public actual fun pthreadSetnameNp(name: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadSetnameNp(name.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadSetnameNp(name.rawAddress)
 
 public actual fun pthreadGetnameNp(thread: PthreadT, name: MutPtr, len: SizeT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadGetnameNp(thread.rawAddress, name.rawAddress, len.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadGetnameNp(thread.toLong(), name.rawAddress, len.toLong())
 
-public actual fun pthreadMachThreadNp(thread: PthreadT): io.github.kotlinmania.rustlang.libc.MachPortT =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadMachThreadNp(thread.rawAddress).toUInt()
+public actual fun pthreadMachThreadNp(thread: PthreadT): io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadMachThreadNp(thread.toLong()).toUInt()
 
-public actual fun pthreadFromMachThreadNp(port: io.github.kotlinmania.rustlang.libc.MachPortT): PthreadT =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdApplePthreadFromMachThreadNp(port.toInt()))
+public actual fun pthreadFromMachThreadNp(port: io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT): PthreadT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadFromMachThreadNp(port.toInt()).toULong()
 
 public actual fun pthreadGetStackaddrNp(thread: PthreadT): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdApplePthreadGetStackaddrNp(thread.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadGetStackaddrNp(thread.toLong()))
 
 public actual fun pthreadGetStacksizeNp(thread: PthreadT): SizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadGetStacksizeNp(thread.rawAddress).toULong()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadGetStacksizeNp(thread.toLong()).toULong()
 
 public actual fun pthreadMainNp(): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadMainNp()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadMainNp()
 
 public actual fun pthreadThreadidNp(thread: PthreadT, threadId: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadThreadidNp(thread.rawAddress, threadId.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadThreadidNp(thread.toLong(), threadId.rawAddress)
 
 public actual fun pthreadJitWriteProtectNp(enabled: CInt) {
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadJitWriteProtectNp(enabled)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadJitWriteProtectNp(enabled)
 }
 
 public actual fun pthreadJitWriteProtectSupportedNp(): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadJitWriteProtectSupportedNp()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadJitWriteProtectSupportedNp()
 
-public actual fun pthreadJitWriteWithCallbackNp(callback: io.github.kotlinmania.rustlang.libc.PthreadJitWriteCallbackT, ctx: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadJitWriteWithCallbackNp(0L, ctx.rawAddress)
+public actual fun pthreadJitWriteWithCallbackNp(callback: io.github.kotlinmania.rustlang.unix.bsd.apple.PthreadJitWriteCallbackT, ctx: MutPtr): CInt =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadJitWriteWithCallbackNp(0L, ctx.rawAddress)
 
 public actual fun pthreadJitWriteFreezeCallbacksNp() {
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadJitWriteFreezeCallbacksNp()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadJitWriteFreezeCallbacksNp()
 }
 
 public actual fun pthreadCpuNumberNp(cpuNumberOut: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadCpuNumberNp(cpuNumberOut.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePthreadCpuNumberNp(cpuNumberOut.rawAddress)
 
 public actual fun osSyncWaitOnAddress(addr: MutPtr, value: ULong, size: SizeT, flags: OsSyncWaitOnAddressFlagsT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsSyncWaitOnAddress(addr.rawAddress, value.toLong(), size.toLong(), flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsSyncWaitOnAddress(addr.rawAddress, value.toLong(), size.toLong(), flags.toInt())
 
 public actual fun osSyncWaitOnAddressWithDeadline(addr: MutPtr, value: ULong, size: SizeT, flags: OsSyncWaitOnAddressFlagsT, clockid: OsClockidT, deadline: ULong): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsSyncWaitOnAddressWithDeadline(addr.rawAddress, value.toLong(), size.toLong(), flags.toInt(), clockid.toInt(), deadline.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsSyncWaitOnAddressWithDeadline(addr.rawAddress, value.toLong(), size.toLong(), flags.toInt(), clockid.toInt(), deadline.toLong())
 
 public actual fun osSyncWaitOnAddressWithTimeout(addr: MutPtr, value: ULong, size: SizeT, flags: OsSyncWaitOnAddressFlagsT, clockid: OsClockidT, timeoutNs: ULong): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsSyncWaitOnAddressWithTimeout(addr.rawAddress, value.toLong(), size.toLong(), flags.toInt(), clockid.toInt(), timeoutNs.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsSyncWaitOnAddressWithTimeout(addr.rawAddress, value.toLong(), size.toLong(), flags.toInt(), clockid.toInt(), timeoutNs.toLong())
 
 public actual fun osSyncWakeByAddressAny(addr: MutPtr, size: SizeT, flags: OsSyncWakeByAddressFlagsT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsSyncWakeByAddressAny(addr.rawAddress, size.toLong(), flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsSyncWakeByAddressAny(addr.rawAddress, size.toLong(), flags.toInt())
 
 public actual fun osSyncWakeByAddressAll(addr: MutPtr, size: SizeT, flags: OsSyncWakeByAddressFlagsT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsSyncWakeByAddressAll(addr.rawAddress, size.toLong(), flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsSyncWakeByAddressAll(addr.rawAddress, size.toLong(), flags.toInt())
 
 public actual fun osUnfairLockLock(lock: OsUnfairLockT) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsUnfairLockLock(lock.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsUnfairLockLock(lock.rawAddress)
 }
 
 public actual fun osUnfairLockTrylock(lock: OsUnfairLockT): Boolean =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsUnfairLockTrylock(lock.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsUnfairLockTrylock(lock.rawAddress)
 
 public actual fun osUnfairLockUnlock(lock: OsUnfairLockT) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsUnfairLockUnlock(lock.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsUnfairLockUnlock(lock.rawAddress)
 }
 
 public actual fun osUnfairLockAssertOwner(lock: OsUnfairLockT) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsUnfairLockAssertOwner(lock.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsUnfairLockAssertOwner(lock.rawAddress)
 }
 
 public actual fun osUnfairLockAssertNotOwner(lock: OsUnfairLockT) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsUnfairLockAssertNotOwner(lock.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsUnfairLockAssertNotOwner(lock.rawAddress)
 }
 
-public actual fun osLogCreate(subsystem: ConstPtr, category: ConstPtr): io.github.kotlinmania.rustlang.libc.OsLogT =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleOsLogCreate(subsystem.rawAddress, category.rawAddress))
+public actual fun osLogCreate(subsystem: ConstPtr, category: ConstPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogT =
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsLogCreate(subsystem.rawAddress, category.rawAddress))
 
-public actual fun osLogTypeEnabled(oslog: io.github.kotlinmania.rustlang.libc.OsLogT, tpe: io.github.kotlinmania.rustlang.libc.OsLogTypeT): Boolean =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsLogTypeEnabled(oslog.rawAddress, tpe.toByte())
+public actual fun osLogTypeEnabled(oslog: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogT, tpe: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogTypeT): Boolean =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsLogTypeEnabled(oslog.rawAddress, tpe.toByte())
 
-public actual fun osSignpostIdMakeWithPointer(log: io.github.kotlinmania.rustlang.libc.OsLogT, ptr: ConstPtr): io.github.kotlinmania.rustlang.libc.OsSignpostIdT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsSignpostIdMakeWithPointer(log.rawAddress, ptr.rawAddress).toULong()
+public actual fun osSignpostIdMakeWithPointer(log: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogT, ptr: ConstPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.OsSignpostIdT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsSignpostIdMakeWithPointer(log.rawAddress, ptr.rawAddress).toULong()
 
-public actual fun osSignpostIdGenerate(log: io.github.kotlinmania.rustlang.libc.OsLogT): io.github.kotlinmania.rustlang.libc.OsSignpostIdT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsSignpostIdGenerate(log.rawAddress).toULong()
+public actual fun osSignpostIdGenerate(log: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogT): io.github.kotlinmania.rustlang.unix.bsd.apple.OsSignpostIdT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsSignpostIdGenerate(log.rawAddress).toULong()
 
-public actual fun osSignpostEnabled(log: io.github.kotlinmania.rustlang.libc.OsLogT): Boolean =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOsSignpostEnabled(log.rawAddress)
+public actual fun osSignpostEnabled(log: io.github.kotlinmania.rustlang.unix.bsd.apple.OsLogT): Boolean =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOsSignpostEnabled(log.rawAddress)
 
 public actual fun threadPolicySet(thread: ThreadT, flavor: ThreadPolicyFlavorT, policyInfo: ThreadPolicyT, count: MachMsgTypeNumberT): KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleThreadPolicySet(thread.toInt(), flavor.toInt(), policyInfo.rawAddress, count.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleThreadPolicySet(thread.toInt(), flavor.toInt(), policyInfo.rawAddress, count.toInt())
 
 public actual fun threadPolicyGet(thread: ThreadT, flavor: ThreadPolicyFlavorT, policyInfo: ThreadPolicyT, count: MutPtr, getDefault: MutPtr): KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleThreadPolicyGet(thread.toInt(), flavor.toInt(), policyInfo.rawAddress, count.rawAddress, getDefault.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleThreadPolicyGet(thread.toInt(), flavor.toInt(), policyInfo.rawAddress, count.rawAddress, getDefault.rawAddress)
 
 public actual fun threadInfo(targetAct: ThreadInspectT, flavor: ThreadFlavorT, threadInfoOut: ThreadInfoT, threadInfoOutCnt: MutPtr): KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleThreadInfo(targetAct.toInt(), flavor.toInt(), threadInfoOut.rawAddress, threadInfoOutCnt.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleThreadInfo(targetAct.toInt(), flavor.toInt(), threadInfoOut.rawAddress, threadInfoOutCnt.rawAddress)
 
 public actual fun error(): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleError())
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleError())
 
 public actual fun backtrace(buf: MutPtr, sz: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleBacktrace(buf.rawAddress, sz)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleBacktrace(buf.rawAddress, sz)
 
 public actual fun backtraceSymbols(addrs: ConstPtr, sz: CInt): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleBacktraceSymbols(addrs.rawAddress, sz))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleBacktraceSymbols(addrs.rawAddress, sz))
 
 public actual fun backtraceSymbolsFd(addrs: ConstPtr, sz: CInt, fd: CInt) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleBacktraceSymbolsFd(addrs.rawAddress, sz, fd)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleBacktraceSymbolsFd(addrs.rawAddress, sz, fd)
 }
 
 public actual fun backtraceFromFp(startfp: MutPtr, array: MutPtr, size: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleBacktraceFromFp(startfp.rawAddress, array.rawAddress, size)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleBacktraceFromFp(startfp.rawAddress, array.rawAddress, size)
 
 public actual fun backtraceImageOffsets(array: ConstPtr, imageOffsets: MutPtr, size: CInt) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleBacktraceImageOffsets(array.rawAddress, imageOffsets.rawAddress, size)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleBacktraceImageOffsets(array.rawAddress, imageOffsets.rawAddress, size)
 }
 
 public actual fun backtraceAsync(array: MutPtr, length: SizeT, taskId: MutPtr): SizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleBacktraceAsync(array.rawAddress, length.toLong(), taskId.rawAddress).toULong()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleBacktraceAsync(array.rawAddress, length.toLong(), taskId.rawAddress).toULong()
 
 public actual fun statfs(path: ConstPtr, buf: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleStatfs(path.rawAddress, buf.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleStatfs(path.rawAddress, buf.rawAddress)
 
 public actual fun fstatfs(fd: CInt, buf: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFstatfs(fd, buf.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFstatfs(fd, buf.rawAddress)
 
 public actual fun kevent(kq: CInt, changelist: ConstPtr, nchanges: CInt, eventlist: MutPtr, nevents: CInt, timeout: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleKevent(kq, changelist.rawAddress, nchanges, eventlist.rawAddress, nevents, timeout.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleKevent(kq, changelist.rawAddress, nchanges, eventlist.rawAddress, nevents, timeout.rawAddress)
 
 public actual fun kevent64(kq: CInt, changelist: ConstPtr, nchanges: CInt, eventlist: MutPtr, nevents: CInt, flags: CUint, timeout: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleKevent64(kq, changelist.rawAddress, nchanges, eventlist.rawAddress, nevents, flags.toInt(), timeout.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleKevent64(kq, changelist.rawAddress, nchanges, eventlist.rawAddress, nevents, flags.toInt(), timeout.rawAddress)
 
 public actual fun mount(src: ConstPtr, target: ConstPtr, flags: CInt, data: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMount(src.rawAddress, target.rawAddress, flags, data.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMount(src.rawAddress, target.rawAddress, flags, data.rawAddress)
 
 public actual fun fmount(src: ConstPtr, fd: CInt, flags: CInt, data: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFmount(src.rawAddress, fd, flags, data.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFmount(src.rawAddress, fd, flags, data.rawAddress)
 
 public actual fun ptrace(request: CInt, pid: PidT, addr: MutPtr, data: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePtrace(request, pid, addr.rawAddress, data)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePtrace(request, pid, addr.rawAddress, data)
 
 public actual fun quotactl(special: ConstPtr, cmd: CInt, id: CInt, data: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleQuotactl(special.rawAddress, cmd, id, data.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleQuotactl(special.rawAddress, cmd, id, data.rawAddress)
 
 public actual fun sethostname(name: ConstPtr, len: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSethostname(name.rawAddress, len)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSethostname(name.rawAddress, len)
 
 public actual fun sendfile(fd: CInt, s: CInt, offset: OffT, len: MutPtr, hdtr: MutPtr, flags: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSendfile(fd, s, offset, len.rawAddress, hdtr.rawAddress, flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSendfile(fd, s, offset, len.rawAddress, hdtr.rawAddress, flags)
 
 public actual fun futimens(fd: CInt, times: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFutimens(fd, times.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFutimens(fd, times.rawAddress)
 
 public actual fun utimensat(dirfd: CInt, path: ConstPtr, times: ConstPtr, flag: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleUtimensat(dirfd, path.rawAddress, times.rawAddress, flag)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleUtimensat(dirfd, path.rawAddress, times.rawAddress, flag)
 
 public actual fun openpty(amaster: MutPtr, aslave: MutPtr, name: MutPtr, termp: MutPtr, winp: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleOpenpty(amaster.rawAddress, aslave.rawAddress, name.rawAddress, termp.rawAddress, winp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleOpenpty(amaster.rawAddress, aslave.rawAddress, name.rawAddress, termp.rawAddress, winp.rawAddress)
 
 public actual fun forkpty(amaster: MutPtr, name: MutPtr, termp: MutPtr, winp: MutPtr): PidT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleForkpty(amaster.rawAddress, name.rawAddress, termp.rawAddress, winp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleForkpty(amaster.rawAddress, name.rawAddress, termp.rawAddress, winp.rawAddress)
 
 public actual fun loginTty(fd: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleLoginTty(fd)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleLoginTty(fd)
 
 public actual fun duplocale(base: LocaleT): LocaleT =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleDuplocale(base.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleDuplocale(base.rawAddress))
 
 public actual fun freelocale(loc: LocaleT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFreelocale(loc.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFreelocale(loc.rawAddress)
 
 public actual fun localeconvL(loc: LocaleT): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleLocaleconvL(loc.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleLocaleconvL(loc.rawAddress))
 
 public actual fun newlocale(mask: CInt, locale: ConstPtr, base: LocaleT): LocaleT =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleNewlocale(mask, locale.rawAddress, base.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleNewlocale(mask, locale.rawAddress, base.rawAddress))
 
 public actual fun uselocale(loc: LocaleT): LocaleT =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleUselocale(loc.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleUselocale(loc.rawAddress))
 
 public actual fun querylocale(mask: CInt, loc: LocaleT): ConstPtr =
-    ConstPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleQuerylocale(mask, loc.rawAddress))
+    ConstPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleQuerylocale(mask, loc.rawAddress))
 
-public actual fun getpriority(which: CInt, who: io.github.kotlinmania.rustlang.libc.IdT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGetpriority(which, who.toInt())
+public actual fun getpriority(which: CInt, who: io.github.kotlinmania.rustlang.unix.bsd.apple.IdT): CInt =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetpriority(which, who.toInt())
 
-public actual fun setpriority(which: CInt, who: io.github.kotlinmania.rustlang.libc.IdT, prio: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSetpriority(which, who.toInt(), prio)
+public actual fun setpriority(which: CInt, who: io.github.kotlinmania.rustlang.unix.bsd.apple.IdT, prio: CInt): CInt =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSetpriority(which, who.toInt(), prio)
 
 public actual fun getdomainname(name: MutPtr, len: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGetdomainname(name.rawAddress, len)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetdomainname(name.rawAddress, len)
 
 public actual fun setdomainname(name: ConstPtr, len: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSetdomainname(name.rawAddress, len)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSetdomainname(name.rawAddress, len)
 
 public actual fun preadv(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT): SsizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePreadv(fd, iov.rawAddress, iovcnt, offset)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePreadv(fd, iov.rawAddress, iovcnt, offset)
 
 public actual fun pwritev(fd: CInt, iov: ConstPtr, iovcnt: CInt, offset: OffT): SsizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePwritev(fd, iov.rawAddress, iovcnt, offset)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePwritev(fd, iov.rawAddress, iovcnt, offset)
 
 public actual fun getxattr(path: ConstPtr, name: ConstPtr, value: MutPtr, size: SizeT, position: UInt, flags: CInt): SsizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGetxattr(path.rawAddress, name.rawAddress, value.rawAddress, size.toLong(), position.toInt(), flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetxattr(path.rawAddress, name.rawAddress, value.rawAddress, size.toLong(), position.toInt(), flags)
 
 public actual fun fgetxattr(filedes: CInt, name: ConstPtr, value: MutPtr, size: SizeT, position: UInt, flags: CInt): SsizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFgetxattr(filedes, name.rawAddress, value.rawAddress, size.toLong(), position.toInt(), flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFgetxattr(filedes, name.rawAddress, value.rawAddress, size.toLong(), position.toInt(), flags)
 
 public actual fun setxattr(path: ConstPtr, name: ConstPtr, value: ConstPtr, size: SizeT, position: UInt, flags: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSetxattr(path.rawAddress, name.rawAddress, value.rawAddress, size.toLong(), position.toInt(), flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSetxattr(path.rawAddress, name.rawAddress, value.rawAddress, size.toLong(), position.toInt(), flags)
 
 public actual fun fsetxattr(filedes: CInt, name: ConstPtr, value: ConstPtr, size: SizeT, position: UInt, flags: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFsetxattr(filedes, name.rawAddress, value.rawAddress, size.toLong(), position.toInt(), flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFsetxattr(filedes, name.rawAddress, value.rawAddress, size.toLong(), position.toInt(), flags)
 
 public actual fun listxattr(path: ConstPtr, list: MutPtr, size: SizeT, flags: CInt): SsizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleListxattr(path.rawAddress, list.rawAddress, size.toLong(), flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleListxattr(path.rawAddress, list.rawAddress, size.toLong(), flags)
 
 public actual fun flistxattr(filedes: CInt, list: MutPtr, size: SizeT, flags: CInt): SsizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFlistxattr(filedes, list.rawAddress, size.toLong(), flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFlistxattr(filedes, list.rawAddress, size.toLong(), flags)
 
 public actual fun removexattr(path: ConstPtr, name: ConstPtr, flags: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleRemovexattr(path.rawAddress, name.rawAddress, flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleRemovexattr(path.rawAddress, name.rawAddress, flags)
 
 public actual fun renamexNp(from: ConstPtr, to: ConstPtr, flags: CUint): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleRenamexNp(from.rawAddress, to.rawAddress, flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleRenamexNp(from.rawAddress, to.rawAddress, flags.toInt())
 
 public actual fun renameatxNp(fromfd: CInt, from: ConstPtr, tofd: CInt, to: ConstPtr, flags: CUint): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleRenameatxNp(fromfd, from.rawAddress, tofd, to.rawAddress, flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleRenameatxNp(fromfd, from.rawAddress, tofd, to.rawAddress, flags.toInt())
 
 public actual fun fremovexattr(filedes: CInt, name: ConstPtr, flags: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFremovexattr(filedes, name.rawAddress, flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFremovexattr(filedes, name.rawAddress, flags)
 
 public actual fun getgrouplist(name: ConstPtr, basegid: CInt, groups: MutPtr, ngroups: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGetgrouplist(name.rawAddress, basegid, groups.rawAddress, ngroups.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetgrouplist(name.rawAddress, basegid, groups.rawAddress, ngroups.rawAddress)
 
 public actual fun initgroups(user: ConstPtr, basegroup: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleInitgroups(user.rawAddress, basegroup)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleInitgroups(user.rawAddress, basegroup)
 
 public actual fun waitid(idtype: IdtypeT, id: IdT, infop: MutPtr, options: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleWaitid(idtype.toInt(), id.toInt(), infop.rawAddress, options)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleWaitid(idtype.toInt(), id.toInt(), infop.rawAddress, options)
 
 public actual fun brk(addr: ConstPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleBrk(addr.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleBrk(addr.rawAddress))
 
 public actual fun sbrk(increment: CInt): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleSbrk(increment))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSbrk(increment))
 
 public actual fun settimeofday(tv: ConstPtr, tz: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSettimeofday(tv.rawAddress, tz.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSettimeofday(tv.rawAddress, tz.rawAddress)
 
 public actual fun dyldImageCount(): UInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleDyldImageCount().toUInt()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleDyldImageCount().toUInt()
 
 public actual fun dyldGetImageHeader(imageIndex: UInt): ConstPtr =
-    ConstPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleDyldGetImageHeader(imageIndex.toInt()))
+    ConstPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleDyldGetImageHeader(imageIndex.toInt()))
 
 public actual fun dyldGetImageVmaddrSlide(imageIndex: UInt): IntptrT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleDyldGetImageVmaddrSlide(imageIndex.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleDyldGetImageVmaddrSlide(imageIndex.toInt())
 
 public actual fun dyldGetImageName(imageIndex: UInt): ConstPtr =
-    ConstPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleDyldGetImageName(imageIndex.toInt()))
+    ConstPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleDyldGetImageName(imageIndex.toInt()))
 
 public actual fun posixSpawn(pid: MutPtr, path: ConstPtr, fileActions: ConstPtr, attrp: ConstPtr, argv: ConstPtr, envp: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawn(pid.rawAddress, path.rawAddress, fileActions.rawAddress, attrp.rawAddress, argv.rawAddress, envp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawn(pid.rawAddress, path.rawAddress, fileActions.rawAddress, attrp.rawAddress, argv.rawAddress, envp.rawAddress)
 
 public actual fun posixSpawnp(pid: MutPtr, file: ConstPtr, fileActions: ConstPtr, attrp: ConstPtr, argv: ConstPtr, envp: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnp(pid.rawAddress, file.rawAddress, fileActions.rawAddress, attrp.rawAddress, argv.rawAddress, envp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnp(pid.rawAddress, file.rawAddress, fileActions.rawAddress, attrp.rawAddress, argv.rawAddress, envp.rawAddress)
 
 public actual fun posixSpawnattrInit(attr: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrInit(attr.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrInit(attr.rawAddress)
 
 public actual fun posixSpawnattrDestroy(attr: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrDestroy(attr.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrDestroy(attr.rawAddress)
 
 public actual fun posixSpawnattrGetsigdefault(attr: ConstPtr, default: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrGetsigdefault(attr.rawAddress, default.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrGetsigdefault(attr.rawAddress, default.rawAddress)
 
 public actual fun posixSpawnattrSetsigdefault(attr: MutPtr, default: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrSetsigdefault(attr.rawAddress, default.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrSetsigdefault(attr.rawAddress, default.rawAddress)
 
 public actual fun posixSpawnattrGetsigmask(attr: ConstPtr, default: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrGetsigmask(attr.rawAddress, default.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrGetsigmask(attr.rawAddress, default.rawAddress)
 
 public actual fun posixSpawnattrSetsigmask(attr: MutPtr, default: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrSetsigmask(attr.rawAddress, default.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrSetsigmask(attr.rawAddress, default.rawAddress)
 
 public actual fun posixSpawnattrGetflags(attr: ConstPtr, flags: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrGetflags(attr.rawAddress, flags.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrGetflags(attr.rawAddress, flags.rawAddress)
 
 public actual fun posixSpawnattrSetflags(attr: MutPtr, flags: CShort): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrSetflags(attr.rawAddress, flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrSetflags(attr.rawAddress, flags)
 
 public actual fun posixSpawnattrGetpgroup(attr: ConstPtr, flags: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrGetpgroup(attr.rawAddress, flags.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrGetpgroup(attr.rawAddress, flags.rawAddress)
 
 public actual fun posixSpawnattrSetpgroup(attr: MutPtr, flags: PidT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrSetpgroup(attr.rawAddress, flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrSetpgroup(attr.rawAddress, flags)
 
 public actual fun posixSpawnattrSetarchprefNp(attr: MutPtr, count: SizeT, pref: MutPtr, subpref: MutPtr, ocount: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrSetarchprefNp(attr.rawAddress, count.toLong(), pref.rawAddress, subpref.rawAddress, ocount.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrSetarchprefNp(attr.rawAddress, count.toLong(), pref.rawAddress, subpref.rawAddress, ocount.rawAddress)
 
 public actual fun posixSpawnattrGetarchprefNp(attr: ConstPtr, count: SizeT, pref: MutPtr, subpref: MutPtr, ocount: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrGetarchprefNp(attr.rawAddress, count.toLong(), pref.rawAddress, subpref.rawAddress, ocount.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrGetarchprefNp(attr.rawAddress, count.toLong(), pref.rawAddress, subpref.rawAddress, ocount.rawAddress)
 
 public actual fun posixSpawnattrGetbinprefNp(attr: ConstPtr, count: SizeT, pref: MutPtr, ocount: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrGetbinprefNp(attr.rawAddress, count.toLong(), pref.rawAddress, ocount.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrGetbinprefNp(attr.rawAddress, count.toLong(), pref.rawAddress, ocount.rawAddress)
 
 public actual fun posixSpawnattrSetbinprefNp(attr: MutPtr, count: SizeT, pref: MutPtr, ocount: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnattrSetbinprefNp(attr.rawAddress, count.toLong(), pref.rawAddress, ocount.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnattrSetbinprefNp(attr.rawAddress, count.toLong(), pref.rawAddress, ocount.rawAddress)
 
 public actual fun posixSpawnFileActionsInit(actions: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnFileActionsInit(actions.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnFileActionsInit(actions.rawAddress)
 
 public actual fun posixSpawnFileActionsDestroy(actions: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnFileActionsDestroy(actions.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnFileActionsDestroy(actions.rawAddress)
 
 public actual fun posixSpawnFileActionsAddopen(actions: MutPtr, fd: CInt, path: ConstPtr, oflag: CInt, mode: ModeT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnFileActionsAddopen(actions.rawAddress, fd, path.rawAddress, oflag, mode.toShort())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnFileActionsAddopen(actions.rawAddress, fd, path.rawAddress, oflag, mode.toShort())
 
 public actual fun posixSpawnFileActionsAddclose(actions: MutPtr, fd: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnFileActionsAddclose(actions.rawAddress, fd)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnFileActionsAddclose(actions.rawAddress, fd)
 
 public actual fun posixSpawnFileActionsAdddup2(actions: MutPtr, fd: CInt, newfd: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnFileActionsAdddup2(actions.rawAddress, fd, newfd)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnFileActionsAdddup2(actions.rawAddress, fd, newfd)
 
 public actual fun posixSpawnFileActionsAddchdirNp(actions: MutPtr, path: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnFileActionsAddchdirNp(actions.rawAddress, path.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnFileActionsAddchdirNp(actions.rawAddress, path.rawAddress)
 
 public actual fun posixSpawnFileActionsAddfchdirNp(actions: MutPtr, fd: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnFileActionsAddfchdirNp(actions.rawAddress, fd)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnFileActionsAddfchdirNp(actions.rawAddress, fd)
 
 public actual fun posixSpawnFileActionsAddchdir(actions: MutPtr, path: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnFileActionsAddchdir(actions.rawAddress, path.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnFileActionsAddchdir(actions.rawAddress, path.rawAddress)
 
 public actual fun posixSpawnFileActionsAddfchdir(actions: MutPtr, fd: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePosixSpawnFileActionsAddfchdir(actions.rawAddress, fd)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdApplePosixSpawnFileActionsAddfchdir(actions.rawAddress, fd)
 
 public actual fun uname(buf: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleUname(buf.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleUname(buf.rawAddress)
 
 public actual fun connectx(socket: CInt, endpoints: ConstPtr, associd: SaeAssocidT, flags: CUint, iov: ConstPtr, iovcnt: CUint, len: MutPtr, connid: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleConnectx(socket, endpoints.rawAddress, associd.toInt(), flags.toInt(), iov.rawAddress, iovcnt.toInt(), len.rawAddress, connid.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleConnectx(socket, endpoints.rawAddress, associd.toInt(), flags.toInt(), iov.rawAddress, iovcnt.toInt(), len.rawAddress, connid.rawAddress)
 
 public actual fun disconnectx(socket: CInt, associd: SaeAssocidT, connid: SaeConnidT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleDisconnectx(socket, associd.toInt(), connid.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleDisconnectx(socket, associd.toInt(), connid.toInt())
 
 public actual fun ntpAdjtime(buf: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleNtpAdjtime(buf.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleNtpAdjtime(buf.rawAddress)
 
 public actual fun ntpGettime(buf: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleNtpGettime(buf.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleNtpGettime(buf.rawAddress)
 
 public actual fun getmntinfo(mntbufp: MutPtr, flags: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGetmntinfo(mntbufp.rawAddress, flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetmntinfo(mntbufp.rawAddress, flags)
 
 public actual fun getfsstat(mntbufp: MutPtr, bufsize: CInt, flags: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGetfsstat(mntbufp.rawAddress, bufsize, flags)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetfsstat(mntbufp.rawAddress, bufsize, flags)
 
 public actual fun clonefile(src: ConstPtr, dst: ConstPtr, flags: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleClonefile(src.rawAddress, dst.rawAddress, flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleClonefile(src.rawAddress, dst.rawAddress, flags.toInt())
 
 public actual fun clonefileat(srcDirfd: CInt, src: ConstPtr, dstDirfd: CInt, dst: ConstPtr, flags: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleClonefileat(srcDirfd, src.rawAddress, dstDirfd, dst.rawAddress, flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleClonefileat(srcDirfd, src.rawAddress, dstDirfd, dst.rawAddress, flags.toInt())
 
 public actual fun fclonefileat(srcfd: CInt, dstDirfd: CInt, dst: ConstPtr, flags: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFclonefileat(srcfd, dstDirfd, dst.rawAddress, flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFclonefileat(srcfd, dstDirfd, dst.rawAddress, flags.toInt())
 
 public actual fun copyfile(from: ConstPtr, to: ConstPtr, state: CopyfileStateT, flags: CopyfileFlagsT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleCopyfile(from.rawAddress, to.rawAddress, state.rawAddress, flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleCopyfile(from.rawAddress, to.rawAddress, state.rawAddress, flags.toInt())
 
 public actual fun fcopyfile(from: CInt, to: CInt, state: CopyfileStateT, flags: CopyfileFlagsT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFcopyfile(from, to, state.rawAddress, flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFcopyfile(from, to, state.rawAddress, flags.toInt())
 
 public actual fun copyfileStateFree(s: CopyfileStateT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleCopyfileStateFree(s.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleCopyfileStateFree(s.rawAddress)
 
 public actual fun copyfileStateAlloc(): CopyfileStateT =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleCopyfileStateAlloc())
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleCopyfileStateAlloc())
 
 public actual fun copyfileStateGet(s: CopyfileStateT, flags: UInt, dst: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleCopyfileStateGet(s.rawAddress, flags.toInt(), dst.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleCopyfileStateGet(s.rawAddress, flags.toInt(), dst.rawAddress)
 
 public actual fun copyfileStateSet(s: CopyfileStateT, flags: UInt, src: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleCopyfileStateSet(s.rawAddress, flags.toInt(), src.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleCopyfileStateSet(s.rawAddress, flags.toInt(), src.rawAddress)
 
-public actual fun machErrorString(errorValue: io.github.kotlinmania.rustlang.libc.MachErrorT): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleMachErrorString(errorValue))
+public actual fun machErrorString(errorValue: io.github.kotlinmania.rustlang.unix.bsd.apple.MachErrorT): MutPtr =
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMachErrorString(errorValue))
 
 public actual fun memsetS(s: MutPtr, smax: SizeT, c: CInt, n: SizeT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMemsetS(s.rawAddress, smax.toLong(), c, n.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMemsetS(s.rawAddress, smax.toLong(), c, n.toLong())
 
 public actual fun memsetPattern4(b: MutPtr, pattern4: ConstPtr, len: SizeT) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMemsetPattern4(b.rawAddress, pattern4.rawAddress, len.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMemsetPattern4(b.rawAddress, pattern4.rawAddress, len.toLong())
 }
 
 public actual fun memsetPattern8(b: MutPtr, pattern8: ConstPtr, len: SizeT) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMemsetPattern8(b.rawAddress, pattern8.rawAddress, len.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMemsetPattern8(b.rawAddress, pattern8.rawAddress, len.toLong())
 }
 
 public actual fun memsetPattern16(b: MutPtr, pattern16: ConstPtr, len: SizeT) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMemsetPattern16(b.rawAddress, pattern16.rawAddress, len.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMemsetPattern16(b.rawAddress, pattern16.rawAddress, len.toLong())
 }
 
 public actual fun strtonum(numstr: ConstPtr, minval: CLonglong, maxval: CLonglong, errstrp: MutPtr): CLonglong =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleStrtonum(numstr.rawAddress, minval, maxval, errstrp.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleStrtonum(numstr.rawAddress, minval, maxval, errstrp.rawAddress)
 
 public actual fun mstats(): Mstats =
     Mstats()
 
 public actual fun mallocPrintf(format: ConstPtr, vararg variadicArgs: Long) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMallocPrintf(format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocPrintf(format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 }
 
 public actual fun mallocZoneCheck(zone: MutPtr): BooleanT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMallocZoneCheck(zone.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocZoneCheck(zone.rawAddress)
 
 public actual fun mallocZonePrint(zone: MutPtr, verbose: BooleanT) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMallocZonePrint(zone.rawAddress, verbose)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocZonePrint(zone.rawAddress, verbose)
 }
 
 public actual fun mallocZoneStatistics(zone: MutPtr, stats: MutPtr) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMallocZoneStatistics(zone.rawAddress, stats.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocZoneStatistics(zone.rawAddress, stats.rawAddress)
 }
 
 public actual fun mallocZoneLog(zone: MutPtr, address: MutPtr) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMallocZoneLog(zone.rawAddress, address.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocZoneLog(zone.rawAddress, address.rawAddress)
 }
 
 public actual fun mallocZonePrintPtrInfo(ptr: MutPtr) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMallocZonePrintPtrInfo(ptr.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocZonePrintPtrInfo(ptr.rawAddress)
 }
 
 public actual fun mallocDefaultZone(): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleMallocDefaultZone())
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocDefaultZone())
 
 public actual fun mallocZoneFromPtr(ptr: ConstPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleMallocZoneFromPtr(ptr.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocZoneFromPtr(ptr.rawAddress))
 
 public actual fun mallocZoneMalloc(zone: MutPtr, size: SizeT): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleMallocZoneMalloc(zone.rawAddress, size.toLong()))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocZoneMalloc(zone.rawAddress, size.toLong()))
 
 public actual fun mallocZoneValloc(zone: MutPtr, size: SizeT): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleMallocZoneValloc(zone.rawAddress, size.toLong()))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocZoneValloc(zone.rawAddress, size.toLong()))
 
 public actual fun mallocZoneCalloc(zone: MutPtr, numItems: SizeT, size: SizeT): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleMallocZoneCalloc(zone.rawAddress, numItems.toLong(), size.toLong()))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocZoneCalloc(zone.rawAddress, numItems.toLong(), size.toLong()))
 
 public actual fun mallocZoneRealloc(zone: MutPtr, ptr: MutPtr, size: SizeT): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleMallocZoneRealloc(zone.rawAddress, ptr.rawAddress, size.toLong()))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocZoneRealloc(zone.rawAddress, ptr.rawAddress, size.toLong()))
 
 public actual fun mallocZoneFree(zone: MutPtr, ptr: MutPtr) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMallocZoneFree(zone.rawAddress, ptr.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocZoneFree(zone.rawAddress, ptr.rawAddress)
 }
 
 public actual fun gethostuuid(id: MutPtr, timeout: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGethostuuid(id.rawAddress, timeout.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGethostuuid(id.rawAddress, timeout.rawAddress)
 
 public actual fun gethostid(): CLong =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGethostid()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGethostid()
 
 public actual fun sethostid(hostid: CLong) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSethostid(hostid)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSethostid(hostid)
 }
 
-public actual fun cCRandomGenerateBytes(bytes: MutPtr, size: SizeT): CCRNGStatus =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleCCRandomGenerateBytes(bytes.rawAddress, size.toLong())
+public actual fun cCRandomGenerateBytes(bytes: MutPtr, size: SizeT): io.github.kotlinmania.rustlang.unix.bsd.apple.CCRNGStatus =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleCCRandomGenerateBytes(bytes.rawAddress, size.toLong())
 
 public actual fun getentropy(buf: MutPtr, buflen: SizeT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGetentropy(buf.rawAddress, buflen.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetentropy(buf.rawAddress, buflen.toLong())
 
 public actual fun nsgetExecutablePath(buf: MutPtr, bufsize: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleNsgetExecutablePath(buf.rawAddress, bufsize.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleNsgetExecutablePath(buf.rawAddress, bufsize.rawAddress)
 
 public actual fun nsgetArgv(): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleNsgetArgv())
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleNsgetArgv())
 
 public actual fun nsgetArgc(): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleNsgetArgc())
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleNsgetArgc())
 
 public actual fun nsgetEnviron(): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleNsgetEnviron())
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleNsgetEnviron())
 
 public actual fun nsgetProgname(): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleNsgetProgname())
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleNsgetProgname())
 
-public actual fun machVmMap(targetTask: io.github.kotlinmania.rustlang.libc.VmMapT, address: MutPtr, size: io.github.kotlinmania.rustlang.libc.MachVmSizeT, mask: io.github.kotlinmania.rustlang.libc.MachVmOffsetT, flags: CInt, obj: io.github.kotlinmania.rustlang.libc.MemEntryNamePortT, offset: io.github.kotlinmania.rustlang.libc.MemoryObjectOffsetT, copy: BooleanT, curProtection: io.github.kotlinmania.rustlang.libc.VmProtT, maxProtection: io.github.kotlinmania.rustlang.libc.VmProtT, inheritance: io.github.kotlinmania.rustlang.libc.VmInheritT): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMachVmMap(targetTask.toInt(), address.rawAddress, size.toLong(), mask.toLong(), flags, obj.toInt(), offset.toLong(), copy, curProtection, maxProtection, inheritance.toInt())
+public actual fun machVmMap(targetTask: io.github.kotlinmania.rustlang.unix.bsd.apple.VmMapT, address: MutPtr, size: io.github.kotlinmania.rustlang.unix.bsd.apple.MachVmSizeT, mask: io.github.kotlinmania.rustlang.unix.bsd.apple.MachVmOffsetT, flags: CInt, obj: io.github.kotlinmania.rustlang.unix.bsd.apple.MemEntryNamePortT, offset: io.github.kotlinmania.rustlang.unix.bsd.apple.MemoryObjectOffsetT, copy: BooleanT, curProtection: io.github.kotlinmania.rustlang.unix.bsd.apple.VmProtT, maxProtection: io.github.kotlinmania.rustlang.unix.bsd.apple.VmProtT, inheritance: io.github.kotlinmania.rustlang.unix.bsd.apple.VmInheritT): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMachVmMap(targetTask.toInt(), address.rawAddress, size.toLong(), mask.toLong(), flags, obj.toInt(), offset.toLong(), copy, curProtection, maxProtection, inheritance.toInt())
 
-public actual fun vmAllocate(targetTask: VmMapT, address: MutPtr, size: VmSizeT, flags: CInt): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleVmAllocate(targetTask.toInt(), address.rawAddress, size.toLong(), flags)
+public actual fun vmAllocate(targetTask: VmMapT, address: MutPtr, size: VmSizeT, flags: CInt): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleVmAllocate(targetTask.toInt(), address.rawAddress, size.toLong(), flags)
 
-public actual fun vmDeallocate(targetTask: VmMapT, address: VmAddressT, size: VmSizeT): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleVmDeallocate(targetTask.toInt(), address.toLong(), size.toLong())
+public actual fun vmDeallocate(targetTask: VmMapT, address: VmAddressT, size: VmSizeT): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleVmDeallocate(targetTask.toInt(), address.toLong(), size.toLong())
 
-public actual fun hostStatistics64(hostPriv: HostT, flavor: HostFlavorT, hostInfo64Out: HostInfo64T, hostInfo64OutCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleHostStatistics64(hostPriv.toInt(), flavor, hostInfo64Out.rawAddress, hostInfo64OutCnt.rawAddress)
+public actual fun hostStatistics64(hostPriv: HostT, flavor: HostFlavorT, hostInfo64Out: HostInfo64T, hostInfo64OutCnt: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleHostStatistics64(hostPriv.toInt(), flavor, hostInfo64Out.rawAddress, hostInfo64OutCnt.rawAddress)
 
-public actual fun hostProcessorInfo(host: HostT, flavor: ProcessorFlavorT, outProcessorCount: MutPtr, outProcessorInfo: MutPtr, outProcessorInfoCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleHostProcessorInfo(host.toInt(), flavor, outProcessorCount.rawAddress, outProcessorInfo.rawAddress, outProcessorInfoCnt.rawAddress)
+public actual fun hostProcessorInfo(host: HostT, flavor: ProcessorFlavorT, outProcessorCount: MutPtr, outProcessorInfo: MutPtr, outProcessorInfoCnt: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleHostProcessorInfo(host.toInt(), flavor, outProcessorCount.rawAddress, outProcessorInfo.rawAddress, outProcessorInfoCnt.rawAddress)
 
-public actual fun taskForPid(host: io.github.kotlinmania.rustlang.libc.MachPortT, pid: PidT, task: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleTaskForPid(host.toInt(), pid, task.rawAddress)
+public actual fun taskForPid(host: io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT, pid: PidT, task: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleTaskForPid(host.toInt(), pid, task.rawAddress)
 
-public actual fun taskInfo(host: io.github.kotlinmania.rustlang.libc.MachPortT, flavor: TaskFlavorT, taskInfoOut: TaskInfoT, taskInfoCount: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleTaskInfo(host.toInt(), flavor.toInt(), taskInfoOut.rawAddress, taskInfoCount.rawAddress)
+public actual fun taskInfo(host: io.github.kotlinmania.rustlang.unix.bsd.apple.MachPortT, flavor: TaskFlavorT, taskInfoOut: TaskInfoT, taskInfoCount: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleTaskInfo(host.toInt(), flavor.toInt(), taskInfoOut.rawAddress, taskInfoCount.rawAddress)
 
-public actual fun taskCreate(targetTask: io.github.kotlinmania.rustlang.libc.TaskT, ledgers: io.github.kotlinmania.rustlang.libc.LedgerArrayT, ledgersCnt: io.github.kotlinmania.rustlang.libc.MachMsgTypeNumberT, inheritMemory: BooleanT, childTask: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleTaskCreate(targetTask.toInt(), ledgers.rawAddress, ledgersCnt.toInt(), inheritMemory, childTask.rawAddress)
+public actual fun taskCreate(targetTask: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskT, ledgers: io.github.kotlinmania.rustlang.unix.bsd.apple.LedgerArrayT, ledgersCnt: io.github.kotlinmania.rustlang.unix.bsd.apple.MachMsgTypeNumberT, inheritMemory: BooleanT, childTask: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleTaskCreate(targetTask.toInt(), ledgers.rawAddress, ledgersCnt.toInt(), inheritMemory, childTask.rawAddress)
 
-public actual fun taskTerminate(targetTask: io.github.kotlinmania.rustlang.libc.TaskT): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleTaskTerminate(targetTask.toInt())
+public actual fun taskTerminate(targetTask: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskT): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleTaskTerminate(targetTask.toInt())
 
-public actual fun taskThreads(targetTask: io.github.kotlinmania.rustlang.libc.TaskInspectT, actList: MutPtr, actListCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleTaskThreads(targetTask.toInt(), actList.rawAddress, actListCnt.rawAddress)
+public actual fun taskThreads(targetTask: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskInspectT, actList: MutPtr, actListCnt: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleTaskThreads(targetTask.toInt(), actList.rawAddress, actListCnt.rawAddress)
 
-public actual fun hostStatistics(hostPriv: HostT, flavor: HostFlavorT, hostInfoOut: HostInfoT, hostInfoOutCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleHostStatistics(hostPriv.toInt(), flavor, hostInfoOut.rawAddress, hostInfoOutCnt.rawAddress)
+public actual fun hostStatistics(hostPriv: HostT, flavor: HostFlavorT, hostInfoOut: HostInfoT, hostInfoOutCnt: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleHostStatistics(hostPriv.toInt(), flavor, hostInfoOut.rawAddress, hostInfoOutCnt.rawAddress)
 
-public actual fun sysdirStartSearchPathEnumeration(dir: SysdirSearchPathDirectoryT, domainMask: SysdirSearchPathDomainMaskT): io.github.kotlinmania.rustlang.libc.SysdirSearchPathEnumerationState =
+public actual fun sysdirStartSearchPathEnumeration(dir: SysdirSearchPathDirectoryT, domainMask: SysdirSearchPathDomainMaskT): io.github.kotlinmania.rustlang.unix.bsd.apple.SysdirSearchPathEnumerationState =
     0u
 
-public actual fun sysdirGetNextSearchPathEnumeration(state: io.github.kotlinmania.rustlang.libc.SysdirSearchPathEnumerationState, path: MutPtr): io.github.kotlinmania.rustlang.libc.SysdirSearchPathEnumerationState =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSysdirGetNextSearchPathEnumeration(state.toInt(), path.rawAddress).toUInt()
+public actual fun sysdirGetNextSearchPathEnumeration(state: io.github.kotlinmania.rustlang.unix.bsd.apple.SysdirSearchPathEnumerationState, path: MutPtr): io.github.kotlinmania.rustlang.unix.bsd.apple.SysdirSearchPathEnumerationState =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSysdirGetNextSearchPathEnumeration(state.toInt(), path.rawAddress).toUInt()
 
 public actual fun getattrlist(path: ConstPtr, attrList: MutPtr, attrBuf: MutPtr, attrBufSize: SizeT, options: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGetattrlist(path.rawAddress, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetattrlist(path.rawAddress, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toInt())
 
 public actual fun fgetattrlist(fd: CInt, attrList: MutPtr, attrBuf: MutPtr, attrBufSize: SizeT, options: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFgetattrlist(fd, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFgetattrlist(fd, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toInt())
 
 public actual fun getattrlistat(fd: CInt, path: ConstPtr, attrList: MutPtr, attrBuf: MutPtr, attrBufSize: SizeT, options: CUlong): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGetattrlistat(fd, path.rawAddress, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetattrlistat(fd, path.rawAddress, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toLong())
 
 public actual fun setattrlist(path: ConstPtr, attrList: MutPtr, attrBuf: MutPtr, attrBufSize: SizeT, options: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSetattrlist(path.rawAddress, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSetattrlist(path.rawAddress, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toInt())
 
 public actual fun fsetattrlist(fd: CInt, attrList: MutPtr, attrBuf: MutPtr, attrBufSize: SizeT, options: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFsetattrlist(fd, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFsetattrlist(fd, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toInt())
 
 public actual fun setattrlistat(dirFd: CInt, path: ConstPtr, attrList: MutPtr, attrBuf: MutPtr, attrBufSize: SizeT, options: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleSetattrlistat(dirFd, path.rawAddress, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleSetattrlistat(dirFd, path.rawAddress, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toInt())
 
 public actual fun getattrlistbulk(dirfd: CInt, attrList: MutPtr, attrBuf: MutPtr, attrBufSize: SizeT, options: ULong): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleGetattrlistbulk(dirfd, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleGetattrlistbulk(dirfd, attrList.rawAddress, attrBuf.rawAddress, attrBufSize.toLong(), options.toLong())
 
 public actual fun mallocSize(ptr: ConstPtr): SizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMallocSize(ptr.rawAddress).toULong()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocSize(ptr.rawAddress).toULong()
 
 public actual fun mallocGoodSize(size: SizeT): SizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMallocGoodSize(size.toLong()).toULong()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMallocGoodSize(size.toLong()).toULong()
 
 public actual fun dirname(path: MutPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleDirname(path.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleDirname(path.rawAddress))
 
 public actual fun basename(path: MutPtr): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleBasename(path.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleBasename(path.rawAddress))
 
 public actual fun mkfifoat(dirfd: CInt, pathname: ConstPtr, mode: ModeT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMkfifoat(dirfd, pathname.rawAddress, mode.toShort())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMkfifoat(dirfd, pathname.rawAddress, mode.toShort())
 
 public actual fun mknodat(dirfd: CInt, pathname: ConstPtr, mode: ModeT, dev: DevT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleMknodat(dirfd, pathname.rawAddress, mode.toShort(), dev)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMknodat(dirfd, pathname.rawAddress, mode.toShort(), dev)
 
 public actual fun freadlink(fd: CInt, buf: MutPtr, size: SizeT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleFreadlink(fd, buf.rawAddress, size.toLong())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleFreadlink(fd, buf.rawAddress, size.toLong())
 
 public actual fun execvP(file: ConstPtr, searchPath: ConstPtr, argv: ConstPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleExecvP(file.rawAddress, searchPath.rawAddress, argv.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleExecvP(file.rawAddress, searchPath.rawAddress, argv.rawAddress)
 
 public actual fun qsortR(base: MutPtr, num: SizeT, size: SizeT, arg: MutPtr, compar: QsortRComparCallback?) {
-    UnixBsdAppleJniBridge.libcUnixBsdAppleQsortR(base.rawAddress, num.toLong(), size.toLong(), arg.rawAddress, 0L)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleQsortR(base.rawAddress, num.toLong(), size.toLong(), arg.rawAddress, 0L)
 }
 
-public actual fun clockSettime(clockId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: ConstPtr): CInt =
-    0
+public actual fun clockSettime(clockId: io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT, tp: ConstPtr): CInt =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleClockSettime(clockId.toInt(), tp.rawAddress)
 
 public actual fun procListpids(t: UInt, typeinfo: UInt, buffer: MutPtr, buffersize: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcListpids(t.toInt(), typeinfo.toInt(), buffer.rawAddress, buffersize)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcListpids(t.toInt(), typeinfo.toInt(), buffer.rawAddress, buffersize)
 
 public actual fun procListallpids(buffer: MutPtr, buffersize: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcListallpids(buffer.rawAddress, buffersize)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcListallpids(buffer.rawAddress, buffersize)
 
 public actual fun procListpgrppids(pgrpid: PidT, buffer: MutPtr, buffersize: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcListpgrppids(pgrpid, buffer.rawAddress, buffersize)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcListpgrppids(pgrpid, buffer.rawAddress, buffersize)
 
 public actual fun procListchildpids(ppid: PidT, buffer: MutPtr, buffersize: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcListchildpids(ppid, buffer.rawAddress, buffersize)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcListchildpids(ppid, buffer.rawAddress, buffersize)
 
 public actual fun procPidinfo(pid: CInt, flavor: CInt, arg: ULong, buffer: MutPtr, buffersize: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcPidinfo(pid, flavor, arg.toLong(), buffer.rawAddress, buffersize)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcPidinfo(pid, flavor, arg.toLong(), buffer.rawAddress, buffersize)
 
 public actual fun procPidfdinfo(pid: CInt, fd: CInt, flavor: CInt, buffer: MutPtr, buffersize: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcPidfdinfo(pid, fd, flavor, buffer.rawAddress, buffersize)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcPidfdinfo(pid, fd, flavor, buffer.rawAddress, buffersize)
 
 public actual fun procPidfileportinfo(pid: CInt, fileport: UInt, flavor: CInt, buffer: MutPtr, buffersize: CInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcPidfileportinfo(pid, fileport.toInt(), flavor, buffer.rawAddress, buffersize)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcPidfileportinfo(pid, fileport.toInt(), flavor, buffer.rawAddress, buffersize)
 
 public actual fun procPidpath(pid: CInt, buffer: MutPtr, buffersize: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcPidpath(pid, buffer.rawAddress, buffersize.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcPidpath(pid, buffer.rawAddress, buffersize.toInt())
 
 public actual fun procName(pid: CInt, buffer: MutPtr, buffersize: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcName(pid, buffer.rawAddress, buffersize.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcName(pid, buffer.rawAddress, buffersize.toInt())
 
 public actual fun procRegionfilename(pid: CInt, address: ULong, buffer: MutPtr, buffersize: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcRegionfilename(pid, address.toLong(), buffer.rawAddress, buffersize.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcRegionfilename(pid, address.toLong(), buffer.rawAddress, buffersize.toInt())
 
 public actual fun procKmsgbuf(buffer: MutPtr, buffersize: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcKmsgbuf(buffer.rawAddress, buffersize.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcKmsgbuf(buffer.rawAddress, buffersize.toInt())
 
 public actual fun procLibversion(major: MutPtr, minor: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcLibversion(major.rawAddress, minor.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcLibversion(major.rawAddress, minor.rawAddress)
 
 public actual fun procPidRusage(pid: CInt, flavor: CInt, buffer: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcPidRusage(pid, flavor, buffer.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcPidRusage(pid, flavor, buffer.rawAddress)
 
 public actual fun procSetNoSmt(): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcSetNoSmt()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcSetNoSmt()
 
 public actual fun procSetthreadNoSmt(): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcSetthreadNoSmt()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcSetthreadNoSmt()
 
 public actual fun procSetCsm(flags: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcSetCsm(flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcSetCsm(flags.toInt())
 
 public actual fun procSetthreadCsm(flags: UInt): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleProcSetthreadCsm(flags.toInt())
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleProcSetthreadCsm(flags.toInt())
 
 public actual fun memmem(haystack: ConstPtr, haystacklen: SizeT, needle: ConstPtr, needlelen: SizeT): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleMemmem(haystack.rawAddress, haystacklen.toLong(), needle.rawAddress, needlelen.toLong()))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleMemmem(haystack.rawAddress, haystacklen.toLong(), needle.rawAddress, needlelen.toLong()))
 
-public actual fun taskSetInfo(targetTask: io.github.kotlinmania.rustlang.libc.TaskT, flavor: io.github.kotlinmania.rustlang.libc.TaskFlavorT, taskInfoIn: io.github.kotlinmania.rustlang.libc.TaskInfoT, taskInfoInCnt: io.github.kotlinmania.rustlang.libc.MachMsgTypeNumberT): io.github.kotlinmania.rustlang.libc.KernReturnT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleTaskSetInfo(targetTask.toInt(), flavor.toInt(), taskInfoIn.rawAddress, taskInfoInCnt.toInt())
+public actual fun taskSetInfo(targetTask: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskT, flavor: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskFlavorT, taskInfoIn: io.github.kotlinmania.rustlang.unix.bsd.apple.TaskInfoT, taskInfoInCnt: io.github.kotlinmania.rustlang.unix.bsd.apple.MachMsgTypeNumberT): io.github.kotlinmania.rustlang.unix.bsd.apple.KernReturnT =
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleTaskSetInfo(targetTask.toInt(), flavor.toInt(), taskInfoIn.rawAddress, taskInfoInCnt.toInt())
 
 public actual fun iconvOpen(tocode: ConstPtr, fromcode: ConstPtr): IconvT =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleIconvOpen(tocode.rawAddress, fromcode.rawAddress))
+    MutPtr(LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleIconvOpen(tocode.rawAddress, fromcode.rawAddress))
 
 public actual fun iconv(cd: IconvT, inbuf: MutPtr, inbytesleft: MutPtr, outbuf: MutPtr, outbytesleft: MutPtr): SizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleIconv(cd.rawAddress, inbuf.rawAddress, inbytesleft.rawAddress, outbuf.rawAddress, outbytesleft.rawAddress).toULong()
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleIconv(cd.rawAddress, inbuf.rawAddress, inbytesleft.rawAddress, outbuf.rawAddress, outbytesleft.rawAddress).toULong()
 
 public actual fun iconvClose(cd: IconvT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdAppleIconvClose(cd.rawAddress)
+    LibcUnixBsdAppleJniBridge.rustlangLibcUnixBsdAppleIconvClose(cd.rawAddress)

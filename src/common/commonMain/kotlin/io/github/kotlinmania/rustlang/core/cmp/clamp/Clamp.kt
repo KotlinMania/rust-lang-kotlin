@@ -3,10 +3,10 @@ package io.github.kotlinmania.rustlang.core.cmp.clamp
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
-import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
-import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
-import io.github.kotlinmania.rustlang.core.ops.range.RangeToInclusive
+import io.github.kotlinmania.rustlang.ops.range.RangeFrom
+import io.github.kotlinmania.rustlang.ops.range.RangeFull
+import io.github.kotlinmania.rustlang.ops.range.RangeInclusive
+import io.github.kotlinmania.rustlang.ops.range.RangeToInclusive
 
 /**
  * Trait for ranges supported by [Ord.clampTo].

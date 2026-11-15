@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.alloc.vec
 
-import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.Global
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -103,7 +103,7 @@ public fun <T> findFirstDuplicate(v: List<T>, chunkSize: Int): Int? {
 // time when we didn't have the ability to gate internal methods used by public macros.
 // NOTE: the real deprecation version is the same as the stabilization version.
 // I.e. it should never have been used even in version 1.0.
-public fun <T> fromElem(elem: T, n: Int): Vec<T> = fromElemGlobal(elem, n)
+public fun <T> fromElem(elem: T, n: Int): Vec<T> = io.github.kotlinmania.rustlang.vec.fromElemGlobal(elem, n)
 
 public fun <T> fromElemGlobal(elem: T, n: Int, fromElemTFn: (T, Int, Any?) -> Vec<T>): Vec<T> = fromElemTFn(elem, n, Global)
 

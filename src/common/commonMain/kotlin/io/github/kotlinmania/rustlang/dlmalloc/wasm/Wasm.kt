@@ -1,10 +1,10 @@
 // port-lint: source wasm.rs
 package io.github.kotlinmania.rustlang.dlmalloc.wasm
 
+import io.github.kotlinmania.rustlang.Allocator
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.dlmalloc.Allocator
 
 /**
  * System setting for Wasm
@@ -74,4 +74,19 @@ public open class System(
 
         public fun new(): System = System(priv = Unit)
     }
+}
+
+public fun acquireGlobalLock() {
+    // single threaded, no need!
+    check(!false)
+}
+
+public fun releaseGlobalLock() {
+    // single threaded, no need!
+    check(!false)
+}
+
+public fun enableAllocAfterFork() {
+    // single threaded, no need!
+    check(!false)
 }

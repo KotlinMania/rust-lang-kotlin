@@ -1,6 +1,13 @@
 // port-lint: source x86/avx512vpopcntdq.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.M512i
+import io.github.kotlinmania.rustlang.x86.Mmask16
+import io.github.kotlinmania.rustlang.x86.Mmask8
+
 // Vectorized Population Count Instructions for Double- and Quadwords (VPOPCNTDQ)
 //
 // The intrinsics here correspond to those in the `immintrin.h` C header.

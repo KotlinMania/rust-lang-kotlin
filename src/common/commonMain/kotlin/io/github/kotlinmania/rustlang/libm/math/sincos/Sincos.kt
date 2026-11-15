@@ -1,10 +1,10 @@
 // port-lint: source math/sincos.rs
 package io.github.kotlinmania.rustlang.libm.math.sincos
 
-import io.github.kotlinmania.rustlang.libm.math.getHighWord
-import io.github.kotlinmania.rustlang.libm.math.kcos.kCos
-import io.github.kotlinmania.rustlang.libm.math.ksin.kSin
-import io.github.kotlinmania.rustlang.libm.math.rempio2.remPio2
+import io.github.kotlinmania.rustlang.math.getHighWord
+import io.github.kotlinmania.rustlang.math.kcos.kCos
+import io.github.kotlinmania.rustlang.math.ksin.kSin
+import io.github.kotlinmania.rustlang.math.rempio2.remPio2
 
 /**
  * Both the sine and cosine of `x` (f64).

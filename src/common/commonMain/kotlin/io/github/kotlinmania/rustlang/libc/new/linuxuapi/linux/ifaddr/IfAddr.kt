@@ -1,10 +1,10 @@
 // port-lint: source new/linux_uapi/linux/if_addr.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.ifaddr
 
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `uapi / linux / ifAddr.h`
 

@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.libc.new.glibc.io.sys.statvfs
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
 
-private object NewGlibcIoSysStatvfsJniBridge {
+private object LibcNewGlibcIoSysStatvfsJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -43,8 +43,8 @@ private object NewGlibcIoSysStatvfsJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = NewGlibcIoSysStatvfsJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = LibcNewGlibcIoSysStatvfsJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -61,26 +61,26 @@ private object NewGlibcIoSysStatvfsJniBridge {
     }
 
     @JvmStatic
-    external fun libcNewGlibcIoSysStatvfsStatvfs(path: Long, buf: Long): Int
+    external fun rustlangLibcNewGlibcIoSysStatvfsStatvfs(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcNewGlibcIoSysStatvfsFstatvfs(fd: Int, buf: Long): Int
+    external fun rustlangLibcNewGlibcIoSysStatvfsFstatvfs(fd: Int, buf: Long): Int
 
     @JvmStatic
-    external fun libcNewGlibcIoSysStatvfsStatvfs64(path: Long, buf: Long): Int
+    external fun rustlangLibcNewGlibcIoSysStatvfsStatvfs64(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcNewGlibcIoSysStatvfsFstatvfs64(fd: Int, buf: Long): Int
+    external fun rustlangLibcNewGlibcIoSysStatvfsFstatvfs64(fd: Int, buf: Long): Int
 }
 
 public actual fun statvfs(path: ConstPtr, buf: MutPtr): CInt =
-    NewGlibcIoSysStatvfsJniBridge.libcNewGlibcIoSysStatvfsStatvfs(path.rawAddress, buf.rawAddress)
+    LibcNewGlibcIoSysStatvfsJniBridge.rustlangLibcNewGlibcIoSysStatvfsStatvfs(path.rawAddress, buf.rawAddress)
 
 public actual fun fstatvfs(fd: CInt, buf: MutPtr): CInt =
-    NewGlibcIoSysStatvfsJniBridge.libcNewGlibcIoSysStatvfsFstatvfs(fd, buf.rawAddress)
+    LibcNewGlibcIoSysStatvfsJniBridge.rustlangLibcNewGlibcIoSysStatvfsFstatvfs(fd, buf.rawAddress)
 
 public actual fun statvfs64(path: ConstPtr, buf: MutPtr): CInt =
-    NewGlibcIoSysStatvfsJniBridge.libcNewGlibcIoSysStatvfsStatvfs64(path.rawAddress, buf.rawAddress)
+    LibcNewGlibcIoSysStatvfsJniBridge.rustlangLibcNewGlibcIoSysStatvfsStatvfs64(path.rawAddress, buf.rawAddress)
 
 public actual fun fstatvfs64(fd: CInt, buf: MutPtr): CInt =
-    NewGlibcIoSysStatvfsJniBridge.libcNewGlibcIoSysStatvfsFstatvfs64(fd, buf.rawAddress)
+    LibcNewGlibcIoSysStatvfsJniBridge.rustlangLibcNewGlibcIoSysStatvfsFstatvfs64(fd, buf.rawAddress)

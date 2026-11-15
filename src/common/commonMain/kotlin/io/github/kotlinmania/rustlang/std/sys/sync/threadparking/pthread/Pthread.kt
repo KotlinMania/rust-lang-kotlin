@@ -8,11 +8,11 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.std.sys.sync.condvar.pthread.Condvar
-import io.github.kotlinmania.rustlang.std.sys.sync.mutex.pthread.Mutex
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.sys.sync.condvar.pthread.Condvar
+import io.github.kotlinmania.rustlang.sys.sync.mutex.pthread.Mutex
 
 // Thread parking without `futex` using the `pthread` synchronization primitives.
 
@@ -49,9 +49,9 @@ public open class Parker internal constructor(
         run {
             val matchVal = this.state.compareExchange(EMPTY, PARKED, Relaxed, Relaxed)
             when {
-                matchVal is Result.Ok<*> -> {}
-                matchVal is Result.Err<*> && matchVal.error == NOTIFIED -> {
-                    val Notified = (matchVal as Result.Err<*>).error
+                matchVal is Result.Ok<*, *> -> {}
+                matchVal is Result.Err<*, *> && matchVal.error == NOTIFIED -> {
+                    val Notified = (matchVal as Result.Err<*, *>).error
                     // We must read here, even though we know it will be `NOTIFIED`.
                     // This is because `unpark` may have been called again since we read
                     // `NOTIFIED` in the `compareExchange` above. We must perform an
@@ -74,9 +74,9 @@ public open class Parker internal constructor(
             this.cvar().wait(this.lock())
             run {
                 val matchVal1 = this.state.compareExchange(NOTIFIED, EMPTY, Acquire, Relaxed)
-                when (matchVal1) { is Result.Ok<*> -> {
+                when (matchVal1) { is Result.Ok<*, *> -> {
                     break
-                }; is Result.Err<*> -> {} }
+                }; is Result.Err<*, *> -> {} }
             }
         }
         this.lock().unlock()
@@ -96,9 +96,9 @@ public open class Parker internal constructor(
         run {
             val matchVal = this.state.compareExchange(EMPTY, PARKED, Relaxed, Relaxed)
             when {
-                matchVal is Result.Ok<*> -> {}
-                matchVal is Result.Err<*> && matchVal.error == NOTIFIED -> {
-                    val Notified = (matchVal as Result.Err<*>).error
+                matchVal is Result.Ok<*, *> -> {}
+                matchVal is Result.Err<*, *> && matchVal.error == NOTIFIED -> {
+                    val Notified = (matchVal as Result.Err<*, *>).error
                     // We must read again here, see `park`.
                     val old = this.state.swap(EMPTY, Acquire)
                     this.lock().unlock()

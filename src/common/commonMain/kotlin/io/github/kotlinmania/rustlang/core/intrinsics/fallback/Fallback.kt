@@ -3,13 +3,13 @@ package io.github.kotlinmania.rustlang.core.intrinsics.fallback
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.intrinsics.assume
-import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr
 import io.github.kotlinmania.rustlang.core.num.rustOverflowingAdd
 import io.github.kotlinmania.rustlang.core.num.rustWrappingAdd
 import io.github.kotlinmania.rustlang.core.num.rustWrappingMul
+import io.github.kotlinmania.rustlang.intrinsics.assume
+import io.github.kotlinmania.rustlang.intrinsics.fallback.disjointBitor
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedShl
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedShr
 
 public interface CarryingMulAdd<T, out Unsigned> {
     public fun carryingMulAdd(multiplicand: T, addend: T, carry: T): Pair<Unsigned, T>

@@ -2,15 +2,15 @@
 package io.github.kotlinmania.rustlang.core.array.drain
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.conjureZst
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.ops.function.FnMut
-import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
+import io.github.kotlinmania.rustlang.mem.conjureZst
+import io.github.kotlinmania.rustlang.ops.function.FnMut
+import io.github.kotlinmania.rustlang.ops.function.FnOnce
+import io.github.kotlinmania.rustlang.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.ptr.withoutProvenanceMut
 
 /**
  * See [Drain.new]; this is our fake iterator.
@@ -32,7 +32,7 @@ public open class Drain<T, F>(
     public var endOrLen: MutPtr,
     public var f: F,
     public var l: Unit,
-) : FnOnce<Int<Drain<T, F>>, Any?, U>, FnMut<Int<Drain<T, F>>> {
+) : FnOnce<Int<Drain<T, F>>, U>, FnMut<Int<Drain<T, F>>> {
     /**
      * This implementation is useless.
      */

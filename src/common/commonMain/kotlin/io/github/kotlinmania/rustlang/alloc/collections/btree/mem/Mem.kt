@@ -1,9 +1,7 @@
 // port-lint: source collections/btree/mem.rs
 package io.github.kotlinmania.rustlang.alloc.collections.btree.mem
 
-import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.forget
 
 // keep as illustration and for future use
 
@@ -35,7 +33,7 @@ public fun <T, R> replace(v: T, change: (T) -> Pair<T, R>): R {
     val (newValue, ret) = change(value)
     // SAFETY: newValue is T and v is valid for writes.
     run {
-        write(v, newValue, typeLayoutT = ObjectSlotLayout<T>())
+        ptr.write(v, newValue, typeLayoutT = ObjectSlotLayout<T>())
     }
     forget(guard)
     return ret

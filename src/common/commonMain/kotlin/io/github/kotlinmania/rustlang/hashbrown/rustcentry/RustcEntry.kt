@@ -1,19 +1,18 @@
 // port-lint: source rustc_entry.rs
 package io.github.kotlinmania.rustlang.hashbrown.rustcentry
 
-import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.Drain
+import io.github.kotlinmania.rustlang.IntoIter
+import io.github.kotlinmania.rustlang.Iter
+import io.github.kotlinmania.rustlang.IterMut
+import io.github.kotlinmania.rustlang.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
-import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hashbrown.Drain
-import io.github.kotlinmania.rustlang.hashbrown.IntoIter
-import io.github.kotlinmania.rustlang.hashbrown.Iter
-import io.github.kotlinmania.rustlang.hashbrown.IterMut
-import io.github.kotlinmania.rustlang.hashbrown.makeHash
-import io.github.kotlinmania.rustlang.hashbrown.makeHasher
-import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
-import io.github.kotlinmania.rustlang.hashbrown.raw.RawTable
 import io.github.kotlinmania.rustlang.hashbrown.rustcentry.RustcEntry.*
+import io.github.kotlinmania.rustlang.makeHash
+import io.github.kotlinmania.rustlang.makeHasher
+import io.github.kotlinmania.rustlang.raw.Bucket
+import io.github.kotlinmania.rustlang.raw.RawTable
 
 public class DebugStruct(
     private val out: StringBuilder,

@@ -38,7 +38,7 @@ private object PanicunwindJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/panicunwind/native/$hostPlatform-$hostArch/$libFileName"
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
         val stream = PanicunwindJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
@@ -56,18 +56,18 @@ private object PanicunwindJniBridge {
     }
 
     @JvmStatic
-    external fun panicunwindRustDropPanic()
+    external fun rustlangPanicunwindRustDropPanic()
 
     @JvmStatic
-    external fun panicunwindRustForeignException()
+    external fun rustlangPanicunwindRustForeignException()
 }
 
 public actual fun rustDropPanic(): Nothing {
-    PanicunwindJniBridge.panicunwindRustDropPanic()
+    PanicunwindJniBridge.rustlangPanicunwindRustDropPanic()
     error("Unreachable noreturn C function rustDropPanic")
 }
 
 public actual fun rustForeignException(): Nothing {
-    PanicunwindJniBridge.panicunwindRustForeignException()
+    PanicunwindJniBridge.rustlangPanicunwindRustForeignException()
     error("Unreachable noreturn C function rustForeignException")
 }

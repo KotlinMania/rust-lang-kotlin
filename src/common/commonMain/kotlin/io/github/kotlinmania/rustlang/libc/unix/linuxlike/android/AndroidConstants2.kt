@@ -1,19 +1,19 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.types.cstr
-import io.github.kotlinmania.rustlang.libc.types.u32CastInt
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.iow
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.iowr
+import io.github.kotlinmania.rustlang.types.cstr
+import io.github.kotlinmania.rustlang.types.u32CastInt
+import io.github.kotlinmania.rustlang.unix.linuxlike.iow
+import io.github.kotlinmania.rustlang.unix.linuxlike.iowr
 
 public val NDTA_PAD: CUshort = 9u
 

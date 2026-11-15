@@ -3,10 +3,10 @@
 package io.github.kotlinmania.rustlang.std.sys.exit
 
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
-import io.github.kotlinmania.rustlang.std.sys.exit.cinterop.stdSysExitExit
+import io.github.kotlinmania.rustlang.std.sys.exit.cinterop.rustlangStdSysExitExit
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun exit(status: CInt): Nothing {
-    stdSysExitExit(status)
+    rustlangStdSysExitExit(status)
     error("Unreachable noreturn C function exit")
 }

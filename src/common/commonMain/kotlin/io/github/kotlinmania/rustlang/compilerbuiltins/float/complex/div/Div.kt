@@ -1,13 +1,13 @@
 // port-lint: source float/complex/div.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.complex.div
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.generic.fmax
-import io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.generic.ilogb
-import io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.generic.scalbn
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.num.complex.Complex
+import io.github.kotlinmania.rustlang.math.fmax
+import io.github.kotlinmania.rustlang.math.libmmath.generic.ilogb
+import io.github.kotlinmania.rustlang.math.libmmath.generic.scalbn
+import io.github.kotlinmania.rustlang.support.Float
 
 /**
  * Returns the quotient of `(a + ib)` and `(c + id)`.

@@ -1,13 +1,10 @@
 // port-lint: source collections/vec_deque/drain.rs
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.drain
 
-import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.index.WrappedIndex
+import io.github.kotlinmania.rustlang.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
-import io.github.kotlinmania.rustlang.core.mem.needsDrop
-import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 
 public class DebugTuple(
@@ -104,8 +101,8 @@ public open class Drain<T, A : Allocator> internal constructor(
                     // SAFETY: We just checked that `self.remaining != 0`.
                     run {
                         val (front, back) = this.value.asSlices()
-                        dropInPlace(front)
-                        dropInPlace(back)
+                        ptr.dropInPlace(front)
+                        ptr.dropInPlace(back)
                     }
                 }
                 // ignore-tidy-undocumented-unchecked
@@ -215,10 +212,10 @@ public open class Drain<T, A : Allocator> internal constructor(
             guard.first.remaining -= front.len()
             // SAFETY: This can't have been dropped before since
             // `idx` & `remaining` track what's been dropped.
-            dropInPlace(front)
+            ptr.dropInPlace(front)
             guard.first.remaining = 0
             // SAFETY: Ditto.
-            dropInPlace(back)
+            ptr.dropInPlace(back)
         }
     }
 

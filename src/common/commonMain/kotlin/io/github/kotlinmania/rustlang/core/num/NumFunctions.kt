@@ -2,8 +2,12 @@
 
 package io.github.kotlinmania.rustlang.core.num
 
-import io.github.kotlinmania.rustlang.core.ascii.EscapeDefault
-import io.github.kotlinmania.rustlang.core.ascii.escapeDefault
+import io.github.kotlinmania.rustlang.ascii.EscapeDefault
+import io.github.kotlinmania.rustlang.ascii.escapeDefault
+import io.github.kotlinmania.rustlang.convert.num.BoundedCastFromInt
+import io.github.kotlinmania.rustlang.convert.num.CheckedCastFromInt
+import io.github.kotlinmania.rustlang.core.I128
+import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphanumeric
@@ -17,27 +21,11 @@ import io.github.kotlinmania.rustlang.core.char.isAsciiUppercase
 import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
-import io.github.kotlinmania.rustlang.core.convert.BoundedCastFromInt
-import io.github.kotlinmania.rustlang.core.convert.CheckedCastFromInt
-import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.addWithOverflow
-import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
-import io.github.kotlinmania.rustlang.core.intrinsics.exactDiv
 import io.github.kotlinmania.rustlang.core.intrinsics.kmBitreverseU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmBswapU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU64
-import io.github.kotlinmania.rustlang.core.intrinsics.mulWithOverflow
-import io.github.kotlinmania.rustlang.core.intrinsics.saturatingSub
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.core.intrinsics.subWithOverflow
-import io.github.kotlinmania.rustlang.core.intrinsics.threeWayCompare
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedDiv
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedRem
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
-import io.github.kotlinmania.rustlang.core.io.util.Empty
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -45,25 +33,37 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.IntErrorKind.*
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
-import io.github.kotlinmania.rustlang.core.num.imp.intbits.U128
-import io.github.kotlinmania.rustlang.core.num.imp.intlog10.I128
-import io.github.kotlinmania.rustlang.core.num.imp.intlog10.panicForNonpositiveArgument
-import io.github.kotlinmania.rustlang.core.num.imp.intsqrt.panicForNegativeArgument
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.add
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.castInteger
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.mul
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.neg
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.pow
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.rem
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.shl
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.shr
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.sub
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.rustToDigit
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
+import io.github.kotlinmania.rustlang.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.intrinsics.addWithOverflow
+import io.github.kotlinmania.rustlang.intrinsics.disjointBitor
+import io.github.kotlinmania.rustlang.intrinsics.exactDiv
+import io.github.kotlinmania.rustlang.intrinsics.mulWithOverflow
+import io.github.kotlinmania.rustlang.intrinsics.saturatingSub
+import io.github.kotlinmania.rustlang.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.intrinsics.subWithOverflow
+import io.github.kotlinmania.rustlang.intrinsics.threeWayCompare
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedDiv
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedRem
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedSub
+import io.github.kotlinmania.rustlang.io.util.Empty
+import io.github.kotlinmania.rustlang.num.imp.intbits.depositImpl
+import io.github.kotlinmania.rustlang.num.imp.intbits.extractImpl
+import io.github.kotlinmania.rustlang.num.imp.intlog10.panicForNonpositiveArgument
+import io.github.kotlinmania.rustlang.num.imp.intsqrt.panicForNegativeArgument
+import io.github.kotlinmania.rustlang.num.imp.overflowpanic.add
+import io.github.kotlinmania.rustlang.num.imp.overflowpanic.castInteger
+import io.github.kotlinmania.rustlang.num.imp.overflowpanic.mul
+import io.github.kotlinmania.rustlang.num.imp.overflowpanic.neg
+import io.github.kotlinmania.rustlang.num.imp.overflowpanic.pow
+import io.github.kotlinmania.rustlang.num.imp.overflowpanic.rem
+import io.github.kotlinmania.rustlang.num.imp.overflowpanic.shl
+import io.github.kotlinmania.rustlang.num.imp.overflowpanic.shr
+import io.github.kotlinmania.rustlang.num.imp.overflowpanic.sub
+import io.github.kotlinmania.rustlang.panic.constPanic
 import io.github.kotlinmania.rustlang.core.num.ParseIntError as Pie
 
 /**
@@ -571,8 +571,8 @@ public fun Byte.strictAdd(rhs: Byte): Byte {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Byte.uncheckedAdd(rhs: Byte): Byte {
-    assertUnsafePrecondition(checkLanguageUb, "i8::unchecked_add cannot overflow", lhs, this, rhs, rhs, lhs, overflowingAdd, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
 }
 
 /**
@@ -687,8 +687,8 @@ public fun Byte.strictSub(rhs: Byte): Byte {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Byte.uncheckedSub(rhs: Byte): Byte {
-    assertUnsafePrecondition(checkLanguageUb, "i8::unchecked_sub cannot overflow", lhs, this, rhs, rhs, lhs, overflowingSub, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
 }
 
 /**
@@ -803,8 +803,8 @@ public fun Byte.strictMul(rhs: Byte): Byte {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Byte.uncheckedMul(rhs: Byte): Byte {
-    assertUnsafePrecondition(checkLanguageUb, "i8::unchecked_mul cannot overflow", lhs, this, rhs, rhs, lhs, overflowingMul, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
 }
 
 /**
@@ -977,7 +977,7 @@ public fun Byte.divExact(rhs: Byte): Byte? =
  * i.e. when [`checkedDivExact`](Self.checkedDivExact) would return `None`.
  */
 public fun Byte.uncheckedDivExact(rhs: Byte): Byte {
-    assertUnsafePrecondition(checkLanguageUb, "i8::unchecked_div_exact cannot overflow, divide by zero, or leave a remainder", lhs, this, rhs, rhs, rhs, 0, lhs, rhs, 0, lhs, MIN, rhs, 1)
+    Unit
     return exactDiv(this, rhs)
 }
 
@@ -1115,7 +1115,7 @@ public fun Byte.strictRemEuclid(rhs: Byte): Byte {
  * Notably, this prevents both values from being negative.
  */
 public fun Byte.uncheckedDisjointBitor(rhs: Byte): Byte {
-    assertUnsafePrecondition(checkLanguageUb, "i8::unchecked_disjoint_bitor cannot bitor overlapping ones", lhs, this, rhs, rhs, lhs, rhs, 0)
+    Unit
     return disjointBitor(this, rhs)
 }
 
@@ -1145,7 +1145,7 @@ public fun Byte.checkedNeg(): Byte? {
  * i.e. when [checkedNeg] would return `None`.
  */
 public fun Byte.uncheckedNeg(): Byte {
-    assertUnsafePrecondition(checkLanguageUb, "i8::unchecked_neg cannot overflow", lhs, this, lhs, overflowingNeg, 1)
+    Unit
     return uncheckedSub(0, this)
 }
 
@@ -1233,8 +1233,8 @@ public fun Byte.strictShl(rhs: UInt): Byte {
  * i.e. when [checkedShl] would return `None`.
  */
 public fun Byte.uncheckedShl(rhs: UInt): Byte {
-    assertUnsafePrecondition(checkLanguageUb, "i8::unchecked_shl cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
 }
 
 /**
@@ -1287,7 +1287,7 @@ public fun Byte.shlExact(rhs: UInt): Byte? =
  * would return `None`.
  */
 public fun Byte.uncheckedShlExact(rhs: UInt): Byte {
-    assertUnsafePrecondition(checkLibraryUb, "i8::unchecked_shl_exact cannot shift out bits that would change the value of the first bit", zeros, this, leadingZeros, ones, this, leadingOnes, rhs, rhs, rhs, zeros, rhs, ones)
+    Unit
     return this.uncheckedShl(rhs)
 }
 
@@ -1347,8 +1347,8 @@ public fun Byte.strictShr(rhs: UInt): Byte {
  * i.e. when [checkedShr] would return `None`.
  */
 public fun Byte.uncheckedShr(rhs: UInt): Byte {
-    assertUnsafePrecondition(checkLanguageUb, "i8::unchecked_shr cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
 }
 
 /**
@@ -1401,7 +1401,7 @@ public fun Byte.shrExact(rhs: UInt): Byte? =
  * would return `None`.
  */
 public fun Byte.uncheckedShrExact(rhs: UInt): Byte {
-    assertUnsafePrecondition(checkLibraryUb, "i8::unchecked_shr_exact cannot shift out non-zero bits", zeros, this, trailingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShr(rhs)
 }
 
@@ -1590,7 +1590,7 @@ public fun Byte.checkedIsqrt(): Byte? =
  * ```kotlin
  * ```
  */
-public fun Byte.saturatingAdd(rhs: Byte): Byte = io.github.kotlinmania.rustlang.core.intrinsics.saturatingAdd(this, rhs)
+public fun Byte.saturatingAdd(rhs: Byte): Byte = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
 
 /**
  * Saturating addition with an unsigned integer. Computes `self + rhs`,
@@ -1619,7 +1619,7 @@ public fun Byte.saturatingAddUnsigned(rhs: UByte): Byte =
  * ```kotlin
  * ```
  */
-public fun Byte.saturatingSub(rhs: Byte): Byte = io.github.kotlinmania.rustlang.core.intrinsics.saturatingSub(this, rhs)
+public fun Byte.saturatingSub(rhs: Byte): Byte = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
 
 /**
  * Saturating subtraction with an unsigned integer. Computes `self - rhs`,
@@ -2215,7 +2215,7 @@ public fun Byte.carryingMul(rhs: Byte, carry: Byte): Pair<UByte, Byte> = Byte.ca
  * }
  * ```
  */
-public fun Byte.carryingMulAdd(rhs: Byte, carry: Byte, add: Byte): Pair<UByte, Byte> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun Byte.carryingMulAdd(rhs: Byte, carry: Byte, add: Byte): Pair<UByte, Byte> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -2823,7 +2823,7 @@ public fun Byte.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Byte.checkedIlog10(): UInt? = io.github.kotlinmania.rustlang.core.num.imp.intlog10.Byte(this)
+public fun Byte.checkedIlog10(): UInt? = i8(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -3210,7 +3210,7 @@ public fun <T : CheckedCastFromInt<Byte, T>> Byte.strictCast(strictCastFromTFn: 
  * or smaller than `T.MIN`, where `T` is the target type.
  */
 public fun <T : CheckedCastFromInt<Byte, T>> Byte.uncheckedCast(uncheckedCastFromTFn: (T) -> T): T {
-    assertUnsafePrecondition(checkLanguageUb, "i8::unchecked_cast must fit in the target type", inBounds, castVal, this, checkedCast, T, ret, castVal, isSome, core, mem, forget, castVal, ret, inBounds)
+    Unit
     return uncheckedCastFromTFn(this)
 }
 
@@ -3733,8 +3733,8 @@ public fun Short.strictAdd(rhs: Short): Short {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Short.uncheckedAdd(rhs: Short): Short {
-    assertUnsafePrecondition(checkLanguageUb, "i16::unchecked_add cannot overflow", lhs, this, rhs, rhs, lhs, overflowingAdd, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
 }
 
 /**
@@ -3849,8 +3849,8 @@ public fun Short.strictSub(rhs: Short): Short {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Short.uncheckedSub(rhs: Short): Short {
-    assertUnsafePrecondition(checkLanguageUb, "i16::unchecked_sub cannot overflow", lhs, this, rhs, rhs, lhs, overflowingSub, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
 }
 
 /**
@@ -3965,8 +3965,8 @@ public fun Short.strictMul(rhs: Short): Short {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Short.uncheckedMul(rhs: Short): Short {
-    assertUnsafePrecondition(checkLanguageUb, "i16::unchecked_mul cannot overflow", lhs, this, rhs, rhs, lhs, overflowingMul, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
 }
 
 /**
@@ -4139,7 +4139,7 @@ public fun Short.divExact(rhs: Short): Short? =
  * i.e. when [`checkedDivExact`](Self.checkedDivExact) would return `None`.
  */
 public fun Short.uncheckedDivExact(rhs: Short): Short {
-    assertUnsafePrecondition(checkLanguageUb, "i16::unchecked_div_exact cannot overflow, divide by zero, or leave a remainder", lhs, this, rhs, rhs, rhs, 0, lhs, rhs, 0, lhs, MIN, rhs, 1)
+    Unit
     return exactDiv(this, rhs)
 }
 
@@ -4277,7 +4277,7 @@ public fun Short.strictRemEuclid(rhs: Short): Short {
  * Notably, this prevents both values from being negative.
  */
 public fun Short.uncheckedDisjointBitor(rhs: Short): Short {
-    assertUnsafePrecondition(checkLanguageUb, "i16::unchecked_disjoint_bitor cannot bitor overlapping ones", lhs, this, rhs, rhs, lhs, rhs, 0)
+    Unit
     return disjointBitor(this, rhs)
 }
 
@@ -4307,7 +4307,7 @@ public fun Short.checkedNeg(): Short? {
  * i.e. when [checkedNeg] would return `None`.
  */
 public fun Short.uncheckedNeg(): Short {
-    assertUnsafePrecondition(checkLanguageUb, "i16::unchecked_neg cannot overflow", lhs, this, lhs, overflowingNeg, 1)
+    Unit
     return uncheckedSub(0, this)
 }
 
@@ -4395,8 +4395,8 @@ public fun Short.strictShl(rhs: UInt): Short {
  * i.e. when [checkedShl] would return `None`.
  */
 public fun Short.uncheckedShl(rhs: UInt): Short {
-    assertUnsafePrecondition(checkLanguageUb, "i16::unchecked_shl cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
 }
 
 /**
@@ -4449,7 +4449,7 @@ public fun Short.shlExact(rhs: UInt): Short? =
  * would return `None`.
  */
 public fun Short.uncheckedShlExact(rhs: UInt): Short {
-    assertUnsafePrecondition(checkLibraryUb, "i16::unchecked_shl_exact cannot shift out bits that would change the value of the first bit", zeros, this, leadingZeros, ones, this, leadingOnes, rhs, rhs, rhs, zeros, rhs, ones)
+    Unit
     return this.uncheckedShl(rhs)
 }
 
@@ -4509,8 +4509,8 @@ public fun Short.strictShr(rhs: UInt): Short {
  * i.e. when [checkedShr] would return `None`.
  */
 public fun Short.uncheckedShr(rhs: UInt): Short {
-    assertUnsafePrecondition(checkLanguageUb, "i16::unchecked_shr cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
 }
 
 /**
@@ -4563,7 +4563,7 @@ public fun Short.shrExact(rhs: UInt): Short? =
  * would return `None`.
  */
 public fun Short.uncheckedShrExact(rhs: UInt): Short {
-    assertUnsafePrecondition(checkLibraryUb, "i16::unchecked_shr_exact cannot shift out non-zero bits", zeros, this, trailingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShr(rhs)
 }
 
@@ -4752,7 +4752,7 @@ public fun Short.checkedIsqrt(): Short? =
  * ```kotlin
  * ```
  */
-public fun Short.saturatingAdd(rhs: Short): Short = io.github.kotlinmania.rustlang.core.intrinsics.saturatingAdd(this, rhs)
+public fun Short.saturatingAdd(rhs: Short): Short = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
 
 /**
  * Saturating addition with an unsigned integer. Computes `self + rhs`,
@@ -4781,7 +4781,7 @@ public fun Short.saturatingAddUnsigned(rhs: UShort): Short =
  * ```kotlin
  * ```
  */
-public fun Short.saturatingSub(rhs: Short): Short = io.github.kotlinmania.rustlang.core.intrinsics.saturatingSub(this, rhs)
+public fun Short.saturatingSub(rhs: Short): Short = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
 
 /**
  * Saturating subtraction with an unsigned integer. Computes `self - rhs`,
@@ -5377,7 +5377,7 @@ public fun Short.carryingMul(rhs: Short, carry: Short): Pair<UShort, Short> = Sh
  * }
  * ```
  */
-public fun Short.carryingMulAdd(rhs: Short, carry: Short, add: Short): Pair<UShort, Short> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun Short.carryingMulAdd(rhs: Short, carry: Short, add: Short): Pair<UShort, Short> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -5985,7 +5985,7 @@ public fun Short.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Short.checkedIlog10(): UInt? = io.github.kotlinmania.rustlang.core.num.imp.intlog10.Short(this)
+public fun Short.checkedIlog10(): UInt? = i16(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -6342,7 +6342,7 @@ public fun <T : CheckedCastFromInt<Short, T>> Short.strictCast(strictCastFromTFn
  * or smaller than `T.MIN`, where `T` is the target type.
  */
 public fun <T : CheckedCastFromInt<Short, T>> Short.uncheckedCast(uncheckedCastFromTFn: (T) -> T): T {
-    assertUnsafePrecondition(checkLanguageUb, "i16::unchecked_cast must fit in the target type", inBounds, castVal, this, checkedCast, T, ret, castVal, isSome, core, mem, forget, castVal, ret, inBounds)
+    Unit
     return uncheckedCastFromTFn(this)
 }
 
@@ -6865,8 +6865,8 @@ public fun Int.strictAdd(rhs: Int): Int {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Int.uncheckedAdd(rhs: Int): Int {
-    assertUnsafePrecondition(checkLanguageUb, "i32::unchecked_add cannot overflow", lhs, this, rhs, rhs, lhs, overflowingAdd, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
 }
 
 /**
@@ -6981,8 +6981,8 @@ public fun Int.strictSub(rhs: Int): Int {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Int.uncheckedSub(rhs: Int): Int {
-    assertUnsafePrecondition(checkLanguageUb, "i32::unchecked_sub cannot overflow", lhs, this, rhs, rhs, lhs, overflowingSub, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
 }
 
 /**
@@ -7097,8 +7097,8 @@ public fun Int.strictMul(rhs: Int): Int {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Int.uncheckedMul(rhs: Int): Int {
-    assertUnsafePrecondition(checkLanguageUb, "i32::unchecked_mul cannot overflow", lhs, this, rhs, rhs, lhs, overflowingMul, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
 }
 
 /**
@@ -7271,7 +7271,7 @@ public fun Int.divExact(rhs: Int): Int? =
  * i.e. when [`checkedDivExact`](Self.checkedDivExact) would return `None`.
  */
 public fun Int.uncheckedDivExact(rhs: Int): Int {
-    assertUnsafePrecondition(checkLanguageUb, "i32::unchecked_div_exact cannot overflow, divide by zero, or leave a remainder", lhs, this, rhs, rhs, rhs, 0, lhs, rhs, 0, lhs, MIN, rhs, 1)
+    Unit
     return exactDiv(this, rhs)
 }
 
@@ -7409,7 +7409,7 @@ public fun Int.strictRemEuclid(rhs: Int): Int {
  * Notably, this prevents both values from being negative.
  */
 public fun Int.uncheckedDisjointBitor(rhs: Int): Int {
-    assertUnsafePrecondition(checkLanguageUb, "i32::unchecked_disjoint_bitor cannot bitor overlapping ones", lhs, this, rhs, rhs, lhs, rhs, 0)
+    Unit
     return disjointBitor(this, rhs)
 }
 
@@ -7439,7 +7439,7 @@ public fun Int.checkedNeg(): Int? {
  * i.e. when [checkedNeg] would return `None`.
  */
 public fun Int.uncheckedNeg(): Int {
-    assertUnsafePrecondition(checkLanguageUb, "i32::unchecked_neg cannot overflow", lhs, this, lhs, overflowingNeg, 1)
+    Unit
     return uncheckedSub(0, this)
 }
 
@@ -7527,8 +7527,8 @@ public fun Int.strictShl(rhs: UInt): Int {
  * i.e. when [checkedShl] would return `None`.
  */
 public fun Int.uncheckedShl(rhs: UInt): Int {
-    assertUnsafePrecondition(checkLanguageUb, "i32::unchecked_shl cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
 }
 
 /**
@@ -7581,7 +7581,7 @@ public fun Int.shlExact(rhs: UInt): Int? =
  * would return `None`.
  */
 public fun Int.uncheckedShlExact(rhs: UInt): Int {
-    assertUnsafePrecondition(checkLibraryUb, "i32::unchecked_shl_exact cannot shift out bits that would change the value of the first bit", zeros, this, leadingZeros, ones, this, leadingOnes, rhs, rhs, rhs, zeros, rhs, ones)
+    Unit
     return this.uncheckedShl(rhs)
 }
 
@@ -7641,8 +7641,8 @@ public fun Int.strictShr(rhs: UInt): Int {
  * i.e. when [checkedShr] would return `None`.
  */
 public fun Int.uncheckedShr(rhs: UInt): Int {
-    assertUnsafePrecondition(checkLanguageUb, "i32::unchecked_shr cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
 }
 
 /**
@@ -7695,7 +7695,7 @@ public fun Int.shrExact(rhs: UInt): Int? =
  * would return `None`.
  */
 public fun Int.uncheckedShrExact(rhs: UInt): Int {
-    assertUnsafePrecondition(checkLibraryUb, "i32::unchecked_shr_exact cannot shift out non-zero bits", zeros, this, trailingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShr(rhs)
 }
 
@@ -7884,7 +7884,7 @@ public fun Int.checkedIsqrt(): Int? =
  * ```kotlin
  * ```
  */
-public fun Int.saturatingAdd(rhs: Int): Int = io.github.kotlinmania.rustlang.core.intrinsics.saturatingAdd(this, rhs)
+public fun Int.saturatingAdd(rhs: Int): Int = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
 
 /**
  * Saturating addition with an unsigned integer. Computes `self + rhs`,
@@ -7913,7 +7913,7 @@ public fun Int.saturatingAddUnsigned(rhs: UInt): Int =
  * ```kotlin
  * ```
  */
-public fun Int.saturatingSub(rhs: Int): Int = io.github.kotlinmania.rustlang.core.intrinsics.saturatingSub(this, rhs)
+public fun Int.saturatingSub(rhs: Int): Int = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
 
 /**
  * Saturating subtraction with an unsigned integer. Computes `self - rhs`,
@@ -8509,7 +8509,7 @@ public fun Int.carryingMul(rhs: Int, carry: Int): Pair<UInt, Int> = Int.carrying
  * }
  * ```
  */
-public fun Int.carryingMulAdd(rhs: Int, carry: Int, add: Int): Pair<UInt, Int> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun Int.carryingMulAdd(rhs: Int, carry: Int, add: Int): Pair<UInt, Int> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -9117,7 +9117,7 @@ public fun Int.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Int.checkedIlog10(): UInt? = io.github.kotlinmania.rustlang.core.num.imp.intlog10.Int(this)
+public fun Int.checkedIlog10(): UInt? = io.github.kotlinmania.rustlang.num.imp.traits.Int(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -9474,7 +9474,7 @@ public fun <T : CheckedCastFromInt<Int, T>> Int.strictCast(strictCastFromTFn: (T
  * or smaller than `T.MIN`, where `T` is the target type.
  */
 public fun <T : CheckedCastFromInt<Int, T>> Int.uncheckedCast(uncheckedCastFromTFn: (T) -> T): T {
-    assertUnsafePrecondition(checkLanguageUb, "i32::unchecked_cast must fit in the target type", inBounds, castVal, this, checkedCast, T, ret, castVal, isSome, core, mem, forget, castVal, ret, inBounds)
+    Unit
     return uncheckedCastFromTFn(this)
 }
 
@@ -9997,8 +9997,8 @@ public fun Long.strictAdd(rhs: Long): Long {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Long.uncheckedAdd(rhs: Long): Long {
-    assertUnsafePrecondition(checkLanguageUb, "i64::unchecked_add cannot overflow", lhs, this, rhs, rhs, lhs, overflowingAdd, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
 }
 
 /**
@@ -10113,8 +10113,8 @@ public fun Long.strictSub(rhs: Long): Long {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Long.uncheckedSub(rhs: Long): Long {
-    assertUnsafePrecondition(checkLanguageUb, "i64::unchecked_sub cannot overflow", lhs, this, rhs, rhs, lhs, overflowingSub, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
 }
 
 /**
@@ -10229,8 +10229,8 @@ public fun Long.strictMul(rhs: Long): Long {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun Long.uncheckedMul(rhs: Long): Long {
-    assertUnsafePrecondition(checkLanguageUb, "i64::unchecked_mul cannot overflow", lhs, this, rhs, rhs, lhs, overflowingMul, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
 }
 
 /**
@@ -10403,7 +10403,7 @@ public fun Long.divExact(rhs: Long): Long? =
  * i.e. when [`checkedDivExact`](Self.checkedDivExact) would return `None`.
  */
 public fun Long.uncheckedDivExact(rhs: Long): Long {
-    assertUnsafePrecondition(checkLanguageUb, "i64::unchecked_div_exact cannot overflow, divide by zero, or leave a remainder", lhs, this, rhs, rhs, rhs, 0, lhs, rhs, 0, lhs, MIN, rhs, 1)
+    Unit
     return exactDiv(this, rhs)
 }
 
@@ -10541,7 +10541,7 @@ public fun Long.strictRemEuclid(rhs: Long): Long {
  * Notably, this prevents both values from being negative.
  */
 public fun Long.uncheckedDisjointBitor(rhs: Long): Long {
-    assertUnsafePrecondition(checkLanguageUb, "i64::unchecked_disjoint_bitor cannot bitor overlapping ones", lhs, this, rhs, rhs, lhs, rhs, 0)
+    Unit
     return disjointBitor(this, rhs)
 }
 
@@ -10571,7 +10571,7 @@ public fun Long.checkedNeg(): Long? {
  * i.e. when [checkedNeg] would return `None`.
  */
 public fun Long.uncheckedNeg(): Long {
-    assertUnsafePrecondition(checkLanguageUb, "i64::unchecked_neg cannot overflow", lhs, this, lhs, overflowingNeg, 1)
+    Unit
     return uncheckedSub(0, this)
 }
 
@@ -10659,8 +10659,8 @@ public fun Long.strictShl(rhs: UInt): Long {
  * i.e. when [checkedShl] would return `None`.
  */
 public fun Long.uncheckedShl(rhs: UInt): Long {
-    assertUnsafePrecondition(checkLanguageUb, "i64::unchecked_shl cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
 }
 
 /**
@@ -10713,7 +10713,7 @@ public fun Long.shlExact(rhs: UInt): Long? =
  * would return `None`.
  */
 public fun Long.uncheckedShlExact(rhs: UInt): Long {
-    assertUnsafePrecondition(checkLibraryUb, "i64::unchecked_shl_exact cannot shift out bits that would change the value of the first bit", zeros, this, leadingZeros, ones, this, leadingOnes, rhs, rhs, rhs, zeros, rhs, ones)
+    Unit
     return this.uncheckedShl(rhs)
 }
 
@@ -10773,8 +10773,8 @@ public fun Long.strictShr(rhs: UInt): Long {
  * i.e. when [checkedShr] would return `None`.
  */
 public fun Long.uncheckedShr(rhs: UInt): Long {
-    assertUnsafePrecondition(checkLanguageUb, "i64::unchecked_shr cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
 }
 
 /**
@@ -10827,7 +10827,7 @@ public fun Long.shrExact(rhs: UInt): Long? =
  * would return `None`.
  */
 public fun Long.uncheckedShrExact(rhs: UInt): Long {
-    assertUnsafePrecondition(checkLibraryUb, "i64::unchecked_shr_exact cannot shift out non-zero bits", zeros, this, trailingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShr(rhs)
 }
 
@@ -11016,7 +11016,7 @@ public fun Long.checkedIsqrt(): Long? =
  * ```kotlin
  * ```
  */
-public fun Long.saturatingAdd(rhs: Long): Long = io.github.kotlinmania.rustlang.core.intrinsics.saturatingAdd(this, rhs)
+public fun Long.saturatingAdd(rhs: Long): Long = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
 
 /**
  * Saturating addition with an unsigned integer. Computes `self + rhs`,
@@ -11045,7 +11045,7 @@ public fun Long.saturatingAddUnsigned(rhs: ULong): Long =
  * ```kotlin
  * ```
  */
-public fun Long.saturatingSub(rhs: Long): Long = io.github.kotlinmania.rustlang.core.intrinsics.saturatingSub(this, rhs)
+public fun Long.saturatingSub(rhs: Long): Long = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
 
 /**
  * Saturating subtraction with an unsigned integer. Computes `self - rhs`,
@@ -11641,7 +11641,7 @@ public fun Long.carryingMul(rhs: Long, carry: Long): Pair<ULong, Long> = Long.ca
  * }
  * ```
  */
-public fun Long.carryingMulAdd(rhs: Long, carry: Long, add: Long): Pair<ULong, Long> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun Long.carryingMulAdd(rhs: Long, carry: Long, add: Long): Pair<ULong, Long> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -12249,7 +12249,7 @@ public fun Long.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Long.checkedIlog10(): UInt? = io.github.kotlinmania.rustlang.core.num.imp.intlog10.Long(this)
+public fun Long.checkedIlog10(): UInt? = i64(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -12606,7 +12606,7 @@ public fun <T : CheckedCastFromInt<Long, T>> Long.strictCast(strictCastFromTFn: 
  * or smaller than `T.MIN`, where `T` is the target type.
  */
 public fun <T : CheckedCastFromInt<Long, T>> Long.uncheckedCast(uncheckedCastFromTFn: (T) -> T): T {
-    assertUnsafePrecondition(checkLanguageUb, "i64::unchecked_cast must fit in the target type", inBounds, castVal, this, checkedCast, T, ret, castVal, isSome, core, mem, forget, castVal, ret, inBounds)
+    Unit
     return uncheckedCastFromTFn(this)
 }
 
@@ -13137,8 +13137,8 @@ public fun I128.strictAdd(rhs: I128): I128 {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun I128.uncheckedAdd(rhs: I128): I128 {
-    assertUnsafePrecondition(checkLanguageUb, "i128::unchecked_add cannot overflow", lhs, this, rhs, rhs, lhs, overflowingAdd, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
 }
 
 /**
@@ -13253,8 +13253,8 @@ public fun I128.strictSub(rhs: I128): I128 {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun I128.uncheckedSub(rhs: I128): I128 {
-    assertUnsafePrecondition(checkLanguageUb, "i128::unchecked_sub cannot overflow", lhs, this, rhs, rhs, lhs, overflowingSub, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
 }
 
 /**
@@ -13369,8 +13369,8 @@ public fun I128.strictMul(rhs: I128): I128 {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun I128.uncheckedMul(rhs: I128): I128 {
-    assertUnsafePrecondition(checkLanguageUb, "i128::unchecked_mul cannot overflow", lhs, this, rhs, rhs, lhs, overflowingMul, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
 }
 
 /**
@@ -13543,7 +13543,7 @@ public fun I128.divExact(rhs: I128): I128? =
  * i.e. when [`checkedDivExact`](Self.checkedDivExact) would return `None`.
  */
 public fun I128.uncheckedDivExact(rhs: I128): I128 {
-    assertUnsafePrecondition(checkLanguageUb, "i128::unchecked_div_exact cannot overflow, divide by zero, or leave a remainder", lhs, this, rhs, rhs, rhs, 0, lhs, rhs, 0, lhs, MIN, rhs, 1)
+    Unit
     return exactDiv(this, rhs)
 }
 
@@ -13681,7 +13681,7 @@ public fun I128.strictRemEuclid(rhs: I128): I128 {
  * Notably, this prevents both values from being negative.
  */
 public fun I128.uncheckedDisjointBitor(rhs: I128): I128 {
-    assertUnsafePrecondition(checkLanguageUb, "i128::unchecked_disjoint_bitor cannot bitor overlapping ones", lhs, this, rhs, rhs, lhs, rhs, 0)
+    Unit
     return disjointBitor(this, rhs)
 }
 
@@ -13711,7 +13711,7 @@ public fun I128.checkedNeg(): I128? {
  * i.e. when [checkedNeg] would return `None`.
  */
 public fun I128.uncheckedNeg(): I128 {
-    assertUnsafePrecondition(checkLanguageUb, "i128::unchecked_neg cannot overflow", lhs, this, lhs, overflowingNeg, 1)
+    Unit
     return uncheckedSub(0, this)
 }
 
@@ -13799,8 +13799,8 @@ public fun I128.strictShl(rhs: UInt): I128 {
  * i.e. when [checkedShl] would return `None`.
  */
 public fun I128.uncheckedShl(rhs: UInt): I128 {
-    assertUnsafePrecondition(checkLanguageUb, "i128::unchecked_shl cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
 }
 
 /**
@@ -13853,7 +13853,7 @@ public fun I128.shlExact(rhs: UInt): I128? =
  * would return `None`.
  */
 public fun I128.uncheckedShlExact(rhs: UInt): I128 {
-    assertUnsafePrecondition(checkLibraryUb, "i128::unchecked_shl_exact cannot shift out bits that would change the value of the first bit", zeros, this, leadingZeros, ones, this, leadingOnes, rhs, rhs, rhs, zeros, rhs, ones)
+    Unit
     return this.uncheckedShl(rhs)
 }
 
@@ -13913,8 +13913,8 @@ public fun I128.strictShr(rhs: UInt): I128 {
  * i.e. when [checkedShr] would return `None`.
  */
 public fun I128.uncheckedShr(rhs: UInt): I128 {
-    assertUnsafePrecondition(checkLanguageUb, "i128::unchecked_shr cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
 }
 
 /**
@@ -13967,7 +13967,7 @@ public fun I128.shrExact(rhs: UInt): I128? =
  * would return `None`.
  */
 public fun I128.uncheckedShrExact(rhs: UInt): I128 {
-    assertUnsafePrecondition(checkLibraryUb, "i128::unchecked_shr_exact cannot shift out non-zero bits", zeros, this, trailingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShr(rhs)
 }
 
@@ -14156,7 +14156,7 @@ public fun I128.checkedIsqrt(): I128? =
  * ```kotlin
  * ```
  */
-public fun I128.saturatingAdd(rhs: I128): I128 = io.github.kotlinmania.rustlang.core.intrinsics.saturatingAdd(this, rhs)
+public fun I128.saturatingAdd(rhs: I128): I128 = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
 
 /**
  * Saturating addition with an unsigned integer. Computes `self + rhs`,
@@ -14185,7 +14185,7 @@ public fun I128.saturatingAddUnsigned(rhs: U128): I128 =
  * ```kotlin
  * ```
  */
-public fun I128.saturatingSub(rhs: I128): I128 = io.github.kotlinmania.rustlang.core.intrinsics.saturatingSub(this, rhs)
+public fun I128.saturatingSub(rhs: I128): I128 = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
 
 /**
  * Saturating subtraction with an unsigned integer. Computes `self - rhs`,
@@ -14781,7 +14781,7 @@ public fun I128.carryingMul(rhs: I128, carry: I128): Pair<U128, I128> = I128.car
  * }
  * ```
  */
-public fun I128.carryingMulAdd(rhs: I128, carry: I128, add: I128): Pair<U128, I128> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun I128.carryingMulAdd(rhs: I128, carry: I128, add: I128): Pair<U128, I128> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -15389,7 +15389,7 @@ public fun I128.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun I128.checkedIlog10(): UInt? = I128(this)
+public fun I128.checkedIlog10(): UInt? = i128(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -15746,7 +15746,7 @@ public fun <T : CheckedCastFromInt<I128, T>> I128.strictCast(strictCastFromTFn: 
  * or smaller than `T.MIN`, where `T` is the target type.
  */
 public fun <T : CheckedCastFromInt<I128, T>> I128.uncheckedCast(uncheckedCastFromTFn: (T) -> T): T {
-    assertUnsafePrecondition(checkLanguageUb, "i128::unchecked_cast must fit in the target type", inBounds, castVal, this, checkedCast, T, ret, castVal, isSome, core, mem, forget, castVal, ret, inBounds)
+    Unit
     return uncheckedCastFromTFn(this)
 }
 
@@ -16377,7 +16377,7 @@ public fun UByte.strictCastSigned(): Byte =
  * ```kotlin
  * ```
  */
-public fun UByte.rotateLeft(n: UInt): UByte = io.github.kotlinmania.rustlang.core.intrinsics.rotateLeft(this, n)
+public fun UByte.rotateLeft(n: UInt): UByte = io.github.kotlinmania.rustlang.intrinsics.rotateLeft(this, n)
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -16395,7 +16395,7 @@ public fun UByte.rotateLeft(n: UInt): UByte = io.github.kotlinmania.rustlang.cor
  * ```kotlin
  * ```
  */
-public fun UByte.rotateRight(n: UInt): UByte = io.github.kotlinmania.rustlang.core.intrinsics.rotateRight(this, n)
+public fun UByte.rotateRight(n: UInt): UByte = io.github.kotlinmania.rustlang.intrinsics.rotateRight(this, n)
 
 /**
  * Performs a left funnel shift.
@@ -16490,8 +16490,8 @@ public fun UByte.funnelShr(right: UByte, n: UInt): UByte {
  * i.e. when [`funnelShl`](Self.funnelShl) would panic.
  */
 public fun UByte.uncheckedFunnelShl(right: UByte, n: UInt): UByte {
-    assertUnsafePrecondition(checkLanguageUb, "u8::unchecked_funnel_shl cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -16503,8 +16503,8 @@ public fun UByte.uncheckedFunnelShl(right: UByte, n: UInt): UByte {
  * i.e. when [`funnelShr`](Self.funnelShr) would panic.
  */
 public fun UByte.uncheckedFunnelShr(right: UByte, n: UInt): UByte {
-    assertUnsafePrecondition(checkLanguageUb, "u8::unchecked_funnel_shr cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -16552,7 +16552,7 @@ public fun UByte.uncheckedFunnelShr(right: UByte, n: UInt): UByte {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UByte.carrylessMul(rhs: UByte): UByte = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
+public fun UByte.carrylessMul(rhs: UByte): UByte = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -16576,7 +16576,7 @@ public fun UByte.swapBytes(): UByte = kmBswapU64((this).toULong()).toUByte()
  * }
  * ```
  */
-public fun UByte.extractBits(mask: UByte): UByte = io.github.kotlinmania.rustlang.core.num.imp.intbits.UByte.extractImpl(this, mask).toUByte()
+public fun UByte.extractBits(mask: UByte): UByte = extractImpl(this, mask).toUByte()
 
 /**
  * Returns an integer with the least significant bits of `self`
@@ -16589,7 +16589,7 @@ public fun UByte.extractBits(mask: UByte): UByte = io.github.kotlinmania.rustlan
  * }
  * ```
  */
-public fun UByte.depositBits(mask: UByte): UByte = io.github.kotlinmania.rustlang.core.num.imp.intbits.UByte.depositImpl(this, mask).toUByte()
+public fun UByte.depositBits(mask: UByte): UByte = depositImpl(this, mask).toUByte()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -16730,8 +16730,8 @@ public fun UByte.strictAdd(rhs: UByte): UByte {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun UByte.uncheckedAdd(rhs: UByte): UByte {
-    assertUnsafePrecondition(checkLanguageUb, "u8::unchecked_add cannot overflow", lhs, this, rhs, rhs, lhs, overflowingAdd, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
 }
 
 /**
@@ -16872,8 +16872,8 @@ public fun UByte.strictSub(rhs: UByte): UByte {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun UByte.uncheckedSub(rhs: UByte): UByte {
-    assertUnsafePrecondition(checkLanguageUb, "u8::unchecked_sub cannot overflow", lhs, this, rhs, rhs, lhs, overflowingSub, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
 }
 
 /**
@@ -17007,8 +17007,8 @@ public fun UByte.strictMul(rhs: UByte): UByte {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun UByte.uncheckedMul(rhs: UByte): UByte {
-    assertUnsafePrecondition(checkLanguageUb, "u8::unchecked_mul cannot overflow", lhs, this, rhs, rhs, lhs, overflowingMul, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
 }
 
 /**
@@ -17142,7 +17142,7 @@ public fun UByte.divExact(rhs: UByte): UByte? =
  * i.e. when [`checkedDivExact`](Self.checkedDivExact) would return `None`.
  */
 public fun UByte.uncheckedDivExact(rhs: UByte): UByte {
-    assertUnsafePrecondition(checkLanguageUb, "u8::unchecked_div_exact divide by zero or leave a remainder", lhs, this, rhs, rhs, rhs, 0, lhs, rhs, 0)
+    Unit
     return exactDiv(this, rhs)
 }
 
@@ -17250,7 +17250,7 @@ public fun UByte.strictRemEuclid(rhs: UByte): UByte = (this % rhs).toUByte()
  * bits, i.e. `lhs & rhs` must be zero.
  */
 public fun UByte.uncheckedDisjointBitor(rhs: UByte): UByte {
-    assertUnsafePrecondition(checkLanguageUb, "u8::unchecked_disjoint_bitor cannot bitor overlapping ones", lhs, this, rhs, rhs, lhs, rhs, 0)
+    Unit
     return disjointBitor(this, rhs)
 }
 
@@ -17527,8 +17527,8 @@ public fun UByte.strictShl(rhs: UInt): UByte {
  * i.e. when [checkedShl] would return `None`.
  */
 public fun UByte.uncheckedShl(rhs: UInt): UByte {
-    assertUnsafePrecondition(checkLanguageUb, "u8::unchecked_shl cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
 }
 
 /**
@@ -17587,7 +17587,7 @@ public fun UByte.shlExact(rhs: UInt): UByte? =
  * would return `None`.
  */
 public fun UByte.uncheckedShlExact(rhs: UInt): UByte {
-    assertUnsafePrecondition(checkLibraryUb, "u8::unchecked_shl_exact cannot shift out non-zero bits", zeros, this, leadingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShl(rhs)
 }
 
@@ -17647,8 +17647,8 @@ public fun UByte.strictShr(rhs: UInt): UByte {
  * i.e. when [checkedShr] would return `None`.
  */
 public fun UByte.uncheckedShr(rhs: UInt): UByte {
-    assertUnsafePrecondition(checkLanguageUb, "u8::unchecked_shr cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
 }
 
 /**
@@ -17707,7 +17707,7 @@ public fun UByte.shrExact(rhs: UInt): UByte? =
  * would return `None`.
  */
 public fun UByte.uncheckedShrExact(rhs: UInt): UByte {
-    assertUnsafePrecondition(checkLibraryUb, "u8::unchecked_shr_exact cannot shift out non-zero bits", zeros, this, trailingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShr(rhs)
 }
 
@@ -17823,7 +17823,7 @@ public fun UByte.strictPow(exp: UInt): UByte =
  * ```kotlin
  * ```
  */
-public fun UByte.saturatingAdd(rhs: UByte): UByte = io.github.kotlinmania.rustlang.core.intrinsics.saturatingAdd(this, rhs)
+public fun UByte.saturatingAdd(rhs: UByte): UByte = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
 
 /**
  * Saturating addition with a signed integer. Computes `self + rhs`,
@@ -17854,7 +17854,7 @@ public fun UByte.saturatingAddSigned(rhs: Byte): UByte {
  * ```kotlin
  * ```
  */
-public fun UByte.saturatingSub(rhs: UByte): UByte = io.github.kotlinmania.rustlang.core.intrinsics.saturatingSub(this, rhs)
+public fun UByte.saturatingSub(rhs: UByte): UByte = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
 
 /**
  * Saturating integer subtraction. Computes `self` - `rhs`, saturating at
@@ -18446,7 +18446,7 @@ public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UBy
  * }
  * ```
  */
-public fun UByte.carryingMulAdd(rhs: UByte, carry: UByte, add: UByte): Pair<UByte, UByte> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun UByte.carryingMulAdd(rhs: UByte, carry: UByte, add: UByte): Pair<UByte, UByte> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -18655,9 +18655,9 @@ public fun UByte.pow(exp: UInt): UByte =
  * ```
  */
 public fun UByte.isqrt(): UByte {
-    val result = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UByte(this)
+    val result = u8(this)
     run {
-        val MAX_RESULT: UByte = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UByte(UByte.MAX_VALUE)
+        val MAX_RESULT: UByte = u8(UByte.MAX_VALUE)
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1u.toUByte()) {
@@ -19157,7 +19157,7 @@ public fun <T : CheckedCastFromInt<UByte, T>> UByte.strictCast(strictCastFromTFn
  * or smaller than `T.MIN`, where `T` is the target type.
  */
 public fun <T : CheckedCastFromInt<UByte, T>> UByte.uncheckedCast(uncheckedCastFromTFn: (T) -> T): T {
-    assertUnsafePrecondition(checkLanguageUb, "u8::unchecked_cast must fit in the target type", inBounds, castVal, this, checkedCast, T, ret, castVal, isSome, core, mem, forget, castVal, ret, inBounds)
+    Unit
     return uncheckedCastFromTFn(this)
 }
 
@@ -19254,7 +19254,7 @@ public fun UByte.isAscii(): Boolean = this <= 127u.toUByte()
  * If the value of this byte is within the ASCII range, returns it as an
  * [ASCII character](ascii.Char).  Otherwise, returns `None`.
  */
-public fun UByte.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? = io.github.kotlinmania.rustlang.core.ascii.Char.fromU8(this)
+public fun UByte.asAscii(): io.github.kotlinmania.rustlang.ascii.Char? = io.github.kotlinmania.rustlang.ascii.Char.fromU8(this)
 
 /**
  * Converts this byte to an [ASCII character](ascii.Char), without
@@ -19264,10 +19264,10 @@ public fun UByte.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? = io
  *
  * This byte must be valid ASCII, or else this is UB.
  */
-public fun UByte.asAsciiUnchecked(): io.github.kotlinmania.rustlang.core.ascii.Char {
-    assertUnsafePrecondition(checkLibraryUb, "as_ascii_unchecked requires that the byte is valid ASCII", it, this, it, isAscii)
+public fun UByte.asAsciiUnchecked(): io.github.kotlinmania.rustlang.ascii.Char {
+    Unit
     // SAFETY: the caller promised that this byte is ASCII.
-    return io.github.kotlinmania.rustlang.core.ascii.Char.fromU8Unchecked(this)
+    return io.github.kotlinmania.rustlang.ascii.Char.fromU8Unchecked(this)
 }
 
 /**
@@ -20186,7 +20186,7 @@ public fun UShort.strictCastSigned(): Short =
  * ```kotlin
  * ```
  */
-public fun UShort.rotateLeft(n: UInt): UShort = io.github.kotlinmania.rustlang.core.intrinsics.rotateLeft(this, n)
+public fun UShort.rotateLeft(n: UInt): UShort = io.github.kotlinmania.rustlang.intrinsics.rotateLeft(this, n)
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -20204,7 +20204,7 @@ public fun UShort.rotateLeft(n: UInt): UShort = io.github.kotlinmania.rustlang.c
  * ```kotlin
  * ```
  */
-public fun UShort.rotateRight(n: UInt): UShort = io.github.kotlinmania.rustlang.core.intrinsics.rotateRight(this, n)
+public fun UShort.rotateRight(n: UInt): UShort = io.github.kotlinmania.rustlang.intrinsics.rotateRight(this, n)
 
 /**
  * Performs a left funnel shift.
@@ -20299,8 +20299,8 @@ public fun UShort.funnelShr(right: UShort, n: UInt): UShort {
  * i.e. when [`funnelShl`](Self.funnelShl) would panic.
  */
 public fun UShort.uncheckedFunnelShl(right: UShort, n: UInt): UShort {
-    assertUnsafePrecondition(checkLanguageUb, "u16::unchecked_funnel_shl cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -20312,8 +20312,8 @@ public fun UShort.uncheckedFunnelShl(right: UShort, n: UInt): UShort {
  * i.e. when [`funnelShr`](Self.funnelShr) would panic.
  */
 public fun UShort.uncheckedFunnelShr(right: UShort, n: UInt): UShort {
-    assertUnsafePrecondition(checkLanguageUb, "u16::unchecked_funnel_shr cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -20361,7 +20361,7 @@ public fun UShort.uncheckedFunnelShr(right: UShort, n: UInt): UShort {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UShort.carrylessMul(rhs: UShort): UShort = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
+public fun UShort.carrylessMul(rhs: UShort): UShort = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -20385,7 +20385,7 @@ public fun UShort.swapBytes(): UShort = kmBswapU64((this).toULong()).toUShort()
  * }
  * ```
  */
-public fun UShort.extractBits(mask: UShort): UShort = io.github.kotlinmania.rustlang.core.num.imp.intbits.UShort.extractImpl(this, mask).toUShort()
+public fun UShort.extractBits(mask: UShort): UShort = extractImpl(this, mask).toUShort()
 
 /**
  * Returns an integer with the least significant bits of `self`
@@ -20398,7 +20398,7 @@ public fun UShort.extractBits(mask: UShort): UShort = io.github.kotlinmania.rust
  * }
  * ```
  */
-public fun UShort.depositBits(mask: UShort): UShort = io.github.kotlinmania.rustlang.core.num.imp.intbits.UShort.depositImpl(this, mask).toUShort()
+public fun UShort.depositBits(mask: UShort): UShort = depositImpl(this, mask).toUShort()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -20539,8 +20539,8 @@ public fun UShort.strictAdd(rhs: UShort): UShort {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun UShort.uncheckedAdd(rhs: UShort): UShort {
-    assertUnsafePrecondition(checkLanguageUb, "u16::unchecked_add cannot overflow", lhs, this, rhs, rhs, lhs, overflowingAdd, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
 }
 
 /**
@@ -20681,8 +20681,8 @@ public fun UShort.strictSub(rhs: UShort): UShort {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun UShort.uncheckedSub(rhs: UShort): UShort {
-    assertUnsafePrecondition(checkLanguageUb, "u16::unchecked_sub cannot overflow", lhs, this, rhs, rhs, lhs, overflowingSub, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
 }
 
 /**
@@ -20816,8 +20816,8 @@ public fun UShort.strictMul(rhs: UShort): UShort {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun UShort.uncheckedMul(rhs: UShort): UShort {
-    assertUnsafePrecondition(checkLanguageUb, "u16::unchecked_mul cannot overflow", lhs, this, rhs, rhs, lhs, overflowingMul, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
 }
 
 /**
@@ -20951,7 +20951,7 @@ public fun UShort.divExact(rhs: UShort): UShort? =
  * i.e. when [`checkedDivExact`](Self.checkedDivExact) would return `None`.
  */
 public fun UShort.uncheckedDivExact(rhs: UShort): UShort {
-    assertUnsafePrecondition(checkLanguageUb, "u16::unchecked_div_exact divide by zero or leave a remainder", lhs, this, rhs, rhs, rhs, 0, lhs, rhs, 0)
+    Unit
     return exactDiv(this, rhs)
 }
 
@@ -21059,7 +21059,7 @@ public fun UShort.strictRemEuclid(rhs: UShort): UShort = (this % rhs).toUShort()
  * bits, i.e. `lhs & rhs` must be zero.
  */
 public fun UShort.uncheckedDisjointBitor(rhs: UShort): UShort {
-    assertUnsafePrecondition(checkLanguageUb, "u16::unchecked_disjoint_bitor cannot bitor overlapping ones", lhs, this, rhs, rhs, lhs, rhs, 0)
+    Unit
     return disjointBitor(this, rhs)
 }
 
@@ -21336,8 +21336,8 @@ public fun UShort.strictShl(rhs: UInt): UShort {
  * i.e. when [checkedShl] would return `None`.
  */
 public fun UShort.uncheckedShl(rhs: UInt): UShort {
-    assertUnsafePrecondition(checkLanguageUb, "u16::unchecked_shl cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
 }
 
 /**
@@ -21396,7 +21396,7 @@ public fun UShort.shlExact(rhs: UInt): UShort? =
  * would return `None`.
  */
 public fun UShort.uncheckedShlExact(rhs: UInt): UShort {
-    assertUnsafePrecondition(checkLibraryUb, "u16::unchecked_shl_exact cannot shift out non-zero bits", zeros, this, leadingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShl(rhs)
 }
 
@@ -21456,8 +21456,8 @@ public fun UShort.strictShr(rhs: UInt): UShort {
  * i.e. when [checkedShr] would return `None`.
  */
 public fun UShort.uncheckedShr(rhs: UInt): UShort {
-    assertUnsafePrecondition(checkLanguageUb, "u16::unchecked_shr cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
 }
 
 /**
@@ -21516,7 +21516,7 @@ public fun UShort.shrExact(rhs: UInt): UShort? =
  * would return `None`.
  */
 public fun UShort.uncheckedShrExact(rhs: UInt): UShort {
-    assertUnsafePrecondition(checkLibraryUb, "u16::unchecked_shr_exact cannot shift out non-zero bits", zeros, this, trailingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShr(rhs)
 }
 
@@ -21632,7 +21632,7 @@ public fun UShort.strictPow(exp: UInt): UShort =
  * ```kotlin
  * ```
  */
-public fun UShort.saturatingAdd(rhs: UShort): UShort = io.github.kotlinmania.rustlang.core.intrinsics.saturatingAdd(this, rhs)
+public fun UShort.saturatingAdd(rhs: UShort): UShort = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
 
 /**
  * Saturating addition with a signed integer. Computes `self + rhs`,
@@ -21663,7 +21663,7 @@ public fun UShort.saturatingAddSigned(rhs: Short): UShort {
  * ```kotlin
  * ```
  */
-public fun UShort.saturatingSub(rhs: UShort): UShort = io.github.kotlinmania.rustlang.core.intrinsics.saturatingSub(this, rhs)
+public fun UShort.saturatingSub(rhs: UShort): UShort = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
 
 /**
  * Saturating integer subtraction. Computes `self` - `rhs`, saturating at
@@ -22255,7 +22255,7 @@ public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> 
  * }
  * ```
  */
-public fun UShort.carryingMulAdd(rhs: UShort, carry: UShort, add: UShort): Pair<UShort, UShort> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun UShort.carryingMulAdd(rhs: UShort, carry: UShort, add: UShort): Pair<UShort, UShort> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -22464,9 +22464,9 @@ public fun UShort.pow(exp: UInt): UShort =
  * ```
  */
 public fun UShort.isqrt(): UShort {
-    val result = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UShort(this).toUShort()
+    val result = u16(this).toUShort()
     run {
-        val MAX_RESULT: UShort = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UShort(UShort.MAX_VALUE).toUShort()
+        val MAX_RESULT: UShort = u16(UShort.MAX_VALUE).toUShort()
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1u.toUShort()) {
@@ -22942,7 +22942,7 @@ public fun <T : CheckedCastFromInt<UShort, T>> UShort.strictCast(strictCastFromT
  * or smaller than `T.MIN`, where `T` is the target type.
  */
 public fun <T : CheckedCastFromInt<UShort, T>> UShort.uncheckedCast(uncheckedCastFromTFn: (T) -> T): T {
-    assertUnsafePrecondition(checkLanguageUb, "u16::unchecked_cast must fit in the target type", inBounds, castVal, this, checkedCast, T, ret, castVal, isSome, core, mem, forget, castVal, ret, inBounds)
+    Unit
     return uncheckedCastFromTFn(this)
 }
 
@@ -23405,7 +23405,7 @@ public fun UInt.strictCastSigned(): Int =
  * ```kotlin
  * ```
  */
-public fun UInt.rotateLeft(n: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.rotateLeft(this, n)
+public fun UInt.rotateLeft(n: UInt): UInt = io.github.kotlinmania.rustlang.intrinsics.rotateLeft(this, n)
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -23423,7 +23423,7 @@ public fun UInt.rotateLeft(n: UInt): UInt = io.github.kotlinmania.rustlang.core.
  * ```kotlin
  * ```
  */
-public fun UInt.rotateRight(n: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.rotateRight(this, n)
+public fun UInt.rotateRight(n: UInt): UInt = io.github.kotlinmania.rustlang.intrinsics.rotateRight(this, n)
 
 /**
  * Performs a left funnel shift.
@@ -23518,8 +23518,8 @@ public fun UInt.funnelShr(right: UInt, n: UInt): UInt {
  * i.e. when [`funnelShl`](Self.funnelShl) would panic.
  */
 public fun UInt.uncheckedFunnelShl(right: UInt, n: UInt): UInt {
-    assertUnsafePrecondition(checkLanguageUb, "u32::unchecked_funnel_shl cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -23531,8 +23531,8 @@ public fun UInt.uncheckedFunnelShl(right: UInt, n: UInt): UInt {
  * i.e. when [`funnelShr`](Self.funnelShr) would panic.
  */
 public fun UInt.uncheckedFunnelShr(right: UInt, n: UInt): UInt {
-    assertUnsafePrecondition(checkLanguageUb, "u32::unchecked_funnel_shr cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -23580,7 +23580,7 @@ public fun UInt.uncheckedFunnelShr(right: UInt, n: UInt): UInt {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UInt.carrylessMul(rhs: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
+public fun UInt.carrylessMul(rhs: UInt): UInt = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -23604,7 +23604,7 @@ public fun UInt.swapBytes(): UInt = kmBswapU64((this).toULong()).toUInt()
  * }
  * ```
  */
-public fun UInt.extractBits(mask: UInt): UInt = io.github.kotlinmania.rustlang.core.num.imp.intbits.UInt.extractImpl(this, mask).toUInt()
+public fun UInt.extractBits(mask: UInt): UInt = extractImpl(this, mask).toUInt()
 
 /**
  * Returns an integer with the least significant bits of `self`
@@ -23617,7 +23617,7 @@ public fun UInt.extractBits(mask: UInt): UInt = io.github.kotlinmania.rustlang.c
  * }
  * ```
  */
-public fun UInt.depositBits(mask: UInt): UInt = io.github.kotlinmania.rustlang.core.num.imp.intbits.UInt.depositImpl(this, mask).toUInt()
+public fun UInt.depositBits(mask: UInt): UInt = depositImpl(this, mask).toUInt()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -23758,8 +23758,8 @@ public fun UInt.strictAdd(rhs: UInt): UInt {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun UInt.uncheckedAdd(rhs: UInt): UInt {
-    assertUnsafePrecondition(checkLanguageUb, "u32::unchecked_add cannot overflow", lhs, this, rhs, rhs, lhs, overflowingAdd, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
 }
 
 /**
@@ -23900,8 +23900,8 @@ public fun UInt.strictSub(rhs: UInt): UInt {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun UInt.uncheckedSub(rhs: UInt): UInt {
-    assertUnsafePrecondition(checkLanguageUb, "u32::unchecked_sub cannot overflow", lhs, this, rhs, rhs, lhs, overflowingSub, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
 }
 
 /**
@@ -24035,8 +24035,8 @@ public fun UInt.strictMul(rhs: UInt): UInt {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun UInt.uncheckedMul(rhs: UInt): UInt {
-    assertUnsafePrecondition(checkLanguageUb, "u32::unchecked_mul cannot overflow", lhs, this, rhs, rhs, lhs, overflowingMul, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
 }
 
 /**
@@ -24170,7 +24170,7 @@ public fun UInt.divExact(rhs: UInt): UInt? =
  * i.e. when [`checkedDivExact`](Self.checkedDivExact) would return `None`.
  */
 public fun UInt.uncheckedDivExact(rhs: UInt): UInt {
-    assertUnsafePrecondition(checkLanguageUb, "u32::unchecked_div_exact divide by zero or leave a remainder", lhs, this, rhs, rhs, rhs, 0, lhs, rhs, 0)
+    Unit
     return exactDiv(this, rhs)
 }
 
@@ -24278,7 +24278,7 @@ public fun UInt.strictRemEuclid(rhs: UInt): UInt = this % rhs
  * bits, i.e. `lhs & rhs` must be zero.
  */
 public fun UInt.uncheckedDisjointBitor(rhs: UInt): UInt {
-    assertUnsafePrecondition(checkLanguageUb, "u32::unchecked_disjoint_bitor cannot bitor overlapping ones", lhs, this, rhs, rhs, lhs, rhs, 0)
+    Unit
     return disjointBitor(this, rhs)
 }
 
@@ -24555,8 +24555,8 @@ public fun UInt.strictShl(rhs: UInt): UInt {
  * i.e. when [checkedShl] would return `None`.
  */
 public fun UInt.uncheckedShl(rhs: UInt): UInt {
-    assertUnsafePrecondition(checkLanguageUb, "u32::unchecked_shl cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
 }
 
 /**
@@ -24615,7 +24615,7 @@ public fun UInt.shlExact(rhs: UInt): UInt? =
  * would return `None`.
  */
 public fun UInt.uncheckedShlExact(rhs: UInt): UInt {
-    assertUnsafePrecondition(checkLibraryUb, "u32::unchecked_shl_exact cannot shift out non-zero bits", zeros, this, leadingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShl(rhs)
 }
 
@@ -24675,8 +24675,8 @@ public fun UInt.strictShr(rhs: UInt): UInt {
  * i.e. when [checkedShr] would return `None`.
  */
 public fun UInt.uncheckedShr(rhs: UInt): UInt {
-    assertUnsafePrecondition(checkLanguageUb, "u32::unchecked_shr cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
 }
 
 /**
@@ -24735,7 +24735,7 @@ public fun UInt.shrExact(rhs: UInt): UInt? =
  * would return `None`.
  */
 public fun UInt.uncheckedShrExact(rhs: UInt): UInt {
-    assertUnsafePrecondition(checkLibraryUb, "u32::unchecked_shr_exact cannot shift out non-zero bits", zeros, this, trailingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShr(rhs)
 }
 
@@ -24851,7 +24851,7 @@ public fun UInt.strictPow(exp: UInt): UInt =
  * ```kotlin
  * ```
  */
-public fun UInt.saturatingAdd(rhs: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.saturatingAdd(this, rhs)
+public fun UInt.saturatingAdd(rhs: UInt): UInt = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
 
 /**
  * Saturating addition with a signed integer. Computes `self + rhs`,
@@ -24882,7 +24882,7 @@ public fun UInt.saturatingAddSigned(rhs: Int): UInt {
  * ```kotlin
  * ```
  */
-public fun UInt.saturatingSub(rhs: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.saturatingSub(this, rhs)
+public fun UInt.saturatingSub(rhs: UInt): UInt = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
 
 /**
  * Saturating integer subtraction. Computes `self` - `rhs`, saturating at
@@ -25474,7 +25474,7 @@ public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.car
  * }
  * ```
  */
-public fun UInt.carryingMulAdd(rhs: UInt, carry: UInt, add: UInt): Pair<UInt, UInt> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun UInt.carryingMulAdd(rhs: UInt, carry: UInt, add: UInt): Pair<UInt, UInt> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -25683,9 +25683,9 @@ public fun UInt.pow(exp: UInt): UInt =
  * ```
  */
 public fun UInt.isqrt(): UInt {
-    val result = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UInt(this).toUInt()
+    val result = u32(this).toUInt()
     run {
-        val MAX_RESULT: UInt = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UInt(UInt.MAX_VALUE).toUInt()
+        val MAX_RESULT: UInt = u32(UInt.MAX_VALUE).toUInt()
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1u) {
@@ -26161,7 +26161,7 @@ public fun <T : CheckedCastFromInt<UInt, T>> UInt.strictCast(strictCastFromTFn: 
  * or smaller than `T.MIN`, where `T` is the target type.
  */
 public fun <T : CheckedCastFromInt<UInt, T>> UInt.uncheckedCast(uncheckedCastFromTFn: (T) -> T): T {
-    assertUnsafePrecondition(checkLanguageUb, "u32::unchecked_cast must fit in the target type", inBounds, castVal, this, checkedCast, T, ret, castVal, isSome, core, mem, forget, castVal, ret, inBounds)
+    Unit
     return uncheckedCastFromTFn(this)
 }
 
@@ -26599,7 +26599,7 @@ public fun ULong.strictCastSigned(): Long =
  * ```kotlin
  * ```
  */
-public fun ULong.rotateLeft(n: UInt): ULong = io.github.kotlinmania.rustlang.core.intrinsics.rotateLeft(this, n)
+public fun ULong.rotateLeft(n: UInt): ULong = io.github.kotlinmania.rustlang.intrinsics.rotateLeft(this, n)
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -26617,7 +26617,7 @@ public fun ULong.rotateLeft(n: UInt): ULong = io.github.kotlinmania.rustlang.cor
  * ```kotlin
  * ```
  */
-public fun ULong.rotateRight(n: UInt): ULong = io.github.kotlinmania.rustlang.core.intrinsics.rotateRight(this, n)
+public fun ULong.rotateRight(n: UInt): ULong = io.github.kotlinmania.rustlang.intrinsics.rotateRight(this, n)
 
 /**
  * Performs a left funnel shift.
@@ -26712,8 +26712,8 @@ public fun ULong.funnelShr(right: ULong, n: UInt): ULong {
  * i.e. when [`funnelShl`](Self.funnelShl) would panic.
  */
 public fun ULong.uncheckedFunnelShl(right: ULong, n: UInt): ULong {
-    assertUnsafePrecondition(checkLanguageUb, "u64::unchecked_funnel_shl cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -26725,8 +26725,8 @@ public fun ULong.uncheckedFunnelShl(right: ULong, n: UInt): ULong {
  * i.e. when [`funnelShr`](Self.funnelShr) would panic.
  */
 public fun ULong.uncheckedFunnelShr(right: ULong, n: UInt): ULong {
-    assertUnsafePrecondition(checkLanguageUb, "u64::unchecked_funnel_shr cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -26774,7 +26774,7 @@ public fun ULong.uncheckedFunnelShr(right: ULong, n: UInt): ULong {
  * public fun doctestEntry() {}
  * ```
  */
-public fun ULong.carrylessMul(rhs: ULong): ULong = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
+public fun ULong.carrylessMul(rhs: ULong): ULong = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -26798,7 +26798,7 @@ public fun ULong.swapBytes(): ULong = kmBswapU64((this).toULong()).toULong()
  * }
  * ```
  */
-public fun ULong.extractBits(mask: ULong): ULong = io.github.kotlinmania.rustlang.core.num.imp.intbits.ULong.extractImpl(this, mask).toULong()
+public fun ULong.extractBits(mask: ULong): ULong = extractImpl(this, mask).toULong()
 
 /**
  * Returns an integer with the least significant bits of `self`
@@ -26811,7 +26811,7 @@ public fun ULong.extractBits(mask: ULong): ULong = io.github.kotlinmania.rustlan
  * }
  * ```
  */
-public fun ULong.depositBits(mask: ULong): ULong = io.github.kotlinmania.rustlang.core.num.imp.intbits.ULong.depositImpl(this, mask).toULong()
+public fun ULong.depositBits(mask: ULong): ULong = depositImpl(this, mask).toULong()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -26952,8 +26952,8 @@ public fun ULong.strictAdd(rhs: ULong): ULong {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun ULong.uncheckedAdd(rhs: ULong): ULong {
-    assertUnsafePrecondition(checkLanguageUb, "u64::unchecked_add cannot overflow", lhs, this, rhs, rhs, lhs, overflowingAdd, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
 }
 
 /**
@@ -27094,8 +27094,8 @@ public fun ULong.strictSub(rhs: ULong): ULong {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun ULong.uncheckedSub(rhs: ULong): ULong {
-    assertUnsafePrecondition(checkLanguageUb, "u64::unchecked_sub cannot overflow", lhs, this, rhs, rhs, lhs, overflowingSub, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
 }
 
 /**
@@ -27229,8 +27229,8 @@ public fun ULong.strictMul(rhs: ULong): ULong {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun ULong.uncheckedMul(rhs: ULong): ULong {
-    assertUnsafePrecondition(checkLanguageUb, "u64::unchecked_mul cannot overflow", lhs, this, rhs, rhs, lhs, overflowingMul, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
 }
 
 /**
@@ -27364,7 +27364,7 @@ public fun ULong.divExact(rhs: ULong): ULong? =
  * i.e. when [`checkedDivExact`](Self.checkedDivExact) would return `None`.
  */
 public fun ULong.uncheckedDivExact(rhs: ULong): ULong {
-    assertUnsafePrecondition(checkLanguageUb, "u64::unchecked_div_exact divide by zero or leave a remainder", lhs, this, rhs, rhs, rhs, 0, lhs, rhs, 0)
+    Unit
     return exactDiv(this, rhs)
 }
 
@@ -27472,7 +27472,7 @@ public fun ULong.strictRemEuclid(rhs: ULong): ULong = this % rhs
  * bits, i.e. `lhs & rhs` must be zero.
  */
 public fun ULong.uncheckedDisjointBitor(rhs: ULong): ULong {
-    assertUnsafePrecondition(checkLanguageUb, "u64::unchecked_disjoint_bitor cannot bitor overlapping ones", lhs, this, rhs, rhs, lhs, rhs, 0)
+    Unit
     return disjointBitor(this, rhs)
 }
 
@@ -27749,8 +27749,8 @@ public fun ULong.strictShl(rhs: UInt): ULong {
  * i.e. when [checkedShl] would return `None`.
  */
 public fun ULong.uncheckedShl(rhs: UInt): ULong {
-    assertUnsafePrecondition(checkLanguageUb, "u64::unchecked_shl cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
 }
 
 /**
@@ -27809,7 +27809,7 @@ public fun ULong.shlExact(rhs: UInt): ULong? =
  * would return `None`.
  */
 public fun ULong.uncheckedShlExact(rhs: UInt): ULong {
-    assertUnsafePrecondition(checkLibraryUb, "u64::unchecked_shl_exact cannot shift out non-zero bits", zeros, this, leadingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShl(rhs)
 }
 
@@ -27869,8 +27869,8 @@ public fun ULong.strictShr(rhs: UInt): ULong {
  * i.e. when [checkedShr] would return `None`.
  */
 public fun ULong.uncheckedShr(rhs: UInt): ULong {
-    assertUnsafePrecondition(checkLanguageUb, "u64::unchecked_shr cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
 }
 
 /**
@@ -27929,7 +27929,7 @@ public fun ULong.shrExact(rhs: UInt): ULong? =
  * would return `None`.
  */
 public fun ULong.uncheckedShrExact(rhs: UInt): ULong {
-    assertUnsafePrecondition(checkLibraryUb, "u64::unchecked_shr_exact cannot shift out non-zero bits", zeros, this, trailingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShr(rhs)
 }
 
@@ -28045,7 +28045,7 @@ public fun ULong.strictPow(exp: UInt): ULong =
  * ```kotlin
  * ```
  */
-public fun ULong.saturatingAdd(rhs: ULong): ULong = io.github.kotlinmania.rustlang.core.intrinsics.saturatingAdd(this, rhs)
+public fun ULong.saturatingAdd(rhs: ULong): ULong = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
 
 /**
  * Saturating addition with a signed integer. Computes `self + rhs`,
@@ -28076,7 +28076,7 @@ public fun ULong.saturatingAddSigned(rhs: Long): ULong {
  * ```kotlin
  * ```
  */
-public fun ULong.saturatingSub(rhs: ULong): ULong = io.github.kotlinmania.rustlang.core.intrinsics.saturatingSub(this, rhs)
+public fun ULong.saturatingSub(rhs: ULong): ULong = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
 
 /**
  * Saturating integer subtraction. Computes `self` - `rhs`, saturating at
@@ -28668,7 +28668,7 @@ public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULo
  * }
  * ```
  */
-public fun ULong.carryingMulAdd(rhs: ULong, carry: ULong, add: ULong): Pair<ULong, ULong> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun ULong.carryingMulAdd(rhs: ULong, carry: ULong, add: ULong): Pair<ULong, ULong> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -28877,9 +28877,9 @@ public fun ULong.pow(exp: UInt): ULong =
  * ```
  */
 public fun ULong.isqrt(): ULong {
-    val result = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.ULong(this).toULong()
+    val result = u64(this).toULong()
     run {
-        val MAX_RESULT: ULong = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.ULong(ULong.MAX_VALUE).toULong()
+        val MAX_RESULT: ULong = u64(ULong.MAX_VALUE).toULong()
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1uL) {
@@ -29355,7 +29355,7 @@ public fun <T : CheckedCastFromInt<ULong, T>> ULong.strictCast(strictCastFromTFn
  * or smaller than `T.MIN`, where `T` is the target type.
  */
 public fun <T : CheckedCastFromInt<ULong, T>> ULong.uncheckedCast(uncheckedCastFromTFn: (T) -> T): T {
-    assertUnsafePrecondition(checkLanguageUb, "u64::unchecked_cast must fit in the target type", inBounds, castVal, this, checkedCast, T, ret, castVal, isSome, core, mem, forget, castVal, ret, inBounds)
+    Unit
     return uncheckedCastFromTFn(this)
 }
 
@@ -29793,7 +29793,7 @@ public fun U128.strictCastSigned(): I128 =
  * ```kotlin
  * ```
  */
-public fun U128.rotateLeft(n: UInt): U128 = io.github.kotlinmania.rustlang.core.intrinsics.rotateLeft(this, n)
+public fun U128.rotateLeft(n: UInt): U128 = io.github.kotlinmania.rustlang.intrinsics.rotateLeft(this, n)
 
 /**
  * Shifts the bits to the right by a specified amount, `n`,
@@ -29811,7 +29811,7 @@ public fun U128.rotateLeft(n: UInt): U128 = io.github.kotlinmania.rustlang.core.
  * ```kotlin
  * ```
  */
-public fun U128.rotateRight(n: UInt): U128 = io.github.kotlinmania.rustlang.core.intrinsics.rotateRight(this, n)
+public fun U128.rotateRight(n: UInt): U128 = io.github.kotlinmania.rustlang.intrinsics.rotateRight(this, n)
 
 /**
  * Performs a left funnel shift.
@@ -29906,8 +29906,8 @@ public fun U128.funnelShr(right: U128, n: UInt): U128 {
  * i.e. when [`funnelShl`](Self.funnelShl) would panic.
  */
 public fun U128.uncheckedFunnelShl(right: U128, n: UInt): U128 {
-    assertUnsafePrecondition(checkLanguageUb, "u128::unchecked_funnel_shl cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -29919,8 +29919,8 @@ public fun U128.uncheckedFunnelShl(right: U128, n: UInt): U128 {
  * i.e. when [`funnelShr`](Self.funnelShr) would panic.
  */
 public fun U128.uncheckedFunnelShr(right: U128, n: UInt): U128 {
-    assertUnsafePrecondition(checkLanguageUb, "u128::unchecked_funnel_shr cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -29968,7 +29968,7 @@ public fun U128.uncheckedFunnelShr(right: U128, n: UInt): U128 {
  * public fun doctestEntry() {}
  * ```
  */
-public fun U128.carrylessMul(rhs: U128): U128 = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
+public fun U128.carrylessMul(rhs: U128): U128 = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -29992,7 +29992,7 @@ public fun U128.swapBytes(): U128 = U128.fromLong(kmBswapU64((this).toULong()).t
  * }
  * ```
  */
-public fun U128.extractBits(mask: U128): U128 = U128.fromLong(U128.extractImpl(this, mask).toLong())
+public fun U128.extractBits(mask: U128): U128 = U128.fromLong(extractImpl(this, mask).toLong())
 
 /**
  * Returns an integer with the least significant bits of `self`
@@ -30005,7 +30005,7 @@ public fun U128.extractBits(mask: U128): U128 = U128.fromLong(U128.extractImpl(t
  * }
  * ```
  */
-public fun U128.depositBits(mask: U128): U128 = U128.fromLong(U128.depositImpl(this, mask).toLong())
+public fun U128.depositBits(mask: U128): U128 = U128.fromLong(depositImpl(this, mask).toLong())
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -30146,8 +30146,8 @@ public fun U128.strictAdd(rhs: U128): U128 {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun U128.uncheckedAdd(rhs: U128): U128 {
-    assertUnsafePrecondition(checkLanguageUb, "u128::unchecked_add cannot overflow", lhs, this, rhs, rhs, lhs, overflowingAdd, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd(this, rhs)
 }
 
 /**
@@ -30288,8 +30288,8 @@ public fun U128.strictSub(rhs: U128): U128 {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun U128.uncheckedSub(rhs: U128): U128 {
-    assertUnsafePrecondition(checkLanguageUb, "u128::unchecked_sub cannot overflow", lhs, this, rhs, rhs, lhs, overflowingSub, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedSub(this, rhs)
 }
 
 /**
@@ -30423,8 +30423,8 @@ public fun U128.strictMul(rhs: U128): U128 {
  * [unwrapUnchecked]: option/enum.Option.html#method.unwrapUnchecked
  */
 public fun U128.uncheckedMul(rhs: U128): U128 {
-    assertUnsafePrecondition(checkLanguageUb, "u128::unchecked_mul cannot overflow", lhs, this, rhs, rhs, lhs, overflowingMul, rhs, 1)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedMul(this, rhs)
 }
 
 /**
@@ -30558,7 +30558,7 @@ public fun U128.divExact(rhs: U128): U128? =
  * i.e. when [`checkedDivExact`](Self.checkedDivExact) would return `None`.
  */
 public fun U128.uncheckedDivExact(rhs: U128): U128 {
-    assertUnsafePrecondition(checkLanguageUb, "u128::unchecked_div_exact divide by zero or leave a remainder", lhs, this, rhs, rhs, rhs, 0, lhs, rhs, 0)
+    Unit
     return exactDiv(this, rhs)
 }
 
@@ -30666,7 +30666,7 @@ public fun U128.strictRemEuclid(rhs: U128): U128 = this % rhs
  * bits, i.e. `lhs & rhs` must be zero.
  */
 public fun U128.uncheckedDisjointBitor(rhs: U128): U128 {
-    assertUnsafePrecondition(checkLanguageUb, "u128::unchecked_disjoint_bitor cannot bitor overlapping ones", lhs, this, rhs, rhs, lhs, rhs, 0)
+    Unit
     return disjointBitor(this, rhs)
 }
 
@@ -30943,8 +30943,8 @@ public fun U128.strictShl(rhs: UInt): U128 {
  * i.e. when [checkedShl] would return `None`.
  */
 public fun U128.uncheckedShl(rhs: UInt): U128 {
-    assertUnsafePrecondition(checkLanguageUb, "u128::unchecked_shl cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShl(this, rhs)
 }
 
 /**
@@ -31003,7 +31003,7 @@ public fun U128.shlExact(rhs: UInt): U128? =
  * would return `None`.
  */
 public fun U128.uncheckedShlExact(rhs: UInt): U128 {
-    assertUnsafePrecondition(checkLibraryUb, "u128::unchecked_shl_exact cannot shift out non-zero bits", zeros, this, leadingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShl(rhs)
 }
 
@@ -31063,8 +31063,8 @@ public fun U128.strictShr(rhs: UInt): U128 {
  * i.e. when [checkedShr] would return `None`.
  */
 public fun U128.uncheckedShr(rhs: UInt): U128 {
-    assertUnsafePrecondition(checkLanguageUb, "u128::unchecked_shr cannot overflow", rhs, rhs, rhs, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr(this, rhs)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedShr(this, rhs)
 }
 
 /**
@@ -31123,7 +31123,7 @@ public fun U128.shrExact(rhs: UInt): U128? =
  * would return `None`.
  */
 public fun U128.uncheckedShrExact(rhs: UInt): U128 {
-    assertUnsafePrecondition(checkLibraryUb, "u128::unchecked_shr_exact cannot shift out non-zero bits", zeros, this, trailingZeros, bits, BITS, rhs, rhs, rhs, zeros, rhs, bits)
+    Unit
     return this.uncheckedShr(rhs)
 }
 
@@ -31239,7 +31239,7 @@ public fun U128.strictPow(exp: UInt): U128 =
  * ```kotlin
  * ```
  */
-public fun U128.saturatingAdd(rhs: U128): U128 = io.github.kotlinmania.rustlang.core.intrinsics.saturatingAdd(this, rhs)
+public fun U128.saturatingAdd(rhs: U128): U128 = io.github.kotlinmania.rustlang.intrinsics.saturatingAdd(this, rhs)
 
 /**
  * Saturating addition with a signed integer. Computes `self + rhs`,
@@ -31270,7 +31270,7 @@ public fun U128.saturatingAddSigned(rhs: I128): U128 {
  * ```kotlin
  * ```
  */
-public fun U128.saturatingSub(rhs: U128): U128 = io.github.kotlinmania.rustlang.core.intrinsics.saturatingSub(this, rhs)
+public fun U128.saturatingSub(rhs: U128): U128 = io.github.kotlinmania.rustlang.intrinsics.saturatingSub(this, rhs)
 
 /**
  * Saturating integer subtraction. Computes `self` - `rhs`, saturating at
@@ -31862,7 +31862,7 @@ public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.car
  * }
  * ```
  */
-public fun U128.carryingMulAdd(rhs: U128, carry: U128, add: U128): Pair<U128, U128> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
+public fun U128.carryingMulAdd(rhs: U128, carry: U128, add: U128): Pair<U128, U128> = io.github.kotlinmania.rustlang.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -32071,9 +32071,9 @@ public fun U128.pow(exp: UInt): U128 =
  * ```
  */
 public fun U128.isqrt(): U128 {
-    val result = U128.fromLong(io.github.kotlinmania.rustlang.core.num.imp.intsqrt.U128(this).toLong())
+    val result = U128.fromLong(u128(this).toLong())
     run {
-        val MAX_RESULT: U128 = U128.fromLong(io.github.kotlinmania.rustlang.core.num.imp.intsqrt.U128(U128.MAX_VALUE).toLong())
+        val MAX_RESULT: U128 = U128.fromLong(u128(U128.MAX_VALUE).toLong())
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= U128(0x0uL, 0x1uL)) {
@@ -32549,7 +32549,7 @@ public fun <T : CheckedCastFromInt<U128, T>> U128.strictCast(strictCastFromTFn: 
  * or smaller than `T.MIN`, where `T` is the target type.
  */
 public fun <T : CheckedCastFromInt<U128, T>> U128.uncheckedCast(uncheckedCastFromTFn: (T) -> T): T {
-    assertUnsafePrecondition(checkLanguageUb, "u128::unchecked_cast must fit in the target type", inBounds, castVal, this, checkedCast, T, ret, castVal, isSome, core, mem, forget, castVal, ret, inBounds)
+    Unit
     return uncheckedCastFromTFn(this)
 }
 
@@ -32822,8 +32822,8 @@ public fun Int.funnelShr(right: Int, n: UInt): Int {
  * i.e. when [`funnelShl`](Self.funnelShl) would panic.
  */
 public fun Int.uncheckedFunnelShl(right: Int, n: UInt): Int {
-    assertUnsafePrecondition(checkLanguageUb, "usize::unchecked_funnel_shl cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -32835,8 +32835,8 @@ public fun Int.uncheckedFunnelShl(right: Int, n: UInt): Int {
  * i.e. when [`funnelShr`](Self.funnelShr) would panic.
  */
 public fun Int.uncheckedFunnelShr(right: Int, n: UInt): Int {
-    assertUnsafePrecondition(checkLanguageUb, "usize::unchecked_funnel_shr cannot overflow", n, n, n, BITS)
-    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
+    Unit
+    return io.github.kotlinmania.rustlang.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -32884,7 +32884,7 @@ public fun Int.uncheckedFunnelShr(right: Int, n: UInt): Int {
  * public fun doctestEntry() {}
  * ```
  */
-public fun Int.carrylessMul(rhs: Int): Int = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
+public fun Int.carrylessMul(rhs: Int): Int = io.github.kotlinmania.rustlang.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Returns an integer with the bit locations specified by `mask` packed
@@ -32897,7 +32897,7 @@ public fun Int.carrylessMul(rhs: Int): Int = io.github.kotlinmania.rustlang.core
  * }
  * ```
  */
-public fun Int.extractBits(mask: Int): Int = io.github.kotlinmania.rustlang.core.num.imp.intbits.ULong.extractImpl(this.toULong(), mask.toULong()).toInt()
+public fun Int.extractBits(mask: Int): Int = extractImpl(this.toULong(), mask.toULong()).toInt()
 
 /**
  * Returns an integer with the least significant bits of `self`
@@ -32910,7 +32910,7 @@ public fun Int.extractBits(mask: Int): Int = io.github.kotlinmania.rustlang.core
  * }
  * ```
  */
-public fun Int.depositBits(mask: Int): Int = io.github.kotlinmania.rustlang.core.num.imp.intbits.ULong.depositImpl(this.toULong(), mask.toULong()).toInt()
+public fun Int.depositBits(mask: Int): Int = depositImpl(this.toULong(), mask.toULong()).toInt()
 
 /**
  * Checked addition with a signed integer. Computes `self + rhs`,

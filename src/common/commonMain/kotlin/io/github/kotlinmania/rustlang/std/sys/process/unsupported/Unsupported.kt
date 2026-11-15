@@ -5,20 +5,20 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.iter.Iter
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.io.stdio.Stderr
+import io.github.kotlinmania.rustlang.io.stdio.Stdout
+import io.github.kotlinmania.rustlang.path.Iter
+import io.github.kotlinmania.rustlang.path.Path
+import io.github.kotlinmania.rustlang.process.StdioPipes
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
-import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.process.StdioPipes
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
-import io.github.kotlinmania.rustlang.std.sys.pal.unsupported.unsupported
-import io.github.kotlinmania.rustlang.std.sys.pipe.unix.Pipe
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnv
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs
+import io.github.kotlinmania.rustlang.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.sys.pal.unsupported.unsupported
+import io.github.kotlinmania.rustlang.sys.pipe.unix.Pipe
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -155,7 +155,7 @@ public open class Command(
                 f.append("[${this.program}] ")
             }
             f.append("${this.args[0]}")
-            for (arg in ((this.args).slice(1 until this.args.size))) {
+            for (arg in ((this.args).subList(1, (this.args).size))) {
                 f.append(" $arg")
             }
         }

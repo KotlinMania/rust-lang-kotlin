@@ -1,12 +1,12 @@
 // port-lint: source slice/memchr.rs
 package io.github.kotlinmania.rustlang.core.slice.memchr
 
-import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.intrinsics.sizeOf
 
 public typealias Chunk = Int
 
@@ -70,7 +70,7 @@ public fun memchrAligned(x: UByte, text: List<UByte>): Int? {
         // Copyright 2015 Andrew Gallant, bluss and Nicolas Koch
         if (offset > 0) {
             offset = offset.min(len)
-            val slice = ((text).slice(0 until offset))
+            val slice = ((text).subList(0, offset))
             when (val matchVal = memchrNaive(x, slice)) {
                 null -> {}
                 else -> {
@@ -136,7 +136,7 @@ public fun memrchrAligned(x: UByte, text: List<UByte>): Int? {
         Pair(prefix.len(), len - suffix.len())
     }
     var offset = maxAlignedOffset
-    when (val matchVal = ((text).slice(offset until text.size)).iter().indexOfLast({ elt -> elt == x }).takeIf { it >= 0 }) {
+    when (val matchVal = ((text).subList(offset, (text).size)).iter().indexOfLast({ elt -> elt == x }).takeIf { it >= 0 }) {
         null -> {}
         else -> {
             val index = matchVal
@@ -164,5 +164,5 @@ public fun memrchrAligned(x: UByte, text: List<UByte>): Int? {
         offset -= 2 * chunkBytes
     }
     // Find the byte before the point the body loop stopped.
-    return ((text).slice(0 until offset)).iter().indexOfLast({ elt -> elt == x }).takeIf { it >= 0 }
+    return ((text).subList(0, offset)).iter().indexOfLast({ elt -> elt == x }).takeIf { it >= 0 }
 }

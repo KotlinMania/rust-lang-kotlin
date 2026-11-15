@@ -1,10 +1,10 @@
 // port-lint: source float/mul.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.mul
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.support.Float
+import io.github.kotlinmania.rustlang.support.Int
 
 public fun <F : Float> mul(a: F, b: F, fromBitsFFn: (ULong) -> F, normalizeFFn: (ULong) -> Any?): F {
     val one = F.Int.ONE

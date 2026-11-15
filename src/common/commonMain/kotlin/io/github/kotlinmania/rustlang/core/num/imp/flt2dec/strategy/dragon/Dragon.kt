@@ -3,17 +3,19 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.dragon
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.num.imp.bignum.Big
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.MAX_SIG_DIGITS
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.Decoded
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.estimator.estimateScalingFactor
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.roundUp
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.num.imp.bignum.Big
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.MAX_SIG_DIGITS
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.decoder.Decoded
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.estimator.estimateScalingFactor
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.roundUp
 
 // Almost direct (but slightly optimized) Rust translation of Figure 3 of "Printing
 // Floating-Point Numbers Quickly and Accurately"[^1].
@@ -247,7 +249,7 @@ public fun formatShortest(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): Pai
         // it seems that this condition is very hard to satisfy (possibly impossible),
         // but we are just being safe and consistent here.
         // SAFETY: we initialized that memory above.
-        when (val matchVal = roundUp(((buf).slice(0 until i)).assumeInitMut())) {
+        when (val matchVal = roundUp(((buf).subList(0, i)).assumeInitMut())) {
             null -> {}
             else -> {
                 val c = matchVal
@@ -258,7 +260,7 @@ public fun formatShortest(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): Pai
         }
     }
     // SAFETY: we initialized that memory above.
-    return Pair(((buf).slice(0 until i)).assumeInitRef(), k)
+    return Pair(((buf).subList(0, i)).assumeInitRef(), k)
 }
 
 /**
@@ -325,11 +327,11 @@ public fun formatExact(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: 
             if (mant.isZero()) {
                 // following digits are all zeroes, we stop here
                 // do *not* try to perform rounding! rather, fill remaining digits.
-                for (idx in ((buf).slice(i until len)).indices) {
-                    ((buf).slice(i until len))[idx] = MaybeUninit.new(48u, ObjectSlotLayout<Pair<List<UByte>, Short>>())
+                for (idx in ((buf).subList(i, len)).indices) {
+                    ((buf).subList(i, len))[idx] = MaybeUninit.new(48u, ObjectSlotLayout<Pair<List<UByte>, Short>>())
                 }
                 // SAFETY: we initialized that memory above.
-                return Pair(((buf).slice(0 until len)).assumeInitRef(), k)
+                return Pair(((buf).subList(0, len)).assumeInitRef(), k)
             }
             var d2 = 0
             if (mant >= scale8) {
@@ -366,7 +368,7 @@ public fun formatExact(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: 
         // if rounding up changes the length, the exponent should also change.
         // but we've been requested a fixed number of digits, so do not alter the buffer...
         // SAFETY: we initialized that memory above.
-        when (val matchVal = roundUp(((buf).slice(0 until len)).assumeInitMut())) {
+        when (val matchVal = roundUp(((buf).subList(0, len)).assumeInitMut())) {
             null -> {}
             else -> {
                 val c = matchVal
@@ -382,5 +384,5 @@ public fun formatExact(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: 
         }
     }
     // SAFETY: we initialized that memory above.
-    return Pair(((buf).slice(0 until len)).assumeInitRef(), k)
+    return Pair(((buf).subList(0, len)).assumeInitRef(), k)
 }

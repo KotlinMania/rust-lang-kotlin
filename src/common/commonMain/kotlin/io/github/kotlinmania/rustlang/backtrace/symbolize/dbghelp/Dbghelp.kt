@@ -3,18 +3,6 @@
 
 package io.github.kotlinmania.rustlang.backtrace.symbolize.dbghelp
 
-import io.github.kotlinmania.rustlang.backtrace.dbghelp.Init
-import io.github.kotlinmania.rustlang.backtrace.dbghelp.init
-import io.github.kotlinmania.rustlang.backtrace.symbolize.ResolveWhat
-import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
-import io.github.kotlinmania.rustlang.backtrace.symbolize.adjustIp
-import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
-import io.github.kotlinmania.rustlang.backtrace.windowssys.Bool
-import io.github.kotlinmania.rustlang.backtrace.windowssys.CP_UTF8
-import io.github.kotlinmania.rustlang.backtrace.windowssys.ImagehlpLinew64
-import io.github.kotlinmania.rustlang.backtrace.windowssys.MAX_SYM_NAME
-import io.github.kotlinmania.rustlang.backtrace.windowssys.TRUE
-import io.github.kotlinmania.rustlang.core.marker.PhantomData
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
@@ -32,6 +20,20 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.dbghelp.Dbghelp
+import io.github.kotlinmania.rustlang.dbghelp.SymAddrIncludeInlineTrace
+import io.github.kotlinmania.rustlang.dbghelp.SymFromInlineContextW
+import io.github.kotlinmania.rustlang.dbghelp.SymGetLineFromInlineContextW
+import io.github.kotlinmania.rustlang.dbghelp.SymQueryInlineTrace
+import io.github.kotlinmania.rustlang.symbolize.ResolveWhat
+import io.github.kotlinmania.rustlang.symbolize.SymbolName
+import io.github.kotlinmania.rustlang.symbolize.adjustIp
+import io.github.kotlinmania.rustlang.types.BytesOrWideString
+import io.github.kotlinmania.rustlang.windowssys.Bool
+import io.github.kotlinmania.rustlang.windowssys.CP_UTF8
+import io.github.kotlinmania.rustlang.windowssys.ImagehlpLinew64
+import io.github.kotlinmania.rustlang.windowssys.MAX_SYM_NAME
+import io.github.kotlinmania.rustlang.windowssys.TRUE
 
 // Symbolication strategy using `dbghelp.dll` on Windows, only used for MSVC
 //
@@ -121,15 +123,15 @@ public open class Aligned8<T>(
     public fun pointerLayout(): TypeLayout<Aligned8<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Aligned8<T>(ptr, layout) }, { it.value })
 }
 
-public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit) {
+public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.symbolize.dbghelp.Symbol) -> Unit) {
     // Ensure this process's symbols are initialized
     val dbghelp1 =
         run {
-            val matchVal = init()
-            when (matchVal) { is Result.Ok<*> -> {
+            val matchVal = Dbghelp.init()
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val dbghelp = matchVal.value
                 dbghelp
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 return
             } }
         }
@@ -152,7 +154,7 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
  * Note that calling this function requires having dbghelp 6.2+ loaded - and
  * will panic otherwise.
  */
-public fun resolveWithInline(dbghelp: Init, addr: MutPtr, inlineContext: UInt?, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit): Unit? {
+public fun resolveWithInline(dbghelp: Init, addr: MutPtr, inlineContext: UInt?, cb: (io.github.kotlinmania.rustlang.symbolize.dbghelp.Symbol) -> Unit): Unit? {
     val inlineContext1 = inlineContext
     run {
         val currentProcess = GetCurrentProcess()
@@ -168,8 +170,8 @@ public fun resolveWithInline(dbghelp: Init, addr: MutPtr, inlineContext: UInt?, 
                 var inlineContext2 by localStorageL176C12
                 // If there is are inlined frames but we can't load them for some reason OR if there are no
                 // inlined frames, then we disregard inlinedFrameCount and inlineContext.
-                if ((inlinedFrameCount > 0u && SymQueryInlineTrace(currentProcess, addr1, 0, addr1, addr1, RustMutableReference(localStorageL176C12.asMutPtr(), localStorageL176C12.layout), RustMutableReference(allocateNativeCell(0, PrimitiveLayouts.I32), PrimitiveLayouts.I32)) != TRUE) || inlinedFrameCount == 0u) {
-                    inlinedFrameCount = 0u
+                if ((inlinedFrameCount > 0 && SymQueryInlineTrace(currentProcess, addr1, 0, addr1, addr1, RustMutableReference(localStorageL176C12.asMutPtr(), localStorageL176C12.layout), RustMutableReference(allocateNativeCell(0, PrimitiveLayouts.I32), PrimitiveLayouts.I32)) != TRUE) || inlinedFrameCount == 0) {
+                    inlinedFrameCount = 0
                     inlineContext2 = 0
                 }
                 Pair(inlinedFrameCount, inlineContext2)
@@ -190,7 +192,7 @@ public fun resolveWithInline(dbghelp: Init, addr: MutPtr, inlineContext: UInt?, 
  * - `symFromAddr`: either `SymFromAddrW` or `SymFromInlineContextW`
  * - `getLineFromAddr`: `SymGetLineFromAddrW64` or `SymGetLineFromInlineContextW`
  */
-public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutableReference<ImagehlpLinew64>) -> Bool, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit) {
+public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutableReference<ImagehlpLinew64>) -> Bool, cb: (io.github.kotlinmania.rustlang.symbolize.dbghelp.Symbol) -> Unit) {
     val data = MaybeUninit.zeroed(ObjectSlotLayout<Aligned8<UByteArray>>())
     val info = data.asMutPtr().cast()
     info.maxNameLen = MAX_SYM_NAME
@@ -238,7 +240,7 @@ public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutabl
             filename = ptrFromRef(rawSliceList(base, len1.toInt(), PrimitiveLayouts.U8))
         }
     }
-    cb(io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = PhantomData)))
+    cb(io.github.kotlinmania.rustlang.symbolize.dbghelp.Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = marker.PhantomData)))
 }
 
 public fun cache(filename: ConstPtr?): OsString? = filename?.let({ f -> OsString.fromWide(f) })

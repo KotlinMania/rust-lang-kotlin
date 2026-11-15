@@ -1,7 +1,7 @@
 package io.github.kotlinmania.rustlang.std.sync.mpmc
 
-import io.github.kotlinmania.rustlang.std.sync.mpmc.counter.new
-import io.github.kotlinmania.rustlang.std.sync.mpmc.list.Channel
+import io.github.kotlinmania.rustlang.sync.mpmc.array.Channel
+import io.github.kotlinmania.rustlang.sync.mpmc.counter.new
 
 /**
  * Creates a new asynchronous channel, returning the sender/receiver halves.
@@ -91,12 +91,12 @@ public fun <T> channel(): Pair<Sender<T>, Receiver<T>> {
  */
 public fun <T> syncChannel(cap: Int): Pair<Sender<T>, Receiver<T>> =
     if (cap == 0) {
-        val (s, r) = new(io.github.kotlinmania.rustlang.std.sync.mpmc.zero.Channel.new())
+        val (s, r) = new(Channel.new())
         val s1 = Sender(flavor = SenderFlavor.Zero(s))
         val r1 = Receiver(flavor = ReceiverFlavor.Zero(r))
         Pair(s1, r1)
     } else {
-        val (s2, r2) = new(io.github.kotlinmania.rustlang.std.sync.mpmc.array.Channel.withCapacity(cap))
+        val (s2, r2) = new(Channel.withCapacity(cap))
         val s3 = Sender(flavor = SenderFlavor.Array(s2))
         val r3 = Receiver(flavor = ReceiverFlavor.Array(r2))
         Pair(s3, r3)

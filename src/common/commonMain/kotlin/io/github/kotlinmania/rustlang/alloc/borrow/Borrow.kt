@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.alloc.borrow
 
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow.*
-import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 

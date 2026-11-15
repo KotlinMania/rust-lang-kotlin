@@ -1,8 +1,9 @@
 // port-lint: tests math/exp2m1.rs
 package io.github.kotlinmania.rustlang.libm.math.exp2m1
 
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
+import io.github.kotlinmania.rustlang.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.math.support.hexfloat.Hex
+import io.github.kotlinmania.rustlang.math.support.hexfloat.hf64
 
 public class Exp2m1InlineTests {
     @kotlin.test.Test
@@ -19,7 +20,7 @@ public class Exp2m1InlineTests {
                 run {
                     val l = result
                     val r = expected
-                    check(l.biteq(r)) { ("x = $x").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toULong()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+                    check(biteq(l, r)) { ("x = $x").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toULong()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
                 }
             }
         }
@@ -38,12 +39,12 @@ public class Exp2m1InlineTests {
             run {
                 val l = exp2m1(x)
                 val r = positive
-                check(l.biteq(r)) { ("x = $x").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toULong()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+                check(biteq(l, r)) { ("x = $x").toString() + "\nl: " + (l).toString() + " (" + (l.toRawBits().toULong()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
             }
             run {
                 val l1 = exp2m1(-x)
                 val r1 = negative
-                check(l1.biteq(r1)) { ("x = ${-x}").toString() + "\nl: " + (l).toString() + " (" + (l1.toRawBits().toULong()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toRawBits().toULong()).toString() + " " + (Hex(r1)).toString() + ")" }
+                check(biteq(l1, r1)) { ("x = ${-x}").toString() + "\nl: " + (l).toString() + " (" + (l1.toRawBits().toULong()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toRawBits().toULong()).toString() + " " + (Hex(r1)).toString() + ")" }
             }
         }
     }

@@ -3,15 +3,16 @@
 
 package io.github.kotlinmania.rustlang.core.net.parser
 
-import io.github.kotlinmania.rustlang.core.net.ipaddr.IpAddr
-import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
-import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
-import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
-import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV4
-import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV6
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.slice.get
+import io.github.kotlinmania.rustlang.net.ipaddr.IpAddr
+import io.github.kotlinmania.rustlang.net.ipaddr.Ipv4Addr
+import io.github.kotlinmania.rustlang.net.ipaddr.Ipv6Addr
+import io.github.kotlinmania.rustlang.net.socketaddr.SocketAddr
+import io.github.kotlinmania.rustlang.net.socketaddr.SocketAddrV4
+import io.github.kotlinmania.rustlang.net.socketaddr.SocketAddrV6
 
 // A private parser implementation of IPv4, IPv6, and socket addresses.
 //
@@ -113,7 +114,7 @@ public open class Parser(
     public open fun <T> readSeparator(sep: Char, index: Int, inner: (Parser) -> T?): T? {
         return this.readAtomically(closure@{ p ->
             if (index > 0) {
-                when (val tryResult = p.readGivenChar(sep)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = p.readGivenChar(sep)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
             }
             inner(p)
         })
@@ -136,11 +137,11 @@ public open class Parser(
         }
         // Works for any radix in u32
         return this.readAtomically(closure1@{ p ->
-            val first = when (val tryResult = when (val tryResult = p.readChar()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure1 Result.Err(tryResult.error) }.toDigit(radix)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure1 Result.Err(tryResult.error) }
+            val first = when (val tryResult = when (val tryResult = p.readChar()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }.toDigit(radix)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }
             var result = first
             var digitCount = 1
             while (true) {
-                val matchVal = p.readAtomically(closure2@{ p1 -> when (val tryResult = p1.readChar()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure2 Result.Err(tryResult.error) }.toDigit(radix) })
+                val matchVal = p.readAtomically(closure2@{ p1 -> when (val tryResult = p1.readChar()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error) }.toDigit(radix) })
                 if (matchVal == null) break
                 val digit = matchVal
                 if (digitCount >= maxDigits) {
@@ -165,14 +166,14 @@ public open class Parser(
      */
     public open fun <T : ReadNumberHelper<T>> readDecimal(): T? {
         return this.readAtomically(closure3@{ p ->
-            val first = when (val tryResult = when (val tryResult = p.readChar()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure3 Result.Err(tryResult.error) }.toDigit(10u)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure3 Result.Err(tryResult.error) }
-            var result = when (val tryResult = T.ZERO.checkedAdd(first)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure3 Result.Err(tryResult.error) }
+            val first = when (val tryResult = when (val tryResult = p.readChar()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }.toDigit(10u)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
+            var result = when (val tryResult = T.ZERO.checkedAdd(first)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
             while (true) {
-                val matchVal = p.readAtomically(closure4@{ p1 -> when (val tryResult = p1.readChar()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }.toDigit(10u) })
+                val matchVal = p.readAtomically(closure4@{ p1 -> when (val tryResult = p1.readChar()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure4 Result.Err(tryResult.error) }.toDigit(10u) })
                 if (matchVal == null) break
                 val digit = matchVal
-                result = when (val tryResult = result.checkedMul(10)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure3 Result.Err(tryResult.error) }
-                result = when (val tryResult = result.checkedAdd(digit)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure3 Result.Err(tryResult.error) }
+                result = when (val tryResult = result.checkedMul(10)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
+                result = when (val tryResult = result.checkedAdd(digit)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error) }
             }
             result
         })
@@ -189,7 +190,7 @@ public open class Parser(
                     // Disallow octal number in IP string.
                     // https://tools.ietf.org/html/rfc6943#section-3.1.1
                     p1.readRadixMaxDigits(10, 3, false)
-                })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure5 Result.Err(tryResult.error) }
+                })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure5 Result.Err(tryResult.error) }
             }
             groups.into()
         })
@@ -246,8 +247,8 @@ public open class Parser(
             }
             // Read `.` if previous code parsed less than 8 groups.
             // `.` indicates one or more groups of 16 bits of zeros.
-            when (val tryResult = p.readGivenChar(':')) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure8 Result.Err(tryResult.error) }
-            when (val tryResult = p.readGivenChar(':')) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure8 Result.Err(tryResult.error) }
+            when (val tryResult = p.readGivenChar(':')) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error) }
+            when (val tryResult = p.readGivenChar(':')) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error) }
             // Read the back part of the address. The :: must contain at least one
             // set of zeroes, so our max length is 7.
             var tail = MutableList(7) { 0 }
@@ -269,7 +270,7 @@ public open class Parser(
      */
     public open fun readPort(): UShort? {
         return this.readAtomically(closure10@{ p ->
-            when (val tryResult = p.readGivenChar(':')) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure10 Result.Err(tryResult.error) }
+            when (val tryResult = p.readGivenChar(':')) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure10 Result.Err(tryResult.error) }
             p.readDecimal()
         })
     }
@@ -279,7 +280,7 @@ public open class Parser(
      */
     public open fun readScopeId(): UInt? {
         return this.readAtomically(closure11@{ p ->
-            when (val tryResult = p.readGivenChar('%')) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure11 Result.Err(tryResult.error) }
+            when (val tryResult = p.readGivenChar('%')) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure11 Result.Err(tryResult.error) }
             p.readDecimal()
         })
     }
@@ -289,8 +290,8 @@ public open class Parser(
      */
     public open fun readSocketAddrV4(): SocketAddrV4? {
         return this.readAtomically(closure12@{ p ->
-            val ip = when (val tryResult = p.readIpv4Addr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure12 Result.Err(tryResult.error) }
-            val port = when (val tryResult = p.readPort()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure12 Result.Err(tryResult.error) }
+            val ip = when (val tryResult = p.readIpv4Addr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure12 Result.Err(tryResult.error) }
+            val port = when (val tryResult = p.readPort()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure12 Result.Err(tryResult.error) }
             SocketAddrV4.new(ip, port)
         })
     }
@@ -300,11 +301,11 @@ public open class Parser(
      */
     public open fun readSocketAddrV6(): SocketAddrV6? {
         return this.readAtomically(closure13@{ p ->
-            when (val tryResult = p.readGivenChar('[')) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure13 Result.Err(tryResult.error) }
-            val ip = when (val tryResult = p.readIpv6Addr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure13 Result.Err(tryResult.error) }
+            when (val tryResult = p.readGivenChar('[')) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure13 Result.Err(tryResult.error) }
+            val ip = when (val tryResult = p.readIpv6Addr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure13 Result.Err(tryResult.error) }
             val scopeId = p.readScopeId().unwrapOr(0)
-            when (val tryResult = p.readGivenChar(']')) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure13 Result.Err(tryResult.error) }
-            val port = when (val tryResult = p.readPort()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure13 Result.Err(tryResult.error) }
+            when (val tryResult = p.readGivenChar(']')) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure13 Result.Err(tryResult.error) }
+            val port = when (val tryResult = p.readPort()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure13 Result.Err(tryResult.error) }
             SocketAddrV6.new(ip, port, 0u, scopeId)
         })
     }

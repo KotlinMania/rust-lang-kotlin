@@ -1,11 +1,11 @@
 // port-lint: source math/lgammaf_r.rs
 package io.github.kotlinmania.rustlang.libm.math.lgammafr
 
-import io.github.kotlinmania.rustlang.libm.math.floor.floorf
-import io.github.kotlinmania.rustlang.libm.math.kcosf.kCosf
-import io.github.kotlinmania.rustlang.libm.math.ksinf.kSinf
-import io.github.kotlinmania.rustlang.libm.math.logf.logf
-import io.github.kotlinmania.rustlang.libm.math.support.uncheckedDivIsize
+import io.github.kotlinmania.rustlang.math.floor.floorf
+import io.github.kotlinmania.rustlang.math.kcosf.kCosf
+import io.github.kotlinmania.rustlang.math.ksinf.kSinf
+import io.github.kotlinmania.rustlang.math.logf.logf
+import io.github.kotlinmania.rustlang.math.support.uncheckedDivIsize
 
 public val PI: kotlin.Float = 3.1415927410e00f
 

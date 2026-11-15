@@ -2,14 +2,14 @@
 
 package io.github.kotlinmania.rustlang.libc.windows
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libc.*
 
 // Special handling for all print and scan type functions because of https://github.com/rust-lang/libc/issues/2860
 
@@ -32,13 +32,13 @@ public data class Timezone(
 
 // note this is the struct called stat64 in Windows. Not stat, nor stati64.
 public data class Stat(
-    public var stDev: DevT = 0u,
-    public var stIno: InoT = 0u,
+    public var stDev: DevT = 0,
+    public var stIno: InoT = 0uL,
     public var stMode: UShort = 0u,
     public var stNlink: CShort = 0,
     public var stUid: CShort = 0,
     public var stGid: CShort = 0,
-    public var stRdev: DevT = 0u,
+    public var stRdev: DevT = 0,
     public var stSize: Long = 0L,
     public var stAtime: Time64T = 0L,
     public var stMtime: Time64T = 0L,

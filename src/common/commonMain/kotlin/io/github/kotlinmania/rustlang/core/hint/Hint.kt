@@ -1,15 +1,13 @@
 // port-lint: source hint.rs
 package io.github.kotlinmania.rustlang.core.hint
 
-import io.github.kotlinmania.rustlang.core.X8664
-import io.github.kotlinmania.rustlang.core.intrinsics.ubChecks
+import io.github.kotlinmania.rustlang.X8664
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.forget
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
+import io.github.kotlinmania.rustlang.mem.forget
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
 
 // Hints to compiler that affects how code should be emitted or optimized.
 //
@@ -100,7 +98,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  * ```
  */
 public fun unreachableUnchecked(): Nothing {
-    ubChecks.assertUnsafePrecondition(checkLanguageUb, "hint::unreachable_unchecked must never be reached", false)
+    Unit
     // SAFETY: the safety contract for `intrinsics.unreachable` must
     // be upheld by the caller.
     error("Entered Rust intrinsics::unreachable")
@@ -186,7 +184,7 @@ public fun unreachableUnchecked(): Nothing {
 public fun assertUnchecked(cond: Boolean) {
     // SAFETY: The caller promised `cond` is true.
     run {
-        ubChecks.assertUnsafePrecondition(checkLanguageUb, "hint::assert_unchecked must never be called when the condition is false", cond, cond, cond)
+        Unit
     }
 }
 
@@ -727,8 +725,8 @@ public fun <T> selectUnpredictable(condition: Boolean, trueVal: T, falseVal: T):
         // value panics. We construct a temporary by-pointer guard around the selected value while
         // dropping the unselected value. Arguments overlap here, so we can not use mutable
         // reference for these arguments.
-        val guard = io.github.kotlinmania.rustlang.core.intrinsics.selectUnpredictable(condition, truePtr, falsePtr)
-        val drop = io.github.kotlinmania.rustlang.core.intrinsics.selectUnpredictable(condition, falsePtr, truePtr)
+        val guard = io.github.kotlinmania.rustlang.intrinsics.selectUnpredictable(condition, truePtr, falsePtr)
+        val drop = io.github.kotlinmania.rustlang.intrinsics.selectUnpredictable(condition, falsePtr, truePtr)
         // SAFETY: both pointers are well-aligned and point to initialized values inside a
         // `MaybeUninit` each. In both possible values for `condition` the pointer `guard` and
         // `drop` do not alias (even though the two argument pairs we have selected from did alias
@@ -739,7 +737,7 @@ public fun <T> selectUnpredictable(condition: Boolean, trueVal: T, falseVal: T):
         // Note that it is important to use the values here. Reading from the pointer we got makes
         // LLVM forget the !unpredictable annotation sometimes (in tests, integer sized values in
         // particular seemed to confuse it, also observed in llvm/llvm-project #82340).
-        io.github.kotlinmania.rustlang.core.intrinsics.selectUnpredictable(condition, trueVal1, falseVal1).assumeInit()
+        io.github.kotlinmania.rustlang.intrinsics.selectUnpredictable(condition, trueVal1, falseVal1).assumeInit()
     }
 }
 

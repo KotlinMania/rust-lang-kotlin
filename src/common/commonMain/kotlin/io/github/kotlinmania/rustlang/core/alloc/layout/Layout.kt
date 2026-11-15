@@ -1,20 +1,19 @@
 // port-lint: source alloc/layout.rs
 package io.github.kotlinmania.rustlang.core.alloc.layout
 
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOfVal
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
-import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
+import io.github.kotlinmania.rustlang.intrinsics.sizeOfVal
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedAdd
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedMul
+import io.github.kotlinmania.rustlang.intrinsics.uncheckedSub
+import io.github.kotlinmania.rustlang.mem.alignment.Alignment
+import io.github.kotlinmania.rustlang.mem.sizeOfValRaw
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 /**
  * Layout of a block of memory.
@@ -416,7 +415,7 @@ public open class Layout(
          * [Layout.fromSizeAlign].
          */
         public fun fromSizeAlignUnchecked(size: Int, align: Int): Layout {
-            assertUnsafePrecondition(checkLibraryUb, "Layout::from_size_align_unchecked requires that align is a power of 2 and the rounded-up allocation size does not exceed isize::MAX", size, size, align, align, Layout, isSizeAlignValid, size, align)
+            Unit
             // SAFETY: the caller is required to uphold the preconditions.
             return Layout(size = size, align = transmute(align))
         }
@@ -430,7 +429,7 @@ public open class Layout(
          * [Layout.fromSizeAlignment].
          */
         public fun fromSizeAlignmentUnchecked(size: Int, alignment: Alignment): Layout {
-            assertUnsafePrecondition(checkLibraryUb, "Layout::from_size_alignment_unchecked requires that the rounded-up allocation size does not exceed isize::MAX", size, size, alignment, Alignment, alignment, Layout, isSizeAlignmentValid, size, alignment)
+            Unit
             // SAFETY: the caller is required to uphold the preconditions.
             return Layout(size = size, align = alignment)
         }

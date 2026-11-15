@@ -1,14 +1,28 @@
 // port-lint: source loongarch64/lasx/generated.rs
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lasx
 
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128
-import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128d
-import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128i
-import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V2f64
-import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V2i64
-import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V4f32
+import io.github.kotlinmania.rustlang.loongarch64.lasx.M256
+import io.github.kotlinmania.rustlang.loongarch64.lasx.M256d
+import io.github.kotlinmania.rustlang.loongarch64.lasx.M256i
+import io.github.kotlinmania.rustlang.loongarch64.lasx.V16i16
+import io.github.kotlinmania.rustlang.loongarch64.lasx.V16u16
+import io.github.kotlinmania.rustlang.loongarch64.lasx.V32i8
+import io.github.kotlinmania.rustlang.loongarch64.lasx.V32u8
+import io.github.kotlinmania.rustlang.loongarch64.lasx.V4f64
+import io.github.kotlinmania.rustlang.loongarch64.lasx.V4i64
+import io.github.kotlinmania.rustlang.loongarch64.lasx.V4u64
+import io.github.kotlinmania.rustlang.loongarch64.lasx.V8f32
+import io.github.kotlinmania.rustlang.loongarch64.lasx.V8i32
+import io.github.kotlinmania.rustlang.loongarch64.lasx.V8u32
+import io.github.kotlinmania.rustlang.loongarch64.lsx.M128
+import io.github.kotlinmania.rustlang.loongarch64.lsx.M128d
+import io.github.kotlinmania.rustlang.loongarch64.lsx.M128i
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V2f64
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V2i64
+import io.github.kotlinmania.rustlang.loongarch64.lsx.V4f32
 
 public expect fun lasxXvsrarB(a: V32i8, b: V32i8): V32i8
 

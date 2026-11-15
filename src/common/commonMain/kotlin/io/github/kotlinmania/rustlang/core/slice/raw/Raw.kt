@@ -1,17 +1,15 @@
 // port-lint: source slice/raw.rs
 package io.github.kotlinmania.rustlang.core.slice.raw
 
-import io.github.kotlinmania.rustlang.core.intrinsics.ubChecks
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
-import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
+import io.github.kotlinmania.rustlang.ops.range.Range
+import io.github.kotlinmania.rustlang.ptr.sliceFromRawParts
+import io.github.kotlinmania.rustlang.ptr.sliceFromRawPartsMut
 
 // Free functions to create `[T]` and `[T]`.
 
@@ -134,7 +132,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 public fun <T> fromRawParts(data: ConstPtr, len: Int): List<T> {
     // SAFETY: the caller must uphold the safety contract for `fromRawParts`.
     return run {
-        ubChecks.assertUnsafePrecondition(checkLanguageUb, "slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`", data, data, size, sizeOf, T, align, alignOf, T, len, len, ubChecks, maybeIsAlignedAndNotNull, data, align, false, ubChecks, isValidAllocationSize, size, len)
+        Unit
         (PrimitiveLayouts.U8).readNative((sliceFromRawParts(data, len)).rawAddress)
     }
 }
@@ -174,7 +172,7 @@ public fun <T> fromRawParts(data: ConstPtr, len: Int): List<T> {
 public fun <T> fromRawPartsMut(data: MutPtr, len: Int): MutableList<T> {
     // SAFETY: the caller must uphold the safety contract for `fromRawPartsMut`.
     return run {
-        ubChecks.assertUnsafePrecondition(checkLanguageUb, "slice::from_raw_parts_mut requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`", data, data, size, sizeOf, T, align, alignOf, T, len, len, ubChecks, maybeIsAlignedAndNotNull, data, align, false, ubChecks, isValidAllocationSize, size, len)
+        Unit
         RustMutableReference(MutPtr((sliceFromRawPartsMut(data, len)).rawAddress), PrimitiveLayouts.U8)
     }
 }
@@ -182,12 +180,12 @@ public fun <T> fromRawPartsMut(data: MutPtr, len: Int): MutableList<T> {
 /**
  * Converts a reference to T into a slice of length 1 (without copying).
  */
-public fun <T> fromRef(s: T): List<T> = io.github.kotlinmania.rustlang.core.array.fromRef(s)
+public fun <T> fromRef(s: T): List<T> = io.github.kotlinmania.rustlang.array.fromRef(s)
 
 /**
  * Converts a reference to T into a slice of length 1 (without copying).
  */
-public fun <T> fromMut(s: T): MutableList<T> = io.github.kotlinmania.rustlang.core.array.fromMut(s)
+public fun <T> fromMut(s: T): MutableList<T> = io.github.kotlinmania.rustlang.array.fromMut(s)
 
 /**
  * Forms a slice from a pointer range.

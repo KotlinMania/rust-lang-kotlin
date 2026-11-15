@@ -2,22 +2,22 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.SighandlerT
-import io.github.kotlinmania.rustlang.libc.UidT
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FsidT
+import io.github.kotlinmania.rustlang.unix.GidT
+import io.github.kotlinmania.rustlang.unix.SighandlerT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.FsidT
 
 public fun interface SigactionSaRestorerCallback {
     public operator fun invoke()
@@ -61,7 +61,7 @@ public data class SigsetT(
 public data class Sigaction(
     public var saFlags: CInt = 0,
     public var saSigaction: SighandlerT = 0uL,
-    public var saMask: io.github.kotlinmania.rustlang.libc.SigsetT = io.github.kotlinmania.rustlang.libc.SigsetT(),
+    public var saMask: io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SigsetT = io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SigsetT(),
     public var saRestorer: SigactionSaRestorerCallback? = null,
 )
 

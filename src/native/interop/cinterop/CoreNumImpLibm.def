@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop
+headers = core_num_imp_libm_wrapper.h
+headerFilter = core_num_imp_libm_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = core_num_imp_libm_wrapper.a

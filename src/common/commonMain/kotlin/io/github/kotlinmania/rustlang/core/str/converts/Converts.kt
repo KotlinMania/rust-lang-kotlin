@@ -8,8 +8,8 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.validations.runUtf8Validation
+import io.github.kotlinmania.rustlang.str.error.Utf8Error
 
 // Ways to create a `String` from bytes slice.
 
@@ -90,10 +90,10 @@ public fun fromUtf8(v: List<UByte>): Result<String, Utf8Error> {
     // Note(const-Note): This should use `?` again, once it's `const`
     return run {
         val matchVal = runUtf8Validation(v)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             // SAFETY: validation succeeded.
             Result.Ok(fromUtf8Unchecked(v))
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             val err = matchVal.error
             Result.Err(err)
         } }
@@ -135,10 +135,10 @@ public fun fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> {
     // Note(const-Note): This should use `?` again, once it's `const`
     return run {
         val matchVal = runUtf8Validation(v)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             // SAFETY: validation succeeded.
             Result.Ok(fromUtf8UncheckedMut(v))
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             val err = matchVal.error
             Result.Err(err)
         } }
@@ -222,7 +222,7 @@ public fun fromUtf8UncheckedMut(v: MutableList<UByte>): String {
  */
 public fun fromRawParts(ptr: ConstPtr, len: Int): String {
     // SAFETY: the caller must uphold the safety contract for `fromRawParts`.
-    return (ObjectSlotLayout<T>()).readNative((io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts(ptr, len)).rawAddress)
+    return (ObjectSlotLayout<T>()).readNative((io.github.kotlinmania.rustlang.ptr.metadata.fromRawParts(ptr, len)).rawAddress)
 }
 
 /**
@@ -241,5 +241,5 @@ public fun fromRawParts(ptr: ConstPtr, len: Int): String {
  */
 public fun fromRawPartsMut(ptr: MutPtr, len: Int): String {
     // SAFETY: the caller must uphold the safety contract for `fromRawPartsMut`.
-    return RustMutableReference(MutPtr((io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut(ptr, len)).rawAddress), ObjectSlotLayout<T>())
+    return RustMutableReference(MutPtr((io.github.kotlinmania.rustlang.ptr.metadata.fromRawPartsMut(ptr, len)).rawAddress), ObjectSlotLayout<T>())
 }

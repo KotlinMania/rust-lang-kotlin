@@ -1,15 +1,15 @@
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt
 
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.num.floatparse.FloatErrorKind
-import io.github.kotlinmania.rustlang.core.num.floatparse.ParseFloatError
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.BiasedFp
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.lemire.computeFloat
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.parse.parseInfNan
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.parse.parseNumber
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.slow.parseLongMantissa
-import io.github.kotlinmania.rustlang.core.num.imp.traits.FloatExt
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.num.floatparse.FloatErrorKind
+import io.github.kotlinmania.rustlang.num.floatparse.ParseFloatError
+import io.github.kotlinmania.rustlang.num.imp.traits.FloatExt
 
 public fun pfeEmpty(): ParseFloatError = ParseFloatError(kind = FloatErrorKind.Empty)
 
@@ -36,7 +36,7 @@ public fun <F : Lemire<F>> dec2flt(s: String): Result<F, ParseFloatError> {
     val c = s2.first() ?: return Result.Err(pfeEmpty())
     val negative = c == 45u
     if (c == 45u || c == 43u) {
-        s2 = ((s2).slice(1 until s2.size))
+        s2 = ((s2).subList(1, (s2).size))
     }
     if (s2.isEmpty()) {
         return Result.Err(pfeInvalid())

@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.s390x.vector.sealed
 
+import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
@@ -13,95 +14,142 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.PackedTuple
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorBoolChar
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorBoolInt
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorBoolLongLong
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorBoolShort
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedChar
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedInt
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedLongLong
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedShort
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedChar
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedInt
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedLongLong
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedShort
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.validateBlockBoundary
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecMax
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.verimb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.verimf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.verimg
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.verimh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeeb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeebs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeef
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeefs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeeh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeehs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezbs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezfs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeezhs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeneb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenebs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenef
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenefs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfeneh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenehs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezbs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezfs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezhs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vftcidb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vftcisb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vlbb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vll
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vperm
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsg
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstl
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrcb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrcbs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrcf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrcfs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrch
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrchs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczbs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczfs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrczhs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrsb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrsf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrsh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrszb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrszf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrszh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsumqf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsumqg
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vtm
-import io.github.kotlinmania.rustlang.corearch.simd.I16x2
-import io.github.kotlinmania.rustlang.corearch.simd.I16x4
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x2
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.I8x2
-import io.github.kotlinmania.rustlang.corearch.simd.I8x8
-import io.github.kotlinmania.rustlang.corearch.simd.U16x4
-import io.github.kotlinmania.rustlang.corearch.simd.U32x2
-import io.github.kotlinmania.rustlang.corearch.simd.U8x16
-import io.github.kotlinmania.rustlang.corearch.simd.U8x8
+import io.github.kotlinmania.rustlang.s390x.vector.PackedTuple
+import io.github.kotlinmania.rustlang.s390x.vector.VectorBoolChar
+import io.github.kotlinmania.rustlang.s390x.vector.VectorBoolInt
+import io.github.kotlinmania.rustlang.s390x.vector.VectorBoolLongLong
+import io.github.kotlinmania.rustlang.s390x.vector.VectorBoolShort
+import io.github.kotlinmania.rustlang.s390x.vector.VectorSignedChar
+import io.github.kotlinmania.rustlang.s390x.vector.VectorSignedInt
+import io.github.kotlinmania.rustlang.s390x.vector.VectorSignedLongLong
+import io.github.kotlinmania.rustlang.s390x.vector.VectorSignedShort
+import io.github.kotlinmania.rustlang.s390x.vector.VectorUnsignedChar
+import io.github.kotlinmania.rustlang.s390x.vector.VectorUnsignedInt
+import io.github.kotlinmania.rustlang.s390x.vector.VectorUnsignedLongLong
+import io.github.kotlinmania.rustlang.s390x.vector.VectorUnsignedShort
+import io.github.kotlinmania.rustlang.s390x.vector.validateBlockBoundary
+import io.github.kotlinmania.rustlang.s390x.vector.vecMax
+import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmab
+import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmaf
+import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmah
+import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmb
+import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmf
+import io.github.kotlinmania.rustlang.s390x.vector.vecVgfmh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVistrbs
+import io.github.kotlinmania.rustlang.s390x.vector.vecVistrfs
+import io.github.kotlinmania.rustlang.s390x.vector.vecVistrhs
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmaeb
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmaef
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmaeh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmahb
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmahf
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmahh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalIb
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalIf
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalIh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalUb
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalUf
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalUh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmaleb
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalef
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmaleh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalhb
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalhf
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalhh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalob
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmalof
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmaloh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmaob
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmaof
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmaoh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmhb
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmhf
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmhh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmlhb
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmlhf
+import io.github.kotlinmania.rustlang.s390x.vector.vecVmlhh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVsumb
+import io.github.kotlinmania.rustlang.s390x.vector.vecVsumgf
+import io.github.kotlinmania.rustlang.s390x.vector.vecVsumgh
+import io.github.kotlinmania.rustlang.s390x.vector.vecVsumh
+import io.github.kotlinmania.rustlang.s390x.vector.verimb
+import io.github.kotlinmania.rustlang.s390x.vector.verimf
+import io.github.kotlinmania.rustlang.s390x.vector.verimg
+import io.github.kotlinmania.rustlang.s390x.vector.verimh
+import io.github.kotlinmania.rustlang.s390x.vector.vfeeb
+import io.github.kotlinmania.rustlang.s390x.vector.vfeebs
+import io.github.kotlinmania.rustlang.s390x.vector.vfeef
+import io.github.kotlinmania.rustlang.s390x.vector.vfeefs
+import io.github.kotlinmania.rustlang.s390x.vector.vfeeh
+import io.github.kotlinmania.rustlang.s390x.vector.vfeehs
+import io.github.kotlinmania.rustlang.s390x.vector.vfeezb
+import io.github.kotlinmania.rustlang.s390x.vector.vfeezbs
+import io.github.kotlinmania.rustlang.s390x.vector.vfeezf
+import io.github.kotlinmania.rustlang.s390x.vector.vfeezfs
+import io.github.kotlinmania.rustlang.s390x.vector.vfeezh
+import io.github.kotlinmania.rustlang.s390x.vector.vfeezhs
+import io.github.kotlinmania.rustlang.s390x.vector.vfeneb
+import io.github.kotlinmania.rustlang.s390x.vector.vfenebs
+import io.github.kotlinmania.rustlang.s390x.vector.vfenef
+import io.github.kotlinmania.rustlang.s390x.vector.vfenefs
+import io.github.kotlinmania.rustlang.s390x.vector.vfeneh
+import io.github.kotlinmania.rustlang.s390x.vector.vfenehs
+import io.github.kotlinmania.rustlang.s390x.vector.vfenezb
+import io.github.kotlinmania.rustlang.s390x.vector.vfenezbs
+import io.github.kotlinmania.rustlang.s390x.vector.vfenezf
+import io.github.kotlinmania.rustlang.s390x.vector.vfenezfs
+import io.github.kotlinmania.rustlang.s390x.vector.vfenezh
+import io.github.kotlinmania.rustlang.s390x.vector.vfenezhs
+import io.github.kotlinmania.rustlang.s390x.vector.vfmadb
+import io.github.kotlinmania.rustlang.s390x.vector.vfmasb
+import io.github.kotlinmania.rustlang.s390x.vector.vfmsdb
+import io.github.kotlinmania.rustlang.s390x.vector.vfmssb
+import io.github.kotlinmania.rustlang.s390x.vector.vftcidb
+import io.github.kotlinmania.rustlang.s390x.vector.vftcisb
+import io.github.kotlinmania.rustlang.s390x.vector.vlbb
+import io.github.kotlinmania.rustlang.s390x.vector.vll
+import io.github.kotlinmania.rustlang.s390x.vector.vperm
+import io.github.kotlinmania.rustlang.s390x.vector.vpklsf
+import io.github.kotlinmania.rustlang.s390x.vector.vpklsg
+import io.github.kotlinmania.rustlang.s390x.vector.vpklsh
+import io.github.kotlinmania.rustlang.s390x.vector.vstl
+import io.github.kotlinmania.rustlang.s390x.vector.vstrcb
+import io.github.kotlinmania.rustlang.s390x.vector.vstrcbs
+import io.github.kotlinmania.rustlang.s390x.vector.vstrcf
+import io.github.kotlinmania.rustlang.s390x.vector.vstrcfs
+import io.github.kotlinmania.rustlang.s390x.vector.vstrch
+import io.github.kotlinmania.rustlang.s390x.vector.vstrchs
+import io.github.kotlinmania.rustlang.s390x.vector.vstrczb
+import io.github.kotlinmania.rustlang.s390x.vector.vstrczbs
+import io.github.kotlinmania.rustlang.s390x.vector.vstrczf
+import io.github.kotlinmania.rustlang.s390x.vector.vstrczfs
+import io.github.kotlinmania.rustlang.s390x.vector.vstrczh
+import io.github.kotlinmania.rustlang.s390x.vector.vstrczhs
+import io.github.kotlinmania.rustlang.s390x.vector.vstrsb
+import io.github.kotlinmania.rustlang.s390x.vector.vstrsf
+import io.github.kotlinmania.rustlang.s390x.vector.vstrsh
+import io.github.kotlinmania.rustlang.s390x.vector.vstrszb
+import io.github.kotlinmania.rustlang.s390x.vector.vstrszf
+import io.github.kotlinmania.rustlang.s390x.vector.vstrszh
+import io.github.kotlinmania.rustlang.s390x.vector.vsumqf
+import io.github.kotlinmania.rustlang.s390x.vector.vsumqg
+import io.github.kotlinmania.rustlang.s390x.vector.vtm
+import io.github.kotlinmania.rustlang.simd.I16x2
+import io.github.kotlinmania.rustlang.simd.I16x4
+import io.github.kotlinmania.rustlang.simd.I16x8
+import io.github.kotlinmania.rustlang.simd.I32x2
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.I8x2
+import io.github.kotlinmania.rustlang.simd.I8x8
+import io.github.kotlinmania.rustlang.simd.U16x4
+import io.github.kotlinmania.rustlang.simd.U32x2
+import io.github.kotlinmania.rustlang.simd.U8x16
+import io.github.kotlinmania.rustlang.simd.U8x8
 
 public interface VectorNeg<T> {
     public fun vecNeg(): T
@@ -956,23 +1004,23 @@ public open class ReverseMask(
         }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<ReverseMask> =
+        public fun typeLayout(n: Int = 0): TypeLayout<ReverseMask> =
             object : TypeLayout<ReverseMask> {
                 override val alignBytes: Long = 4L
-                override val sizeBytes: Long = alignUpBytes(((N).toLong() * (PrimitiveLayouts.U32).strideBytes), 4L)
+                override val sizeBytes: Long = alignUpBytes(((n).toLong() * (PrimitiveLayouts.U32).strideBytes), 4L)
                 override fun readNative(addr: Long): ReverseMask =
                     ReverseMask(
-                        (PrimitiveArrayLayouts.uIntArray((N).toInt())).readNative(addr),
+                        (PrimitiveArrayLayouts.uIntArray((n).toInt())).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: ReverseMask) {
-                    (PrimitiveArrayLayouts.uIntArray((N).toInt())).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uIntArray((n).toInt())).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): ReverseMask =
                     ReverseMask(
-                        (PrimitiveArrayLayouts.uIntArray((N).toInt())).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uIntArray((n).toInt())).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: ReverseMask) {
-                    (PrimitiveArrayLayouts.uIntArray((N).toInt())).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uIntArray((n).toInt())).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -1008,17 +1056,17 @@ public fun reveg(a: VectorSignedLongLong): VectorSignedLongLong = run { val _sim
 
 public fun VectorSignedLongLong.vecReve(): VectorSignedLongLong = reveg(this)
 
-public fun VectorFloat.vecReve(): VectorFloat = transmute(transmute<VectorSignedInt>(this).vecReve())
+public fun VectorFloat.vecReve(): VectorFloat = transmute(transmute(this).vecReve())
 
-public fun VectorDouble.vecReve(): VectorDouble = transmute(transmute<VectorSignedLongLong>(this).vecReve())
+public fun VectorDouble.vecReve(): VectorDouble = transmute(transmute(this).vecReve())
 
 public interface VectorRevb<T> {
     public fun vecRevb(): T
 }
 
-public fun VectorFloat.vecRevb(): VectorFloat = transmute(transmute<VectorSignedInt>(this).vecRevb())
+public fun VectorFloat.vecRevb(): VectorFloat = transmute(transmute(this).vecRevb())
 
-public fun VectorDouble.vecRevb(): VectorDouble = transmute(transmute<VectorSignedLongLong>(this).vecRevb())
+public fun VectorDouble.vecRevb(): VectorDouble = transmute(transmute(this).vecRevb())
 
 public interface VectorMergel<T, Result> {
     public fun vecMergel(other: T): T
@@ -1132,17 +1180,17 @@ public interface VectorSqrt<T> {
     public fun vecSqrt(): T
 }
 
-public fun vfaeb(a: VectorSignedChar, b: VectorSignedChar, imm: Int): VectorSignedChar = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaeb(a, b, imm)
+public fun vfaeb(a: VectorSignedChar, b: VectorSignedChar, imm: Int): VectorSignedChar = io.github.kotlinmania.rustlang.s390x.vector.vfaeb(a, b, imm)
 
-public fun vfaeh(a: VectorSignedShort, b: VectorSignedShort, imm: Int): VectorSignedShort = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaeh(a, b, imm)
+public fun vfaeh(a: VectorSignedShort, b: VectorSignedShort, imm: Int): VectorSignedShort = io.github.kotlinmania.rustlang.s390x.vector.vfaeh(a, b, imm)
 
-public fun vfaef(a: VectorSignedInt, b: VectorSignedInt, imm: Int): VectorSignedInt = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaef(a, b, imm)
+public fun vfaef(a: VectorSignedInt, b: VectorSignedInt, imm: Int): VectorSignedInt = io.github.kotlinmania.rustlang.s390x.vector.vfaef(a, b, imm)
 
-public fun vfaezb(a: VectorSignedChar, b: VectorSignedChar, imm: Int): VectorSignedChar = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezb(a, b, imm)
+public fun vfaezb(a: VectorSignedChar, b: VectorSignedChar, imm: Int): VectorSignedChar = io.github.kotlinmania.rustlang.s390x.vector.vfaezb(a, b, imm)
 
-public fun vfaezh(a: VectorSignedShort, b: VectorSignedShort, imm: Int): VectorSignedShort = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezh(a, b, imm)
+public fun vfaezh(a: VectorSignedShort, b: VectorSignedShort, imm: Int): VectorSignedShort = io.github.kotlinmania.rustlang.s390x.vector.vfaezh(a, b, imm)
 
-public fun vfaezf(a: VectorSignedInt, b: VectorSignedInt, imm: Int): VectorSignedInt = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezf(a, b, imm)
+public fun vfaezf(a: VectorSignedInt, b: VectorSignedInt, imm: Int): VectorSignedInt = io.github.kotlinmania.rustlang.s390x.vector.vfaezf(a, b, imm)
 
 public interface VectorFindAnyEq<Other, out Result> {
     public fun vecFindAnyEq(other: Other): Result
@@ -1276,17 +1324,17 @@ public fun VectorUnsignedInt.vecFindAnyNeIdx(b: VectorUnsignedInt): VectorUnsign
 
 public fun VectorBoolInt.vecFindAnyNeIdx(b: VectorBoolInt): VectorUnsignedInt = transmute(vfaef(transmute(this), transmute(b), FindImm.NeIdx.value.toInt()))
 
-public fun vfaebs(a: VectorSignedChar, b: VectorSignedChar, imm: Int): PackedTuple<VectorSignedChar, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaebs(a, b, imm)
+public fun vfaebs(a: VectorSignedChar, b: VectorSignedChar, imm: Int): PackedTuple<VectorSignedChar, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaebs(a, b, imm)
 
-public fun vfaehs(a: VectorSignedShort, b: VectorSignedShort, imm: Int): PackedTuple<VectorSignedShort, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaehs(a, b, imm)
+public fun vfaehs(a: VectorSignedShort, b: VectorSignedShort, imm: Int): PackedTuple<VectorSignedShort, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaehs(a, b, imm)
 
-public fun vfaefs(a: VectorSignedInt, b: VectorSignedInt, imm: Int): PackedTuple<VectorSignedInt, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaefs(a, b, imm)
+public fun vfaefs(a: VectorSignedInt, b: VectorSignedInt, imm: Int): PackedTuple<VectorSignedInt, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaefs(a, b, imm)
 
-public fun vfaezbs(a: VectorSignedChar, b: VectorSignedChar, imm: Int): PackedTuple<VectorSignedChar, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezbs(a, b, imm)
+public fun vfaezbs(a: VectorSignedChar, b: VectorSignedChar, imm: Int): PackedTuple<VectorSignedChar, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaezbs(a, b, imm)
 
-public fun vfaezhs(a: VectorSignedShort, b: VectorSignedShort, imm: Int): PackedTuple<VectorSignedShort, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezhs(a, b, imm)
+public fun vfaezhs(a: VectorSignedShort, b: VectorSignedShort, imm: Int): PackedTuple<VectorSignedShort, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaezhs(a, b, imm)
 
-public fun vfaezfs(a: VectorSignedInt, b: VectorSignedInt, imm: Int): PackedTuple<VectorSignedInt, Int> = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaezfs(a, b, imm)
+public fun vfaezfs(a: VectorSignedInt, b: VectorSignedInt, imm: Int): PackedTuple<VectorSignedInt, Int> = io.github.kotlinmania.rustlang.s390x.vector.vfaezfs(a, b, imm)
 
 public interface VectorFindAnyEqCC<Other, out Result> {
     public fun vecFindAnyEqCc(other: Other): Pair<Result, Int>
@@ -1779,7 +1827,7 @@ public interface VectorPacksCC<T, out Result> {
 }
 
 public fun vpkshs(a: VectorSignedShort, b: VectorSignedShort): Pair<VectorSignedChar, Int> {
-    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpkshs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpkshs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -1788,7 +1836,7 @@ public fun vpkshs(a: VectorSignedShort, b: VectorSignedShort): Pair<VectorSigned
 public fun VectorSignedShort.vecPacksCc(b: VectorSignedShort): Pair<VectorSignedChar, Int> = vpkshs(this, b)
 
 public fun vpklshs(a: VectorUnsignedShort, b: VectorUnsignedShort): Pair<VectorUnsignedChar, Int> {
-    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklshs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpklshs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -1797,7 +1845,7 @@ public fun vpklshs(a: VectorUnsignedShort, b: VectorUnsignedShort): Pair<VectorU
 public fun VectorUnsignedShort.vecPacksCc(b: VectorUnsignedShort): Pair<VectorUnsignedChar, Int> = vpklshs(this, b)
 
 public fun vpksfs(a: VectorSignedInt, b: VectorSignedInt): Pair<VectorSignedShort, Int> {
-    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpksfs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpksfs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -1806,7 +1854,7 @@ public fun vpksfs(a: VectorSignedInt, b: VectorSignedInt): Pair<VectorSignedShor
 public fun VectorSignedInt.vecPacksCc(b: VectorSignedInt): Pair<VectorSignedShort, Int> = vpksfs(this, b)
 
 public fun vpklsfs(a: VectorUnsignedInt, b: VectorUnsignedInt): Pair<VectorUnsignedShort, Int> {
-    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsfs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpklsfs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -1815,7 +1863,7 @@ public fun vpklsfs(a: VectorUnsignedInt, b: VectorUnsignedInt): Pair<VectorUnsig
 public fun VectorUnsignedInt.vecPacksCc(b: VectorUnsignedInt): Pair<VectorUnsignedShort, Int> = vpklsfs(this, b)
 
 public fun vpksgs(a: VectorSignedLongLong, b: VectorSignedLongLong): Pair<VectorSignedInt, Int> {
-    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpksgs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpksgs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -1824,7 +1872,7 @@ public fun vpksgs(a: VectorSignedLongLong, b: VectorSignedLongLong): Pair<Vector
 public fun VectorSignedLongLong.vecPacksCc(b: VectorSignedLongLong): Pair<VectorSignedInt, Int> = vpksgs(this, b)
 
 public fun vpklsgs(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): Pair<VectorUnsignedInt, Int> {
-    val structVal = io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsgs(a, b)
+    val structVal = io.github.kotlinmania.rustlang.s390x.vector.vpklsgs(a, b)
     val x = structVal.x
     val y = structVal.y
     return Pair(x, y)
@@ -2206,7 +2254,7 @@ public fun VectorSignedChar.vecSel(b: VectorSignedChar, c: TU): VectorSignedChar
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorSignedChar.vecSelVectorSel(b: VectorSignedChar, c: TB): VectorSignedChar = this.vecSel(b, transmute<TU>(c))
+public fun VectorSignedChar.vecSelVectorSel(b: VectorSignedChar, c: TB): VectorSignedChar = this.vecSel(b, transmute(c))
 
 public fun VectorSignedShort.vecSel(b: VectorSignedShort, c: TU): VectorSignedShort {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2214,7 +2262,7 @@ public fun VectorSignedShort.vecSel(b: VectorSignedShort, c: TU): VectorSignedSh
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorSignedShort.vecSelVectorSel(b: VectorSignedShort, c: TB): VectorSignedShort = this.vecSel(b, transmute<TU>(c))
+public fun VectorSignedShort.vecSelVectorSel(b: VectorSignedShort, c: TB): VectorSignedShort = this.vecSel(b, transmute(c))
 
 public fun VectorSignedInt.vecSel(b: VectorSignedInt, c: TU): VectorSignedInt {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2222,7 +2270,7 @@ public fun VectorSignedInt.vecSel(b: VectorSignedInt, c: TU): VectorSignedInt {
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorSignedInt.vecSelVectorSel(b: VectorSignedInt, c: TB): VectorSignedInt = this.vecSel(b, transmute<TU>(c))
+public fun VectorSignedInt.vecSelVectorSel(b: VectorSignedInt, c: TB): VectorSignedInt = this.vecSel(b, transmute(c))
 
 public fun VectorSignedLongLong.vecSel(b: VectorSignedLongLong, c: TU): VectorSignedLongLong {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2230,7 +2278,7 @@ public fun VectorSignedLongLong.vecSel(b: VectorSignedLongLong, c: TU): VectorSi
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorSignedLongLong.vecSelVectorSel(b: VectorSignedLongLong, c: TB): VectorSignedLongLong = this.vecSel(b, transmute<TU>(c))
+public fun VectorSignedLongLong.vecSelVectorSel(b: VectorSignedLongLong, c: TB): VectorSignedLongLong = this.vecSel(b, transmute(c))
 
 public fun VectorUnsignedChar.vecSel(b: VectorUnsignedChar, c: TU): VectorUnsignedChar {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2238,7 +2286,7 @@ public fun VectorUnsignedChar.vecSel(b: VectorUnsignedChar, c: TU): VectorUnsign
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorUnsignedChar.vecSelVectorSel(b: VectorUnsignedChar, c: TB): VectorUnsignedChar = this.vecSel(b, transmute<TU>(c))
+public fun VectorUnsignedChar.vecSelVectorSel(b: VectorUnsignedChar, c: TB): VectorUnsignedChar = this.vecSel(b, transmute(c))
 
 public fun VectorUnsignedShort.vecSel(b: VectorUnsignedShort, c: TU): VectorUnsignedShort {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2246,7 +2294,7 @@ public fun VectorUnsignedShort.vecSel(b: VectorUnsignedShort, c: TU): VectorUnsi
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorUnsignedShort.vecSelVectorSel(b: VectorUnsignedShort, c: TB): VectorUnsignedShort = this.vecSel(b, transmute<TU>(c))
+public fun VectorUnsignedShort.vecSelVectorSel(b: VectorUnsignedShort, c: TB): VectorUnsignedShort = this.vecSel(b, transmute(c))
 
 public fun VectorUnsignedInt.vecSel(b: VectorUnsignedInt, c: TU): VectorUnsignedInt {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2254,7 +2302,7 @@ public fun VectorUnsignedInt.vecSel(b: VectorUnsignedInt, c: TU): VectorUnsigned
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorUnsignedInt.vecSelVectorSel(b: VectorUnsignedInt, c: TB): VectorUnsignedInt = this.vecSel(b, transmute<TU>(c))
+public fun VectorUnsignedInt.vecSelVectorSel(b: VectorUnsignedInt, c: TB): VectorUnsignedInt = this.vecSel(b, transmute(c))
 
 public fun VectorUnsignedLongLong.vecSel(b: VectorUnsignedLongLong, c: TU): VectorUnsignedLongLong {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2262,7 +2310,7 @@ public fun VectorUnsignedLongLong.vecSel(b: VectorUnsignedLongLong, c: TU): Vect
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorUnsignedLongLong.vecSelVectorSel(b: VectorUnsignedLongLong, c: TB): VectorUnsignedLongLong = this.vecSel(b, transmute<TU>(c))
+public fun VectorUnsignedLongLong.vecSelVectorSel(b: VectorUnsignedLongLong, c: TB): VectorUnsignedLongLong = this.vecSel(b, transmute(c))
 
 public fun VectorBoolChar.vecSel(b: VectorBoolChar, c: TU): VectorBoolChar {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2270,7 +2318,7 @@ public fun VectorBoolChar.vecSel(b: VectorBoolChar, c: TU): VectorBoolChar {
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorBoolChar.vecSelVectorSel(b: VectorBoolChar, c: TB): VectorBoolChar = this.vecSel(b, transmute<TU>(c))
+public fun VectorBoolChar.vecSelVectorSel(b: VectorBoolChar, c: TB): VectorBoolChar = this.vecSel(b, transmute(c))
 
 public fun VectorBoolShort.vecSel(b: VectorBoolShort, c: TU): VectorBoolShort {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2278,7 +2326,7 @@ public fun VectorBoolShort.vecSel(b: VectorBoolShort, c: TU): VectorBoolShort {
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorBoolShort.vecSelVectorSel(b: VectorBoolShort, c: TB): VectorBoolShort = this.vecSel(b, transmute<TU>(c))
+public fun VectorBoolShort.vecSelVectorSel(b: VectorBoolShort, c: TB): VectorBoolShort = this.vecSel(b, transmute(c))
 
 public fun VectorBoolInt.vecSel(b: VectorBoolInt, c: TU): VectorBoolInt {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2286,7 +2334,7 @@ public fun VectorBoolInt.vecSel(b: VectorBoolInt, c: TU): VectorBoolInt {
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorBoolInt.vecSelVectorSel(b: VectorBoolInt, c: TB): VectorBoolInt = this.vecSel(b, transmute<TU>(c))
+public fun VectorBoolInt.vecSelVectorSel(b: VectorBoolInt, c: TB): VectorBoolInt = this.vecSel(b, transmute(c))
 
 public fun VectorBoolLongLong.vecSel(b: VectorBoolLongLong, c: TU): VectorBoolLongLong {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2294,7 +2342,7 @@ public fun VectorBoolLongLong.vecSel(b: VectorBoolLongLong, c: TU): VectorBoolLo
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorBoolLongLong.vecSelVectorSel(b: VectorBoolLongLong, c: TB): VectorBoolLongLong = this.vecSel(b, transmute<TU>(c))
+public fun VectorBoolLongLong.vecSelVectorSel(b: VectorBoolLongLong, c: TB): VectorBoolLongLong = this.vecSel(b, transmute(c))
 
 public fun VectorFloat.vecSel(b: VectorFloat, c: TU): VectorFloat {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2302,7 +2350,7 @@ public fun VectorFloat.vecSel(b: VectorFloat, c: TU): VectorFloat {
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorFloat.vecSelVectorSel(b: VectorFloat, c: TB): VectorFloat = this.vecSel(b, transmute<TU>(c))
+public fun VectorFloat.vecSelVectorSel(b: VectorFloat, c: TB): VectorFloat = this.vecSel(b, transmute(c))
 
 public fun VectorDouble.vecSel(b: VectorDouble, c: TU): VectorDouble {
     val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = c; _simdArg0 }
@@ -2310,7 +2358,7 @@ public fun VectorDouble.vecSel(b: VectorDouble, c: TU): VectorDouble {
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorDouble.vecSelVectorSel(b: VectorDouble, c: TB): VectorDouble = this.vecSel(b, transmute<TU>(c))
+public fun VectorDouble.vecSelVectorSel(b: VectorDouble, c: TB): VectorDouble = this.vecSel(b, transmute(c))
 
 public interface VectorFpTestDataClass<out Result> {
     public fun vecFpTestDataClass(cls: UInt): Pair<Result, Int>

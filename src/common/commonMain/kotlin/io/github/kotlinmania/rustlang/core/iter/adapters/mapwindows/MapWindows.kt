@@ -1,19 +1,19 @@
 // port-lint: source iter/adapters/map_windows.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.mapwindows
 
-import io.github.kotlinmania.rustlang.core.array.iterNextChunk
+import io.github.kotlinmania.rustlang.array.iterNextChunk
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.mem.manuallydrop.ManuallyDrop
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.ptr.dropInPlace
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -48,15 +48,15 @@ public class DebugStruct(
  */
 public open class MapWindows<I, F> internal constructor(
     public var f: F,
-    innerCtorArg: MapWindowsInner<I, N>,
+    innerCtorArg: MapWindowsInner<I>,
 ) {
-    public var inner: MapWindowsInner<I, N> = innerCtorArg
+    public var inner: MapWindowsInner<I> = innerCtorArg
         internal set
 
     public companion object {
         public operator fun <I, F> invoke(
             f: F,
-            inner: MapWindowsInner<I, N>,
+            inner: MapWindowsInner<I>,
         ): MapWindows<I, F> = MapWindows<I, F>(
             f = f,
             innerCtorArg = inner,
@@ -66,7 +66,7 @@ public open class MapWindows<I, F> internal constructor(
 
 public open class MapWindowsInner<I> internal constructor(
     public var iter: I,
-    bufferCtorArg: Buffer<Item, N>?,
+    bufferCtorArg: Buffer<Item>?,
 ) {
     // Since iterators are assumed lazy, i.e. it only yields an item when
     // `Iterator.next()` is called, and `MapWindows` is not an exception.
@@ -80,13 +80,13 @@ public open class MapWindowsInner<I> internal constructor(
     // away this `buffer` and leave it `None` to reclaim its resources.
     //
     // Note: should we shrink the size of `buffer` using niche optimization?
-    public var buffer: Buffer<Item, N>? = bufferCtorArg
+    public var buffer: Buffer<Item>? = bufferCtorArg
         internal set
 
     public companion object {
         public operator fun <I> invoke(
             iter: I,
-            buffer: Buffer<Item, N>?,
+            buffer: Buffer<Item>?,
         ): MapWindowsInner<I> = MapWindowsInner<I>(
             iter = iter,
             bufferCtorArg = buffer,

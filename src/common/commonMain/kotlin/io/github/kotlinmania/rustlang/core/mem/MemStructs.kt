@@ -1,7 +1,7 @@
 package io.github.kotlinmania.rustlang.core.mem
 
-import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.clone.TrivialClone
+import io.github.kotlinmania.rustlang.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugTuple(

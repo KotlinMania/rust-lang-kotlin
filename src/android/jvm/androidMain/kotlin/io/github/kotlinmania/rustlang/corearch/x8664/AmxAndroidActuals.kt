@@ -4,213 +4,214 @@ package io.github.kotlinmania.rustlang.corearch.x8664
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.simd.F16x32
-import io.github.kotlinmania.rustlang.corearch.simd.F32x16
-import io.github.kotlinmania.rustlang.corearch.simd.I32x16
-import io.github.kotlinmania.rustlang.corearch.simd.U16x32
+import io.github.kotlinmania.rustlang.simd.F16x32
+import io.github.kotlinmania.rustlang.simd.F32x16
+import io.github.kotlinmania.rustlang.simd.I32x16
+import io.github.kotlinmania.rustlang.simd.U16x32
+import io.github.kotlinmania.rustlang.x8664.Tile
 
-private object X8664AmxJniBridge {
+private object CorearchX8664AmxJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun corearchX8664AmxLdtilecfg(memAddr: Long)
+    external fun rustlangCorearchX8664AmxLdtilecfg(memAddr: Long)
 
     @JvmStatic
-    external fun corearchX8664AmxSttilecfg(memAddr: Long)
+    external fun rustlangCorearchX8664AmxSttilecfg(memAddr: Long)
 
     @JvmStatic
-    external fun corearchX8664AmxTileloadd64(dst: Byte, base: Long, stride: Long)
+    external fun rustlangCorearchX8664AmxTileloadd64(dst: Byte, base: Long, stride: Long)
 
     @JvmStatic
-    external fun corearchX8664AmxTileloaddt164(dst: Byte, base: Long, stride: Long)
+    external fun rustlangCorearchX8664AmxTileloaddt164(dst: Byte, base: Long, stride: Long)
 
     @JvmStatic
-    external fun corearchX8664AmxTilerelease()
+    external fun rustlangCorearchX8664AmxTilerelease()
 
     @JvmStatic
-    external fun corearchX8664AmxTilestored64(dst: Byte, base: Long, stride: Long)
+    external fun rustlangCorearchX8664AmxTilestored64(dst: Byte, base: Long, stride: Long)
 
     @JvmStatic
-    external fun corearchX8664AmxTilezero(dst: Byte)
+    external fun rustlangCorearchX8664AmxTilezero(dst: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTdpbf16ps(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTdpbf16ps(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTdpbuud(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTdpbuud(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTdpbusd(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTdpbusd(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTdpbsud(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTdpbsud(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTdpbssd(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTdpbssd(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTdpfp16ps(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTdpfp16ps(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTcmmimfp16ps(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTcmmimfp16ps(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTcmmrlfp16ps(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTcmmrlfp16ps(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTdpbf8ps(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTdpbf8ps(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTdpbhf8ps(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTdpbhf8ps(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTdphbf8ps(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTdphbf8ps(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTdphf8ps(dst: Byte, a: Byte, b: Byte)
+    external fun rustlangCorearchX8664AmxTdphf8ps(dst: Byte, a: Byte, b: Byte)
 
     @JvmStatic
-    external fun corearchX8664AmxTileloaddrs64(dst: Byte, base: Long, stride: Long)
+    external fun rustlangCorearchX8664AmxTileloaddrs64(dst: Byte, base: Long, stride: Long)
 
     @JvmStatic
-    external fun corearchX8664AmxTileloaddrst164(dst: Byte, base: Long, stride: Long)
+    external fun rustlangCorearchX8664AmxTileloaddrst164(dst: Byte, base: Long, stride: Long)
 }
 
 public actual fun ldtilecfg(memAddr: ConstPtr) {
-    X8664AmxJniBridge.corearchX8664AmxLdtilecfg(memAddr.rawAddress)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxLdtilecfg(memAddr.rawAddress)
 }
 
 public actual fun sttilecfg(memAddr: MutPtr) {
-    X8664AmxJniBridge.corearchX8664AmxSttilecfg(memAddr.rawAddress)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxSttilecfg(memAddr.rawAddress)
 }
 
 public actual fun tileloadd64(dst: Byte, base: ConstPtr, stride: ULong) {
-    X8664AmxJniBridge.corearchX8664AmxTileloadd64(dst, base.rawAddress, stride.toLong())
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTileloadd64(dst, base.rawAddress, stride.toLong())
 }
 
 public actual fun tileloadd64Internal(rows: UShort, colsb: UShort, base: ConstPtr, stride: ULong): Tile =
     null as Tile
 
 public actual fun tileloaddt164(dst: Byte, base: ConstPtr, stride: ULong) {
-    X8664AmxJniBridge.corearchX8664AmxTileloaddt164(dst, base.rawAddress, stride.toLong())
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTileloaddt164(dst, base.rawAddress, stride.toLong())
 }
 
 public actual fun tileloaddt164Internal(rows: UShort, colsb: UShort, base: ConstPtr, stride: ULong): Tile =
     null as Tile
 
 public actual fun tilerelease() {
-    X8664AmxJniBridge.corearchX8664AmxTilerelease()
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTilerelease()
 }
 
 public actual fun tilestored64(dst: Byte, base: MutPtr, stride: ULong) {
-    X8664AmxJniBridge.corearchX8664AmxTilestored64(dst, base.rawAddress, stride.toLong())
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTilestored64(dst, base.rawAddress, stride.toLong())
 }
 
 public actual fun tilestored64Internal(rows: UShort, colsb: UShort, base: MutPtr, stride: ULong, src: Tile) {
 }
 
 public actual fun tilezero(dst: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTilezero(dst)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTilezero(dst)
 }
 
 public actual fun tilezeroInternal(rows: UShort, colsb: UShort): Tile =
     null as Tile
 
 public actual fun tdpbf16ps(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTdpbf16ps(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTdpbf16ps(dst, a, b)
 }
 
 public actual fun tdpbf16psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tdpbuud(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTdpbuud(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTdpbuud(dst, a, b)
 }
 
 public actual fun tdpbuudInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tdpbusd(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTdpbusd(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTdpbusd(dst, a, b)
 }
 
 public actual fun tdpbusdInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tdpbsud(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTdpbsud(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTdpbsud(dst, a, b)
 }
 
 public actual fun tdpbsudInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tdpbssd(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTdpbssd(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTdpbssd(dst, a, b)
 }
 
 public actual fun tdpbssdInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tdpfp16ps(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTdpfp16ps(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTdpfp16ps(dst, a, b)
 }
 
 public actual fun tdpfp16psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tcmmimfp16ps(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTcmmimfp16ps(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTcmmimfp16ps(dst, a, b)
 }
 
 public actual fun tcmmimfp16psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tcmmrlfp16ps(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTcmmrlfp16ps(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTcmmrlfp16ps(dst, a, b)
 }
 
 public actual fun tcmmrlfp16psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tdpbf8ps(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTdpbf8ps(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTdpbf8ps(dst, a, b)
 }
 
 public actual fun tdpbf8psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tdpbhf8ps(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTdpbhf8ps(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTdpbhf8ps(dst, a, b)
 }
 
 public actual fun tdpbhf8psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tdphbf8ps(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTdphbf8ps(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTdphbf8ps(dst, a, b)
 }
 
 public actual fun tdphbf8psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tdphf8ps(dst: Byte, a: Byte, b: Byte) {
-    X8664AmxJniBridge.corearchX8664AmxTdphf8ps(dst, a, b)
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTdphf8ps(dst, a, b)
 }
 
 public actual fun tdphf8psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     null as Tile
 
 public actual fun tileloaddrs64(dst: Byte, base: ConstPtr, stride: ULong) {
-    X8664AmxJniBridge.corearchX8664AmxTileloaddrs64(dst, base.rawAddress, stride.toLong())
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTileloaddrs64(dst, base.rawAddress, stride.toLong())
 }
 
 public actual fun tileloaddrs64Internal(rows: UShort, colsb: UShort, base: ConstPtr, stride: ULong): Tile =
     null as Tile
 
 public actual fun tileloaddrst164(dst: Byte, base: ConstPtr, stride: ULong) {
-    X8664AmxJniBridge.corearchX8664AmxTileloaddrst164(dst, base.rawAddress, stride.toLong())
+    CorearchX8664AmxJniBridge.rustlangCorearchX8664AmxTileloaddrst164(dst, base.rawAddress, stride.toLong())
 }
 
 public actual fun tileloaddrst164Internal(rows: UShort, colsb: UShort, base: ConstPtr, stride: ULong): Tile =

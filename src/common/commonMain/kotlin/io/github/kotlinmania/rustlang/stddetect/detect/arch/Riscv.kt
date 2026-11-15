@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.arch
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
+import io.github.kotlinmania.rustlang.detect.checkFor
 
 // Run-time feature detection on RISC-V.
 
@@ -566,532 +566,532 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv32i(): Boolean = checkFor(Feature::rv32i)
+public fun rv32i(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rv32i)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv32e(): Boolean = checkFor(Feature::rv32e)
+public fun rv32e(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rv32e)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv64i(): Boolean = checkFor(Feature::rv64i)
+public fun rv64i(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rv64i)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv128i(): Boolean = checkFor(Feature::rv128i)
+public fun rv128i(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.rv128i)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun unalignedScalarMem(): Boolean = checkFor(Feature::unalignedScalarMem)
+public fun unalignedScalarMem(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.unalignedScalarMem)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun unalignedVectorMem(): Boolean = checkFor(Feature::unalignedVectorMem)
+public fun unalignedVectorMem(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.unalignedVectorMem)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicsr(): Boolean = checkFor(Feature::zicsr)
+public fun zicsr(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zicsr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicntr(): Boolean = checkFor(Feature::zicntr)
+public fun zicntr(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zicntr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zihpm(): Boolean = checkFor(Feature::zihpm)
+public fun zihpm(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zihpm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zifencei(): Boolean = checkFor(Feature::zifencei)
+public fun zifencei(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zifencei)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zihintntl(): Boolean = checkFor(Feature::zihintntl)
+public fun zihintntl(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zihintntl)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zihintpause(): Boolean = checkFor(Feature::zihintpause)
+public fun zihintpause(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zihintpause)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zimop(): Boolean = checkFor(Feature::zimop)
+public fun zimop(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zimop)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicbom(): Boolean = checkFor(Feature::zicbom)
+public fun zicbom(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zicbom)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicboz(): Boolean = checkFor(Feature::zicboz)
+public fun zicboz(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zicboz)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicond(): Boolean = checkFor(Feature::zicond)
+public fun zicond(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zicond)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun m(): Boolean = checkFor(Feature::m)
+public fun m(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.m)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zmmul(): Boolean = checkFor(Feature::zmmul)
+public fun zmmul(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zmmul)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun a(): Boolean = checkFor(Feature::a)
+public fun a(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.a)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zalrsc(): Boolean = checkFor(Feature::zalrsc)
+public fun zalrsc(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zalrsc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zaamo(): Boolean = checkFor(Feature::zaamo)
+public fun zaamo(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zaamo)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zawrs(): Boolean = checkFor(Feature::zawrs)
+public fun zawrs(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zawrs)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zabha(): Boolean = checkFor(Feature::zabha)
+public fun zabha(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zabha)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zacas(): Boolean = checkFor(Feature::zacas)
+public fun zacas(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zacas)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zam(): Boolean = checkFor(Feature::zam)
+public fun zam(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zam)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ztso(): Boolean = checkFor(Feature::ztso)
+public fun ztso(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.ztso)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun f(): Boolean = checkFor(Feature::f)
+public fun f(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun d(): Boolean = checkFor(Feature::d)
+public fun d(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.d)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun q(): Boolean = checkFor(Feature::q)
+public fun q(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.Feature::q)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfh(): Boolean = checkFor(Feature::zfh)
+public fun zfh(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zfh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfhmin(): Boolean = checkFor(Feature::zfhmin)
+public fun zfhmin(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zfhmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfa(): Boolean = checkFor(Feature::zfa)
+public fun zfa(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zfa)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfbfmin(): Boolean = checkFor(Feature::zfbfmin)
+public fun zfbfmin(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zfbfmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfinx(): Boolean = checkFor(Feature::zfinx)
+public fun zfinx(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zfinx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zdinx(): Boolean = checkFor(Feature::zdinx)
+public fun zdinx(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zdinx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zhinx(): Boolean = checkFor(Feature::zhinx)
+public fun zhinx(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zhinx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zhinxmin(): Boolean = checkFor(Feature::zhinxmin)
+public fun zhinxmin(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zhinxmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun c(): Boolean = checkFor(Feature::c)
+public fun c(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.c)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zca(): Boolean = checkFor(Feature::zca)
+public fun zca(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zca)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcf(): Boolean = checkFor(Feature::zcf)
+public fun zcf(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zcf)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcd(): Boolean = checkFor(Feature::zcd)
+public fun zcd(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zcd)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcb(): Boolean = checkFor(Feature::zcb)
+public fun zcb(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zcb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcmop(): Boolean = checkFor(Feature::zcmop)
+public fun zcmop(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zcmop)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun b(): Boolean = checkFor(Feature::b)
+public fun b(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.b)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zba(): Boolean = checkFor(Feature::zba)
+public fun zba(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zba)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbb(): Boolean = checkFor(Feature::zbb)
+public fun zbb(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zbb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbc(): Boolean = checkFor(Feature::zbc)
+public fun zbc(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zbc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbs(): Boolean = checkFor(Feature::zbs)
+public fun zbs(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zbs)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbkb(): Boolean = checkFor(Feature::zbkb)
+public fun zbkb(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zbkb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbkc(): Boolean = checkFor(Feature::zbkc)
+public fun zbkc(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zbkc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbkx(): Boolean = checkFor(Feature::zbkx)
+public fun zbkx(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zbkx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zknd(): Boolean = checkFor(Feature::zknd)
+public fun zknd(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zknd)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkne(): Boolean = checkFor(Feature::zkne)
+public fun zkne(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zkne)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zknh(): Boolean = checkFor(Feature::zknh)
+public fun zknh(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zknh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zksed(): Boolean = checkFor(Feature::zksed)
+public fun zksed(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zksed)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zksh(): Boolean = checkFor(Feature::zksh)
+public fun zksh(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zksh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkr(): Boolean = checkFor(Feature::zkr)
+public fun zkr(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zkr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkn(): Boolean = checkFor(Feature::zkn)
+public fun zkn(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zkn)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zks(): Boolean = checkFor(Feature::zks)
+public fun zks(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zks)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zk(): Boolean = checkFor(Feature::zk)
+public fun zk(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zk)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkt(): Boolean = checkFor(Feature::zkt)
+public fun zkt(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zkt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun v(): Boolean = checkFor(Feature::v)
+public fun v(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.Feature::v)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve32x(): Boolean = checkFor(Feature::zve32x)
+public fun zve32x(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zve32x)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve32f(): Boolean = checkFor(Feature::zve32f)
+public fun zve32f(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zve32f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve64x(): Boolean = checkFor(Feature::zve64x)
+public fun zve64x(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zve64x)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve64f(): Boolean = checkFor(Feature::zve64f)
+public fun zve64f(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zve64f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve64d(): Boolean = checkFor(Feature::zve64d)
+public fun zve64d(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zve64d)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfh(): Boolean = checkFor(Feature::zvfh)
+public fun zvfh(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvfh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfhmin(): Boolean = checkFor(Feature::zvfhmin)
+public fun zvfhmin(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvfhmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfbfmin(): Boolean = checkFor(Feature::zvfbfmin)
+public fun zvfbfmin(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvfbfmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfbfwma(): Boolean = checkFor(Feature::zvfbfwma)
+public fun zvfbfwma(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvfbfwma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvbb(): Boolean = checkFor(Feature::zvbb)
+public fun zvbb(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvbb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvbc(): Boolean = checkFor(Feature::zvbc)
+public fun zvbc(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvbc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkb(): Boolean = checkFor(Feature::zvkb)
+public fun zvkb(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvkb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkg(): Boolean = checkFor(Feature::zvkg)
+public fun zvkg(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvkg)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkned(): Boolean = checkFor(Feature::zvkned)
+public fun zvkned(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvkned)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvknha(): Boolean = checkFor(Feature::zvknha)
+public fun zvknha(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvknha)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvknhb(): Boolean = checkFor(Feature::zvknhb)
+public fun zvknhb(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvknhb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksed(): Boolean = checkFor(Feature::zvksed)
+public fun zvksed(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvksed)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksh(): Boolean = checkFor(Feature::zvksh)
+public fun zvksh(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvksh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkn(): Boolean = checkFor(Feature::zvkn)
+public fun zvkn(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvkn)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvknc(): Boolean = checkFor(Feature::zvknc)
+public fun zvknc(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvknc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkng(): Boolean = checkFor(Feature::zvkng)
+public fun zvkng(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvkng)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvks(): Boolean = checkFor(Feature::zvks)
+public fun zvks(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvks)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksc(): Boolean = checkFor(Feature::zvksc)
+public fun zvksc(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvksc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksg(): Boolean = checkFor(Feature::zvksg)
+public fun zvksg(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvksg)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkt(): Boolean = checkFor(Feature::zvkt)
+public fun zvkt(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.zvkt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun j(): Boolean = checkFor(Feature::j)
+public fun j(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.j)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun p(): Boolean = checkFor(Feature::p)
+public fun p(): Boolean = checkFor(io.github.kotlinmania.rustlang.detect.arch.Feature::p)

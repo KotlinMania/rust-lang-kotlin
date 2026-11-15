@@ -1,14 +1,14 @@
 // port-lint: source new/linux_uapi/linux/sctp.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.sctp
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S32
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_FIN
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S32
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U16
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.unix.linuxlike.MSG_FIN
 
 public typealias SctpAssocT = S32
 
@@ -194,7 +194,7 @@ public data class SctpSndrcvinfo(
     public var sinfoTimetolive: U32 = 0u,
     public var sinfoTsn: U32 = 0u,
     public var sinfoCumtsn: U32 = 0u,
-    public var sinfoAssocId: io.github.kotlinmania.rustlang.libc.SctpAssocT = 0,
+    public var sinfoAssocId: io.github.kotlinmania.rustlang.new.linuxuapi.linux.sctp.SctpAssocT = 0,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<SctpSndrcvinfo> =
@@ -256,7 +256,7 @@ public data class SctpSndinfo(
     public var sndFlags: U16 = 0u,
     public var sndPpid: U32 = 0u,
     public var sndContext: U32 = 0u,
-    public var sndAssocId: io.github.kotlinmania.rustlang.libc.SctpAssocT = 0,
+    public var sndAssocId: io.github.kotlinmania.rustlang.new.linuxuapi.linux.sctp.SctpAssocT = 0,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<SctpSndinfo> =
@@ -305,7 +305,7 @@ public data class SctpRcvinfo(
     public var rcvTsn: U32 = 0u,
     public var rcvCumtsn: U32 = 0u,
     public var rcvContext: U32 = 0u,
-    public var rcvAssocId: io.github.kotlinmania.rustlang.libc.SctpAssocT = 0,
+    public var rcvAssocId: io.github.kotlinmania.rustlang.new.linuxuapi.linux.sctp.SctpAssocT = 0,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<SctpRcvinfo> =
@@ -363,7 +363,7 @@ public data class SctpNxtinfo(
     public var nxtFlags: U16 = 0u,
     public var nxtPpid: U32 = 0u,
     public var nxtLength: U32 = 0u,
-    public var nxtAssocId: io.github.kotlinmania.rustlang.libc.SctpAssocT = 0,
+    public var nxtAssocId: io.github.kotlinmania.rustlang.new.linuxuapi.linux.sctp.SctpAssocT = 0,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<SctpNxtinfo> =

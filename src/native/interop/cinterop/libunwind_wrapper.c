@@ -15,7 +15,7 @@
 #endif
 #endif
 
-void unwindLibunwindUnwindResume(void* exception) {
+void rustlangLibunwindUnwindResume(void* exception) {
     typedef void (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -62,7 +62,7 @@ void unwindLibunwindUnwindResume(void* exception) {
     errno = ENOSYS;
 }
 
-void unwindLibunwindUnwindDeleteException(void* exception) {
+void rustlangLibunwindUnwindDeleteException(void* exception) {
     typedef void (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -88,7 +88,7 @@ void unwindLibunwindUnwindDeleteException(void* exception) {
     errno = ENOSYS;
 }
 
-void* unwindLibunwindUnwindGetLanguageSpecificData(void* ctx) {
+void* rustlangLibunwindUnwindGetLanguageSpecificData(void* ctx) {
     typedef void* (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -114,7 +114,7 @@ void* unwindLibunwindUnwindGetLanguageSpecificData(void* ctx) {
     return NULL;
 }
 
-void* unwindLibunwindUnwindGetRegionStart(void* ctx) {
+void* rustlangLibunwindUnwindGetRegionStart(void* ctx) {
     typedef void* (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -140,7 +140,7 @@ void* unwindLibunwindUnwindGetRegionStart(void* ctx) {
     return NULL;
 }
 
-void* unwindLibunwindUnwindGetTextRelBase(void* ctx) {
+void* rustlangLibunwindUnwindGetTextRelBase(void* ctx) {
     typedef void* (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -166,7 +166,7 @@ void* unwindLibunwindUnwindGetTextRelBase(void* ctx) {
     return NULL;
 }
 
-void* unwindLibunwindUnwindGetDataRelBase(void* ctx) {
+void* rustlangLibunwindUnwindGetDataRelBase(void* ctx) {
     typedef void* (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -192,7 +192,7 @@ void* unwindLibunwindUnwindGetDataRelBase(void* ctx) {
     return NULL;
 }
 
-void* unwindLibunwindUnwindGetGr(void* ctx, int32_t regIndex) {
+void* rustlangLibunwindUnwindGetGr(void* ctx, int32_t regIndex) {
     typedef void* (*km_fn_t)(void*, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -239,7 +239,7 @@ void* unwindLibunwindUnwindGetGr(void* ctx, int32_t regIndex) {
     return NULL;
 }
 
-void unwindLibunwindUnwindSetGr(void* ctx, int32_t regIndex, void* value) {
+void rustlangLibunwindUnwindSetGr(void* ctx, int32_t regIndex, void* value) {
     typedef void (*km_fn_t)(void*, int32_t, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -286,7 +286,7 @@ void unwindLibunwindUnwindSetGr(void* ctx, int32_t regIndex, void* value) {
     errno = ENOSYS;
 }
 
-void unwindLibunwindUnwindSetIp(void* ctx, void* value) {
+void rustlangLibunwindUnwindSetIp(void* ctx, void* value) {
     typedef void (*km_fn_t)(void*, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -333,7 +333,7 @@ void unwindLibunwindUnwindSetIp(void* ctx, void* value) {
     errno = ENOSYS;
 }
 
-void* unwindLibunwindUnwindGetIpinfo(void* ctx, void* ipBeforeInsn) {
+void* rustlangLibunwindUnwindGetIpinfo(void* ctx, void* ipBeforeInsn) {
     typedef void* (*km_fn_t)(void*, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -380,7 +380,7 @@ void* unwindLibunwindUnwindGetIpinfo(void* ctx, void* ipBeforeInsn) {
     return NULL;
 }
 
-int32_t unwindLibunwindGccSpecificHandler(void* exceptionRecord, void* establisherFrame, void* contextRecord, void* dispatcherContext, void* personality) {
+int32_t rustlangLibunwindGccSpecificHandler(void* exceptionRecord, void* establisherFrame, void* contextRecord, void* dispatcherContext, void* personality) {
     typedef int32_t (*km_fn_t)(void*, void*, void*, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

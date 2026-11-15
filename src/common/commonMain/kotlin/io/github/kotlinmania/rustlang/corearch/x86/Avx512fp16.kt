@@ -1,29 +1,83 @@
 // port-lint: source x86/avx512fp16.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.simd.I16x16
-import io.github.kotlinmania.rustlang.corearch.simd.I16x32
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x16
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I32x8
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I64x4
-import io.github.kotlinmania.rustlang.corearch.simd.I64x8
-import io.github.kotlinmania.rustlang.corearch.simd.U16x16
-import io.github.kotlinmania.rustlang.corearch.simd.U16x32
-import io.github.kotlinmania.rustlang.corearch.simd.U16x8
-import io.github.kotlinmania.rustlang.corearch.simd.U32x16
-import io.github.kotlinmania.rustlang.corearch.simd.U32x4
-import io.github.kotlinmania.rustlang.corearch.simd.U32x8
-import io.github.kotlinmania.rustlang.corearch.simd.U64x2
-import io.github.kotlinmania.rustlang.corearch.simd.U64x4
-import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import io.github.kotlinmania.rustlang.simd.I16x16
+import io.github.kotlinmania.rustlang.simd.I16x32
+import io.github.kotlinmania.rustlang.simd.I16x8
+import io.github.kotlinmania.rustlang.simd.I32x16
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I32x8
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I64x4
+import io.github.kotlinmania.rustlang.simd.I64x8
+import io.github.kotlinmania.rustlang.simd.U16x16
+import io.github.kotlinmania.rustlang.simd.U16x32
+import io.github.kotlinmania.rustlang.simd.U16x8
+import io.github.kotlinmania.rustlang.simd.U32x16
+import io.github.kotlinmania.rustlang.simd.U32x4
+import io.github.kotlinmania.rustlang.simd.U32x8
+import io.github.kotlinmania.rustlang.simd.U64x2
+import io.github.kotlinmania.rustlang.simd.U64x4
+import io.github.kotlinmania.rustlang.simd.U64x8
+import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.x86.M128d
+import io.github.kotlinmania.rustlang.x86.M128h
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.M256
+import io.github.kotlinmania.rustlang.x86.M256d
+import io.github.kotlinmania.rustlang.x86.M256h
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.M512
+import io.github.kotlinmania.rustlang.x86.M512d
+import io.github.kotlinmania.rustlang.x86.M512h
+import io.github.kotlinmania.rustlang.x86.M512i
+import io.github.kotlinmania.rustlang.x86.MM_FROUND_CUR_DIRECTION
+import io.github.kotlinmania.rustlang.x86.MmMantissaNormEnum
+import io.github.kotlinmania.rustlang.x86.MmMantissaSignEnum
+import io.github.kotlinmania.rustlang.x86.Mmask16
+import io.github.kotlinmania.rustlang.x86.Mmask32
+import io.github.kotlinmania.rustlang.x86.Mmask8
+import io.github.kotlinmania.rustlang.x86.mm256AndSi256
+import io.github.kotlinmania.rustlang.x86.mm256Permutex2varEpi16
+import io.github.kotlinmania.rustlang.x86.mm256PermutexvarEpi16
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi16
+import io.github.kotlinmania.rustlang.x86.mm256Set1Epi32
+import io.github.kotlinmania.rustlang.x86.mm256SetzeroPd
+import io.github.kotlinmania.rustlang.x86.mm256SetzeroPs
+import io.github.kotlinmania.rustlang.x86.mm256SetzeroSi256
+import io.github.kotlinmania.rustlang.x86.mm256UndefinedSi256
+import io.github.kotlinmania.rustlang.x86.mm256XorSi256
+import io.github.kotlinmania.rustlang.x86.mm512AndSi512
+import io.github.kotlinmania.rustlang.x86.mm512Permutex2varEpi16
+import io.github.kotlinmania.rustlang.x86.mm512PermutexvarEpi16
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi16
+import io.github.kotlinmania.rustlang.x86.mm512Set1Epi32
+import io.github.kotlinmania.rustlang.x86.mm512SetzeroPd
+import io.github.kotlinmania.rustlang.x86.mm512SetzeroPs
+import io.github.kotlinmania.rustlang.x86.mm512SetzeroSi512
+import io.github.kotlinmania.rustlang.x86.mm512UndefinedEpi32
+import io.github.kotlinmania.rustlang.x86.mm512XorSi512
+import io.github.kotlinmania.rustlang.x86.mmAndSi128
+import io.github.kotlinmania.rustlang.x86.mmMaskMoveSs
+import io.github.kotlinmania.rustlang.x86.mmMoveSs
+import io.github.kotlinmania.rustlang.x86.mmPermutex2varEpi16
+import io.github.kotlinmania.rustlang.x86.mmPermutexvarEpi16
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi16
+import io.github.kotlinmania.rustlang.x86.mmSet1Epi32
+import io.github.kotlinmania.rustlang.x86.mmSetSd
+import io.github.kotlinmania.rustlang.x86.mmSetSs
+import io.github.kotlinmania.rustlang.x86.mmSetzeroPd
+import io.github.kotlinmania.rustlang.x86.mmSetzeroPs
+import io.github.kotlinmania.rustlang.x86.mmSetzeroSi128
+import io.github.kotlinmania.rustlang.x86.mmUndefinedPs
+import io.github.kotlinmania.rustlang.x86.mmUndefinedSi128
+import io.github.kotlinmania.rustlang.x86.mmXorSi128
 
 /**
  * Set packed half-precision (16-bit) floating-point elements in dst with the supplied values.
@@ -712,7 +766,7 @@ public fun mmMaskzLoadSh(k: Mmask8, memAddr: ConstPtr): M128h {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_loadu_ph)
  */
-public fun mmLoaduPh(memAddr: ConstPtr): M128h = readUnaligned(memAddr)
+public fun mmLoaduPh(memAddr: ConstPtr): M128h = ptr.readUnaligned(memAddr)
 
 /**
  * Load 256-bits (composed of 16 packed half-precision (16-bit) floating-point elements) from memory into
@@ -720,7 +774,7 @@ public fun mmLoaduPh(memAddr: ConstPtr): M128h = readUnaligned(memAddr)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_loadu_ph)
  */
-public fun mm256LoaduPh(memAddr: ConstPtr): M256h = readUnaligned(memAddr)
+public fun mm256LoaduPh(memAddr: ConstPtr): M256h = ptr.readUnaligned(memAddr)
 
 /**
  * Load 512-bits (composed of 32 packed half-precision (16-bit) floating-point elements) from memory into
@@ -728,7 +782,7 @@ public fun mm256LoaduPh(memAddr: ConstPtr): M256h = readUnaligned(memAddr)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_loadu_ph)
  */
-public fun mm512LoaduPh(memAddr: ConstPtr): M512h = readUnaligned(memAddr)
+public fun mm512LoaduPh(memAddr: ConstPtr): M512h = ptr.readUnaligned(memAddr)
 
 /**
  * Move the lower half-precision (16-bit) floating-point element from b to the lower element of dst
@@ -830,7 +884,7 @@ public fun mmMaskStoreSh(memAddr: MutPtr, k: Mmask8, a: M128h) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_storeu_ph)
  */
 public fun mmStoreuPh(memAddr: MutPtr, a: M128h) {
-    writeUnaligned(memAddr, a)
+    ptr.writeUnaligned(memAddr, a)
 }
 
 /**
@@ -840,7 +894,7 @@ public fun mmStoreuPh(memAddr: MutPtr, a: M128h) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_storeu_ph)
  */
 public fun mm256StoreuPh(memAddr: MutPtr, a: M256h) {
-    writeUnaligned(memAddr, a)
+    ptr.writeUnaligned(memAddr, a)
 }
 
 /**
@@ -850,7 +904,7 @@ public fun mm256StoreuPh(memAddr: MutPtr, a: M256h) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_storeu_ph)
  */
 public fun mm512StoreuPh(memAddr: MutPtr, a: M512h) {
-    writeUnaligned(memAddr, a)
+    ptr.writeUnaligned(memAddr, a)
 }
 
 /**

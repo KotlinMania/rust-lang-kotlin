@@ -2,11 +2,11 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.stacknp
 
+import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.unix.UintptrT
+import io.github.kotlinmania.rustlang.unix.UintptrT
 
-private object NewAppleLibpthreadPthreadStacknpStackNpJniBridge {
+private object LibcNewAppleLibpthreadPthreadStacknpStackNpJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -42,8 +42,8 @@ private object NewAppleLibpthreadPthreadStacknpStackNpJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = NewAppleLibpthreadPthreadStacknpStackNpJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = LibcNewAppleLibpthreadPthreadStacknpStackNpJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -60,8 +60,8 @@ private object NewAppleLibpthreadPthreadStacknpStackNpJniBridge {
     }
 
     @JvmStatic
-    external fun libcNewAppleLibpthreadPthreadStacknpStackNpPthreadStackFrameDecodeNp(frameAddr: Long, returnAddr: Long): Long
+    external fun rustlangLibcNewAppleLibpthreadPthreadStacknpStackNpPthreadStackFrameDecodeNp(frameAddr: Long, returnAddr: Long): Long
 }
 
 public actual fun pthreadStackFrameDecodeNp(frameAddr: UintptrT, returnAddr: MutPtr): UintptrT =
-    NewAppleLibpthreadPthreadStacknpStackNpJniBridge.libcNewAppleLibpthreadPthreadStacknpStackNpPthreadStackFrameDecodeNp(frameAddr.toLong(), returnAddr.rawAddress).toULong()
+    LibcNewAppleLibpthreadPthreadStacknpStackNpJniBridge.rustlangLibcNewAppleLibpthreadPthreadStacknpStackNpPthreadStackFrameDecodeNp(frameAddr.toLong(), returnAddr.rawAddress).toULong()

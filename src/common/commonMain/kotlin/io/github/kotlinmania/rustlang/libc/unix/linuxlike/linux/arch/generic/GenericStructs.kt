@@ -2,13 +2,13 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.arch.generic
 
+import io.github.kotlinmania.rustlang.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.CcT
-import io.github.kotlinmania.rustlang.libc.SpeedT
-import io.github.kotlinmania.rustlang.libc.TcflagT
+import io.github.kotlinmania.rustlang.unix.CcT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
 
 // RLIMIT Constants
 public data class Termios2(

@@ -1,8 +1,8 @@
 // port-lint: source math/tanf.rs
 package io.github.kotlinmania.rustlang.libm.math.tanf
 
-import io.github.kotlinmania.rustlang.libm.math.ktanf.kTanf
-import io.github.kotlinmania.rustlang.libm.math.rempio2f.remPio2f
+import io.github.kotlinmania.rustlang.math.ktanf.kTanf
+import io.github.kotlinmania.rustlang.math.rempio2f.remPio2f
 
 // Small multiples of pi/2 rounded to double precision.
 public val T1_PIO2: Double = 1.0 * 1.5707963267948966

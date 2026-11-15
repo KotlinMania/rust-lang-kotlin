@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -23,24 +24,27 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.or
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.slice.get
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.fs.Metadata
-import io.github.kotlinmania.rustlang.std.fs.ReadDir
-import io.github.kotlinmania.rustlang.std.fs.exists
-import io.github.kotlinmania.rustlang.std.fs.metadata
-import io.github.kotlinmania.rustlang.std.fs.symlinkMetadata
-import io.github.kotlinmania.rustlang.std.io.ErrorKind
-import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.fs.Metadata
+import io.github.kotlinmania.rustlang.fs.ReadDir
+import io.github.kotlinmania.rustlang.fs.exists
+import io.github.kotlinmania.rustlang.fs.metadata
+import io.github.kotlinmania.rustlang.fs.symlinkMetadata
+import io.github.kotlinmania.rustlang.io.ErrorKind
+import io.github.kotlinmania.rustlang.io.constError
+import io.github.kotlinmania.rustlang.path.SEPARATORS
+import io.github.kotlinmania.rustlang.path.SEPARATORS_STR
+import io.github.kotlinmania.rustlang.rc.Rc
 import io.github.kotlinmania.rustlang.std.path.Prefix.*
-import io.github.kotlinmania.rustlang.std.rc.Rc
-import io.github.kotlinmania.rustlang.std.sync.Arc
-import io.github.kotlinmania.rustlang.std.sys.args.unix.init
-import io.github.kotlinmania.rustlang.std.sys.path.isSepByte
-import io.github.kotlinmania.rustlang.std.sys.path.unix.HAS_PREFIXES
-import io.github.kotlinmania.rustlang.std.sys.path.unix.isVerbatimSep
-import io.github.kotlinmania.rustlang.std.sys.path.unix.parsePrefix
+import io.github.kotlinmania.rustlang.sync.Arc
+import io.github.kotlinmania.rustlang.sys.args.unix.init
+import io.github.kotlinmania.rustlang.sys.path.isSepByte
+import io.github.kotlinmania.rustlang.sys.path.unix.HAS_PREFIXES
+import io.github.kotlinmania.rustlang.sys.path.unix.isVerbatimSep
+import io.github.kotlinmania.rustlang.sys.path.unix.parsePrefix
 
 // Cross-platform path manipulation.
 //
@@ -387,7 +391,7 @@ public fun hasPhysicalRoot(s: List<UByte>, prefix: Prefix?): Boolean {
     val path =
         if (prefix != null) {
             val p = prefix
-            ((s).slice(p.len() until s.size))
+            ((s).subList(p.len(), (s).size))
         } else {
             s
         }
@@ -537,9 +541,9 @@ public open class PrefixComponent(
 
     public open fun eq(other: PrefixComponent): Boolean = (this.parsed == other.parsed).toUByte()
 
-    public open fun partialCmp(other: PrefixComponent): Ordering? = PartialOrd.partialCmp(this.parsed, other.parsed)
+    public open fun partialCmp(other: PrefixComponent): cmp.Ordering? = PartialOrd.partialCmp(this.parsed, other.parsed)
 
-    public open fun cmp(other: PrefixComponent): Ordering = Ord.cmp(this.parsed, other.parsed)
+    public open fun cmp(other: PrefixComponent): cmp.Ordering = Ord.cmp(this.parsed, other.parsed)
 
     public override fun hashCode(): Int {
         var h = 0
@@ -799,7 +803,7 @@ public open class Components(
         if (this.hasRoot()) {
             return false
         }
-        val slice = ((this.path).slice(this.prefixRemaining() until this.path.size))
+        val slice = ((this.path).subList(this.prefixRemaining(), (this.path).size))
         return when {
             slice.size == 1 && slice[0] == 46u -> true
             slice.size >= 2 && slice[0] == 46u -> {
@@ -833,7 +837,7 @@ public open class Components(
                 null -> Pair(0, this.path)
                 else -> {
                     val i = matchVal
-                    Pair(1, ((this.path).slice(0 until i)))
+                    Pair(1, ((this.path).subList(0, i)))
                 }
             }
         // SAFETY: `comp` is a valid substring, since it is split on a separator.
@@ -846,11 +850,11 @@ public open class Components(
         check(this.back == State.Body)
         val start = this.lenBeforeBody()
         val (extra, comp) =
-            when (val matchVal = ((this.path).slice(start until this.path.size)).iter().indexOfLast({ b -> this.isSepByte(b) }).takeIf { it >= 0 }) {
-                null -> Pair(0, ((this.path).slice(start until this.path.size)))
+            when (val matchVal = ((this.path).subList(start, (this.path).size)).iter().indexOfLast({ b -> this.isSepByte(b) }).takeIf { it >= 0 }) {
+                null -> Pair(0, ((this.path).subList(start, (this.path).size)))
                 else -> {
                     val i = matchVal
-                    Pair(1, ((this.path).slice(start + i + 1 until this.path.size)))
+                    Pair(1, ((this.path).subList(start + i + 1, (this.path).size)))
                 }
             }
         // SAFETY: `comp` is a valid substring, since it is split on a separator.
@@ -864,7 +868,7 @@ public open class Components(
             if (comp != null) {
                 return
             } else {
-                this.path = ((this.path).slice(size until this.path.size))
+                this.path = ((this.path).subList(size, (this.path).size))
             }
         }
     }
@@ -876,7 +880,7 @@ public open class Components(
             if (comp != null) {
                 return
             } else {
-                this.path = ((this.path).slice(0 until this.path.size - size))
+                this.path = ((this.path).subList(0, this.path.size - size))
             }
         }
     }
@@ -893,7 +897,7 @@ public open class Components(
                     // most likely case first
                     matchVal == State.Body && !this.path.isEmpty() -> {
                         val (size, comp) = this.parseNextComponent()
-                        this.path = ((this.path).slice(size until this.path.size))
+                        this.path = ((this.path).subList(size, (this.path).size))
                         if (comp != null) {
                             return comp
                         }
@@ -905,7 +909,7 @@ public open class Components(
                         this.front = State.Body
                         if (this.hasPhysicalRoot) {
                             check(!this.path.isEmpty())
-                            this.path = ((this.path).slice(1 until this.path.size))
+                            this.path = ((this.path).subList(1, (this.path).size))
                             return Component.RootDir
                         } else if (HAS_PREFIXES && this.prefix != null) {
                             if (p.hasImplicitRoot() && !p.isVerbatim()) {
@@ -913,7 +917,7 @@ public open class Components(
                             }
                         } else if (this.includeCurDir()) {
                             check(!this.path.isEmpty())
-                            this.path = ((this.path).slice(1 until this.path.size))
+                            this.path = ((this.path).subList(1, (this.path).size))
                             return Component.CurDir
                         }
                     }
@@ -924,8 +928,8 @@ public open class Components(
                     matchVal == State.Prefix -> {
                         this.front = State.StartDir
                         check(this.prefixLen() <= this.path.size)
-                        val raw = ((this.path).slice(0 until this.prefixLen()))
-                        this.path = ((this.path).slice(this.prefixLen() until this.path.size))
+                        val raw = ((this.path).subList(0, this.prefixLen()))
+                        this.path = ((this.path).subList(this.prefixLen(), (this.path).size))
                         return Component.Prefix(PrefixComponent(raw = OsStr.fromEncodedBytesUnchecked(raw), parsed = this.prefix!!))
                     }
                     else -> error("unreachable")
@@ -942,7 +946,7 @@ public open class Components(
                 when {
                     matchVal == State.Body && this.path.size > this.lenBeforeBody() -> {
                         val (size, comp) = this.parseNextComponentBack()
-                        this.path = ((this.path).slice(0 until this.path.size - size))
+                        this.path = ((this.path).subList(0, this.path.size - size))
                         if (comp != null) {
                             return comp
                         }
@@ -957,14 +961,14 @@ public open class Components(
                             State.Done
                         }
                         if (this.hasPhysicalRoot) {
-                            this.path = ((this.path).slice(0 until this.path.size - 1))
+                            this.path = ((this.path).subList(0, this.path.size - 1))
                             return Component.RootDir
                         } else if (HAS_PREFIXES && this.prefix != null) {
                             if (p.hasImplicitRoot() && !p.isVerbatim()) {
                                 return Component.RootDir
                             }
                         } else if (this.includeCurDir()) {
-                            this.path = ((this.path).slice(0 until this.path.size - 1))
+                            this.path = ((this.path).subList(0, this.path.size - 1))
                             return Component.CurDir
                         }
                     }
@@ -999,9 +1003,9 @@ public open class Components(
         return Iterator.eq(this.clone().rev(), other.clone().rev())
     }
 
-    public open fun partialCmp(other: Components): Ordering? = compareComponents(this.clone(), other.clone())
+    public open fun partialCmp(other: Components): cmp.Ordering? = compareComponents(this.clone(), other.clone())
 
-    public open fun cmp(other: Components): Ordering = compareComponents(this.clone(), other.clone())
+    public open fun cmp(other: Components): cmp.Ordering = compareComponents(this.clone(), other.clone())
 }
 
 /**
@@ -1068,7 +1072,7 @@ public open class Iter(
     public open fun nextBack(): OsStr? = this.inner.nextBack()?.let({ it.asOsStr() })
 }
 
-public fun compareComponents(left: Components, right: Components): Ordering {
+public fun compareComponents(left: Components, right: Components): cmp.Ordering {
     // Fast path for long shared prefixes
     //
     // - compare raw bytes to find first mismatch
@@ -1084,7 +1088,7 @@ public fun compareComponents(left: Components, right: Components): Ordering {
             run {
                 val matchVal = (left.path.zip(right.path)).indexOfFirst({ (a, b) -> a != b }).takeIf { it >= 0 }
                 when {
-                    matchVal == null && left.path.size == right.path.size -> { return Ordering.Equal }
+                    matchVal == null && left.path.size == right.path.size -> { return cmp.Ordering.Equal }
                     matchVal == null -> left.path.size.min(right.path.size)
                     else -> {
                         val diff = matchVal
@@ -1092,14 +1096,14 @@ public fun compareComponents(left: Components, right: Components): Ordering {
                     }
                 }
             }
-        when (val matchVal1 = ((left.path).slice(0 until firstDifference)).iter().indexOfLast({ b -> left.isSepByte(b) }).takeIf { it >= 0 }) {
+        when (val matchVal1 = ((left.path).subList(0, firstDifference)).iter().indexOfLast({ b -> left.isSepByte(b) }).takeIf { it >= 0 }) {
             null -> {}
             else -> {
                 val previousSep = matchVal1
                 val mismatchedComponentStart = previousSep + 1
-                left.path = ((left.path).slice(mismatchedComponentStart until left.path.size))
+                left.path = ((left.path).subList(mismatchedComponentStart, (left.path).size))
                 left.front = State.Body
-                right.path = ((right.path).slice(mismatchedComponentStart until right.path.size))
+                right.path = ((right.path).subList(mismatchedComponentStart, (right.path).size))
                 right.front = State.Body
             }
         }
@@ -1203,7 +1207,7 @@ public open class Ancestors(
  */
 public open class PathBuf(
     public var inner: OsString,
-) : FromStr, Borrow<Path>, AsRef<OsStr> {
+) : FromStr<Nothing>, Borrow<Path>, AsRef<OsStr> {
     /**
      * Coerces to a [Path] slice.
      *
@@ -1731,9 +1735,9 @@ public open class PathBuf(
         return h
     }
 
-    public open fun partialCmp(other: PathBuf): Ordering? = compareComponents(this.components(), other.components())
+    public open fun partialCmp(other: PathBuf): cmp.Ordering? = compareComponents(this.components(), other.components())
 
-    public open fun cmp(other: PathBuf): Ordering = compareComponents(this.components(), other.components())
+    public open fun cmp(other: PathBuf): cmp.Ordering = compareComponents(this.components(), other.components())
 
     public open fun asRef(): OsStr = this.inner
 
@@ -1743,31 +1747,31 @@ public open class PathBuf(
 
     public open fun eq(other: Path): Boolean = Path.eq(this, other)
 
-    public open fun partialCmp(other: Path): Ordering? = Path.partialCmp(this, other)
+    public open fun partialCmp(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
 
     public open fun eqPath(other: Path): Boolean = Path.eq(this, other)
 
-    public open fun partialCmpPath(other: Path): Ordering? = Path.partialCmp(this, other)
+    public open fun partialCmpPath(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
 
     public open fun eqCowPath(other: Path): Boolean = Path.eq(this, other)
 
-    public open fun partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(this, other)
+    public open fun partialCmpCowPath(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
 
     public open fun eq(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmp(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmp(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eqOsStr(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmpOsStr(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmpOsStr(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eqCowOsStr(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmpCowOsStr(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmpCowOsStr(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eq(other: OsString): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmp(other: OsString): Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmp(other: OsString): cmp.Ordering? = Path.partialCmp(this, other.asRef())
 
     public companion object {
         /**
@@ -2099,7 +2103,7 @@ public open class Path internal constructor(
      *
      * [hasRoot]: Path.hasRoot
      */
-    public open fun isAbsolute(): Boolean = io.github.kotlinmania.rustlang.std.sys.path.unix.isAbsolute(this)
+    public open fun isAbsolute(): Boolean = io.github.kotlinmania.rustlang.sys.path.unix.isAbsolute(this)
 
     /**
      * Returns `true` if the `Path` is relative, i.e., not absolute.
@@ -2781,7 +2785,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun metadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.std.fs.metadata(this)
+    public open fun metadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.fs.metadata(this)
 
     /**
      * Queries the metadata about a file without following symlinks.
@@ -2798,7 +2802,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun symlinkMetadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.std.fs.symlinkMetadata(this)
+    public open fun symlinkMetadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.fs.symlinkMetadata(this)
 
     /**
      * Returns the canonical, absolute form of the path with all intermediate
@@ -2824,7 +2828,7 @@ public open class Path internal constructor(
      * check(path.canonicalize().unwrap() == PathBuf.from("/foo/test/bar.rs"))
      * ```
      */
-    public open fun canonicalize(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.std.fs.canonicalize(this)
+    public open fun canonicalize(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.fs.canonicalize(this)
 
     /**
      * Makes the path absolute without accessing the filesystem.
@@ -2946,7 +2950,7 @@ public open class Path internal constructor(
      * val pathLink = path.readLink().expect("the path should be an existing symbolic link")
      * ```
      */
-    public open fun readLink(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.std.fs.readLink(this)
+    public open fun readLink(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.fs.readLink(this)
 
     /**
      * Returns an iterator over the entries within a directory.
@@ -2970,7 +2974,7 @@ public open class Path internal constructor(
      * }
      * ```
      */
-    public open fun readDir(): Result<ReadDir, Error> = io.github.kotlinmania.rustlang.std.fs.readDir(this)
+    public open fun readDir(): Result<ReadDir, Error> = io.github.kotlinmania.rustlang.fs.readDir(this)
 
     /**
      * Returns `true` if the path points at an existing entity.
@@ -3163,7 +3167,7 @@ public open class Path internal constructor(
                     Pair(prefix.len(), prefix.isVerbatim())
                 }
             }
-        val bytes1 = ((bytes).slice(prefixLen until bytes.size))
+        val bytes1 = ((bytes).subList(prefixLen, (bytes).size))
         var componentStart = 0
         // track some extra state to avoid prefix collisions.
         // ["foo", "bar"] and ["foobar"], will have the same payload bytes
@@ -3210,9 +3214,9 @@ public open class Path internal constructor(
         return h
     }
 
-    public open fun partialCmp(other: Path): Ordering? = compareComponents(this.components(), other.components())
+    public open fun partialCmp(other: Path): cmp.Ordering? = compareComponents(this.components(), other.components())
 
-    public open fun cmp(other: Path): Ordering = compareComponents(this.components(), other.components())
+    public open fun cmp(other: Path): cmp.Ordering = compareComponents(this.components(), other.components())
 
     public open fun asRefPath(): Path = this
 
@@ -3220,27 +3224,27 @@ public open class Path internal constructor(
 
     public open fun eq(other: PathBuf): Boolean = Path.eq(this, other)
 
-    public open fun partialCmp(other: PathBuf): Ordering? = Path.partialCmp(this, other)
+    public open fun partialCmp(other: PathBuf): cmp.Ordering? = Path.partialCmp(this, other)
 
     public open fun eqCowPath(other: Path): Boolean = Path.eq(this, other)
 
-    public open fun partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(this, other)
+    public open fun partialCmpCowPath(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
 
     public open fun eq(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmp(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmp(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eqOsStr(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmpOsStr(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmpOsStr(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eqCowOsStr(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmpCowOsStr(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmpCowOsStr(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
 
     public open fun eq(other: OsString): Boolean = Path.eq(this, other.asRef())
 
-    public open fun partialCmp(other: OsString): Ordering? = Path.partialCmp(this, other.asRef())
+    public open fun partialCmp(other: OsString): cmp.Ordering? = Path.partialCmp(this, other.asRef())
 
     public companion object {
         public operator fun invoke(inner: OsStr, fieldLayout: TypeLayout<OsStr>): Path = Path(inner, fieldLayout)
@@ -3444,63 +3448,63 @@ public fun String.asRefPath(): Path = Path.new(this)
 
 public fun Path.eq(other: Path): Boolean = Path.eq(this, other)
 
-public fun Path.partialCmp(other: Path): Ordering? = Path.partialCmp(this, other)
+public fun Path.partialCmp(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
 
 public fun Path.eqPath(other: Path): Boolean = Path.eq(this, other)
 
-public fun Path.partialCmpPath(other: Path): Ordering? = Path.partialCmp(this, other)
+public fun Path.partialCmpPath(other: Path): cmp.Ordering? = Path.partialCmp(this, other)
 
 public fun Path.eq(other: PathBuf): Boolean = Path.eq(this, other)
 
-public fun Path.partialCmp(other: PathBuf): Ordering? = Path.partialCmp(this, other)
+public fun Path.partialCmp(other: PathBuf): cmp.Ordering? = Path.partialCmp(this, other)
 
 public fun OsStr.eq(other: PathBuf): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsStr.partialCmp(other: PathBuf): Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsStr.partialCmp(other: PathBuf): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsStr.eqPathBuf(other: PathBuf): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsStr.partialCmpPathBuf(other: PathBuf): Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsStr.partialCmpPathBuf(other: PathBuf): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsString.eq(other: PathBuf): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsString.partialCmp(other: PathBuf): Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsString.partialCmp(other: PathBuf): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsStr.eq(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsStr.partialCmp(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsStr.partialCmp(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsStr.eqPath(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsStr.partialCmpPath(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsStr.partialCmpPath(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsString.eq(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsString.partialCmp(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsString.partialCmp(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun OsString.eqPath(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun OsString.partialCmpPath(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsString.partialCmpPath(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun Path.eq(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
 public fun OsStr.eqCowPath(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun Path.partialCmp(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
+public fun Path.partialCmp(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
 
-public fun OsStr.partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsStr.partialCmpCowPath(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
 
 public fun Path.eqOsStr(other: OsStr): Boolean = Path.eq(this, other.asRef())
 
-public fun Path.partialCmpOsStr(other: OsStr): Ordering? = Path.partialCmp(this, other.asRef())
+public fun Path.partialCmpOsStr(other: OsStr): cmp.Ordering? = Path.partialCmp(this, other.asRef())
 
 public fun Path.eq(other: OsString): Boolean = Path.eq(this, other.asRef())
 
 public fun OsString.eqCowPath(other: Path): Boolean = Path.eq(this.asRef(), other)
 
-public fun Path.partialCmp(other: OsString): Ordering? = Path.partialCmp(this, other.asRef())
+public fun Path.partialCmp(other: OsString): cmp.Ordering? = Path.partialCmp(this, other.asRef())
 
-public fun OsString.partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(this.asRef(), other)
+public fun OsString.partialCmpCowPath(other: Path): cmp.Ordering? = Path.partialCmp(this.asRef(), other)
 
 /**
  * Makes the path absolute without accessing the filesystem.
@@ -3584,6 +3588,6 @@ public fun absolute(path: Path): Result<PathBuf, Error> {
     return if (path1.asOsStr().isEmpty()) {
         Result.Err(constError(ErrorKind.InvalidInput, "cannot make an empty path absolute"))
     } else {
-        io.github.kotlinmania.rustlang.std.sys.path.unix.absolute(path1)
+        io.github.kotlinmania.rustlang.sys.path.unix.absolute(path1)
     }
 }

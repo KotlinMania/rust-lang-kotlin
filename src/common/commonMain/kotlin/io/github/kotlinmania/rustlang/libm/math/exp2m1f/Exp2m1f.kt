@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.libm.math.exp2m1f
 import io.github.kotlinmania.rustlang.libm.math.support.Float
 import io.github.kotlinmania.rustlang.libm.math.support.Int
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf32
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
+import io.github.kotlinmania.rustlang.math.support.hexfloat.hf32
+import io.github.kotlinmania.rustlang.math.support.hexfloat.hf64
 
 /**
  * Base-2 exponential minus one (f32).

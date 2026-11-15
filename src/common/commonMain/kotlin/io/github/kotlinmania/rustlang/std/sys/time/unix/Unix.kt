@@ -8,15 +8,15 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_MONOTONIC
-import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_REALTIME
-import io.github.kotlinmania.rustlang.libc.helenos.ClockidT
+import io.github.kotlinmania.rustlang.io.Error
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.CLOCK_UPTIME_RAW
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.KERN_SUCCESS
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.KernReturnT
-import io.github.kotlinmania.rustlang.std.io.Error
-import io.github.kotlinmania.rustlang.std.sys.AsInner
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
+import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
+import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_REALTIME
+import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
+import io.github.kotlinmania.rustlang.sys.AsInner
+import io.github.kotlinmania.rustlang.sys.pal.unix.time.Timespec
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -70,7 +70,7 @@ public open class SystemTime(
         public val MIN: SystemTime = SystemTime(t = Timespec.MIN)
 
         public fun new(tvSec: Long, tvNsec: Long): Result<SystemTime, Error> {
-            return Result.Ok(SystemTime(t = when (val tryResult = Timespec.new(tvSec, tvNsec)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+            return Result.Ok(SystemTime(t = when (val tryResult = Timespec.new(tvSec, tvNsec)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
         }
 
         public fun now(): SystemTime = SystemTime(t = Timespec.now(CLOCK_REALTIME))

@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.loongarchshared
 
-private object LoongarchsharedJniBridge {
+private object CorearchLoongarchsharedJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -38,8 +38,8 @@ private object LoongarchsharedJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/corearch/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = LoongarchsharedJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = CorearchLoongarchsharedJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -56,112 +56,112 @@ private object LoongarchsharedJniBridge {
     }
 
     @JvmStatic
-    external fun corearchLoongarchsharedDbar(a: Int)
+    external fun rustlangCorearchLoongarchsharedDbar(a: Int)
 
     @JvmStatic
-    external fun corearchLoongarchsharedIbar(a: Int)
+    external fun rustlangCorearchLoongarchsharedIbar(a: Int)
 
     @JvmStatic
-    external fun corearchLoongarchsharedMovgr2fcsr(a: Int, b: Int)
+    external fun rustlangCorearchLoongarchsharedMovgr2fcsr(a: Int, b: Int)
 
     @JvmStatic
-    external fun corearchLoongarchsharedMovfcsr2gr(a: Int): Int
+    external fun rustlangCorearchLoongarchsharedMovfcsr2gr(a: Int): Int
 
     @JvmStatic
-    external fun corearchLoongarchsharedIocsrrdB(a: Int): Int
+    external fun rustlangCorearchLoongarchsharedIocsrrdB(a: Int): Int
 
     @JvmStatic
-    external fun corearchLoongarchsharedIocsrrdH(a: Int): Int
+    external fun rustlangCorearchLoongarchsharedIocsrrdH(a: Int): Int
 
     @JvmStatic
-    external fun corearchLoongarchsharedIocsrrdW(a: Int): Int
+    external fun rustlangCorearchLoongarchsharedIocsrrdW(a: Int): Int
 
     @JvmStatic
-    external fun corearchLoongarchsharedIocsrwrB(a: Int, b: Int)
+    external fun rustlangCorearchLoongarchsharedIocsrwrB(a: Int, b: Int)
 
     @JvmStatic
-    external fun corearchLoongarchsharedIocsrwrH(a: Int, b: Int)
+    external fun rustlangCorearchLoongarchsharedIocsrwrH(a: Int, b: Int)
 
     @JvmStatic
-    external fun corearchLoongarchsharedIocsrwrW(a: Int, b: Int)
+    external fun rustlangCorearchLoongarchsharedIocsrwrW(a: Int, b: Int)
 
     @JvmStatic
-    external fun corearchLoongarchsharedBreakTarget(a: Int)
+    external fun rustlangCorearchLoongarchsharedBreakTarget(a: Int)
 
     @JvmStatic
-    external fun corearchLoongarchsharedCpucfg(a: Int): Int
+    external fun rustlangCorearchLoongarchsharedCpucfg(a: Int): Int
 
     @JvmStatic
-    external fun corearchLoongarchsharedSyscall(a: Int)
+    external fun rustlangCorearchLoongarchsharedSyscall(a: Int)
 
     @JvmStatic
-    external fun corearchLoongarchsharedFrecipeS(a: Float): Float
+    external fun rustlangCorearchLoongarchsharedFrecipeS(a: Float): Float
 
     @JvmStatic
-    external fun corearchLoongarchsharedFrecipeD(a: Double): Double
+    external fun rustlangCorearchLoongarchsharedFrecipeD(a: Double): Double
 
     @JvmStatic
-    external fun corearchLoongarchsharedFrsqrteS(a: Float): Float
+    external fun rustlangCorearchLoongarchsharedFrsqrteS(a: Float): Float
 
     @JvmStatic
-    external fun corearchLoongarchsharedFrsqrteD(a: Double): Double
+    external fun rustlangCorearchLoongarchsharedFrsqrteD(a: Double): Double
 }
 
 public actual fun dbar(a: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedDbar(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedDbar(a)
 }
 
 public actual fun ibar(a: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedIbar(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedIbar(a)
 }
 
 public actual fun movgr2fcsr(a: Int, b: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedMovgr2fcsr(a, b)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedMovgr2fcsr(a, b)
 }
 
 public actual fun movfcsr2gr(a: Int): Int =
-    LoongarchsharedJniBridge.corearchLoongarchsharedMovfcsr2gr(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedMovfcsr2gr(a)
 
 public actual fun iocsrrdB(a: Int): Int =
-    LoongarchsharedJniBridge.corearchLoongarchsharedIocsrrdB(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedIocsrrdB(a)
 
 public actual fun iocsrrdH(a: Int): Int =
-    LoongarchsharedJniBridge.corearchLoongarchsharedIocsrrdH(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedIocsrrdH(a)
 
 public actual fun iocsrrdW(a: Int): Int =
-    LoongarchsharedJniBridge.corearchLoongarchsharedIocsrrdW(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedIocsrrdW(a)
 
 public actual fun iocsrwrB(a: Int, b: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedIocsrwrB(a, b)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedIocsrwrB(a, b)
 }
 
 public actual fun iocsrwrH(a: Int, b: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedIocsrwrH(a, b)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedIocsrwrH(a, b)
 }
 
 public actual fun iocsrwrW(a: Int, b: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedIocsrwrW(a, b)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedIocsrwrW(a, b)
 }
 
 public actual fun breakTarget(a: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedBreakTarget(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedBreakTarget(a)
 }
 
 public actual fun cpucfg(a: Int): Int =
-    LoongarchsharedJniBridge.corearchLoongarchsharedCpucfg(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedCpucfg(a)
 
 public actual fun syscall(a: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedSyscall(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedSyscall(a)
 }
 
 public actual fun frecipeS(a: Float): Float =
-    LoongarchsharedJniBridge.corearchLoongarchsharedFrecipeS(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedFrecipeS(a)
 
 public actual fun frecipeD(a: Double): Double =
-    LoongarchsharedJniBridge.corearchLoongarchsharedFrecipeD(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedFrecipeD(a)
 
 public actual fun frsqrteS(a: Float): Float =
-    LoongarchsharedJniBridge.corearchLoongarchsharedFrsqrteS(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedFrsqrteS(a)
 
 public actual fun frsqrteD(a: Double): Double =
-    LoongarchsharedJniBridge.corearchLoongarchsharedFrsqrteD(a)
+    CorearchLoongarchsharedJniBridge.rustlangCorearchLoongarchsharedFrsqrteD(a)

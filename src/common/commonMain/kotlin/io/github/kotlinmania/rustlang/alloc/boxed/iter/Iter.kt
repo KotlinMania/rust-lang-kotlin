@@ -1,8 +1,6 @@
 // port-lint: source boxed/iter.rs
 package io.github.kotlinmania.rustlang.alloc.boxed.iter
 
-import io.github.kotlinmania.rustlang.alloc.string.String
-import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.asynciter.asynciter.AsyncIterator
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
@@ -10,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
+import io.github.kotlinmania.rustlang.vec.Vec
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -33,13 +32,13 @@ public class DebugTuple(
     }
 }
 
-public fun <I, A : Allocator> I.next(): Item? = this.next()
+public fun <Item, I, A : Allocator> I.next(): Item? = this.next()
 
-public fun <I, A : Allocator> I.sizeHint(): Pair<Int, Int?> = this.sizeHint()
+public fun <Item, I, A : Allocator> I.sizeHint(): Pair<Int, Int?> = this.sizeHint()
 
-public fun <I, A : Allocator> I.nth(n: Int): Item? = this.nth(n)
+public fun <Item, I, A : Allocator> I.nth(n: Int): Item? = this.nth(n)
 
-public fun <I, A : Allocator> I.last(): Item? = this.last()
+public fun <Item, I, A : Allocator> I.last(): Item? = this.last()
 
 public interface BoxIter<out Item> {
     public fun last(): Item?

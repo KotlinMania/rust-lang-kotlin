@@ -2,8 +2,9 @@
 package io.github.kotlinmania.rustlang.core.ubchecks
 
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.panicking.panicNounwind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.panicking.panicNounwind
+import io.github.kotlinmania.rustlang.ubchecks.assertUnsafePrecondition
 
 // Provides the [assertUnsafePrecondition] macro as well as some utility functions that cover
 // common preconditions.

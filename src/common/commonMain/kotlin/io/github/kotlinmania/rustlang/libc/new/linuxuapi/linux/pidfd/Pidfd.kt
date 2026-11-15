@@ -1,18 +1,18 @@
 // port-lint: source new/linux_uapi/linux/pidfd.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd
 
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S32
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.io
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.iowr
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Ioctl
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.O_EXCL
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.O_NONBLOCK
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S32
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U64
+import io.github.kotlinmania.rustlang.unix.linuxlike.io
+import io.github.kotlinmania.rustlang.unix.linuxlike.iowr
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Ioctl
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.O_EXCL
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.O_NONBLOCK
 
 // Header: `uapi / linux / pidfd.h`
 

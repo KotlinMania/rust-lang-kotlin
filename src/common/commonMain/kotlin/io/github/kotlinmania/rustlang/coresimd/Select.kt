@@ -1,8 +1,10 @@
 // port-lint: source select.rs
 package io.github.kotlinmania.rustlang.coresimd
 
-import io.github.kotlinmania.rustlang.coresimd.simd.MaskElement
-import io.github.kotlinmania.rustlang.coresimd.simd.SimdElement
+import io.github.kotlinmania.rustlang.FixEndianness
+import io.github.kotlinmania.rustlang.Mask
+import io.github.kotlinmania.rustlang.MaskElement
+import io.github.kotlinmania.rustlang.Simd
 
 /**
  * Choose elements from two vectors using a mask.
@@ -49,7 +51,7 @@ public interface Select<T> {
     public fun select(trueValues: T, falseValues: T): T
 }
 
-public fun <Mask, T, U> Mask<U, N>.select(trueValues: Simd<T, N>, falseValues: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?>, U : MaskElement<U> {
+public fun <Mask, T, U> Mask<U, N>.select(trueValues: Simd<T>, falseValues: Simd<T>, n: Int): Simd<T> where U : MaskElement<U> {
     // Safety:
     // simdAs between masks is always safe (they're vectors of ints).
     // simdSelect uses a mask that matches the width and number of elements
@@ -59,8 +61,8 @@ public fun <Mask, T, U> Mask<U, N>.select(trueValues: Simd<T, N>, falseValues: S
     }
 }
 
-public fun <Mask, T> ULong.select(trueValues: Simd<T, N>, falseValues: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> {
-    fun <Mask, T, U : FixEndianness<U>> selectImpl(bitmask: U, trueValues1: Simd<T>, falseValues1: Simd<T>, m: Int, n: Int): Simd<T> where T : SimdElement<Any?> {
+public fun <Mask, T> ULong.select(trueValues: Simd<T>, falseValues: Simd<T>, n: Int): Simd<T> {
+    fun <Mask, T, U : FixEndianness<U>> selectImpl(bitmask: U, trueValues1: Simd<T>, falseValues1: Simd<T>, m: Int, n: Int): Simd<T> {
         val default = trueValues1[0]
         val trueValues2 = trueValues1.resize(default)
         val falseValues2 = falseValues1.resize(default)
@@ -93,13 +95,13 @@ public fun <Mask, T> ULong.select(trueValues: Simd<T, N>, falseValues: Simd<T, N
     }
 }
 
-public fun <T, U> Mask<U, N>.select(trueValues: Mask<T, N>, falseValues: Mask<T, N>, n: Int): Mask<T> where T : MaskElement<T>, U : MaskElement<U> {
+public fun <T, U> Mask<U, N>.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int): Mask<T> where T : MaskElement<T>, U : MaskElement<U> {
     val selected: Simd<T> = Select.Select(this, trueValues.toSimd(), falseValues.toSimd())
     // Safety: all values come from masks
     return Mask.fromSimdUnchecked(selected)
 }
 
-public fun <T> ULong.select(trueValues: Mask<T, N>, falseValues: Mask<T, N>, n: Int): Mask<T> where T : MaskElement<T> {
+public fun <T> ULong.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> {
     val selected: Simd<T> = Select.Select(this, trueValues.toSimd(), falseValues.toSimd())
     // Safety: all values come from masks
     return Mask.fromSimdUnchecked(selected)

@@ -2,31 +2,31 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike
 
-import io.github.kotlinmania.rustlang.core.ffi.CChar
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.In6Addr
-import io.github.kotlinmania.rustlang.libc.InAddrT
-import io.github.kotlinmania.rustlang.libc.InPortT
-import io.github.kotlinmania.rustlang.libc.Sigval
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S64
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U8
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S64
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U16
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U64
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U8
+import io.github.kotlinmania.rustlang.unix.In6Addr
+import io.github.kotlinmania.rustlang.unix.InAddrT
+import io.github.kotlinmania.rustlang.unix.InPortT
+import io.github.kotlinmania.rustlang.unix.Sigval
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT
 
 // intentionally not public, only used for fdSet
 // https://github.com/search?q=repo%3Atorvalds%2Flinux+%22%23define+_IOC_NONE%22&type=code
@@ -185,7 +185,7 @@ public data class IpMreqSource(
 
 public data class GroupReq(
     public var grInterface: UInt = 0u,
-    public var grGroup: io.github.kotlinmania.rustlang.libc.SockaddrStorage = io.github.kotlinmania.rustlang.libc.SockaddrStorage(),
+    public var grGroup: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<GroupReq> =
@@ -216,8 +216,8 @@ public data class GroupReq(
 
 public data class GroupSourceReq(
     public var gsrInterface: UInt = 0u,
-    public var gsrGroup: io.github.kotlinmania.rustlang.libc.SockaddrStorage = io.github.kotlinmania.rustlang.libc.SockaddrStorage(),
-    public var gsrSource: io.github.kotlinmania.rustlang.libc.SockaddrStorage = io.github.kotlinmania.rustlang.libc.SockaddrStorage(),
+    public var gsrGroup: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
+    public var gsrSource: io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage = io.github.kotlinmania.rustlang.unix.bsd.apple.SockaddrStorage(),
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<GroupSourceReq> =
@@ -299,7 +299,7 @@ public data class Sockaddr(
 public data class SockaddrIn(
     public var sinFamily: SaFamilyT = 0u,
     public var sinPort: InPortT = 0u,
-    public var sinAddr: io.github.kotlinmania.rustlang.libc.InAddr = io.github.kotlinmania.rustlang.libc.InAddr(),
+    public var sinAddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
     public var sinZero: UByteArray = UByteArray(8),
 ) {
     override fun equals(other: Any?): Boolean {
@@ -370,7 +370,7 @@ public class Addrinfo internal constructor(
     public var aiFamily: CInt,
     public var aiSocktype: CInt,
     public var aiProtocol: CInt,
-    public var aiAddrlen: io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT,
+    public var aiAddrlen: SocklenT,
     aiAddrCtorArg: MutPtr,
     aiCanonnameCtorArg: MutPtr,
     aiNextCtorArg: MutPtr,
@@ -403,7 +403,7 @@ public class Addrinfo internal constructor(
 
     public operator fun component4(): CInt = this.aiProtocol
 
-    public operator fun component5(): io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT = this.aiAddrlen
+    public operator fun component5(): SocklenT = this.aiAddrlen
 
     public operator fun component6(): MutPtr = this.aiAddr
 
@@ -411,7 +411,7 @@ public class Addrinfo internal constructor(
 
     public operator fun component8(): MutPtr = this.aiNext
 
-    public fun copy(aiFlags: CInt = this.aiFlags, aiFamily: CInt = this.aiFamily, aiSocktype: CInt = this.aiSocktype, aiProtocol: CInt = this.aiProtocol, aiAddrlen: io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT = this.aiAddrlen, aiAddr: MutPtr = this.aiAddr, aiCanonname: MutPtr = this.aiCanonname, aiNext: MutPtr = this.aiNext): Addrinfo = Addrinfo(aiFlags = aiFlags, aiFamily = aiFamily, aiSocktype = aiSocktype, aiProtocol = aiProtocol, aiAddrlen = aiAddrlen, aiAddrCtorArg = aiAddr, aiCanonnameCtorArg = aiCanonname, aiNextCtorArg = aiNext)
+    public fun copy(aiFlags: CInt = this.aiFlags, aiFamily: CInt = this.aiFamily, aiSocktype: CInt = this.aiSocktype, aiProtocol: CInt = this.aiProtocol, aiAddrlen: SocklenT = this.aiAddrlen, aiAddr: MutPtr = this.aiAddr, aiCanonname: MutPtr = this.aiCanonname, aiNext: MutPtr = this.aiNext): Addrinfo = Addrinfo(aiFlags = aiFlags, aiFamily = aiFamily, aiSocktype = aiSocktype, aiProtocol = aiProtocol, aiAddrlen = aiAddrlen, aiAddrCtorArg = aiAddr, aiCanonnameCtorArg = aiCanonname, aiNextCtorArg = aiNext)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -495,7 +495,7 @@ public class Addrinfo internal constructor(
             aiFamily: CInt = 0,
             aiSocktype: CInt = 0,
             aiProtocol: CInt = 0,
-            aiAddrlen: io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT = 0u,
+            aiAddrlen: SocklenT = 0u,
             aiAddr: MutPtr = MutPtr(0L),
             aiCanonname: MutPtr = MutPtr(0L),
             aiNext: MutPtr = MutPtr(0L),
@@ -1186,8 +1186,8 @@ public class Lconv internal constructor(
 
 public data class InPktinfo(
     public var ipiIfindex: CInt = 0,
-    public var ipiSpecDst: io.github.kotlinmania.rustlang.libc.InAddr = io.github.kotlinmania.rustlang.libc.InAddr(),
-    public var ipiAddr: io.github.kotlinmania.rustlang.libc.InAddr = io.github.kotlinmania.rustlang.libc.InAddr(),
+    public var ipiSpecDst: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
+    public var ipiAddr: io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr = io.github.kotlinmania.rustlang.unix.bsd.apple.InAddr(),
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<InPktinfo> =
@@ -1379,10 +1379,10 @@ public data class In6Rtmsg(
 )
 
 public data class Arpreq(
-    public var arpPa: io.github.kotlinmania.rustlang.libc.Sockaddr = io.github.kotlinmania.rustlang.libc.Sockaddr(),
-    public var arpHa: io.github.kotlinmania.rustlang.libc.Sockaddr = io.github.kotlinmania.rustlang.libc.Sockaddr(),
+    public var arpPa: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
+    public var arpHa: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
     public var arpFlags: CInt = 0,
-    public var arpNetmask: io.github.kotlinmania.rustlang.libc.Sockaddr = io.github.kotlinmania.rustlang.libc.Sockaddr(),
+    public var arpNetmask: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
     public var arpDev: UByteArray = UByteArray(16),
 ) {
     override fun equals(other: Any?): Boolean {
@@ -1445,10 +1445,10 @@ public data class Arpreq(
 }
 
 public data class ArpreqOld(
-    public var arpPa: io.github.kotlinmania.rustlang.libc.Sockaddr = io.github.kotlinmania.rustlang.libc.Sockaddr(),
-    public var arpHa: io.github.kotlinmania.rustlang.libc.Sockaddr = io.github.kotlinmania.rustlang.libc.Sockaddr(),
+    public var arpPa: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
+    public var arpHa: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
     public var arpFlags: CInt = 0,
-    public var arpNetmask: io.github.kotlinmania.rustlang.libc.Sockaddr = io.github.kotlinmania.rustlang.libc.Sockaddr(),
+    public var arpNetmask: io.github.kotlinmania.rustlang.unix.bsd.Sockaddr = io.github.kotlinmania.rustlang.unix.bsd.Sockaddr(),
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<ArpreqOld> =

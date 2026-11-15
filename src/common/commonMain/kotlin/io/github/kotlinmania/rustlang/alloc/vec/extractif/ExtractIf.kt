@@ -4,12 +4,9 @@ package io.github.kotlinmania.rustlang.alloc.vec.extractif
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.copy
-import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
@@ -116,7 +113,7 @@ public open class ExtractIf<T, F, A : Allocator>(
                 // We use copy for move, and never touch this element again.
                 run {
                     val holeSlot = MutPtr((this.vec.asMutPtr()).rawAddress + ((i - this.del).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-                    copyNonoverlapping(cur, holeSlot, 1)
+                    ptr.copyNonoverlapping(cur, holeSlot, 1)
                 }
             }
         }
@@ -129,7 +126,7 @@ public open class ExtractIf<T, F, A : Allocator>(
         if (this.del > 0) {
             // SAFETY: Trailing unchecked items must be valid since we never touch them.
             run {
-                copy(ConstPtr((this.vec.asPtr()).rawAddress + ((this.idx).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((this.idx - this.del).toLong() * (ObjectSlotLayout<T>()).strideBytes)), this.oldLen - this.idx)
+                ptr.copy(ConstPtr((this.vec.asPtr()).rawAddress + ((this.idx).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((this.idx - this.del).toLong() * (ObjectSlotLayout<T>()).strideBytes)), this.oldLen - this.idx)
             }
         }
         // SAFETY: After filling holes, all items are in contiguous memory.
@@ -152,7 +149,7 @@ public open class ExtractIf<T, F, A : Allocator>(
     public companion object {
         public fun <T, F, A : Allocator, R : RangeBounds<Int>> new(vec: List<T>, pred: F, range: R): ExtractIf<T, F, A> {
             val oldLen = vec.size
-            val structVal = Range(range, 0 until oldLen)
+            val structVal = slice.range(range, 0 until oldLen)
             val start = structVal.start
             val end = structVal.end
             // Guard against the vec getting leaked (leak amplification)

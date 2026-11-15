@@ -3,7 +3,7 @@
 
 package io.github.kotlinmania.rustlang.libm.math.exp2f
 
-import io.github.kotlinmania.rustlang.libm.math.arch.x87Exp2f
+import io.github.kotlinmania.rustlang.math.arch.i586.expall.x87Exp2f
 
 // origin: FreeBSD /usr/src/lib/msun/src/sExp2f.c
 // -

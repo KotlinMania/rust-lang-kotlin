@@ -1,11 +1,11 @@
 // port-lint: source iter/sources/repeat_n.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeatn
 
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public class DebugStruct(
     private val out: StringBuilder,

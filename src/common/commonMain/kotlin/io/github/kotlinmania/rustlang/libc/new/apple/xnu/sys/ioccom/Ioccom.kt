@@ -1,12 +1,12 @@
 // port-lint: source new/apple/xnu/sys/ioccom.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom
 
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `sys / ioccom.h`
 //

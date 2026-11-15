@@ -2,9 +2,9 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.I8x32
-import io.github.kotlinmania.rustlang.corearch.simd.I8x64
+import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.I8x32
+import io.github.kotlinmania.rustlang.simd.I8x64
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun vgf2p8affineinvqb512(x: I8x64, a: I8x64, imm8: UByte): I8x64 =

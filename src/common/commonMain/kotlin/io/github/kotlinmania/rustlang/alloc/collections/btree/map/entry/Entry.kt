@@ -5,13 +5,8 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.borrow.DormantMutR
 import io.github.kotlinmania.rustlang.alloc.collections.btree.map.entry.Entry.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Handle
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.NodeRef
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Edge
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.KV
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.LeafOrInternal
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Mut
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
-import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -208,7 +203,7 @@ public sealed class Entry<K, V, A : AllocatorClone> {
             }
             is Vacant -> {
                 val (entry1) = this
-                Result.Ok(entry1.insert(when (val tryResult = default()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+                Result.Ok(entry1.insert(when (val tryResult = default()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
             }
         }
     }
@@ -262,7 +257,7 @@ public sealed class Entry<K, V, A : AllocatorClone> {
             }
             is Vacant -> {
                 val (entry1) = this
-                val value = when (val tryResult = default(entry1.key())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val value = when (val tryResult = default(entry1.key())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                 Result.Ok(entry1.insert(value))
             }
         }
@@ -377,7 +372,7 @@ public sealed class Entry<K, V, A : AllocatorClone> {
  */
 public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
     public var key: K,
-    handleCtorArg: Handle<NodeRef<Mut, K, V, Leaf>, Edge>?,
+    handleCtorArg: Handle<NodeRef<marker.Mut, K, V, marker.Leaf>, marker.Edge>?,
     dormantMapCtorArg: DormantMutRef<MutableMap<K, V>>,
     /**
      * The BTreeMap will outlive this IntoIter so we don't care about drop order for `alloc`.
@@ -389,7 +384,7 @@ public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
     /**
      * `None` for a (empty) map without root
      */
-    public var handle: Handle<NodeRef<Mut, K, V, Leaf>, Edge>? = handleCtorArg
+    public var handle: Handle<NodeRef<marker.Mut, K, V, marker.Leaf>, marker.Edge>? = handleCtorArg
         internal set
 
     public var dormantMap: DormantMutRef<MutableMap<K, V>> = dormantMapCtorArg
@@ -510,7 +505,7 @@ public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
     public companion object {
         public operator fun <K, V, A : AllocatorClone> invoke(
             key: K,
-            handle: Handle<NodeRef<Mut, K, V, Leaf>, Edge>?,
+            handle: Handle<NodeRef<marker.Mut, K, V, marker.Leaf>, marker.Edge>?,
             dormantMap: DormantMutRef<MutableMap<K, V>>,
             alloc: A,
             marker: Unit,
@@ -529,7 +524,7 @@ public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
  * It is part of the [Entry] enum.
  */
 public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
-    handleCtorArg: Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>,
+    handleCtorArg: Handle<NodeRef<marker.Mut, K, V, marker.LeafOrInternal>, marker.KV>,
     dormantMapCtorArg: DormantMutRef<MutableMap<K, V>>,
     /**
      * The BTreeMap will outlive this IntoIter so we don't care about drop order for `alloc`.
@@ -538,7 +533,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
     // Be invariant in `K` and `V`
     public var marker: Unit,
 ) {
-    public var handle: Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV> = handleCtorArg
+    public var handle: Handle<NodeRef<marker.Mut, K, V, marker.LeafOrInternal>, marker.KV> = handleCtorArg
         internal set
 
     public var dormantMap: DormantMutRef<MutableMap<K, V>> = dormantMapCtorArg
@@ -731,7 +726,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
 
     public companion object {
         public operator fun <K, V, A : AllocatorClone> invoke(
-            handle: Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>,
+            handle: Handle<NodeRef<marker.Mut, K, V, marker.LeafOrInternal>, marker.KV>,
             dormantMap: DormantMutRef<MutableMap<K, V>>,
             alloc: A,
             marker: Unit,

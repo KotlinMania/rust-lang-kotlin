@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.core.hash
 
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.marker.PhantomData
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -71,7 +72,7 @@ public class DebugStruct(
  */
 public open class BuildHasherDefault<H>(
     public var value: Unit,
-) : BuildHasher<Any?, H> {
+) : BuildHasher<H> {
     public var field0: Unit
         get() = value
         set(v) {
@@ -82,7 +83,7 @@ public open class BuildHasherDefault<H>(
 
     public override fun buildHasher(defaultHFn: () -> H): H = defaultHFn()
 
-    public open fun clone(): BuildHasherDefault<H> = BuildHasherDefault(Unit)
+    public open fun clone(): BuildHasherDefault<H> = BuildHasherDefault(PhantomData)
 
     public open fun eq(other: BuildHasherDefault<H>): Boolean = true
 
@@ -90,7 +91,7 @@ public open class BuildHasherDefault<H>(
         /**
          * Creates a new BuildHasherDefault for Hasher `H`.
          */
-        public fun <H> new(): BuildHasherDefault<H> = BuildHasherDefault(Unit)
+        public fun <H> new(): BuildHasherDefault<H> = BuildHasherDefault(PhantomData)
 
         public fun <H> default(): BuildHasherDefault<H> = BuildHasherDefault.new()
     }

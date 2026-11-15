@@ -1,24 +1,15 @@
 package io.github.kotlinmania.rustlang.alloc.vec
 
-import io.github.kotlinmania.rustlang.alloc.alloc.Global
-import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
-import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
+import io.github.kotlinmania.rustlang.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.vec.drain.Drain
 import io.github.kotlinmania.rustlang.alloc.vec.extractif.ExtractIf
 import io.github.kotlinmania.rustlang.alloc.vec.intoiter.IntoIter
 import io.github.kotlinmania.rustlang.alloc.vec.peekmut.PeekMut
 import io.github.kotlinmania.rustlang.alloc.vec.setlenondrop.SetLenOnDrop
 import io.github.kotlinmania.rustlang.alloc.vec.splice.Splice
-import io.github.kotlinmania.rustlang.alloc.vec.sveretain.MIN_SVE_SIZE_1
-import io.github.kotlinmania.rustlang.alloc.vec.sveretain.MIN_SVE_SIZE_2
-import io.github.kotlinmania.rustlang.alloc.vec.sveretain.MIN_SVE_SIZE_4
-import io.github.kotlinmania.rustlang.alloc.vec.sveretain.MIN_SVE_SIZE_8
-import io.github.kotlinmania.rustlang.alloc.vec.sveretain.PanicGuard
-import io.github.kotlinmania.rustlang.alloc.vec.sveretain.chunkedRetain
-import io.github.kotlinmania.rustlang.alloc.wtf8.cloneInto
+import io.github.kotlinmania.rustlang.collections.TryReserveError
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.hint.unlikely
 import io.github.kotlinmania.rustlang.core.marker.Freeze
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -26,28 +17,27 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
-import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.core.option.Iter
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copy
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.iter.Iter
-import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
+import io.github.kotlinmania.rustlang.rawvec.RawVec
+import io.github.kotlinmania.rustlang.vec.sveretain.MIN_SVE_SIZE_1
+import io.github.kotlinmania.rustlang.vec.sveretain.MIN_SVE_SIZE_2
+import io.github.kotlinmania.rustlang.vec.sveretain.MIN_SVE_SIZE_4
+import io.github.kotlinmania.rustlang.vec.sveretain.MIN_SVE_SIZE_8
+import io.github.kotlinmania.rustlang.vec.sveretain.PanicGuard
+import io.github.kotlinmania.rustlang.vec.sveretain.chunkedRetain
+import io.github.kotlinmania.rustlang.wtf8.cloneInto
 
 /**
  * A contiguous growable array type, written as `List<T>`, short for 'vector'.
@@ -1187,7 +1177,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * [spareCapacityMut]: Vec.spareCapacityMut
      */
     public open fun setLen(newLen: Int) {
-        assertUnsafePrecondition(checkLibraryUb, "Vec::set_len requires that new_len <= capacity()", newLen, newLen, capacity, this, capacity, newLen, capacity)
+        Unit
         this.len = newLen
     }
 
@@ -1995,7 +1985,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * Appends elements to `self` from other buffer, returning [TryReserveError] on OOM.
      */
     public open fun tryAppendElements(other: ConstPtr): Result<Unit, TryReserveError> {
-        when (val tryResult = this.tryReserve(other.len())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.tryReserve(other.len())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         // ignore-tidy-undocumented-unchecked
         run {
             this.appendElementsUnreserved(other)
@@ -2061,7 +2051,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         // the hole, and the vector length is restored to the new length.
         //
         val len = this.len()
-        val structVal = Range(range, 0 until len)
+        val structVal = range(range, 0 until len)
         val start = structVal.start
         val end = structVal.end
         // ignore-tidy-undocumented-unchecked
@@ -2588,7 +2578,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> extendFromWithin(src: R) where R : RangeBounds<Int> {
-        val range = Range(src, 0 until this.len())
+        val range = range(src, 0 until this.len())
         this.reserve(range.len())
         // SAFETY:
         // - `slice.range` guarantees that the given range is valid for indexing self
@@ -3112,7 +3102,7 @@ public open class Vec<T, A : Allocator> internal constructor(
          * [will not allocate]: self#memory-layout
          */
         public fun <T, A : Allocator> tryWithCapacityIn(capacity: Int, alloc: A): Result<Vec<T, A>, TryReserveError> {
-            return Result.Ok(Vec(buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, alloc)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, len = 0))
+            return Result.Ok(Vec(buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, alloc)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, len = 0))
         }
 
         /**
@@ -3195,7 +3185,7 @@ public open class Vec<T, A : Allocator> internal constructor(
          * ```
          */
         public fun <T, A : Allocator> fromRawPartsIn(ptr: MutPtr, length: Int, capacity: Int, alloc: A): Vec<T, A> {
-            assertUnsafePrecondition(checkLibraryUb, "Vec::from_raw_parts_in requires that length <= capacity", length, length, capacity, capacity, length, capacity)
+            Unit
             // SAFETY: Upheld by caller.
             return Vec(buf = RawVec.fromRawPartsIn(ptr, capacity, alloc), len = length)
         }
@@ -3279,7 +3269,7 @@ public open class Vec<T, A : Allocator> internal constructor(
          * ```
          */
         public fun <T, A : Allocator> fromPartsIn(ptr: NonNull, length: Int, capacity: Int, alloc: A): Vec<T, A> {
-            assertUnsafePrecondition(checkLibraryUb, "Vec::from_parts_in requires that length <= capacity", length, length, capacity, capacity, length, capacity)
+            Unit
             // SAFETY: Upheld by caller.
             return Vec(buf = RawVec.fromNonnullIn(ptr, capacity, alloc), len = length)
         }

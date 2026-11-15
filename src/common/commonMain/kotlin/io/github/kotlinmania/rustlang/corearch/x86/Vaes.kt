@@ -1,6 +1,9 @@
 // port-lint: source x86/vaes.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.M512i
+
 // Vectorized AES Instructions (VAES)
 //
 // The intrinsics here correspond to those in the `immintrin.h` C header.

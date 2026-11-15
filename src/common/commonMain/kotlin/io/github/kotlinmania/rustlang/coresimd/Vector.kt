@@ -1,6 +1,8 @@
 // port-lint: source vector.rs
 package io.github.kotlinmania.rustlang.coresimd
 
+import io.github.kotlinmania.rustlang.Mask
+import io.github.kotlinmania.rustlang.MaskElement
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -15,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.coresimd.simd.MaskElement
 
 //
 // NOTE: Accessing the inner array directly in any way (e.g. by using the `.0` field syntax) or
@@ -118,23 +119,23 @@ public open class Simd<T>(
         }
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Simd<T>> =
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>, n: Int = 0): TypeLayout<Simd<T>> =
             object : TypeLayout<Simd<T>> {
                 override val alignBytes: Long = listOf(1L, minOf(typeLayoutT.alignBytes, 1L)).max()
-                override val sizeBytes: Long = alignUpBytes(((N).toLong() * (typeLayoutT).strideBytes), alignBytes)
+                override val sizeBytes: Long = alignUpBytes(((n).toLong() * (typeLayoutT).strideBytes), alignBytes)
                 override fun readNative(addr: Long): Simd<T> =
                     Simd(
-                        (fixedListTypeLayout(typeLayoutT, (N).toInt())).readNative(addr),
+                        (fixedListTypeLayout(typeLayoutT, (n).toInt())).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Simd<T>) {
-                    (fixedListTypeLayout(typeLayoutT, (N).toInt())).writeNative(addr, value.value)
+                    (fixedListTypeLayout(typeLayoutT, (n).toInt())).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Simd<T> =
                     Simd(
-                        (fixedListTypeLayout(typeLayoutT, (N).toInt())).readBytes(buf, offset),
+                        (fixedListTypeLayout(typeLayoutT, (n).toInt())).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Simd<T>) {
-                    (fixedListTypeLayout(typeLayoutT, (N).toInt())).writeBytes(buf, offset, value.value)
+                    (fixedListTypeLayout(typeLayoutT, (n).toInt())).writeBytes(buf, offset, value.value)
                 }
             }
     }
@@ -365,7 +366,7 @@ public fun <Mask, T> Simd.Companion.loadOr(slice: List<T>, or: Simd<T, N>, n: In
  * check(result == Simd.fromArray(listOf(0, 11, 12, 0)))
  * ```
  */
-public fun <Mask, T> Simd.Companion.loadSelectOrDefault(slice: List<T>, enable: Mask<Mask, N>, n: Int, defaultTFn: () -> T): Simd<T, N> = Simd.loadSelect(slice, enable, defaultTFn())
+public fun <Mask, T> Simd.Companion.loadSelectOrDefault(slice: List<T>, enable: Mask<Mask>, n: Int, defaultTFn: () -> T): Simd<T, N> = Simd.loadSelect(slice, enable, defaultTFn())
 
 /**
  * Reads contiguous elements from `slice`. Each element is read from memory if its
@@ -383,7 +384,7 @@ public fun <Mask, T> Simd.Companion.loadSelectOrDefault(slice: List<T>, enable: 
  * check(result == Simd.fromArray(listOf(10, 11, -3, 13)))
  * ```
  */
-public fun <Mask, T> Simd.Companion.loadSelect(slice: List<T>, enable: Mask<Mask, N>, or: Simd<T, N>, n: Int): Simd<T, N> {
+public fun <Mask, T> Simd.Companion.loadSelect(slice: List<T>, enable: Mask<Mask>, or: Simd<T, N>, n: Int): Simd<T, N> {
     var enable1 = enable
     enable1 = enable1 and maskUpTo(slice.size)
     // SAFETY: We performed the bounds check by updating the mask. &[T] is properly aligned to
@@ -401,7 +402,7 @@ public fun <Mask, T> Simd.Companion.loadSelect(slice: List<T>, enable: Mask<Mask
  * # Safety
  * Enabled loads must not exceed the length of `slice`.
  */
-public fun <Mask, T> Simd.Companion.loadSelectUnchecked(slice: List<T>, enable: Mask<Mask, N>, or: Simd<T, N>, n: Int): Simd<T, N> {
+public fun <Mask, T> Simd.Companion.loadSelectUnchecked(slice: List<T>, enable: Mask<Mask>, or: Simd<T, N>, n: Int): Simd<T, N> {
     val ptr = slice.asPtr()
     // SAFETY: The safety of reading elements from `slice` is ensured by the caller.
     return Simd.loadSelectPtr(ptr, enable, or)
@@ -417,7 +418,7 @@ public fun <Mask, T> Simd.Companion.loadSelectUnchecked(slice: List<T>, enable: 
  * # Safety
  * Enabled `ptr` elements must be safe to read as if by `core.ptr.read`.
  */
-public fun <Mask, T> Simd.Companion.loadSelectPtr(ptr: ConstPtr, enable: Mask<Mask, N>, or: Simd<T, N>, n: Int): Simd<T, N> {
+public fun <Mask, T> Simd.Companion.loadSelectPtr(ptr: ConstPtr, enable: Mask<Mask>, or: Simd<T, N>, n: Int): Simd<T, N> {
     // SAFETY: The safety of reading elements through `ptr` is ensured by the caller.
     return run { val _simdArg0 = enable.toSimd(); val _simdArg1 = ptr; val _simdArg2 = or; _simdArg2 }
 }
@@ -436,7 +437,7 @@ public fun <Mask, T> Simd.Companion.loadSelectPtr(ptr: ConstPtr, enable: Mask<Ma
  * check(result == Simd.fromArray(listOf(-5, 13, 10, 15)))
  * ```
  */
-public fun <Mask, T> Simd.Companion.gatherOr(slice: List<T>, idxs: Simd<Int, N>, or: Simd<T, N>, n: Int): Simd<T, N> = Simd.gatherSelect(slice, Mask.splat(true), idxs, or)
+public fun <Mask, T> Simd.Companion.gatherOr(slice: List<T>, idxs: Simd<Int>, or: Simd<T, N>, n: Int): Simd<T, N> = Simd.gatherSelect(slice, Mask.splat(true), idxs, or)
 
 /**
  * Reads from indices in `slice` to construct a SIMD vector.
@@ -451,7 +452,7 @@ public fun <Mask, T> Simd.Companion.gatherOr(slice: List<T>, idxs: Simd<Int, N>,
  * check(result == Simd.fromArray(listOf(0, 13, 10, 15)))
  * ```
  */
-public fun <Mask, T> Simd.Companion.gatherOrDefault(slice: List<T>, idxs: Simd<Int, N>, n: Int, defaultTFn: () -> T): Simd<T, N> = Simd.gatherOr(slice, idxs, Simd.splat(defaultTFn()))
+public fun <Mask, T> Simd.Companion.gatherOrDefault(slice: List<T>, idxs: Simd<Int>, n: Int, defaultTFn: () -> T): Simd<T, N> = Simd.gatherOr(slice, idxs, Simd.splat(defaultTFn()))
 
 /**
  * Reads from indices in `slice` to construct a SIMD vector.
@@ -470,7 +471,7 @@ public fun <Mask, T> Simd.Companion.gatherOrDefault(slice: List<T>, idxs: Simd<I
  * check(result == Simd.fromArray(listOf(-5, 13, 10, -2)))
  * ```
  */
-public fun <Mask, T> Simd.Companion.gatherSelect(slice: List<T>, enable: Mask<Int, N>, idxs: Simd<Int, N>, or: Simd<T, N>, n: Int): Simd<T, N> {
+public fun <Mask, T> Simd.Companion.gatherSelect(slice: List<T>, enable: Mask<Int>, idxs: Simd<Int>, or: Simd<T, N>, n: Int): Simd<T, N> {
     val enable1: Mask<Int> = enable and idxs.simdLt(Simd.splat(slice.size))
     // Safety: We have masked-off out-of-bounds indices.
     return Simd.gatherSelectUnchecked(slice, enable1, idxs, or)
@@ -504,7 +505,7 @@ public fun <Mask, T> Simd.Companion.gatherSelect(slice: List<T>, enable: Mask<In
  * ```
  * [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
  */
-public fun <Mask, T> Simd.Companion.gatherSelectUnchecked(slice: List<T>, enable: Mask<Int, N>, idxs: Simd<Int, N>, or: Simd<T, N>, n: Int): Simd<T, N> {
+public fun <Mask, T> Simd.Companion.gatherSelectUnchecked(slice: List<T>, enable: Mask<Int>, idxs: Simd<Int>, or: Simd<T, N>, n: Int): Simd<T, N> {
     val basePtr = Simd.splat(slice.asPtr())
     // Ferris forgive me, I have done pointer arithmetic here.
     val ptrs = basePtr.wrappingAdd(idxs)
@@ -532,7 +533,7 @@ public fun <Mask, T> Simd.Companion.gatherSelectUnchecked(slice: List<T>, enable
  * check(gathered == Simd.fromArray(listOf(2, 6, 6, 9)))
  * ```
  */
-public fun <Mask, T> Simd.Companion.gatherPtr(source: Simd<ConstPtr, N>, n: Int): Simd<T, N> {
+public fun <Mask, T> Simd.Companion.gatherPtr(source: Simd<ConstPtr>, n: Int): Simd<T, N> {
     // Note: add an intrinsic that doesn't use a passthru vector, and remove the T: Default bound
     // Safety: The caller is responsible for upholding all invariants
     return Simd.gatherSelectPtr(source, Mask.splat(true), Simd.default())
@@ -562,7 +563,7 @@ public fun <Mask, T> Simd.Companion.gatherPtr(source: Simd<ConstPtr, N>, n: Int)
  * check(gathered == Simd.fromArray(listOf(2, 6, 0, 9)))
  * ```
  */
-public fun <Mask, T> Simd.Companion.gatherSelectPtr(source: Simd<ConstPtr, N>, enable: Mask<Int, N>, or: Simd<T, N>, n: Int): Simd<T, N> {
+public fun <Mask, T> Simd.Companion.gatherSelectPtr(source: Simd<ConstPtr>, enable: Mask<Int>, or: Simd<T, N>, n: Int): Simd<T, N> {
     // Safety: The caller is responsible for upholding all invariants
     return run { val _simdArg0 = or; val _simdArg1 = source; val _simdArg2 = enable.toSimd(); _simdArg0 }
 }
@@ -582,7 +583,7 @@ public fun <Mask, T> Simd.Companion.gatherSelectPtr(source: Simd<ConstPtr, N>, e
  * check(arr == intArrayOf(0, -4, -3, 0))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.storeSelect(slice: MutableList<T>, enable: Mask<Mask, N>, n: Int) {
+public fun <Mask, T> Simd<T, N>.storeSelect(slice: MutableList<T>, enable: Mask<Mask>, n: Int) {
     var enable1 = enable
     enable1 = enable1 and maskUpTo(slice.size)
     // SAFETY: We performed the bounds check by updating the mask. &[T] is properly aligned to
@@ -607,7 +608,7 @@ public fun <Mask, T> Simd<T, N>.storeSelect(slice: MutableList<T>, enable: Mask<
  * check(arr == intArrayOf(0, -4, -3, -2))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.storeSelectUnchecked(slice: MutableList<T>, enable: Mask<Mask, N>, n: Int) {
+public fun <Mask, T> Simd<T, N>.storeSelectUnchecked(slice: MutableList<T>, enable: Mask<Mask>, n: Int) {
     val ptr = slice.asMutPtr()
     // SAFETY: The safety of writing elements in `slice` is ensured by the caller.
     this.storeSelectPtr(ptr, enable)
@@ -623,7 +624,7 @@ public fun <Mask, T> Simd<T, N>.storeSelectUnchecked(slice: MutableList<T>, enab
  * Memory addresses for element are calculated [pointer.wrappingOffset] and
  * each enabled element must satisfy the same conditions as [core.ptr.write].
  */
-public fun <Mask, T> Simd<T, N>.storeSelectPtr(ptr: MutPtr, enable: Mask<Mask, N>, n: Int) {
+public fun <Mask, T> Simd<T, N>.storeSelectPtr(ptr: MutPtr, enable: Mask<Mask>, n: Int) {
     // SAFETY: The safety of writing elements through `ptr` is ensured by the caller.
     run { val _simdArg0 = enable.toSimd(); val _simdArg1 = ptr; val _simdArg2 = this; Unit }
 }
@@ -645,7 +646,7 @@ public fun <Mask, T> Simd<T, N>.storeSelectPtr(ptr: MutPtr, enable: Mask<Mask, N
  * check(vec == mutableListOf(124, 11, 12, 82, 14, 15, 16, 17, 18))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.scatter(slice: MutableList<T>, idxs: Simd<Int, N>, n: Int) {
+public fun <Mask, T> Simd<T, N>.scatter(slice: MutableList<T>, idxs: Simd<Int>, n: Int) {
     this.scatterSelect(slice, Mask.splat(true), idxs)
 }
 
@@ -669,7 +670,7 @@ public fun <Mask, T> Simd<T, N>.scatter(slice: MutableList<T>, idxs: Simd<Int, N
  * check(vec == mutableListOf(-41, 11, 12, 82, 14, 15, 16, 17, 18))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.scatterSelect(slice: MutableList<T>, enable: Mask<Int, N>, idxs: Simd<Int, N>, n: Int) {
+public fun <Mask, T> Simd<T, N>.scatterSelect(slice: MutableList<T>, enable: Mask<Int>, idxs: Simd<Int>, n: Int) {
     val enable1: Mask<Int> = enable and idxs.simdLt(Simd.splat(slice.size))
     // Safety: We have masked-off out-of-bounds indices.
     this.scatterSelectUnchecked(slice, enable1, idxs)
@@ -706,7 +707,7 @@ public fun <Mask, T> Simd<T, N>.scatterSelect(slice: MutableList<T>, enable: Mas
  * ```
  * [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
  */
-public fun <Mask, T> Simd<T, N>.scatterSelectUnchecked(slice: MutableList<T>, enable: Mask<Int, N>, idxs: Simd<Int, N>, n: Int) {
+public fun <Mask, T> Simd<T, N>.scatterSelectUnchecked(slice: MutableList<T>, enable: Mask<Int>, idxs: Simd<Int>, n: Int) {
     // Safety: This block works with *mut T derived from a [T],
     // which means it is delicate in Rust's borrowing model, circa 2021:
     // a [T] asserts uniqueness, so deriving &a [T] invalidates live *mut Ts!
@@ -751,7 +752,7 @@ public fun <Mask, T> Simd<T, N>.scatterSelectUnchecked(slice: MutableList<T>, en
  * check(values == intArrayOf(7, 5, 3, 6))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.scatterPtr(dest: Simd<MutPtr, N>, n: Int) {
+public fun <Mask, T> Simd<T, N>.scatterPtr(dest: Simd<MutPtr>, n: Int) {
     // Safety: The caller is responsible for upholding all invariants
     this.scatterSelectPtr(dest, Mask.splat(true))
 }
@@ -782,7 +783,7 @@ public fun <Mask, T> Simd<T, N>.scatterPtr(dest: Simd<MutPtr, N>, n: Int) {
  * check(values == intArrayOf(0, 0, 3, 6))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.scatterSelectPtr(dest: Simd<MutPtr, N>, enable: Mask<Int, N>, n: Int) {
+public fun <Mask, T> Simd<T, N>.scatterSelectPtr(dest: Simd<MutPtr>, enable: Mask<Int>, n: Int) {
     // Safety: The caller is responsible for upholding all invariants
     run { val _simdArg0 = this; val _simdArg1 = dest; val _simdArg2 = enable.toSimd(); Unit }
 }
@@ -846,14 +847,14 @@ public fun <Mask, T> Simd<T, N>.asMutTSlice(n: Int): MutableList<T> = this.asMut
 // vector/array conversion
 public fun <Mask, T> fromSimdTN(array: List<T>, n: Int): Simd<T, N> = Simd.fromArray(array)
 
-public fun <Mask, T> fromTArrayn(vector: Simd<T, N>, n: Int): List<T> = vector.toArray()
+public fun <Mask, T> fromTArrayn(vector: Simd<T>, n: Int): List<T> = vector.toArray()
 
 public fun <Mask, T> tryFromSimdTN(slice: List<T>, n: Int): Result<Simd<T, N>, TryFromSliceError> {
-    return Result.Ok(Simd.fromArray(when (val tryResult = slice.tryInto()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(Simd.fromArray(when (val tryResult = slice.tryInto()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
 }
 
 public fun <Mask, T> tryFromSimdTN(slice: MutableList<T>, n: Int): Result<Simd<T, N>, TryFromSliceError> {
-    return Result.Ok(Simd.fromArray(when (val tryResult = slice.tryInto()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+    return Result.Ok(Simd.fromArray(when (val tryResult = slice.tryInto()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
 }
 
 /**

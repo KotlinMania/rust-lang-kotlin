@@ -18,24 +18,24 @@ import io.github.kotlinmania.rustlang.libc.wasi.AT_SYMLINK_NOFOLLOW
 import io.github.kotlinmania.rustlang.libc.wasi.O_ACCMODE
 import io.github.kotlinmania.rustlang.libc.wasi.O_CLOEXEC
 import io.github.kotlinmania.rustlang.libc.wasi.O_DIRECTORY
+import io.github.kotlinmania.rustlang.os.fd.BorrowedFd
+import io.github.kotlinmania.rustlang.os.fd.FromRawFd
+import io.github.kotlinmania.rustlang.os.fd.OwnedFd
+import io.github.kotlinmania.rustlang.os.fd.RawFd
+import io.github.kotlinmania.rustlang.path.Path
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
-import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.Stat64
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.cfgHasStatx
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.debugPathFd
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.open64
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.tryStatx
-import io.github.kotlinmania.rustlang.std.sys.fs.unsupported.FileAttr
-import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runPathWithCstr
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
+import io.github.kotlinmania.rustlang.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.sys.fs.unix.FileAttr
+import io.github.kotlinmania.rustlang.sys.fs.unix.OpenOptions
+import io.github.kotlinmania.rustlang.sys.fs.unix.cfgHasStatx
+import io.github.kotlinmania.rustlang.sys.fs.unix.debugPathFd
+import io.github.kotlinmania.rustlang.sys.fs.unix.tryStatx
+import io.github.kotlinmania.rustlang.sys.helpers.smallcstring.runPathWithCstr
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.sys.pal.unix.cvtR
 import io.github.kotlinmania.rustlang.libc.fstatat as fstatat64
 import io.github.kotlinmania.rustlang.libc.openat as openat64
 
@@ -51,7 +51,7 @@ public open class Dir(
         }
 
     public open fun duplicate(): Result<Dir, Error> {
-        return Result.Ok(Dir(when (val tryResult = this.value.tryClone()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+        return Result.Ok(Dir(when (val tryResult = this.value.tryClone()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
     }
 
     public open fun openFile(path: Path, opts: OpenOptions): Result<File, Error> = runPathWithCstr(path.asRef(), { path1 -> this.openFileC(path1, opts, 0) }).map(FileDesc::fromInner).map({ File(it) })
@@ -59,7 +59,7 @@ public open class Dir(
     public open fun selfMetadata(): Result<FileAttr, Error> {
         // Reuse the implementation for files, which should work for all FDs.
         val fd = this.value.asRawFd()
-        val f = File(FileDesc.fromRawFd(fd))
+        val f = mem.ManuallyDrop.new(File(FileDesc.fromRawFd(fd)))
         return f.fileAttr()
     }
 
@@ -84,8 +84,8 @@ public open class Dir(
     public open fun symlinkMetadata(path: Path): Result<FileAttr, Error> = runPathWithCstr(path, { path1 -> this.metadataC(path1, true) })
 
     public open fun openFileC(path: CStr, opts: OpenOptions, extraFlags: CInt): Result<OwnedFd, Error> {
-        val flags = O_CLOEXEC or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } or (opts.customFlags and O_ACCMODE.inv()) or extraFlags
-        val fd = when (val tryResult = cvtR({ openat64(this.value.asRawFd(), path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val flags = O_CLOEXEC or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) } or (opts.customFlags and O_ACCMODE.inv()) or extraFlags
+        val fd = when (val tryResult = cvtR({ openat64(this.value.asRawFd(), path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(OwnedFd.fromRawFd(fd))
     }
 
@@ -116,7 +116,7 @@ public open class Dir(
             }
         })
         val stat: Stat64  = MaybeUninit.zeroed(ObjectSlotLayout<Stat64>()).assumeInit()
-        when (val tryResult = cvt(fstatat64(fd, path.asPtr(), stat, flag))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(fstatat64(fd, path.asPtr(), stat, flag))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(FileAttr.fromStat64(stat))
     }
 
@@ -132,27 +132,27 @@ public open class Dir(
         public fun openForTraversal(path: Path): Result<Dir, Error> = runPathWithCstr(path, { path1 -> Dir.openTraversalC(path1) })
 
         public fun openWithC(path: CStr, opts: OpenOptions): Result<Dir, Error> {
-            val flags = O_CLOEXEC or O_DIRECTORY or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } or (opts.customFlags and O_ACCMODE.inv())
-            val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val flags = O_CLOEXEC or O_DIRECTORY or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) } or (opts.customFlags and O_ACCMODE.inv())
+            val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             return Result.Ok(Dir(OwnedFd.fromRawFd(fd)))
         }
 
         public fun openTraversalC(path: CStr): Result<Dir, Error> {
             val flags = O_CLOEXEC or O_DIRECTORY or TRAVERSE_DIRECTORY
-            val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, 0) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, 0) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             return Result.Ok(Dir(OwnedFd.fromRawFd(fd)))
         }
     }
 }
 
-public fun io.github.kotlinmania.rustlang.std.fs.Dir.asRawFd(): RawFd = this.asInner().first.asRawFd()
+public fun io.github.kotlinmania.rustlang.fs.Dir.asRawFd(): RawFd = this.asInner().first.asRawFd()
 
-public fun io.github.kotlinmania.rustlang.std.fs.Dir.intoRawFd(): RawFd = this.intoInner().first.intoRawFd()
+public fun io.github.kotlinmania.rustlang.fs.Dir.intoRawFd(): RawFd = this.intoInner().first.intoRawFd()
 
-public fun fromRawFdDir(fd: RawFd): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.fromInner(Dir(FromRawFd.fromRawFd(fd)))
+public fun fromRawFdDir(fd: RawFd): io.github.kotlinmania.rustlang.fs.Dir = io.github.kotlinmania.rustlang.fs.Dir.fromInner(Dir(FromRawFd.fromRawFd(fd)))
 
-public fun io.github.kotlinmania.rustlang.std.fs.Dir.asFd(): BorrowedFd = this.asInner().first.asFd()
+public fun io.github.kotlinmania.rustlang.fs.Dir.asFd(): BorrowedFd = this.asInner().first.asFd()
 
-public fun fromOwnedFd(value: io.github.kotlinmania.rustlang.std.fs.Dir): OwnedFd = value.intoInner().first
+public fun fromOwnedFd(value: io.github.kotlinmania.rustlang.fs.Dir): OwnedFd = value.intoInner().first
 
-public fun fromDir(value: OwnedFd): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.fromInner(Dir(value))
+public fun fromDir(value: OwnedFd): io.github.kotlinmania.rustlang.fs.Dir = io.github.kotlinmania.rustlang.fs.Dir.fromInner(Dir(value))

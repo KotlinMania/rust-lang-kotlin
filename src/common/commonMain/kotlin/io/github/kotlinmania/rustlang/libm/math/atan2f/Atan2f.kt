@@ -1,8 +1,8 @@
 // port-lint: source math/atan2f.rs
 package io.github.kotlinmania.rustlang.libm.math.atan2f
 
-import io.github.kotlinmania.rustlang.libm.math.atanf.atanf
-import io.github.kotlinmania.rustlang.libm.math.fabs.fabsf
+import io.github.kotlinmania.rustlang.math.atanf.atanf
+import io.github.kotlinmania.rustlang.math.fabs.fabsf
 
 public val PI: kotlin.Float = 3.1415927410e00f
 

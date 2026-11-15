@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.test.stats
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.swap
 import kotlin.math.abs
 import kotlin.math.floor
 

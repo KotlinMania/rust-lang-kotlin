@@ -3,21 +3,20 @@ package io.github.kotlinmania.rustlang.core.fmt.float
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.MAX_SIG_DIGITS
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.Sign
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.DecodableFloat
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.grisu.formatExact
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.grisu.formatShortest
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toExactExpStr
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toExactFixedStr
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toShortestExpStr
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toShortestStr
-import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
+import io.github.kotlinmania.rustlang.fmt.Formatter
+import io.github.kotlinmania.rustlang.fmt.Result
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.MAX_SIG_DIGITS
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.Sign
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.decoder.DecodableFloat
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.strategy.grisu.formatExact
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.strategy.grisu.formatShortest
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.toExactExpStr
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.toExactFixedStr
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.toShortestExpStr
+import io.github.kotlinmania.rustlang.num.imp.flt2dec.toShortestStr
 import kotlin.math.abs
 
 public interface GeneralFormat {

@@ -2,80 +2,80 @@
 
 package io.github.kotlinmania.rustlang.corearch.loongarchshared
 
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedBreakTarget
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedCpucfg
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedDbar
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedFrecipeD
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedFrecipeS
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedFrsqrteD
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedFrsqrteS
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedIbar
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedIocsrrdB
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedIocsrrdH
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedIocsrrdW
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedIocsrwrB
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedIocsrwrH
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedIocsrwrW
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedMovfcsr2gr
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedMovgr2fcsr
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedSyscall
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedBreakTarget
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedCpucfg
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedDbar
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedFrecipeD
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedFrecipeS
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedFrsqrteD
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedFrsqrteS
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedIbar
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedIocsrrdB
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedIocsrrdH
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedIocsrrdW
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedIocsrwrB
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedIocsrwrH
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedIocsrwrW
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedMovfcsr2gr
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedMovgr2fcsr
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.rustlangCorearchLoongarchsharedSyscall
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun dbar(a: Int) {
-    corearchLoongarchsharedDbar(a)
+    rustlangCorearchLoongarchsharedDbar(a)
 }
 
 public actual fun ibar(a: Int) {
-    corearchLoongarchsharedIbar(a)
+    rustlangCorearchLoongarchsharedIbar(a)
 }
 
 public actual fun movgr2fcsr(a: Int, b: Int) {
-    corearchLoongarchsharedMovgr2fcsr(a, b)
+    rustlangCorearchLoongarchsharedMovgr2fcsr(a, b)
 }
 
 public actual fun movfcsr2gr(a: Int): Int =
-    corearchLoongarchsharedMovfcsr2gr(a)
+    rustlangCorearchLoongarchsharedMovfcsr2gr(a)
 
 public actual fun iocsrrdB(a: Int): Int =
-    corearchLoongarchsharedIocsrrdB(a)
+    rustlangCorearchLoongarchsharedIocsrrdB(a)
 
 public actual fun iocsrrdH(a: Int): Int =
-    corearchLoongarchsharedIocsrrdH(a)
+    rustlangCorearchLoongarchsharedIocsrrdH(a)
 
 public actual fun iocsrrdW(a: Int): Int =
-    corearchLoongarchsharedIocsrrdW(a)
+    rustlangCorearchLoongarchsharedIocsrrdW(a)
 
 public actual fun iocsrwrB(a: Int, b: Int) {
-    corearchLoongarchsharedIocsrwrB(a, b)
+    rustlangCorearchLoongarchsharedIocsrwrB(a, b)
 }
 
 public actual fun iocsrwrH(a: Int, b: Int) {
-    corearchLoongarchsharedIocsrwrH(a, b)
+    rustlangCorearchLoongarchsharedIocsrwrH(a, b)
 }
 
 public actual fun iocsrwrW(a: Int, b: Int) {
-    corearchLoongarchsharedIocsrwrW(a, b)
+    rustlangCorearchLoongarchsharedIocsrwrW(a, b)
 }
 
 public actual fun breakTarget(a: Int) {
-    corearchLoongarchsharedBreakTarget(a)
+    rustlangCorearchLoongarchsharedBreakTarget(a)
 }
 
 public actual fun cpucfg(a: Int): Int =
-    corearchLoongarchsharedCpucfg(a)
+    rustlangCorearchLoongarchsharedCpucfg(a)
 
 public actual fun syscall(a: Int) {
-    corearchLoongarchsharedSyscall(a)
+    rustlangCorearchLoongarchsharedSyscall(a)
 }
 
 public actual fun frecipeS(a: Float): Float =
-    corearchLoongarchsharedFrecipeS(a)
+    rustlangCorearchLoongarchsharedFrecipeS(a)
 
 public actual fun frecipeD(a: Double): Double =
-    corearchLoongarchsharedFrecipeD(a)
+    rustlangCorearchLoongarchsharedFrecipeD(a)
 
 public actual fun frsqrteS(a: Float): Float =
-    corearchLoongarchsharedFrsqrteS(a)
+    rustlangCorearchLoongarchsharedFrsqrteS(a)
 
 public actual fun frsqrteD(a: Double): Double =
-    corearchLoongarchsharedFrsqrteD(a)
+    rustlangCorearchLoongarchsharedFrsqrteD(a)

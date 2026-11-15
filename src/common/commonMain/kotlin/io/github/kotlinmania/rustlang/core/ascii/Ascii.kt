@@ -1,10 +1,10 @@
 // port-lint: source ascii.rs
 package io.github.kotlinmania.rustlang.core.ascii
 
-import io.github.kotlinmania.rustlang.core.escape.AlwaysEscaped
-import io.github.kotlinmania.rustlang.core.escape.EscapeIterInner
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.escape.AlwaysEscaped
+import io.github.kotlinmania.rustlang.escape.EscapeIterInner
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
 
 // Operations on ASCII strings and characters.
 //

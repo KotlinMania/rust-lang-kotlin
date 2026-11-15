@@ -1,16 +1,17 @@
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.types.cstr
-import io.github.kotlinmania.rustlang.libc.types.u32CastInt
+import io.github.kotlinmania.rustlang.types.cstr
+import io.github.kotlinmania.rustlang.types.u32CastInt
+import io.github.kotlinmania.rustlang.unix.bsd.apple.VmStatistics64
 
 public val XATTR_REPLACE: CInt = 0x0004
 
@@ -539,49 +540,49 @@ public val RUSAGE_INFO_V3: CInt = 3
 public val RUSAGE_INFO_V4: CInt = 4
 
 // copyfile.h
-public val COPYFILE_ACL: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 0
+public val COPYFILE_ACL: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 0
 
-public val COPYFILE_STAT: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 1
+public val COPYFILE_STAT: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 1
 
-public val COPYFILE_XATTR: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 2
+public val COPYFILE_XATTR: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 2
 
-public val COPYFILE_DATA: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 3
+public val COPYFILE_DATA: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 3
 
-public val COPYFILE_SECURITY: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = COPYFILE_STAT or COPYFILE_ACL
+public val COPYFILE_SECURITY: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = COPYFILE_STAT or COPYFILE_ACL
 
-public val COPYFILE_METADATA: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = COPYFILE_SECURITY or COPYFILE_XATTR
+public val COPYFILE_METADATA: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = COPYFILE_SECURITY or COPYFILE_XATTR
 
-public val COPYFILE_RECURSIVE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 15
+public val COPYFILE_RECURSIVE: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 15
 
-public val COPYFILE_CHECK: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 16
+public val COPYFILE_CHECK: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 16
 
-public val COPYFILE_EXCL: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 17
+public val COPYFILE_EXCL: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 17
 
-public val COPYFILE_NOFOLLOW_SRC: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 18
+public val COPYFILE_NOFOLLOW_SRC: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 18
 
-public val COPYFILE_NOFOLLOW_DST: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 19
+public val COPYFILE_NOFOLLOW_DST: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 19
 
-public val COPYFILE_MOVE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 20
+public val COPYFILE_MOVE: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 20
 
-public val COPYFILE_UNLINK: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 21
+public val COPYFILE_UNLINK: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 21
 
-public val COPYFILE_NOFOLLOW: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = COPYFILE_NOFOLLOW_SRC or COPYFILE_NOFOLLOW_DST
+public val COPYFILE_NOFOLLOW: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = COPYFILE_NOFOLLOW_SRC or COPYFILE_NOFOLLOW_DST
 
-public val COPYFILE_PACK: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 22
+public val COPYFILE_PACK: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 22
 
-public val COPYFILE_UNPACK: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 23
+public val COPYFILE_UNPACK: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 23
 
-public val COPYFILE_CLONE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 24
+public val COPYFILE_CLONE: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 24
 
-public val COPYFILE_CLONE_FORCE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 25
+public val COPYFILE_CLONE_FORCE: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 25
 
-public val COPYFILE_RUN_IN_PLACE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 26
+public val COPYFILE_RUN_IN_PLACE: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 26
 
-public val COPYFILE_DATA_SPARSE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 27
+public val COPYFILE_DATA_SPARSE: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 27
 
-public val COPYFILE_PRESERVE_DST_TRACKED: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 28
+public val COPYFILE_PRESERVE_DST_TRACKED: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 28
 
-public val COPYFILE_VERBOSE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 30
+public val COPYFILE_VERBOSE: io.github.kotlinmania.rustlang.unix.bsd.apple.CopyfileFlagsT = 1u shl 30
 
 public val COPYFILE_RECURSE_ERROR: CInt = 0
 

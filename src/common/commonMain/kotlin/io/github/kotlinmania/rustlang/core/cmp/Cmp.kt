@@ -1,30 +1,30 @@
 // port-lint: source cmp.rs
 package io.github.kotlinmania.rustlang.core.cmp
 
+import io.github.kotlinmania.rustlang.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.*
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
-import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
-import io.github.kotlinmania.rustlang.core.intrinsics.integerMax
-import io.github.kotlinmania.rustlang.core.intrinsics.integerMin
-import io.github.kotlinmania.rustlang.core.intrinsics.threeWayCompare
-import io.github.kotlinmania.rustlang.core.marker.Tuple
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Break
-import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Continue
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.panic.constAssert
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.intrinsics.discriminantValue
+import io.github.kotlinmania.rustlang.intrinsics.integerMax
+import io.github.kotlinmania.rustlang.intrinsics.integerMin
+import io.github.kotlinmania.rustlang.intrinsics.threeWayCompare
+import io.github.kotlinmania.rustlang.marker.Tuple
+import io.github.kotlinmania.rustlang.ops.ControlFlow.Break
+import io.github.kotlinmania.rustlang.ops.ControlFlow.Continue
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.panic.constAssert
 
 // Utilities for comparing and ordering values.
 //

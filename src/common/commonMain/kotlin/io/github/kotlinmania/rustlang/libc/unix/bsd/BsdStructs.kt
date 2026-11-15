@@ -2,22 +2,22 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.In6Addr
-import io.github.kotlinmania.rustlang.libc.InPortT
-import io.github.kotlinmania.rustlang.libc.TimeT
-import io.github.kotlinmania.rustlang.libc.UidT
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.FD_SETSIZE
+import io.github.kotlinmania.rustlang.unix.GidT
+import io.github.kotlinmania.rustlang.unix.In6Addr
+import io.github.kotlinmania.rustlang.unix.InPortT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.FD_SETSIZE
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
 
 // Note(exhaustive): review for 1.0
 public data class Sockaddr(
@@ -469,11 +469,11 @@ public data class FdSet(
 // Note(exhaustive): review for 1.0
 public class Msghdr internal constructor(
     msgNameCtorArg: MutPtr,
-    public var msgNamelen: io.github.kotlinmania.rustlang.libc.SocklenT,
+    public var msgNamelen: io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT,
     msgIovCtorArg: MutPtr,
     public var msgIovlen: CInt,
     msgControlCtorArg: MutPtr,
-    public var msgControllen: io.github.kotlinmania.rustlang.libc.SocklenT,
+    public var msgControllen: io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT,
     public var msgFlags: CInt,
 ) {
     public var msgName: MutPtr = msgNameCtorArg
@@ -497,7 +497,7 @@ public class Msghdr internal constructor(
 
     public operator fun component1(): MutPtr = this.msgName
 
-    public operator fun component2(): io.github.kotlinmania.rustlang.libc.SocklenT = this.msgNamelen
+    public operator fun component2(): io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT = this.msgNamelen
 
     public operator fun component3(): MutPtr = this.msgIov
 
@@ -505,11 +505,11 @@ public class Msghdr internal constructor(
 
     public operator fun component5(): MutPtr = this.msgControl
 
-    public operator fun component6(): io.github.kotlinmania.rustlang.libc.SocklenT = this.msgControllen
+    public operator fun component6(): io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT = this.msgControllen
 
     public operator fun component7(): CInt = this.msgFlags
 
-    public fun copy(msgName: MutPtr = this.msgName, msgNamelen: io.github.kotlinmania.rustlang.libc.SocklenT = this.msgNamelen, msgIov: MutPtr = this.msgIov, msgIovlen: CInt = this.msgIovlen, msgControl: MutPtr = this.msgControl, msgControllen: io.github.kotlinmania.rustlang.libc.SocklenT = this.msgControllen, msgFlags: CInt = this.msgFlags): Msghdr = Msghdr(msgNameCtorArg = msgName, msgNamelen = msgNamelen, msgIovCtorArg = msgIov, msgIovlen = msgIovlen, msgControlCtorArg = msgControl, msgControllen = msgControllen, msgFlags = msgFlags)
+    public fun copy(msgName: MutPtr = this.msgName, msgNamelen: io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT = this.msgNamelen, msgIov: MutPtr = this.msgIov, msgIovlen: CInt = this.msgIovlen, msgControl: MutPtr = this.msgControl, msgControllen: io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT = this.msgControllen, msgFlags: CInt = this.msgFlags): Msghdr = Msghdr(msgNameCtorArg = msgName, msgNamelen = msgNamelen, msgIovCtorArg = msgIov, msgIovlen = msgIovlen, msgControlCtorArg = msgControl, msgControllen = msgControllen, msgFlags = msgFlags)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -584,11 +584,11 @@ public class Msghdr internal constructor(
 
         public operator fun invoke(
             msgName: MutPtr = MutPtr(0L),
-            msgNamelen: io.github.kotlinmania.rustlang.libc.SocklenT = 0u,
+            msgNamelen: io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT = 0u,
             msgIov: MutPtr = MutPtr(0L),
             msgIovlen: CInt = 0,
             msgControl: MutPtr = MutPtr(0L),
-            msgControllen: io.github.kotlinmania.rustlang.libc.SocklenT = 0u,
+            msgControllen: io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT = 0u,
             msgFlags: CInt = 0,
         ): Msghdr = Msghdr(
             msgNameCtorArg = msgName,
@@ -604,7 +604,7 @@ public class Msghdr internal constructor(
 
 // Note(exhaustive): review for 1.0
 public data class Cmsghdr(
-    public var cmsgLen: io.github.kotlinmania.rustlang.libc.SocklenT = 0u,
+    public var cmsgLen: io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.SocklenT = 0u,
     public var cmsgLevel: CInt = 0,
     public var cmsgType: CInt = 0,
 ) {

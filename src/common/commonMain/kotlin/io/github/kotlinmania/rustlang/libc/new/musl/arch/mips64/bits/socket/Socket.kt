@@ -1,8 +1,8 @@
 // port-lint: source new/musl/arch/mips64/bits/socket.rs
 package io.github.kotlinmania.rustlang.libc.new.musl.arch.mips64.bits.socket
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 
 public val SOCK_STREAM: CInt = 2
 

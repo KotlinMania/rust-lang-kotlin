@@ -1,7 +1,7 @@
 // port-lint: source process.rs
 package io.github.kotlinmania.rustlang.core.process
 
-import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
+import io.github.kotlinmania.rustlang.intrinsics.abortImmediate
 
 // A module for working with processes.
 //
@@ -98,5 +98,5 @@ public fun crash(): Nothing = abortImmediate()
  * execution.
  */
 public fun resumableBreakpoint() {
-    io.github.kotlinmania.rustlang.core.intrinsics.resumableBreakpoint()
+    io.github.kotlinmania.rustlang.intrinsics.resumableBreakpoint()
 }

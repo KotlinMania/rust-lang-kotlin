@@ -179,10 +179,10 @@ public open class LocalKey<T>(
     public open fun <R> with(f: (T) -> R): R =
         run {
             val matchVal = this.tryWith(f)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val r = matchVal.value
                 r
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val err = matchVal.error
                 panicAccessError(err)
             } }
@@ -208,7 +208,7 @@ public open class LocalKey<T>(
      * ```
      */
     public open fun <R> tryWith(f: (T) -> R): Result<R, AccessError> {
-        val threadLocal = when (val tryResult = (this.inner)(null).asRef().okOr(AccessError())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val threadLocal = when (val tryResult = (this.inner)(null).asRef().okOr(AccessError())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(f(threadLocal))
     }
 

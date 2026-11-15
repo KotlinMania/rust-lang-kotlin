@@ -4,9 +4,9 @@ package io.github.kotlinmania.rustlang.core.mem.maybedangling
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.mem.forget
+import io.github.kotlinmania.rustlang.ptr.read
 
 // Note: remove `noRun` once the semantics are actually implemented
 

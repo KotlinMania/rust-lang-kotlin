@@ -1,11 +1,11 @@
 // port-lint: source wtf8.rs
 package io.github.kotlinmania.rustlang.core.wtf8
 
+import io.github.kotlinmania.rustlang.char.methods.EscapeDebugExtArgs
+import io.github.kotlinmania.rustlang.char.methods.encodeUtf16Raw
+import io.github.kotlinmania.rustlang.clone.CloneToUninit
+import io.github.kotlinmania.rustlang.convert.AsRef
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
-import io.github.kotlinmania.rustlang.core.char.methods.encodeUtf16Raw
-import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
-import io.github.kotlinmania.rustlang.core.convert.AsRef
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -14,12 +14,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.nichetypes.CodePointInner
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
-import io.github.kotlinmania.rustlang.core.ops.range.Range
-import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
-import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
-import io.github.kotlinmania.rustlang.core.ops.range.RangeTo
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -27,7 +22,12 @@ import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.core.str.validations.nextCodePoint
+import io.github.kotlinmania.rustlang.num.nichetypes.CodePointInner
+import io.github.kotlinmania.rustlang.ops.range.Range
+import io.github.kotlinmania.rustlang.ops.range.RangeFrom
+import io.github.kotlinmania.rustlang.ops.range.RangeFull
+import io.github.kotlinmania.rustlang.ops.range.RangeTo
+import io.github.kotlinmania.rustlang.str.validations.nextCodePoint
 
 // Implementation of [the WTF-8 encoding](https://wtf-8.codeberg.page/).
 //
@@ -221,12 +221,12 @@ public open class Wtf8 internal constructor(
             val surrogatePos = matchVal.first
             val surrogate = matchVal.second
             // SAFETY: nextSurrogate provides an index for a range of valid UTF-8 bytes.
-            writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).slice(pos until surrogatePos))))
-            when (val tryResult = formatter.writeFmt("\\u{$surrogate}")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).subList(pos, surrogatePos))))
+            when (val tryResult = formatter.writeFmt("\\u{$surrogate}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
             pos = surrogatePos + 3
         }
         // SAFETY: after nextSurrogate returns None, the remainder is valid UTF-8.
-        writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).slice(pos until this.bytes.size))))
+        writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).subList(pos, (this.bytes).size))))
         return run { formatter.append('"'); Result.Ok(Unit) }
     }
 
@@ -241,7 +241,7 @@ public open class Wtf8 internal constructor(
             when (val matchVal = this.nextSurrogate(pos)) {
                 null -> {
                     // SAFETY: after nextSurrogate returns None, the remainder is valid UTF-8.
-                    val s = String.fromUtf8Unchecked(((wtf8Bytes).slice(pos until wtf8Bytes.size)))
+                    val s = String.fromUtf8Unchecked(((wtf8Bytes).subList(pos, (wtf8Bytes).size)))
                     if (pos == 0) {
                         return s.fmt(formatter)
                     } else {
@@ -251,7 +251,7 @@ public open class Wtf8 internal constructor(
                 else -> {
                     val surrogatePos = matchVal.first
                     // SAFETY: nextSurrogate provides an index for a range of valid UTF-8 bytes.
-                    formatter.append(String.fromUtf8Unchecked(((wtf8Bytes).slice(pos until surrogatePos))))
+                    formatter.append(String.fromUtf8Unchecked(((wtf8Bytes).subList(pos, surrogatePos))))
                     formatter.append(Char.REPLACEMENT_CHARACTER)
                     pos = surrogatePos + 3
                 }
@@ -300,7 +300,7 @@ public open class Wtf8 internal constructor(
      *
      * This does not copy the data.
      */
-    public open fun asStr(): Result<String, Utf8Error> = String.fromUtf8(this.bytes)
+    public open fun asStr(): Result<String, str.Utf8Error> = String.fromUtf8(this.bytes)
 
     /**
      * Converts the WTF-8 string to potentially ill-formed UTF-16
@@ -314,7 +314,7 @@ public open class Wtf8 internal constructor(
 
     public open fun nextSurrogate(pos: Int): Pair<Int, UShort>? {
         var pos1 = pos
-        val iter = ((this.bytes).slice(pos1 until this.bytes.size)).iter()
+        val iter = ((this.bytes).subList(pos1, (this.bytes).size)).iter()
         while (true) {
             val b = (iter.next() ?: return null)
             if (b < 0x80) {
@@ -696,9 +696,9 @@ public open class EncodeWide(
                 }
             }
         }
-        when (val tryResult = f.writeFmt("EncodeWide(")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone().map({ CodeUnit(it) })).finish()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("EncodeWide(")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone().map({ CodeUnit(it) })).finish()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt(")")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 }

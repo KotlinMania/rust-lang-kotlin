@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.error
 
 import io.github.kotlinmania.rustlang.core.RustTypeId
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -13,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.fmt.Formatter
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -844,7 +844,7 @@ public interface MaybeSizedType<out Reified>
  */
 public open class Value<T>(
     public var value: Unit,
-) : Type<Any?, T> {
+) : Type<T> {
     public var field0: Unit
         get() = value
         set(v) {
@@ -857,7 +857,7 @@ public open class Value<T>(
  */
 public open class MaybeSizedValue<T>(
     public var value: Unit,
-) : MaybeSizedType<Any?, T> {
+) : MaybeSizedType<T> {
     public var field0: Unit
         get() = value
         set(v) {
@@ -871,7 +871,7 @@ public open class MaybeSizedValue<T>(
  */
 public open class Ref<I>(
     public var value: Unit,
-) : Type<Any?, Reified> {
+) : Type<Reified> {
     public var field0: Unit
         get() = value
         set(v) {

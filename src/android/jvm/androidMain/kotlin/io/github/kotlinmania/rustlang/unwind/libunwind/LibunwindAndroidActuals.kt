@@ -5,8 +5,8 @@ package io.github.kotlinmania.rustlang.unwind.libunwind
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unwind.types.UnwindReasonCode
-import io.github.kotlinmania.rustlang.unwind.types.UnwindWord
+import io.github.kotlinmania.rustlang.types.UnwindReasonCode
+import io.github.kotlinmania.rustlang.types.UnwindWord
 
 private object LibunwindJniBridge {
     init {
@@ -14,76 +14,76 @@ private object LibunwindJniBridge {
     }
 
     @JvmStatic
-    external fun unwindLibunwindUnwindResume(exception: Long)
+    external fun rustlangLibunwindUnwindResume(exception: Long)
 
     @JvmStatic
-    external fun unwindLibunwindUnwindDeleteException(exception: Long)
+    external fun rustlangLibunwindUnwindDeleteException(exception: Long)
 
     @JvmStatic
-    external fun unwindLibunwindUnwindGetLanguageSpecificData(ctx: Long): Long
+    external fun rustlangLibunwindUnwindGetLanguageSpecificData(ctx: Long): Long
 
     @JvmStatic
-    external fun unwindLibunwindUnwindGetRegionStart(ctx: Long): Long
+    external fun rustlangLibunwindUnwindGetRegionStart(ctx: Long): Long
 
     @JvmStatic
-    external fun unwindLibunwindUnwindGetTextRelBase(ctx: Long): Long
+    external fun rustlangLibunwindUnwindGetTextRelBase(ctx: Long): Long
 
     @JvmStatic
-    external fun unwindLibunwindUnwindGetDataRelBase(ctx: Long): Long
+    external fun rustlangLibunwindUnwindGetDataRelBase(ctx: Long): Long
 
     @JvmStatic
-    external fun unwindLibunwindUnwindGetGr(ctx: Long, regIndex: Int): Long
+    external fun rustlangLibunwindUnwindGetGr(ctx: Long, regIndex: Int): Long
 
     @JvmStatic
-    external fun unwindLibunwindUnwindSetGr(ctx: Long, regIndex: Int, value: Long)
+    external fun rustlangLibunwindUnwindSetGr(ctx: Long, regIndex: Int, value: Long)
 
     @JvmStatic
-    external fun unwindLibunwindUnwindSetIp(ctx: Long, value: Long)
+    external fun rustlangLibunwindUnwindSetIp(ctx: Long, value: Long)
 
     @JvmStatic
-    external fun unwindLibunwindUnwindGetIpinfo(ctx: Long, ipBeforeInsn: Long): Long
+    external fun rustlangLibunwindUnwindGetIpinfo(ctx: Long, ipBeforeInsn: Long): Long
 
     @JvmStatic
-    external fun unwindLibunwindGccSpecificHandler(exceptionRecord: Long, establisherFrame: Long, contextRecord: Long, dispatcherContext: Long, personality: Long): Int
+    external fun rustlangLibunwindGccSpecificHandler(exceptionRecord: Long, establisherFrame: Long, contextRecord: Long, dispatcherContext: Long, personality: Long): Int
 }
 
 public actual fun unwindResume(exception: MutPtr): Nothing {
-    LibunwindJniBridge.unwindLibunwindUnwindResume(exception.rawAddress)
+    LibunwindJniBridge.rustlangLibunwindUnwindResume(exception.rawAddress)
     error("Unreachable noreturn C function unwindResume")
 }
 
 public actual fun unwindDeleteException(exception: MutPtr) {
-    LibunwindJniBridge.unwindLibunwindUnwindDeleteException(exception.rawAddress)
+    LibunwindJniBridge.rustlangLibunwindUnwindDeleteException(exception.rawAddress)
 }
 
 public actual fun unwindGetLanguageSpecificData(ctx: MutPtr): MutPtr =
-    MutPtr(LibunwindJniBridge.unwindLibunwindUnwindGetLanguageSpecificData(ctx.rawAddress))
+    MutPtr(LibunwindJniBridge.rustlangLibunwindUnwindGetLanguageSpecificData(ctx.rawAddress))
 
 public actual fun unwindGetRegionStart(ctx: MutPtr): UnwindPtr =
-    ConstPtr(LibunwindJniBridge.unwindLibunwindUnwindGetRegionStart(ctx.rawAddress))
+    ConstPtr(LibunwindJniBridge.rustlangLibunwindUnwindGetRegionStart(ctx.rawAddress))
 
 public actual fun unwindGetTextRelBase(ctx: MutPtr): UnwindPtr =
-    ConstPtr(LibunwindJniBridge.unwindLibunwindUnwindGetTextRelBase(ctx.rawAddress))
+    ConstPtr(LibunwindJniBridge.rustlangLibunwindUnwindGetTextRelBase(ctx.rawAddress))
 
 public actual fun unwindGetDataRelBase(ctx: MutPtr): UnwindPtr =
-    ConstPtr(LibunwindJniBridge.unwindLibunwindUnwindGetDataRelBase(ctx.rawAddress))
+    ConstPtr(LibunwindJniBridge.rustlangLibunwindUnwindGetDataRelBase(ctx.rawAddress))
 
 public actual fun unwindGetGr(ctx: MutPtr, regIndex: CInt): UnwindWord =
-    ConstPtr(LibunwindJniBridge.unwindLibunwindUnwindGetGr(ctx.rawAddress, regIndex))
+    ConstPtr(LibunwindJniBridge.rustlangLibunwindUnwindGetGr(ctx.rawAddress, regIndex))
 
 public actual fun unwindSetGr(ctx: MutPtr, regIndex: CInt, value: UnwindWord) {
-    LibunwindJniBridge.unwindLibunwindUnwindSetGr(ctx.rawAddress, regIndex, value.rawAddress)
+    LibunwindJniBridge.rustlangLibunwindUnwindSetGr(ctx.rawAddress, regIndex, value.rawAddress)
 }
 
 public actual fun unwindSetIp(ctx: MutPtr, value: UnwindWord) {
-    LibunwindJniBridge.unwindLibunwindUnwindSetIp(ctx.rawAddress, value.rawAddress)
+    LibunwindJniBridge.rustlangLibunwindUnwindSetIp(ctx.rawAddress, value.rawAddress)
 }
 
 public actual fun unwindGetIpinfo(ctx: MutPtr, ipBeforeInsn: MutPtr): UnwindWord =
-    ConstPtr(LibunwindJniBridge.unwindLibunwindUnwindGetIpinfo(ctx.rawAddress, ipBeforeInsn.rawAddress))
+    ConstPtr(LibunwindJniBridge.rustlangLibunwindUnwindGetIpinfo(ctx.rawAddress, ipBeforeInsn.rawAddress))
 
 public actual fun unwindRaiseException(exception: MutPtr): UnwindReasonCode =
     null as UnwindReasonCode
 
 public actual fun gccSpecificHandler(exceptionRecord: MutPtr, establisherFrame: Lpvoid, contextRecord: MutPtr, dispatcherContext: MutPtr, personality: PersonalityFn): ExceptionDisposition =
-    LibunwindJniBridge.unwindLibunwindGccSpecificHandler(exceptionRecord.rawAddress, establisherFrame.rawAddress, contextRecord.rawAddress, dispatcherContext.rawAddress, 0L)
+    LibunwindJniBridge.rustlangLibunwindGccSpecificHandler(exceptionRecord.rawAddress, establisherFrame.rawAddress, contextRecord.rawAddress, dispatcherContext.rawAddress, 0L)

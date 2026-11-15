@@ -1,34 +1,38 @@
 // port-lint: source option.rs
 package io.github.kotlinmania.rustlang.core.option
 
-import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.clone.UseCloned
+import io.github.kotlinmania.rustlang.clone.TrivialClone
+import io.github.kotlinmania.rustlang.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
-import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.replace
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.ops.deref.Deref
-import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
-import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
-import io.github.kotlinmania.rustlang.core.panicking.panic
-import io.github.kotlinmania.rustlang.core.panicking.panicDisplay
-import io.github.kotlinmania.rustlang.core.pin.Pin
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.intrinsics.discriminantValue
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.marker.StructuralPartialEq
+import io.github.kotlinmania.rustlang.mem.forget
+import io.github.kotlinmania.rustlang.mem.replace
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.ops.deref.Deref
+import io.github.kotlinmania.rustlang.ops.deref.DerefMut
+import io.github.kotlinmania.rustlang.ops.trytrait.FromResidual
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.ops.trytrait.Yeet
+import io.github.kotlinmania.rustlang.panicking.panic
+import io.github.kotlinmania.rustlang.panicking.panicDisplay
+import io.github.kotlinmania.rustlang.pin.Pin
 
 // Optional values.
 //
@@ -599,7 +603,7 @@ public typealias TryType<T> = Option<T>
 /**
  * The `Option` type. See [the module level documentation](self) for more.
  */
-public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, StructuralPartialEq, Try<Option<T>, Any?, Any?, T, Option<Nothing>>, FromResidual<Option<Nothing>, Option<T>> {
+public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, StructuralPartialEq, Try<Option<T>, T, Option<Nothing>>, FromResidual<Option<Nothing>, Option<T>> {
     /**
      * No value.
      */
@@ -1716,7 +1720,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun <R> getOrTryInsertWith(f: () -> R): TryType where R : Try<R, T, Any?> {
         if (this == null) {
-            this = Some(when (val tryResult = f()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+            this = Some(when (val tryResult = f()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
         }
         // SAFETY: a `None` variant for `self` would have been replaced by a `Some`
         // variant in the code above.
@@ -1797,7 +1801,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * check(old1 == null)
      * ```
      */
-    public open fun replace(value: T): Option<T> = io.github.kotlinmania.rustlang.core.mem.replace(this, Some(value))
+    public open fun replace(value: T): Option<T> = io.github.kotlinmania.rustlang.mem.replace(this, Some(value))
 
     /**
      * Makes a tuple of the value in `self` and the value in another `Option`.
@@ -2185,12 +2189,12 @@ public fun <T> Option<T>.cloned(): Option<T> = this.asDeref().cloned()
  */
 public fun <T, E> Option<Result<T, E>>.transpose(): Result<Option<T>, E> =
     when {
-        this is Some && (this as Some<T>).value is Result.Ok<*> -> {
-            val x = ((this as Some<T>).value as Result.Ok<*>).value
+        this is Some && (this as Some<T>).value is Result.Ok<*, *> -> {
+            val x = ((this as Some<T>).value as Result.Ok<*, *>).value
             Result.Ok(Some(x))
         }
-        this is Some && (this as Some<T>).value is Result.Err<*> -> {
-            val e = ((this as Some<T>).value as Result.Err<*>).error
+        this is Some && (this as Some<T>).value is Result.Err<*, *> -> {
+            val e = ((this as Some<T>).value as Result.Err<*, *>).error
             Result.Err(e)
         }
         else -> Result.Ok(None)
@@ -2522,7 +2526,7 @@ public open class OptionFlatten<A>(
  * Since the third element caused an underflow, no further elements were taken,
  * so the final value of `shared` is 6 (= `3 + 2 + 1`), not 16.
  */
-public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I): Option<V> = tryProcess(iter.iterator(), { i -> i.collect() })
+public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I): Option<V> = Iter.tryProcess(iter.iterator(), { i -> i.collect() })
 
 /**
  * Converts from `Option<Option<T>>` to `Option<T>`.

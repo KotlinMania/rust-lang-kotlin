@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.stddetect.detect.os.windows.aarch64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
+import io.github.kotlinmania.rustlang.detect.arch.Feature
+import io.github.kotlinmania.rustlang.detect.cache.cache
 
 // Run-time feature detection for Aarch64 on Windows.
 

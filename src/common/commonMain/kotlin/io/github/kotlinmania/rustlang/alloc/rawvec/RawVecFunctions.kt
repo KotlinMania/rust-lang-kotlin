@@ -1,8 +1,9 @@
 package io.github.kotlinmania.rustlang.alloc.rawvec
 
-import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
-import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
-import io.github.kotlinmania.rustlang.alloc.collections.TryReserveErrorKind.*
+import io.github.kotlinmania.rustlang.alloc.handleAllocError
+import io.github.kotlinmania.rustlang.collections.TryReserveError
+import io.github.kotlinmania.rustlang.collections.TryReserveErrorKind.*
+import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.result.Result
 

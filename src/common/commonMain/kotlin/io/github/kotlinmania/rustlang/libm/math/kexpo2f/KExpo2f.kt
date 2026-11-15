@@ -1,7 +1,7 @@
 // port-lint: source math/k_expo2f.rs
 package io.github.kotlinmania.rustlang.libm.math.kexpo2f
 
-import io.github.kotlinmania.rustlang.libm.math.expf.expf
+import io.github.kotlinmania.rustlang.math.expf.expf
 
 // k is such that k*ln2 has minimal relative error and x - kln2 > log(FLT_MIN)
 public val K: Int = 235

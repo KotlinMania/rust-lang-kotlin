@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.core.mem
 
-import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
 
 /**

@@ -3,23 +3,22 @@
 
 package io.github.kotlinmania.rustlang.core.str.pattern
 
-import io.github.kotlinmania.rustlang.core.cmp.Eq
-import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
-import io.github.kotlinmania.rustlang.core.str.iter.CharIndices
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.core.Mask8x16 as Mask
-import io.github.kotlinmania.rustlang.core.U8x16 as Block
+import io.github.kotlinmania.rustlang.option.Option
+import io.github.kotlinmania.rustlang.panicking.assertFailed
+import io.github.kotlinmania.rustlang.slice.memchr.memchr
+import io.github.kotlinmania.rustlang.str.iter.CharIndices
+import io.github.kotlinmania.rustlang.Mask8x16 as Mask
+import io.github.kotlinmania.rustlang.U8x16 as Block
 
 // The string Pattern API.
 //
@@ -776,7 +775,7 @@ public fun List<Char>.matches(c: Char): Boolean = this.contains(c)
 
 public open class MultiCharEqPattern<C : MultiCharEq>(
     public var value: C,
-) : Pattern<Any?, MultiCharEqSearcher<C>> {
+) : Pattern<MultiCharEqSearcher<C>> {
     public var field0: C
         get() = value
         set(v) {
@@ -1221,7 +1220,7 @@ public open class StrSearcher(
                 if (searcher.position >= bytes.size) {
                     return null
                 }
-                when (val matchVal2 = memchr.memchr(searcher.b, ((bytes).slice(searcher.position until bytes.size)))) {
+                when (val matchVal2 = memchr.memchr(searcher.b, ((bytes).subList(searcher.position, (bytes).size)))) {
                     null -> {
                         searcher.position = bytes.size
                         null
@@ -1331,7 +1330,7 @@ public open class StrSearcher(
                     return null
                 }
                 val bytes = this.haystack.encodeToByteArray().map { it.toUByte() }
-                when (val matchVal2 = memchr.memrchr(searcher.b, ((bytes).slice(0 until searcher.end)))) {
+                when (val matchVal2 = memchr.memrchr(searcher.b, ((bytes).subList(0, searcher.end)))) {
                     null -> {
                         searcher.end = 0
                         null
@@ -1836,7 +1835,7 @@ public open class TwoWaySearcher(
             // &v[..period]. If it is, we use "Algorithm CP1". Otherwise we use
             // "Algorithm CP2", which is optimized for when the period of the needle
             // is large.
-            return if (((needle).slice(0 until critPos)) == ((needle).slice(period until period + critPos))) {
+            return if (((needle).subList(0, critPos)) == ((needle).subList(period, period + critPos))) {
                 // short period case -- the period is exact
                 // compute a separate critical factorization for the reversed needle
                 // x = u' v' where |v'| < period(x).
@@ -1847,7 +1846,7 @@ public open class TwoWaySearcher(
                 // period in reverse (critPos = 2, period = 2). We use the given
                 // reverse factorization but keep the exact period.
                 val critPosBack = needle.size - max(TwoWaySearcher.reverseMaximalSuffix(needle, period, false), TwoWaySearcher.reverseMaximalSuffix(needle, period, true))
-                TwoWaySearcher(critPos = critPos, critPosBack = critPosBack, period = period, byteset = TwoWaySearcher.bytesetCreate(((needle).slice(0 until period))), position = 0, end = end, memory = 0, memoryBack = needle.size)
+                TwoWaySearcher(critPos = critPos, critPosBack = critPosBack, period = period, byteset = TwoWaySearcher.bytesetCreate(((needle).subList(0, period))), position = 0, end = end, memory = 0, memoryBack = needle.size)
             } else {
                 // long period case -- we have an approximation to the actual period,
                 // and don't use memorization.
@@ -1984,7 +1983,7 @@ public interface TwoWayStrategy<out Output> {
 /**
  * Skip to match intervals as quickly as possible
  */
-public object MatchOnly : TwoWayStrategy<Any?, Pair<Int, Int>?> {
+public object MatchOnly : TwoWayStrategy<Pair<Int, Int>?> {
     public override fun useEarlyReject(): Boolean = false
 
     public override fun rejecting(a: Int, b: Int): Pair<Int, Int>? = null
@@ -1995,7 +1994,7 @@ public object MatchOnly : TwoWayStrategy<Any?, Pair<Int, Int>?> {
 /**
  * Emit Rejects regularly
  */
-public object RejectAndMatch : TwoWayStrategy<Any?, SearchStep> {
+public object RejectAndMatch : TwoWayStrategy<SearchStep> {
     public override fun useEarlyReject(): Boolean = true
 
     public override fun rejecting(a: Int, b: Int): SearchStep = SearchStep.Reject(a, b)
@@ -2056,7 +2055,7 @@ public fun simdContains(needle: String, haystack: String): Boolean? {
     val secondProbe: Block = Block.splat(needle1[secondProbeOffset1])
     // first byte are already checked by the outer loop. to verify a match only the
     // remainder has to be compared.
-    val trimmedNeedle = ((needle1).slice(1 until needle1.size))
+    val trimmedNeedle = ((needle1).subList(1, (needle1).size))
     // this @cold is load-bearing, benchmark before removing it...
     val checkMask =
         closure@{ idx, mask: UShort, skip: Boolean ->

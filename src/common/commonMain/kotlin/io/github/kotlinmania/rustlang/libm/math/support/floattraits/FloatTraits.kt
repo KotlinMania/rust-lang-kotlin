@@ -8,26 +8,26 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.core.ops.arith.Add
-import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
-import io.github.kotlinmania.rustlang.core.ops.arith.Div
-import io.github.kotlinmania.rustlang.core.ops.arith.Mul
-import io.github.kotlinmania.rustlang.core.ops.arith.MulAssign
-import io.github.kotlinmania.rustlang.core.ops.arith.Neg
-import io.github.kotlinmania.rustlang.core.ops.arith.Rem
-import io.github.kotlinmania.rustlang.core.ops.arith.Sub
-import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.fma.fmaf
-import io.github.kotlinmania.rustlang.libm.math.floor.floorf
-import io.github.kotlinmania.rustlang.libm.math.floor.floorf128
-import io.github.kotlinmania.rustlang.libm.math.floor.floorf16
-import io.github.kotlinmania.rustlang.libm.math.fma.fmaf128
-import io.github.kotlinmania.rustlang.libm.math.fmaf16.fmaf16
-import io.github.kotlinmania.rustlang.libm.math.generic.fabs
-import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf
-import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf128
-import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf16
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.DisplayHex
+import io.github.kotlinmania.rustlang.core.ops.Add
+import io.github.kotlinmania.rustlang.core.ops.AddAssign
+import io.github.kotlinmania.rustlang.core.ops.Div
+import io.github.kotlinmania.rustlang.core.ops.Mul
+import io.github.kotlinmania.rustlang.core.ops.MulAssign
+import io.github.kotlinmania.rustlang.core.ops.Neg
+import io.github.kotlinmania.rustlang.core.ops.Rem
+import io.github.kotlinmania.rustlang.core.ops.Sub
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
+import io.github.kotlinmania.rustlang.math.arch.aarch64.fma.fmaf
+import io.github.kotlinmania.rustlang.math.fabs.fabs
+import io.github.kotlinmania.rustlang.math.floor.floorf
+import io.github.kotlinmania.rustlang.math.floor.floorf128
+import io.github.kotlinmania.rustlang.math.floor.floorf16
+import io.github.kotlinmania.rustlang.math.fma.fmaf128
+import io.github.kotlinmania.rustlang.math.fmaf16.fmaf16
+import io.github.kotlinmania.rustlang.math.roundeven.roundevenf
+import io.github.kotlinmania.rustlang.math.roundeven.roundevenf128
+import io.github.kotlinmania.rustlang.math.roundeven.roundevenf16
+import io.github.kotlinmania.rustlang.math.support.hexfloat.DisplayHex
 import kotlin.math.abs
 
 // only used in c-b
@@ -50,7 +50,7 @@ public val MIPS_NAN: Boolean = false || false || false || false
 /**
  * Trait for some basic operations on floats
  */
-public interface Float<T, Int, SignedInt> : DisplayHex, AddAssign, MulAssign, Add<T>, Sub<T>, Mul<T>, Div<T>, Rem<T>, Neg<T> {
+public interface Float<T, Int, SignedInt> : DisplayHex, AddAssign<T>, MulAssign<T>, Add<T, T>, Sub<T, T>, Mul<T, T>, Div<T, T>, Rem<T, T>, Neg<T> {
     public val ZERO: T
 
     public val NEG_ZERO: T
@@ -417,12 +417,12 @@ public fun floatFromBitsF16(a: UShort): F16 = F16.fromBits(a)
 
 public fun F16.absFloat(): F16 {
     F16.fromFloat(abs(this.toFloat()))
-    return fabs(this)
+    return fabs(this.toDouble())
 }
 
 public fun F16.copysignFloat(other: F16): F16 {
     this.copysign(other)
-    return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
+    return io.github.kotlinmania.rustlang.math.support.floattraits.copysign(this, other)
 }
 
 public fun F16.fma(y: F16, z: F16): F16 {
@@ -532,12 +532,12 @@ public fun floatFromBitsFloat(a: UInt): kotlin.Float = kotlin.Float.fromBits(a)
 
 public fun kotlin.Float.absFloat(): kotlin.Float {
     abs(this)
-    return fabs(this)
+    return fabs(this.toDouble())
 }
 
 public fun kotlin.Float.copysignFloat(other: kotlin.Float): kotlin.Float {
     this.copysign(other)
-    return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
+    return io.github.kotlinmania.rustlang.math.support.floattraits.copysign(this, other)
 }
 
 public fun kotlin.Float.fma(y: kotlin.Float, z: kotlin.Float): kotlin.Float {
@@ -652,22 +652,22 @@ public fun Double.absFloat(): Double {
 
 public fun Double.copysignFloat(other: Double): Double {
     this.copysign(other)
-    return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
+    return io.github.kotlinmania.rustlang.math.support.floattraits.copysign(this, other)
 }
 
 public fun Double.fma(y: Double, z: Double): Double {
     fma(this, y, z)
-    return io.github.kotlinmania.rustlang.libm.math.arch.aarch64.fma.fma(this, y, z)
+    return io.github.kotlinmania.rustlang.math.support.floattraits.fma(this, y, z)
 }
 
 public fun Double.floor(): Double {
     floor(this)
-    return io.github.kotlinmania.rustlang.libm.math.floor.floor(this)
+    return io.github.kotlinmania.rustlang.math.support.floattraits.floor(this)
 }
 
 public fun Double.roundeven(): Double {
     roundTiesEven(this)
-    return io.github.kotlinmania.rustlang.libm.math.roundeven.roundeven(this)
+    return io.github.kotlinmania.rustlang.math.support.floattraits.roundeven(this)
 }
 
 public fun floatNormalizeDouble(significand: ULong): Pair<Int, ULong> {
@@ -762,12 +762,12 @@ public fun floatFromBitsF128(a: U128): F128 = F128.fromBits(a)
 
 public fun F128.absFloat(): F128 {
     F128.fromDouble(abs(this.toDouble()))
-    return fabs(this)
+    return fabs(this.toDouble())
 }
 
 public fun F128.copysignFloat(other: F128): F128 {
     this.copysign(other)
-    return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
+    return io.github.kotlinmania.rustlang.math.support.floattraits.copysign(this, other)
 }
 
 public fun F128.fma(y: F128, z: F128): F128 {

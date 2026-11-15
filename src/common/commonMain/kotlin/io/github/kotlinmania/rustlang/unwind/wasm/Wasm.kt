@@ -5,8 +5,8 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.unwind.types.UnwindException
-import io.github.kotlinmania.rustlang.unwind.types.UnwindReasonCode
+import io.github.kotlinmania.rustlang.types.UnwindException
+import io.github.kotlinmania.rustlang.types.UnwindReasonCode
 
 // A shim for libunwind implemented in terms of the native wasm `throw` instruction.
 

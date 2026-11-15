@@ -1,11 +1,12 @@
 // port-lint: source tuple.rs
 package io.github.kotlinmania.rustlang.core.tuple
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.*
-import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Break
-import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Continue
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.cmp.Ordering.*
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.ops.ControlFlow.Break
+import io.github.kotlinmania.rustlang.ops.ControlFlow.Continue
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
 
 /**
  * This trait is implemented for tuples up to twelve items long.
@@ -285,10 +286,10 @@ public fun <T> fromTArray3(tuple: Triple<T, T, T>): List<T> {
 }
 
 public fun <W, V, U, T> List<Any?>.partialCmp(other: List<Any?>): Ordering? =
-    when (val matchVal = (this.value).partialCmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).partialCmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).partialCmp(other.third)) {
-                Equal -> (this.field3).partialCmp(other.field3)
+    when (val matchVal = (this[0]).partialCmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).partialCmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).partialCmp(other[2])) {
+                Equal -> (this[3]).partialCmp(other[3])
                 else -> {
                     val ordering = matchVal2
                     ordering
@@ -306,24 +307,24 @@ public fun <W, V, U, T> List<Any?>.partialCmp(other: List<Any?>): Ordering? =
     }
 
 public fun <W, V, U, T> List<Any?>.lt(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
-                        is Continue -> this.field3.lt(other.field3)
+                        is Continue -> (this[3]).lt(other[3])
                     }
                 }
             }
@@ -331,24 +332,24 @@ public fun <W, V, U, T> List<Any?>.lt(other: List<Any?>): Boolean =
     }
 
 public fun <W, V, U, T> List<Any?>.le(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
-                        is Continue -> this.field3.le(other.field3)
+                        is Continue -> (this[3]).le(other[3])
                     }
                 }
             }
@@ -356,24 +357,24 @@ public fun <W, V, U, T> List<Any?>.le(other: List<Any?>): Boolean =
     }
 
 public fun <W, V, U, T> List<Any?>.ge(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
-                        is Continue -> this.field3.ge(other.field3)
+                        is Continue -> (this[3]).ge(other[3])
                     }
                 }
             }
@@ -381,24 +382,24 @@ public fun <W, V, U, T> List<Any?>.ge(other: List<Any?>): Boolean =
     }
 
 public fun <W, V, U, T> List<Any?>.gt(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
-                        is Continue -> this.field3.gt(other.field3)
+                        is Continue -> (this[3]).gt(other[3])
                     }
                 }
             }
@@ -407,20 +408,20 @@ public fun <W, V, U, T> List<Any?>.gt(other: List<Any?>): Boolean =
 
 public fun <W, V, U, T> List<Any?>.chainingLess(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingLess(other.first) is Break) {
-            val r = this.value.chainingLess(other.first)
+        if ((this[0]).chainingLess(other[0]) is Break) {
+            val r = (this[0]).chainingLess(other[0])
             return r
         }
-        if (this.field1.chainingLess(other.second) is Break) {
-            val r1 = this.field1.chainingLess(other.second)
+        if ((this[1]).chainingLess(other[1]) is Break) {
+            val r1 = (this[1]).chainingLess(other[1])
             return r1
         }
-        if (this.field2.chainingLess(other.third) is Break) {
-            val r2 = this.field2.chainingLess(other.third)
+        if ((this[2]).chainingLess(other[2]) is Break) {
+            val r2 = (this[2]).chainingLess(other[2])
             return r2
         }
-        if (this.field3.chainingLess(other.field3) is Break) {
-            val r3 = this.field3.chainingLess(other.field3)
+        if ((this[3]).chainingLess(other[3]) is Break) {
+            val r3 = (this[3]).chainingLess(other[3])
             return r3
         }
         Continue()
@@ -429,20 +430,20 @@ public fun <W, V, U, T> List<Any?>.chainingLess(other: List<Any?>): ControlFlow<
 
 public fun <W, V, U, T> List<Any?>.chainingGreater(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingGreater(other.first) is Break) {
-            val r = this.value.chainingGreater(other.first)
+        if ((this[0]).chainingGreater(other[0]) is Break) {
+            val r = (this[0]).chainingGreater(other[0])
             return r
         }
-        if (this.field1.chainingGreater(other.second) is Break) {
-            val r1 = this.field1.chainingGreater(other.second)
+        if ((this[1]).chainingGreater(other[1]) is Break) {
+            val r1 = (this[1]).chainingGreater(other[1])
             return r1
         }
-        if (this.field2.chainingGreater(other.third) is Break) {
-            val r2 = this.field2.chainingGreater(other.third)
+        if ((this[2]).chainingGreater(other[2]) is Break) {
+            val r2 = (this[2]).chainingGreater(other[2])
             return r2
         }
-        if (this.field3.chainingGreater(other.field3) is Break) {
-            val r3 = this.field3.chainingGreater(other.field3)
+        if ((this[3]).chainingGreater(other[3]) is Break) {
+            val r3 = (this[3]).chainingGreater(other[3])
             return r3
         }
         Continue()
@@ -450,10 +451,10 @@ public fun <W, V, U, T> List<Any?>.chainingGreater(other: List<Any?>): ControlFl
 }
 
 public fun <W, V, U, T> List<Any?>.cmp(other: List<Any?>): Ordering =
-    when (val matchVal = (this.value).cmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).cmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).cmp(other.third)) {
-                Equal -> (this.field3).cmp(other.field3)
+    when (val matchVal = (this[0]).cmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).cmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).cmp(other[2])) {
+                Equal -> (this[3]).cmp(other[3])
                 else -> {
                     val ordering = matchVal2
                     ordering
@@ -496,11 +497,11 @@ public fun <T> fromTArray4(tuple: List<Any?>): List<T> {
 }
 
 public fun <X, W, V, U, T> List<Any?>.partialCmpFromXWVUT(other: List<Any?>): Ordering? =
-    when (val matchVal = (this.value).partialCmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).partialCmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).partialCmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).partialCmp(other.field3)) {
-                    Equal -> (this.field4).partialCmp(other.field4)
+    when (val matchVal = (this[0]).partialCmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).partialCmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).partialCmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).partialCmp(other[3])) {
+                    Equal -> (this[4]).partialCmp(other[4])
                     else -> {
                         val ordering = matchVal3
                         ordering
@@ -523,30 +524,30 @@ public fun <X, W, V, U, T> List<Any?>.partialCmpFromXWVUT(other: List<Any?>): Or
     }
 
 public fun <X, W, V, U, T> List<Any?>.ltFromXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
-                                is Continue -> this.field4.lt(other.field4)
+                                is Continue -> (this[4]).lt(other[4])
                             }
                         }
                     }
@@ -556,30 +557,30 @@ public fun <X, W, V, U, T> List<Any?>.ltFromXWVUT(other: List<Any?>): Boolean =
     }
 
 public fun <X, W, V, U, T> List<Any?>.leFromXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
-                                is Continue -> this.field4.le(other.field4)
+                                is Continue -> (this[4]).le(other[4])
                             }
                         }
                     }
@@ -589,30 +590,30 @@ public fun <X, W, V, U, T> List<Any?>.leFromXWVUT(other: List<Any?>): Boolean =
     }
 
 public fun <X, W, V, U, T> List<Any?>.geFromXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
-                                is Continue -> this.field4.ge(other.field4)
+                                is Continue -> (this[4]).ge(other[4])
                             }
                         }
                     }
@@ -622,30 +623,30 @@ public fun <X, W, V, U, T> List<Any?>.geFromXWVUT(other: List<Any?>): Boolean =
     }
 
 public fun <X, W, V, U, T> List<Any?>.gtFromXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
-                                is Continue -> this.field4.gt(other.field4)
+                                is Continue -> (this[4]).gt(other[4])
                             }
                         }
                     }
@@ -656,24 +657,24 @@ public fun <X, W, V, U, T> List<Any?>.gtFromXWVUT(other: List<Any?>): Boolean =
 
 public fun <X, W, V, U, T> List<Any?>.chainingLessFromXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingLess(other.first) is Break) {
-            val r = this.value.chainingLess(other.first)
+        if ((this[0]).chainingLess(other[0]) is Break) {
+            val r = (this[0]).chainingLess(other[0])
             return r
         }
-        if (this.field1.chainingLess(other.second) is Break) {
-            val r1 = this.field1.chainingLess(other.second)
+        if ((this[1]).chainingLess(other[1]) is Break) {
+            val r1 = (this[1]).chainingLess(other[1])
             return r1
         }
-        if (this.field2.chainingLess(other.third) is Break) {
-            val r2 = this.field2.chainingLess(other.third)
+        if ((this[2]).chainingLess(other[2]) is Break) {
+            val r2 = (this[2]).chainingLess(other[2])
             return r2
         }
-        if (this.field3.chainingLess(other.field3) is Break) {
-            val r3 = this.field3.chainingLess(other.field3)
+        if ((this[3]).chainingLess(other[3]) is Break) {
+            val r3 = (this[3]).chainingLess(other[3])
             return r3
         }
-        if (this.field4.chainingLess(other.field4) is Break) {
-            val r4 = this.field4.chainingLess(other.field4)
+        if ((this[4]).chainingLess(other[4]) is Break) {
+            val r4 = (this[4]).chainingLess(other[4])
             return r4
         }
         Continue()
@@ -682,24 +683,24 @@ public fun <X, W, V, U, T> List<Any?>.chainingLessFromXWVUT(other: List<Any?>): 
 
 public fun <X, W, V, U, T> List<Any?>.chainingGreaterFromXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingGreater(other.first) is Break) {
-            val r = this.value.chainingGreater(other.first)
+        if ((this[0]).chainingGreater(other[0]) is Break) {
+            val r = (this[0]).chainingGreater(other[0])
             return r
         }
-        if (this.field1.chainingGreater(other.second) is Break) {
-            val r1 = this.field1.chainingGreater(other.second)
+        if ((this[1]).chainingGreater(other[1]) is Break) {
+            val r1 = (this[1]).chainingGreater(other[1])
             return r1
         }
-        if (this.field2.chainingGreater(other.third) is Break) {
-            val r2 = this.field2.chainingGreater(other.third)
+        if ((this[2]).chainingGreater(other[2]) is Break) {
+            val r2 = (this[2]).chainingGreater(other[2])
             return r2
         }
-        if (this.field3.chainingGreater(other.field3) is Break) {
-            val r3 = this.field3.chainingGreater(other.field3)
+        if ((this[3]).chainingGreater(other[3]) is Break) {
+            val r3 = (this[3]).chainingGreater(other[3])
             return r3
         }
-        if (this.field4.chainingGreater(other.field4) is Break) {
-            val r4 = this.field4.chainingGreater(other.field4)
+        if ((this[4]).chainingGreater(other[4]) is Break) {
+            val r4 = (this[4]).chainingGreater(other[4])
             return r4
         }
         Continue()
@@ -707,11 +708,11 @@ public fun <X, W, V, U, T> List<Any?>.chainingGreaterFromXWVUT(other: List<Any?>
 }
 
 public fun <X, W, V, U, T> List<Any?>.cmpFromXWVUT(other: List<Any?>): Ordering =
-    when (val matchVal = (this.value).cmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).cmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).cmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).cmp(other.field3)) {
-                    Equal -> (this.field4).cmp(other.field4)
+    when (val matchVal = (this[0]).cmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).cmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).cmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).cmp(other[3])) {
+                    Equal -> (this[4]).cmp(other[4])
                     else -> {
                         val ordering = matchVal3
                         ordering
@@ -762,12 +763,12 @@ public fun <T> fromTArray5(tuple: List<Any?>): List<T> {
 }
 
 public fun <Y, X, W, V, U, T> List<Any?>.partialCmpFromYXWVUT(other: List<Any?>): Ordering? =
-    when (val matchVal = (this.value).partialCmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).partialCmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).partialCmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).partialCmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).partialCmp(other.field4)) {
-                        Equal -> (this.field5).partialCmp(other.field5)
+    when (val matchVal = (this[0]).partialCmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).partialCmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).partialCmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).partialCmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).partialCmp(other[4])) {
+                        Equal -> (this[5]).partialCmp(other[5])
                         else -> {
                             val ordering = matchVal4
                             ordering
@@ -795,36 +796,36 @@ public fun <Y, X, W, V, U, T> List<Any?>.partialCmpFromYXWVUT(other: List<Any?>)
     }
 
 public fun <Y, X, W, V, U, T> List<Any?>.ltFromYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
-                                        is Continue -> this.field5.lt(other.field5)
+                                        is Continue -> (this[5]).lt(other[5])
                                     }
                                 }
                             }
@@ -836,36 +837,36 @@ public fun <Y, X, W, V, U, T> List<Any?>.ltFromYXWVUT(other: List<Any?>): Boolea
     }
 
 public fun <Y, X, W, V, U, T> List<Any?>.leFromYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
-                                        is Continue -> this.field5.le(other.field5)
+                                        is Continue -> (this[5]).le(other[5])
                                     }
                                 }
                             }
@@ -877,36 +878,36 @@ public fun <Y, X, W, V, U, T> List<Any?>.leFromYXWVUT(other: List<Any?>): Boolea
     }
 
 public fun <Y, X, W, V, U, T> List<Any?>.geFromYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
-                                        is Continue -> this.field5.ge(other.field5)
+                                        is Continue -> (this[5]).ge(other[5])
                                     }
                                 }
                             }
@@ -918,36 +919,36 @@ public fun <Y, X, W, V, U, T> List<Any?>.geFromYXWVUT(other: List<Any?>): Boolea
     }
 
 public fun <Y, X, W, V, U, T> List<Any?>.gtFromYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
-                                        is Continue -> this.field5.gt(other.field5)
+                                        is Continue -> (this[5]).gt(other[5])
                                     }
                                 }
                             }
@@ -960,28 +961,28 @@ public fun <Y, X, W, V, U, T> List<Any?>.gtFromYXWVUT(other: List<Any?>): Boolea
 
 public fun <Y, X, W, V, U, T> List<Any?>.chainingLessFromYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingLess(other.first) is Break) {
-            val r = this.value.chainingLess(other.first)
+        if ((this[0]).chainingLess(other[0]) is Break) {
+            val r = (this[0]).chainingLess(other[0])
             return r
         }
-        if (this.field1.chainingLess(other.second) is Break) {
-            val r1 = this.field1.chainingLess(other.second)
+        if ((this[1]).chainingLess(other[1]) is Break) {
+            val r1 = (this[1]).chainingLess(other[1])
             return r1
         }
-        if (this.field2.chainingLess(other.third) is Break) {
-            val r2 = this.field2.chainingLess(other.third)
+        if ((this[2]).chainingLess(other[2]) is Break) {
+            val r2 = (this[2]).chainingLess(other[2])
             return r2
         }
-        if (this.field3.chainingLess(other.field3) is Break) {
-            val r3 = this.field3.chainingLess(other.field3)
+        if ((this[3]).chainingLess(other[3]) is Break) {
+            val r3 = (this[3]).chainingLess(other[3])
             return r3
         }
-        if (this.field4.chainingLess(other.field4) is Break) {
-            val r4 = this.field4.chainingLess(other.field4)
+        if ((this[4]).chainingLess(other[4]) is Break) {
+            val r4 = (this[4]).chainingLess(other[4])
             return r4
         }
-        if (this.field5.chainingLess(other.field5) is Break) {
-            val r5 = this.field5.chainingLess(other.field5)
+        if ((this[5]).chainingLess(other[5]) is Break) {
+            val r5 = (this[5]).chainingLess(other[5])
             return r5
         }
         Continue()
@@ -990,28 +991,28 @@ public fun <Y, X, W, V, U, T> List<Any?>.chainingLessFromYXWVUT(other: List<Any?
 
 public fun <Y, X, W, V, U, T> List<Any?>.chainingGreaterFromYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingGreater(other.first) is Break) {
-            val r = this.value.chainingGreater(other.first)
+        if ((this[0]).chainingGreater(other[0]) is Break) {
+            val r = (this[0]).chainingGreater(other[0])
             return r
         }
-        if (this.field1.chainingGreater(other.second) is Break) {
-            val r1 = this.field1.chainingGreater(other.second)
+        if ((this[1]).chainingGreater(other[1]) is Break) {
+            val r1 = (this[1]).chainingGreater(other[1])
             return r1
         }
-        if (this.field2.chainingGreater(other.third) is Break) {
-            val r2 = this.field2.chainingGreater(other.third)
+        if ((this[2]).chainingGreater(other[2]) is Break) {
+            val r2 = (this[2]).chainingGreater(other[2])
             return r2
         }
-        if (this.field3.chainingGreater(other.field3) is Break) {
-            val r3 = this.field3.chainingGreater(other.field3)
+        if ((this[3]).chainingGreater(other[3]) is Break) {
+            val r3 = (this[3]).chainingGreater(other[3])
             return r3
         }
-        if (this.field4.chainingGreater(other.field4) is Break) {
-            val r4 = this.field4.chainingGreater(other.field4)
+        if ((this[4]).chainingGreater(other[4]) is Break) {
+            val r4 = (this[4]).chainingGreater(other[4])
             return r4
         }
-        if (this.field5.chainingGreater(other.field5) is Break) {
-            val r5 = this.field5.chainingGreater(other.field5)
+        if ((this[5]).chainingGreater(other[5]) is Break) {
+            val r5 = (this[5]).chainingGreater(other[5])
             return r5
         }
         Continue()
@@ -1019,12 +1020,12 @@ public fun <Y, X, W, V, U, T> List<Any?>.chainingGreaterFromYXWVUT(other: List<A
 }
 
 public fun <Y, X, W, V, U, T> List<Any?>.cmpFromYXWVUT(other: List<Any?>): Ordering =
-    when (val matchVal = (this.value).cmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).cmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).cmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).cmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).cmp(other.field4)) {
-                        Equal -> (this.field5).cmp(other.field5)
+    when (val matchVal = (this[0]).cmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).cmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).cmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).cmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).cmp(other[4])) {
+                        Equal -> (this[5]).cmp(other[5])
                         else -> {
                             val ordering = matchVal4
                             ordering
@@ -1083,13 +1084,13 @@ public fun <T> fromTArray6(tuple: List<Any?>): List<T> {
 }
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromZYXWVUT(other: List<Any?>): Ordering? =
-    when (val matchVal = (this.value).partialCmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).partialCmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).partialCmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).partialCmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).partialCmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).partialCmp(other.field5)) {
-                            Equal -> (this.field6).partialCmp(other.field6)
+    when (val matchVal = (this[0]).partialCmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).partialCmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).partialCmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).partialCmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).partialCmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).partialCmp(other[5])) {
+                            Equal -> (this[6]).partialCmp(other[6])
                             else -> {
                                 val ordering = matchVal5
                                 ordering
@@ -1122,42 +1123,42 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromZYXWVUT(other: List<An
     }
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.ltFromZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
-                                                is Continue -> this.field6.lt(other.field6)
+                                                is Continue -> (this[6]).lt(other[6])
                                             }
                                         }
                                     }
@@ -1171,42 +1172,42 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.ltFromZYXWVUT(other: List<Any?>): Bo
     }
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.leFromZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
-                                                is Continue -> this.field6.le(other.field6)
+                                                is Continue -> (this[6]).le(other[6])
                                             }
                                         }
                                     }
@@ -1220,42 +1221,42 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.leFromZYXWVUT(other: List<Any?>): Bo
     }
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.geFromZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
-                                                is Continue -> this.field6.ge(other.field6)
+                                                is Continue -> (this[6]).ge(other[6])
                                             }
                                         }
                                     }
@@ -1269,42 +1270,42 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.geFromZYXWVUT(other: List<Any?>): Bo
     }
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.gtFromZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
-                                                is Continue -> this.field6.gt(other.field6)
+                                                is Continue -> (this[6]).gt(other[6])
                                             }
                                         }
                                     }
@@ -1319,32 +1320,32 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.gtFromZYXWVUT(other: List<Any?>): Bo
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingLess(other.first) is Break) {
-            val r = this.value.chainingLess(other.first)
+        if ((this[0]).chainingLess(other[0]) is Break) {
+            val r = (this[0]).chainingLess(other[0])
             return r
         }
-        if (this.field1.chainingLess(other.second) is Break) {
-            val r1 = this.field1.chainingLess(other.second)
+        if ((this[1]).chainingLess(other[1]) is Break) {
+            val r1 = (this[1]).chainingLess(other[1])
             return r1
         }
-        if (this.field2.chainingLess(other.third) is Break) {
-            val r2 = this.field2.chainingLess(other.third)
+        if ((this[2]).chainingLess(other[2]) is Break) {
+            val r2 = (this[2]).chainingLess(other[2])
             return r2
         }
-        if (this.field3.chainingLess(other.field3) is Break) {
-            val r3 = this.field3.chainingLess(other.field3)
+        if ((this[3]).chainingLess(other[3]) is Break) {
+            val r3 = (this[3]).chainingLess(other[3])
             return r3
         }
-        if (this.field4.chainingLess(other.field4) is Break) {
-            val r4 = this.field4.chainingLess(other.field4)
+        if ((this[4]).chainingLess(other[4]) is Break) {
+            val r4 = (this[4]).chainingLess(other[4])
             return r4
         }
-        if (this.field5.chainingLess(other.field5) is Break) {
-            val r5 = this.field5.chainingLess(other.field5)
+        if ((this[5]).chainingLess(other[5]) is Break) {
+            val r5 = (this[5]).chainingLess(other[5])
             return r5
         }
-        if (this.field6.chainingLess(other.field6) is Break) {
-            val r6 = this.field6.chainingLess(other.field6)
+        if ((this[6]).chainingLess(other[6]) is Break) {
+            val r6 = (this[6]).chainingLess(other[6])
             return r6
         }
         Continue()
@@ -1353,32 +1354,32 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromZYXWVUT(other: List<
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingGreater(other.first) is Break) {
-            val r = this.value.chainingGreater(other.first)
+        if ((this[0]).chainingGreater(other[0]) is Break) {
+            val r = (this[0]).chainingGreater(other[0])
             return r
         }
-        if (this.field1.chainingGreater(other.second) is Break) {
-            val r1 = this.field1.chainingGreater(other.second)
+        if ((this[1]).chainingGreater(other[1]) is Break) {
+            val r1 = (this[1]).chainingGreater(other[1])
             return r1
         }
-        if (this.field2.chainingGreater(other.third) is Break) {
-            val r2 = this.field2.chainingGreater(other.third)
+        if ((this[2]).chainingGreater(other[2]) is Break) {
+            val r2 = (this[2]).chainingGreater(other[2])
             return r2
         }
-        if (this.field3.chainingGreater(other.field3) is Break) {
-            val r3 = this.field3.chainingGreater(other.field3)
+        if ((this[3]).chainingGreater(other[3]) is Break) {
+            val r3 = (this[3]).chainingGreater(other[3])
             return r3
         }
-        if (this.field4.chainingGreater(other.field4) is Break) {
-            val r4 = this.field4.chainingGreater(other.field4)
+        if ((this[4]).chainingGreater(other[4]) is Break) {
+            val r4 = (this[4]).chainingGreater(other[4])
             return r4
         }
-        if (this.field5.chainingGreater(other.field5) is Break) {
-            val r5 = this.field5.chainingGreater(other.field5)
+        if ((this[5]).chainingGreater(other[5]) is Break) {
+            val r5 = (this[5]).chainingGreater(other[5])
             return r5
         }
-        if (this.field6.chainingGreater(other.field6) is Break) {
-            val r6 = this.field6.chainingGreater(other.field6)
+        if ((this[6]).chainingGreater(other[6]) is Break) {
+            val r6 = (this[6]).chainingGreater(other[6])
             return r6
         }
         Continue()
@@ -1386,13 +1387,13 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromZYXWVUT(other: Li
 }
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.cmpFromZYXWVUT(other: List<Any?>): Ordering =
-    when (val matchVal = (this.value).cmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).cmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).cmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).cmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).cmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).cmp(other.field5)) {
-                            Equal -> (this.field6).cmp(other.field6)
+    when (val matchVal = (this[0]).cmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).cmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).cmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).cmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).cmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).cmp(other[5])) {
+                            Equal -> (this[6]).cmp(other[6])
                             else -> {
                                 val ordering = matchVal5
                                 ordering
@@ -1459,14 +1460,14 @@ public fun <T> fromTArray7(tuple: List<Any?>): List<T> {
 }
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromAZYXWVUT(other: List<Any?>): Ordering? =
-    when (val matchVal = (this.value).partialCmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).partialCmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).partialCmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).partialCmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).partialCmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).partialCmp(other.field5)) {
-                            Equal -> when (val matchVal6 = (this.field6).partialCmp(other.field6)) {
-                                Equal -> (this.field7).partialCmp(other.field7)
+    when (val matchVal = (this[0]).partialCmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).partialCmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).partialCmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).partialCmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).partialCmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).partialCmp(other[5])) {
+                            Equal -> when (val matchVal6 = (this[6]).partialCmp(other[6])) {
+                                Equal -> (this[7]).partialCmp(other[7])
                                 else -> {
                                     val ordering = matchVal6
                                     ordering
@@ -1504,48 +1505,48 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromAZYXWVUT(other: Lis
     }
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.ltFromAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingLess(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingLess(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
-                                                        is Continue -> this.field7.lt(other.field7)
+                                                        is Continue -> (this[7]).lt(other[7])
                                                     }
                                                 }
                                             }
@@ -1561,48 +1562,48 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.ltFromAZYXWVUT(other: List<Any?>)
     }
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.leFromAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingLess(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingLess(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
-                                                        is Continue -> this.field7.le(other.field7)
+                                                        is Continue -> (this[7]).le(other[7])
                                                     }
                                                 }
                                             }
@@ -1618,48 +1619,48 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.leFromAZYXWVUT(other: List<Any?>)
     }
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.geFromAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingGreater(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingGreater(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
-                                                        is Continue -> this.field7.ge(other.field7)
+                                                        is Continue -> (this[7]).ge(other[7])
                                                     }
                                                 }
                                             }
@@ -1675,48 +1676,48 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.geFromAZYXWVUT(other: List<Any?>)
     }
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.gtFromAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingGreater(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingGreater(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
-                                                        is Continue -> this.field7.gt(other.field7)
+                                                        is Continue -> (this[7]).gt(other[7])
                                                     }
                                                 }
                                             }
@@ -1733,36 +1734,36 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.gtFromAZYXWVUT(other: List<Any?>)
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromAZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingLess(other.first) is Break) {
-            val r = this.value.chainingLess(other.first)
+        if ((this[0]).chainingLess(other[0]) is Break) {
+            val r = (this[0]).chainingLess(other[0])
             return r
         }
-        if (this.field1.chainingLess(other.second) is Break) {
-            val r1 = this.field1.chainingLess(other.second)
+        if ((this[1]).chainingLess(other[1]) is Break) {
+            val r1 = (this[1]).chainingLess(other[1])
             return r1
         }
-        if (this.field2.chainingLess(other.third) is Break) {
-            val r2 = this.field2.chainingLess(other.third)
+        if ((this[2]).chainingLess(other[2]) is Break) {
+            val r2 = (this[2]).chainingLess(other[2])
             return r2
         }
-        if (this.field3.chainingLess(other.field3) is Break) {
-            val r3 = this.field3.chainingLess(other.field3)
+        if ((this[3]).chainingLess(other[3]) is Break) {
+            val r3 = (this[3]).chainingLess(other[3])
             return r3
         }
-        if (this.field4.chainingLess(other.field4) is Break) {
-            val r4 = this.field4.chainingLess(other.field4)
+        if ((this[4]).chainingLess(other[4]) is Break) {
+            val r4 = (this[4]).chainingLess(other[4])
             return r4
         }
-        if (this.field5.chainingLess(other.field5) is Break) {
-            val r5 = this.field5.chainingLess(other.field5)
+        if ((this[5]).chainingLess(other[5]) is Break) {
+            val r5 = (this[5]).chainingLess(other[5])
             return r5
         }
-        if (this.field6.chainingLess(other.field6) is Break) {
-            val r6 = this.field6.chainingLess(other.field6)
+        if ((this[6]).chainingLess(other[6]) is Break) {
+            val r6 = (this[6]).chainingLess(other[6])
             return r6
         }
-        if (this.field7.chainingLess(other.field7) is Break) {
-            val r7 = this.field7.chainingLess(other.field7)
+        if ((this[7]).chainingLess(other[7]) is Break) {
+            val r7 = (this[7]).chainingLess(other[7])
             return r7
         }
         Continue()
@@ -1771,36 +1772,36 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromAZYXWVUT(other: L
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromAZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingGreater(other.first) is Break) {
-            val r = this.value.chainingGreater(other.first)
+        if ((this[0]).chainingGreater(other[0]) is Break) {
+            val r = (this[0]).chainingGreater(other[0])
             return r
         }
-        if (this.field1.chainingGreater(other.second) is Break) {
-            val r1 = this.field1.chainingGreater(other.second)
+        if ((this[1]).chainingGreater(other[1]) is Break) {
+            val r1 = (this[1]).chainingGreater(other[1])
             return r1
         }
-        if (this.field2.chainingGreater(other.third) is Break) {
-            val r2 = this.field2.chainingGreater(other.third)
+        if ((this[2]).chainingGreater(other[2]) is Break) {
+            val r2 = (this[2]).chainingGreater(other[2])
             return r2
         }
-        if (this.field3.chainingGreater(other.field3) is Break) {
-            val r3 = this.field3.chainingGreater(other.field3)
+        if ((this[3]).chainingGreater(other[3]) is Break) {
+            val r3 = (this[3]).chainingGreater(other[3])
             return r3
         }
-        if (this.field4.chainingGreater(other.field4) is Break) {
-            val r4 = this.field4.chainingGreater(other.field4)
+        if ((this[4]).chainingGreater(other[4]) is Break) {
+            val r4 = (this[4]).chainingGreater(other[4])
             return r4
         }
-        if (this.field5.chainingGreater(other.field5) is Break) {
-            val r5 = this.field5.chainingGreater(other.field5)
+        if ((this[5]).chainingGreater(other[5]) is Break) {
+            val r5 = (this[5]).chainingGreater(other[5])
             return r5
         }
-        if (this.field6.chainingGreater(other.field6) is Break) {
-            val r6 = this.field6.chainingGreater(other.field6)
+        if ((this[6]).chainingGreater(other[6]) is Break) {
+            val r6 = (this[6]).chainingGreater(other[6])
             return r6
         }
-        if (this.field7.chainingGreater(other.field7) is Break) {
-            val r7 = this.field7.chainingGreater(other.field7)
+        if ((this[7]).chainingGreater(other[7]) is Break) {
+            val r7 = (this[7]).chainingGreater(other[7])
             return r7
         }
         Continue()
@@ -1808,14 +1809,14 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromAZYXWVUT(other
 }
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.cmpFromAZYXWVUT(other: List<Any?>): Ordering =
-    when (val matchVal = (this.value).cmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).cmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).cmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).cmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).cmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).cmp(other.field5)) {
-                            Equal -> when (val matchVal6 = (this.field6).cmp(other.field6)) {
-                                Equal -> (this.field7).cmp(other.field7)
+    when (val matchVal = (this[0]).cmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).cmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).cmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).cmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).cmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).cmp(other[5])) {
+                            Equal -> when (val matchVal6 = (this[6]).cmp(other[6])) {
+                                Equal -> (this[7]).cmp(other[7])
                                 else -> {
                                     val ordering = matchVal6
                                     ordering
@@ -1890,15 +1891,15 @@ public fun <T> fromTArray8(tuple: List<Any?>): List<T> {
 }
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromBAZYXWVUT(other: List<Any?>): Ordering? =
-    when (val matchVal = (this.value).partialCmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).partialCmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).partialCmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).partialCmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).partialCmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).partialCmp(other.field5)) {
-                            Equal -> when (val matchVal6 = (this.field6).partialCmp(other.field6)) {
-                                Equal -> when (val matchVal7 = (this.field7).partialCmp(other.field7)) {
-                                    Equal -> (this.field8).partialCmp(other.field8)
+    when (val matchVal = (this[0]).partialCmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).partialCmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).partialCmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).partialCmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).partialCmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).partialCmp(other[5])) {
+                            Equal -> when (val matchVal6 = (this[6]).partialCmp(other[6])) {
+                                Equal -> when (val matchVal7 = (this[7]).partialCmp(other[7])) {
+                                    Equal -> (this[8]).partialCmp(other[8])
                                     else -> {
                                         val ordering = matchVal7
                                         ordering
@@ -1941,54 +1942,54 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromBAZYXWVUT(other:
     }
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingLess(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingLess(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingLess(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingLess(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
-                                                                is Continue -> this.field8.lt(other.field8)
+                                                                is Continue -> (this[8]).lt(other[8])
                                                             }
                                                         }
                                                     }
@@ -2006,54 +2007,54 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromBAZYXWVUT(other: List<An
     }
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingLess(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingLess(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingLess(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingLess(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
-                                                                is Continue -> this.field8.le(other.field8)
+                                                                is Continue -> (this[8]).le(other[8])
                                                             }
                                                         }
                                                     }
@@ -2071,54 +2072,54 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromBAZYXWVUT(other: List<An
     }
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingGreater(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingGreater(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingGreater(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingGreater(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
-                                                                is Continue -> this.field8.ge(other.field8)
+                                                                is Continue -> (this[8]).ge(other[8])
                                                             }
                                                         }
                                                     }
@@ -2136,54 +2137,54 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromBAZYXWVUT(other: List<An
     }
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingGreater(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingGreater(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingGreater(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingGreater(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
-                                                                is Continue -> this.field8.gt(other.field8)
+                                                                is Continue -> (this[8]).gt(other[8])
                                                             }
                                                         }
                                                     }
@@ -2202,40 +2203,40 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromBAZYXWVUT(other: List<An
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingLess(other.first) is Break) {
-            val r = this.value.chainingLess(other.first)
+        if ((this[0]).chainingLess(other[0]) is Break) {
+            val r = (this[0]).chainingLess(other[0])
             return r
         }
-        if (this.field1.chainingLess(other.second) is Break) {
-            val r1 = this.field1.chainingLess(other.second)
+        if ((this[1]).chainingLess(other[1]) is Break) {
+            val r1 = (this[1]).chainingLess(other[1])
             return r1
         }
-        if (this.field2.chainingLess(other.third) is Break) {
-            val r2 = this.field2.chainingLess(other.third)
+        if ((this[2]).chainingLess(other[2]) is Break) {
+            val r2 = (this[2]).chainingLess(other[2])
             return r2
         }
-        if (this.field3.chainingLess(other.field3) is Break) {
-            val r3 = this.field3.chainingLess(other.field3)
+        if ((this[3]).chainingLess(other[3]) is Break) {
+            val r3 = (this[3]).chainingLess(other[3])
             return r3
         }
-        if (this.field4.chainingLess(other.field4) is Break) {
-            val r4 = this.field4.chainingLess(other.field4)
+        if ((this[4]).chainingLess(other[4]) is Break) {
+            val r4 = (this[4]).chainingLess(other[4])
             return r4
         }
-        if (this.field5.chainingLess(other.field5) is Break) {
-            val r5 = this.field5.chainingLess(other.field5)
+        if ((this[5]).chainingLess(other[5]) is Break) {
+            val r5 = (this[5]).chainingLess(other[5])
             return r5
         }
-        if (this.field6.chainingLess(other.field6) is Break) {
-            val r6 = this.field6.chainingLess(other.field6)
+        if ((this[6]).chainingLess(other[6]) is Break) {
+            val r6 = (this[6]).chainingLess(other[6])
             return r6
         }
-        if (this.field7.chainingLess(other.field7) is Break) {
-            val r7 = this.field7.chainingLess(other.field7)
+        if ((this[7]).chainingLess(other[7]) is Break) {
+            val r7 = (this[7]).chainingLess(other[7])
             return r7
         }
-        if (this.field8.chainingLess(other.field8) is Break) {
-            val r8 = this.field8.chainingLess(other.field8)
+        if ((this[8]).chainingLess(other[8]) is Break) {
+            val r8 = (this[8]).chainingLess(other[8])
             return r8
         }
         Continue()
@@ -2244,40 +2245,40 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromBAZYXWVUT(othe
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingGreater(other.first) is Break) {
-            val r = this.value.chainingGreater(other.first)
+        if ((this[0]).chainingGreater(other[0]) is Break) {
+            val r = (this[0]).chainingGreater(other[0])
             return r
         }
-        if (this.field1.chainingGreater(other.second) is Break) {
-            val r1 = this.field1.chainingGreater(other.second)
+        if ((this[1]).chainingGreater(other[1]) is Break) {
+            val r1 = (this[1]).chainingGreater(other[1])
             return r1
         }
-        if (this.field2.chainingGreater(other.third) is Break) {
-            val r2 = this.field2.chainingGreater(other.third)
+        if ((this[2]).chainingGreater(other[2]) is Break) {
+            val r2 = (this[2]).chainingGreater(other[2])
             return r2
         }
-        if (this.field3.chainingGreater(other.field3) is Break) {
-            val r3 = this.field3.chainingGreater(other.field3)
+        if ((this[3]).chainingGreater(other[3]) is Break) {
+            val r3 = (this[3]).chainingGreater(other[3])
             return r3
         }
-        if (this.field4.chainingGreater(other.field4) is Break) {
-            val r4 = this.field4.chainingGreater(other.field4)
+        if ((this[4]).chainingGreater(other[4]) is Break) {
+            val r4 = (this[4]).chainingGreater(other[4])
             return r4
         }
-        if (this.field5.chainingGreater(other.field5) is Break) {
-            val r5 = this.field5.chainingGreater(other.field5)
+        if ((this[5]).chainingGreater(other[5]) is Break) {
+            val r5 = (this[5]).chainingGreater(other[5])
             return r5
         }
-        if (this.field6.chainingGreater(other.field6) is Break) {
-            val r6 = this.field6.chainingGreater(other.field6)
+        if ((this[6]).chainingGreater(other[6]) is Break) {
+            val r6 = (this[6]).chainingGreater(other[6])
             return r6
         }
-        if (this.field7.chainingGreater(other.field7) is Break) {
-            val r7 = this.field7.chainingGreater(other.field7)
+        if ((this[7]).chainingGreater(other[7]) is Break) {
+            val r7 = (this[7]).chainingGreater(other[7])
             return r7
         }
-        if (this.field8.chainingGreater(other.field8) is Break) {
-            val r8 = this.field8.chainingGreater(other.field8)
+        if ((this[8]).chainingGreater(other[8]) is Break) {
+            val r8 = (this[8]).chainingGreater(other[8])
             return r8
         }
         Continue()
@@ -2285,15 +2286,15 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromBAZYXWVUT(o
 }
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.cmpFromBAZYXWVUT(other: List<Any?>): Ordering =
-    when (val matchVal = (this.value).cmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).cmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).cmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).cmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).cmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).cmp(other.field5)) {
-                            Equal -> when (val matchVal6 = (this.field6).cmp(other.field6)) {
-                                Equal -> when (val matchVal7 = (this.field7).cmp(other.field7)) {
-                                    Equal -> (this.field8).cmp(other.field8)
+    when (val matchVal = (this[0]).cmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).cmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).cmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).cmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).cmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).cmp(other[5])) {
+                            Equal -> when (val matchVal6 = (this[6]).cmp(other[6])) {
+                                Equal -> when (val matchVal7 = (this[7]).cmp(other[7])) {
+                                    Equal -> (this[8]).cmp(other[8])
                                     else -> {
                                         val ordering = matchVal7
                                         ordering
@@ -2376,16 +2377,16 @@ public fun <T> fromTArray9(tuple: List<Any?>): List<T> {
 }
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromCBAZYXWVUT(other: List<Any?>): Ordering? =
-    when (val matchVal = (this.value).partialCmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).partialCmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).partialCmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).partialCmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).partialCmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).partialCmp(other.field5)) {
-                            Equal -> when (val matchVal6 = (this.field6).partialCmp(other.field6)) {
-                                Equal -> when (val matchVal7 = (this.field7).partialCmp(other.field7)) {
-                                    Equal -> when (val matchVal8 = (this.field8).partialCmp(other.field8)) {
-                                        Equal -> (this.field9).partialCmp(other.field9)
+    when (val matchVal = (this[0]).partialCmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).partialCmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).partialCmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).partialCmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).partialCmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).partialCmp(other[5])) {
+                            Equal -> when (val matchVal6 = (this[6]).partialCmp(other[6])) {
+                                Equal -> when (val matchVal7 = (this[7]).partialCmp(other[7])) {
+                                    Equal -> when (val matchVal8 = (this[8]).partialCmp(other[8])) {
+                                        Equal -> (this[9]).partialCmp(other[9])
                                         else -> {
                                             val ordering = matchVal8
                                             ordering
@@ -2433,60 +2434,60 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromCBAZYXWVUT(ot
     }
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingLess(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingLess(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingLess(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingLess(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingLess(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingLess(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
-                                                                        is Continue -> this.field9.lt(other.field9)
+                                                                        is Continue -> (this[9]).lt(other[9])
                                                                     }
                                                                 }
                                                             }
@@ -2506,60 +2507,60 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromCBAZYXWVUT(other: Lis
     }
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingLess(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingLess(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingLess(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingLess(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingLess(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingLess(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
-                                                                        is Continue -> this.field9.le(other.field9)
+                                                                        is Continue -> (this[9]).le(other[9])
                                                                     }
                                                                 }
                                                             }
@@ -2579,60 +2580,60 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromCBAZYXWVUT(other: Lis
     }
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingGreater(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingGreater(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingGreater(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingGreater(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingGreater(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingGreater(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
-                                                                        is Continue -> this.field9.ge(other.field9)
+                                                                        is Continue -> (this[9]).ge(other[9])
                                                                     }
                                                                 }
                                                             }
@@ -2652,60 +2653,60 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromCBAZYXWVUT(other: Lis
     }
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingGreater(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingGreater(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingGreater(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingGreater(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingGreater(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingGreater(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
-                                                                        is Continue -> this.field9.gt(other.field9)
+                                                                        is Continue -> (this[9]).gt(other[9])
                                                                     }
                                                                 }
                                                             }
@@ -2726,44 +2727,44 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromCBAZYXWVUT(other: Lis
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingLess(other.first) is Break) {
-            val r = this.value.chainingLess(other.first)
+        if ((this[0]).chainingLess(other[0]) is Break) {
+            val r = (this[0]).chainingLess(other[0])
             return r
         }
-        if (this.field1.chainingLess(other.second) is Break) {
-            val r1 = this.field1.chainingLess(other.second)
+        if ((this[1]).chainingLess(other[1]) is Break) {
+            val r1 = (this[1]).chainingLess(other[1])
             return r1
         }
-        if (this.field2.chainingLess(other.third) is Break) {
-            val r2 = this.field2.chainingLess(other.third)
+        if ((this[2]).chainingLess(other[2]) is Break) {
+            val r2 = (this[2]).chainingLess(other[2])
             return r2
         }
-        if (this.field3.chainingLess(other.field3) is Break) {
-            val r3 = this.field3.chainingLess(other.field3)
+        if ((this[3]).chainingLess(other[3]) is Break) {
+            val r3 = (this[3]).chainingLess(other[3])
             return r3
         }
-        if (this.field4.chainingLess(other.field4) is Break) {
-            val r4 = this.field4.chainingLess(other.field4)
+        if ((this[4]).chainingLess(other[4]) is Break) {
+            val r4 = (this[4]).chainingLess(other[4])
             return r4
         }
-        if (this.field5.chainingLess(other.field5) is Break) {
-            val r5 = this.field5.chainingLess(other.field5)
+        if ((this[5]).chainingLess(other[5]) is Break) {
+            val r5 = (this[5]).chainingLess(other[5])
             return r5
         }
-        if (this.field6.chainingLess(other.field6) is Break) {
-            val r6 = this.field6.chainingLess(other.field6)
+        if ((this[6]).chainingLess(other[6]) is Break) {
+            val r6 = (this[6]).chainingLess(other[6])
             return r6
         }
-        if (this.field7.chainingLess(other.field7) is Break) {
-            val r7 = this.field7.chainingLess(other.field7)
+        if ((this[7]).chainingLess(other[7]) is Break) {
+            val r7 = (this[7]).chainingLess(other[7])
             return r7
         }
-        if (this.field8.chainingLess(other.field8) is Break) {
-            val r8 = this.field8.chainingLess(other.field8)
+        if ((this[8]).chainingLess(other[8]) is Break) {
+            val r8 = (this[8]).chainingLess(other[8])
             return r8
         }
-        if (this.field9.chainingLess(other.field9) is Break) {
-            val r9 = this.field9.chainingLess(other.field9)
+        if ((this[9]).chainingLess(other[9]) is Break) {
+            val r9 = (this[9]).chainingLess(other[9])
             return r9
         }
         Continue()
@@ -2772,44 +2773,44 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromCBAZYXWVUT(
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingGreater(other.first) is Break) {
-            val r = this.value.chainingGreater(other.first)
+        if ((this[0]).chainingGreater(other[0]) is Break) {
+            val r = (this[0]).chainingGreater(other[0])
             return r
         }
-        if (this.field1.chainingGreater(other.second) is Break) {
-            val r1 = this.field1.chainingGreater(other.second)
+        if ((this[1]).chainingGreater(other[1]) is Break) {
+            val r1 = (this[1]).chainingGreater(other[1])
             return r1
         }
-        if (this.field2.chainingGreater(other.third) is Break) {
-            val r2 = this.field2.chainingGreater(other.third)
+        if ((this[2]).chainingGreater(other[2]) is Break) {
+            val r2 = (this[2]).chainingGreater(other[2])
             return r2
         }
-        if (this.field3.chainingGreater(other.field3) is Break) {
-            val r3 = this.field3.chainingGreater(other.field3)
+        if ((this[3]).chainingGreater(other[3]) is Break) {
+            val r3 = (this[3]).chainingGreater(other[3])
             return r3
         }
-        if (this.field4.chainingGreater(other.field4) is Break) {
-            val r4 = this.field4.chainingGreater(other.field4)
+        if ((this[4]).chainingGreater(other[4]) is Break) {
+            val r4 = (this[4]).chainingGreater(other[4])
             return r4
         }
-        if (this.field5.chainingGreater(other.field5) is Break) {
-            val r5 = this.field5.chainingGreater(other.field5)
+        if ((this[5]).chainingGreater(other[5]) is Break) {
+            val r5 = (this[5]).chainingGreater(other[5])
             return r5
         }
-        if (this.field6.chainingGreater(other.field6) is Break) {
-            val r6 = this.field6.chainingGreater(other.field6)
+        if ((this[6]).chainingGreater(other[6]) is Break) {
+            val r6 = (this[6]).chainingGreater(other[6])
             return r6
         }
-        if (this.field7.chainingGreater(other.field7) is Break) {
-            val r7 = this.field7.chainingGreater(other.field7)
+        if ((this[7]).chainingGreater(other[7]) is Break) {
+            val r7 = (this[7]).chainingGreater(other[7])
             return r7
         }
-        if (this.field8.chainingGreater(other.field8) is Break) {
-            val r8 = this.field8.chainingGreater(other.field8)
+        if ((this[8]).chainingGreater(other[8]) is Break) {
+            val r8 = (this[8]).chainingGreater(other[8])
             return r8
         }
-        if (this.field9.chainingGreater(other.field9) is Break) {
-            val r9 = this.field9.chainingGreater(other.field9)
+        if ((this[9]).chainingGreater(other[9]) is Break) {
+            val r9 = (this[9]).chainingGreater(other[9])
             return r9
         }
         Continue()
@@ -2817,16 +2818,16 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromCBAZYXWV
 }
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.cmpFromCBAZYXWVUT(other: List<Any?>): Ordering =
-    when (val matchVal = (this.value).cmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).cmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).cmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).cmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).cmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).cmp(other.field5)) {
-                            Equal -> when (val matchVal6 = (this.field6).cmp(other.field6)) {
-                                Equal -> when (val matchVal7 = (this.field7).cmp(other.field7)) {
-                                    Equal -> when (val matchVal8 = (this.field8).cmp(other.field8)) {
-                                        Equal -> (this.field9).cmp(other.field9)
+    when (val matchVal = (this[0]).cmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).cmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).cmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).cmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).cmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).cmp(other[5])) {
+                            Equal -> when (val matchVal6 = (this[6]).cmp(other[6])) {
+                                Equal -> when (val matchVal7 = (this[7]).cmp(other[7])) {
+                                    Equal -> when (val matchVal8 = (this[8]).cmp(other[8])) {
+                                        Equal -> (this[9]).cmp(other[9])
                                         else -> {
                                             val ordering = matchVal8
                                             ordering
@@ -2917,17 +2918,17 @@ public fun <T> fromTArray10(tuple: List<Any?>): List<T> {
 }
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromDCBAZYXWVUT(other: List<Any?>): Ordering? =
-    when (val matchVal = (this.value).partialCmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).partialCmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).partialCmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).partialCmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).partialCmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).partialCmp(other.field5)) {
-                            Equal -> when (val matchVal6 = (this.field6).partialCmp(other.field6)) {
-                                Equal -> when (val matchVal7 = (this.field7).partialCmp(other.field7)) {
-                                    Equal -> when (val matchVal8 = (this.field8).partialCmp(other.field8)) {
-                                        Equal -> when (val matchVal9 = (this.field9).partialCmp(other.field9)) {
-                                            Equal -> (this.field10).partialCmp(other.field10)
+    when (val matchVal = (this[0]).partialCmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).partialCmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).partialCmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).partialCmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).partialCmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).partialCmp(other[5])) {
+                            Equal -> when (val matchVal6 = (this[6]).partialCmp(other[6])) {
+                                Equal -> when (val matchVal7 = (this[7]).partialCmp(other[7])) {
+                                    Equal -> when (val matchVal8 = (this[8]).partialCmp(other[8])) {
+                                        Equal -> when (val matchVal9 = (this[9]).partialCmp(other[9])) {
+                                            Equal -> (this[10]).partialCmp(other[10])
                                             else -> {
                                                 val ordering = matchVal9
                                                 ordering
@@ -2980,66 +2981,66 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromDCBAZYXWVU
     }
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingLess(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingLess(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingLess(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingLess(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingLess(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingLess(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
                                                                         is Continue -> {
-                                                                            when (val matchVal9 = this.field9.chainingLess(other.field9)) {
+                                                                            when (val matchVal9 = (this[9]).chainingLess(other[9])) {
                                                                                 is Break -> {
                                                                                     val (value9) = matchVal9
                                                                                     value9
                                                                                 }
-                                                                                is Continue -> this.field10.lt(other.field10)
+                                                                                is Continue -> (this[10]).lt(other[10])
                                                                             }
                                                                         }
                                                                     }
@@ -3061,66 +3062,66 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromDCBAZYXWVUT(other:
     }
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingLess(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingLess(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingLess(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingLess(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingLess(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingLess(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
                                                                         is Continue -> {
-                                                                            when (val matchVal9 = this.field9.chainingLess(other.field9)) {
+                                                                            when (val matchVal9 = (this[9]).chainingLess(other[9])) {
                                                                                 is Break -> {
                                                                                     val (value9) = matchVal9
                                                                                     value9
                                                                                 }
-                                                                                is Continue -> this.field10.le(other.field10)
+                                                                                is Continue -> (this[10]).le(other[10])
                                                                             }
                                                                         }
                                                                     }
@@ -3142,66 +3143,66 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromDCBAZYXWVUT(other:
     }
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingGreater(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingGreater(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingGreater(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingGreater(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingGreater(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingGreater(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
                                                                         is Continue -> {
-                                                                            when (val matchVal9 = this.field9.chainingGreater(other.field9)) {
+                                                                            when (val matchVal9 = (this[9]).chainingGreater(other[9])) {
                                                                                 is Break -> {
                                                                                     val (value9) = matchVal9
                                                                                     value9
                                                                                 }
-                                                                                is Continue -> this.field10.ge(other.field10)
+                                                                                is Continue -> (this[10]).ge(other[10])
                                                                             }
                                                                         }
                                                                     }
@@ -3223,66 +3224,66 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromDCBAZYXWVUT(other:
     }
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingGreater(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingGreater(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingGreater(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingGreater(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingGreater(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingGreater(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
                                                                         is Continue -> {
-                                                                            when (val matchVal9 = this.field9.chainingGreater(other.field9)) {
+                                                                            when (val matchVal9 = (this[9]).chainingGreater(other[9])) {
                                                                                 is Break -> {
                                                                                     val (value9) = matchVal9
                                                                                     value9
                                                                                 }
-                                                                                is Continue -> this.field10.gt(other.field10)
+                                                                                is Continue -> (this[10]).gt(other[10])
                                                                             }
                                                                         }
                                                                     }
@@ -3305,48 +3306,48 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromDCBAZYXWVUT(other:
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromDCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingLess(other.first) is Break) {
-            val r = this.value.chainingLess(other.first)
+        if ((this[0]).chainingLess(other[0]) is Break) {
+            val r = (this[0]).chainingLess(other[0])
             return r
         }
-        if (this.field1.chainingLess(other.second) is Break) {
-            val r1 = this.field1.chainingLess(other.second)
+        if ((this[1]).chainingLess(other[1]) is Break) {
+            val r1 = (this[1]).chainingLess(other[1])
             return r1
         }
-        if (this.field2.chainingLess(other.third) is Break) {
-            val r2 = this.field2.chainingLess(other.third)
+        if ((this[2]).chainingLess(other[2]) is Break) {
+            val r2 = (this[2]).chainingLess(other[2])
             return r2
         }
-        if (this.field3.chainingLess(other.field3) is Break) {
-            val r3 = this.field3.chainingLess(other.field3)
+        if ((this[3]).chainingLess(other[3]) is Break) {
+            val r3 = (this[3]).chainingLess(other[3])
             return r3
         }
-        if (this.field4.chainingLess(other.field4) is Break) {
-            val r4 = this.field4.chainingLess(other.field4)
+        if ((this[4]).chainingLess(other[4]) is Break) {
+            val r4 = (this[4]).chainingLess(other[4])
             return r4
         }
-        if (this.field5.chainingLess(other.field5) is Break) {
-            val r5 = this.field5.chainingLess(other.field5)
+        if ((this[5]).chainingLess(other[5]) is Break) {
+            val r5 = (this[5]).chainingLess(other[5])
             return r5
         }
-        if (this.field6.chainingLess(other.field6) is Break) {
-            val r6 = this.field6.chainingLess(other.field6)
+        if ((this[6]).chainingLess(other[6]) is Break) {
+            val r6 = (this[6]).chainingLess(other[6])
             return r6
         }
-        if (this.field7.chainingLess(other.field7) is Break) {
-            val r7 = this.field7.chainingLess(other.field7)
+        if ((this[7]).chainingLess(other[7]) is Break) {
+            val r7 = (this[7]).chainingLess(other[7])
             return r7
         }
-        if (this.field8.chainingLess(other.field8) is Break) {
-            val r8 = this.field8.chainingLess(other.field8)
+        if ((this[8]).chainingLess(other[8]) is Break) {
+            val r8 = (this[8]).chainingLess(other[8])
             return r8
         }
-        if (this.field9.chainingLess(other.field9) is Break) {
-            val r9 = this.field9.chainingLess(other.field9)
+        if ((this[9]).chainingLess(other[9]) is Break) {
+            val r9 = (this[9]).chainingLess(other[9])
             return r9
         }
-        if (this.field10.chainingLess(other.field10) is Break) {
-            val r10 = this.field10.chainingLess(other.field10)
+        if ((this[10]).chainingLess(other[10]) is Break) {
+            val r10 = (this[10]).chainingLess(other[10])
             return r10
         }
         Continue()
@@ -3355,48 +3356,48 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromDCBAZYXW
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromDCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingGreater(other.first) is Break) {
-            val r = this.value.chainingGreater(other.first)
+        if ((this[0]).chainingGreater(other[0]) is Break) {
+            val r = (this[0]).chainingGreater(other[0])
             return r
         }
-        if (this.field1.chainingGreater(other.second) is Break) {
-            val r1 = this.field1.chainingGreater(other.second)
+        if ((this[1]).chainingGreater(other[1]) is Break) {
+            val r1 = (this[1]).chainingGreater(other[1])
             return r1
         }
-        if (this.field2.chainingGreater(other.third) is Break) {
-            val r2 = this.field2.chainingGreater(other.third)
+        if ((this[2]).chainingGreater(other[2]) is Break) {
+            val r2 = (this[2]).chainingGreater(other[2])
             return r2
         }
-        if (this.field3.chainingGreater(other.field3) is Break) {
-            val r3 = this.field3.chainingGreater(other.field3)
+        if ((this[3]).chainingGreater(other[3]) is Break) {
+            val r3 = (this[3]).chainingGreater(other[3])
             return r3
         }
-        if (this.field4.chainingGreater(other.field4) is Break) {
-            val r4 = this.field4.chainingGreater(other.field4)
+        if ((this[4]).chainingGreater(other[4]) is Break) {
+            val r4 = (this[4]).chainingGreater(other[4])
             return r4
         }
-        if (this.field5.chainingGreater(other.field5) is Break) {
-            val r5 = this.field5.chainingGreater(other.field5)
+        if ((this[5]).chainingGreater(other[5]) is Break) {
+            val r5 = (this[5]).chainingGreater(other[5])
             return r5
         }
-        if (this.field6.chainingGreater(other.field6) is Break) {
-            val r6 = this.field6.chainingGreater(other.field6)
+        if ((this[6]).chainingGreater(other[6]) is Break) {
+            val r6 = (this[6]).chainingGreater(other[6])
             return r6
         }
-        if (this.field7.chainingGreater(other.field7) is Break) {
-            val r7 = this.field7.chainingGreater(other.field7)
+        if ((this[7]).chainingGreater(other[7]) is Break) {
+            val r7 = (this[7]).chainingGreater(other[7])
             return r7
         }
-        if (this.field8.chainingGreater(other.field8) is Break) {
-            val r8 = this.field8.chainingGreater(other.field8)
+        if ((this[8]).chainingGreater(other[8]) is Break) {
+            val r8 = (this[8]).chainingGreater(other[8])
             return r8
         }
-        if (this.field9.chainingGreater(other.field9) is Break) {
-            val r9 = this.field9.chainingGreater(other.field9)
+        if ((this[9]).chainingGreater(other[9]) is Break) {
+            val r9 = (this[9]).chainingGreater(other[9])
             return r9
         }
-        if (this.field10.chainingGreater(other.field10) is Break) {
-            val r10 = this.field10.chainingGreater(other.field10)
+        if ((this[10]).chainingGreater(other[10]) is Break) {
+            val r10 = (this[10]).chainingGreater(other[10])
             return r10
         }
         Continue()
@@ -3404,17 +3405,17 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromDCBAZ
 }
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.cmpFromDCBAZYXWVUT(other: List<Any?>): Ordering =
-    when (val matchVal = (this.value).cmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).cmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).cmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).cmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).cmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).cmp(other.field5)) {
-                            Equal -> when (val matchVal6 = (this.field6).cmp(other.field6)) {
-                                Equal -> when (val matchVal7 = (this.field7).cmp(other.field7)) {
-                                    Equal -> when (val matchVal8 = (this.field8).cmp(other.field8)) {
-                                        Equal -> when (val matchVal9 = (this.field9).cmp(other.field9)) {
-                                            Equal -> (this.field10).cmp(other.field10)
+    when (val matchVal = (this[0]).cmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).cmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).cmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).cmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).cmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).cmp(other[5])) {
+                            Equal -> when (val matchVal6 = (this[6]).cmp(other[6])) {
+                                Equal -> when (val matchVal7 = (this[7]).cmp(other[7])) {
+                                    Equal -> when (val matchVal8 = (this[8]).cmp(other[8])) {
+                                        Equal -> when (val matchVal9 = (this[9]).cmp(other[9])) {
+                                            Equal -> (this[10]).cmp(other[10])
                                             else -> {
                                                 val ordering = matchVal9
                                                 ordering
@@ -3513,18 +3514,18 @@ public fun <T> fromTArray11(tuple: List<Any?>): List<T> {
 }
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromEDCBAZYXWVUT(other: List<Any?>): Ordering? =
-    when (val matchVal = (this.value).partialCmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).partialCmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).partialCmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).partialCmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).partialCmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).partialCmp(other.field5)) {
-                            Equal -> when (val matchVal6 = (this.field6).partialCmp(other.field6)) {
-                                Equal -> when (val matchVal7 = (this.field7).partialCmp(other.field7)) {
-                                    Equal -> when (val matchVal8 = (this.field8).partialCmp(other.field8)) {
-                                        Equal -> when (val matchVal9 = (this.field9).partialCmp(other.field9)) {
-                                            Equal -> when (val matchVal10 = (this.field10).partialCmp(other.field10)) {
-                                                Equal -> (this.field11).partialCmp(other.field11)
+    when (val matchVal = (this[0]).partialCmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).partialCmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).partialCmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).partialCmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).partialCmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).partialCmp(other[5])) {
+                            Equal -> when (val matchVal6 = (this[6]).partialCmp(other[6])) {
+                                Equal -> when (val matchVal7 = (this[7]).partialCmp(other[7])) {
+                                    Equal -> when (val matchVal8 = (this[8]).partialCmp(other[8])) {
+                                        Equal -> when (val matchVal9 = (this[9]).partialCmp(other[9])) {
+                                            Equal -> when (val matchVal10 = (this[10]).partialCmp(other[10])) {
+                                                Equal -> (this[11]).partialCmp(other[11])
                                                 else -> {
                                                     val ordering = matchVal10
                                                     ordering
@@ -3582,72 +3583,72 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromEDCBAZY
     }
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromEDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingLess(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingLess(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingLess(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingLess(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingLess(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingLess(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
                                                                         is Continue -> {
-                                                                            when (val matchVal9 = this.field9.chainingLess(other.field9)) {
+                                                                            when (val matchVal9 = (this[9]).chainingLess(other[9])) {
                                                                                 is Break -> {
                                                                                     val (value9) = matchVal9
                                                                                     value9
                                                                                 }
                                                                                 is Continue -> {
-                                                                                    when (val matchVal10 = this.field10.chainingLess(other.field10)) {
+                                                                                    when (val matchVal10 = (this[10]).chainingLess(other[10])) {
                                                                                         is Break -> {
                                                                                             val (value10) = matchVal10
                                                                                             value10
                                                                                         }
-                                                                                        is Continue -> this.field11.lt(other.field11)
+                                                                                        is Continue -> (this[11]).lt(other[11])
                                                                                     }
                                                                                 }
                                                                             }
@@ -3671,72 +3672,72 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromEDCBAZYXWVUT(ot
     }
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromEDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingLess(other.first)) {
+    when (val matchVal = (this[0]).chainingLess(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingLess(other.second)) {
+            when (val matchVal1 = (this[1]).chainingLess(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingLess(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingLess(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingLess(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingLess(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingLess(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingLess(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingLess(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingLess(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingLess(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingLess(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingLess(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingLess(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingLess(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingLess(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
                                                                         is Continue -> {
-                                                                            when (val matchVal9 = this.field9.chainingLess(other.field9)) {
+                                                                            when (val matchVal9 = (this[9]).chainingLess(other[9])) {
                                                                                 is Break -> {
                                                                                     val (value9) = matchVal9
                                                                                     value9
                                                                                 }
                                                                                 is Continue -> {
-                                                                                    when (val matchVal10 = this.field10.chainingLess(other.field10)) {
+                                                                                    when (val matchVal10 = (this[10]).chainingLess(other[10])) {
                                                                                         is Break -> {
                                                                                             val (value10) = matchVal10
                                                                                             value10
                                                                                         }
-                                                                                        is Continue -> this.field11.le(other.field11)
+                                                                                        is Continue -> (this[11]).le(other[11])
                                                                                     }
                                                                                 }
                                                                             }
@@ -3760,72 +3761,72 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromEDCBAZYXWVUT(ot
     }
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromEDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingGreater(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingGreater(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingGreater(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingGreater(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingGreater(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingGreater(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
                                                                         is Continue -> {
-                                                                            when (val matchVal9 = this.field9.chainingGreater(other.field9)) {
+                                                                            when (val matchVal9 = (this[9]).chainingGreater(other[9])) {
                                                                                 is Break -> {
                                                                                     val (value9) = matchVal9
                                                                                     value9
                                                                                 }
                                                                                 is Continue -> {
-                                                                                    when (val matchVal10 = this.field10.chainingGreater(other.field10)) {
+                                                                                    when (val matchVal10 = (this[10]).chainingGreater(other[10])) {
                                                                                         is Break -> {
                                                                                             val (value10) = matchVal10
                                                                                             value10
                                                                                         }
-                                                                                        is Continue -> this.field11.ge(other.field11)
+                                                                                        is Continue -> (this[11]).ge(other[11])
                                                                                     }
                                                                                 }
                                                                             }
@@ -3849,72 +3850,72 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromEDCBAZYXWVUT(ot
     }
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromEDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = this.value.chainingGreater(other.first)) {
+    when (val matchVal = (this[0]).chainingGreater(other[0])) {
         is Break -> {
             val (value) = matchVal
             value
         }
         is Continue -> {
-            when (val matchVal1 = this.field1.chainingGreater(other.second)) {
+            when (val matchVal1 = (this[1]).chainingGreater(other[1])) {
                 is Break -> {
                     val (value1) = matchVal1
                     value1
                 }
                 is Continue -> {
-                    when (val matchVal2 = this.field2.chainingGreater(other.third)) {
+                    when (val matchVal2 = (this[2]).chainingGreater(other[2])) {
                         is Break -> {
                             val (value2) = matchVal2
                             value2
                         }
                         is Continue -> {
-                            when (val matchVal3 = this.field3.chainingGreater(other.field3)) {
+                            when (val matchVal3 = (this[3]).chainingGreater(other[3])) {
                                 is Break -> {
                                     val (value3) = matchVal3
                                     value3
                                 }
                                 is Continue -> {
-                                    when (val matchVal4 = this.field4.chainingGreater(other.field4)) {
+                                    when (val matchVal4 = (this[4]).chainingGreater(other[4])) {
                                         is Break -> {
                                             val (value4) = matchVal4
                                             value4
                                         }
                                         is Continue -> {
-                                            when (val matchVal5 = this.field5.chainingGreater(other.field5)) {
+                                            when (val matchVal5 = (this[5]).chainingGreater(other[5])) {
                                                 is Break -> {
                                                     val (value5) = matchVal5
                                                     value5
                                                 }
                                                 is Continue -> {
-                                                    when (val matchVal6 = this.field6.chainingGreater(other.field6)) {
+                                                    when (val matchVal6 = (this[6]).chainingGreater(other[6])) {
                                                         is Break -> {
                                                             val (value6) = matchVal6
                                                             value6
                                                         }
                                                         is Continue -> {
-                                                            when (val matchVal7 = this.field7.chainingGreater(other.field7)) {
+                                                            when (val matchVal7 = (this[7]).chainingGreater(other[7])) {
                                                                 is Break -> {
                                                                     val (value7) = matchVal7
                                                                     value7
                                                                 }
                                                                 is Continue -> {
-                                                                    when (val matchVal8 = this.field8.chainingGreater(other.field8)) {
+                                                                    when (val matchVal8 = (this[8]).chainingGreater(other[8])) {
                                                                         is Break -> {
                                                                             val (value8) = matchVal8
                                                                             value8
                                                                         }
                                                                         is Continue -> {
-                                                                            when (val matchVal9 = this.field9.chainingGreater(other.field9)) {
+                                                                            when (val matchVal9 = (this[9]).chainingGreater(other[9])) {
                                                                                 is Break -> {
                                                                                     val (value9) = matchVal9
                                                                                     value9
                                                                                 }
                                                                                 is Continue -> {
-                                                                                    when (val matchVal10 = this.field10.chainingGreater(other.field10)) {
+                                                                                    when (val matchVal10 = (this[10]).chainingGreater(other[10])) {
                                                                                         is Break -> {
                                                                                             val (value10) = matchVal10
                                                                                             value10
                                                                                         }
-                                                                                        is Continue -> this.field11.gt(other.field11)
+                                                                                        is Continue -> (this[11]).gt(other[11])
                                                                                     }
                                                                                 }
                                                                             }
@@ -3939,52 +3940,52 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromEDCBAZYXWVUT(ot
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromEDCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingLess(other.first) is Break) {
-            val r = this.value.chainingLess(other.first)
+        if ((this[0]).chainingLess(other[0]) is Break) {
+            val r = (this[0]).chainingLess(other[0])
             return r
         }
-        if (this.field1.chainingLess(other.second) is Break) {
-            val r1 = this.field1.chainingLess(other.second)
+        if ((this[1]).chainingLess(other[1]) is Break) {
+            val r1 = (this[1]).chainingLess(other[1])
             return r1
         }
-        if (this.field2.chainingLess(other.third) is Break) {
-            val r2 = this.field2.chainingLess(other.third)
+        if ((this[2]).chainingLess(other[2]) is Break) {
+            val r2 = (this[2]).chainingLess(other[2])
             return r2
         }
-        if (this.field3.chainingLess(other.field3) is Break) {
-            val r3 = this.field3.chainingLess(other.field3)
+        if ((this[3]).chainingLess(other[3]) is Break) {
+            val r3 = (this[3]).chainingLess(other[3])
             return r3
         }
-        if (this.field4.chainingLess(other.field4) is Break) {
-            val r4 = this.field4.chainingLess(other.field4)
+        if ((this[4]).chainingLess(other[4]) is Break) {
+            val r4 = (this[4]).chainingLess(other[4])
             return r4
         }
-        if (this.field5.chainingLess(other.field5) is Break) {
-            val r5 = this.field5.chainingLess(other.field5)
+        if ((this[5]).chainingLess(other[5]) is Break) {
+            val r5 = (this[5]).chainingLess(other[5])
             return r5
         }
-        if (this.field6.chainingLess(other.field6) is Break) {
-            val r6 = this.field6.chainingLess(other.field6)
+        if ((this[6]).chainingLess(other[6]) is Break) {
+            val r6 = (this[6]).chainingLess(other[6])
             return r6
         }
-        if (this.field7.chainingLess(other.field7) is Break) {
-            val r7 = this.field7.chainingLess(other.field7)
+        if ((this[7]).chainingLess(other[7]) is Break) {
+            val r7 = (this[7]).chainingLess(other[7])
             return r7
         }
-        if (this.field8.chainingLess(other.field8) is Break) {
-            val r8 = this.field8.chainingLess(other.field8)
+        if ((this[8]).chainingLess(other[8]) is Break) {
+            val r8 = (this[8]).chainingLess(other[8])
             return r8
         }
-        if (this.field9.chainingLess(other.field9) is Break) {
-            val r9 = this.field9.chainingLess(other.field9)
+        if ((this[9]).chainingLess(other[9]) is Break) {
+            val r9 = (this[9]).chainingLess(other[9])
             return r9
         }
-        if (this.field10.chainingLess(other.field10) is Break) {
-            val r10 = this.field10.chainingLess(other.field10)
+        if ((this[10]).chainingLess(other[10]) is Break) {
+            val r10 = (this[10]).chainingLess(other[10])
             return r10
         }
-        if (this.field11.chainingLess(other.field11) is Break) {
-            val r11 = this.field11.chainingLess(other.field11)
+        if ((this[11]).chainingLess(other[11]) is Break) {
+            val r11 = (this[11]).chainingLess(other[11])
             return r11
         }
         Continue()
@@ -3993,52 +3994,52 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromEDCBA
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromEDCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean> {
     return run {
-        if (this.value.chainingGreater(other.first) is Break) {
-            val r = this.value.chainingGreater(other.first)
+        if ((this[0]).chainingGreater(other[0]) is Break) {
+            val r = (this[0]).chainingGreater(other[0])
             return r
         }
-        if (this.field1.chainingGreater(other.second) is Break) {
-            val r1 = this.field1.chainingGreater(other.second)
+        if ((this[1]).chainingGreater(other[1]) is Break) {
+            val r1 = (this[1]).chainingGreater(other[1])
             return r1
         }
-        if (this.field2.chainingGreater(other.third) is Break) {
-            val r2 = this.field2.chainingGreater(other.third)
+        if ((this[2]).chainingGreater(other[2]) is Break) {
+            val r2 = (this[2]).chainingGreater(other[2])
             return r2
         }
-        if (this.field3.chainingGreater(other.field3) is Break) {
-            val r3 = this.field3.chainingGreater(other.field3)
+        if ((this[3]).chainingGreater(other[3]) is Break) {
+            val r3 = (this[3]).chainingGreater(other[3])
             return r3
         }
-        if (this.field4.chainingGreater(other.field4) is Break) {
-            val r4 = this.field4.chainingGreater(other.field4)
+        if ((this[4]).chainingGreater(other[4]) is Break) {
+            val r4 = (this[4]).chainingGreater(other[4])
             return r4
         }
-        if (this.field5.chainingGreater(other.field5) is Break) {
-            val r5 = this.field5.chainingGreater(other.field5)
+        if ((this[5]).chainingGreater(other[5]) is Break) {
+            val r5 = (this[5]).chainingGreater(other[5])
             return r5
         }
-        if (this.field6.chainingGreater(other.field6) is Break) {
-            val r6 = this.field6.chainingGreater(other.field6)
+        if ((this[6]).chainingGreater(other[6]) is Break) {
+            val r6 = (this[6]).chainingGreater(other[6])
             return r6
         }
-        if (this.field7.chainingGreater(other.field7) is Break) {
-            val r7 = this.field7.chainingGreater(other.field7)
+        if ((this[7]).chainingGreater(other[7]) is Break) {
+            val r7 = (this[7]).chainingGreater(other[7])
             return r7
         }
-        if (this.field8.chainingGreater(other.field8) is Break) {
-            val r8 = this.field8.chainingGreater(other.field8)
+        if ((this[8]).chainingGreater(other[8]) is Break) {
+            val r8 = (this[8]).chainingGreater(other[8])
             return r8
         }
-        if (this.field9.chainingGreater(other.field9) is Break) {
-            val r9 = this.field9.chainingGreater(other.field9)
+        if ((this[9]).chainingGreater(other[9]) is Break) {
+            val r9 = (this[9]).chainingGreater(other[9])
             return r9
         }
-        if (this.field10.chainingGreater(other.field10) is Break) {
-            val r10 = this.field10.chainingGreater(other.field10)
+        if ((this[10]).chainingGreater(other[10]) is Break) {
+            val r10 = (this[10]).chainingGreater(other[10])
             return r10
         }
-        if (this.field11.chainingGreater(other.field11) is Break) {
-            val r11 = this.field11.chainingGreater(other.field11)
+        if ((this[11]).chainingGreater(other[11]) is Break) {
+            val r11 = (this[11]).chainingGreater(other[11])
             return r11
         }
         Continue()
@@ -4046,18 +4047,18 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromED
 }
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.cmpFromEDCBAZYXWVUT(other: List<Any?>): Ordering =
-    when (val matchVal = (this.value).cmp(other.first)) {
-        Equal -> when (val matchVal1 = (this.field1).cmp(other.second)) {
-            Equal -> when (val matchVal2 = (this.field2).cmp(other.third)) {
-                Equal -> when (val matchVal3 = (this.field3).cmp(other.field3)) {
-                    Equal -> when (val matchVal4 = (this.field4).cmp(other.field4)) {
-                        Equal -> when (val matchVal5 = (this.field5).cmp(other.field5)) {
-                            Equal -> when (val matchVal6 = (this.field6).cmp(other.field6)) {
-                                Equal -> when (val matchVal7 = (this.field7).cmp(other.field7)) {
-                                    Equal -> when (val matchVal8 = (this.field8).cmp(other.field8)) {
-                                        Equal -> when (val matchVal9 = (this.field9).cmp(other.field9)) {
-                                            Equal -> when (val matchVal10 = (this.field10).cmp(other.field10)) {
-                                                Equal -> (this.field11).cmp(other.field11)
+    when (val matchVal = (this[0]).cmp(other[0])) {
+        Equal -> when (val matchVal1 = (this[1]).cmp(other[1])) {
+            Equal -> when (val matchVal2 = (this[2]).cmp(other[2])) {
+                Equal -> when (val matchVal3 = (this[3]).cmp(other[3])) {
+                    Equal -> when (val matchVal4 = (this[4]).cmp(other[4])) {
+                        Equal -> when (val matchVal5 = (this[5]).cmp(other[5])) {
+                            Equal -> when (val matchVal6 = (this[6]).cmp(other[6])) {
+                                Equal -> when (val matchVal7 = (this[7]).cmp(other[7])) {
+                                    Equal -> when (val matchVal8 = (this[8]).cmp(other[8])) {
+                                        Equal -> when (val matchVal9 = (this[9]).cmp(other[9])) {
+                                            Equal -> when (val matchVal10 = (this[10]).cmp(other[10])) {
+                                                Equal -> (this[11]).cmp(other[11])
                                                 else -> {
                                                     val ordering = matchVal10
                                                     ordering

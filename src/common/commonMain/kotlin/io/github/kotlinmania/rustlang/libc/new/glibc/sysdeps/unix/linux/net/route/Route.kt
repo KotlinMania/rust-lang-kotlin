@@ -1,13 +1,13 @@
 // port-lint: source new/glibc/sysdeps/unix/linux/net/route.rs
 package io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.net.route
 
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.Sockaddr
+import io.github.kotlinmania.rustlang.unix.bsd.Sockaddr
 
 // Header: `net / route.h`
 //

@@ -1,7 +1,7 @@
 // port-lint: source sys/configure_builtins.rs
 package io.github.kotlinmania.rustlang.std.sys.configurebuiltins
 
-import io.github.kotlinmania.rustlang.std.arch.isAarch64FeatureDetected
+import io.github.kotlinmania.rustlang.arch.isAarch64FeatureDetected
 
 // The configure builtins provides runtime support compiler-builtin features
 // which require dynamic initialization to work as expected, e.g. aarch64

@@ -1,7 +1,7 @@
 // port-lint: source ops/async_function.rs
 package io.github.kotlinmania.rustlang.core.ops.asyncfunction
 
-import io.github.kotlinmania.rustlang.core.marker.Tuple
+import io.github.kotlinmania.rustlang.marker.Tuple
 
 /**
  * An async-aware version of the [`Fn`](ops.Fn) trait.

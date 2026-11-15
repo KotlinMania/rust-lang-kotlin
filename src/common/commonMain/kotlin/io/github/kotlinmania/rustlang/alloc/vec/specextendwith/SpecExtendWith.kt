@@ -1,15 +1,13 @@
 // port-lint: source vec/spec_extend_with.rs
 package io.github.kotlinmania.rustlang.alloc.vec.specextendwith
 
-import io.github.kotlinmania.rustlang.alloc.vec.setlenondrop.SetLenOnDrop
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
-import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.vec.setlenondrop.SetLenOnDrop
 
 public interface SpecExtendWith<T> {
     /**
@@ -40,7 +38,7 @@ public fun <T, A : Allocator> List<T>.specExtendWith(n: Int, value: T, cloneTFn:
         // - the length will be set by SetLenOnDrop, to the amount of initialized elements
         // - later, when the Vec is dropped, only initialized elements are dropped.
         // SAFETY: According to the diagram above, this write is within bounds.
-        write(ptr, cloneTFn(value))
+        ptr.write(ptr, cloneTFn(value))
         // SAFETY: According to the diagram above, this increment is within bounds of the
         // allocation and won't wrap around
         ptr = MutPtr((ptr).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
@@ -52,7 +50,7 @@ public fun <T, A : Allocator> List<T>.specExtendWith(n: Int, value: T, cloneTFn:
         // We can write the last element directly without cloning needlessly
         // SAFETY: According to the diagram above, the last element is not yet written,
         // so this write is within bounds.
-        write(ptr, value)
+        ptr.write(ptr, value)
         localLen.incrementLen(1)
     }
     // len set by scope guard

@@ -1,33 +1,36 @@
 // port-lint: source x86/sse41.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.simd.F32x4
-import io.github.kotlinmania.rustlang.corearch.simd.F64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I16x2
-import io.github.kotlinmania.rustlang.corearch.simd.I16x4
-import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simd.I32x2
-import io.github.kotlinmania.rustlang.corearch.simd.I32x4
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simd.I8x2
-import io.github.kotlinmania.rustlang.corearch.simd.I8x4
-import io.github.kotlinmania.rustlang.corearch.simd.I8x8
-import io.github.kotlinmania.rustlang.corearch.simd.U16x2
-import io.github.kotlinmania.rustlang.corearch.simd.U16x4
-import io.github.kotlinmania.rustlang.corearch.simd.U16x8
-import io.github.kotlinmania.rustlang.corearch.simd.U32x2
-import io.github.kotlinmania.rustlang.corearch.simd.U8x16
-import io.github.kotlinmania.rustlang.corearch.simd.U8x2
-import io.github.kotlinmania.rustlang.corearch.simd.U8x4
-import io.github.kotlinmania.rustlang.corearch.simd.U8x8
-import io.github.kotlinmania.rustlang.corearch.simd.simdImax
-import io.github.kotlinmania.rustlang.corearch.simd.simdImin
+import io.github.kotlinmania.rustlang.simd.I16x2
+import io.github.kotlinmania.rustlang.simd.I16x4
+import io.github.kotlinmania.rustlang.simd.I16x8
+import io.github.kotlinmania.rustlang.simd.I32x2
+import io.github.kotlinmania.rustlang.simd.I32x4
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.I8x2
+import io.github.kotlinmania.rustlang.simd.I8x4
+import io.github.kotlinmania.rustlang.simd.I8x8
+import io.github.kotlinmania.rustlang.simd.U16x2
+import io.github.kotlinmania.rustlang.simd.U16x4
+import io.github.kotlinmania.rustlang.simd.U16x8
+import io.github.kotlinmania.rustlang.simd.U32x2
+import io.github.kotlinmania.rustlang.simd.U8x16
+import io.github.kotlinmania.rustlang.simd.U8x2
+import io.github.kotlinmania.rustlang.simd.U8x4
+import io.github.kotlinmania.rustlang.simd.U8x8
+import io.github.kotlinmania.rustlang.simd.simdImax
+import io.github.kotlinmania.rustlang.simd.simdImin
+import io.github.kotlinmania.rustlang.x86.M128
+import io.github.kotlinmania.rustlang.x86.M128d
+import io.github.kotlinmania.rustlang.x86.M128i
+import io.github.kotlinmania.rustlang.x86.mmCmpeqEpi32
 
 // Streaming SIMD Extensions 4.1 (SSE4.1)
 
@@ -127,7 +130,7 @@ public fun mmBlendEpi16(a: M128i, b: M128i, imm8: Int): M128i {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute<I16x8>(run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 8)[imm8 and 1], listOf(1, 9)[(imm8 shr 1) and 1], listOf(2, 10)[(imm8 shr 2) and 1], listOf(3, 11)[(imm8 shr 3) and 1], listOf(4, 12)[(imm8 shr 4) and 1], listOf(5, 13)[(imm8 shr 5) and 1], listOf(6, 14)[(imm8 shr 6) and 1], listOf(7, 15)[(imm8 shr 7) and 1])); _simdArg0 })
+    return transmute(run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 8)[imm8 and 1], listOf(1, 9)[(imm8 shr 1) and 1], listOf(2, 10)[(imm8 shr 2) and 1], listOf(3, 11)[(imm8 shr 3) and 1], listOf(4, 12)[(imm8 shr 4) and 1], listOf(5, 13)[(imm8 shr 5) and 1], listOf(6, 14)[(imm8 shr 6) and 1], listOf(7, 15)[(imm8 shr 7) and 1])); _simdArg0 })
 }
 
 /**
@@ -138,7 +141,7 @@ public fun mmBlendEpi16(a: M128i, b: M128i, imm8: Int): M128i {
  */
 public fun mmBlendvPd(a: M128d, b: M128d, mask: M128d): M128d =
     run {
-        val mask1: I64x2 = run { val _simdArg0 = transmute<I64x2>(mask); val _simdArg1 = i64x2.ZERO; _simdArg0 }
+        val mask1: I64x2 = run { val _simdArg0 = transmute(mask); val _simdArg1 = i64x2.ZERO; _simdArg0 }
         transmute(run { val _simdArg0 = mask1; val _simdArg1 = b.asF64x2(); val _simdArg2 = a.asF64x2(); _simdArg1 })
     }
 
@@ -150,7 +153,7 @@ public fun mmBlendvPd(a: M128d, b: M128d, mask: M128d): M128d =
  */
 public fun mmBlendvPs(a: M128, b: M128, mask: M128): M128 =
     run {
-        val mask1: I32x4 = run { val _simdArg0 = transmute<I32x4>(mask); val _simdArg1 = i32x4.ZERO; _simdArg0 }
+        val mask1: I32x4 = run { val _simdArg0 = transmute(mask); val _simdArg1 = i32x4.ZERO; _simdArg0 }
         transmute(run { val _simdArg0 = mask1; val _simdArg1 = b.asF32x4(); val _simdArg2 = a.asF32x4(); _simdArg1 })
     }
 
@@ -168,7 +171,7 @@ public fun mmBlendPd(a: M128d, b: M128d, imm2: Int): M128d {
     run {
         check(0 <= imm2 && imm2 < (1 shl 2)) { "IMM2 doesn't fit in 2 bits (unsigned)" }
     }
-    return transmute<F64x2>(run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 2)[imm2 and 1], listOf(1, 3)[(imm2 shr 1) and 1])); _simdArg0 })
+    return transmute(run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 2)[imm2 and 1], listOf(1, 3)[(imm2 shr 1) and 1])); _simdArg0 })
 }
 
 /**
@@ -181,7 +184,7 @@ public fun mmBlendPs(a: M128, b: M128, imm4: Int): M128 {
     run {
         check(0 <= imm4 && imm4 < (1 shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute<F32x4>(run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 4)[imm4 and 1], listOf(1, 5)[(imm4 shr 1) and 1], listOf(2, 6)[(imm4 shr 2) and 1], listOf(3, 7)[(imm4 shr 3) and 1])); _simdArg0 })
+    return transmute(run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 4)[imm4 and 1], listOf(1, 5)[(imm4 shr 1) and 1], listOf(2, 6)[(imm4 shr 2) and 1], listOf(3, 7)[(imm4 shr 3) and 1])); _simdArg0 })
 }
 
 /**

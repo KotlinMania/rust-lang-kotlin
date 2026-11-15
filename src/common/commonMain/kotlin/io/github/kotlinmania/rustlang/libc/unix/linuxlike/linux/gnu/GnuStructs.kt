@@ -2,40 +2,40 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.CcT
-import io.github.kotlinmania.rustlang.libc.FanotifyEventInfoHeader
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.Sigevent
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.SpeedT
-import io.github.kotlinmania.rustlang.libc.TcflagT
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S16
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S32
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S64
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U8
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Elf32Word
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Elf64Word
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Elf64Xword
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.ETH_ALEN
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Off64T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.NCCS
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S16
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S32
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.S64
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U16
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U32
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U64
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U8
+import io.github.kotlinmania.rustlang.unix.CcT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.Sigevent
+import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
+import io.github.kotlinmania.rustlang.unix.linuxlike.Elf32Word
+import io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Word
+import io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Xword
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.ETH_ALEN
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.FanotifyEventInfoHeader
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Off64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.SocklenT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.NCCS
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -831,7 +831,7 @@ public data class Mallinfo2(
 }
 
 public data class Ntptimeval(
-    public var time: io.github.kotlinmania.rustlang.libc.Timeval = io.github.kotlinmania.rustlang.libc.Timeval(),
+    public var time: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval(),
     public var maxerror: CLong = 0L,
     public var esterror: CLong = 0L,
     public var tai: CLong = 0L,
@@ -1411,7 +1411,7 @@ public data class PtraceSudConfig(
 public data class Iocb(
     public var aioData: U64 = 0uL,
     public var aioKey: U32 = 0u,
-    public var aioRwFlags: KernelRwfT = 0,
+    public var aioRwFlags: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.KernelRwfT = 0,
     public var aioLioOpcode: U16 = 0u,
     public var aioReqprio: S16 = 0,
     public var aioFildes: U32 = 0u,
@@ -2009,7 +2009,7 @@ public data class MbstateT(
 
 public data class Fpos64T(
     public var pos: Off64T = 0L,
-    public var state: io.github.kotlinmania.rustlang.libc.MbstateT = io.github.kotlinmania.rustlang.libc.MbstateT(),
+    public var state: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.MbstateT = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.MbstateT(),
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<Fpos64T> =
@@ -2040,7 +2040,7 @@ public data class Fpos64T(
 
 public data class FposT(
     public var pos: OffT = 0L,
-    public var state: io.github.kotlinmania.rustlang.libc.MbstateT = io.github.kotlinmania.rustlang.libc.MbstateT(),
+    public var state: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.MbstateT = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.MbstateT(),
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<FposT> =
@@ -2114,7 +2114,7 @@ public data class Utmpx(
     public var utHost: UByteArray = UByteArray(UT_HOSTSIZE),
     public var utExit: ExitStatus = ExitStatus(),
     public var utSession: CLong = 0L,
-    public var utTv: io.github.kotlinmania.rustlang.libc.Timeval = io.github.kotlinmania.rustlang.libc.Timeval(),
+    public var utTv: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval(),
     public var utAddrV6: IntArray = IntArray(4),
     public var glibcReserved: UByteArray = UByteArray(20),
 ) {
@@ -2224,7 +2224,7 @@ public data class Utmpx(
 public data class Ethhdr(
     public var hDest: UByteArray = UByteArray(ETH_ALEN),
     public var hSource: UByteArray = UByteArray(ETH_ALEN),
-    public var hProto: Be16 = 0u,
+    public var hProto: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Be16 = 0u,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

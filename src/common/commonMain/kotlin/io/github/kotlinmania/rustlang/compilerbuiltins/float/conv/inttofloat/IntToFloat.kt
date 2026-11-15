@@ -1,12 +1,12 @@
 // port-lint: source float/conv.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
 import io.github.kotlinmania.rustlang.core.num.rustWrappingShl
+import io.github.kotlinmania.rustlang.support.Float
+import io.github.kotlinmania.rustlang.support.Int
 
 // Conversions from integers to floats.
 //

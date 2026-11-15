@@ -1,10 +1,10 @@
 // port-lint: source collections/btree/node.rs
 package io.github.kotlinmania.rustlang.alloc.collections.btree.node
 
-import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.collections.btree.mem.takeMut
-import io.github.kotlinmania.rustlang.alloc.collections.linkedlist.Node
-import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.Dropper
+import io.github.kotlinmania.rustlang.boxed.Box
+import io.github.kotlinmania.rustlang.collections.btree.mem.takeMut
+import io.github.kotlinmania.rustlang.collections.linkedlist.Node
+import io.github.kotlinmania.rustlang.collections.vecdeque.Dropper
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
@@ -14,12 +14,9 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copy
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -1105,7 +1102,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, Edge>.ins
     while (true) {
         split1 = run {
             val matchVal1 = split1.left.ascend()
-            when (matchVal1) { is Result.Ok<*> -> {
+            when (matchVal1) { is Result.Ok<*, *> -> {
                 val parent = matchVal1.value
                 when (val matchVal2 = parent.insert(split1.kv.first, split1.kv.second, split1.right, alloc.clone())) {
                     // SAFETY: we have finished splitting and can now re-awaken the
@@ -1116,7 +1113,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, Edge>.ins
                         split2.forgetNodeType()
                     }
                 }
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val root = matchVal1.error
                 splitRoot(split1.copy(left = root))
                 // SAFETY: we have finished splitting and can now re-awaken the
@@ -1274,8 +1271,8 @@ public fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.splitLeafDa
     return run {
         val k = this.node.keyAreaMut(this.idx).assumeInitRead()
         val v = this.node.valAreaMut(this.idx).assumeInitRead()
-        moveToSlice(this.node.keyAreaMut(this.idx + 1 until oldLen), ((newNode.keys).slice(0 until newLen)))
-        moveToSlice(this.node.valAreaMut(this.idx + 1 until oldLen), ((newNode.vals).slice(0 until newLen)))
+        moveToSlice(this.node.keyAreaMut(this.idx + 1 until oldLen), ((newNode.keys).subList(0, newLen)))
+        moveToSlice(this.node.valAreaMut(this.idx + 1 until oldLen), ((newNode.vals).subList(0, newLen)))
         this.node.lenMut() = this.idx.toUShort()
         Pair(k, v)
     }
@@ -1609,27 +1606,27 @@ public fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.chooseParentKv(): Result<Le
     // ignore-tidy-undocumented-unchecked
     return run {
         val matchVal = read(this).ascend()
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok<*, *> -> {
             val parentEdge = matchVal.value
             run {
                 val matchVal1 = parentEdge.leftKv()
-                when (matchVal1) { is Result.Ok<*> -> {
+                when (matchVal1) { is Result.Ok<*, *> -> {
                     val leftParentKv = matchVal1.value
                     Result.Ok(LeftOrRight.Left(BalancingContext(parent = read(leftParentKv), leftChild = leftParentKv.leftEdge().descend(), rightChild = this)))
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val parentEdge1 = matchVal1.error
                     run {
                         val matchVal2 = parentEdge1.rightKv()
-                        when (matchVal2) { is Result.Ok<*> -> {
+                        when (matchVal2) { is Result.Ok<*, *> -> {
                             val rightParentKv = matchVal2.value
                             Result.Ok(LeftOrRight.Right(BalancingContext(parent = read(rightParentKv), leftChild = this, rightChild = rightParentKv.rightEdge().descend())))
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err<*, *> -> {
                             error("empty internal node")
                         } }
                     }
                 } }
             }
-        }; is Result.Err<*> -> {
+        }; is Result.Err<*, *> -> {
             val root = matchVal.error
             Result.Err(root)
         } }

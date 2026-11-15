@@ -89,19 +89,19 @@ public class PowInlineTests {
     public fun nanInputs() {
         // NAN as the base:
         // (f64.Nan ^ anything *but 0* should be f64.Nan)
-        testSetsAsExponent(Double.NaN, ((ALL).slice(2 until ALL.size)), Double.NaN)
+        testSetsAsExponent(Double.NaN, ((ALL).subList(2, (ALL).size)), Double.NaN)
         // f64.Nan as the exponent:
         // (anything *but 1* ^ f64.Nan should be f64.Nan)
-        testSetsAsBase(((ALL).slice(0 until (ALL.size - 2))), Double.NaN, Double.NaN)
+        testSetsAsBase(((ALL).subList(0, (ALL.size - 2))), Double.NaN, Double.NaN)
     }
 
     @kotlin.test.Test
     public fun infinityAsBase() {
         // Positive Infinity as the base:
         // (+Infinity ^ positive anything but 0 and f64.Nan should be +Infinity)
-        testSetsAsExponent(Double.POSITIVE_INFINITY, ((POS).slice(1 until POS.size)), Double.POSITIVE_INFINITY)
+        testSetsAsExponent(Double.POSITIVE_INFINITY, ((POS).subList(1, (POS).size)), Double.POSITIVE_INFINITY)
         // (+Infinity ^ negative anything except 0 and f64.Nan should be 0.0)
-        testSetsAsExponent(Double.POSITIVE_INFINITY, ((NEG).slice(1 until NEG.size)), 0.0)
+        testSetsAsExponent(Double.POSITIVE_INFINITY, ((NEG).subList(1, (NEG).size)), 0.0)
         // Negative Infinity as the base:
         // (-Infinity ^ positive odd ints should be -Infinity)
         testSetsAsExponent(Double.NEGATIVE_INFINITY, listOf(POS_ODDS), Double.NEGATIVE_INFINITY)
@@ -117,9 +117,9 @@ public class PowInlineTests {
     public fun infinityAsExponent() {
         // Positive/Negative base greater than 1:
         // (pos/neg > 1 ^ Infinity should be Infinity - note this excludes f64.Nan as the base)
-        testSetsAsBase(((ALL).slice(5 until (ALL.size - 2))), Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY)
+        testSetsAsBase(((ALL).subList(5, (ALL.size - 2))), Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY)
         // (pos/neg > 1 ^ -Infinity should be 0.0)
-        testSetsAsBase(((ALL).slice(5 until ALL.size - 2)), Double.NEGATIVE_INFINITY, 0.0)
+        testSetsAsBase(((ALL).subList(5, ALL.size - 2)), Double.NEGATIVE_INFINITY, 0.0)
         // Positive/Negative base less than 1:
         val baseBelowOne = listOf(POS_ZERO, NEG_ZERO, NEG_SMALL_FLOATS, POS_SMALL_FLOATS)
         // (pos/neg < 1 ^ Infinity should be 0.0 - this also excludes f64.Nan as the base)
@@ -137,16 +137,16 @@ public class PowInlineTests {
     public fun zeroAsBase() {
         // Positive Zero as the base:
         // (+0 ^ anything positive but 0 and f64.Nan should be +0)
-        testSetsAsExponent(0.0, ((POS).slice(1 until POS.size)), 0.0)
+        testSetsAsExponent(0.0, ((POS).subList(1, (POS).size)), 0.0)
         // (+0 ^ anything negative but 0 and f64.Nan should be Infinity)
         // (this should panic because we're dividing by zero)
-        testSetsAsExponent(0.0, ((NEG).slice(1 until NEG.size)), Double.POSITIVE_INFINITY)
+        testSetsAsExponent(0.0, ((NEG).subList(1, (NEG).size)), Double.POSITIVE_INFINITY)
         // Negative Zero as the base:
         // (-0 ^ anything positive but 0, f64.Nan, and odd ints should be +0)
-        testSetsAsExponent(-0.0, ((POS).slice(3 until POS.size)), 0.0)
+        testSetsAsExponent(-0.0, ((POS).subList(3, (POS).size)), 0.0)
         // (-0 ^ anything negative but 0, f64.Nan, and odd ints should be Infinity)
         // (should panic because of divide by zero)
-        testSetsAsExponent(-0.0, ((NEG).slice(3 until NEG.size)), Double.POSITIVE_INFINITY)
+        testSetsAsExponent(-0.0, ((NEG).subList(3, (NEG).size)), Double.POSITIVE_INFINITY)
         // (-0 ^ positive odd ints should be -0)
         testSetsAsExponent(-0.0, listOf(POS_ODDS), -0.0)
         // (-0 ^ negative odd ints should be -Infinity)
@@ -173,9 +173,9 @@ public class PowInlineTests {
         })
         // Negative base (imaginary results):
         // (-anything except 0 and Infinity ^ non-integer should be NAN)
-        ((NEG).slice(1 until (NEG.size - 1))).forEach({ set ->
+        ((NEG).subList(1, (NEG.size - 1))).forEach({ set ->
             set.iter().forEach({ value ->
-                testSets(((ALL).slice(3 until 7)), { v: Double -> pow(value, v) }, { Double.NaN })
+                testSets(((ALL).subList(3, 7)), { v: Double -> pow(value, v) }, { Double.NaN })
             })
         })
     }

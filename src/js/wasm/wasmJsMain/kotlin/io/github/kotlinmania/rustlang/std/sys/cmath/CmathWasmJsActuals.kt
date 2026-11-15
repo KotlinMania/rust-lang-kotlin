@@ -6,159 +6,159 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 
 @JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
-private external fun initSysCmathNapiAddon(): Boolean
+private external fun initStdSysCmathNapiAddon(): Boolean
 
-private val sysCmathNapiAvailable: Boolean = initSysCmathNapiAddon()
+private val stdSysCmathNapiAvailable: Boolean = initStdSysCmathNapiAddon()
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathAcos(p0)")
-private external fun wasmStdSysCmathAcos(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAcos(p0)")
+private external fun wasmRustlangStdSysCmathAcos(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathAcosh(p0)")
-private external fun wasmStdSysCmathAcosh(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAcosh(p0)")
+private external fun wasmRustlangStdSysCmathAcosh(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathAsin(p0)")
-private external fun wasmStdSysCmathAsin(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAsin(p0)")
+private external fun wasmRustlangStdSysCmathAsin(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathAsinh(p0)")
-private external fun wasmStdSysCmathAsinh(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAsinh(p0)")
+private external fun wasmRustlangStdSysCmathAsinh(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathAtan(p0)")
-private external fun wasmStdSysCmathAtan(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAtan(p0)")
+private external fun wasmRustlangStdSysCmathAtan(p0: Double): Double
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysCmathAtan2(p0, p1)")
-private external fun wasmStdSysCmathAtan2(p0: Double, p1: Double): Double
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAtan2(p0, p1)")
+private external fun wasmRustlangStdSysCmathAtan2(p0: Double, p1: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathCosh(p0)")
-private external fun wasmStdSysCmathCosh(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathCosh(p0)")
+private external fun wasmRustlangStdSysCmathCosh(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathExpm1(p0)")
-private external fun wasmStdSysCmathExpm1(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathExpm1(p0)")
+private external fun wasmRustlangStdSysCmathExpm1(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathExpm1f(p0)")
-private external fun wasmStdSysCmathExpm1f(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathExpm1f(p0)")
+private external fun wasmRustlangStdSysCmathExpm1f(p0: Double): Double
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysCmathHypot(p0, p1)")
-private external fun wasmStdSysCmathHypot(p0: Double, p1: Double): Double
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysCmathHypot(p0, p1)")
+private external fun wasmRustlangStdSysCmathHypot(p0: Double, p1: Double): Double
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysCmathHypotf(p0, p1)")
-private external fun wasmStdSysCmathHypotf(p0: Double, p1: Double): Double
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysCmathHypotf(p0, p1)")
+private external fun wasmRustlangStdSysCmathHypotf(p0: Double, p1: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathLog1p(p0)")
-private external fun wasmStdSysCmathLog1p(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathLog1p(p0)")
+private external fun wasmRustlangStdSysCmathLog1p(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathLog1pf(p0)")
-private external fun wasmStdSysCmathLog1pf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathLog1pf(p0)")
+private external fun wasmRustlangStdSysCmathLog1pf(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathSinh(p0)")
-private external fun wasmStdSysCmathSinh(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathSinh(p0)")
+private external fun wasmRustlangStdSysCmathSinh(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathTan(p0)")
-private external fun wasmStdSysCmathTan(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathTan(p0)")
+private external fun wasmRustlangStdSysCmathTan(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathTanh(p0)")
-private external fun wasmStdSysCmathTanh(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathTanh(p0)")
+private external fun wasmRustlangStdSysCmathTanh(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathTgamma(p0)")
-private external fun wasmStdSysCmathTgamma(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathTgamma(p0)")
+private external fun wasmRustlangStdSysCmathTgamma(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathTgammaf(p0)")
-private external fun wasmStdSysCmathTgammaf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathTgammaf(p0)")
+private external fun wasmRustlangStdSysCmathTgammaf(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathErf(p0)")
-private external fun wasmStdSysCmathErf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathErf(p0)")
+private external fun wasmRustlangStdSysCmathErf(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathErff(p0)")
-private external fun wasmStdSysCmathErff(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathErff(p0)")
+private external fun wasmRustlangStdSysCmathErff(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathErfc(p0)")
-private external fun wasmStdSysCmathErfc(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathErfc(p0)")
+private external fun wasmRustlangStdSysCmathErfc(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathErfcf(p0)")
-private external fun wasmStdSysCmathErfcf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathErfcf(p0)")
+private external fun wasmRustlangStdSysCmathErfcf(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathAcosf(p0)")
-private external fun wasmStdSysCmathAcosf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAcosf(p0)")
+private external fun wasmRustlangStdSysCmathAcosf(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathAcoshf(p0)")
-private external fun wasmStdSysCmathAcoshf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAcoshf(p0)")
+private external fun wasmRustlangStdSysCmathAcoshf(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathAsinf(p0)")
-private external fun wasmStdSysCmathAsinf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAsinf(p0)")
+private external fun wasmRustlangStdSysCmathAsinf(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathAsinhf(p0)")
-private external fun wasmStdSysCmathAsinhf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAsinhf(p0)")
+private external fun wasmRustlangStdSysCmathAsinhf(p0: Double): Double
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysCmathAtan2f(p0, p1)")
-private external fun wasmStdSysCmathAtan2f(p0: Double, p1: Double): Double
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAtan2f(p0, p1)")
+private external fun wasmRustlangStdSysCmathAtan2f(p0: Double, p1: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathAtanf(p0)")
-private external fun wasmStdSysCmathAtanf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathAtanf(p0)")
+private external fun wasmRustlangStdSysCmathAtanf(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathCoshf(p0)")
-private external fun wasmStdSysCmathCoshf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathCoshf(p0)")
+private external fun wasmRustlangStdSysCmathCoshf(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathSinhf(p0)")
-private external fun wasmStdSysCmathSinhf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathSinhf(p0)")
+private external fun wasmRustlangStdSysCmathSinhf(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathTanf(p0)")
-private external fun wasmStdSysCmathTanf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathTanf(p0)")
+private external fun wasmRustlangStdSysCmathTanf(p0: Double): Double
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysCmathTanhf(p0)")
-private external fun wasmStdSysCmathTanhf(p0: Double): Double
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysCmathTanhf(p0)")
+private external fun wasmRustlangStdSysCmathTanhf(p0: Double): Double
 
 public actual fun acos(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAcos(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAcos(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun acosh(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAcosh(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAcosh(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun asin(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAsin(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAsin(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun asinh(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAsinh(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAsinh(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun atan(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAtan(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAtan(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun atan2(a: Double, b: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAtan2(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAtan2(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun cosh(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathCosh(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathCosh(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun expm1(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathExpm1(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathExpm1(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun expm1f(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathExpm1f(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathExpm1f(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun hypot(x: Double, y: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathHypot(x, y) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathHypot(x, y) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun hypotf(x: Float, y: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathHypotf(x.toDouble(), y.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathHypotf(x.toDouble(), y.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun log1p(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathLog1p(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathLog1p(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun log1pf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathLog1pf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathLog1pf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sinh(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathSinh(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathSinh(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tan(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathTan(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathTan(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tanh(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathTanh(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathTanh(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tgamma(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathTgamma(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathTgamma(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tgammaf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathTgammaf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathTgammaf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lgammaR(n: Double, s: RustMutableReference<Int>): Double =
     throw UnsupportedOperationException("Native FFI addon is not available")
@@ -167,16 +167,16 @@ public actual fun lgammafR(n: Float, s: RustMutableReference<Int>): Float =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun erf(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathErf(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathErf(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun erff(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathErff(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathErff(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun erfc(n: Double): Double =
-    if (sysCmathNapiAvailable) wasmStdSysCmathErfc(n) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathErfc(n) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun erfcf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathErfcf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathErfcf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun acosf128(n: F128): F128 =
     throw UnsupportedOperationException("Native FFI addon is not available")
@@ -233,31 +233,31 @@ public actual fun erfcf128(n: F128): F128 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun acosf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAcosf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAcosf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun acoshf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAcoshf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAcoshf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun asinf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAsinf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAsinf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun asinhf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAsinhf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAsinhf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun atan2f(a: Float, b: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAtan2f(a.toDouble(), b.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAtan2f(a.toDouble(), b.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun atanf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathAtanf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathAtanf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun coshf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathCoshf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathCoshf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sinhf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathSinhf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathSinhf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tanf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathTanf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathTanf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tanhf(n: Float): Float =
-    if (sysCmathNapiAvailable) wasmStdSysCmathTanhf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysCmathNapiAvailable) wasmRustlangStdSysCmathTanhf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")

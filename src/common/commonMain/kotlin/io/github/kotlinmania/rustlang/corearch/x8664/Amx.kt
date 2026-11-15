@@ -4,14 +4,16 @@ package io.github.kotlinmania.rustlang.corearch.x8664
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.simd.F16x32
-import io.github.kotlinmania.rustlang.corearch.simd.F32x16
-import io.github.kotlinmania.rustlang.corearch.simd.I32x16
-import io.github.kotlinmania.rustlang.corearch.simd.U16x32
-import io.github.kotlinmania.rustlang.corearch.x86.M512
-import io.github.kotlinmania.rustlang.corearch.x86.M512bh
-import io.github.kotlinmania.rustlang.corearch.x86.M512h
-import io.github.kotlinmania.rustlang.corearch.x86.M512i
+import io.github.kotlinmania.rustlang.simd.F16x32
+import io.github.kotlinmania.rustlang.simd.F32x16
+import io.github.kotlinmania.rustlang.simd.I32x16
+import io.github.kotlinmania.rustlang.simd.U16x32
+import io.github.kotlinmania.rustlang.x86.M512
+import io.github.kotlinmania.rustlang.x86.M512bh
+import io.github.kotlinmania.rustlang.x86.M512h
+import io.github.kotlinmania.rustlang.x86.M512i
+import io.github.kotlinmania.rustlang.x8664.Tile
+import io.github.kotlinmania.rustlang.x8664.Tile1024i
 
 /**
  * Load tile configuration from a 64-byte memory location specified by `memAddr`.

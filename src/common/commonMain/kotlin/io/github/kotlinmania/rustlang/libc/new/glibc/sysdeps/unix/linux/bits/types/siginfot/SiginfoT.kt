@@ -1,19 +1,19 @@
 // port-lint: source new/glibc/sysdeps/unix/linux/bits/types/siginfo_t.rs
 package io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.Sigval
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.Sigval
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.ClockT
 
 // Source header: `sysdeps / unix / sysv / linux / bits / types / siginfoT.h`
 //
@@ -42,7 +42,7 @@ public val SI_PAD_SIZE: Int =
 public typealias SiBandType = CInt
 
 public data class SiClockT(
-    public var value: ClockT = 0uL,
+    public var value: ClockT = 0L,
 ) {
     public var field0: ClockT
         get() = value
@@ -57,17 +57,17 @@ public data class SiClockT(
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): SiClockT =
                     SiClockT(
-                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.I64).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: SiClockT) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.value)
+                    (PrimitiveLayouts.I64).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): SiClockT =
                     SiClockT(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: SiClockT) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset, value.value)
                 }
             }
     }

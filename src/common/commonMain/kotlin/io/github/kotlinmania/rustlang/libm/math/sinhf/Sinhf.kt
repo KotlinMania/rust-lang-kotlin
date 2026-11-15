@@ -1,8 +1,8 @@
 // port-lint: source math/sinhf.rs
 package io.github.kotlinmania.rustlang.libm.math.sinhf
 
-import io.github.kotlinmania.rustlang.libm.math.expm1f.expm1f
-import io.github.kotlinmania.rustlang.libm.math.kexpo2f.kExpo2f
+import io.github.kotlinmania.rustlang.math.expm1f.expm1f
+import io.github.kotlinmania.rustlang.math.kexpo2f.kExpo2f
 
 /**
  * The hyperbolic sine of `x` (f32).

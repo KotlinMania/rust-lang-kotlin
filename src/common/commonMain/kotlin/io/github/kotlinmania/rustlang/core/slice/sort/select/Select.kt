@@ -1,11 +1,11 @@
 // port-lint: source slice/sort/select.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.select
 
-import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
-import io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot.choosePivot
-import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.insertionSortShiftLeft
-import io.github.kotlinmania.rustlang.core.slice.sort.unstable.quicksort.partition
+import io.github.kotlinmania.rustlang.mem.swap
+import io.github.kotlinmania.rustlang.slice.sort.shared.pivot.choosePivot
+import io.github.kotlinmania.rustlang.slice.sort.shared.smallsort.insertionSortShiftLeft
+import io.github.kotlinmania.rustlang.slice.sort.unstable.quicksort.partition
 
 // This module contains the implementation for `slice.selectNthUnstable`.
 // It uses an introselect algorithm based on ipnsort by Lukas Bergdoll and Orson Peters,

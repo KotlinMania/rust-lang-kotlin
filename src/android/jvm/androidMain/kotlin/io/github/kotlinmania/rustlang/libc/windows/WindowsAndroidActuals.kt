@@ -2,1059 +2,1101 @@
 
 package io.github.kotlinmania.rustlang.libc.windows
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
 
-private object WindowsJniBridge {
+private object LibcWindowsJniBridge {
     init {
         System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
-    external fun libcWindowsIsalnum(c: Int): Int
+    external fun rustlangLibcWindowsPrintf(format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcWindowsIsalpha(c: Int): Int
+    external fun rustlangLibcWindowsFprintf(stream: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcWindowsIscntrl(c: Int): Int
+    external fun rustlangLibcWindowsSnprintf(buffer: Long, count: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcWindowsIsdigit(c: Int): Int
+    external fun rustlangLibcWindowsSprintf(buffer: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcWindowsIsgraph(c: Int): Int
+    external fun rustlangLibcWindowsScanf(format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcWindowsIslower(c: Int): Int
+    external fun rustlangLibcWindowsSscanf(buffer: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcWindowsIsprint(c: Int): Int
+    external fun rustlangLibcWindowsFscanf(stream: Long, format: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcWindowsIspunct(c: Int): Int
+    external fun rustlangLibcWindowsIsalnum(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsIsspace(c: Int): Int
+    external fun rustlangLibcWindowsIsalpha(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsIsupper(c: Int): Int
+    external fun rustlangLibcWindowsIscntrl(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsIsxdigit(c: Int): Int
+    external fun rustlangLibcWindowsIsdigit(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsIsblank(c: Int): Int
+    external fun rustlangLibcWindowsIsgraph(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsTolower(c: Int): Int
+    external fun rustlangLibcWindowsIslower(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsToupper(c: Int): Int
+    external fun rustlangLibcWindowsIsprint(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsQsort(base: Long, num: Long, size: Long, compar: Long)
+    external fun rustlangLibcWindowsIspunct(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsQsortS(base: Long, num: Long, size: Long, compar: Long, arg: Long)
+    external fun rustlangLibcWindowsIsspace(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsFopen(filename: Long, mode: Long): Long
+    external fun rustlangLibcWindowsIsupper(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsFreopen(filename: Long, mode: Long, file: Long): Long
+    external fun rustlangLibcWindowsIsxdigit(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsFflush(file: Long): Int
+    external fun rustlangLibcWindowsIsblank(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsFclose(file: Long): Int
+    external fun rustlangLibcWindowsTolower(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsRemove(filename: Long): Int
+    external fun rustlangLibcWindowsToupper(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsRename(oldname: Long, newname: Long): Int
+    external fun rustlangLibcWindowsQsort(base: Long, num: Long, size: Long, compar: Long)
 
     @JvmStatic
-    external fun libcWindowsTmpfile(): Long
+    external fun rustlangLibcWindowsQsortS(base: Long, num: Long, size: Long, compar: Long, arg: Long)
 
     @JvmStatic
-    external fun libcWindowsSetvbuf(stream: Long, buffer: Long, mode: Int, size: Long): Int
+    external fun rustlangLibcWindowsFopen(filename: Long, mode: Long): Long
 
     @JvmStatic
-    external fun libcWindowsSetbuf(stream: Long, buf: Long)
+    external fun rustlangLibcWindowsFreopen(filename: Long, mode: Long, file: Long): Long
 
     @JvmStatic
-    external fun libcWindowsGetchar(): Int
+    external fun rustlangLibcWindowsFflush(file: Long): Int
 
     @JvmStatic
-    external fun libcWindowsPutchar(c: Int): Int
+    external fun rustlangLibcWindowsFclose(file: Long): Int
 
     @JvmStatic
-    external fun libcWindowsFgetc(stream: Long): Int
+    external fun rustlangLibcWindowsRemove(filename: Long): Int
 
     @JvmStatic
-    external fun libcWindowsFgets(buf: Long, n: Int, stream: Long): Long
+    external fun rustlangLibcWindowsRename(oldname: Long, newname: Long): Int
 
     @JvmStatic
-    external fun libcWindowsFputc(c: Int, stream: Long): Int
+    external fun rustlangLibcWindowsTmpfile(): Long
 
     @JvmStatic
-    external fun libcWindowsFputs(s: Long, stream: Long): Int
+    external fun rustlangLibcWindowsSetvbuf(stream: Long, buffer: Long, mode: Int, size: Long): Int
 
     @JvmStatic
-    external fun libcWindowsPuts(s: Long): Int
+    external fun rustlangLibcWindowsSetbuf(stream: Long, buf: Long)
 
     @JvmStatic
-    external fun libcWindowsUngetc(c: Int, stream: Long): Int
+    external fun rustlangLibcWindowsGetchar(): Int
 
     @JvmStatic
-    external fun libcWindowsFread(ptr: Long, size: Long, nobj: Long, stream: Long): Long
+    external fun rustlangLibcWindowsPutchar(c: Int): Int
 
     @JvmStatic
-    external fun libcWindowsFwrite(ptr: Long, size: Long, nobj: Long, stream: Long): Long
+    external fun rustlangLibcWindowsFgetc(stream: Long): Int
 
     @JvmStatic
-    external fun libcWindowsFseek(stream: Long, offset: Long, whence: Int): Int
+    external fun rustlangLibcWindowsFgets(buf: Long, n: Int, stream: Long): Long
 
     @JvmStatic
-    external fun libcWindowsFtell(stream: Long): Long
+    external fun rustlangLibcWindowsFputc(c: Int, stream: Long): Int
 
     @JvmStatic
-    external fun libcWindowsRewind(stream: Long)
+    external fun rustlangLibcWindowsFputs(s: Long, stream: Long): Int
 
     @JvmStatic
-    external fun libcWindowsFgetpos(stream: Long, ptr: Long): Int
+    external fun rustlangLibcWindowsPuts(s: Long): Int
 
     @JvmStatic
-    external fun libcWindowsFsetpos(stream: Long, ptr: Long): Int
+    external fun rustlangLibcWindowsUngetc(c: Int, stream: Long): Int
 
     @JvmStatic
-    external fun libcWindowsFeof(stream: Long): Int
+    external fun rustlangLibcWindowsFread(ptr: Long, size: Long, nobj: Long, stream: Long): Long
 
     @JvmStatic
-    external fun libcWindowsFerror(stream: Long): Int
+    external fun rustlangLibcWindowsFwrite(ptr: Long, size: Long, nobj: Long, stream: Long): Long
 
     @JvmStatic
-    external fun libcWindowsPerror(s: Long)
+    external fun rustlangLibcWindowsFseek(stream: Long, offset: Long, whence: Int): Int
 
     @JvmStatic
-    external fun libcWindowsAtof(s: Long): Double
+    external fun rustlangLibcWindowsFtell(stream: Long): Long
 
     @JvmStatic
-    external fun libcWindowsAtoi(s: Long): Int
+    external fun rustlangLibcWindowsRewind(stream: Long)
 
     @JvmStatic
-    external fun libcWindowsAtol(s: Long): Long
+    external fun rustlangLibcWindowsFgetpos(stream: Long, ptr: Long): Int
 
     @JvmStatic
-    external fun libcWindowsAtoll(s: Long): Long
+    external fun rustlangLibcWindowsFsetpos(stream: Long, ptr: Long): Int
 
     @JvmStatic
-    external fun libcWindowsStrtod(s: Long, endp: Long): Double
+    external fun rustlangLibcWindowsFeof(stream: Long): Int
 
     @JvmStatic
-    external fun libcWindowsStrtof(s: Long, endp: Long): Float
+    external fun rustlangLibcWindowsFerror(stream: Long): Int
 
     @JvmStatic
-    external fun libcWindowsStrtol(s: Long, endp: Long, base: Int): Long
+    external fun rustlangLibcWindowsPerror(s: Long)
 
     @JvmStatic
-    external fun libcWindowsStrtoll(s: Long, endp: Long, base: Int): Long
+    external fun rustlangLibcWindowsAtof(s: Long): Double
 
     @JvmStatic
-    external fun libcWindowsStrtoul(s: Long, endp: Long, base: Int): Long
+    external fun rustlangLibcWindowsAtoi(s: Long): Int
 
     @JvmStatic
-    external fun libcWindowsStrtoull(s: Long, endp: Long, base: Int): Long
+    external fun rustlangLibcWindowsAtol(s: Long): Long
 
     @JvmStatic
-    external fun libcWindowsCalloc(nobj: Long, size: Long): Long
+    external fun rustlangLibcWindowsAtoll(s: Long): Long
 
     @JvmStatic
-    external fun libcWindowsMalloc(size: Long): Long
+    external fun rustlangLibcWindowsStrtod(s: Long, endp: Long): Double
 
     @JvmStatic
-    external fun libcWindowsMsize(p: Long): Long
+    external fun rustlangLibcWindowsStrtof(s: Long, endp: Long): Float
 
     @JvmStatic
-    external fun libcWindowsRealloc(p: Long, size: Long): Long
+    external fun rustlangLibcWindowsStrtol(s: Long, endp: Long, base: Int): Long
 
     @JvmStatic
-    external fun libcWindowsFree(p: Long)
+    external fun rustlangLibcWindowsStrtoll(s: Long, endp: Long, base: Int): Long
 
     @JvmStatic
-    external fun libcWindowsAbort()
+    external fun rustlangLibcWindowsStrtoul(s: Long, endp: Long, base: Int): Long
 
     @JvmStatic
-    external fun libcWindowsExit(status: Int)
+    external fun rustlangLibcWindowsStrtoull(s: Long, endp: Long, base: Int): Long
 
     @JvmStatic
-    external fun libcWindowsAtexit(cb: Long): Int
+    external fun rustlangLibcWindowsCalloc(nobj: Long, size: Long): Long
 
     @JvmStatic
-    external fun libcWindowsSystem(s: Long): Int
+    external fun rustlangLibcWindowsMalloc(size: Long): Long
 
     @JvmStatic
-    external fun libcWindowsGetenv(s: Long): Long
+    external fun rustlangLibcWindowsMsize(p: Long): Long
 
     @JvmStatic
-    external fun libcWindowsStrcpy(dst: Long, src: Long): Long
+    external fun rustlangLibcWindowsRealloc(p: Long, size: Long): Long
 
     @JvmStatic
-    external fun libcWindowsStrncpy(dst: Long, src: Long, n: Long): Long
+    external fun rustlangLibcWindowsFree(p: Long)
 
     @JvmStatic
-    external fun libcWindowsStrcat(s: Long, ct: Long): Long
+    external fun rustlangLibcWindowsAbort()
 
     @JvmStatic
-    external fun libcWindowsStrncat(s: Long, ct: Long, n: Long): Long
+    external fun rustlangLibcWindowsExit(status: Int)
 
     @JvmStatic
-    external fun libcWindowsStrcmp(cs: Long, ct: Long): Int
+    external fun rustlangLibcWindowsAtexit(cb: Long): Int
 
     @JvmStatic
-    external fun libcWindowsStrncmp(cs: Long, ct: Long, n: Long): Int
+    external fun rustlangLibcWindowsSystem(s: Long): Int
 
     @JvmStatic
-    external fun libcWindowsStrcoll(cs: Long, ct: Long): Int
+    external fun rustlangLibcWindowsGetenv(s: Long): Long
 
     @JvmStatic
-    external fun libcWindowsStrchr(cs: Long, c: Int): Long
+    external fun rustlangLibcWindowsStrcpy(dst: Long, src: Long): Long
 
     @JvmStatic
-    external fun libcWindowsStrrchr(cs: Long, c: Int): Long
+    external fun rustlangLibcWindowsStrncpy(dst: Long, src: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcWindowsStrspn(cs: Long, ct: Long): Long
+    external fun rustlangLibcWindowsStrcat(s: Long, ct: Long): Long
 
     @JvmStatic
-    external fun libcWindowsStrcspn(cs: Long, ct: Long): Long
+    external fun rustlangLibcWindowsStrncat(s: Long, ct: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcWindowsStrdup(cs: Long): Long
+    external fun rustlangLibcWindowsStrcmp(cs: Long, ct: Long): Int
 
     @JvmStatic
-    external fun libcWindowsStrpbrk(cs: Long, ct: Long): Long
+    external fun rustlangLibcWindowsStrncmp(cs: Long, ct: Long, n: Long): Int
 
     @JvmStatic
-    external fun libcWindowsStrstr(cs: Long, ct: Long): Long
+    external fun rustlangLibcWindowsStrcoll(cs: Long, ct: Long): Int
 
     @JvmStatic
-    external fun libcWindowsStrlen(cs: Long): Long
+    external fun rustlangLibcWindowsStrchr(cs: Long, c: Int): Long
 
     @JvmStatic
-    external fun libcWindowsStrnlen(cs: Long, maxlen: Long): Long
+    external fun rustlangLibcWindowsStrrchr(cs: Long, c: Int): Long
 
     @JvmStatic
-    external fun libcWindowsStrerror(n: Int): Long
+    external fun rustlangLibcWindowsStrspn(cs: Long, ct: Long): Long
 
     @JvmStatic
-    external fun libcWindowsStrtok(s: Long, t: Long): Long
+    external fun rustlangLibcWindowsStrcspn(cs: Long, ct: Long): Long
 
     @JvmStatic
-    external fun libcWindowsStrxfrm(s: Long, ct: Long, n: Long): Long
+    external fun rustlangLibcWindowsStrdup(cs: Long): Long
 
     @JvmStatic
-    external fun libcWindowsWcslen(buf: Long): Long
+    external fun rustlangLibcWindowsStrpbrk(cs: Long, ct: Long): Long
 
     @JvmStatic
-    external fun libcWindowsWcsnlen(str: Long, numberOfElements: Long): Long
+    external fun rustlangLibcWindowsStrstr(cs: Long, ct: Long): Long
 
     @JvmStatic
-    external fun libcWindowsWcstombs(dest: Long, src: Long, n: Long): Long
+    external fun rustlangLibcWindowsStrlen(cs: Long): Long
 
     @JvmStatic
-    external fun libcWindowsMemchr(cx: Long, c: Int, n: Long): Long
+    external fun rustlangLibcWindowsStrnlen(cs: Long, maxlen: Long): Long
 
     @JvmStatic
-    external fun libcWindowsMemcmp(cx: Long, ct: Long, n: Long): Int
+    external fun rustlangLibcWindowsStrerror(n: Int): Long
 
     @JvmStatic
-    external fun libcWindowsMemcpy(dest: Long, src: Long, n: Long): Long
+    external fun rustlangLibcWindowsStrtok(s: Long, t: Long): Long
 
     @JvmStatic
-    external fun libcWindowsMemmove(dest: Long, src: Long, n: Long): Long
+    external fun rustlangLibcWindowsStrxfrm(s: Long, ct: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcWindowsMemset(dest: Long, c: Int, n: Long): Long
+    external fun rustlangLibcWindowsWcslen(buf: Long): Long
 
     @JvmStatic
-    external fun libcWindowsAbs(i: Int): Int
+    external fun rustlangLibcWindowsWcsnlen(str: Long, numberOfElements: Long): Long
 
     @JvmStatic
-    external fun libcWindowsLabs(i: Long): Long
+    external fun rustlangLibcWindowsWcstombs(dest: Long, src: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcWindowsRand(): Int
+    external fun rustlangLibcWindowsMemchr(cx: Long, c: Int, n: Long): Long
 
     @JvmStatic
-    external fun libcWindowsSrand(seed: Int)
+    external fun rustlangLibcWindowsMemcmp(cx: Long, ct: Long, n: Long): Int
 
     @JvmStatic
-    external fun libcWindowsSignal(signum: Int, handler: Long): Long
+    external fun rustlangLibcWindowsMemcpy(dest: Long, src: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcWindowsRaise(signum: Int): Int
+    external fun rustlangLibcWindowsMemmove(dest: Long, src: Long, n: Long): Long
 
     @JvmStatic
-    external fun libcWindowsClock(): Int
+    external fun rustlangLibcWindowsMemset(dest: Long, c: Int, n: Long): Long
 
     @JvmStatic
-    external fun libcWindowsGetDaylight(hours: Long): Int
+    external fun rustlangLibcWindowsAbs(i: Int): Int
 
     @JvmStatic
-    external fun libcWindowsGetDstbias(seconds: Long): Int
+    external fun rustlangLibcWindowsLabs(i: Long): Long
 
     @JvmStatic
-    external fun libcWindowsGetTimezone(seconds: Long): Int
+    external fun rustlangLibcWindowsRand(): Int
 
     @JvmStatic
-    external fun libcWindowsGetTzname(pReturnValue: Long, timeZoneName: Long, sizeInBytes: Long, index: Int): Int
+    external fun rustlangLibcWindowsSrand(seed: Int)
 
     @JvmStatic
-    external fun libcWindowsTzset()
+    external fun rustlangLibcWindowsSignal(signum: Int, handler: Long): Long
 
     @JvmStatic
-    external fun libcWindowsChmod(path: Long, mode: Int): Int
+    external fun rustlangLibcWindowsRaise(signum: Int): Int
 
     @JvmStatic
-    external fun libcWindowsWchmod(path: Long, mode: Int): Int
+    external fun rustlangLibcWindowsClock(): Int
 
     @JvmStatic
-    external fun libcWindowsMkdir(path: Long): Int
+    external fun rustlangLibcWindowsGetDaylight(hours: Long): Int
 
     @JvmStatic
-    external fun libcWindowsWrmdir(path: Long): Int
+    external fun rustlangLibcWindowsGetDstbias(seconds: Long): Int
 
     @JvmStatic
-    external fun libcWindowsFstat(fildes: Int, buf: Long): Int
+    external fun rustlangLibcWindowsGetTimezone(seconds: Long): Int
 
     @JvmStatic
-    external fun libcWindowsStat(path: Long, buf: Long): Int
+    external fun rustlangLibcWindowsGetTzname(pReturnValue: Long, timeZoneName: Long, sizeInBytes: Long, index: Int): Int
 
     @JvmStatic
-    external fun libcWindowsWstat(path: Long, buf: Long): Int
+    external fun rustlangLibcWindowsTzset()
 
     @JvmStatic
-    external fun libcWindowsWutime(file: Long, buf: Long): Int
+    external fun rustlangLibcWindowsChmod(path: Long, mode: Int): Int
 
     @JvmStatic
-    external fun libcWindowsPopen(command: Long, mode: Long): Long
+    external fun rustlangLibcWindowsWchmod(path: Long, mode: Int): Int
 
     @JvmStatic
-    external fun libcWindowsPclose(stream: Long): Int
+    external fun rustlangLibcWindowsMkdir(path: Long): Int
 
     @JvmStatic
-    external fun libcWindowsFdopen(fd: Int, mode: Long): Long
+    external fun rustlangLibcWindowsWrmdir(path: Long): Int
 
     @JvmStatic
-    external fun libcWindowsFileno(stream: Long): Int
+    external fun rustlangLibcWindowsFstat(fildes: Int, buf: Long): Int
 
     @JvmStatic
-    external fun libcWindowsOpen(path: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcWindowsStat(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcWindowsWopen(path: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
+    external fun rustlangLibcWindowsWstat(path: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcWindowsCreat(path: Long, mode: Int): Int
+    external fun rustlangLibcWindowsWutime(file: Long, buf: Long): Int
 
     @JvmStatic
-    external fun libcWindowsAccess(path: Long, amode: Int): Int
+    external fun rustlangLibcWindowsPopen(command: Long, mode: Long): Long
 
     @JvmStatic
-    external fun libcWindowsChdir(dir: Long): Int
+    external fun rustlangLibcWindowsPclose(stream: Long): Int
 
     @JvmStatic
-    external fun libcWindowsClose(fd: Int): Int
+    external fun rustlangLibcWindowsFdopen(fd: Int, mode: Long): Long
 
     @JvmStatic
-    external fun libcWindowsDup(fd: Int): Int
+    external fun rustlangLibcWindowsFileno(stream: Long): Int
 
     @JvmStatic
-    external fun libcWindowsDup2(src: Int, dst: Int): Int
+    external fun rustlangLibcWindowsOpen(path: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcWindowsExecl(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
+    external fun rustlangLibcWindowsWopen(path: Long, oflag: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcWindowsWexecl(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
+    external fun rustlangLibcWindowsCreat(path: Long, mode: Int): Int
 
     @JvmStatic
-    external fun libcWindowsExecle(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
+    external fun rustlangLibcWindowsAccess(path: Long, amode: Int): Int
 
     @JvmStatic
-    external fun libcWindowsWexecle(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
+    external fun rustlangLibcWindowsChdir(dir: Long): Int
 
     @JvmStatic
-    external fun libcWindowsExeclp(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
+    external fun rustlangLibcWindowsClose(fd: Int): Int
 
     @JvmStatic
-    external fun libcWindowsWexeclp(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
+    external fun rustlangLibcWindowsDup(fd: Int): Int
 
     @JvmStatic
-    external fun libcWindowsExeclpe(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
+    external fun rustlangLibcWindowsDup2(src: Int, dst: Int): Int
 
     @JvmStatic
-    external fun libcWindowsWexeclpe(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
+    external fun rustlangLibcWindowsExecl(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
 
     @JvmStatic
-    external fun libcWindowsExecv(prog: Long, argv: Long): Long
+    external fun rustlangLibcWindowsWexecl(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
 
     @JvmStatic
-    external fun libcWindowsExecve(prog: Long, argv: Long, envp: Long): Int
+    external fun rustlangLibcWindowsExecle(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
 
     @JvmStatic
-    external fun libcWindowsExecvp(c: Long, argv: Long): Int
+    external fun rustlangLibcWindowsWexecle(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
 
     @JvmStatic
-    external fun libcWindowsExecvpe(c: Long, argv: Long, envp: Long): Int
+    external fun rustlangLibcWindowsExeclp(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
 
     @JvmStatic
-    external fun libcWindowsWexecv(prog: Long, argv: Long): Long
+    external fun rustlangLibcWindowsWexeclp(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
 
     @JvmStatic
-    external fun libcWindowsWexecve(prog: Long, argv: Long, envp: Long): Long
+    external fun rustlangLibcWindowsExeclpe(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
 
     @JvmStatic
-    external fun libcWindowsWexecvp(c: Long, argv: Long): Long
+    external fun rustlangLibcWindowsWexeclpe(path: Long, arg0: Long, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Long
 
     @JvmStatic
-    external fun libcWindowsWexecvpe(c: Long, argv: Long, envp: Long): Long
+    external fun rustlangLibcWindowsExecv(prog: Long, argv: Long): Long
 
     @JvmStatic
-    external fun libcWindowsGetcwd(buf: Long, size: Int): Long
+    external fun rustlangLibcWindowsExecve(prog: Long, argv: Long, envp: Long): Int
 
     @JvmStatic
-    external fun libcWindowsGetpid(): Int
+    external fun rustlangLibcWindowsExecvp(c: Long, argv: Long): Int
 
     @JvmStatic
-    external fun libcWindowsIsatty(fd: Int): Int
+    external fun rustlangLibcWindowsExecvpe(c: Long, argv: Long, envp: Long): Int
 
     @JvmStatic
-    external fun libcWindowsLseek(fd: Int, offset: Long, origin: Int): Long
+    external fun rustlangLibcWindowsWexecv(prog: Long, argv: Long): Long
 
     @JvmStatic
-    external fun libcWindowsLseek64(fd: Int, offset: Long, origin: Int): Long
+    external fun rustlangLibcWindowsWexecve(prog: Long, argv: Long, envp: Long): Long
 
     @JvmStatic
-    external fun libcWindowsPipe(fds: Long, psize: Int, textmode: Int): Int
+    external fun rustlangLibcWindowsWexecvp(c: Long, argv: Long): Long
 
     @JvmStatic
-    external fun libcWindowsRead(fd: Int, buf: Long, count: Int): Int
+    external fun rustlangLibcWindowsWexecvpe(c: Long, argv: Long, envp: Long): Long
 
     @JvmStatic
-    external fun libcWindowsRmdir(path: Long): Int
+    external fun rustlangLibcWindowsGetcwd(buf: Long, size: Int): Long
 
     @JvmStatic
-    external fun libcWindowsUnlink(c: Long): Int
+    external fun rustlangLibcWindowsGetpid(): Int
 
     @JvmStatic
-    external fun libcWindowsWrite(fd: Int, buf: Long, count: Int): Int
+    external fun rustlangLibcWindowsIsatty(fd: Int): Int
 
     @JvmStatic
-    external fun libcWindowsCommit(fd: Int): Int
+    external fun rustlangLibcWindowsLseek(fd: Int, offset: Long, origin: Int): Long
 
     @JvmStatic
-    external fun libcWindowsGetOsfhandle(fd: Int): Long
+    external fun rustlangLibcWindowsLseek64(fd: Int, offset: Long, origin: Int): Long
 
     @JvmStatic
-    external fun libcWindowsOpenOsfhandle(osfhandle: Long, flags: Int): Int
+    external fun rustlangLibcWindowsPipe(fds: Long, psize: Int, textmode: Int): Int
 
     @JvmStatic
-    external fun libcWindowsSetlocale(category: Int, locale: Long): Long
+    external fun rustlangLibcWindowsRead(fd: Int, buf: Long, count: Int): Int
 
     @JvmStatic
-    external fun libcWindowsWsetlocale(category: Int, locale: Long): Long
+    external fun rustlangLibcWindowsRmdir(path: Long): Int
 
     @JvmStatic
-    external fun libcWindowsAlignedMalloc(size: Long, alignment: Long): Long
+    external fun rustlangLibcWindowsUnlink(c: Long): Int
 
     @JvmStatic
-    external fun libcWindowsAlignedFree(ptr: Long)
+    external fun rustlangLibcWindowsWrite(fd: Int, buf: Long, count: Int): Int
 
     @JvmStatic
-    external fun libcWindowsAlignedRealloc(memblock: Long, size: Long, alignment: Long): Long
+    external fun rustlangLibcWindowsCommit(fd: Int): Int
 
     @JvmStatic
-    external fun libcWindowsPutenv(envstring: Long): Int
+    external fun rustlangLibcWindowsGetOsfhandle(fd: Int): Long
 
     @JvmStatic
-    external fun libcWindowsWputenv(envstring: Long): Int
+    external fun rustlangLibcWindowsOpenOsfhandle(osfhandle: Long, flags: Int): Int
 
     @JvmStatic
-    external fun libcWindowsPutenvS(envstring: Long, valueString: Long): Int
+    external fun rustlangLibcWindowsSetlocale(category: Int, locale: Long): Long
 
     @JvmStatic
-    external fun libcWindowsWputenvS(envstring: Long, valueString: Long): Int
+    external fun rustlangLibcWindowsWsetlocale(category: Int, locale: Long): Long
 
     @JvmStatic
-    external fun libcWindowsListen(s: Long, backlog: Int): Int
+    external fun rustlangLibcWindowsAlignedMalloc(size: Long, alignment: Long): Long
 
     @JvmStatic
-    external fun libcWindowsAccept(s: Long, addr: Long, addrlen: Long): Long
+    external fun rustlangLibcWindowsAlignedFree(ptr: Long)
 
     @JvmStatic
-    external fun libcWindowsBind(s: Long, name: Long, namelen: Int): Int
+    external fun rustlangLibcWindowsAlignedRealloc(memblock: Long, size: Long, alignment: Long): Long
 
     @JvmStatic
-    external fun libcWindowsConnect(s: Long, name: Long, namelen: Int): Int
+    external fun rustlangLibcWindowsPutenv(envstring: Long): Int
 
     @JvmStatic
-    external fun libcWindowsGetpeername(s: Long, name: Long, nameln: Long): Int
+    external fun rustlangLibcWindowsWputenv(envstring: Long): Int
 
     @JvmStatic
-    external fun libcWindowsGetsockname(s: Long, name: Long, nameln: Long): Int
+    external fun rustlangLibcWindowsPutenvS(envstring: Long, valueString: Long): Int
 
     @JvmStatic
-    external fun libcWindowsGetsockopt(s: Long, level: Int, optname: Int, optval: Long, optlen: Long): Int
+    external fun rustlangLibcWindowsWputenvS(envstring: Long, valueString: Long): Int
 
     @JvmStatic
-    external fun libcWindowsRecvfrom(s: Long, buf: Long, len: Int, flags: Int, from: Long, fromlen: Long): Int
+    external fun rustlangLibcWindowsListen(s: Long, backlog: Int): Int
 
     @JvmStatic
-    external fun libcWindowsSendto(s: Long, buf: Long, len: Int, flags: Int, to: Long, tolen: Int): Int
+    external fun rustlangLibcWindowsAccept(s: Long, addr: Long, addrlen: Long): Long
 
     @JvmStatic
-    external fun libcWindowsSetsockopt(s: Long, level: Int, optname: Int, optval: Long, optlen: Int): Int
+    external fun rustlangLibcWindowsBind(s: Long, name: Long, namelen: Int): Int
 
     @JvmStatic
-    external fun libcWindowsSocket(af: Int, socketType: Int, protocol: Int): Long
+    external fun rustlangLibcWindowsConnect(s: Long, name: Long, namelen: Int): Int
+
+    @JvmStatic
+    external fun rustlangLibcWindowsGetpeername(s: Long, name: Long, nameln: Long): Int
+
+    @JvmStatic
+    external fun rustlangLibcWindowsGetsockname(s: Long, name: Long, nameln: Long): Int
+
+    @JvmStatic
+    external fun rustlangLibcWindowsGetsockopt(s: Long, level: Int, optname: Int, optval: Long, optlen: Long): Int
+
+    @JvmStatic
+    external fun rustlangLibcWindowsRecvfrom(s: Long, buf: Long, len: Int, flags: Int, from: Long, fromlen: Long): Int
+
+    @JvmStatic
+    external fun rustlangLibcWindowsSendto(s: Long, buf: Long, len: Int, flags: Int, to: Long, tolen: Int): Int
+
+    @JvmStatic
+    external fun rustlangLibcWindowsSetsockopt(s: Long, level: Int, optname: Int, optval: Long, optlen: Int): Int
+
+    @JvmStatic
+    external fun rustlangLibcWindowsSocket(af: Int, socketType: Int, protocol: Int): Long
 }
 
+public actual fun printf(format: ConstPtr, vararg variadicArgs: Long): CInt =
+    LibcWindowsJniBridge.rustlangLibcWindowsPrintf(format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    LibcWindowsJniBridge.rustlangLibcWindowsFprintf(stream.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun snprintf(buffer: MutPtr, count: SizeT, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    LibcWindowsJniBridge.rustlangLibcWindowsSnprintf(buffer.rawAddress, count.toLong(), format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun sprintf(buffer: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    LibcWindowsJniBridge.rustlangLibcWindowsSprintf(buffer.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun scanf(format: ConstPtr, vararg variadicArgs: Long): CInt =
+    LibcWindowsJniBridge.rustlangLibcWindowsScanf(format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun sscanf(buffer: ConstPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    LibcWindowsJniBridge.rustlangLibcWindowsSscanf(buffer.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun fscanf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    LibcWindowsJniBridge.rustlangLibcWindowsFscanf(stream.rawAddress, format.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
 public actual fun isalnum(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIsalnum(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIsalnum(c)
 
 public actual fun isalpha(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIsalpha(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIsalpha(c)
 
 public actual fun iscntrl(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIscntrl(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIscntrl(c)
 
 public actual fun isdigit(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIsdigit(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIsdigit(c)
 
 public actual fun isgraph(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIsgraph(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIsgraph(c)
 
 public actual fun islower(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIslower(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIslower(c)
 
 public actual fun isprint(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIsprint(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIsprint(c)
 
 public actual fun ispunct(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIspunct(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIspunct(c)
 
 public actual fun isspace(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIsspace(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIsspace(c)
 
 public actual fun isupper(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIsupper(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIsupper(c)
 
 public actual fun isxdigit(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIsxdigit(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIsxdigit(c)
 
 public actual fun isblank(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsIsblank(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsIsblank(c)
 
 public actual fun tolower(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsTolower(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsTolower(c)
 
 public actual fun toupper(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsToupper(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsToupper(c)
 
 public actual fun qsort(base: MutPtr, num: SizeT, size: SizeT, compar: QsortComparCallback?) {
-    WindowsJniBridge.libcWindowsQsort(base.rawAddress, num.toLong(), size.toLong(), 0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsQsort(base.rawAddress, num.toLong(), size.toLong(), 0L)
 }
 
 public actual fun qsortS(base: MutPtr, num: SizeT, size: SizeT, compar: QsortSComparCallback?, arg: MutPtr) {
-    WindowsJniBridge.libcWindowsQsortS(base.rawAddress, num.toLong(), size.toLong(), 0L, arg.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsQsortS(base.rawAddress, num.toLong(), size.toLong(), 0L, arg.rawAddress)
 }
 
 public actual fun fopen(filename: ConstPtr, mode: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsFopen(filename.rawAddress, mode.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsFopen(filename.rawAddress, mode.rawAddress))
 
 public actual fun freopen(filename: ConstPtr, mode: ConstPtr, file: MutPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsFreopen(filename.rawAddress, mode.rawAddress, file.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsFreopen(filename.rawAddress, mode.rawAddress, file.rawAddress))
 
 public actual fun fflush(file: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsFflush(file.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFflush(file.rawAddress)
 
 public actual fun fclose(file: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsFclose(file.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFclose(file.rawAddress)
 
 public actual fun remove(filename: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsRemove(filename.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsRemove(filename.rawAddress)
 
 public actual fun rename(oldname: ConstPtr, newname: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsRename(oldname.rawAddress, newname.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsRename(oldname.rawAddress, newname.rawAddress)
 
 public actual fun tmpfile(): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsTmpfile())
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsTmpfile())
 
 public actual fun setvbuf(stream: MutPtr, buffer: MutPtr, mode: CInt, size: SizeT): CInt =
-    WindowsJniBridge.libcWindowsSetvbuf(stream.rawAddress, buffer.rawAddress, mode, size.toLong())
+    LibcWindowsJniBridge.rustlangLibcWindowsSetvbuf(stream.rawAddress, buffer.rawAddress, mode, size.toLong())
 
 public actual fun setbuf(stream: MutPtr, buf: MutPtr) {
-    WindowsJniBridge.libcWindowsSetbuf(stream.rawAddress, buf.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsSetbuf(stream.rawAddress, buf.rawAddress)
 }
 
 public actual fun getchar(): CInt =
-    WindowsJniBridge.libcWindowsGetchar()
+    LibcWindowsJniBridge.rustlangLibcWindowsGetchar()
 
 public actual fun putchar(c: CInt): CInt =
-    WindowsJniBridge.libcWindowsPutchar(c)
+    LibcWindowsJniBridge.rustlangLibcWindowsPutchar(c)
 
 public actual fun fgetc(stream: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsFgetc(stream.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFgetc(stream.rawAddress)
 
 public actual fun fgets(buf: MutPtr, n: CInt, stream: MutPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsFgets(buf.rawAddress, n, stream.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsFgets(buf.rawAddress, n, stream.rawAddress))
 
 public actual fun fputc(c: CInt, stream: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsFputc(c, stream.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFputc(c, stream.rawAddress)
 
 public actual fun fputs(s: ConstPtr, stream: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsFputs(s.rawAddress, stream.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFputs(s.rawAddress, stream.rawAddress)
 
 public actual fun puts(s: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsPuts(s.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsPuts(s.rawAddress)
 
 public actual fun ungetc(c: CInt, stream: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsUngetc(c, stream.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsUngetc(c, stream.rawAddress)
 
 public actual fun fread(ptr: MutPtr, size: SizeT, nobj: SizeT, stream: MutPtr): SizeT =
-    WindowsJniBridge.libcWindowsFread(ptr.rawAddress, size.toLong(), nobj.toLong(), stream.rawAddress).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsFread(ptr.rawAddress, size.toLong(), nobj.toLong(), stream.rawAddress).toULong()
 
 public actual fun fwrite(ptr: ConstPtr, size: SizeT, nobj: SizeT, stream: MutPtr): SizeT =
-    WindowsJniBridge.libcWindowsFwrite(ptr.rawAddress, size.toLong(), nobj.toLong(), stream.rawAddress).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsFwrite(ptr.rawAddress, size.toLong(), nobj.toLong(), stream.rawAddress).toULong()
 
 public actual fun fseek(stream: MutPtr, offset: CLong, whence: CInt): CInt =
-    WindowsJniBridge.libcWindowsFseek(stream.rawAddress, offset, whence)
+    LibcWindowsJniBridge.rustlangLibcWindowsFseek(stream.rawAddress, offset, whence)
 
 public actual fun ftell(stream: MutPtr): CLong =
-    WindowsJniBridge.libcWindowsFtell(stream.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFtell(stream.rawAddress)
 
 public actual fun rewind(stream: MutPtr) {
-    WindowsJniBridge.libcWindowsRewind(stream.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsRewind(stream.rawAddress)
 }
 
 public actual fun fgetpos(stream: MutPtr, ptr: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsFgetpos(stream.rawAddress, ptr.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFgetpos(stream.rawAddress, ptr.rawAddress)
 
 public actual fun fsetpos(stream: MutPtr, ptr: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsFsetpos(stream.rawAddress, ptr.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFsetpos(stream.rawAddress, ptr.rawAddress)
 
 public actual fun feof(stream: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsFeof(stream.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFeof(stream.rawAddress)
 
 public actual fun ferror(stream: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsFerror(stream.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFerror(stream.rawAddress)
 
 public actual fun perror(s: ConstPtr) {
-    WindowsJniBridge.libcWindowsPerror(s.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsPerror(s.rawAddress)
 }
 
 public actual fun atof(s: ConstPtr): CDouble =
-    WindowsJniBridge.libcWindowsAtof(s.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsAtof(s.rawAddress)
 
 public actual fun atoi(s: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsAtoi(s.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsAtoi(s.rawAddress)
 
 public actual fun atol(s: ConstPtr): CLong =
-    WindowsJniBridge.libcWindowsAtol(s.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsAtol(s.rawAddress)
 
 public actual fun atoll(s: ConstPtr): CLonglong =
-    WindowsJniBridge.libcWindowsAtoll(s.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsAtoll(s.rawAddress)
 
 public actual fun strtod(s: ConstPtr, endp: MutPtr): CDouble =
-    WindowsJniBridge.libcWindowsStrtod(s.rawAddress, endp.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsStrtod(s.rawAddress, endp.rawAddress)
 
 public actual fun strtof(s: ConstPtr, endp: MutPtr): CFloat =
-    WindowsJniBridge.libcWindowsStrtof(s.rawAddress, endp.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsStrtof(s.rawAddress, endp.rawAddress)
 
 public actual fun strtol(s: ConstPtr, endp: MutPtr, base: CInt): CLong =
-    WindowsJniBridge.libcWindowsStrtol(s.rawAddress, endp.rawAddress, base)
+    LibcWindowsJniBridge.rustlangLibcWindowsStrtol(s.rawAddress, endp.rawAddress, base)
 
 public actual fun strtoll(s: ConstPtr, endp: MutPtr, base: CInt): CLonglong =
-    WindowsJniBridge.libcWindowsStrtoll(s.rawAddress, endp.rawAddress, base)
+    LibcWindowsJniBridge.rustlangLibcWindowsStrtoll(s.rawAddress, endp.rawAddress, base)
 
 public actual fun strtoul(s: ConstPtr, endp: MutPtr, base: CInt): CUlong =
-    WindowsJniBridge.libcWindowsStrtoul(s.rawAddress, endp.rawAddress, base).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsStrtoul(s.rawAddress, endp.rawAddress, base).toULong()
 
 public actual fun strtoull(s: ConstPtr, endp: MutPtr, base: CInt): CUlonglong =
-    WindowsJniBridge.libcWindowsStrtoull(s.rawAddress, endp.rawAddress, base).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsStrtoull(s.rawAddress, endp.rawAddress, base).toULong()
 
 public actual fun calloc(nobj: SizeT, size: SizeT): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsCalloc(nobj.toLong(), size.toLong()))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsCalloc(nobj.toLong(), size.toLong()))
 
 public actual fun malloc(size: SizeT): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsMalloc(size.toLong()))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsMalloc(size.toLong()))
 
 public actual fun msize(p: MutPtr): SizeT =
-    WindowsJniBridge.libcWindowsMsize(p.rawAddress).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsMsize(p.rawAddress).toULong()
 
 public actual fun realloc(p: MutPtr, size: SizeT): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsRealloc(p.rawAddress, size.toLong()))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsRealloc(p.rawAddress, size.toLong()))
 
 public actual fun free(p: MutPtr) {
-    WindowsJniBridge.libcWindowsFree(p.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFree(p.rawAddress)
 }
 
 public actual fun abort(): Nothing {
-    WindowsJniBridge.libcWindowsAbort()
+    LibcWindowsJniBridge.rustlangLibcWindowsAbort()
     error("Unreachable noreturn C function abort")
 }
 
 public actual fun exit(status: CInt): Nothing {
-    WindowsJniBridge.libcWindowsExit(status)
+    LibcWindowsJniBridge.rustlangLibcWindowsExit(status)
     error("Unreachable noreturn C function exit")
 }
 
 public actual fun atexit(cb: AtexitCbCallback): CInt =
-    WindowsJniBridge.libcWindowsAtexit(0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsAtexit(0L)
 
 public actual fun system(s: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsSystem(s.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsSystem(s.rawAddress)
 
 public actual fun getenv(s: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsGetenv(s.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsGetenv(s.rawAddress))
 
 public actual fun strcpy(dst: MutPtr, src: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsStrcpy(dst.rawAddress, src.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsStrcpy(dst.rawAddress, src.rawAddress))
 
 public actual fun strncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsStrncpy(dst.rawAddress, src.rawAddress, n.toLong()))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsStrncpy(dst.rawAddress, src.rawAddress, n.toLong()))
 
 public actual fun strcat(s: MutPtr, ct: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsStrcat(s.rawAddress, ct.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsStrcat(s.rawAddress, ct.rawAddress))
 
 public actual fun strncat(s: MutPtr, ct: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsStrncat(s.rawAddress, ct.rawAddress, n.toLong()))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsStrncat(s.rawAddress, ct.rawAddress, n.toLong()))
 
 public actual fun strcmp(cs: ConstPtr, ct: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsStrcmp(cs.rawAddress, ct.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsStrcmp(cs.rawAddress, ct.rawAddress)
 
 public actual fun strncmp(cs: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    WindowsJniBridge.libcWindowsStrncmp(cs.rawAddress, ct.rawAddress, n.toLong())
+    LibcWindowsJniBridge.rustlangLibcWindowsStrncmp(cs.rawAddress, ct.rawAddress, n.toLong())
 
 public actual fun strcoll(cs: ConstPtr, ct: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsStrcoll(cs.rawAddress, ct.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsStrcoll(cs.rawAddress, ct.rawAddress)
 
 public actual fun strchr(cs: ConstPtr, c: CInt): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsStrchr(cs.rawAddress, c))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsStrchr(cs.rawAddress, c))
 
 public actual fun strrchr(cs: ConstPtr, c: CInt): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsStrrchr(cs.rawAddress, c))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsStrrchr(cs.rawAddress, c))
 
 public actual fun strspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    WindowsJniBridge.libcWindowsStrspn(cs.rawAddress, ct.rawAddress).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsStrspn(cs.rawAddress, ct.rawAddress).toULong()
 
 public actual fun strcspn(cs: ConstPtr, ct: ConstPtr): SizeT =
-    WindowsJniBridge.libcWindowsStrcspn(cs.rawAddress, ct.rawAddress).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsStrcspn(cs.rawAddress, ct.rawAddress).toULong()
 
 public actual fun strdup(cs: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsStrdup(cs.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsStrdup(cs.rawAddress))
 
 public actual fun strpbrk(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsStrpbrk(cs.rawAddress, ct.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsStrpbrk(cs.rawAddress, ct.rawAddress))
 
 public actual fun strstr(cs: ConstPtr, ct: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsStrstr(cs.rawAddress, ct.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsStrstr(cs.rawAddress, ct.rawAddress))
 
 public actual fun strlen(cs: ConstPtr): SizeT =
-    WindowsJniBridge.libcWindowsStrlen(cs.rawAddress).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsStrlen(cs.rawAddress).toULong()
 
 public actual fun strnlen(cs: ConstPtr, maxlen: SizeT): SizeT =
-    WindowsJniBridge.libcWindowsStrnlen(cs.rawAddress, maxlen.toLong()).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsStrnlen(cs.rawAddress, maxlen.toLong()).toULong()
 
 public actual fun strerror(n: CInt): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsStrerror(n))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsStrerror(n))
 
 public actual fun strtok(s: MutPtr, t: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsStrtok(s.rawAddress, t.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsStrtok(s.rawAddress, t.rawAddress))
 
 public actual fun strxfrm(s: MutPtr, ct: ConstPtr, n: SizeT): SizeT =
-    WindowsJniBridge.libcWindowsStrxfrm(s.rawAddress, ct.rawAddress, n.toLong()).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsStrxfrm(s.rawAddress, ct.rawAddress, n.toLong()).toULong()
 
 public actual fun wcslen(buf: ConstPtr): SizeT =
-    WindowsJniBridge.libcWindowsWcslen(buf.rawAddress).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsWcslen(buf.rawAddress).toULong()
 
 public actual fun wcsnlen(str: ConstPtr, numberOfElements: SizeT): SizeT =
-    WindowsJniBridge.libcWindowsWcsnlen(str.rawAddress, numberOfElements.toLong()).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsWcsnlen(str.rawAddress, numberOfElements.toLong()).toULong()
 
 public actual fun wcstombs(dest: MutPtr, src: ConstPtr, n: SizeT): SizeT =
-    WindowsJniBridge.libcWindowsWcstombs(dest.rawAddress, src.rawAddress, n.toLong()).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsWcstombs(dest.rawAddress, src.rawAddress, n.toLong()).toULong()
 
 public actual fun memchr(cx: ConstPtr, c: CInt, n: SizeT): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsMemchr(cx.rawAddress, c, n.toLong()))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsMemchr(cx.rawAddress, c, n.toLong()))
 
 public actual fun memcmp(cx: ConstPtr, ct: ConstPtr, n: SizeT): CInt =
-    WindowsJniBridge.libcWindowsMemcmp(cx.rawAddress, ct.rawAddress, n.toLong())
+    LibcWindowsJniBridge.rustlangLibcWindowsMemcmp(cx.rawAddress, ct.rawAddress, n.toLong())
 
 public actual fun memcpy(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsMemcpy(dest.rawAddress, src.rawAddress, n.toLong()))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsMemcpy(dest.rawAddress, src.rawAddress, n.toLong()))
 
 public actual fun memmove(dest: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsMemmove(dest.rawAddress, src.rawAddress, n.toLong()))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsMemmove(dest.rawAddress, src.rawAddress, n.toLong()))
 
 public actual fun memset(dest: MutPtr, c: CInt, n: SizeT): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsMemset(dest.rawAddress, c, n.toLong()))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsMemset(dest.rawAddress, c, n.toLong()))
 
 public actual fun abs(i: CInt): CInt =
-    WindowsJniBridge.libcWindowsAbs(i)
+    LibcWindowsJniBridge.rustlangLibcWindowsAbs(i)
 
 public actual fun labs(i: CLong): CLong =
-    WindowsJniBridge.libcWindowsLabs(i)
+    LibcWindowsJniBridge.rustlangLibcWindowsLabs(i)
 
 public actual fun rand(): CInt =
-    WindowsJniBridge.libcWindowsRand()
+    LibcWindowsJniBridge.rustlangLibcWindowsRand()
 
 public actual fun srand(seed: CUint) {
-    WindowsJniBridge.libcWindowsSrand(seed.toInt())
+    LibcWindowsJniBridge.rustlangLibcWindowsSrand(seed.toInt())
 }
 
 public actual fun signal(signum: CInt, handler: SighandlerT): SighandlerT =
-    WindowsJniBridge.libcWindowsSignal(signum, handler.toLong()).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsSignal(signum, handler.toLong()).toULong()
 
 public actual fun raise(signum: CInt): CInt =
-    WindowsJniBridge.libcWindowsRaise(signum)
+    LibcWindowsJniBridge.rustlangLibcWindowsRaise(signum)
 
 public actual fun clock(): ClockT =
-    WindowsJniBridge.libcWindowsClock()
+    LibcWindowsJniBridge.rustlangLibcWindowsClock()
 
 public actual fun getDaylight(hours: MutPtr): ErrnoT =
-    WindowsJniBridge.libcWindowsGetDaylight(hours.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsGetDaylight(hours.rawAddress)
 
 public actual fun getDstbias(seconds: MutPtr): ErrnoT =
-    WindowsJniBridge.libcWindowsGetDstbias(seconds.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsGetDstbias(seconds.rawAddress)
 
 public actual fun getTimezone(seconds: MutPtr): ErrnoT =
-    WindowsJniBridge.libcWindowsGetTimezone(seconds.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsGetTimezone(seconds.rawAddress)
 
 public actual fun getTzname(pReturnValue: MutPtr, timeZoneName: MutPtr, sizeInBytes: SizeT, index: CInt): ErrnoT =
-    WindowsJniBridge.libcWindowsGetTzname(pReturnValue.rawAddress, timeZoneName.rawAddress, sizeInBytes.toLong(), index)
+    LibcWindowsJniBridge.rustlangLibcWindowsGetTzname(pReturnValue.rawAddress, timeZoneName.rawAddress, sizeInBytes.toLong(), index)
 
 public actual fun tzset() {
-    WindowsJniBridge.libcWindowsTzset()
+    LibcWindowsJniBridge.rustlangLibcWindowsTzset()
 }
 
 public actual fun chmod(path: ConstPtr, mode: CInt): CInt =
-    WindowsJniBridge.libcWindowsChmod(path.rawAddress, mode)
+    LibcWindowsJniBridge.rustlangLibcWindowsChmod(path.rawAddress, mode)
 
 public actual fun wchmod(path: ConstPtr, mode: CInt): CInt =
-    WindowsJniBridge.libcWindowsWchmod(path.rawAddress, mode)
+    LibcWindowsJniBridge.rustlangLibcWindowsWchmod(path.rawAddress, mode)
 
 public actual fun mkdir(path: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsMkdir(path.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsMkdir(path.rawAddress)
 
 public actual fun wrmdir(path: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsWrmdir(path.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsWrmdir(path.rawAddress)
 
 public actual fun fstat(fildes: CInt, buf: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsFstat(fildes, buf.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFstat(fildes, buf.rawAddress)
 
 public actual fun stat(path: ConstPtr, buf: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsStat(path.rawAddress, buf.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsStat(path.rawAddress, buf.rawAddress)
 
 public actual fun wstat(path: ConstPtr, buf: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsWstat(path.rawAddress, buf.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsWstat(path.rawAddress, buf.rawAddress)
 
 public actual fun wutime(file: ConstPtr, buf: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsWutime(file.rawAddress, buf.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsWutime(file.rawAddress, buf.rawAddress)
 
 public actual fun popen(command: ConstPtr, mode: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsPopen(command.rawAddress, mode.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsPopen(command.rawAddress, mode.rawAddress))
 
 public actual fun pclose(stream: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsPclose(stream.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsPclose(stream.rawAddress)
 
 public actual fun fdopen(fd: CInt, mode: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsFdopen(fd, mode.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsFdopen(fd, mode.rawAddress))
 
 public actual fun fileno(stream: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsFileno(stream.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsFileno(stream.rawAddress)
 
 public actual fun open(path: ConstPtr, oflag: CInt, vararg variadicArgs: Long): CInt =
-    WindowsJniBridge.libcWindowsOpen(path.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsOpen(path.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun wopen(path: ConstPtr, oflag: CInt, vararg variadicArgs: Long): CInt =
-    WindowsJniBridge.libcWindowsWopen(path.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsWopen(path.rawAddress, oflag, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun creat(path: ConstPtr, mode: CInt): CInt =
-    WindowsJniBridge.libcWindowsCreat(path.rawAddress, mode)
+    LibcWindowsJniBridge.rustlangLibcWindowsCreat(path.rawAddress, mode)
 
 public actual fun access(path: ConstPtr, amode: CInt): CInt =
-    WindowsJniBridge.libcWindowsAccess(path.rawAddress, amode)
+    LibcWindowsJniBridge.rustlangLibcWindowsAccess(path.rawAddress, amode)
 
 public actual fun chdir(dir: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsChdir(dir.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsChdir(dir.rawAddress)
 
 public actual fun close(fd: CInt): CInt =
-    WindowsJniBridge.libcWindowsClose(fd)
+    LibcWindowsJniBridge.rustlangLibcWindowsClose(fd)
 
 public actual fun dup(fd: CInt): CInt =
-    WindowsJniBridge.libcWindowsDup(fd)
+    LibcWindowsJniBridge.rustlangLibcWindowsDup(fd)
 
 public actual fun dup2(src: CInt, dst: CInt): CInt =
-    WindowsJniBridge.libcWindowsDup2(src, dst)
+    LibcWindowsJniBridge.rustlangLibcWindowsDup2(src, dst)
 
 public actual fun execl(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    WindowsJniBridge.libcWindowsExecl(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsExecl(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun wexecl(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    WindowsJniBridge.libcWindowsWexecl(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsWexecl(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun execle(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    WindowsJniBridge.libcWindowsExecle(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsExecle(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun wexecle(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    WindowsJniBridge.libcWindowsWexecle(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsWexecle(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun execlp(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    WindowsJniBridge.libcWindowsExeclp(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsExeclp(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun wexeclp(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    WindowsJniBridge.libcWindowsWexeclp(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsWexeclp(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun execlpe(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    WindowsJniBridge.libcWindowsExeclpe(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsExeclpe(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun wexeclpe(path: ConstPtr, arg0: ConstPtr, vararg variadicArgs: Long): IntptrT =
-    WindowsJniBridge.libcWindowsWexeclpe(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+    LibcWindowsJniBridge.rustlangLibcWindowsWexeclpe(path.rawAddress, arg0.rawAddress, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun execv(prog: ConstPtr, argv: ConstPtr): IntptrT =
-    WindowsJniBridge.libcWindowsExecv(prog.rawAddress, argv.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsExecv(prog.rawAddress, argv.rawAddress)
 
 public actual fun execve(prog: ConstPtr, argv: ConstPtr, envp: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsExecve(prog.rawAddress, argv.rawAddress, envp.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsExecve(prog.rawAddress, argv.rawAddress, envp.rawAddress)
 
 public actual fun execvp(c: ConstPtr, argv: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsExecvp(c.rawAddress, argv.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsExecvp(c.rawAddress, argv.rawAddress)
 
 public actual fun execvpe(c: ConstPtr, argv: ConstPtr, envp: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsExecvpe(c.rawAddress, argv.rawAddress, envp.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsExecvpe(c.rawAddress, argv.rawAddress, envp.rawAddress)
 
 public actual fun wexecv(prog: ConstPtr, argv: ConstPtr): IntptrT =
-    WindowsJniBridge.libcWindowsWexecv(prog.rawAddress, argv.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsWexecv(prog.rawAddress, argv.rawAddress)
 
 public actual fun wexecve(prog: ConstPtr, argv: ConstPtr, envp: ConstPtr): IntptrT =
-    WindowsJniBridge.libcWindowsWexecve(prog.rawAddress, argv.rawAddress, envp.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsWexecve(prog.rawAddress, argv.rawAddress, envp.rawAddress)
 
 public actual fun wexecvp(c: ConstPtr, argv: ConstPtr): IntptrT =
-    WindowsJniBridge.libcWindowsWexecvp(c.rawAddress, argv.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsWexecvp(c.rawAddress, argv.rawAddress)
 
 public actual fun wexecvpe(c: ConstPtr, argv: ConstPtr, envp: ConstPtr): IntptrT =
-    WindowsJniBridge.libcWindowsWexecvpe(c.rawAddress, argv.rawAddress, envp.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsWexecvpe(c.rawAddress, argv.rawAddress, envp.rawAddress)
 
 public actual fun getcwd(buf: MutPtr, size: CInt): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsGetcwd(buf.rawAddress, size))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsGetcwd(buf.rawAddress, size))
 
 public actual fun getpid(): CInt =
-    WindowsJniBridge.libcWindowsGetpid()
+    LibcWindowsJniBridge.rustlangLibcWindowsGetpid()
 
 public actual fun isatty(fd: CInt): CInt =
-    WindowsJniBridge.libcWindowsIsatty(fd)
+    LibcWindowsJniBridge.rustlangLibcWindowsIsatty(fd)
 
 public actual fun lseek(fd: CInt, offset: CLong, origin: CInt): CLong =
-    WindowsJniBridge.libcWindowsLseek(fd, offset, origin)
+    LibcWindowsJniBridge.rustlangLibcWindowsLseek(fd, offset, origin)
 
 public actual fun lseek64(fd: CInt, offset: CLonglong, origin: CInt): CLonglong =
-    WindowsJniBridge.libcWindowsLseek64(fd, offset, origin)
+    LibcWindowsJniBridge.rustlangLibcWindowsLseek64(fd, offset, origin)
 
 public actual fun pipe(fds: MutPtr, psize: CUint, textmode: CInt): CInt =
-    WindowsJniBridge.libcWindowsPipe(fds.rawAddress, psize.toInt(), textmode)
+    LibcWindowsJniBridge.rustlangLibcWindowsPipe(fds.rawAddress, psize.toInt(), textmode)
 
 public actual fun read(fd: CInt, buf: MutPtr, count: CUint): CInt =
-    WindowsJniBridge.libcWindowsRead(fd, buf.rawAddress, count.toInt())
+    LibcWindowsJniBridge.rustlangLibcWindowsRead(fd, buf.rawAddress, count.toInt())
 
 public actual fun rmdir(path: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsRmdir(path.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsRmdir(path.rawAddress)
 
 public actual fun unlink(c: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsUnlink(c.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsUnlink(c.rawAddress)
 
 public actual fun write(fd: CInt, buf: ConstPtr, count: CUint): CInt =
-    WindowsJniBridge.libcWindowsWrite(fd, buf.rawAddress, count.toInt())
+    LibcWindowsJniBridge.rustlangLibcWindowsWrite(fd, buf.rawAddress, count.toInt())
 
 public actual fun commit(fd: CInt): CInt =
-    WindowsJniBridge.libcWindowsCommit(fd)
+    LibcWindowsJniBridge.rustlangLibcWindowsCommit(fd)
 
 public actual fun getOsfhandle(fd: CInt): IntptrT =
-    WindowsJniBridge.libcWindowsGetOsfhandle(fd)
+    LibcWindowsJniBridge.rustlangLibcWindowsGetOsfhandle(fd)
 
 public actual fun openOsfhandle(osfhandle: IntptrT, flags: CInt): CInt =
-    WindowsJniBridge.libcWindowsOpenOsfhandle(osfhandle, flags)
+    LibcWindowsJniBridge.rustlangLibcWindowsOpenOsfhandle(osfhandle, flags)
 
 public actual fun setlocale(category: CInt, locale: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsSetlocale(category, locale.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsSetlocale(category, locale.rawAddress))
 
 public actual fun wsetlocale(category: CInt, locale: ConstPtr): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsWsetlocale(category, locale.rawAddress))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsWsetlocale(category, locale.rawAddress))
 
 public actual fun alignedMalloc(size: SizeT, alignment: SizeT): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsAlignedMalloc(size.toLong(), alignment.toLong()))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsAlignedMalloc(size.toLong(), alignment.toLong()))
 
 public actual fun alignedFree(ptr: MutPtr) {
-    WindowsJniBridge.libcWindowsAlignedFree(ptr.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsAlignedFree(ptr.rawAddress)
 }
 
 public actual fun alignedRealloc(memblock: MutPtr, size: SizeT, alignment: SizeT): MutPtr =
-    MutPtr(WindowsJniBridge.libcWindowsAlignedRealloc(memblock.rawAddress, size.toLong(), alignment.toLong()))
+    MutPtr(LibcWindowsJniBridge.rustlangLibcWindowsAlignedRealloc(memblock.rawAddress, size.toLong(), alignment.toLong()))
 
 public actual fun putenv(envstring: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsPutenv(envstring.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsPutenv(envstring.rawAddress)
 
 public actual fun wputenv(envstring: ConstPtr): CInt =
-    WindowsJniBridge.libcWindowsWputenv(envstring.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsWputenv(envstring.rawAddress)
 
-public actual fun putenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.libc.ErrnoT =
-    WindowsJniBridge.libcWindowsPutenvS(envstring.rawAddress, valueString.rawAddress)
+public actual fun putenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.windows.ErrnoT =
+    LibcWindowsJniBridge.rustlangLibcWindowsPutenvS(envstring.rawAddress, valueString.rawAddress)
 
-public actual fun wputenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.libc.ErrnoT =
-    WindowsJniBridge.libcWindowsWputenvS(envstring.rawAddress, valueString.rawAddress)
+public actual fun wputenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.windows.ErrnoT =
+    LibcWindowsJniBridge.rustlangLibcWindowsWputenvS(envstring.rawAddress, valueString.rawAddress)
 
 public actual fun listen(s: Socket, backlog: CInt): CInt =
-    WindowsJniBridge.libcWindowsListen(s.toLong(), backlog)
+    LibcWindowsJniBridge.rustlangLibcWindowsListen(s.toLong(), backlog)
 
 public actual fun accept(s: Socket, addr: MutPtr, addrlen: MutPtr): Socket =
-    WindowsJniBridge.libcWindowsAccept(s.toLong(), addr.rawAddress, addrlen.rawAddress).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsAccept(s.toLong(), addr.rawAddress, addrlen.rawAddress).toULong()
 
 public actual fun bind(s: Socket, name: ConstPtr, namelen: CInt): CInt =
-    WindowsJniBridge.libcWindowsBind(s.toLong(), name.rawAddress, namelen)
+    LibcWindowsJniBridge.rustlangLibcWindowsBind(s.toLong(), name.rawAddress, namelen)
 
 public actual fun connect(s: Socket, name: ConstPtr, namelen: CInt): CInt =
-    WindowsJniBridge.libcWindowsConnect(s.toLong(), name.rawAddress, namelen)
+    LibcWindowsJniBridge.rustlangLibcWindowsConnect(s.toLong(), name.rawAddress, namelen)
 
 public actual fun getpeername(s: Socket, name: MutPtr, nameln: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsGetpeername(s.toLong(), name.rawAddress, nameln.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsGetpeername(s.toLong(), name.rawAddress, nameln.rawAddress)
 
 public actual fun getsockname(s: Socket, name: MutPtr, nameln: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsGetsockname(s.toLong(), name.rawAddress, nameln.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsGetsockname(s.toLong(), name.rawAddress, nameln.rawAddress)
 
 public actual fun getsockopt(s: Socket, level: CInt, optname: CInt, optval: MutPtr, optlen: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsGetsockopt(s.toLong(), level, optname, optval.rawAddress, optlen.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsGetsockopt(s.toLong(), level, optname, optval.rawAddress, optlen.rawAddress)
 
 public actual fun recvfrom(s: Socket, buf: MutPtr, len: CInt, flags: CInt, from: MutPtr, fromlen: MutPtr): CInt =
-    WindowsJniBridge.libcWindowsRecvfrom(s.toLong(), buf.rawAddress, len, flags, from.rawAddress, fromlen.rawAddress)
+    LibcWindowsJniBridge.rustlangLibcWindowsRecvfrom(s.toLong(), buf.rawAddress, len, flags, from.rawAddress, fromlen.rawAddress)
 
 public actual fun sendto(s: Socket, buf: ConstPtr, len: CInt, flags: CInt, to: ConstPtr, tolen: CInt): CInt =
-    WindowsJniBridge.libcWindowsSendto(s.toLong(), buf.rawAddress, len, flags, to.rawAddress, tolen)
+    LibcWindowsJniBridge.rustlangLibcWindowsSendto(s.toLong(), buf.rawAddress, len, flags, to.rawAddress, tolen)
 
 public actual fun setsockopt(s: Socket, level: CInt, optname: CInt, optval: ConstPtr, optlen: CInt): CInt =
-    WindowsJniBridge.libcWindowsSetsockopt(s.toLong(), level, optname, optval.rawAddress, optlen)
+    LibcWindowsJniBridge.rustlangLibcWindowsSetsockopt(s.toLong(), level, optname, optval.rawAddress, optlen)
 
 public actual fun socket(af: CInt, socketType: CInt, protocol: CInt): Socket =
-    WindowsJniBridge.libcWindowsSocket(af, socketType, protocol).toULong()
+    LibcWindowsJniBridge.rustlangLibcWindowsSocket(af, socketType, protocol).toULong()

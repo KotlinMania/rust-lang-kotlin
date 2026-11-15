@@ -7,11 +7,11 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun malloc(size: CSizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysAllocUnixMalloc")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangStdSysAllocUnixMalloc")
 
 public actual fun realloc(ptr: MutPtr, size: CSizeT): MutPtr =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysAllocUnixRealloc")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangStdSysAllocUnixRealloc")
 
 public actual fun free(ptr: MutPtr) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysAllocUnixFree")
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for rustlangStdSysAllocUnixFree")
 }

@@ -1,6 +1,8 @@
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.os.windows.io.BorrowedHandle
+import io.github.kotlinmania.rustlang.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.io.error.Error
 
 public interface StdioExt {

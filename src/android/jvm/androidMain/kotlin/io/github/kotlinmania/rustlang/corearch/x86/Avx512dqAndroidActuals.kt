@@ -2,18 +2,20 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.corearch.simd.F32x16
-import io.github.kotlinmania.rustlang.corearch.simd.F32x4
-import io.github.kotlinmania.rustlang.corearch.simd.F32x8
-import io.github.kotlinmania.rustlang.corearch.simd.F64x2
-import io.github.kotlinmania.rustlang.corearch.simd.F64x4
-import io.github.kotlinmania.rustlang.corearch.simd.F64x8
-import io.github.kotlinmania.rustlang.corearch.simd.I64x2
-import io.github.kotlinmania.rustlang.corearch.simd.I64x4
-import io.github.kotlinmania.rustlang.corearch.simd.I64x8
-import io.github.kotlinmania.rustlang.corearch.simd.U64x2
-import io.github.kotlinmania.rustlang.corearch.simd.U64x4
-import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import io.github.kotlinmania.rustlang.simd.F32x16
+import io.github.kotlinmania.rustlang.simd.F32x4
+import io.github.kotlinmania.rustlang.simd.F32x8
+import io.github.kotlinmania.rustlang.simd.F64x2
+import io.github.kotlinmania.rustlang.simd.F64x4
+import io.github.kotlinmania.rustlang.simd.F64x8
+import io.github.kotlinmania.rustlang.simd.I64x2
+import io.github.kotlinmania.rustlang.simd.I64x4
+import io.github.kotlinmania.rustlang.simd.I64x8
+import io.github.kotlinmania.rustlang.simd.U64x2
+import io.github.kotlinmania.rustlang.simd.U64x4
+import io.github.kotlinmania.rustlang.simd.U64x8
+import io.github.kotlinmania.rustlang.x86.Mmask16
+import io.github.kotlinmania.rustlang.x86.Mmask8
 
 public actual fun vcvtqq2pd128(a: I64x2, rounding: Int): F64x2 =
     null as F64x2

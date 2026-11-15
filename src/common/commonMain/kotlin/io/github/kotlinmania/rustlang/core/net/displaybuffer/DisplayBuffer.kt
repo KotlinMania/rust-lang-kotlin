@@ -1,10 +1,9 @@
 // port-lint: source net/display_buffer.rs
 package io.github.kotlinmania.rustlang.core.net.displaybuffer
 
-import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
 
 /**
  * Used for slow path in `Display` implementations when alignment is required.
@@ -20,7 +19,7 @@ public open class DisplayBuffer internal constructor(
         // SAFETY: `buf` is only written to by the `fmt.Write.writeStr` implementation
         // which writes a valid UTF-8 string to `buf` and correctly sets `len`.
         return run {
-            val s = ((this.buf).slice(0 until this.len)).assumeInitRef()
+            val s = ((this.buf).subList(0, this.len)).assumeInitRef()
             String.fromUtf8Unchecked(s)
         }
     }

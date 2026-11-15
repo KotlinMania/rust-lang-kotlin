@@ -9,13 +9,12 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.detect.arch.Feature
+import io.github.kotlinmania.rustlang.detect.bit.test
+import io.github.kotlinmania.rustlang.detect.cache.Cache
 import io.github.kotlinmania.rustlang.libc.systemPropertyGet
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.PROP_VALUE_MAX
-import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
-import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec
 
 // Run-time feature detection for Aarch64 on Linux.
 
@@ -35,7 +34,7 @@ public fun detectFeatures(): Initializer {
         // because Android 9+ includes the fix.
         len > 0 && arch.startsWith("exynos9810".encodeToByteArray())
     }
-    when (val matchVal = auxv()) {
+    when (val matchVal = auxvec.auxv()) {
         is Ok -> {
             val auxv = matchVal.value
             val hwcap: AtHwcap = auxv.into()
@@ -619,7 +618,7 @@ public open class AtHwcap(
         /**
          * Reads AtHwcap from the auxiliary vector.
          */
-        public fun from(auxv: AuxVec): AtHwcap {
+        public fun from(auxv: auxvec.AuxVec): AtHwcap {
             val cap = Default.default().copy(fp = test(auxv.hwcap, 0u), asimd = test(auxv.hwcap, 1u), aes = test(auxv.hwcap, 3u), pmull = test(auxv.hwcap, 4u), sha1 = test(auxv.hwcap, 5u), sha2 = test(auxv.hwcap, 6u), crc32 = test(auxv.hwcap, 7u), atomics = test(auxv.hwcap, 8u), fphp = test(auxv.hwcap, 9u), asimdhp = test(auxv.hwcap, 10u), asimdrdm = test(auxv.hwcap, 12u), jscvt = test(auxv.hwcap, 13u), fcma = test(auxv.hwcap, 14u), lrcpc = test(auxv.hwcap, 15u), dcpop = test(auxv.hwcap, 16u), sha3 = test(auxv.hwcap, 17u), sm3 = test(auxv.hwcap, 18u), sm4 = test(auxv.hwcap, 19u), asimddp = test(auxv.hwcap, 20u), sha512 = test(auxv.hwcap, 21u), sve = test(auxv.hwcap, 22u), fhm = test(auxv.hwcap, 23u), dit = test(auxv.hwcap, 24u), uscat = test(auxv.hwcap, 25u), ilrcpc = test(auxv.hwcap, 26u), flagm = test(auxv.hwcap, 27u), ssbs = test(auxv.hwcap, 28u), sb = test(auxv.hwcap, 29u), paca = test(auxv.hwcap, 30u), pacg = test(auxv.hwcap, 31u), dcpodp = test(auxv.hwcap2, 0u), sve2 = test(auxv.hwcap2, 1u), sveaes = test(auxv.hwcap2, 2u), svepmull = test(auxv.hwcap2, 3u), svebitperm = test(auxv.hwcap2, 4u), svesha3 = test(auxv.hwcap2, 5u), svesm4 = test(auxv.hwcap2, 6u), flagm2 = test(auxv.hwcap2, 7u), frint = test(auxv.hwcap2, 8u), svef32mm = test(auxv.hwcap2, 10u), svef64mm = test(auxv.hwcap2, 11u), i8mm = test(auxv.hwcap2, 13u), bf16 = test(auxv.hwcap2, 14u), rng = test(auxv.hwcap2, 16u), bti = test(auxv.hwcap2, 17u), mte = test(auxv.hwcap2, 18u), ecv = test(auxv.hwcap2, 19u), sme = test(auxv.hwcap2, 23u), smei16i64 = test(auxv.hwcap2, 24u), smef64f64 = test(auxv.hwcap2, 25u), smefa64 = test(auxv.hwcap2, 30u), wfxt = test(auxv.hwcap2, 31u))
             // Hardware capabilities from bits 32 to 63 should only
             // be tested on LP64 targets with 64 bits `Int`.

@@ -2,12 +2,12 @@
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.lemire
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.BiasedFp
-import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.table.LARGEST_POWER_OF_FIVE
-import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.table.POWER_OF_FIVE_128
-import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.table.SMALLEST_POWER_OF_FIVE
-import io.github.kotlinmania.rustlang.core.num.imp.traits.Float
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
+import io.github.kotlinmania.rustlang.num.imp.dec2flt.common.BiasedFp
+import io.github.kotlinmania.rustlang.num.imp.dec2flt.table.LARGEST_POWER_OF_FIVE
+import io.github.kotlinmania.rustlang.num.imp.dec2flt.table.POWER_OF_FIVE_128
+import io.github.kotlinmania.rustlang.num.imp.dec2flt.table.SMALLEST_POWER_OF_FIVE
+import io.github.kotlinmania.rustlang.num.imp.traits.Float
 
 // Implementation of the Eisel-Lemire algorithm.
 

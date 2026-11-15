@@ -9,11 +9,12 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.simd.Simd
-import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
+import io.github.kotlinmania.rustlang.simd.Simd
+import io.github.kotlinmania.rustlang.simd.debugSimdFinish
 
 // MIPS SIMD Architecture intrinsics
 //

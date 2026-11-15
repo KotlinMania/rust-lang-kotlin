@@ -3,30 +3,30 @@
 
 package io.github.kotlinmania.rustlang.core.num.f32
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
-import io.github.kotlinmania.rustlang.core.intrinsics.copysignf32
-import io.github.kotlinmania.rustlang.core.intrinsics.fabs
-import io.github.kotlinmania.rustlang.core.intrinsics.faddAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fdivAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fma
-import io.github.kotlinmania.rustlang.core.intrinsics.fmulAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fmuladd
-import io.github.kotlinmania.rustlang.core.intrinsics.fremAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fsubAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.maximumNumberNszF32
-import io.github.kotlinmania.rustlang.core.intrinsics.maximumf32
-import io.github.kotlinmania.rustlang.core.intrinsics.minimumNumberNszF32
-import io.github.kotlinmania.rustlang.core.intrinsics.minimumf32
+import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.cmp.clamp.ClampBounds
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.num.FpCategory
-import io.github.kotlinmania.rustlang.core.num.imp.libm.cbrtf
-import io.github.kotlinmania.rustlang.core.num.imp.libm.fdimf
 import io.github.kotlinmania.rustlang.core.num.rustClassifyFloat
 import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
-import io.github.kotlinmania.rustlang.core.panic.constAssert
+import io.github.kotlinmania.rustlang.intrinsics.copysignf32
+import io.github.kotlinmania.rustlang.intrinsics.fabs
+import io.github.kotlinmania.rustlang.intrinsics.faddAlgebraic
+import io.github.kotlinmania.rustlang.intrinsics.fdivAlgebraic
+import io.github.kotlinmania.rustlang.intrinsics.fma
+import io.github.kotlinmania.rustlang.intrinsics.fmulAlgebraic
+import io.github.kotlinmania.rustlang.intrinsics.fmuladd
+import io.github.kotlinmania.rustlang.intrinsics.fremAlgebraic
+import io.github.kotlinmania.rustlang.intrinsics.fsubAlgebraic
+import io.github.kotlinmania.rustlang.intrinsics.maximumNumberNszF32
+import io.github.kotlinmania.rustlang.intrinsics.maximumf32
+import io.github.kotlinmania.rustlang.intrinsics.minimumNumberNszF32
+import io.github.kotlinmania.rustlang.intrinsics.minimumf32
+import io.github.kotlinmania.rustlang.num.FpCategory
+import io.github.kotlinmania.rustlang.num.imp.libm.cbrtf
+import io.github.kotlinmania.rustlang.num.imp.libm.fdimf
+import io.github.kotlinmania.rustlang.panic.constAssert
 import kotlin.math.abs
 
 // Constants for the `Float` single-precision floating point type.
@@ -1505,7 +1505,7 @@ public fun kotlin.Float.nanTo(replacement: kotlin.Float): kotlin.Float =
  *
  * [f32.floor]: ../../../std/primitive.f32.html#method.floor
  */
-public fun floor(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.floor(x)
+public fun floor(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.intrinsics.floor(x)
 
 /**
  * Experimental version of `ceil` in `core`. See [f32.ceil] for details.
@@ -1527,7 +1527,7 @@ public fun floor(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang
  *
  * [f32.ceil]: ../../../std/primitive.f32.html#method.ceil
  */
-public fun ceil(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.ceil(x)
+public fun ceil(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.intrinsics.ceil(x)
 
 /**
  * Experimental version of `round` in `core`. See [f32.round] for details.
@@ -1555,7 +1555,7 @@ public fun ceil(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.
  *
  * [f32.round]: ../../../std/primitive.f32.html#method.round
  */
-public fun round(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.round(x)
+public fun round(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.intrinsics.round(x)
 
 /**
  * Experimental version of `roundTiesEven` in `core`. See [f32.roundTiesEven] for
@@ -1582,7 +1582,7 @@ public fun round(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang
  *
  * [f32.roundTiesEven]: ../../../std/primitive.f32.html#method.roundTiesEven
  */
-public fun roundTiesEven(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.roundTiesEven(x)
+public fun roundTiesEven(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.intrinsics.roundTiesEven(x)
 
 /**
  * Experimental version of `trunc` in `core`. See [f32.trunc] for details.
@@ -1606,7 +1606,7 @@ public fun roundTiesEven(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.
  *
  * [f32.trunc]: ../../../std/primitive.f32.html#method.trunc
  */
-public fun trunc(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.trunc(x)
+public fun trunc(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.intrinsics.trunc(x)
 
 /**
  * Experimental version of `fract` in `core`. See [f32.fract] for details.
@@ -1753,7 +1753,7 @@ public fun remEuclid(x: kotlin.Float, rhs: kotlin.Float): kotlin.Float {
  *
  * [f32.powi]: ../../../std/primitive.f32.html#method.powi
  */
-public fun powi(x: kotlin.Float, n: Int): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.powi(x, n)
+public fun powi(x: kotlin.Float, n: Int): kotlin.Float = io.github.kotlinmania.rustlang.intrinsics.powi(x, n)
 
 /**
  * Experimental version of `sqrt` in `core`. See [f32.sqrt] for details.
@@ -1777,7 +1777,7 @@ public fun powi(x: kotlin.Float, n: Int): kotlin.Float = io.github.kotlinmania.r
  *
  * [f32.sqrt]: ../../../std/primitive.f32.html#method.sqrt
  */
-public fun sqrt(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.sqrt(x)
+public fun sqrt(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.intrinsics.sqrt(x)
 
 /**
  * Experimental version of `absSub` in `core`. See [f32.absSub] for details.

@@ -8,12 +8,13 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.num.rustWrappingAbs
 import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.simd.I8x16
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -493,7 +494,7 @@ public class Simd128InlineTests {
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i8x16Add(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i8x16Add(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -504,7 +505,7 @@ public class Simd128InlineTests {
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i8x16Add(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i8x16Add(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -515,7 +516,7 @@ public class Simd128InlineTests {
             val v22 = listOf(127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 9, -24)
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = i8x16Add(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.i8x16Add(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -532,7 +533,7 @@ public class Simd128InlineTests {
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i8x16AddSat(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i8x16AddSat(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -543,7 +544,7 @@ public class Simd128InlineTests {
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i8x16AddSat(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i8x16AddSat(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -554,7 +555,7 @@ public class Simd128InlineTests {
             val v22 = listOf(127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 9, -24)
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = i8x16AddSat(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.i8x16AddSat(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -571,7 +572,7 @@ public class Simd128InlineTests {
             val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u8x16AddSat(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u8x16AddSat(v1V128, v2V128)
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -582,7 +583,7 @@ public class Simd128InlineTests {
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u8x16AddSat(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u8x16AddSat(v1V1281, v2V1281)
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -593,7 +594,7 @@ public class Simd128InlineTests {
             val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = u8x16AddSat(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.u8x16AddSat(v1V1282, v2V1282)
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -610,7 +611,7 @@ public class Simd128InlineTests {
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i8x16Sub(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i8x16Sub(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -621,7 +622,7 @@ public class Simd128InlineTests {
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i8x16Sub(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i8x16Sub(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -632,7 +633,7 @@ public class Simd128InlineTests {
             val v22 = listOf(-127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 4, 8)
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = i8x16Sub(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.i8x16Sub(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -649,7 +650,7 @@ public class Simd128InlineTests {
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i8x16SubSat(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i8x16SubSat(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -660,7 +661,7 @@ public class Simd128InlineTests {
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i8x16SubSat(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i8x16SubSat(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -671,7 +672,7 @@ public class Simd128InlineTests {
             val v22 = listOf(-127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 4, 8)
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = i8x16SubSat(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.i8x16SubSat(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -688,7 +689,7 @@ public class Simd128InlineTests {
             val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u8x16SubSat(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u8x16SubSat(v1V128, v2V128)
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -699,7 +700,7 @@ public class Simd128InlineTests {
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u8x16SubSat(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u8x16SubSat(v1V1281, v2V1281)
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -710,7 +711,7 @@ public class Simd128InlineTests {
             val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = u8x16SubSat(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.u8x16SubSat(v1V1282, v2V1282)
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -727,7 +728,7 @@ public class Simd128InlineTests {
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i8x16Min(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i8x16Min(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -738,7 +739,7 @@ public class Simd128InlineTests {
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i8x16Min(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i8x16Min(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -749,7 +750,7 @@ public class Simd128InlineTests {
             val v22 = listOf(-127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 4, 8)
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = i8x16Min(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.i8x16Min(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -766,7 +767,7 @@ public class Simd128InlineTests {
             val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u8x16Min(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u8x16Min(v1V128, v2V128)
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -777,7 +778,7 @@ public class Simd128InlineTests {
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u8x16Min(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u8x16Min(v1V1281, v2V1281)
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -788,7 +789,7 @@ public class Simd128InlineTests {
             val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = u8x16Min(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.u8x16Min(v1V1282, v2V1282)
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -805,7 +806,7 @@ public class Simd128InlineTests {
             val v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i8x16Max(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i8x16Max(v1V128, v2V128)
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -816,7 +817,7 @@ public class Simd128InlineTests {
             val v21 = listOf(-2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -18)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i8x16Max(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i8x16Max(v1V1281, v2V1281)
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -827,7 +828,7 @@ public class Simd128InlineTests {
             val v22 = listOf(-127, -44, 43, 126, 4, 2, 9, -3, -59, -43, 39, -69, 79, -3, 4, 8)
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = i8x16Max(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.i8x16Max(v1V1282, v2V1282)
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -844,7 +845,7 @@ public class Simd128InlineTests {
             val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u8x16Max(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u8x16Max(v1V128, v2V128)
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -855,7 +856,7 @@ public class Simd128InlineTests {
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u8x16Max(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u8x16Max(v1V1281, v2V1281)
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -866,7 +867,7 @@ public class Simd128InlineTests {
             val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = u8x16Max(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.u8x16Max(v1V1282, v2V1282)
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -883,7 +884,7 @@ public class Simd128InlineTests {
             val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u8x16Avgr(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u8x16Avgr(v1V128, v2V128)
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -894,7 +895,7 @@ public class Simd128InlineTests {
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u8x16Avgr(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u8x16Avgr(v1V1281, v2V1281)
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -905,7 +906,7 @@ public class Simd128InlineTests {
             val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = u8x16Avgr(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.u8x16Avgr(v1V1282, v2V1282)
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -922,7 +923,7 @@ public class Simd128InlineTests {
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i16x8Add(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i16x8Add(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -933,7 +934,7 @@ public class Simd128InlineTests {
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i16x8Add(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i16x8Add(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -950,7 +951,7 @@ public class Simd128InlineTests {
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i16x8AddSat(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i16x8AddSat(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -961,7 +962,7 @@ public class Simd128InlineTests {
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i16x8AddSat(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i16x8AddSat(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -978,7 +979,7 @@ public class Simd128InlineTests {
             val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u16x8AddSat(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u16x8AddSat(v1V128, v2V128)
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -989,7 +990,7 @@ public class Simd128InlineTests {
             val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u16x8AddSat(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u16x8AddSat(v1V1281, v2V1281)
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1006,7 +1007,7 @@ public class Simd128InlineTests {
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i16x8Sub(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i16x8Sub(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1017,7 +1018,7 @@ public class Simd128InlineTests {
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i16x8Sub(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i16x8Sub(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1034,7 +1035,7 @@ public class Simd128InlineTests {
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i16x8SubSat(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i16x8SubSat(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1045,7 +1046,7 @@ public class Simd128InlineTests {
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i16x8SubSat(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i16x8SubSat(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1062,7 +1063,7 @@ public class Simd128InlineTests {
             val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u16x8SubSat(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u16x8SubSat(v1V128, v2V128)
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1073,7 +1074,7 @@ public class Simd128InlineTests {
             val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u16x8SubSat(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u16x8SubSat(v1V1281, v2V1281)
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1090,7 +1091,7 @@ public class Simd128InlineTests {
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i16x8Mul(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i16x8Mul(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1101,7 +1102,7 @@ public class Simd128InlineTests {
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i16x8Mul(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i16x8Mul(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1118,7 +1119,7 @@ public class Simd128InlineTests {
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i16x8Min(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i16x8Min(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1129,7 +1130,7 @@ public class Simd128InlineTests {
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i16x8Min(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i16x8Min(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1146,7 +1147,7 @@ public class Simd128InlineTests {
             val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u16x8Min(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u16x8Min(v1V128, v2V128)
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1157,7 +1158,7 @@ public class Simd128InlineTests {
             val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u16x8Min(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u16x8Min(v1V1281, v2V1281)
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1174,7 +1175,7 @@ public class Simd128InlineTests {
             val v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i16x8Max(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i16x8Max(v1V128, v2V128)
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1185,7 +1186,7 @@ public class Simd128InlineTests {
             val v21 = listOf(32767, 8, -2494, -4, 4882, -4, 848, 3830)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i16x8Max(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i16x8Max(v1V1281, v2V1281)
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1202,7 +1203,7 @@ public class Simd128InlineTests {
             val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u16x8Max(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u16x8Max(v1V128, v2V128)
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1213,7 +1214,7 @@ public class Simd128InlineTests {
             val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u16x8Max(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u16x8Max(v1V1281, v2V1281)
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1230,7 +1231,7 @@ public class Simd128InlineTests {
             val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u16x8Avgr(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u16x8Avgr(v1V128, v2V128)
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1241,7 +1242,7 @@ public class Simd128InlineTests {
             val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u16x8Avgr(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u16x8Avgr(v1V1281, v2V1281)
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1258,7 +1259,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1, 2, 3, 4)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i32x4Add(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i32x4Add(v1V128, v2V128)
             var v3 = intArrayOf(0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1269,7 +1270,7 @@ public class Simd128InlineTests {
             val v21 = IntArray(4) { Int.MAX_VALUE }
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i32x4Add(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i32x4Add(v1V1281, v2V1281)
             var v31 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1286,7 +1287,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1, 2, 3, 4)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i32x4Sub(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i32x4Sub(v1V128, v2V128)
             var v3 = intArrayOf(0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1297,7 +1298,7 @@ public class Simd128InlineTests {
             val v21 = IntArray(4) { Int.MAX_VALUE }
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i32x4Sub(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i32x4Sub(v1V1281, v2V1281)
             var v31 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1314,7 +1315,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1, 2, 3, 4)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i32x4Mul(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i32x4Mul(v1V128, v2V128)
             var v3 = intArrayOf(0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1325,7 +1326,7 @@ public class Simd128InlineTests {
             val v21 = IntArray(4) { Int.MAX_VALUE }
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i32x4Mul(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i32x4Mul(v1V1281, v2V1281)
             var v31 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1342,7 +1343,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1, 2, 3, 4)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i32x4Min(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i32x4Min(v1V128, v2V128)
             var v3 = intArrayOf(0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1353,7 +1354,7 @@ public class Simd128InlineTests {
             val v21 = IntArray(4) { Int.MAX_VALUE }
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i32x4Min(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i32x4Min(v1V1281, v2V1281)
             var v31 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1370,7 +1371,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1, 2, 3, 4)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u32x4Min(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u32x4Min(v1V128, v2V128)
             var v3 = uintArrayOf(0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1381,7 +1382,7 @@ public class Simd128InlineTests {
             val v21 = UIntArray(4) { Int.MAX_VALUE.toUInt() }
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u32x4Min(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u32x4Min(v1V1281, v2V1281)
             var v31 = uintArrayOf(1u, 1283u, Int.MAX_VALUE.toUInt(), Int.MIN_VALUE.toUInt())
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1398,7 +1399,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1, 2, 3, 4)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i32x4Max(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i32x4Max(v1V128, v2V128)
             var v3 = intArrayOf(0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1409,7 +1410,7 @@ public class Simd128InlineTests {
             val v21 = IntArray(4) { Int.MAX_VALUE }
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i32x4Max(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i32x4Max(v1V1281, v2V1281)
             var v31 = intArrayOf(1, 1283, Int.MAX_VALUE, Int.MIN_VALUE)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1426,7 +1427,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1, 2, 3, 4)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = u32x4Max(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.u32x4Max(v1V128, v2V128)
             var v3 = uintArrayOf(0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1437,7 +1438,7 @@ public class Simd128InlineTests {
             val v21 = UIntArray(4) { Int.MAX_VALUE.toUInt() }
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = u32x4Max(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.u32x4Max(v1V1281, v2V1281)
             var v31 = uintArrayOf(1u, 1283u, Int.MAX_VALUE.toUInt(), Int.MIN_VALUE.toUInt())
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1454,7 +1455,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1, 2)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i64x2Add(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i64x2Add(v1V128, v2V128)
             var v3 = longArrayOf(0L, 0L)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1465,7 +1466,7 @@ public class Simd128InlineTests {
             val v21 = longArrayOf(Long.MAX_VALUE, Long.MIN_VALUE)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i64x2Add(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i64x2Add(v1V1281, v2V1281)
             var v31 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1476,7 +1477,7 @@ public class Simd128InlineTests {
             val v22 = LongArray(2) { Long.MAX_VALUE }
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = i64x2Add(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.i64x2Add(v1V1282, v2V1282)
             var v32 = LongArray(2) { Long.MAX_VALUE }
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1487,7 +1488,7 @@ public class Simd128InlineTests {
             val v23 = listOf(800, 939)
             val v1V1283: V128 = transmute(v13)
             val v2V1283: V128 = transmute(v23)
-            val v3V1283 = i64x2Add(v1V1283, v2V1283)
+            val v3V1283 = io.github.kotlinmania.rustlang.wasm32.i64x2Add(v1V1283, v2V1283)
             var v33 = longArrayOf(-4L, -4L)
             v33 = transmute(v3V1283)
             for ((i3, actual3) in v33.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1504,7 +1505,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1, 2)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i64x2Sub(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i64x2Sub(v1V128, v2V128)
             var v3 = longArrayOf(0L, 0L)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1515,7 +1516,7 @@ public class Simd128InlineTests {
             val v21 = longArrayOf(Long.MAX_VALUE, Long.MIN_VALUE)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i64x2Sub(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i64x2Sub(v1V1281, v2V1281)
             var v31 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1526,7 +1527,7 @@ public class Simd128InlineTests {
             val v22 = LongArray(2) { Long.MAX_VALUE }
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = i64x2Sub(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.i64x2Sub(v1V1282, v2V1282)
             var v32 = LongArray(2) { Long.MAX_VALUE }
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1537,7 +1538,7 @@ public class Simd128InlineTests {
             val v23 = listOf(800, 939)
             val v1V1283: V128 = transmute(v13)
             val v2V1283: V128 = transmute(v23)
-            val v3V1283 = i64x2Sub(v1V1283, v2V1283)
+            val v3V1283 = io.github.kotlinmania.rustlang.wasm32.i64x2Sub(v1V1283, v2V1283)
             var v33 = longArrayOf(-4L, -4L)
             v33 = transmute(v3V1283)
             for ((i3, actual3) in v33.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1554,7 +1555,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1, 2)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = i64x2Mul(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.i64x2Mul(v1V128, v2V128)
             var v3 = longArrayOf(0L, 0L)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1565,7 +1566,7 @@ public class Simd128InlineTests {
             val v21 = longArrayOf(Long.MAX_VALUE, Long.MIN_VALUE)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = i64x2Mul(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.i64x2Mul(v1V1281, v2V1281)
             var v31 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1576,7 +1577,7 @@ public class Simd128InlineTests {
             val v22 = LongArray(2) { Long.MAX_VALUE }
             val v1V1282: V128 = transmute(v12)
             val v2V1282: V128 = transmute(v22)
-            val v3V1282 = i64x2Mul(v1V1282, v2V1282)
+            val v3V1282 = io.github.kotlinmania.rustlang.wasm32.i64x2Mul(v1V1282, v2V1282)
             var v32 = LongArray(2) { Long.MAX_VALUE }
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1587,7 +1588,7 @@ public class Simd128InlineTests {
             val v23 = listOf(800, 939)
             val v1V1283: V128 = transmute(v13)
             val v2V1283: V128 = transmute(v23)
-            val v3V1283 = i64x2Mul(v1V1283, v2V1283)
+            val v3V1283 = io.github.kotlinmania.rustlang.wasm32.i64x2Mul(v1V1283, v2V1283)
             var v33 = longArrayOf(-4L, -4L)
             v33 = transmute(v3V1283)
             for ((i3, actual3) in v33.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1604,7 +1605,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f32x4Add(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Add(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1615,7 +1616,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f32x4Add(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Add(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1632,7 +1633,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f32x4Sub(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Sub(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1643,7 +1644,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f32x4Sub(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Sub(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1660,7 +1661,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f32x4Mul(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Mul(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1671,7 +1672,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0, 1.0, 0.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f32x4Mul(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Mul(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1688,7 +1689,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f32x4Div(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Div(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1699,7 +1700,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f32x4Div(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Div(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1716,7 +1717,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f32x4Min(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Min(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1727,7 +1728,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f32x4Min(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Min(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1744,7 +1745,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f32x4Max(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Max(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1755,7 +1756,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f32x4Max(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Max(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1772,7 +1773,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f32x4Pmin(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Pmin(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1783,7 +1784,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f32x4Pmin(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Pmin(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1800,7 +1801,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f32x4Pmax(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Pmax(v1V128, v2V128)
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1811,7 +1812,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0, 0.0, 0.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f32x4Pmax(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Pmax(v1V1281, v2V1281)
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1828,7 +1829,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f64x2Add(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Add(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1839,7 +1840,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f64x2Add(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Add(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1856,7 +1857,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f64x2Sub(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Sub(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1867,7 +1868,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f64x2Sub(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Sub(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1884,7 +1885,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f64x2Mul(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Mul(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1895,7 +1896,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f64x2Mul(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Mul(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1912,7 +1913,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f64x2Div(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Div(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1923,7 +1924,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f64x2Div(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Div(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1940,7 +1941,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f64x2Min(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Min(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1951,7 +1952,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f64x2Min(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Min(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1968,7 +1969,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f64x2Max(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Max(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1979,7 +1980,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f64x2Max(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Max(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -1996,7 +1997,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f64x2Pmin(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Pmin(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2007,7 +2008,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f64x2Pmin(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Pmin(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2024,7 +2025,7 @@ public class Simd128InlineTests {
             val v2 = listOf(1.0, 2.0)
             val v1V128: V128 = transmute(v1)
             val v2V128: V128 = transmute(v2)
-            val v3V128 = f64x2Pmax(v1V128, v2V128)
+            val v3V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Pmax(v1V128, v2V128)
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2035,7 +2036,7 @@ public class Simd128InlineTests {
             val v21 = listOf(1.0, 2.0)
             val v1V1281: V128 = transmute(v11)
             val v2V1281: V128 = transmute(v21)
-            val v3V1281 = f64x2Pmax(v1V1281, v2V1281)
+            val v3V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Pmax(v1V1281, v2V1281)
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2050,7 +2051,7 @@ public class Simd128InlineTests {
         run {
             val v1 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = i8x16Abs(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.i8x16Abs(v1V128)
             var v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2059,7 +2060,7 @@ public class Simd128InlineTests {
             }
             val v11 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = i8x16Abs(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.i8x16Abs(v1V1281)
             var v21 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2068,7 +2069,7 @@ public class Simd128InlineTests {
             }
             val v12 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
             val v1V1282: V128 = transmute(v12)
-            val v2V1282 = i8x16Abs(v1V1282)
+            val v2V1282 = io.github.kotlinmania.rustlang.wasm32.i8x16Abs(v1V1282)
             var v22 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
             v22 = transmute(v2V1282)
             for ((i2, actual2) in v22.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2083,7 +2084,7 @@ public class Simd128InlineTests {
         run {
             val v1 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = i8x16Neg(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.i8x16Neg(v1V128)
             var v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2092,7 +2093,7 @@ public class Simd128InlineTests {
             }
             val v11 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = i8x16Neg(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.i8x16Neg(v1V1281)
             var v21 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2101,7 +2102,7 @@ public class Simd128InlineTests {
             }
             val v12 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
             val v1V1282: V128 = transmute(v12)
-            val v2V1282 = i8x16Neg(v1V1282)
+            val v2V1282 = io.github.kotlinmania.rustlang.wasm32.i8x16Neg(v1V1282)
             var v22 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
             v22 = transmute(v2V1282)
             for ((i2, actual2) in v22.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2116,7 +2117,7 @@ public class Simd128InlineTests {
         run {
             val v1 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = i16x8Abs(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.i16x8Abs(v1V128)
             var v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2125,7 +2126,7 @@ public class Simd128InlineTests {
             }
             val v11 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = i16x8Abs(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.i16x8Abs(v1V1281)
             var v21 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2140,7 +2141,7 @@ public class Simd128InlineTests {
         run {
             val v1 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = i16x8Neg(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.i16x8Neg(v1V128)
             var v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2149,7 +2150,7 @@ public class Simd128InlineTests {
             }
             val v11 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = i16x8Neg(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.i16x8Neg(v1V1281)
             var v21 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2164,7 +2165,7 @@ public class Simd128InlineTests {
         run {
             val v1 = intArrayOf(1, 2, 3, 4)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = i32x4Abs(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.i32x4Abs(v1V128)
             var v2 = intArrayOf(1, 2, 3, 4)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2173,7 +2174,7 @@ public class Simd128InlineTests {
             }
             val v11 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = i32x4Abs(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.i32x4Abs(v1V1281)
             var v21 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2188,7 +2189,7 @@ public class Simd128InlineTests {
         run {
             val v1 = intArrayOf(1, 2, 3, 4)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = i32x4Neg(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.i32x4Neg(v1V128)
             var v2 = intArrayOf(1, 2, 3, 4)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2197,7 +2198,7 @@ public class Simd128InlineTests {
             }
             val v11 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = i32x4Neg(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.i32x4Neg(v1V1281)
             var v21 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2212,7 +2213,7 @@ public class Simd128InlineTests {
         run {
             val v1 = longArrayOf(1L, 2L)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = i64x2Abs(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.i64x2Abs(v1V128)
             var v2 = longArrayOf(1L, 2L)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2221,7 +2222,7 @@ public class Simd128InlineTests {
             }
             val v11 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = i64x2Abs(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.i64x2Abs(v1V1281)
             var v21 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2236,7 +2237,7 @@ public class Simd128InlineTests {
         run {
             val v1 = longArrayOf(1L, 2L)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = i64x2Neg(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.i64x2Neg(v1V128)
             var v2 = longArrayOf(1L, 2L)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2245,7 +2246,7 @@ public class Simd128InlineTests {
             }
             val v11 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = i64x2Neg(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.i64x2Neg(v1V1281)
             var v21 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2260,7 +2261,7 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f32x4Ceil(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Ceil(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2269,7 +2270,7 @@ public class Simd128InlineTests {
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f32x4Ceil(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Ceil(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2284,7 +2285,7 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f32x4Floor(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Floor(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2293,7 +2294,7 @@ public class Simd128InlineTests {
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f32x4Floor(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Floor(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2308,7 +2309,7 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f32x4Trunc(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Trunc(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2317,7 +2318,7 @@ public class Simd128InlineTests {
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f32x4Trunc(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Trunc(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2332,7 +2333,7 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f32x4Nearest(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Nearest(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2341,7 +2342,7 @@ public class Simd128InlineTests {
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f32x4Nearest(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Nearest(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2356,7 +2357,7 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f32x4Abs(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Abs(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2365,7 +2366,7 @@ public class Simd128InlineTests {
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f32x4Abs(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Abs(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2380,7 +2381,7 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f32x4Neg(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Neg(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2389,7 +2390,7 @@ public class Simd128InlineTests {
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f32x4Neg(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Neg(v1V1281)
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2404,7 +2405,7 @@ public class Simd128InlineTests {
         run {
             val v1 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f32x4Sqrt(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f32x4Sqrt(v1V128)
             var v2 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2413,7 +2414,7 @@ public class Simd128InlineTests {
             }
             val v11 = floatArrayOf(0.0f, 0.3f, Float.POSITIVE_INFINITY, 0.1f)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f32x4Sqrt(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f32x4Sqrt(v1V1281)
             var v21 = floatArrayOf(0.0f, 0.3f, Float.POSITIVE_INFINITY, 0.1f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2428,7 +2429,7 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f64x2Ceil(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Ceil(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2437,7 +2438,7 @@ public class Simd128InlineTests {
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f64x2Ceil(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Ceil(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2452,7 +2453,7 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f64x2Floor(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Floor(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2461,7 +2462,7 @@ public class Simd128InlineTests {
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f64x2Floor(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Floor(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2476,7 +2477,7 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f64x2Trunc(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Trunc(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2485,7 +2486,7 @@ public class Simd128InlineTests {
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f64x2Trunc(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Trunc(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2500,7 +2501,7 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f64x2Nearest(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Nearest(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2509,7 +2510,7 @@ public class Simd128InlineTests {
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f64x2Nearest(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Nearest(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2524,7 +2525,7 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f64x2Abs(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Abs(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2533,7 +2534,7 @@ public class Simd128InlineTests {
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f64x2Abs(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Abs(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2548,7 +2549,7 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f64x2Neg(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Neg(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2557,7 +2558,7 @@ public class Simd128InlineTests {
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f64x2Neg(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Neg(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2572,7 +2573,7 @@ public class Simd128InlineTests {
         run {
             val v1 = doubleArrayOf(1.0, 2.3)
             val v1V128: V128 = transmute(v1)
-            val v2V128 = f64x2Sqrt(v1V128)
+            val v2V128 = io.github.kotlinmania.rustlang.wasm32.f64x2Sqrt(v1V128)
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
@@ -2581,7 +2582,7 @@ public class Simd128InlineTests {
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, 0.1)
             val v1V1281: V128 = transmute(v11)
-            val v2V1281 = f64x2Sqrt(v1V1281)
+            val v2V1281 = io.github.kotlinmania.rustlang.wasm32.f64x2Sqrt(v1V1281)
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, 0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
@@ -4526,8 +4527,8 @@ public class Simd128InlineTests {
         run {
             val a: ByteArray = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             val b: ByteArray = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            val low = transmute<ShortArray>(i16x8ExtmulLowI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
-            val high = transmute<ShortArray>(i16x8ExtmulHighI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
+            val low = transmute(i16x8ExtmulLowI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
+            val high = transmute(i16x8ExtmulHighI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
             val half = a.size / 2
             for (i in 0 until half) {
                 check(((a[i].toShort()) * (b[i].toShort())).toShort() == low[i])
@@ -4537,8 +4538,8 @@ public class Simd128InlineTests {
         run {
             val a1: ByteArray = byteArrayOf((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0)
             val b1: ByteArray = byteArrayOf((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)
-            val low1 = transmute<ShortArray>(i16x8ExtmulLowI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)))
-            val high1 = transmute<ShortArray>(i16x8ExtmulHighI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)))
+            val low1 = transmute(i16x8ExtmulLowI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)))
+            val high1 = transmute(i16x8ExtmulHighI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)))
             val half1 = a1.size / 2
             for (i1 in 0 until half1) {
                 check(((a1[i1].toShort()) * (b1[i1].toShort())).toShort() == low1[i1])
@@ -4548,8 +4549,8 @@ public class Simd128InlineTests {
         run {
             val a2: UByteArray = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val b2: UByteArray = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val low2 = transmute<UShortArray>(u16x8ExtmulLowU8x16(u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
-            val high2 = transmute<UShortArray>(u16x8ExtmulHighU8x16(u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
+            val low2 = transmute(u16x8ExtmulLowU8x16(u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
+            val high2 = transmute(u16x8ExtmulHighU8x16(u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
             val half2 = a2.size / 2
             for (i2 in 0 until half2) {
                 check(((a2[i2].toUShort()) * (b2[i2].toUShort())).toUShort() == low2[i2])
@@ -4559,8 +4560,8 @@ public class Simd128InlineTests {
         run {
             val a3: UByteArray = ubyteArrayOf(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u)
             val b3: UByteArray = ubyteArrayOf(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)
-            val low3 = transmute<UShortArray>(u16x8ExtmulLowU8x16(u8x16(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u), u8x16(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)))
-            val high3 = transmute<UShortArray>(u16x8ExtmulHighU8x16(u8x16(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u), u8x16(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)))
+            val low3 = transmute(u16x8ExtmulLowU8x16(u8x16(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u), u8x16(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)))
+            val high3 = transmute(u16x8ExtmulHighU8x16(u8x16(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u), u8x16(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)))
             val half3 = a3.size / 2
             for (i3 in 0 until half3) {
                 check(((a3[i3].toUShort()) * (b3[i3].toUShort())).toUShort() == low3[i3])
@@ -4570,8 +4571,8 @@ public class Simd128InlineTests {
         run {
             val a4: ShortArray = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             val b4: ShortArray = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            val low4 = transmute<IntArray>(i32x4ExtmulLowI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)))
-            val high4 = transmute<IntArray>(i32x4ExtmulHighI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)))
+            val low4 = transmute(i32x4ExtmulLowI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)))
+            val high4 = transmute(i32x4ExtmulHighI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)))
             val half4 = a4.size / 2
             for (i4 in 0 until half4) {
                 check(((a4[i4].toInt()) * (b4[i4].toInt())) == low4[i4])
@@ -4581,8 +4582,8 @@ public class Simd128InlineTests {
         run {
             val a5: ShortArray = shortArrayOf((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87)
             val b5: ShortArray = shortArrayOf(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())
-            val low5 = transmute<IntArray>(i32x4ExtmulLowI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())))
-            val high5 = transmute<IntArray>(i32x4ExtmulHighI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())))
+            val low5 = transmute(i32x4ExtmulLowI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())))
+            val high5 = transmute(i32x4ExtmulHighI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())))
             val half5 = a5.size / 2
             for (i5 in 0 until half5) {
                 check(((a5[i5].toInt()) * (b5[i5].toInt())) == low5[i5])
@@ -4592,8 +4593,8 @@ public class Simd128InlineTests {
         run {
             val a6: UShortArray = ushortArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val b6: UShortArray = ushortArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val low6 = transmute<UIntArray>(u32x4ExtmulLowU16x8(u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
-            val high6 = transmute<UIntArray>(u32x4ExtmulHighU16x8(u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
+            val low6 = transmute(u32x4ExtmulLowU16x8(u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
+            val high6 = transmute(u32x4ExtmulHighU16x8(u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
             val half6 = a6.size / 2
             for (i6 in 0 until half6) {
                 check(((a6[i6].toUInt()) * (b6[i6].toUInt())) == low6[i6])
@@ -4603,8 +4604,8 @@ public class Simd128InlineTests {
         run {
             val a7: UShortArray = ushortArrayOf(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u)
             val b7: UShortArray = ushortArrayOf(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)
-            val low7 = transmute<UIntArray>(u32x4ExtmulLowU16x8(u16x8(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u), u16x8(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)))
-            val high7 = transmute<UIntArray>(u32x4ExtmulHighU16x8(u16x8(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u), u16x8(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)))
+            val low7 = transmute(u32x4ExtmulLowU16x8(u16x8(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u), u16x8(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)))
+            val high7 = transmute(u32x4ExtmulHighU16x8(u16x8(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u), u16x8(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)))
             val half7 = a7.size / 2
             for (i7 in 0 until half7) {
                 check(((a7[i7].toUInt()) * (b7[i7].toUInt())) == low7[i7])
@@ -4614,8 +4615,8 @@ public class Simd128InlineTests {
         run {
             val a8: IntArray = intArrayOf(0, 0, 0, 0)
             val b8: IntArray = intArrayOf(0, 0, 0, 0)
-            val low8 = transmute<LongArray>(i64x2ExtmulLowI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)))
-            val high8 = transmute<LongArray>(i64x2ExtmulHighI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)))
+            val low8 = transmute(i64x2ExtmulLowI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)))
+            val high8 = transmute(i64x2ExtmulHighI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)))
             val half8 = a8.size / 2
             for (i8 in 0 until half8) {
                 check(((a8[i8].toLong()) * (b8[i8].toLong())) == low8[i8])
@@ -4625,8 +4626,8 @@ public class Simd128InlineTests {
         run {
             val a9: IntArray = intArrayOf(-1, 0, Int.MAX_VALUE, 19931)
             val b9: IntArray = intArrayOf(1, 1, Int.MIN_VALUE, 29391)
-            val low9 = transmute<LongArray>(i64x2ExtmulLowI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)))
-            val high9 = transmute<LongArray>(i64x2ExtmulHighI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)))
+            val low9 = transmute(i64x2ExtmulLowI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)))
+            val high9 = transmute(i64x2ExtmulHighI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)))
             val half9 = a9.size / 2
             for (i9 in 0 until half9) {
                 check(((a9[i9].toLong()) * (b9[i9].toLong())) == low9[i9])
@@ -4636,8 +4637,8 @@ public class Simd128InlineTests {
         run {
             val a10: IntArray = intArrayOf(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff)
             val b10: IntArray = intArrayOf(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)
-            val low10 = transmute<LongArray>(i64x2ExtmulLowI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)))
-            val high10 = transmute<LongArray>(i64x2ExtmulHighI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)))
+            val low10 = transmute(i64x2ExtmulLowI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)))
+            val high10 = transmute(i64x2ExtmulHighI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)))
             val half10 = a10.size / 2
             for (i10 in 0 until half10) {
                 check(((a10[i10].toLong()) * (b10[i10].toLong())) == low10[i10])
@@ -4647,8 +4648,8 @@ public class Simd128InlineTests {
         run {
             val a11: UIntArray = uintArrayOf(0u, 0u, 0u, 0u)
             val b11: UIntArray = uintArrayOf(0u, 0u, 0u, 0u)
-            val low11 = transmute<ULongArray>(u64x2ExtmulLowU32x4(u32x4(0u, 0u, 0u, 0u), u32x4(0u, 0u, 0u, 0u)))
-            val high11 = transmute<ULongArray>(u64x2ExtmulHighU32x4(u32x4(0u, 0u, 0u, 0u), u32x4(0u, 0u, 0u, 0u)))
+            val low11 = transmute(u64x2ExtmulLowU32x4(u32x4(0u, 0u, 0u, 0u), u32x4(0u, 0u, 0u, 0u)))
+            val high11 = transmute(u64x2ExtmulHighU32x4(u32x4(0u, 0u, 0u, 0u), u32x4(0u, 0u, 0u, 0u)))
             val half11 = a11.size / 2
             for (i11 in 0 until half11) {
                 check(((a11[i11].toULong()) * (b11[i11].toULong())) == low11[i11])
@@ -4658,8 +4659,8 @@ public class Simd128InlineTests {
         run {
             val a12: UIntArray = uintArrayOf(1u, 0u, UInt.MAX_VALUE, 19931u)
             val b12: UIntArray = uintArrayOf(1u, 1u, 3u, 29391u)
-            val low12 = transmute<ULongArray>(u64x2ExtmulLowU32x4(u32x4(1u, 0u, UInt.MAX_VALUE, 19931u), u32x4(1u, 1u, 3u, 29391u)))
-            val high12 = transmute<ULongArray>(u64x2ExtmulHighU32x4(u32x4(1u, 0u, UInt.MAX_VALUE, 19931u), u32x4(1u, 1u, 3u, 29391u)))
+            val low12 = transmute(u64x2ExtmulLowU32x4(u32x4(1u, 0u, UInt.MAX_VALUE, 19931u), u32x4(1u, 1u, 3u, 29391u)))
+            val high12 = transmute(u64x2ExtmulHighU32x4(u32x4(1u, 0u, UInt.MAX_VALUE, 19931u), u32x4(1u, 1u, 3u, 29391u)))
             val half12 = a12.size / 2
             for (i12 in 0 until half12) {
                 check(((a12[i12].toULong()) * (b12[i12].toULong())) == low12[i12])
@@ -4669,8 +4670,8 @@ public class Simd128InlineTests {
         run {
             val a13: UIntArray = uintArrayOf(UInt.MAX_VALUE, 3003183u, 3u shl 20, 0xffffffu)
             val b13: UIntArray = uintArrayOf(UInt.MAX_VALUE, 3000u, 40042u, 300u)
-            val low13 = transmute<ULongArray>(u64x2ExtmulLowU32x4(u32x4(UInt.MAX_VALUE, 3003183u, 3u shl 20, 0xffffffu), u32x4(UInt.MAX_VALUE, 3000u, 40042u, 300u)))
-            val high13 = transmute<ULongArray>(u64x2ExtmulHighU32x4(u32x4(UInt.MAX_VALUE, 3003183u, 3u shl 20, 0xffffffu), u32x4(UInt.MAX_VALUE, 3000u, 40042u, 300u)))
+            val low13 = transmute(u64x2ExtmulLowU32x4(u32x4(UInt.MAX_VALUE, 3003183u, 3u shl 20, 0xffffffu), u32x4(UInt.MAX_VALUE, 3000u, 40042u, 300u)))
+            val high13 = transmute(u64x2ExtmulHighU32x4(u32x4(UInt.MAX_VALUE, 3003183u, 3u shl 20, 0xffffffu), u32x4(UInt.MAX_VALUE, 3000u, 40042u, 300u)))
             val half13 = a13.size / 2
             for (i13 in 0 until half13) {
                 check(((a13[i13].toULong()) * (b13[i13].toULong())) == low13[i13])
@@ -4685,7 +4686,7 @@ public class Simd128InlineTests {
             val aV = i16x8(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7])
             val bV = i16x8(b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7])
             val result = i16x8Q15mulrSat(aV, bV)
-            val result1 = transmute<V128, ShortArray>(result)
+            val result1 = transmute(result)
             for ((i, a1, b1) in (a.zip(b)).mapIndexed { index, item -> Pair(index, item) }) {
                 check(result1[i] == (((a1.toInt()) * (b1.toInt()) + 0x4000) shr 15).toShort())
             }
@@ -4699,8 +4700,8 @@ public class Simd128InlineTests {
     public fun testExtadd() {
         run {
             val a: ByteArray = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            val aV = transmute<V128>(a)
-            val r = transmute<V128, ShortArray>(i16x8ExtaddPairwiseI8x16(aV))
+            val aV = transmute(a)
+            val r = transmute(i16x8ExtaddPairwiseI8x16(aV))
             val half = a.size / 2
             for (i in 0 until half) {
                 check(((a[2 * i].toShort()) + (a[2 * i + 1].toShort())).toShort() == r[i])
@@ -4708,8 +4709,8 @@ public class Simd128InlineTests {
         }
         run {
             val a1: ByteArray = byteArrayOf((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0)
-            val aV1 = transmute<V128>(a1)
-            val r1 = transmute<V128, ShortArray>(i16x8ExtaddPairwiseI8x16(aV1))
+            val aV1 = transmute(a1)
+            val r1 = transmute(i16x8ExtaddPairwiseI8x16(aV1))
             val half1 = a1.size / 2
             for (i1 in 0 until half1) {
                 check(((a1[2 * i1].toShort()) + (a1[2 * i1 + 1].toShort())).toShort() == r1[i1])
@@ -4717,8 +4718,8 @@ public class Simd128InlineTests {
         }
         run {
             val a2: ByteArray = byteArrayOf((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)
-            val aV2 = transmute<V128>(a2)
-            val r2 = transmute<V128, ShortArray>(i16x8ExtaddPairwiseI8x16(aV2))
+            val aV2 = transmute(a2)
+            val r2 = transmute(i16x8ExtaddPairwiseI8x16(aV2))
             val half2 = a2.size / 2
             for (i2 in 0 until half2) {
                 check(((a2[2 * i2].toShort()) + (a2[2 * i2 + 1].toShort())).toShort() == r2[i2])
@@ -4726,8 +4727,8 @@ public class Simd128InlineTests {
         }
         run {
             val a3: UByteArray = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val aV3 = transmute<V128>(a3)
-            val r3 = transmute<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV3))
+            val aV3 = transmute(a3)
+            val r3 = transmute(i16x8ExtaddPairwiseU8x16(aV3))
             val half3 = a3.size / 2
             for (i3 in 0 until half3) {
                 check(((a3[2 * i3].toShort()) + (a3[2 * i3 + 1].toShort())).toShort() == r3[i3])
@@ -4735,8 +4736,8 @@ public class Simd128InlineTests {
         }
         run {
             val a4: UByteArray = ubyteArrayOf(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u)
-            val aV4 = transmute<V128>(a4)
-            val r4 = transmute<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV4))
+            val aV4 = transmute(a4)
+            val r4 = transmute(i16x8ExtaddPairwiseU8x16(aV4))
             val half4 = a4.size / 2
             for (i4 in 0 until half4) {
                 check(((a4[2 * i4].toShort()) + (a4[2 * i4 + 1].toShort())).toShort() == r4[i4])
@@ -4744,8 +4745,8 @@ public class Simd128InlineTests {
         }
         run {
             val a5: UByteArray = ubyteArrayOf(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)
-            val aV5 = transmute<V128>(a5)
-            val r5 = transmute<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV5))
+            val aV5 = transmute(a5)
+            val r5 = transmute(i16x8ExtaddPairwiseU8x16(aV5))
             val half5 = a5.size / 2
             for (i5 in 0 until half5) {
                 check(((a5[2 * i5].toShort()) + (a5[2 * i5 + 1].toShort())).toShort() == r5[i5])
@@ -4753,8 +4754,8 @@ public class Simd128InlineTests {
         }
         run {
             val a6: ShortArray = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            val aV6 = transmute<V128>(a6)
-            val r6 = transmute<V128, IntArray>(i32x4ExtaddPairwiseI16x8(aV6))
+            val aV6 = transmute(a6)
+            val r6 = transmute(i32x4ExtaddPairwiseI16x8(aV6))
             val half6 = a6.size / 2
             for (i6 in 0 until half6) {
                 check(((a6[2 * i6].toInt()) + (a6[2 * i6 + 1].toInt())) == r6[i6])
@@ -4762,8 +4763,8 @@ public class Simd128InlineTests {
         }
         run {
             val a7: ShortArray = shortArrayOf((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87)
-            val aV7 = transmute<V128>(a7)
-            val r7 = transmute<V128, IntArray>(i32x4ExtaddPairwiseI16x8(aV7))
+            val aV7 = transmute(a7)
+            val r7 = transmute(i32x4ExtaddPairwiseI16x8(aV7))
             val half7 = a7.size / 2
             for (i7 in 0 until half7) {
                 check(((a7[2 * i7].toInt()) + (a7[2 * i7 + 1].toInt())) == r7[i7])
@@ -4771,8 +4772,8 @@ public class Simd128InlineTests {
         }
         run {
             val a8: ShortArray = shortArrayOf(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())
-            val aV8 = transmute<V128>(a8)
-            val r8 = transmute<V128, IntArray>(i32x4ExtaddPairwiseI16x8(aV8))
+            val aV8 = transmute(a8)
+            val r8 = transmute(i32x4ExtaddPairwiseI16x8(aV8))
             val half8 = a8.size / 2
             for (i8 in 0 until half8) {
                 check(((a8[2 * i8].toInt()) + (a8[2 * i8 + 1].toInt())) == r8[i8])
@@ -4780,8 +4781,8 @@ public class Simd128InlineTests {
         }
         run {
             val a9: UShortArray = ushortArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val aV9 = transmute<V128>(a9)
-            val r9 = transmute<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV9))
+            val aV9 = transmute(a9)
+            val r9 = transmute(i32x4ExtaddPairwiseU16x8(aV9))
             val half9 = a9.size / 2
             for (i9 in 0 until half9) {
                 check(((a9[2 * i9].toInt()) + (a9[2 * i9 + 1].toInt())) == r9[i9])
@@ -4789,8 +4790,8 @@ public class Simd128InlineTests {
         }
         run {
             val a10: UShortArray = ushortArrayOf(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u)
-            val aV10 = transmute<V128>(a10)
-            val r10 = transmute<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV10))
+            val aV10 = transmute(a10)
+            val r10 = transmute(i32x4ExtaddPairwiseU16x8(aV10))
             val half10 = a10.size / 2
             for (i10 in 0 until half10) {
                 check(((a10[2 * i10].toInt()) + (a10[2 * i10 + 1].toInt())) == r10[i10])
@@ -4798,8 +4799,8 @@ public class Simd128InlineTests {
         }
         run {
             val a11: UShortArray = ushortArrayOf(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)
-            val aV11 = transmute<V128>(a11)
-            val r11 = transmute<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV11))
+            val aV11 = transmute(a11)
+            val r11 = transmute(i32x4ExtaddPairwiseU16x8(aV11))
             val half11 = a11.size / 2
             for (i11 in 0 until half11) {
                 check(((a11[2 * i11].toInt()) + (a11[2 * i11 + 1].toInt())) == r11[i11])
@@ -4811,42 +4812,42 @@ public class Simd128InlineTests {
 public class Simd128SplatsInlineTests {
     @kotlin.test.Test
     public fun i8x16Splat() {
-        val a = i8x16Splat(42)
+        val a = io.github.kotlinmania.rustlang.wasm32.i8x16Splat(42)
         val b = u8x16(42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte(), 42.toUByte())
         compareBytes(a, b)
     }
 
     @kotlin.test.Test
     public fun i16x8Splat() {
-        val a = i16x8Splat(42)
+        val a = io.github.kotlinmania.rustlang.wasm32.i16x8Splat(42)
         val b = u8x16(42.toUByte(), 0.toUByte(), 42.toUByte(), 0.toUByte(), 42.toUByte(), 0.toUByte(), 42.toUByte(), 0.toUByte(), 42.toUByte(), 0.toUByte(), 42.toUByte(), 0.toUByte(), 42.toUByte(), 0.toUByte(), 42.toUByte(), 0.toUByte())
         compareBytes(a, b)
     }
 
     @kotlin.test.Test
     public fun i32x4Splat() {
-        val a = i32x4Splat(42)
+        val a = io.github.kotlinmania.rustlang.wasm32.i32x4Splat(42)
         val b = u8x16(42.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 42.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 42.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 42.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte())
         compareBytes(a, b)
     }
 
     @kotlin.test.Test
     public fun i64x2Splat() {
-        val a = i64x2Splat(42L)
+        val a = io.github.kotlinmania.rustlang.wasm32.i64x2Splat(42L)
         val b = u8x16(42.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 42.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte())
         compareBytes(a, b)
     }
 
     @kotlin.test.Test
     public fun f32x4Splat() {
-        val a = f32x4Splat(42.0f)
+        val a = io.github.kotlinmania.rustlang.wasm32.f32x4Splat(42.0f)
         val b = u8x16(0.toUByte(), 0.toUByte(), 40.toUByte(), 66.toUByte(), 0.toUByte(), 0.toUByte(), 40.toUByte(), 66.toUByte(), 0.toUByte(), 0.toUByte(), 40.toUByte(), 66.toUByte(), 0.toUByte(), 0.toUByte(), 40.toUByte(), 66.toUByte())
         compareBytes(a, b)
     }
 
     @kotlin.test.Test
     public fun f64x2Splat() {
-        val a = f64x2Splat(42.0)
+        val a = io.github.kotlinmania.rustlang.wasm32.f64x2Splat(42.0)
         val b = u8x16(0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 69.toUByte(), 64.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 0.toUByte(), 69.toUByte(), 64.toUByte())
         compareBytes(a, b)
     }

@@ -1,16 +1,16 @@
 // port-lint: source iter/adapters/cloned.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.cloned
 
-import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -25,7 +25,7 @@ public typealias Source<I> = I.Source
  */
 public open class Cloned<I>(
     public var it: I,
-) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Cloned<I>>, SourceIter<Any?, Source>, InPlaceIterable, Iterable<T> {
+) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Cloned<I>>, SourceIter<Source>, InPlaceIterable, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Cloned.next()) {

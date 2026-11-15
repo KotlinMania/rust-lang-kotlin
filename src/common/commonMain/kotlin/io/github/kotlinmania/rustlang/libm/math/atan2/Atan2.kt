@@ -1,8 +1,8 @@
 // port-lint: source math/atan2.rs
 package io.github.kotlinmania.rustlang.libm.math.atan2
 
-import io.github.kotlinmania.rustlang.libm.math.atan.atan
-import io.github.kotlinmania.rustlang.libm.math.fabs.fabs
+import io.github.kotlinmania.rustlang.math.atan.atan
+import io.github.kotlinmania.rustlang.math.fabs.fabs
 
 public val PI: Double = 3.1415926535897931160e00
 

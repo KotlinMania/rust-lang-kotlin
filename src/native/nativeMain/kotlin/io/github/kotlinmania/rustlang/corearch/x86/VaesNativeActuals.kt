@@ -2,6 +2,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.x86.M256i
+import io.github.kotlinmania.rustlang.x86.M512i
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun aesenc256(a: M256i, roundKey: M256i): M256i =

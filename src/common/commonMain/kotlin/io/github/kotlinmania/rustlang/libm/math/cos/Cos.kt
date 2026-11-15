@@ -1,9 +1,9 @@
 // port-lint: source math/cos.rs
 package io.github.kotlinmania.rustlang.libm.math.cos
 
-import io.github.kotlinmania.rustlang.libm.math.kcos.kCos
-import io.github.kotlinmania.rustlang.libm.math.ksin.kSin
-import io.github.kotlinmania.rustlang.libm.math.rempio2.remPio2
+import io.github.kotlinmania.rustlang.math.kcos.kCos
+import io.github.kotlinmania.rustlang.math.ksin.kSin
+import io.github.kotlinmania.rustlang.math.rempio2.remPio2
 
 // cos(x)
 // Return cosine function of x.

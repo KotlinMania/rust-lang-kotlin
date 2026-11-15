@@ -1,16 +1,16 @@
 // port-lint: source sys/thread_local/key/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.ffi.CInt
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.ffi.CInt
+import io.github.kotlinmania.rustlang.os.raw.CUint
+import io.github.kotlinmania.rustlang.process.abort
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
 
 public fun interface PthreadKeyCreateDestructorCallback {
     public operator fun invoke(arg0: MutPtr)
@@ -20,7 +20,7 @@ public fun interface CreateDtorCallback {
     public operator fun invoke(arg0: MutPtr)
 }
 
-public typealias PthreadKeyT = io.github.kotlinmania.rustlang.std.ffi.CUint
+public typealias PthreadKeyT = io.github.kotlinmania.rustlang.ffi.CUint
 
 public expect fun pthreadKeyCreate(key: MutPtr, destructor: PthreadKeyCreateDestructorCallback): CInt
 

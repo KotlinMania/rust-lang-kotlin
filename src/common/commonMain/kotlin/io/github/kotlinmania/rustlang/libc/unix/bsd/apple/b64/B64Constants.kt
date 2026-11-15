@@ -1,7 +1,7 @@
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64
 
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.libc.*
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 
 public val BIOCSETF: CUlong = 0x80104267uL
 

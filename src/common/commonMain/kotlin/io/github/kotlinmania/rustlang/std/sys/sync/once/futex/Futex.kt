@@ -3,14 +3,14 @@ package io.github.kotlinmania.rustlang.std.sys.sync.once.futex
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
-import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Futex
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.Primitive
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWait
-import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWakeAll
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.sync.once.OnceExclusiveState
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.Futex
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.Primitive
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWait
+import io.github.kotlinmania.rustlang.sys.sync.futex.unix.futexWakeAll
 
 // On some platforms, the OS is very nice and handles the waiter queue for us.
 // This means we only need one atomic value with 4 states:
@@ -146,7 +146,7 @@ public open class Once(
         }
     }
 
-    public open fun call(ignorePoisoning: Boolean, f: (io.github.kotlinmania.rustlang.std.sync.once.OnceState) -> Unit) {
+    public open fun call(ignorePoisoning: Boolean, f: (io.github.kotlinmania.rustlang.sync.once.OnceState) -> Unit) {
         var stateAndQueued = this.stateAndQueued.load(Acquire)
         while (true) {
             val state = stateAndQueued and STATE_MASK
@@ -178,7 +178,7 @@ public open class Once(
                     // wake them up on drop.
                     val waiterQueue = CompletionGuard(stateAndQueued = this.stateAndQueued, setStateOnDropTo = POISONED)
                     // Run the function, letting it know if we're poisoned or not.
-                    val fState = io.github.kotlinmania.rustlang.std.sync.once.OnceState(inner = OnceState(poisoned = (state == POISONED).toUByte(), setStateTo = Cell.new(COMPLETE)))
+                    val fState = io.github.kotlinmania.rustlang.sync.once.OnceState(inner = OnceState(poisoned = (state == POISONED).toUByte(), setStateTo = Cell.new(COMPLETE)))
                     f(fState)
                     waiterQueue.setStateOnDropTo = fState.inner.setStateTo.get()
                     return

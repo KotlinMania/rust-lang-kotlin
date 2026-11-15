@@ -1,8 +1,7 @@
 // port-lint: source ops.rs
 package io.github.kotlinmania.rustlang.coresimd.ops
 
-import io.github.kotlinmania.rustlang.coresimd.Simd
-import io.github.kotlinmania.rustlang.coresimd.simd.SimdElement
+import io.github.kotlinmania.rustlang.Simd
 
 // SAFETY: This macro should not be used for anything except Shl or Shr, and passed the appropriate shift intrinsic.
 // It handles performing a bitand in addition to calling the shift operator, so that the result
@@ -21,9 +20,9 @@ import io.github.kotlinmania.rustlang.coresimd.simd.SimdElement
 // | <$int>::MIN / -1 | UB   | <$int>::MIN
 // | <$int>::MIN % -1 | UB   | 0
 
-public fun <Mask, I, T> Simd<T, N>.index(index: I, n: Int): Output where T : SimdElement<Any?>, I : SliceIndex<List<T>> = this.asArray()[index]
+public fun <Mask, I, T> Simd<T, N>.index(index: I, n: Int): Output where I : SliceIndex<List<T>> = this.asArray()[index]
 
-public fun <Mask, I, T> Simd<T, N>.indexMut(index: I, n: Int): Output where T : SimdElement<Any?>, I : SliceIndex<List<T>> = this.asMutArray()[index]
+public fun <Mask, I, T> Simd<T, N>.indexMut(index: I, n: Int): Output where I : SliceIndex<List<T>> = this.asMutArray()[index]
 
 // Integers can always accept add, mul, sub, bitand, bitor, and bitxor.
 // For all of these operations, simd_* intrinsics apply wrapping logic.

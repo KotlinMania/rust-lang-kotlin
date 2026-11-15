@@ -5,13 +5,13 @@ import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.sync.nonpoison.TryLockResult
-import io.github.kotlinmania.rustlang.std.sync.poison.Flag
-import io.github.kotlinmania.rustlang.std.sync.poison.Guard
-import io.github.kotlinmania.rustlang.std.sync.poison.LockResult
-import io.github.kotlinmania.rustlang.std.sync.poison.PoisonError
-import io.github.kotlinmania.rustlang.std.sync.poison.TryLockError
-import io.github.kotlinmania.rustlang.std.sync.poison.mapResult
+import io.github.kotlinmania.rustlang.sync.nonpoison.TryLockResult
+import io.github.kotlinmania.rustlang.sync.poison.Flag
+import io.github.kotlinmania.rustlang.sync.poison.Guard
+import io.github.kotlinmania.rustlang.sync.poison.LockResult
+import io.github.kotlinmania.rustlang.sync.poison.PoisonError
+import io.github.kotlinmania.rustlang.sync.poison.TryLockError
+import io.github.kotlinmania.rustlang.sync.poison.mapResult
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -235,7 +235,7 @@ public class DebugStruct(
  * ```
  */
 public open class Mutex<T>(
-    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex,
+    public var inner: io.github.kotlinmania.rustlang.sys.sync.mutex.futex.Mutex,
     public var poison: Flag,
     public var data: UnsafeCell<T>,
 ) {
@@ -286,10 +286,10 @@ public open class Mutex<T>(
     public open fun getCloned(): Result<T, PoisonError<Unit>> =
         run {
             val matchVal = this.lock()
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val guard = matchVal.value
                 Result.Ok(guard.clone())
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 Result.Err(PoisonError.new())
             } }
         }
@@ -317,18 +317,18 @@ public open class Mutex<T>(
      * ```
      */
     public open fun set(value: T): Result<Unit, PoisonError<T>> =
-        if (needsDrop<T>()) {
+        if (mem.needsDrop<T>()) {
             // If the contained value has non-trivial destructor, we
             // call that destructor after the lock being released.
             this.replace(value).map({ Unit })
         } else {
             run {
                 val matchVal = this.lock()
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val guard = matchVal.value
                     guard = value
                     Result.Ok(Unit)
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     Result.Err(PoisonError.new(value))
                 } }
             }
@@ -358,10 +358,10 @@ public open class Mutex<T>(
     public open fun replace(value: T): LockResult<T> =
         run {
             val matchVal = this.lock()
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val guard = matchVal.value
-                Result.Ok(replace(guard, value))
-            }; is Result.Err<*> -> {
+                Result.Ok(mem.replace(guard, value))
+            }; is Result.Err<*, *> -> {
                 Result.Err(PoisonError.new(value))
             } }
         }
@@ -453,7 +453,7 @@ public open class Mutex<T>(
      */
     public open fun tryLock(): TryLockResult<MutexGuard<T>> {
         return if (this.inner.tryLock()) {
-            Result.Ok(when (val tryResult = MutexGuard.new(this)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+            Result.Ok(when (val tryResult = MutexGuard.new(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
         } else {
             Result.Err(TryLockError.WouldBlock)
         }
@@ -587,11 +587,11 @@ public open class Mutex<T>(
         run {
             val matchVal = this.tryLock()
             when {
-                matchVal is Result.Ok<*> -> {
-                    val guard = (matchVal as Result.Ok<*>).value
+                matchVal is Result.Ok<*, *> -> {
+                    val guard = (matchVal as Result.Ok<*, *>).value
                     d.field("data", guard)
                 }
-                matchVal is Result.Err<*> && matchVal.error is TryLockError.Poisoned -> {
+                matchVal is Result.Err<*, *> && matchVal.error is TryLockError.Poisoned -> {
                     d.field("data", err.getRef())
                 }
                 else -> {
@@ -615,7 +615,7 @@ public open class Mutex<T>(
          * val mutex = Mutex.new(0)
          * ```
          */
-        public fun <T> new(t: T): Mutex<T> = Mutex(inner = io.github.kotlinmania.rustlang.std.sys.sync.mutex.new(), poison = Flag.new(), data = UnsafeCell.new(t))
+        public fun <T> new(t: T): Mutex<T> = Mutex(inner = io.github.kotlinmania.rustlang.sys.sync.mutex.new(), poison = Flag.new(), data = UnsafeCell.new(t))
 
         /**
          * Creates a new mutex in an unlocked state ready for use.
@@ -757,7 +757,7 @@ public open class MappedMutexGuard<T>(
     // `NonNull` is covariant over `T`, so we add a `PhantomData<T>` field
     // below for the correct variance over `T` (invariance).
     public var data: NonNull,
-    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex,
+    public var inner: io.github.kotlinmania.rustlang.sys.sync.mutex.futex.Mutex,
     public var poisonFlag: Flag,
     public var poison: Guard,
     public var variance: Unit,
@@ -834,7 +834,7 @@ public open class MappedMutexGuard<T>(
 /**
  * For use in [`nonpoison.condvar`](condvar).
  */
-public fun <T> guardLock(guard: MutexGuard<T>): io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex = guard.lock.inner
+public fun <T> guardLock(guard: MutexGuard<T>): io.github.kotlinmania.rustlang.sys.sync.mutex.futex.Mutex = guard.lock.inner
 
 /**
  * For use in [`nonpoison.condvar`](condvar).

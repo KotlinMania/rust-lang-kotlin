@@ -1,9 +1,8 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal
 
-import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.process.abort
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.list.run
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
 
 /**
  * Run a callback in a scenario which must not unwind (such as a `extern "C"

@@ -1,20 +1,20 @@
 // port-lint: source iter/adapters/enumerate.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.enumerate
 
-import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -30,7 +30,7 @@ public typealias Source<I> = I.Source
 public open class Enumerate<I>(
     public var iter: I,
     public var count: Int,
-) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen<Enumerate<I>>, SourceIter<Any?, Source>, InPlaceIterable, Iterable<Pair<Int, Item>> {
+) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen<Enumerate<I>>, SourceIter<Source>, InPlaceIterable, Iterable<Pair<Int, Item>> {
     override fun iterator(): Iterator<Pair<Int, Item>> = object : AbstractIterator<Pair<Int, Item>>() {
         override fun computeNext() {
             when (val v = this@Enumerate.next()) {
@@ -126,9 +126,9 @@ public open class Enumerate<I>(
     public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
         val remaining = this.iter.advanceBy(n)
         val advanced =
-            when (remaining) { is Result.Ok<*> -> {
+            when (remaining) { is Result.Ok<*, *> -> {
                 n
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val rem = remaining.error
                 n - rem.get()
             } }

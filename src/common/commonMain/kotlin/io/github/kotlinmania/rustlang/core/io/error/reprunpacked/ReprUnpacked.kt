@@ -1,12 +1,12 @@
 // port-lint: source io/error/repr_unpacked.rs
 package io.github.kotlinmania.rustlang.core.io.error.reprunpacked
 
-import io.github.kotlinmania.rustlang.core.io.error.Custom
-import io.github.kotlinmania.rustlang.core.io.error.CustomOwner
-import io.github.kotlinmania.rustlang.core.io.error.ErrorData
-import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
-import io.github.kotlinmania.rustlang.core.io.error.RawOsError
-import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
+import io.github.kotlinmania.rustlang.io.error.Custom
+import io.github.kotlinmania.rustlang.io.error.CustomOwner
+import io.github.kotlinmania.rustlang.io.error.ErrorData
+import io.github.kotlinmania.rustlang.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.io.error.RawOsError
+import io.github.kotlinmania.rustlang.io.error.SimpleMessage
 
 // This is a fairly simple unpacked error representation that's used on
 // non-64bit targets, where the packed 64 bit representation wouldn't work, and

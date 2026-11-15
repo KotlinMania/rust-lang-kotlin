@@ -1,16 +1,16 @@
 // port-lint: source array/iter.rs
 package io.github.kotlinmania.rustlang.core.array.iter
 
-import io.github.kotlinmania.rustlang.core.array.iter.iterinner.PolymorphicIter
-import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
-import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.mem.needsDrop
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.array.iter.iterinner.PolymorphicIter
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.intrinsics.transmuteUnchecked
+import io.github.kotlinmania.rustlang.mem.manuallydrop.ManuallyDrop
+import io.github.kotlinmania.rustlang.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.mem.needsDrop
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.indexrange.IndexRange
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.ptr.read
 
 // Defines the `IntoIter` owned iterator for arrays.
 
@@ -21,21 +21,10 @@ public typealias InnerUnsized<T> = PolymorphicIter<List<MaybeUninit<T>>>
 /**
  * A by-value [array] iterator.
  */
-public open class IntoIter<T> internal constructor(
-    innerCtorArg: InnerSized<T, N>,
+public open class IntoIter<T>(
+    public var inner: InnerSized<T>,
 ) {
-    public var inner: InnerSized<T, N> = innerCtorArg
-        internal set
-
     public open fun clone(): IntoIter<T> = IntoIter(inner)
-
-    public companion object {
-        public operator fun <T> invoke(
-            inner: InnerSized<T, N>,
-        ): IntoIter<T> = IntoIter<T>(
-            innerCtorArg = inner,
-        )
-    }
 }
 
 public fun <T> IntoIter<T, N>.unsize(n: Int): InnerUnsized<T> = this.inner.deref()

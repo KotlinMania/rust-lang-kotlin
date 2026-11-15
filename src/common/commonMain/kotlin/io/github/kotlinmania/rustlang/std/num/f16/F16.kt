@@ -5,23 +5,23 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.std.sys.cmath.acosf
-import io.github.kotlinmania.rustlang.std.sys.cmath.acoshf
-import io.github.kotlinmania.rustlang.std.sys.cmath.asinf
-import io.github.kotlinmania.rustlang.std.sys.cmath.asinhf
-import io.github.kotlinmania.rustlang.std.sys.cmath.atan2f
-import io.github.kotlinmania.rustlang.std.sys.cmath.atanf
-import io.github.kotlinmania.rustlang.std.sys.cmath.coshf
-import io.github.kotlinmania.rustlang.std.sys.cmath.erfcf
-import io.github.kotlinmania.rustlang.std.sys.cmath.erff
-import io.github.kotlinmania.rustlang.std.sys.cmath.expm1f
-import io.github.kotlinmania.rustlang.std.sys.cmath.hypotf
-import io.github.kotlinmania.rustlang.std.sys.cmath.lgammafR
-import io.github.kotlinmania.rustlang.std.sys.cmath.log1pf
-import io.github.kotlinmania.rustlang.std.sys.cmath.sinhf
-import io.github.kotlinmania.rustlang.std.sys.cmath.tanf
-import io.github.kotlinmania.rustlang.std.sys.cmath.tanhf
-import io.github.kotlinmania.rustlang.std.sys.cmath.tgammaf
+import io.github.kotlinmania.rustlang.sys.cmath.acosf
+import io.github.kotlinmania.rustlang.sys.cmath.acoshf
+import io.github.kotlinmania.rustlang.sys.cmath.asinf
+import io.github.kotlinmania.rustlang.sys.cmath.asinhf
+import io.github.kotlinmania.rustlang.sys.cmath.atan2f
+import io.github.kotlinmania.rustlang.sys.cmath.atanf
+import io.github.kotlinmania.rustlang.sys.cmath.coshf
+import io.github.kotlinmania.rustlang.sys.cmath.erfcf
+import io.github.kotlinmania.rustlang.sys.cmath.erff
+import io.github.kotlinmania.rustlang.sys.cmath.expm1f
+import io.github.kotlinmania.rustlang.sys.cmath.hypotf
+import io.github.kotlinmania.rustlang.sys.cmath.lgammafR
+import io.github.kotlinmania.rustlang.sys.cmath.log1pf
+import io.github.kotlinmania.rustlang.sys.cmath.sinhf
+import io.github.kotlinmania.rustlang.sys.cmath.tanf
+import io.github.kotlinmania.rustlang.sys.cmath.tanhf
+import io.github.kotlinmania.rustlang.sys.cmath.tgammaf
 import kotlin.math.cos
 import kotlin.math.ln
 import kotlin.math.sin
@@ -61,7 +61,7 @@ import kotlin.math.sin
  * }
  * ```
  */
-public fun F16.powf(n: F16): F16 = powf(this, n)
+public fun F16.powf(n: F16): F16 = intrinsics.powf(this, n)
 
 /**
  * Returns `e ^(self)`, (the exponential function).
@@ -87,7 +87,7 @@ public fun F16.powf(n: F16): F16 = powf(this, n)
  * }
  * ```
  */
-public fun F16.exp(): F16 = exp(this)
+public fun F16.exp(): F16 = intrinsics.exp(this)
 
 /**
  * Returns `2 ^(self)`.
@@ -111,7 +111,7 @@ public fun F16.exp(): F16 = exp(this)
  * }
  * ```
  */
-public fun F16.exp2(): F16 = exp2(this)
+public fun F16.exp2(): F16 = intrinsics.exp2(this)
 
 /**
  * Returns the natural logarithm of the number.
@@ -150,7 +150,7 @@ public fun F16.exp2(): F16 = exp2(this)
  * }
  * ```
  */
-public fun F16.ln(): F16 = log(this)
+public fun F16.ln(): F16 = intrinsics.log(this)
 
 /**
  * Returns the logarithm of the number with respect to an arbitrary base.
@@ -228,7 +228,7 @@ public fun F16.log(base: F16): F16 = F16.fromFloat(ln(this.toFloat())) / F16.fro
  * }
  * ```
  */
-public fun F16.log2(): F16 = log2(this)
+public fun F16.log2(): F16 = intrinsics.log2(this)
 
 /**
  * Returns the base 10 logarithm of the number.
@@ -265,7 +265,7 @@ public fun F16.log2(): F16 = log2(this)
  * }
  * ```
  */
-public fun F16.log10(): F16 = log10(this)
+public fun F16.log10(): F16 = intrinsics.log10(this)
 
 /**
  * Compute the distance between the origin and a point (`x`, `y`) on the
@@ -319,7 +319,7 @@ public fun F16.hypot(other: F16): F16 = F16.fromFloat(hypotf(this.toFloat(), oth
  * }
  * ```
  */
-public fun F16.sin(): F16 = sin(this)
+public fun F16.sin(): F16 = intrinsics.sin(this)
 
 /**
  * Computes the cosine of a number (in radians).
@@ -342,7 +342,7 @@ public fun F16.sin(): F16 = sin(this)
  * }
  * ```
  */
-public fun F16.cos(): F16 = cos(this)
+public fun F16.cos(): F16 = intrinsics.cos(this)
 
 /**
  * Computes the tangent of a number (in radians).

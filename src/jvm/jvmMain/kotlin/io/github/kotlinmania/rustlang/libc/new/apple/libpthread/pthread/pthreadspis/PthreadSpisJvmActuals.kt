@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.pthreadspis
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
 
-private object NewAppleLibpthreadPthreadPthreadspisPthreadSpisJniBridge {
+private object LibcNewAppleLibpthreadPthreadPthreadspisPthreadSpisJniBridge {
     init {
         loadNativeLibrary()
     }
@@ -43,8 +43,8 @@ private object NewAppleLibpthreadPthreadPthreadspisPthreadSpisJniBridge {
                 return
             }
         }
-        val resourcePath = "io/github/kotlinmania/rustlang/libc/native/$hostPlatform-$hostArch/$libFileName"
-        val stream = NewAppleLibpthreadPthreadPthreadspisPthreadSpisJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
+        val resourcePath = "io/github/kotlinmania/rustlang/native/$hostPlatform-$hostArch/$libFileName"
+        val stream = LibcNewAppleLibpthreadPthreadPthreadspisPthreadSpisJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
             val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
@@ -61,8 +61,8 @@ private object NewAppleLibpthreadPthreadPthreadspisPthreadSpisJniBridge {
     }
 
     @JvmStatic
-    external fun libcNewAppleLibpthreadPthreadPthreadspisPthreadSpisPthreadCreateFromMachThread(thread: Long, attr: Long, f: Long, value: Long): Int
+    external fun rustlangLibcNewAppleLibpthreadPthreadPthreadspisPthreadSpisPthreadCreateFromMachThread(thread: Long, attr: Long, f: Long, value: Long): Int
 }
 
 public actual fun pthreadCreateFromMachThread(thread: MutPtr, attr: ConstPtr, f: PthreadCreateFromMachThreadFCallback, value: MutPtr): CInt =
-    NewAppleLibpthreadPthreadPthreadspisPthreadSpisJniBridge.libcNewAppleLibpthreadPthreadPthreadspisPthreadSpisPthreadCreateFromMachThread(thread.rawAddress, attr.rawAddress, 0L, value.rawAddress)
+    LibcNewAppleLibpthreadPthreadPthreadspisPthreadSpisJniBridge.rustlangLibcNewAppleLibpthreadPthreadPthreadspisPthreadSpisPthreadCreateFromMachThread(thread.rawAddress, attr.rawAddress, 0L, value.rawAddress)

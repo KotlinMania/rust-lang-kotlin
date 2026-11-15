@@ -1,0 +1,6 @@
+package = io.github.kotlinmania.rustlang.libc.new.glibc.io.sys.statvfs.cinterop
+headers = libc_new_glibc_io_sys_statvfs_wrapper.h
+headerFilter = libc_new_glibc_io_sys_statvfs_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = libc_new_glibc_io_sys_statvfs_wrapper.a
+noStringConversion = rustlangLibcNewGlibcIoSysStatvfsStatvfs rustlangLibcNewGlibcIoSysStatvfsStatvfs64

@@ -1,25 +1,25 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U8
-import io.github.kotlinmania.rustlang.libc.types.cstr
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LC_COLLATE_MASK
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LC_CTYPE_MASK
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LC_MESSAGES_MASK
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LC_MONETARY_MASK
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LC_NUMERIC_MASK
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LC_TIME_MASK
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.NLMSG_MIN_TYPE
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.EOPNOTSUPP
+import io.github.kotlinmania.rustlang.new.linuxuapi.linux.types.U8
+import io.github.kotlinmania.rustlang.types.cstr
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.LC_COLLATE_MASK
+import io.github.kotlinmania.rustlang.unix.bsd.apple.LC_CTYPE_MASK
+import io.github.kotlinmania.rustlang.unix.bsd.apple.LC_MESSAGES_MASK
+import io.github.kotlinmania.rustlang.unix.bsd.apple.LC_MONETARY_MASK
+import io.github.kotlinmania.rustlang.unix.bsd.apple.LC_NUMERIC_MASK
+import io.github.kotlinmania.rustlang.unix.bsd.apple.LC_TIME_MASK
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.NLMSG_MIN_TYPE
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.SocklenT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.aarch64.EOPNOTSUPP
 
 // include/uapi/asm-generic/hugetlbEncode.h
 public val HUGETLB_FLAG_ENCODE_SHIFT: CInt = 26
@@ -86,11 +86,11 @@ public val MAP_HUGE_2GB: CInt = HUGETLB_FLAG_ENCODE_2GB
 
 public val MAP_HUGE_16GB: CInt = HUGETLB_FLAG_ENCODE_16GB
 
-public val PRIO_PROCESS: PriorityWhichT = 0u
+public val PRIO_PROCESS: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PriorityWhichT = 0u
 
-public val PRIO_PGRP: PriorityWhichT = 1u
+public val PRIO_PGRP: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PriorityWhichT = 1u
 
-public val PRIO_USER: PriorityWhichT = 2u
+public val PRIO_USER: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PriorityWhichT = 2u
 
 public val UT_LINESIZE: Int = 32
 

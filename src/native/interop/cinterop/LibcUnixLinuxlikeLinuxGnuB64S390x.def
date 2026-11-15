@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.s390x.cinterop
+headers = libc_unix_linuxlike_linux_gnu_b64_s390x_wrapper.h
+headerFilter = libc_unix_linuxlike_linux_gnu_b64_s390x_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = libc_unix_linuxlike_linux_gnu_b64_s390x_wrapper.a

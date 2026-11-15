@@ -2,15 +2,16 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl
 
-import io.github.kotlinmania.rustlang.core.ffi.CChar
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -19,23 +20,23 @@ import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.CcT
-import io.github.kotlinmania.rustlang.libc.FsidT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.Sigevent
-import io.github.kotlinmania.rustlang.libc.SighandlerT
-import io.github.kotlinmania.rustlang.libc.SigsetT
-import io.github.kotlinmania.rustlang.libc.Sockaddr
-import io.github.kotlinmania.rustlang.libc.SpeedT
-import io.github.kotlinmania.rustlang.libc.TcflagT
-import io.github.kotlinmania.rustlang.libc.Timeval
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Elf32Word
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Elf64Word
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Elf64Xword
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Off64T
+import io.github.kotlinmania.rustlang.unix.CcT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SighandlerT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.bsd.FsidT
+import io.github.kotlinmania.rustlang.unix.bsd.Sockaddr
+import io.github.kotlinmania.rustlang.unix.bsd.apple.Sigevent
+import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
+import io.github.kotlinmania.rustlang.unix.linuxlike.Elf32Word
+import io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Word
+import io.github.kotlinmania.rustlang.unix.linuxlike.Elf64Xword
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Off64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Timeval
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.NCCS
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.b64.SigsetT
 
 public fun interface SigactionSaRestorerCallback {
     public operator fun invoke()
@@ -480,12 +481,12 @@ public data class StatxTimestamp(
 public data class Statvfs(
     public var fBsize: CUlong = 0uL,
     public var fFrsize: CUlong = 0uL,
-    public var fBlocks: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fBfree: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fBavail: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fFiles: io.github.kotlinmania.rustlang.libc.FsfilcntT = 0u,
-    public var fFfree: io.github.kotlinmania.rustlang.libc.FsfilcntT = 0u,
-    public var fFavail: io.github.kotlinmania.rustlang.libc.FsfilcntT = 0u,
+    public var fBlocks: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.FsblkcntT = 0uL,
+    public var fBfree: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.FsblkcntT = 0uL,
+    public var fBavail: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.FsblkcntT = 0uL,
+    public var fFiles: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.FsfilcntT = 0uL,
+    public var fFfree: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.FsfilcntT = 0uL,
+    public var fFavail: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.FsfilcntT = 0uL,
     public var fFsid: CUlong = 0uL,
     public var fFlag: CUlong = 0uL,
     public var fNamemax: CUlong = 0uL,
@@ -596,12 +597,12 @@ public data class Statvfs(
 public data class Statvfs64(
     public var fBsize: CUlong = 0uL,
     public var fFrsize: CUlong = 0uL,
-    public var fBlocks: io.github.kotlinmania.rustlang.libc.Fsblkcnt64T = 0uL,
-    public var fBfree: io.github.kotlinmania.rustlang.libc.Fsblkcnt64T = 0uL,
-    public var fBavail: io.github.kotlinmania.rustlang.libc.Fsblkcnt64T = 0uL,
-    public var fFiles: io.github.kotlinmania.rustlang.libc.Fsfilcnt64T = 0uL,
-    public var fFfree: io.github.kotlinmania.rustlang.libc.Fsfilcnt64T = 0uL,
-    public var fFavail: io.github.kotlinmania.rustlang.libc.Fsfilcnt64T = 0uL,
+    public var fBlocks: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Fsblkcnt64T = 0uL,
+    public var fBfree: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Fsblkcnt64T = 0uL,
+    public var fBavail: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Fsblkcnt64T = 0uL,
+    public var fFiles: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Fsfilcnt64T = 0uL,
+    public var fFfree: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Fsfilcnt64T = 0uL,
+    public var fFavail: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Fsfilcnt64T = 0uL,
     public var fFsid: CUlong = 0uL,
     public var fFlag: CUlong = 0uL,
     public var fNamemax: CUlong = 0uL,
@@ -1592,11 +1593,11 @@ public class TcpInfo(
 public data class Statfs(
     public var fType: CUlong = 0uL,
     public var fBsize: CUlong = 0uL,
-    public var fBlocks: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fBfree: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fBavail: io.github.kotlinmania.rustlang.libc.FsblkcntT = 0u,
-    public var fFiles: io.github.kotlinmania.rustlang.libc.FsfilcntT = 0u,
-    public var fFfree: io.github.kotlinmania.rustlang.libc.FsfilcntT = 0u,
+    public var fBlocks: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.FsblkcntT = 0uL,
+    public var fBfree: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.FsblkcntT = 0uL,
+    public var fBavail: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.FsblkcntT = 0uL,
+    public var fFiles: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.FsfilcntT = 0uL,
+    public var fFfree: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.FsfilcntT = 0uL,
     public var fFsid: FsidT = FsidT(),
     public var fNamelen: CUlong = 0uL,
     public var fFrsize: CUlong = 0uL,
@@ -1641,11 +1642,11 @@ public data class Statfs(
 public data class Statfs64(
     public var fType: CUlong = 0uL,
     public var fBsize: CUlong = 0uL,
-    public var fBlocks: io.github.kotlinmania.rustlang.libc.Fsblkcnt64T = 0uL,
-    public var fBfree: io.github.kotlinmania.rustlang.libc.Fsblkcnt64T = 0uL,
-    public var fBavail: io.github.kotlinmania.rustlang.libc.Fsblkcnt64T = 0uL,
-    public var fFiles: io.github.kotlinmania.rustlang.libc.Fsfilcnt64T = 0uL,
-    public var fFfree: io.github.kotlinmania.rustlang.libc.Fsfilcnt64T = 0uL,
+    public var fBlocks: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Fsblkcnt64T = 0uL,
+    public var fBfree: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Fsblkcnt64T = 0uL,
+    public var fBavail: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Fsblkcnt64T = 0uL,
+    public var fFiles: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Fsfilcnt64T = 0uL,
+    public var fFfree: io.github.kotlinmania.rustlang.unix.linuxlike.linux.musl.Fsfilcnt64T = 0uL,
     public var fFsid: FsidT = FsidT(),
     public var fNamelen: CUlong = 0uL,
     public var fFrsize: CUlong = 0uL,

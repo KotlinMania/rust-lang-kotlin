@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.std.sys
 
-import io.github.kotlinmania.rustlang.std.backtrace.Inner
+import io.github.kotlinmania.rustlang.backtrace.Inner
 
 /**
  * A trait for viewing representations from std types.

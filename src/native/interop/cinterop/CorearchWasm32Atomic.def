@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.corearch.wasm32.cinterop
+headers = corearch_wasm32_atomic_wrapper.h
+headerFilter = corearch_wasm32_atomic_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = corearch_wasm32_atomic_wrapper.a

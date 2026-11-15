@@ -1,7 +1,7 @@
 // port-lint: source fmt/builders.rs
 package io.github.kotlinmania.rustlang.core.fmt.builders
 
-import io.github.kotlinmania.rustlang.core.cell.Cell
+import io.github.kotlinmania.rustlang.cell.Cell
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -148,7 +148,7 @@ public open class DebugStruct(
                 val writer = PadAdapter.wrap(this.fmt, slot, state)
                 writer.append(name)
                 writer.append(": ")
-                when (val tryResult = value.fmt(writer)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = value.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
                 writer.append(",\n")
             } else {
                 val prefix =
@@ -365,7 +365,7 @@ public open class DebugTuple(
                 val slot = null
                 val state = Default.default()
                 val writer = PadAdapter.wrap(this.fmt, slot, state)
-                when (val tryResult = value.fmt(writer)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure2 Result.Err(tryResult.error) }
+                when (val tryResult = value.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error) }
                 writer.append(",\n")
             } else {
                 val prefix =
@@ -567,7 +567,7 @@ public open class DebugInner(
                 val slot = null
                 val state = Default.default()
                 val writer = PadAdapter.wrap(this.fmt, slot, state)
-                when (val tryResult = entry.fmt(writer)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure5 Result.Err(tryResult.error) }
+                when (val tryResult = entry.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure5 Result.Err(tryResult.error) }
                 writer.append(",\n")
             } else {
                 if (this.hasFields) {
@@ -1048,13 +1048,13 @@ public open class DebugMap(
                 val slot = null
                 this.state = Default.default()
                 val writer = PadAdapter.wrap(this.fmt, slot, this.state)
-                when (val tryResult = key.fmt(writer)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure8 Result.Err(tryResult.error) }
+                when (val tryResult = key.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error) }
                 writer.append(": ")
             } else {
                 if (this.hasFields) {
                     this.fmt.append(", ")
                 }
-                when (val tryResult = key.fmt(this.fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure8 Result.Err(tryResult.error) }
+                when (val tryResult = key.fmt(this.fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error) }
                 this.fmt.append(": ")
             }
             this.hasKey = true
@@ -1141,10 +1141,10 @@ public open class DebugMap(
             if (this.isPretty()) {
                 val slot = null
                 val writer = PadAdapter.wrap(this.fmt, slot, this.state)
-                when (val tryResult = value.fmt(writer)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure9 Result.Err(tryResult.error) }
+                when (val tryResult = value.fmt(writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure9 Result.Err(tryResult.error) }
                 writer.append(",\n")
             } else {
-                when (val tryResult = value.fmt(this.fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure9 Result.Err(tryResult.error) }
+                when (val tryResult = value.fmt(this.fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure9 Result.Err(tryResult.error) }
             }
             this.hasKey = false
             Result.Ok(Unit)

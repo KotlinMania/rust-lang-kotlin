@@ -1,15 +1,15 @@
 // port-lint: source iter/adapters/zip.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.zip
 
-import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -50,7 +50,7 @@ public open class Zip<A, B>(
     // index, len and aLen are only used by the specialized version of zip
     public var index: Int,
     public var len: Int,
-) : ZipImpl<A, B, Zip<A, B>, Any?, Pair<Item, Item>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen<Zip<A, B>>, SourceIter<Any?, Source>, InPlaceIterable, ZipFmt<A, B>, SpecFold<Zip<A, B>>, Iterable<Pair<Item, Item>> {
+) : ZipImpl<A, B, Zip<A, B>, Pair<Item, Item>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen<Zip<A, B>>, SourceIter<Source>, InPlaceIterable, ZipFmt<A, B>, SpecFold<Zip<A, B>>, Iterable<Pair<Item, Item>> {
     override fun iterator(): Iterator<Pair<Item, Item>> = object : AbstractIterator<Pair<Item, Item>>() {
         override fun computeNext() {
             when (val v = this@Zip.next()) {
@@ -293,9 +293,9 @@ public open class Zip<A, B>(
 
         public fun <Item, A, B> new(a: A, b: B): Zip<A, B> = ZipImpl.new(a, b)
 
-        public fun <A, B> newAB(a: A, b: B): Zip<A, B> = Zip(a = a, b = b, index = 0, len = 0)
+        public fun <Item, A, B> newAB(a: A, b: B): Zip<A, B> = Zip(a = a, b = b, index = 0, len = 0)
 
-        public fun <A, B> newABAB(a: A, b: B): Zip<A, B> where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce = Zip(a = a, b = b, index = 0, len = 0)
+        public fun <Item, A, B> newABAB(a: A, b: B): Zip<A, B> where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce = Zip(a = a, b = b, index = 0, len = 0)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = A.MAY_HAVE_SIDE_EFFECT || B.MAY_HAVE_SIDE_EFFECT
 

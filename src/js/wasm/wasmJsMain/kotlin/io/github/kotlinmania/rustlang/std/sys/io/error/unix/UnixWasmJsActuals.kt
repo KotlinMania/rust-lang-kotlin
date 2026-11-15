@@ -6,28 +6,28 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 @JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
-private external fun initSysIoErrorUnixNapiAddon(): Boolean
+private external fun initStdSysIoErrorUnixNapiAddon(): Boolean
 
-private val sysIoErrorUnixNapiAvailable: Boolean = initSysIoErrorUnixNapiAddon()
+private val stdSysIoErrorUnixNapiAvailable: Boolean = initStdSysIoErrorUnixNapiAddon()
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysIoErrorUnixGetLIBCERRNO()")
-private external fun wasmStdSysIoErrorUnixGetLIBCERRNO(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysIoErrorUnixGetLIBCERRNO()")
+private external fun wasmRustlangStdSysIoErrorUnixGetLIBCERRNO(): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysIoErrorUnixSetLIBCERRNO(p0)")
-private external fun wasmStdSysIoErrorUnixSetLIBCERRNO(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysIoErrorUnixSetLIBCERRNO(p0)")
+private external fun wasmRustlangStdSysIoErrorUnixSetLIBCERRNO(p0: Int)
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysIoErrorUnixErrnoLocation()")
-private external fun wasmStdSysIoErrorUnixErrnoLocation(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysIoErrorUnixErrnoLocation()")
+private external fun wasmRustlangStdSysIoErrorUnixErrnoLocation(): String
 
-public actual var LIBC_ERRNO: CInt
-    get() = if (sysIoErrorUnixNapiAvailable) wasmStdSysIoErrorUnixGetLIBCERRNO() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual var LIBC_ERRNO: io.github.kotlinmania.rustlang.libc.CInt
+    get() = if (stdSysIoErrorUnixNapiAvailable) wasmRustlangStdSysIoErrorUnixGetLIBCERRNO() else throw UnsupportedOperationException("Native FFI addon is not available")
     set(value) {
-        if (sysIoErrorUnixNapiAvailable) {
-            wasmStdSysIoErrorUnixSetLIBCERRNO(value)
+        if (stdSysIoErrorUnixNapiAvailable) {
+            wasmRustlangStdSysIoErrorUnixSetLIBCERRNO(value)
         } else {
             throw UnsupportedOperationException("Native FFI addon is not available")
         }
     }
 
 public actual fun errnoLocation(): MutPtr =
-    if (sysIoErrorUnixNapiAvailable) MutPtr(wasmStdSysIoErrorUnixErrnoLocation().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysIoErrorUnixNapiAvailable) MutPtr(wasmRustlangStdSysIoErrorUnixErrnoLocation().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")

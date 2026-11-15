@@ -1,7 +1,6 @@
 // port-lint: source backtrace/win64.rs
 package io.github.kotlinmania.rustlang.backtrace.backtrace.win64
 
-import io.github.kotlinmania.rustlang.backtrace.windowssys.Context
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -11,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.windowssys.Context
 
 // Backtrace strategy for Windows `x8664` and `aarch64` platforms.
 //
@@ -95,7 +95,7 @@ public open class MyContext internal constructor(
     }
 }
 
-public fun trace(cb: (io.github.kotlinmania.rustlang.backtrace.backtrace.Frame) -> Boolean) {
+public fun trace(cb: (io.github.kotlinmania.rustlang.backtrace.Frame) -> Boolean) {
     // Capture the initial context to start walking from.
     // Note: shouldn't this have a Default impl?
     val context = null
@@ -118,7 +118,7 @@ public fun trace(cb: (io.github.kotlinmania.rustlang.backtrace.backtrace.Frame) 
             // this frame or the rest of the stack.
             break
         }
-        val frame = io.github.kotlinmania.rustlang.backtrace.backtrace.Frame(inner = Frame(baseAddress = MutPtr(base.toLong()), ip = mutPtrFromRustCast(ip), sp = mutPtrFromRustCast(context.sp()), inlineContext = null))
+        val frame = io.github.kotlinmania.rustlang.backtrace.Frame(inner = Frame(baseAddress = MutPtr(base.toLong()), ip = mutPtrFromRustCast(ip), sp = mutPtrFromRustCast(context.sp()), inlineContext = null))
         // We've loaded all the info about the current frame, so now call the
         // callback.
         if (!cb(frame)) {

@@ -1,6 +1,8 @@
 // port-lint: source alias.rs
 package io.github.kotlinmania.rustlang.coresimd
 
+import io.github.kotlinmania.rustlang.Mask
+import io.github.kotlinmania.rustlang.Simd
 import io.github.kotlinmania.rustlang.core.F16
 
 public typealias I8x1 = Simd<Byte>

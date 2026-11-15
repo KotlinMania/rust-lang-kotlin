@@ -4,7 +4,7 @@
 package io.github.kotlinmania.rustlang.core.unicode.unicodedata.lowercase
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.unicode.unicodedata.bitsetSearch
+import io.github.kotlinmania.rustlang.unicode.unicodedata.bitsetSearch
 
 public var BITSET_CHUNKS_MAP: UByteArray = ubyteArrayOf(12u, 17u, 0u, 0u, 8u, 0u, 0u, 13u, 14u, 9u, 0u, 16u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 6u, 3u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 4u, 1u, 0u, 15u, 0u, 11u, 0u, 0u, 10u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 5u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 19u, 0u, 2u, 18u, 0u, 7u)
 

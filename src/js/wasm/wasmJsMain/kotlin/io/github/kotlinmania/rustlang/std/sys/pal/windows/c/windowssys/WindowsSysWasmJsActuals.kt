@@ -6,559 +6,559 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 @JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
-private external fun initSysPalWindowsCWindowssysWindowsSysNapiAddon(): Boolean
+private external fun initStdSysPalWindowsCWindowssysWindowsSysNapiAddon(): Boolean
 
-private val sysPalWindowsCWindowssysWindowsSysNapiAvailable: Boolean = initSysPalWindowsCWindowssysWindowsSysNapiAddon()
+private val stdSysPalWindowsCWindowssysWindowsSysNapiAvailable: Boolean = initStdSysPalWindowsCWindowssysWindowsSysNapiAddon()
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(p0: String)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(p0: Int, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(p0: Int, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCancelIo(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCancelIo(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCancelIo(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCancelIo(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCloseHandle(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCloseHandle(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCloseHandle(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCloseHandle(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(p0: String, p1: Int, p2: String, p3: Int, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(p0: String, p1: Int, p2: String, p3: Int, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCopyFileExW(p0, p1, p2, p3, p4, p5)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCopyFileExW(p0: String, p1: String, p2: String, p3: String, p4: String, p5: Int): Int
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCopyFileExW(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCopyFileExW(p0: String, p1: String, p2: String, p3: String, p4: String, p5: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateEventW(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateEventW(p0: String, p1: Int, p2: Int, p3: String): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateEventW(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateEventW(p0: String, p1: Int, p2: Int, p3: String): String
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateFileW(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateFileW(p0: String, p1: Int, p2: Int, p3: String, p4: Int, p5: Int, p6: String): String
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateFileW(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateFileW(p0: String, p1: Int, p2: Int, p3: String, p4: Int, p5: Int, p6: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(p0, p1, p2, p3, p4, p5, p6, p7)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(p0: String, p1: Int, p2: Int, p3: Int, p4: Int, p5: Int, p6: Int, p7: String): String
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(p0, p1, p2, p3, p4, p5, p6, p7)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(p0: String, p1: Int, p2: Int, p3: Int, p4: Int, p5: Int, p6: Int, p7: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreatePipe(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreatePipe(p0: String, p1: String, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCreatePipe(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreatePipe(p0: String, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateProcessW(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateProcessW(p0: String, p1: String, p2: String, p3: String, p4: Int, p5: Int, p6: String, p7: String, p8: String, p9: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateProcessW(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateProcessW(p0: String, p1: String, p2: String, p3: String, p4: Int, p5: Int, p6: String, p7: String, p8: String, p9: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateThread(p0, p1, p2, p3, p4, p5)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateThread(p0: String, p1: String, p2: String, p3: String, p4: Int, p5: String): String
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateThread(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateThread(p0: String, p1: String, p2: String, p3: String, p4: Int, p5: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(p0: String, p1: String, p2: Int, p3: Int): String
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(p0: String, p1: String, p2: Int, p3: Int): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysDeleteFileW(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysDeleteFileW(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysDeleteFileW(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysDeleteFileW(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(p0: String)
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(p0, p1, p2, p3, p4, p5, p6, p7)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(p0: String, p1: Int, p2: String, p3: Int, p4: String, p5: Int, p6: String, p7: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(p0, p1, p2, p3, p4, p5, p6, p7)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(p0: String, p1: Int, p2: String, p3: Int, p4: String, p5: Int, p6: String, p7: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(p0: String, p1: String, p2: String, p3: String, p4: Int, p5: Int, p6: Int): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(p0: String, p1: String, p2: String, p3: String, p4: Int, p5: Int, p6: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysExitProcess(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysExitProcess(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysExitProcess(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysExitProcess(p0: Int)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFindClose(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFindClose(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysFindClose(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFindClose(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(p0, p1, p2, p3, p4, p5)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(p0: String, p1: Int, p2: String, p3: Int, p4: String, p5: Int): String
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(p0: String, p1: Int, p2: String, p3: Int, p4: String, p5: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFindNextFileW(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFindNextFileW(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysFindNextFileW(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFindNextFileW(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFlsAlloc(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFlsAlloc(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysFlsAlloc(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFlsAlloc(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFlsFree(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFlsFree(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysFlsFree(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFlsFree(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFlsGetValue(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFlsGetValue(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysFlsGetValue(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFlsGetValue(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFlsSetValue(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFlsSetValue(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysFlsSetValue(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFlsSetValue(p0: Int, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFormatMessageW(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFormatMessageW(p0: Int, p1: String, p2: Int, p3: Int, p4: String, p5: Int, p6: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysFormatMessageW(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFormatMessageW(p0: Int, p1: String, p2: Int, p3: Int, p4: String, p5: Int, p6: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(p0: Int): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCommandLineW()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCommandLineW(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCommandLineW()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCommandLineW(): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(p0: String, p1: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP(): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(p0: Int, p1: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess(): String
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId(): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCurrentThread()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentThread(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentThread()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentThread(): String
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId(): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW(): String
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW(): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(p0: String, p1: Int, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(p0: String, p1: Int, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFileType(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFileType(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFileType(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFileType(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(p0: String, p1: String, p2: Int, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(p0: String, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(p0: String, p1: Int, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(p0: String, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetHostNameW(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetHostNameW(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetHostNameW(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetHostNameW(p0: String, p1: Int): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetLastError()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetLastError(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetLastError()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetLastError(): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives(): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(p0: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(p0: Int, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(p0: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(p0: String, p1: String, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(p0: String, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetProcAddress(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetProcAddress(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetProcAddress(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetProcAddress(p0: String, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetProcessId(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetProcessId(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetProcessId(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetProcessId(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetStdHandle(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetStdHandle(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetStdHandle(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetStdHandle(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(p0: String, p1: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(p0: String)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetTempPathW(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetTempPathW(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetTempPathW(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetTempPathW(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(p0: String, p1: Int, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(p0: String, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(p0: String, p1: Int, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(p0: String, p1: Int, p2: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(p0: String, p1: Int, p2: Int, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(p0: String, p1: Int, p2: Int, p3: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber(): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(p0: String, p1: String, p2: Int): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(p0: String, p1: String, p2: Int): String
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysLocalFree(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysLocalFree(p0: String): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysLocalFree(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysLocalFree(p0: String): String
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysLockFileEx(p0, p1, p2, p3, p4, p5)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysLockFileEx(p0: String, p1: Int, p2: Int, p3: Int, p4: Int, p5: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysLockFileEx(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysLockFileEx(p0: String, p1: Int, p2: Int, p3: Int, p4: Int, p5: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysMoveFileExW(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysMoveFileExW(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysMoveFileExW(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysMoveFileExW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(p0, p1, p2, p3, p4, p5)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(p0: Int, p1: Int, p2: String, p3: Int, p4: String, p5: Int): Int
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(p0: Int, p1: Int, p2: String, p3: Int, p4: String, p5: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtCreateFile(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtCreateFile(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: Int, p6: Int, p7: Int, p8: Int, p9: String, p10: Int): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysNtCreateFile(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtCreateFile(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: Int, p6: Int, p7: Int, p8: Int, p9: String, p10: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtOpenFile(p0, p1, p2, p3, p4, p5)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtOpenFile(p0: String, p1: Int, p2: String, p3: String, p4: Int, p5: Int): Int
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysNtOpenFile(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtOpenFile(p0: String, p1: Int, p2: String, p3: String, p4: Int, p5: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(p0: String, p1: String, p2: String, p3: Int, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(p0: String, p1: String, p2: String, p3: Int, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtReadFile(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtReadFile(p0: String, p1: String, p2: String, p3: String, p4: String, p5: String, p6: Int, p7: String, p8: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysNtReadFile(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtReadFile(p0: String, p1: String, p2: String, p3: String, p4: String, p5: String, p6: Int, p7: String, p8: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(p0: String, p1: String, p2: String, p3: Int, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(p0: String, p1: String, p2: String, p3: Int, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtWriteFile(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtWriteFile(p0: String, p1: String, p2: String, p3: String, p4: String, p5: String, p6: Int, p7: String, p8: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysNtWriteFile(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtWriteFile(p0: String, p1: String, p2: String, p3: String, p4: String, p5: String, p6: Int, p7: String, p8: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(p0: String, p1: Int, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(p0: String, p1: Int, p2: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysReadConsoleW(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysReadConsoleW(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysReadConsoleW(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysReadConsoleW(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysReadFile(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysReadFile(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysReadFile(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysReadFile(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysReadFileEx(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysReadFileEx(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysReadFileEx(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysReadFileEx(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(p0: String, p1: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(p0: String, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(p0: String, p1: Int, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(p0: String, p1: Int, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(p0: String, p1: String, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(p0: String, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetFileTime(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetFileTime(p0: String, p1: String, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetFileTime(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetFileTime(p0: String, p1: String, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(p0: String, p1: Int, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(p0: String, p1: Int, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetLastError(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetLastError(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetLastError(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetLastError(p0: Int)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetStdHandle(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetStdHandle(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetStdHandle(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetStdHandle(p0: Int, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(p0, p1, p2, p3, p4, p5)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: Int): Int
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSleep(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSleep(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSleep(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSleep(p0: Int)
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(p0: String, p1: String, p2: Int, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(p0: String, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSleepEx(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSleepEx(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSleepEx(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSleepEx(p0: Int, p1: Int): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSwitchToThread()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSwitchToThread(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSwitchToThread()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSwitchToThread(): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTerminateProcess(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTerminateProcess(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysTerminateProcess(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTerminateProcess(p0: String, p1: Int): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTlsAlloc()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTlsAlloc(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysTlsAlloc()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTlsAlloc(): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTlsFree(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTlsFree(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysTlsFree(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTlsFree(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTlsGetValue(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTlsGetValue(p0: Int): String
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysTlsGetValue(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTlsGetValue(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTlsSetValue(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTlsSetValue(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysTlsSetValue(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTlsSetValue(p0: Int, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysUnlockFile(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysUnlockFile(p0: String, p1: Int, p2: Int, p3: Int, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysUnlockFile(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysUnlockFile(p0: String, p1: Int, p2: Int, p3: Int, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: String, p6: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSACleanup()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSACleanup(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWSACleanup()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSACleanup(): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(p0: String, p1: Int, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(p0: String, p1: Int, p2: String): Int
 
-@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSAGetLastError()")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSAGetLastError(): Int
+@JsFun("() => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWSAGetLastError()")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSAGetLastError(): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSARecv(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSARecv(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWSARecv(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSARecv(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSASend(p0, p1, p2, p3, p4, p5, p6)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSASend(p0: String, p1: String, p2: Int, p3: String, p4: Int, p5: String, p6: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWSASend(p0, p1, p2, p3, p4, p5, p6)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSASend(p0: String, p1: String, p2: Int, p3: String, p4: Int, p5: String, p6: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSASocketW(p0, p1, p2, p3, p4, p5)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSASocketW(p0: Int, p1: Int, p2: Int, p3: String, p4: Int, p5: Int): String
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWSASocketW(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSASocketW(p0: Int, p1: Int, p2: Int, p3: String, p4: Int, p5: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSAStartup(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSAStartup(p0: Int, p1: String): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWSAStartup(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSAStartup(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(p0: Int, p1: String, p2: Int, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(p0: Int, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(p0: String, p1: String, p2: String, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(p0: String, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(p0: String)
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(p0, p1, p2, p3, p4, p5, p6, p7)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(p0: Int, p1: Int, p2: String, p3: Int, p4: String, p5: Int, p6: String, p7: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(p0, p1, p2, p3, p4, p5, p6, p7)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(p0: Int, p1: Int, p2: String, p3: Int, p4: String, p5: Int, p6: String, p7: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWriteFileEx(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWriteFileEx(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysWriteFileEx(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWriteFileEx(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysAccept(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysAccept(p0: String, p1: String, p2: String): String
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysAccept(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysAccept(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysBind(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysBind(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysBind(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysBind(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysClosesocket(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysClosesocket(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysClosesocket(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysClosesocket(p0: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysConnect(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysConnect(p0: String, p1: String, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysConnect(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysConnect(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(p0: String)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(p0: String)
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(p0: String, p1: String, p2: String, p3: String): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(p0: String, p1: String, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetpeername(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetpeername(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetpeername(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetpeername(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetsockname(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetsockname(p0: String, p1: String, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetsockname(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetsockname(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetsockopt(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetsockopt(p0: String, p1: Int, p2: Int, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysGetsockopt(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetsockopt(p0: String, p1: Int, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysIoctlsocket(p0, p1, p2)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysIoctlsocket(p0: String, p1: Int, p2: String): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysIoctlsocket(p0, p1, p2)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysIoctlsocket(p0: String, p1: Int, p2: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysListen(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysListen(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysListen(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysListen(p0: String, p1: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysLstrlenW(p0)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysLstrlenW(p0: String): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysLstrlenW(p0)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysLstrlenW(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysRecv(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysRecv(p0: String, p1: String, p2: Int, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysRecv(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysRecv(p0: String, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysRecvfrom(p0, p1, p2, p3, p4, p5)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysRecvfrom(p0: String, p1: String, p2: Int, p3: Int, p4: String, p5: String): Int
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysRecvfrom(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysRecvfrom(p0: String, p1: String, p2: Int, p3: Int, p4: String, p5: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSelect(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSelect(p0: Int, p1: String, p2: String, p3: String, p4: String): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSelect(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSelect(p0: Int, p1: String, p2: String, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSend(p0, p1, p2, p3)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSend(p0: String, p1: String, p2: Int, p3: Int): Int
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSend(p0, p1, p2, p3)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSend(p0: String, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSendto(p0, p1, p2, p3, p4, p5)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSendto(p0: String, p1: String, p2: Int, p3: Int, p4: String, p5: Int): Int
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSendto(p0, p1, p2, p3, p4, p5)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSendto(p0: String, p1: String, p2: Int, p3: Int, p4: String, p5: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetsockopt(p0, p1, p2, p3, p4)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetsockopt(p0: String, p1: Int, p2: Int, p3: String, p4: Int): Int
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysSetsockopt(p0, p1, p2, p3, p4)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetsockopt(p0: String, p1: Int, p2: Int, p3: String, p4: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysShutdown(p0, p1)")
-private external fun wasmStdSysPalWindowsCWindowssysWindowsSysShutdown(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.rustlangStdSysPalWindowsCWindowssysWindowsSysShutdown(p0, p1)")
+private external fun wasmRustlangStdSysPalWindowsCWindowssysWindowsSysShutdown(p0: String, p1: Int): Int
 
 public actual fun acquireSRWLockExclusive(srwlock: MutPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(srwlock.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(srwlock.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun acquireSRWLockShared(srwlock: MutPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(srwlock.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(srwlock.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun addVectoredExceptionHandler(first: UInt, handler: PvectoredExceptionHandler): MutPtr =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(first.toInt(), 0L.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(first.toInt(), 0L.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun cancelIo(hfile: Handle): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCancelIo(hfile.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCancelIo(hfile.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun closeHandle(hobject: Handle): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCloseHandle(hobject.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCloseHandle(hobject.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun compareStringOrdinal(lpstring1: ConstPtr, cchcount1: Int, lpstring2: ConstPtr, cchcount2: Int, bignorecase: Bool): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(lpstring1.rawAddress.toString(), cchcount1, lpstring2.rawAddress.toString(), cchcount2, bignorecase) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(lpstring1.rawAddress.toString(), cchcount1, lpstring2.rawAddress.toString(), cchcount2, bignorecase) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun copyFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, lpprogressroutine: LpprogressRoutine, lpdata: ConstPtr, pbcancel: MutPtr, dwcopyflags: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCopyFileExW(lpexistingfilename.rawAddress.toString(), lpnewfilename.rawAddress.toString(), 0L.toString(), lpdata.rawAddress.toString(), pbcancel.rawAddress.toString(), dwcopyflags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCopyFileExW(lpexistingfilename.rawAddress.toString(), lpnewfilename.rawAddress.toString(), 0L.toString(), lpdata.rawAddress.toString(), pbcancel.rawAddress.toString(), dwcopyflags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createDirectoryW(lppathname: Pcwstr, lpsecurityattributes: ConstPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(lppathname.rawAddress.toString(), lpsecurityattributes.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(lppathname.rawAddress.toString(), lpsecurityattributes.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createEventW(lpeventattributes: ConstPtr, bmanualreset: Bool, binitialstate: Bool, lpname: Pcwstr): Handle =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysCreateEventW(lpeventattributes.rawAddress.toString(), bmanualreset, binitialstate, lpname.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateEventW(lpeventattributes.rawAddress.toString(), bmanualreset, binitialstate, lpname.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createFileW(lpfilename: Pcwstr, dwdesiredaccess: UInt, dwsharemode: UInt, lpsecurityattributes: ConstPtr, dwcreationdisposition: UInt, dwflagsandattributes: UInt, htemplatefile: Handle): Handle =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysCreateFileW(lpfilename.rawAddress.toString(), dwdesiredaccess.toInt(), dwsharemode.toInt(), lpsecurityattributes.rawAddress.toString(), dwcreationdisposition.toInt(), dwflagsandattributes.toInt(), htemplatefile.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateFileW(lpfilename.rawAddress.toString(), dwdesiredaccess.toInt(), dwsharemode.toInt(), lpsecurityattributes.rawAddress.toString(), dwcreationdisposition.toInt(), dwflagsandattributes.toInt(), htemplatefile.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createHardLinkW(lpfilename: Pcwstr, lpexistingfilename: Pcwstr, lpsecurityattributes: ConstPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(lpfilename.rawAddress.toString(), lpexistingfilename.rawAddress.toString(), lpsecurityattributes.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(lpfilename.rawAddress.toString(), lpexistingfilename.rawAddress.toString(), lpsecurityattributes.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createNamedPipeW(lpname: Pcwstr, dwopenmode: UInt, dwpipemode: UInt, nmaxinstances: UInt, noutbuffersize: UInt, ninbuffersize: UInt, ndefaulttimeout: UInt, lpsecurityattributes: ConstPtr): Handle =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(lpname.rawAddress.toString(), dwopenmode.toInt(), dwpipemode.toInt(), nmaxinstances.toInt(), noutbuffersize.toInt(), ninbuffersize.toInt(), ndefaulttimeout.toInt(), lpsecurityattributes.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(lpname.rawAddress.toString(), dwopenmode.toInt(), dwpipemode.toInt(), nmaxinstances.toInt(), noutbuffersize.toInt(), ninbuffersize.toInt(), ndefaulttimeout.toInt(), lpsecurityattributes.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createPipe(hreadpipe: MutPtr, hwritepipe: MutPtr, lppipeattributes: ConstPtr, nsize: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCreatePipe(hreadpipe.rawAddress.toString(), hwritepipe.rawAddress.toString(), lppipeattributes.rawAddress.toString(), nsize.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreatePipe(hreadpipe.rawAddress.toString(), hwritepipe.rawAddress.toString(), lppipeattributes.rawAddress.toString(), nsize.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createProcessW(lpapplicationname: Pcwstr, lpcommandline: Pwstr, lpprocessattributes: ConstPtr, lpthreadattributes: ConstPtr, binherithandles: Bool, dwcreationflags: UInt, lpenvironment: ConstPtr, lpcurrentdirectory: Pcwstr, lpstartupinfo: ConstPtr, lpprocessinformation: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCreateProcessW(lpapplicationname.rawAddress.toString(), lpcommandline.rawAddress.toString(), lpprocessattributes.rawAddress.toString(), lpthreadattributes.rawAddress.toString(), binherithandles, dwcreationflags.toInt(), lpenvironment.rawAddress.toString(), lpcurrentdirectory.rawAddress.toString(), lpstartupinfo.rawAddress.toString(), lpprocessinformation.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateProcessW(lpapplicationname.rawAddress.toString(), lpcommandline.rawAddress.toString(), lpprocessattributes.rawAddress.toString(), lpthreadattributes.rawAddress.toString(), binherithandles, dwcreationflags.toInt(), lpenvironment.rawAddress.toString(), lpcurrentdirectory.rawAddress.toString(), lpstartupinfo.rawAddress.toString(), lpprocessinformation.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createSymbolicLinkW(lpsymlinkfilename: Pcwstr, lptargetfilename: Pcwstr, dwflags: UInt): Boolean =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(lpsymlinkfilename.rawAddress.toString(), lptargetfilename.rawAddress.toString(), dwflags.toInt()).toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(lpsymlinkfilename.rawAddress.toString(), lptargetfilename.rawAddress.toString(), dwflags.toInt()).toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createThread(lpthreadattributes: ConstPtr, dwstacksize: ULong, lpstartaddress: LpthreadStartRoutine, lpparameter: ConstPtr, dwcreationflags: UInt, lpthreadid: MutPtr): Handle =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysCreateThread(lpthreadattributes.rawAddress.toString(), dwstacksize.toString(), 0L.toString(), lpparameter.rawAddress.toString(), dwcreationflags.toInt(), lpthreadid.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateThread(lpthreadattributes.rawAddress.toString(), dwstacksize.toString(), 0L.toString(), lpparameter.rawAddress.toString(), dwcreationflags.toInt(), lpthreadid.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun createWaitableTimerExW(lptimerattributes: ConstPtr, lptimername: Pcwstr, dwflags: UInt, dwdesiredaccess: UInt): Handle =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(lptimerattributes.rawAddress.toString(), lptimername.rawAddress.toString(), dwflags.toInt(), dwdesiredaccess.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(lptimerattributes.rawAddress.toString(), lptimername.rawAddress.toString(), dwflags.toInt(), dwdesiredaccess.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun deleteFileW(lpfilename: Pcwstr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysDeleteFileW(lpfilename.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysDeleteFileW(lpfilename.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun deleteProcThreadAttributeList(lpattributelist: MutPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(lpattributelist.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(lpattributelist.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun deviceIoControl(hdevice: Handle, dwiocontrolcode: UInt, lpinbuffer: ConstPtr, ninbuffersize: UInt, lpoutbuffer: MutPtr, noutbuffersize: UInt, lpbytesreturned: MutPtr, lpoverlapped: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(hdevice.rawAddress.toString(), dwiocontrolcode.toInt(), lpinbuffer.rawAddress.toString(), ninbuffersize.toInt(), lpoutbuffer.rawAddress.toString(), noutbuffersize.toInt(), lpbytesreturned.rawAddress.toString(), lpoverlapped.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(hdevice.rawAddress.toString(), dwiocontrolcode.toInt(), lpinbuffer.rawAddress.toString(), ninbuffersize.toInt(), lpoutbuffer.rawAddress.toString(), noutbuffersize.toInt(), lpbytesreturned.rawAddress.toString(), lpoverlapped.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun duplicateHandle(hsourceprocesshandle: Handle, hsourcehandle: Handle, htargetprocesshandle: Handle, lptargethandle: MutPtr, dwdesiredaccess: UInt, binherithandle: Bool, dwoptions: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(hsourceprocesshandle.rawAddress.toString(), hsourcehandle.rawAddress.toString(), htargetprocesshandle.rawAddress.toString(), lptargethandle.rawAddress.toString(), dwdesiredaccess.toInt(), binherithandle, dwoptions.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(hsourceprocesshandle.rawAddress.toString(), hsourcehandle.rawAddress.toString(), htargetprocesshandle.rawAddress.toString(), lptargethandle.rawAddress.toString(), dwdesiredaccess.toInt(), binherithandle, dwoptions.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun exitProcess(uexitcode: UInt): Nothing {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysExitProcess(uexitcode.toInt())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysExitProcess(uexitcode.toInt())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
@@ -566,463 +566,463 @@ public actual fun exitProcess(uexitcode: UInt): Nothing {
 }
 
 public actual fun findClose(hfindfile: Handle): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFindClose(hfindfile.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFindClose(hfindfile.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun findFirstFileExW(lpfilename: Pcwstr, finfolevelid: FindexInfoLevels, lpfindfiledata: MutPtr, fsearchop: FindexSearchOps, lpsearchfilter: ConstPtr, dwadditionalflags: UInt): Handle =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(lpfilename.rawAddress.toString(), finfolevelid, lpfindfiledata.rawAddress.toString(), fsearchop, lpsearchfilter.rawAddress.toString(), dwadditionalflags.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(lpfilename.rawAddress.toString(), finfolevelid, lpfindfiledata.rawAddress.toString(), fsearchop, lpsearchfilter.rawAddress.toString(), dwadditionalflags.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun findNextFileW(hfindfile: Handle, lpfindfiledata: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFindNextFileW(hfindfile.rawAddress.toString(), lpfindfiledata.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFindNextFileW(hfindfile.rawAddress.toString(), lpfindfiledata.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun flsAlloc(lpcallback: PflsCallbackFunction): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFlsAlloc(0L.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFlsAlloc(0L.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun flsFree(dwflsindex: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFlsFree(dwflsindex.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFlsFree(dwflsindex.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun flsGetValue(dwflsindex: UInt): MutPtr =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysFlsGetValue(dwflsindex.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFlsGetValue(dwflsindex.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun flsSetValue(dwflsindex: UInt, lpflsdata: ConstPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFlsSetValue(dwflsindex.toInt(), lpflsdata.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFlsSetValue(dwflsindex.toInt(), lpflsdata.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun flushFileBuffers(hfile: Handle): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(hfile.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(hfile.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun formatMessageW(dwflags: UInt, lpsource: ConstPtr, dwmessageid: UInt, dwlanguageid: UInt, lpbuffer: Pcwstr, nsize: UInt, arguments: ConstPtr): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFormatMessageW(dwflags.toInt(), lpsource.rawAddress.toString(), dwmessageid.toInt(), dwlanguageid.toInt(), lpbuffer.rawAddress.toString(), nsize.toInt(), arguments.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFormatMessageW(dwflags.toInt(), lpsource.rawAddress.toString(), dwmessageid.toInt(), dwlanguageid.toInt(), lpbuffer.rawAddress.toString(), nsize.toInt(), arguments.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun freeEnvironmentStringsW(penv: ConstPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(penv.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(penv.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getActiveProcessorCount(groupnumber: UShort): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(groupnumber.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(groupnumber.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getCommandLineW(): Pwstr =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetCommandLineW().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCommandLineW().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getConsoleMode(hconsolehandle: Handle, lpmode: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(hconsolehandle.rawAddress.toString(), lpmode.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(hconsolehandle.rawAddress.toString(), lpmode.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getConsoleOutputCP(): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getCurrentDirectoryW(nbufferlength: UInt, lpbuffer: Pwstr): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(nbufferlength.toInt(), lpbuffer.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(nbufferlength.toInt(), lpbuffer.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getCurrentProcess(): Handle =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getCurrentProcessId(): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getCurrentThread(): Handle =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentThread().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentThread().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getCurrentThreadId(): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getEnvironmentStringsW(): Lpwch =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW().toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getEnvironmentVariableW(lpname: Pcwstr, lpbuffer: Pwstr, nsize: UInt): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(lpname.rawAddress.toString(), lpbuffer.rawAddress.toString(), nsize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(lpname.rawAddress.toString(), lpbuffer.rawAddress.toString(), nsize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getExitCodeProcess(hprocess: Handle, lpexitcode: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(hprocess.rawAddress.toString(), lpexitcode.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(hprocess.rawAddress.toString(), lpexitcode.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getFileAttributesW(lpfilename: Pcwstr): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(lpfilename.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(lpfilename.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getFileInformationByHandle(hfile: Handle, lpfileinformation: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(hfile.rawAddress.toString(), lpfileinformation.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(hfile.rawAddress.toString(), lpfileinformation.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getFileInformationByHandleEx(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: MutPtr, dwbuffersize: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(hfile.rawAddress.toString(), fileinformationclass, lpfileinformation.rawAddress.toString(), dwbuffersize.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(hfile.rawAddress.toString(), fileinformationclass, lpfileinformation.rawAddress.toString(), dwbuffersize.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getFileSizeEx(hfile: Handle, lpfilesize: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(hfile.rawAddress.toString(), lpfilesize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(hfile.rawAddress.toString(), lpfilesize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getFileType(hfile: Handle): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFileType(hfile.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFileType(hfile.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getFinalPathNameByHandleW(hfile: Handle, lpszfilepath: Pwstr, cchfilepath: UInt, dwflags: UInt): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(hfile.rawAddress.toString(), lpszfilepath.rawAddress.toString(), cchfilepath.toInt(), dwflags.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(hfile.rawAddress.toString(), lpszfilepath.rawAddress.toString(), cchfilepath.toInt(), dwflags.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getFullPathNameW(lpfilename: Pcwstr, nbufferlength: UInt, lpbuffer: Pwstr, lpfilepart: MutPtr): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(lpfilename.rawAddress.toString(), nbufferlength.toInt(), lpbuffer.rawAddress.toString(), lpfilepart.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(lpfilename.rawAddress.toString(), nbufferlength.toInt(), lpbuffer.rawAddress.toString(), lpfilepart.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getHostNameW(name: Pwstr, namelen: Int): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetHostNameW(name.rawAddress.toString(), namelen) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetHostNameW(name.rawAddress.toString(), namelen) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getLastError(): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetLastError().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetLastError().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getLogicalDrives(): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getModuleFileNameW(hmodule: Hmodule, lpfilename: Pwstr, nsize: UInt): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(hmodule.rawAddress.toString(), lpfilename.rawAddress.toString(), nsize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(hmodule.rawAddress.toString(), lpfilename.rawAddress.toString(), nsize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getModuleHandleA(lpmodulename: Pcstr): Hmodule =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(lpmodulename.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(lpmodulename.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getModuleHandleExW(dwflags: UInt, lpmodulename: Pcwstr, phmodule: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(dwflags.toInt(), lpmodulename.rawAddress.toString(), phmodule.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(dwflags.toInt(), lpmodulename.rawAddress.toString(), phmodule.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getModuleHandleW(lpmodulename: Pcwstr): Hmodule =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(lpmodulename.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(lpmodulename.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getOverlappedResult(hfile: Handle, lpoverlapped: ConstPtr, lpnumberofbytestransferred: MutPtr, bwait: Bool): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(hfile.rawAddress.toString(), lpoverlapped.rawAddress.toString(), lpnumberofbytestransferred.rawAddress.toString(), bwait) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(hfile.rawAddress.toString(), lpoverlapped.rawAddress.toString(), lpnumberofbytestransferred.rawAddress.toString(), bwait) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getProcAddress(hmodule: Hmodule, lpprocname: Pcstr): Farproc =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) null else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) null else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getProcessId(process: Handle): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetProcessId(process.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetProcessId(process.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getStdHandle(nstdhandle: UInt): Handle =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysGetStdHandle(nstdhandle.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetStdHandle(nstdhandle.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getSystemDirectoryW(lpbuffer: Pwstr, usize: UInt): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(lpbuffer.rawAddress.toString(), usize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(lpbuffer.rawAddress.toString(), usize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getSystemInfo(lpsysteminfo: MutPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(lpsysteminfo.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(lpsysteminfo.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun getSystemTimeAsFileTime(lpsystemtimeasfiletime: MutPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(lpsystemtimeasfiletime.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(lpsystemtimeasfiletime.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun getSystemTimePreciseAsFileTime(lpsystemtimeasfiletime: MutPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(lpsystemtimeasfiletime.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(lpsystemtimeasfiletime.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun getTempPathW(nbufferlength: UInt, lpbuffer: Pwstr): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetTempPathW(nbufferlength.toInt(), lpbuffer.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetTempPathW(nbufferlength.toInt(), lpbuffer.rawAddress.toString()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getUserProfileDirectoryW(htoken: Handle, lpprofiledir: Pwstr, lpcchsize: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(htoken.rawAddress.toString(), lpprofiledir.rawAddress.toString(), lpcchsize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(htoken.rawAddress.toString(), lpprofiledir.rawAddress.toString(), lpcchsize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getWindowsDirectoryW(lpbuffer: Pwstr, usize: UInt): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(lpbuffer.rawAddress.toString(), usize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(lpbuffer.rawAddress.toString(), usize.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun initOnceBeginInitialize(lpinitonce: LpinitOnce, dwflags: UInt, fpending: MutPtr, lpcontext: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(lpinitonce.rawAddress.toString(), dwflags.toInt(), fpending.rawAddress.toString(), lpcontext.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(lpinitonce.rawAddress.toString(), dwflags.toInt(), fpending.rawAddress.toString(), lpcontext.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun initOnceComplete(lpinitonce: LpinitOnce, dwflags: UInt, lpcontext: ConstPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(lpinitonce.rawAddress.toString(), dwflags.toInt(), lpcontext.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(lpinitonce.rawAddress.toString(), dwflags.toInt(), lpcontext.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun initializeProcThreadAttributeList(lpattributelist: MutPtr, dwattributecount: UInt, dwflags: UInt, lpsize: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(lpattributelist.rawAddress.toString(), dwattributecount.toInt(), dwflags.toInt(), lpsize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(lpattributelist.rawAddress.toString(), dwattributecount.toInt(), dwflags.toInt(), lpsize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun isThreadAFiber(): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun loadLibraryExA(lplibfilename: Pcstr, hfile: Handle, dwflags: UInt): Hmodule =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(lplibfilename.rawAddress.toString(), hfile.rawAddress.toString(), dwflags.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(lplibfilename.rawAddress.toString(), hfile.rawAddress.toString(), dwflags.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun localFree(hmem: Hlocal): Hlocal =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysLocalFree(hmem.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysLocalFree(hmem.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lockFileEx(hfile: Handle, dwflags: UInt, dwreserved: UInt, nnumberofbytestolocklow: UInt, nnumberofbytestolockhigh: UInt, lpoverlapped: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysLockFileEx(hfile.rawAddress.toString(), dwflags.toInt(), dwreserved.toInt(), nnumberofbytestolocklow.toInt(), nnumberofbytestolockhigh.toInt(), lpoverlapped.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysLockFileEx(hfile.rawAddress.toString(), dwflags.toInt(), dwreserved.toInt(), nnumberofbytestolocklow.toInt(), nnumberofbytestolockhigh.toInt(), lpoverlapped.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun moveFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, dwflags: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysMoveFileExW(lpexistingfilename.rawAddress.toString(), lpnewfilename.rawAddress.toString(), dwflags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysMoveFileExW(lpexistingfilename.rawAddress.toString(), lpnewfilename.rawAddress.toString(), dwflags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun multiByteToWideChar(codepage: UInt, dwflags: UInt, lpmultibytestr: ConstPtr, cbmultibyte: Int, lpwidecharstr: Pwstr, cchwidechar: Int): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(codepage.toInt(), dwflags.toInt(), lpmultibytestr.rawAddress.toString(), cbmultibyte, lpwidecharstr.rawAddress.toString(), cchwidechar) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(codepage.toInt(), dwflags.toInt(), lpmultibytestr.rawAddress.toString(), cbmultibyte, lpwidecharstr.rawAddress.toString(), cchwidechar) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ntCreateFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, allocationsize: ConstPtr, fileattributes: UInt, shareaccess: UInt, createdisposition: UInt, createoptions: UInt, eabuffer: ConstPtr, ealength: UInt): Ntstatus =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtCreateFile(filehandle.rawAddress.toString(), desiredaccess.toInt(), objectattributes.rawAddress.toString(), iostatusblock.rawAddress.toString(), allocationsize.rawAddress.toString(), fileattributes.toInt(), shareaccess.toInt(), createdisposition.toInt(), createoptions.toInt(), eabuffer.rawAddress.toString(), ealength.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtCreateFile(filehandle.rawAddress.toString(), desiredaccess.toInt(), objectattributes.rawAddress.toString(), iostatusblock.rawAddress.toString(), allocationsize.rawAddress.toString(), fileattributes.toInt(), shareaccess.toInt(), createdisposition.toInt(), createoptions.toInt(), eabuffer.rawAddress.toString(), ealength.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ntOpenFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, shareaccess: UInt, openoptions: UInt): Ntstatus =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtOpenFile(filehandle.rawAddress.toString(), desiredaccess.toInt(), objectattributes.rawAddress.toString(), iostatusblock.rawAddress.toString(), shareaccess.toInt(), openoptions.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtOpenFile(filehandle.rawAddress.toString(), desiredaccess.toInt(), objectattributes.rawAddress.toString(), iostatusblock.rawAddress.toString(), shareaccess.toInt(), openoptions.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ntQueryVolumeInformationFile(filehandle: Handle, iostatusblock: MutPtr, fsinformation: MutPtr, length: UInt, fsinformationclass: FsInformationClass): Ntstatus =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(filehandle.rawAddress.toString(), iostatusblock.rawAddress.toString(), fsinformation.rawAddress.toString(), length.toInt(), fsinformationclass) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(filehandle.rawAddress.toString(), iostatusblock.rawAddress.toString(), fsinformation.rawAddress.toString(), length.toInt(), fsinformationclass) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ntReadFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: MutPtr, length: UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtReadFile(filehandle.rawAddress.toString(), event.rawAddress.toString(), 0L.toString(), apccontext.rawAddress.toString(), iostatusblock.rawAddress.toString(), buffer.rawAddress.toString(), length.toInt(), byteoffset.rawAddress.toString(), key.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtReadFile(filehandle.rawAddress.toString(), event.rawAddress.toString(), 0L.toString(), apccontext.rawAddress.toString(), iostatusblock.rawAddress.toString(), buffer.rawAddress.toString(), length.toInt(), byteoffset.rawAddress.toString(), key.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ntSetInformationFile(filehandle: Handle, iostatusblock: MutPtr, fileinformation: ConstPtr, length: UInt, fileinformationclass: FileInformationClass): Ntstatus =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(filehandle.rawAddress.toString(), iostatusblock.rawAddress.toString(), fileinformation.rawAddress.toString(), length.toInt(), fileinformationclass) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(filehandle.rawAddress.toString(), iostatusblock.rawAddress.toString(), fileinformation.rawAddress.toString(), length.toInt(), fileinformationclass) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ntWriteFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: ConstPtr, length: UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysNtWriteFile(filehandle.rawAddress.toString(), event.rawAddress.toString(), 0L.toString(), apccontext.rawAddress.toString(), iostatusblock.rawAddress.toString(), buffer.rawAddress.toString(), length.toInt(), byteoffset.rawAddress.toString(), key.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysNtWriteFile(filehandle.rawAddress.toString(), event.rawAddress.toString(), 0L.toString(), apccontext.rawAddress.toString(), iostatusblock.rawAddress.toString(), buffer.rawAddress.toString(), length.toInt(), byteoffset.rawAddress.toString(), key.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun openProcessToken(processhandle: Handle, desiredaccess: UInt, tokenhandle: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(processhandle.rawAddress.toString(), desiredaccess.toInt(), tokenhandle.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(processhandle.rawAddress.toString(), desiredaccess.toInt(), tokenhandle.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun queryDosDeviceW(lpdevicename: Pcwstr, lptargetpath: Pwstr, ucchmax: UInt): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(lpdevicename.rawAddress.toString(), lptargetpath.rawAddress.toString(), ucchmax.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(lpdevicename.rawAddress.toString(), lptargetpath.rawAddress.toString(), ucchmax.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun queryPerformanceCounter(lpperformancecount: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(lpperformancecount.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(lpperformancecount.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun queryPerformanceFrequency(lpfrequency: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(lpfrequency.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(lpfrequency.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun readConsoleW(hconsoleinput: Handle, lpbuffer: MutPtr, nnumberofcharstoread: UInt, lpnumberofcharsread: MutPtr, pinputcontrol: ConstPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysReadConsoleW(hconsoleinput.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofcharstoread.toInt(), lpnumberofcharsread.rawAddress.toString(), pinputcontrol.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysReadConsoleW(hconsoleinput.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofcharstoread.toInt(), lpnumberofcharsread.rawAddress.toString(), pinputcontrol.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun readFile(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: UInt, lpnumberofbytesread: MutPtr, lpoverlapped: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysReadFile(hfile.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofbytestoread.toInt(), lpnumberofbytesread.rawAddress.toString(), lpoverlapped.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysReadFile(hfile.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofbytestoread.toInt(), lpnumberofbytesread.rawAddress.toString(), lpoverlapped.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun readFileEx(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysReadFileEx(hfile.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofbytestoread.toInt(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysReadFileEx(hfile.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofbytestoread.toInt(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun releaseSRWLockExclusive(srwlock: MutPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(srwlock.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(srwlock.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun releaseSRWLockShared(srwlock: MutPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(srwlock.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(srwlock.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun removeDirectoryW(lppathname: Pcwstr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(lppathname.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(lppathname.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun rtlGenRandom(randombuffer: MutPtr, randombufferlength: UInt): Boolean =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(randombuffer.rawAddress.toString(), randombufferlength.toInt()).toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(randombuffer.rawAddress.toString(), randombufferlength.toInt()).toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun rtlNtStatusToDosError(status: Ntstatus): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(status).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(status).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setCurrentDirectoryW(lppathname: Pcwstr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(lppathname.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(lppathname.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setEnvironmentVariableW(lpname: Pcwstr, lpvalue: Pcwstr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(lpname.rawAddress.toString(), lpvalue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(lpname.rawAddress.toString(), lpvalue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setFileAttributesW(lpfilename: Pcwstr, dwfileattributes: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(lpfilename.rawAddress.toString(), dwfileattributes.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(lpfilename.rawAddress.toString(), dwfileattributes.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setFileInformationByHandle(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: ConstPtr, dwbuffersize: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(hfile.rawAddress.toString(), fileinformationclass, lpfileinformation.rawAddress.toString(), dwbuffersize.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(hfile.rawAddress.toString(), fileinformationclass, lpfileinformation.rawAddress.toString(), dwbuffersize.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setFilePointerEx(hfile: Handle, lidistancetomove: Long, lpnewfilepointer: MutPtr, dwmovemethod: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(hfile.rawAddress.toString(), lidistancetomove.toString(), lpnewfilepointer.rawAddress.toString(), dwmovemethod.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(hfile.rawAddress.toString(), lidistancetomove.toString(), lpnewfilepointer.rawAddress.toString(), dwmovemethod.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setFileTime(hfile: Handle, lpcreationtime: ConstPtr, lplastaccesstime: ConstPtr, lplastwritetime: ConstPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetFileTime(hfile.rawAddress.toString(), lpcreationtime.rawAddress.toString(), lplastaccesstime.rawAddress.toString(), lplastwritetime.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetFileTime(hfile.rawAddress.toString(), lpcreationtime.rawAddress.toString(), lplastaccesstime.rawAddress.toString(), lplastwritetime.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setHandleInformation(hobject: Handle, dwmask: UInt, dwflags: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(hobject.rawAddress.toString(), dwmask.toInt(), dwflags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(hobject.rawAddress.toString(), dwmask.toInt(), dwflags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setLastError(dwerrcode: UInt) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysSetLastError(dwerrcode.toInt())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetLastError(dwerrcode.toInt())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun setStdHandle(nstdhandle: UInt, hhandle: Handle): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetStdHandle(nstdhandle.toInt(), hhandle.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetStdHandle(nstdhandle.toInt(), hhandle.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setThreadStackGuarantee(stacksizeinbytes: MutPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(stacksizeinbytes.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(stacksizeinbytes.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setWaitableTimer(htimer: Handle, lpduetime: ConstPtr, lperiod: Int, pfncompletionroutine: Ptimerapcroutine, lpargtocompletionroutine: ConstPtr, fresume: Bool): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(htimer.rawAddress.toString(), lpduetime.rawAddress.toString(), lperiod, 0L.toString(), lpargtocompletionroutine.rawAddress.toString(), fresume) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(htimer.rawAddress.toString(), lpduetime.rawAddress.toString(), lperiod, 0L.toString(), lpargtocompletionroutine.rawAddress.toString(), fresume) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sleep(dwmilliseconds: UInt) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysSleep(dwmilliseconds.toInt())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSleep(dwmilliseconds.toInt())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun sleepConditionVariableSRW(conditionvariable: MutPtr, srwlock: MutPtr, dwmilliseconds: UInt, flags: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(conditionvariable.rawAddress.toString(), srwlock.rawAddress.toString(), dwmilliseconds.toInt(), flags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(conditionvariable.rawAddress.toString(), srwlock.rawAddress.toString(), dwmilliseconds.toInt(), flags.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sleepEx(dwmilliseconds: UInt, balertable: Bool): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSleepEx(dwmilliseconds.toInt(), balertable).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSleepEx(dwmilliseconds.toInt(), balertable).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun switchToThread(): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSwitchToThread() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSwitchToThread() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun terminateProcess(hprocess: Handle, uexitcode: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysTerminateProcess(hprocess.rawAddress.toString(), uexitcode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTerminateProcess(hprocess.rawAddress.toString(), uexitcode.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tlsAlloc(): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysTlsAlloc().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTlsAlloc().toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tlsFree(dwtlsindex: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysTlsFree(dwtlsindex.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTlsFree(dwtlsindex.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tlsGetValue(dwtlsindex: UInt): MutPtr =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmStdSysPalWindowsCWindowssysWindowsSysTlsGetValue(dwtlsindex.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) MutPtr(wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTlsGetValue(dwtlsindex.toInt()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tlsSetValue(dwtlsindex: UInt, lptlsvalue: ConstPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysTlsSetValue(dwtlsindex.toInt(), lptlsvalue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTlsSetValue(dwtlsindex.toInt(), lptlsvalue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tryAcquireSRWLockExclusive(srwlock: MutPtr): Boolean =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(srwlock.rawAddress.toString()).toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(srwlock.rawAddress.toString()).toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tryAcquireSRWLockShared(srwlock: MutPtr): Boolean =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(srwlock.rawAddress.toString()).toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(srwlock.rawAddress.toString()).toUByte() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun unlockFile(hfile: Handle, dwfileoffsetlow: UInt, dwfileoffsethigh: UInt, nnumberofbytestounlocklow: UInt, nnumberofbytestounlockhigh: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysUnlockFile(hfile.rawAddress.toString(), dwfileoffsetlow.toInt(), dwfileoffsethigh.toInt(), nnumberofbytestounlocklow.toInt(), nnumberofbytestounlockhigh.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysUnlockFile(hfile.rawAddress.toString(), dwfileoffsetlow.toInt(), dwfileoffsethigh.toInt(), nnumberofbytestounlocklow.toInt(), nnumberofbytestounlockhigh.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun updateProcThreadAttribute(lpattributelist: MutPtr, dwflags: UInt, attribute: ULong, lpvalue: ConstPtr, cbsize: ULong, lppreviousvalue: MutPtr, lpreturnsize: ConstPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(lpattributelist.rawAddress.toString(), dwflags.toInt(), attribute.toString(), lpvalue.rawAddress.toString(), cbsize.toString(), lppreviousvalue.rawAddress.toString(), lpreturnsize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(lpattributelist.rawAddress.toString(), dwflags.toInt(), attribute.toString(), lpvalue.rawAddress.toString(), cbsize.toString(), lppreviousvalue.rawAddress.toString(), lpreturnsize.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wSACleanup(): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSACleanup() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSACleanup() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wSADuplicateSocketW(s: Socket, dwprocessid: UInt, lpprotocolinfo: MutPtr): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(s.toString(), dwprocessid.toInt(), lpprotocolinfo.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(s.toString(), dwprocessid.toInt(), lpprotocolinfo.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wSAGetLastError(): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSAGetLastError() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSAGetLastError() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wSARecv(s: Socket, lpbuffers: ConstPtr, dwbuffercount: UInt, lpnumberofbytesrecvd: MutPtr, lpflags: MutPtr, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSARecv(s.toString(), lpbuffers.rawAddress.toString(), dwbuffercount.toInt(), lpnumberofbytesrecvd.rawAddress.toString(), lpflags.rawAddress.toString(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSARecv(s.toString(), lpbuffers.rawAddress.toString(), dwbuffercount.toInt(), lpnumberofbytesrecvd.rawAddress.toString(), lpflags.rawAddress.toString(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wSASend(s: Socket, lpbuffers: ConstPtr, dwbuffercount: UInt, lpnumberofbytessent: MutPtr, dwflags: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSASend(s.toString(), lpbuffers.rawAddress.toString(), dwbuffercount.toInt(), lpnumberofbytessent.rawAddress.toString(), dwflags.toInt(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSASend(s.toString(), lpbuffers.rawAddress.toString(), dwbuffercount.toInt(), lpnumberofbytessent.rawAddress.toString(), dwflags.toInt(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wSASocketW(af: Int, type: Int, protocol: Int, lpprotocolinfo: ConstPtr, g: Group, dwflags: UInt): Socket =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSASocketW(af, type, protocol, lpprotocolinfo.rawAddress.toString(), g.toInt(), dwflags.toInt()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSASocketW(af, type, protocol, lpprotocolinfo.rawAddress.toString(), g.toInt(), dwflags.toInt()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wSAStartup(wversionrequested: UShort, lpwsadata: MutPtr): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWSAStartup(wversionrequested.toInt(), lpwsadata.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWSAStartup(wversionrequested.toInt(), lpwsadata.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun waitForMultipleObjects(ncount: UInt, lphandles: ConstPtr, bwaitall: Bool, dwmilliseconds: UInt): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(ncount.toInt(), lphandles.rawAddress.toString(), bwaitall, dwmilliseconds.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(ncount.toInt(), lphandles.rawAddress.toString(), bwaitall, dwmilliseconds.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun waitForSingleObject(hhandle: Handle, dwmilliseconds: UInt): UInt =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(hhandle.rawAddress.toString(), dwmilliseconds.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(hhandle.rawAddress.toString(), dwmilliseconds.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun waitOnAddress(address: ConstPtr, compareaddress: ConstPtr, addresssize: ULong, dwmilliseconds: UInt): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(address.rawAddress.toString(), compareaddress.rawAddress.toString(), addresssize.toString(), dwmilliseconds.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(address.rawAddress.toString(), compareaddress.rawAddress.toString(), addresssize.toString(), dwmilliseconds.toInt()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun wakeAllConditionVariable(conditionvariable: MutPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(conditionvariable.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(conditionvariable.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun wakeByAddressAll(address: ConstPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(address.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(address.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun wakeByAddressSingle(address: ConstPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(address.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(address.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun wakeConditionVariable(conditionvariable: MutPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(conditionvariable.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(conditionvariable.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun wideCharToMultiByte(codepage: UInt, dwflags: UInt, lpwidecharstr: ConstPtr, cchwidechar: Int, lpmultibytestr: Pstr, cbmultibyte: Int, lpdefaultchar: ConstPtr, lpuseddefaultchar: MutPtr): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(codepage.toInt(), dwflags.toInt(), lpwidecharstr.rawAddress.toString(), cchwidechar, lpmultibytestr.rawAddress.toString(), cbmultibyte, lpdefaultchar.rawAddress.toString(), lpuseddefaultchar.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(codepage.toInt(), dwflags.toInt(), lpwidecharstr.rawAddress.toString(), cchwidechar, lpmultibytestr.rawAddress.toString(), cbmultibyte, lpdefaultchar.rawAddress.toString(), lpuseddefaultchar.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun writeConsoleW(hconsoleoutput: Handle, lpbuffer: ConstPtr, nnumberofcharstowrite: UInt, lpnumberofcharswritten: MutPtr, lpreserved: ConstPtr): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(hconsoleoutput.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofcharstowrite.toInt(), lpnumberofcharswritten.rawAddress.toString(), lpreserved.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(hconsoleoutput.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofcharstowrite.toInt(), lpnumberofcharswritten.rawAddress.toString(), lpreserved.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun writeFileEx(hfile: Handle, lpbuffer: ConstPtr, nnumberofbytestowrite: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysWriteFileEx(hfile.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofbytestowrite.toInt(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysWriteFileEx(hfile.rawAddress.toString(), lpbuffer.rawAddress.toString(), nnumberofbytestowrite.toInt(), lpoverlapped.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun accept(s: Socket, addr: MutPtr, addrlen: MutPtr): Socket =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysAccept(s.toString(), addr.rawAddress.toString(), addrlen.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysAccept(s.toString(), addr.rawAddress.toString(), addrlen.rawAddress.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun bind(s: Socket, name: ConstPtr, namelen: Int): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysBind(s.toString(), name.rawAddress.toString(), namelen) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysBind(s.toString(), name.rawAddress.toString(), namelen) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun closesocket(s: Socket): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysClosesocket(s.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysClosesocket(s.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun connect(s: Socket, name: ConstPtr, namelen: Int): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysConnect(s.toString(), name.rawAddress.toString(), namelen) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysConnect(s.toString(), name.rawAddress.toString(), namelen) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun freeaddrinfo(paddrinfo: ConstPtr) {
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) {
-        wasmStdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(paddrinfo.rawAddress.toString())
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) {
+        wasmRustlangStdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(paddrinfo.rawAddress.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
 public actual fun getaddrinfo(pnodename: Pcstr, pservicename: Pcstr, phints: ConstPtr, ppresult: MutPtr): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(pnodename.rawAddress.toString(), pservicename.rawAddress.toString(), phints.rawAddress.toString(), ppresult.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(pnodename.rawAddress.toString(), pservicename.rawAddress.toString(), phints.rawAddress.toString(), ppresult.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getpeername(s: Socket, name: MutPtr, namelen: MutPtr): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetpeername(s.toString(), name.rawAddress.toString(), namelen.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetpeername(s.toString(), name.rawAddress.toString(), namelen.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getsockname(s: Socket, name: MutPtr, namelen: MutPtr): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetsockname(s.toString(), name.rawAddress.toString(), namelen.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetsockname(s.toString(), name.rawAddress.toString(), namelen.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getsockopt(s: Socket, level: Int, optname: Int, optval: MutPtr, optlen: MutPtr): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysGetsockopt(s.toString(), level, optname, optval.rawAddress.toString(), optlen.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysGetsockopt(s.toString(), level, optname, optval.rawAddress.toString(), optlen.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ioctlsocket(s: Socket, cmd: Int, argp: MutPtr): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysIoctlsocket(s.toString(), cmd, argp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysIoctlsocket(s.toString(), cmd, argp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun listen(s: Socket, backlog: Int): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysListen(s.toString(), backlog) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysListen(s.toString(), backlog) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lstrlenW(lpstring: Pcwstr): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysLstrlenW(lpstring.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysLstrlenW(lpstring.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun recv(s: Socket, buf: MutPtr, len: Int, flags: Int): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysRecv(s.toString(), buf.rawAddress.toString(), len, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysRecv(s.toString(), buf.rawAddress.toString(), len, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun recvfrom(s: Socket, buf: MutPtr, len: Int, flags: Int, from: MutPtr, fromlen: MutPtr): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysRecvfrom(s.toString(), buf.rawAddress.toString(), len, flags, from.rawAddress.toString(), fromlen.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysRecvfrom(s.toString(), buf.rawAddress.toString(), len, flags, from.rawAddress.toString(), fromlen.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun select(nfds: Int, readfds: MutPtr, writefds: MutPtr, exceptfds: MutPtr, timeout: ConstPtr): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSelect(nfds, readfds.rawAddress.toString(), writefds.rawAddress.toString(), exceptfds.rawAddress.toString(), timeout.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSelect(nfds, readfds.rawAddress.toString(), writefds.rawAddress.toString(), exceptfds.rawAddress.toString(), timeout.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun send(s: Socket, buf: ConstPtr, len: Int, flags: Int): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSend(s.toString(), buf.rawAddress.toString(), len, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSend(s.toString(), buf.rawAddress.toString(), len, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sendto(s: Socket, buf: ConstPtr, len: Int, flags: Int, to: ConstPtr, tolen: Int): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSendto(s.toString(), buf.rawAddress.toString(), len, flags, to.rawAddress.toString(), tolen) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSendto(s.toString(), buf.rawAddress.toString(), len, flags, to.rawAddress.toString(), tolen) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun setsockopt(s: Socket, level: Int, optname: Int, optval: ConstPtr, optlen: Int): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysSetsockopt(s.toString(), level, optname, optval.rawAddress.toString(), optlen) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysSetsockopt(s.toString(), level, optname, optval.rawAddress.toString(), optlen) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun shutdown(s: Socket, how: Int): Int =
-    if (sysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmStdSysPalWindowsCWindowssysWindowsSysShutdown(s.toString(), how) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (stdSysPalWindowsCWindowssysWindowsSysNapiAvailable) wasmRustlangStdSysPalWindowsCWindowssysWindowsSysShutdown(s.toString(), how) else throw UnsupportedOperationException("Native FFI addon is not available")

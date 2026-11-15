@@ -2,9 +2,9 @@
 
 package io.github.kotlinmania.rustlang.corearch.armshared
 
-import io.github.kotlinmania.rustlang.corearch.armshared.cinterop.corearchArmsharedHintsHint
+import io.github.kotlinmania.rustlang.corearch.armshared.cinterop.rustlangCorearchArmsharedHintsHint
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun hint(arg0: Int) {
-    corearchArmsharedHintsHint(arg0)
+    rustlangCorearchArmsharedHintsHint(arg0)
 }

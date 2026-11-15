@@ -7,7 +7,7 @@ private val dummyNapiAddon: dynamic =
 
 public actual fun rustAbort(): Nothing {
     if (dummyNapiAddon != null) {
-        dummyNapiAddon.panicunwindDummyRustAbort()
+        dummyNapiAddon.rustlangDummyRustAbort()
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

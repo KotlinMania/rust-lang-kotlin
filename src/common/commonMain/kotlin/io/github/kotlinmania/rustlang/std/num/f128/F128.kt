@@ -5,24 +5,24 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.std.sys.cmath.acosf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.acoshf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.asinf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.asinhf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.atan2f128
-import io.github.kotlinmania.rustlang.std.sys.cmath.atanf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.cbrtf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.coshf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.erfcf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.erff128
-import io.github.kotlinmania.rustlang.std.sys.cmath.expm1f128
-import io.github.kotlinmania.rustlang.std.sys.cmath.hypotf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.lgammaf128R
-import io.github.kotlinmania.rustlang.std.sys.cmath.log1pf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.sinhf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.tanf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.tanhf128
-import io.github.kotlinmania.rustlang.std.sys.cmath.tgammaf128
+import io.github.kotlinmania.rustlang.sys.cmath.acosf128
+import io.github.kotlinmania.rustlang.sys.cmath.acoshf128
+import io.github.kotlinmania.rustlang.sys.cmath.asinf128
+import io.github.kotlinmania.rustlang.sys.cmath.asinhf128
+import io.github.kotlinmania.rustlang.sys.cmath.atan2f128
+import io.github.kotlinmania.rustlang.sys.cmath.atanf128
+import io.github.kotlinmania.rustlang.sys.cmath.cbrtf128
+import io.github.kotlinmania.rustlang.sys.cmath.coshf128
+import io.github.kotlinmania.rustlang.sys.cmath.erfcf128
+import io.github.kotlinmania.rustlang.sys.cmath.erff128
+import io.github.kotlinmania.rustlang.sys.cmath.expm1f128
+import io.github.kotlinmania.rustlang.sys.cmath.hypotf128
+import io.github.kotlinmania.rustlang.sys.cmath.lgammaf128R
+import io.github.kotlinmania.rustlang.sys.cmath.log1pf128
+import io.github.kotlinmania.rustlang.sys.cmath.sinhf128
+import io.github.kotlinmania.rustlang.sys.cmath.tanf128
+import io.github.kotlinmania.rustlang.sys.cmath.tanhf128
+import io.github.kotlinmania.rustlang.sys.cmath.tgammaf128
 import kotlin.math.cos
 import kotlin.math.ln
 import kotlin.math.sin
@@ -62,7 +62,7 @@ import kotlin.math.sin
  * }
  * ```
  */
-public fun F128.powf(n: F128): F128 = powf(this, n)
+public fun F128.powf(n: F128): F128 = intrinsics.powf(this, n)
 
 /**
  * Returns `e ^(self)`, (the exponential function).
@@ -88,7 +88,7 @@ public fun F128.powf(n: F128): F128 = powf(this, n)
  * }
  * ```
  */
-public fun F128.exp(): F128 = exp(this)
+public fun F128.exp(): F128 = intrinsics.exp(this)
 
 /**
  * Returns `2 ^(self)`.
@@ -112,7 +112,7 @@ public fun F128.exp(): F128 = exp(this)
  * }
  * ```
  */
-public fun F128.exp2(): F128 = exp2(this)
+public fun F128.exp2(): F128 = intrinsics.exp2(this)
 
 /**
  * Returns the natural logarithm of the number.
@@ -151,7 +151,7 @@ public fun F128.exp2(): F128 = exp2(this)
  * }
  * ```
  */
-public fun F128.ln(): F128 = log(this)
+public fun F128.ln(): F128 = intrinsics.log(this)
 
 /**
  * Returns the logarithm of the number with respect to an arbitrary base.
@@ -229,7 +229,7 @@ public fun F128.log(base: F128): F128 = F128.fromDouble(ln(this.toDouble())) / F
  * }
  * ```
  */
-public fun F128.log2(): F128 = log2(this)
+public fun F128.log2(): F128 = intrinsics.log2(this)
 
 /**
  * Returns the base 10 logarithm of the number.
@@ -266,7 +266,7 @@ public fun F128.log2(): F128 = log2(this)
  * }
  * ```
  */
-public fun F128.log10(): F128 = log10(this)
+public fun F128.log10(): F128 = intrinsics.log10(this)
 
 /**
  * Returns the cube root of a number.
@@ -347,7 +347,7 @@ public fun F128.hypot(other: F128): F128 = hypotf128(this, other)
  * }
  * ```
  */
-public fun F128.sin(): F128 = sin(this)
+public fun F128.sin(): F128 = intrinsics.sin(this)
 
 /**
  * Computes the cosine of a number (in radians).
@@ -370,7 +370,7 @@ public fun F128.sin(): F128 = sin(this)
  * }
  * ```
  */
-public fun F128.cos(): F128 = cos(this)
+public fun F128.cos(): F128 = intrinsics.cos(this)
 
 /**
  * Computes the tangent of a number (in radians).

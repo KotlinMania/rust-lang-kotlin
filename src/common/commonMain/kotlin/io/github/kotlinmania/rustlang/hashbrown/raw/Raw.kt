@@ -3,47 +3,40 @@
 
 package io.github.kotlinmania.rustlang.hashbrown.raw
 
-import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.Guard
+import io.github.kotlinmania.rustlang.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.Allocator
+import io.github.kotlinmania.rustlang.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
-import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.alloc.doAlloc
+import io.github.kotlinmania.rustlang.control.bitmask.BitMaskIter
+import io.github.kotlinmania.rustlang.control.group.generic.Group
+import io.github.kotlinmania.rustlang.control.tag.Tag
+import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
-import io.github.kotlinmania.rustlang.core.array.fromFn
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopy
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
-import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.mem.needsDrop
-import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.read
-import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.get
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.hashbrown.Guard
-import io.github.kotlinmania.rustlang.hashbrown.TryReserveError
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.doAlloc
-import io.github.kotlinmania.rustlang.hashbrown.control.bitmask.BitMaskIter
-import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.Group
-import io.github.kotlinmania.rustlang.hashbrown.control.tag.Tag
-import io.github.kotlinmania.rustlang.hashbrown.likely
-import io.github.kotlinmania.rustlang.hashbrown.scopeguard.ScopeGuard
-import io.github.kotlinmania.rustlang.hashbrown.unlikely
-import io.github.kotlinmania.rustlang.hashbrown.util.invalidMut
+import io.github.kotlinmania.rustlang.scopeguard.ScopeGuard
+import io.github.kotlinmania.rustlang.util.invalidMut
+import io.github.kotlinmania.rustlang.util.likely
+import io.github.kotlinmania.rustlang.util.unlikely
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: MutPtr)
@@ -923,7 +916,7 @@ public open class RawTable<T, A : Allocator>(
      */
     public open fun reserveRehash(additional: Int, hasher: (T) -> ULong, fallibility: Fallibility): Result<Unit, TryReserveError> =
         this.table.reserveRehashInner(this.alloc, additional, { table, index -> hasher(table.bucket<T>(index).asRef()) }, fallibility, RawTable.TABLE_LAYOUT, if (T.NEEDS_DROP) {
-            { ptr -> dropInPlace(ptr.cast()) }
+            { ptr -> ptr.dropInPlace(ptr.cast()) }
         } else {
             null
         })
@@ -1056,10 +1049,10 @@ public open class RawTable<T, A : Allocator>(
         this.reserve(1, hasher)
         return run {
             val matchVal = this.table.findOrFindInsertIndexInner(hash, { index -> eq(this.bucket(index).asRef()) })
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val index = matchVal.value
                 Result.Ok(this.bucket(index))
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val index1 = matchVal.error
                 Result.Err(index1)
             } }
@@ -1344,7 +1337,7 @@ public open class RawTable<T, A : Allocator>(
                     val option = RawTable.TABLE_LAYOUT.calculateLayoutFor(this.table.numBuckets())
                     option.unwrapUnchecked()
                 }
-                Triple(NonNull.newUnchecked(this.table.ctrl.asPtr().sub(ctrlOffset).cast()), layout, read(addrOf(this.alloc)))
+                Triple(NonNull.newUnchecked(this.table.ctrl.asPtr().sub(ctrlOffset).cast()), layout, ptr.read(addrOf(this.alloc)))
             }
         forget(this)
         return alloc
@@ -1523,7 +1516,7 @@ public open class RawTable<T, A : Allocator>(
          */
         public fun <T, A : Allocator> newUninitialized(alloc: A, buckets: Int, fallibility: Fallibility): Result<RawTable<T, A>, TryReserveError> {
             check(buckets.isPowerOfTwo())
-            return Result.Ok(RawTable(table = when (val tryResult = RawTableInner.newUninitialized(alloc, RawTable.TABLE_LAYOUT, buckets, fallibility)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, alloc = alloc, marker = Unit))
+            return Result.Ok(RawTable(table = when (val tryResult = RawTableInner.newUninitialized(alloc, RawTable.TABLE_LAYOUT, buckets, fallibility)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, alloc = alloc, marker = Unit))
         }
 
         /**
@@ -2540,7 +2533,7 @@ public open class RawTableInner internal constructor(
     public open fun <A> prepareResize(alloc: A, tableLayout: TableLayout, capacity: Int, fallibility: Fallibility): Result<ScopeGuard<RawTableInner, (RawTableInner) -> Unit>, TryReserveError> where A : Allocator {
         check(this.items <= capacity)
         // Allocate and initialize the new table.
-        val newTable = when (val tryResult = RawTableInner.fallibleWithCapacity(alloc, tableLayout, capacity, fallibility)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val newTable = when (val tryResult = RawTableInner.fallibleWithCapacity(alloc, tableLayout, capacity, fallibility)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         // The hash function may panic, in which case we simply free the new
         // table without dropping any elements that may have been copied into
         // it.
@@ -2700,7 +2693,7 @@ public open class RawTableInner internal constructor(
     public open fun <A> resizeInner(alloc: A, capacity: Int, hasher: (RawTableInner, Int) -> ULong, fallibility: Fallibility, layout: TableLayout): Result<Unit, TryReserveError> where A : Allocator {
         // SAFETY: We know for sure that `alloc` and `layout` matches the [Allocator] and [TableLayout]
         // that were used to allocate this table.
-        val newTable = when (val tryResult = this.prepareResize(alloc, layout, capacity, fallibility)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val newTable = when (val tryResult = this.prepareResize(alloc, layout, capacity, fallibility)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         // SAFETY: We know for sure that RawTableInner will outlive the
         // returned `FullBucketsIndices` iterator, and the caller of this
         // function ensures that the control bytes are properly initialized.
@@ -2733,7 +2726,7 @@ public open class RawTableInner internal constructor(
             // * Both `src` and `dst` are properly aligned.
             //
             // * Both `src` and `dst` point to different region of memory.
-            copyNonoverlapping(this.bucketPtr(fullByteIndex, layout.size), newTable.bucketPtr(newIndex, layout.size), layout.size)
+            ptr.copyNonoverlapping(this.bucketPtr(fullByteIndex, layout.size), newTable.bucketPtr(newIndex, layout.size), layout.size)
         }
         // The hash function didn't panic, so we can safely set the
         // `growthLeft` and `items` fields of the new table.
@@ -2830,7 +2823,7 @@ public open class RawTableInner internal constructor(
                     // element into the new slot and clear the old control
                     // byte.
                     run {
-                        copyNonoverlapping(iP, newIP, sizeOf)
+                        ptr.copyNonoverlapping(iP, newIP, sizeOf)
                     }
                     continue
                 }
@@ -2839,7 +2832,7 @@ public open class RawTableInner internal constructor(
                 // swapped into the old slot.
                 check(prevCtrl == Tag.DELETED)
                 run {
-                    swapNonoverlapping(iP, newIP, sizeOf)
+                    ptr.swapNonoverlapping(iP, newIP, sizeOf)
                 }
             }
         }
@@ -3091,7 +3084,7 @@ public open class RawTableInner internal constructor(
             val ptr: NonNull =
                 run {
                     val matchVal = doAlloc(alloc, layout)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok<*, *> -> {
                         val block = matchVal.value
                         // The allocator can't return a value smaller than was
                         // requested, so this can be != instead of >=.
@@ -3110,7 +3103,7 @@ public open class RawTableInner internal constructor(
                             buckets1 = x
                         }
                         block.cast()
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err<*, *> -> {
                         return Result.Err(fallibility.allocErr(layout))
                     } }
                 }
@@ -3132,8 +3125,8 @@ public open class RawTableInner internal constructor(
                 // SAFETY: We checked that we could successfully allocate the new table, and then
                 // initialized all control bytes with the constant `Tag.EMPTY` byte.
                 run {
-                    val buckets = when (val tryResult = (capacityToBuckets(capacity, tableLayout)?.let { Result.Ok(it) } ?: Result.Err(fallibility.capacityOverflow()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                    val result = when (val tryResult = RawTableInner.newUninitialized(alloc, tableLayout, buckets, fallibility)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    val buckets = when (val tryResult = (capacityToBuckets(capacity, tableLayout)?.let { Result.Ok(it) } ?: Result.Err(fallibility.capacityOverflow()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                    val result = when (val tryResult = RawTableInner.newUninitialized(alloc, tableLayout, buckets, fallibility)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
                     // SAFETY: We checked that the table is allocated and therefore the table already has
                     // `self.bucketMask + 1 + Group.WIDTH` number of control bytes (see TableLayout.calculateLayoutFor)
                     // so writing `self.numCtrlBytes() == bucketMask + 1 + Group.WIDTH` bytes is safe.
@@ -3255,6 +3248,38 @@ public open class RawIterRange<T> internal constructor(
             }
         }
     }
+
+    /**
+     * Splits a `RawIterRange` into two halves.
+     *
+     * Returns `None` if the remaining range is smaller than or equal to the
+     * group width.
+     */
+    public open fun split(): Pair<RawIterRange<T>, RawIterRange<T>?> =
+        if (((this.end).rawAddress.toULong() <= (this.nextCtrl).rawAddress.toULong())) {
+            // Nothing to split if the group that we are current processing
+            // is the last one.
+            Pair(this, null)
+        } else {
+            // len is the remaining number of elements after the group that
+            // we are currently processing. It must be a multiple of the
+            // group size (small tables are caught by the check above).
+            val len = offsetFrom(this.end, this.nextCtrl)
+            check(len % Group.WIDTH == 0)
+            // Split the remaining elements into two halves, but round the
+            // midpoint down in case there is an odd number of groups
+            // remaining. This ensures that:
+            // - The tail is at least 1 group long.
+            // - The split is roughly even considering we still have the
+            // current group to process.
+            val mid = (len / 2) and (Group.WIDTH - 1).inv()
+            val tail = RawIterRange.new(ConstPtr((this.nextCtrl).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes)), this.data.nextN(Group.WIDTH).nextN(mid), len - mid)
+            check(this.data.nextN(Group.WIDTH).nextN(mid).ptr == tail.data.ptr)
+            check(this.end == tail.end)
+            this.end = ConstPtr((this.nextCtrl).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes))
+            check(ConstPtr((this.end).rawAddress + ((Group.WIDTH).toLong() * (PrimitiveLayouts.U8).strideBytes)) == tail.nextCtrl)
+            Pair(this, tail)
+        }
 
     /**
      * # Safety

@@ -1,8 +1,7 @@
 // port-lint: source boxed/convert.rs
 package io.github.kotlinmania.rustlang.alloc.boxed.convert
 
-import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.string.String
+import io.github.kotlinmania.rustlang.boxed.Box
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.RustTypeId
 import io.github.kotlinmania.rustlang.core.alloc.Allocator

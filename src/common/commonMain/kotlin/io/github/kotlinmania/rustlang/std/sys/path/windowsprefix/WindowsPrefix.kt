@@ -5,15 +5,16 @@ package io.github.kotlinmania.rustlang.std.sys.path.windowsprefix
 
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.path.Prefix
-import io.github.kotlinmania.rustlang.std.path.Prefix.DeviceNS
-import io.github.kotlinmania.rustlang.std.path.Prefix.Disk
-import io.github.kotlinmania.rustlang.std.path.Prefix.Verbatim
-import io.github.kotlinmania.rustlang.std.path.Prefix.VerbatimDisk
-import io.github.kotlinmania.rustlang.std.path.Prefix.VerbatimUNC
+import io.github.kotlinmania.rustlang.core.slice.get
+import io.github.kotlinmania.rustlang.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.path.Prefix
+import io.github.kotlinmania.rustlang.path.Prefix.DeviceNS
+import io.github.kotlinmania.rustlang.path.Prefix.Disk
+import io.github.kotlinmania.rustlang.path.Prefix.Verbatim
+import io.github.kotlinmania.rustlang.path.Prefix.VerbatimDisk
+import io.github.kotlinmania.rustlang.path.Prefix.VerbatimUNC
 import io.github.kotlinmania.rustlang.std.sys.path.isSepByte
-import io.github.kotlinmania.rustlang.std.sys.path.unix.isVerbatimSep
+import io.github.kotlinmania.rustlang.sys.path.unix.isVerbatimSep
 
 // Parse Windows prefixes, for both Windows and Cygwin.
 
@@ -46,7 +47,7 @@ public open class PrefixParserSlice(
     public var prefix: List<UByte>,
     public var index: Int,
 ) {
-    public open fun stripPrefix(prefix: String): PrefixParserSlice? = ((this.prefix).slice(this.index until this.prefix.size)).startsWith(prefix.encodeToByteArray().map { it.toUByte() }).thenSome(this.copy(index = this.index + prefix.length))
+    public open fun stripPrefix(prefix: String): PrefixParserSlice? = ((this.prefix).subList(this.index, (this.prefix).size)).startsWith(prefix.encodeToByteArray().map { it.toUByte() }).thenSome(this.copy(index = this.index + prefix.length))
 
     public open fun prefixBytes(): List<UByte> = this.path.asEncodedBytes()[0 until this.index]
 

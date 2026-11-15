@@ -1,11 +1,10 @@
 // port-lint: source vec/splice.rs
 package io.github.kotlinmania.rustlang.alloc.vec.splice
 
-import io.github.kotlinmania.rustlang.alloc.vec.drain.Drain
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
-import io.github.kotlinmania.rustlang.core.mem.copy
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.vec.drain.Drain
 
 /**
  * A splicing iterator for `List`.
@@ -133,7 +132,7 @@ public fun <T, A : Allocator> Drain<T, A>.moveTail(additional: Int) {
     run {
         val src = vec.asPtr().add(this.tailStart)
         val dst = vec.asMutPtr().add(newTailStart)
-        copy(src, dst, this.tailLen)
+        ptr.copy(src, dst, this.tailLen)
     }
     this.tailStart = newTailStart
 }

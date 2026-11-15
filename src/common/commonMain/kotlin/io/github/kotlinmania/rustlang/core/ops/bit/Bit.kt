@@ -468,7 +468,7 @@ public fun I128.bitxorI128(other: I128): Output = this.bitxor(other)
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class Scalar(public var value: Int) : Shl<Scalar, Any?, Scalar> {
+ *     open class Scalar(public var value: Int) : Shl<Scalar, Scalar> {
  *         public var field0: Int
  *             get() = value
  *             set(v) {
@@ -492,7 +492,7 @@ public fun I128.bitxorI128(other: I128): Output = this.bitxor(other)
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class SpinVector<T>(public var vec: List<T>) : Shl<Int, Any?, SpinVector<T>> {
+ *     open class SpinVector<T>(public var vec: List<T>) : Shl<Int, SpinVector<T>> {
  *         public open fun shl(rhs: Int): SpinVector<T> {
  *             // Rotate the vector by `rhs` places.
  *             val (a, b) = this.vec.splitAt(rhs)
@@ -939,7 +939,7 @@ public fun I128.shlI128(other: I128): Output = Shl.Shl(this, other)
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class Scalar(public var value: Int) : Shr<Scalar, Any?, Scalar> {
+ *     open class Scalar(public var value: Int) : Shr<Scalar, Scalar> {
  *         public var field0: Int
  *             get() = value
  *             set(v) {
@@ -963,7 +963,7 @@ public fun I128.shlI128(other: I128): Output = Shl.Shl(this, other)
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class SpinVector<T>(public var vec: List<T>) : Shr<Int, Any?, SpinVector<T>> {
+ *     open class SpinVector<T>(public var vec: List<T>) : Shr<Int, SpinVector<T>> {
  *         public open fun shr(rhs: Int): SpinVector<T> {
  *             // Rotate the vector by `rhs` places.
  *             val (a, b) = this.vec.splitAt(this.vec.size - rhs)

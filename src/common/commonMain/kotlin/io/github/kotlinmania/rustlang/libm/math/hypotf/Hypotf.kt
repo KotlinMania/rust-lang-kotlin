@@ -1,7 +1,7 @@
 // port-lint: source math/hypotf.rs
 package io.github.kotlinmania.rustlang.libm.math.hypotf
 
-import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrtf
+import io.github.kotlinmania.rustlang.math.arch.aarch64.sqrt.sqrtf
 
 public fun hypotf(x: kotlin.Float, y: kotlin.Float): kotlin.Float {
     var x1 = x

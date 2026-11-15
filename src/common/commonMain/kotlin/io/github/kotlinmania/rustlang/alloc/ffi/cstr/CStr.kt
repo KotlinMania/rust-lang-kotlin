@@ -1,11 +1,7 @@
 // port-lint: source ffi/c_str.rs
 package io.github.kotlinmania.rustlang.alloc.ffi.cstr
 
-import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
-import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
-import io.github.kotlinmania.rustlang.alloc.string.String
-import io.github.kotlinmania.rustlang.alloc.vec.Vec
+import io.github.kotlinmania.rustlang.boxed.Box
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
@@ -13,10 +9,8 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -24,6 +18,9 @@ import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
+import io.github.kotlinmania.rustlang.rcs.arc.Arc
+import io.github.kotlinmania.rustlang.rcs.rc.Rc
+import io.github.kotlinmania.rustlang.vec.Vec
 
 // [CString] and its related types.
 
@@ -122,7 +119,7 @@ public open class CString(
     // Invariant 2: the slice contains only one zero byte.
     // Improper usage of unchecked function can break Invariant 2, but not Invariant 1.
     public var inner: List<UByte>,
-) : Borrow<CStr>, FromStr, AsRef<CStr> {
+) : Borrow<CStr>, FromStr<NulError>, AsRef<CStr> {
     public open fun clone(): CString = CString(inner)
 
     /**
@@ -143,7 +140,7 @@ public open class CString(
      * # Examples
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
      *
      * val cString = CString.from("foo")
      * val ptr = cString.intoRaw()
@@ -167,7 +164,7 @@ public open class CString(
      * # Examples
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
      *
      * val validUtf8 = mutableListOf(102u, 111u, 111u)
      * val cstring = CString.new(validUtf8).expect("we provided bytes that do not have a NUL byte, so CString.new should not fail")
@@ -190,7 +187,7 @@ public open class CString(
      * # Examples
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
      *
      * val cString = CString.from("foo")
      * val bytes = cString.intoBytes()
@@ -211,7 +208,7 @@ public open class CString(
      * # Examples
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
      *
      * val cString = CString.from("foo")
      * val bytes = cString.intoBytesWithNul()
@@ -233,7 +230,7 @@ public open class CString(
      * ```kotlin
      * @file:OptIn(ExperimentalUnsignedTypes.cls)
      *
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
      *
      * public fun doctestEntry() {
      *     val cString = CString.from("foo")
@@ -256,7 +253,7 @@ public open class CString(
      * ```kotlin
      * @file:OptIn(ExperimentalUnsignedTypes.cls)
      *
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
      *
      * public fun doctestEntry() {
      *     val cString = CString.from("foo")
@@ -273,8 +270,8 @@ public open class CString(
      * # Examples
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
-     * import io.github.kotlinmania.rustlang.core.ffi.CStr
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
+     * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
      *
      * val cString = CString.from("foo")
      * val cstr = cString.asCStr()
@@ -389,7 +386,7 @@ public open class CString(
             }
             fun List<UByte>.specNewImpl(): Result<CString, NulError> {
                 val bytes: List<UByte> = this.into()
-                return when (val matchVal = memchr(0, bytes)) {
+                return when (val matchVal = memchr.memchr(0, bytes)) {
                     // SAFETY: We ensured there's no null bytes.
                     null -> Result.Ok(CString.fromVecUnchecked(bytes))
                     else -> {
@@ -412,7 +409,7 @@ public open class CString(
                 buffer.extend(bytes)
                 // Check memory of self instead of new buffer.
                 // This allows better optimizations if lto enabled.
-                return when (val matchVal = memchr(0, bytes)) {
+                return when (val matchVal = memchr.memchr(0, bytes)) {
                     // SAFETY: We ensured there's no null bytes.
                     null -> Result.Ok(CString.fromVecUnchecked(buffer))
                     else -> {
@@ -443,7 +440,7 @@ public open class CString(
          * # Examples
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+         * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
          *
          * val raw = "foo".encodeToByteArray().toVec()
          * run {
@@ -452,7 +449,7 @@ public open class CString(
          * ```
          */
         public fun fromVecUnchecked(v: List<UByte>): CString {
-            check(memchr(0, v) == null)
+            check(memchr.memchr(0, v) == null)
             // SAFETY: Upheld by caller.
             return CString.fromVecUnchecked(v)
         }
@@ -538,13 +535,13 @@ public open class CString(
          * # Example
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+         * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
          *
          * check(CString.fromVecWithNulUnchecked("abc\u0000".encodeToByteArray().toVec()) == CString.fromVecUnchecked("abc".encodeToByteArray().toVec()))
          * ```
          */
         public fun fromVecWithNulUnchecked(v: List<UByte>): CString {
-            check(memchr(0, v)!! + 1 == v.size)
+            check(memchr.memchr(0, v)!! + 1 == v.size)
             // SAFETY: Upheld by caller.
             return CString.fromVecWithNulUnchecked(v)
         }
@@ -566,7 +563,7 @@ public open class CString(
          * when called without the ending nul byte.
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+         * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
          *
          * check(CString.fromVecWithNul("abc\u0000".encodeToByteArray().toVec()).expect("we provided bytes that has one NUL byte exactly at the end, so CString.fromVecWithNul should not fail") == "abc".toOwned())
          * ```
@@ -574,7 +571,7 @@ public open class CString(
          * An incorrectly formatted [Vec] will produce an error.
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+         * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
          * import std.ffi.FromVecWithNulError
          *
          * // Interior nul byte
@@ -584,7 +581,7 @@ public open class CString(
          * ```
          */
         public fun fromVecWithNul(v: List<UByte>): Result<CString, FromVecWithNulError> {
-            val nulPos = memchr(0, v)
+            val nulPos = memchr.memchr(0, v)
             return when {
                 nulPos != null && nulPos + 1 == v.size -> {
                     val nulPos1 = nulPos
@@ -668,7 +665,7 @@ public open class CString(
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+ * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
  * import std.ffi.NulError
  *
  * val unused: NulError = CString.new("f\u0000oo".encodeToByteArray().toVec()).unwrapErr()
@@ -687,7 +684,7 @@ public open class NulError(
      * # Examples
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
      *
      * val nulError = CString.new("foo\u0000bar").unwrapErr()
      * check(nulError.nulPosition() == 3)
@@ -704,7 +701,7 @@ public open class NulError(
      * # Examples
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
      *
      * val nulError = CString.new("foo\u0000bar").unwrapErr()
      * check(nulError.intoVec() == "foo\u0000bar".encodeToByteArray())
@@ -736,7 +733,7 @@ public sealed class FromBytesWithNulErrorKind {
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+ * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
  * import std.ffi.FromVecWithNulError
  *
  * val unused: FromVecWithNulError = CString.fromVecWithNul("f\u0000oo".encodeToByteArray().toVec()).unwrapErr()
@@ -756,7 +753,7 @@ public open class FromVecWithNulError(
      * Basic usage:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
      *
      * // Some invalid bytes in a vector
      * val bytes = "f\u0000oo".encodeToByteArray().toVec()
@@ -778,7 +775,7 @@ public open class FromVecWithNulError(
      * Basic usage:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
      *
      * // Some invalid bytes in a vector
      * val bytes = "f\u0000oo".encodeToByteArray().toVec()
@@ -979,8 +976,8 @@ public fun CStr.toStringLossy(): String = String.fromUtf8Lossy(this.toBytes())
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.alloc.ffi.CString
- * import io.github.kotlinmania.rustlang.core.ffi.CStr
+ * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
+ * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
  *
  * val boxed: CStr = Holder.from("foo")
  * val cString: CString = "foo".toOwned()

@@ -6,5 +6,5 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.aarch64outlineatomics.ru
  * LSE operations are supported.
  */
 public fun rustEnableLse() {
-    io.github.kotlinmania.rustlang.compilerbuiltins.aarch64outlineatomics.rustEnableLse()
+    io.github.kotlinmania.rustlang.aarch64outlineatomics.rustEnableLse()
 }

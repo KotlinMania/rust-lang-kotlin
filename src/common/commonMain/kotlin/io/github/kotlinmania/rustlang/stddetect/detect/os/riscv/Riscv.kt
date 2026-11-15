@@ -3,8 +3,8 @@
 
 package io.github.kotlinmania.rustlang.stddetect.detect.os.riscv
 
-import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
+import io.github.kotlinmania.rustlang.detect.arch.Feature
+import io.github.kotlinmania.rustlang.detect.cache.cache
 
 // Run-time feature detection utility for RISC-V.
 //

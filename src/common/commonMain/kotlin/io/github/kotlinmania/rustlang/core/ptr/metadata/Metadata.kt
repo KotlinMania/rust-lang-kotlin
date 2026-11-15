@@ -1,21 +1,25 @@
 // port-lint: source ptr/metadata.rs
 package io.github.kotlinmania.rustlang.core.ptr.metadata
 
-import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
-import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.cmp.Eq
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.hash.Hash
-import io.github.kotlinmania.rustlang.core.intrinsics.aggregateRawPtr
-import io.github.kotlinmania.rustlang.core.intrinsics.ptrMetadata
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
-import io.github.kotlinmania.rustlang.core.intrinsics.vtableAlign
-import io.github.kotlinmania.rustlang.core.intrinsics.vtableSize
+import io.github.kotlinmania.rustlang.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.clone.TrivialClone
+import io.github.kotlinmania.rustlang.cmp.Eq
+import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.hash.Hash
+import io.github.kotlinmania.rustlang.intrinsics.aggregateRawPtr
+import io.github.kotlinmania.rustlang.intrinsics.ptrMetadata
+import io.github.kotlinmania.rustlang.intrinsics.vtableAlign
+import io.github.kotlinmania.rustlang.intrinsics.vtableSize
+import io.github.kotlinmania.rustlang.ptr.metadata.Thin
+import io.github.kotlinmania.rustlang.ptr.metadata.VTable
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -190,7 +194,7 @@ public open class DynMetadata<Dyn> internal constructor(
     public open fun vtablePtr(): ConstPtr {
         // SAFETY: this layout assumption is hard-coded into the compiler.
         // If it's somehow not a size match, the reinterpret will error.
-        return transmute<DynMetadata<Dyn>, ConstPtr>(this)
+        return transmute(this)
     }
 
     /**

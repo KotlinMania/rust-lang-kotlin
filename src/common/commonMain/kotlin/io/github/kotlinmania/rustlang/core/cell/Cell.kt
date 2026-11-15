@@ -1,26 +1,26 @@
 // port-lint: source cell.rs
 package io.github.kotlinmania.rustlang.core.cell
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.replace
-import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
-import io.github.kotlinmania.rustlang.core.panic.constPanic
-import io.github.kotlinmania.rustlang.core.panic.location.Location
-import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.eq
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.mem.forget
+import io.github.kotlinmania.rustlang.mem.replace
+import io.github.kotlinmania.rustlang.ops.deref.DerefPure
+import io.github.kotlinmania.rustlang.panic.constPanic
+import io.github.kotlinmania.rustlang.panic.location.Location
+import io.github.kotlinmania.rustlang.pin.PinSafePointer
+import io.github.kotlinmania.rustlang.ptr.eq
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
 
 // Shareable mutable containers.
 //
@@ -731,7 +731,7 @@ public open class RefCell<T> internal constructor(
      * check(cell == RefCell.new(6))
      * ```
      */
-    public open fun replace(t: T): T = io.github.kotlinmania.rustlang.core.mem.replace(this.borrowMut(), t)
+    public open fun replace(t: T): T = io.github.kotlinmania.rustlang.mem.replace(this.borrowMut(), t)
 
     /**
      * Replaces the wrapped value with a new one computed from `f`, returning
@@ -782,7 +782,7 @@ public open class RefCell<T> internal constructor(
      * ```
      */
     public open fun swap(other: RefCell<T>) {
-        io.github.kotlinmania.rustlang.core.mem.swap(this.borrowMut(), other.borrowMut())
+        io.github.kotlinmania.rustlang.mem.swap(this.borrowMut(), other.borrowMut())
     }
 
     /**
@@ -820,10 +820,10 @@ public open class RefCell<T> internal constructor(
     public open fun borrow(): Ref<T> =
         run {
             val matchVal = this.tryBorrow()
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val b = matchVal.value
                 b
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val err = matchVal.error
                 panicAlreadyMutablyBorrowed(err)
             } }
@@ -905,10 +905,10 @@ public open class RefCell<T> internal constructor(
     public open fun borrowMut(): RefMut<T> =
         run {
             val matchVal = this.tryBorrowMut()
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok<*, *> -> {
                 val b = matchVal.value
                 b
-            }; is Result.Err<*> -> {
+            }; is Result.Err<*, *> -> {
                 val err = matchVal.error
                 panicAlreadyBorrowed(err)
             } }
@@ -1428,10 +1428,10 @@ public open class Ref<T>(
         public fun <T, U, E> tryMap(orig: Ref<T>, f: (T) -> Result<U, E>): Result<Ref<U>, Pair<Ref<T>, E>> =
             run {
                 val matchVal = f((orig).value)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val value = matchVal.value
                     Result.Ok(Ref(value = NonNull.from(value), borrow = (orig).value.borrow))
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val e = matchVal.error
                     Result.Err(Pair(orig, e))
                 } }
@@ -1709,10 +1709,10 @@ public open class RefMut<T>(
             // escape.
             return run {
                 val matchVal = f((orig).value)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok<*, *> -> {
                     val value = matchVal.value
                     Result.Ok(RefMut(value = NonNull.from(value), borrow = (orig).value.borrow, marker = Unit))
-                }; is Result.Err<*> -> {
+                }; is Result.Err<*, *> -> {
                     val e = matchVal.error
                     Result.Err(Pair(orig, e))
                 } }

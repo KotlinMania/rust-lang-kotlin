@@ -1,0 +1,6 @@
+package = io.github.kotlinmania.rustlang.libc.new.bioniclibc.sys.socket.cinterop
+headers = libc_new_bioniclibc_sys_socket_wrapper.h
+headerFilter = libc_new_bioniclibc_sys_socket_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = libc_new_bioniclibc_sys_socket_wrapper.a
+linkerOpts.mingw = -lws2_32

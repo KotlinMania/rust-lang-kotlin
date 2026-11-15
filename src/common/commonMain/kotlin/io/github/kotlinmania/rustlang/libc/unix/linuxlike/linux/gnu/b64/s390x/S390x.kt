@@ -3,41 +3,41 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.s390x
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.Blkcnt64T
-import io.github.kotlinmania.rustlang.libc.BlkcntT
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.FsblkcntT
-import io.github.kotlinmania.rustlang.libc.FsfilcntT
-import io.github.kotlinmania.rustlang.libc.FsidT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.Ino64T
-import io.github.kotlinmania.rustlang.libc.InoT
-import io.github.kotlinmania.rustlang.libc.KeyT
-import io.github.kotlinmania.rustlang.libc.ModeT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.ShmattT
-import io.github.kotlinmania.rustlang.libc.SigsetT
-import io.github.kotlinmania.rustlang.libc.SpeedT
-import io.github.kotlinmania.rustlang.libc.TcflagT
-import io.github.kotlinmania.rustlang.libc.TimeT
-import io.github.kotlinmania.rustlang.libc.UidT
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Off64T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.unix.GidT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.UidT
+import io.github.kotlinmania.rustlang.unix.bsd.FsidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.KeyT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.SpeedT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.TcflagT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.ModeT
+import io.github.kotlinmania.rustlang.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Blkcnt64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.DevT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Ino64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.BlkcntT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.FsblkcntT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.FsfilcntT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.InoT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.ShmattT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.SigsetT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.TimeT
 
 // s390x
 
@@ -58,11 +58,11 @@ public typealias GregT = ULong
 public data class Statfs(
     public var fType: CUint = 0u,
     public var fBsize: CUint = 0u,
-    public var fBlocks: FsblkcntT = 0u,
-    public var fBfree: FsblkcntT = 0u,
-    public var fBavail: FsblkcntT = 0u,
-    public var fFiles: FsfilcntT = 0u,
-    public var fFfree: FsfilcntT = 0u,
+    public var fBlocks: FsblkcntT = 0uL,
+    public var fBfree: FsblkcntT = 0uL,
+    public var fBavail: FsblkcntT = 0uL,
+    public var fFiles: FsfilcntT = 0uL,
+    public var fFfree: FsfilcntT = 0uL,
     public var fFsid: FsidT = FsidT(),
     public var fNamelen: CUint = 0u,
     public var fFrsize: CUint = 0u,
@@ -278,14 +278,14 @@ public class StackT internal constructor(
 }
 
 public class Stat(
-    public var stDev: DevT = 0,
+    public var stDev: DevT = 0uL,
     public var stIno: InoT = 0uL,
-    public var stNlink: io.github.kotlinmania.rustlang.libc.NlinkT = 0u,
+    public var stNlink: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.NlinkT = 0uL,
     public var stMode: ModeT = 0u,
     public var stUid: UidT = 0,
     public var stGid: GidT = 0,
     public var stPad0: CInt = 0,
-    public var stRdev: DevT = 0,
+    public var stRdev: DevT = 0uL,
     public var stSize: OffT = 0L,
     public var stAtime: TimeT = 0L,
     public var stAtimeNsec: CLong = 0L,
@@ -293,7 +293,7 @@ public class Stat(
     public var stMtimeNsec: CLong = 0L,
     public var stCtime: TimeT = 0L,
     public var stCtimeNsec: CLong = 0L,
-    public var stBlksize: io.github.kotlinmania.rustlang.libc.BlksizeT = 0,
+    public var stBlksize: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.BlksizeT = 0L,
     public var stBlocks: BlkcntT = 0L,
     public var glibcReserved: LongArray = LongArray(3),
 ) {
@@ -306,14 +306,14 @@ public class Stat(
                 override val sizeBytes: Long = 144L
                 override fun readNative(addr: Long): Stat =
                     Stat(
-                        (PrimitiveLayouts.I32).readNative(addr),
+                        (PrimitiveLayouts.U64).readNative(addr),
                         (PrimitiveLayouts.U64).readNative(addr + 8L),
                         (PrimitiveLayouts.U64).readNative(addr + 16L),
-                        (PrimitiveLayouts.U16).readNative(addr + 24L),
+                        (PrimitiveLayouts.U32).readNative(addr + 24L),
                         (PrimitiveLayouts.I32).readNative(addr + 28L),
                         (PrimitiveLayouts.I32).readNative(addr + 32L),
                         (PrimitiveLayouts.I32).readNative(addr + 36L),
-                        (PrimitiveLayouts.I32).readNative(addr + 40L),
+                        (PrimitiveLayouts.U64).readNative(addr + 40L),
                         (PrimitiveLayouts.I64).readNative(addr + 48L),
                         (PrimitiveLayouts.I64).readNative(addr + 56L),
                         (PrimitiveLayouts.I64).readNative(addr + 64L),
@@ -326,14 +326,14 @@ public class Stat(
                         (PrimitiveArrayLayouts.longArray(3)).readNative(addr + 120L),
                     )
                 override fun writeNative(addr: Long, value: Stat) {
-                    (PrimitiveLayouts.I32).writeNative(addr, value.stDev)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.stDev)
                     (PrimitiveLayouts.U64).writeNative(addr + 8L, value.stIno)
                     (PrimitiveLayouts.U64).writeNative(addr + 16L, value.stNlink)
-                    (PrimitiveLayouts.U16).writeNative(addr + 24L, value.stMode)
+                    (PrimitiveLayouts.U32).writeNative(addr + 24L, value.stMode)
                     (PrimitiveLayouts.I32).writeNative(addr + 28L, value.stUid)
                     (PrimitiveLayouts.I32).writeNative(addr + 32L, value.stGid)
                     (PrimitiveLayouts.I32).writeNative(addr + 36L, value.stPad0)
-                    (PrimitiveLayouts.I32).writeNative(addr + 40L, value.stRdev)
+                    (PrimitiveLayouts.U64).writeNative(addr + 40L, value.stRdev)
                     (PrimitiveLayouts.I64).writeNative(addr + 48L, value.stSize)
                     (PrimitiveLayouts.I64).writeNative(addr + 56L, value.stAtime)
                     (PrimitiveLayouts.I64).writeNative(addr + 64L, value.stAtimeNsec)
@@ -347,14 +347,14 @@ public class Stat(
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Stat =
                     Stat(
-                        (PrimitiveLayouts.I32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.U16).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 24),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 28),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 32),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 36),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 40),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 40),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 48),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 56),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 64),
@@ -367,14 +367,14 @@ public class Stat(
                         (PrimitiveArrayLayouts.longArray(3)).readBytes(buf, offset + 120),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Stat) {
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset, value.stDev)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.stDev)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.stIno)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.stNlink)
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 24, value.stMode)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 24, value.stMode)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 28, value.stUid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 32, value.stGid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 36, value.stPad0)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 40, value.stRdev)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 40, value.stRdev)
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 48, value.stSize)
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 56, value.stAtime)
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 64, value.stAtimeNsec)
@@ -391,14 +391,14 @@ public class Stat(
 }
 
 public class Stat64(
-    public var stDev: DevT = 0,
+    public var stDev: DevT = 0uL,
     public var stIno: Ino64T = 0uL,
-    public var stNlink: io.github.kotlinmania.rustlang.libc.NlinkT = 0u,
+    public var stNlink: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.NlinkT = 0uL,
     public var stMode: ModeT = 0u,
     public var stUid: UidT = 0,
     public var stGid: GidT = 0,
     public var stPad0: CInt = 0,
-    public var stRdev: DevT = 0,
+    public var stRdev: DevT = 0uL,
     public var stSize: OffT = 0L,
     public var stAtime: TimeT = 0L,
     public var stAtimeNsec: CLong = 0L,
@@ -406,7 +406,7 @@ public class Stat64(
     public var stMtimeNsec: CLong = 0L,
     public var stCtime: TimeT = 0L,
     public var stCtimeNsec: CLong = 0L,
-    public var stBlksize: io.github.kotlinmania.rustlang.libc.BlksizeT = 0,
+    public var stBlksize: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.BlksizeT = 0L,
     public var stBlocks: Blkcnt64T = 0L,
     public var glibcReserved: LongArray = LongArray(3),
 ) {
@@ -419,14 +419,14 @@ public class Stat64(
                 override val sizeBytes: Long = 144L
                 override fun readNative(addr: Long): Stat64 =
                     Stat64(
-                        (PrimitiveLayouts.I32).readNative(addr),
+                        (PrimitiveLayouts.U64).readNative(addr),
                         (PrimitiveLayouts.U64).readNative(addr + 8L),
                         (PrimitiveLayouts.U64).readNative(addr + 16L),
-                        (PrimitiveLayouts.U16).readNative(addr + 24L),
+                        (PrimitiveLayouts.U32).readNative(addr + 24L),
                         (PrimitiveLayouts.I32).readNative(addr + 28L),
                         (PrimitiveLayouts.I32).readNative(addr + 32L),
                         (PrimitiveLayouts.I32).readNative(addr + 36L),
-                        (PrimitiveLayouts.I32).readNative(addr + 40L),
+                        (PrimitiveLayouts.U64).readNative(addr + 40L),
                         (PrimitiveLayouts.I64).readNative(addr + 48L),
                         (PrimitiveLayouts.I64).readNative(addr + 56L),
                         (PrimitiveLayouts.I64).readNative(addr + 64L),
@@ -439,14 +439,14 @@ public class Stat64(
                         (PrimitiveArrayLayouts.longArray(3)).readNative(addr + 120L),
                     )
                 override fun writeNative(addr: Long, value: Stat64) {
-                    (PrimitiveLayouts.I32).writeNative(addr, value.stDev)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.stDev)
                     (PrimitiveLayouts.U64).writeNative(addr + 8L, value.stIno)
                     (PrimitiveLayouts.U64).writeNative(addr + 16L, value.stNlink)
-                    (PrimitiveLayouts.U16).writeNative(addr + 24L, value.stMode)
+                    (PrimitiveLayouts.U32).writeNative(addr + 24L, value.stMode)
                     (PrimitiveLayouts.I32).writeNative(addr + 28L, value.stUid)
                     (PrimitiveLayouts.I32).writeNative(addr + 32L, value.stGid)
                     (PrimitiveLayouts.I32).writeNative(addr + 36L, value.stPad0)
-                    (PrimitiveLayouts.I32).writeNative(addr + 40L, value.stRdev)
+                    (PrimitiveLayouts.U64).writeNative(addr + 40L, value.stRdev)
                     (PrimitiveLayouts.I64).writeNative(addr + 48L, value.stSize)
                     (PrimitiveLayouts.I64).writeNative(addr + 56L, value.stAtime)
                     (PrimitiveLayouts.I64).writeNative(addr + 64L, value.stAtimeNsec)
@@ -460,14 +460,14 @@ public class Stat64(
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Stat64 =
                     Stat64(
-                        (PrimitiveLayouts.I32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.U16).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 24),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 28),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 32),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 36),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 40),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 40),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 48),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 56),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 64),
@@ -480,14 +480,14 @@ public class Stat64(
                         (PrimitiveArrayLayouts.longArray(3)).readBytes(buf, offset + 120),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Stat64) {
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset, value.stDev)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.stDev)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.stIno)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.stNlink)
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 24, value.stMode)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 24, value.stMode)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 28, value.stUid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 32, value.stGid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 36, value.stPad0)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 40, value.stRdev)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 40, value.stRdev)
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 48, value.stSize)
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 56, value.stAtime)
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 64, value.stAtimeNsec)
@@ -562,9 +562,9 @@ public data class IpcPerm(
                         (PrimitiveLayouts.I32).readNative(addr + 8L),
                         (PrimitiveLayouts.I32).readNative(addr + 12L),
                         (PrimitiveLayouts.I32).readNative(addr + 16L),
-                        (PrimitiveLayouts.U16).readNative(addr + 20L),
-                        (PrimitiveLayouts.U16).readNative(addr + 22L),
+                        (PrimitiveLayouts.U32).readNative(addr + 20L),
                         (PrimitiveLayouts.U16).readNative(addr + 24L),
+                        (PrimitiveLayouts.U16).readNative(addr + 26L),
                         (PrimitiveLayouts.U64).readNative(addr + 32L),
                         (PrimitiveLayouts.U64).readNative(addr + 40L),
                     )
@@ -574,9 +574,9 @@ public data class IpcPerm(
                     (PrimitiveLayouts.I32).writeNative(addr + 8L, value.gid)
                     (PrimitiveLayouts.I32).writeNative(addr + 12L, value.cuid)
                     (PrimitiveLayouts.I32).writeNative(addr + 16L, value.cgid)
-                    (PrimitiveLayouts.U16).writeNative(addr + 20L, value.mode)
-                    (PrimitiveLayouts.U16).writeNative(addr + 22L, value.seq)
-                    (PrimitiveLayouts.U16).writeNative(addr + 24L, value.pad1)
+                    (PrimitiveLayouts.U32).writeNative(addr + 20L, value.mode)
+                    (PrimitiveLayouts.U16).writeNative(addr + 24L, value.seq)
+                    (PrimitiveLayouts.U16).writeNative(addr + 26L, value.pad1)
                     (PrimitiveLayouts.U64).writeNative(addr + 32L, value.unused1)
                     (PrimitiveLayouts.U64).writeNative(addr + 40L, value.unused2)
                 }
@@ -587,9 +587,9 @@ public data class IpcPerm(
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 8),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 12),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.U16).readBytes(buf, offset + 20),
-                        (PrimitiveLayouts.U16).readBytes(buf, offset + 22),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 20),
                         (PrimitiveLayouts.U16).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset + 26),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 32),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 40),
                     )
@@ -599,9 +599,9 @@ public data class IpcPerm(
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.gid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 12, value.cuid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 16, value.cgid)
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 20, value.mode)
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 22, value.seq)
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 24, value.pad1)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 20, value.mode)
+                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 24, value.seq)
+                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 26, value.pad1)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 32, value.unused1)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 40, value.unused2)
                 }
@@ -610,14 +610,14 @@ public data class IpcPerm(
 }
 
 public data class ShmidDs(
-    public var shmPerm: io.github.kotlinmania.rustlang.libc.IpcPerm = io.github.kotlinmania.rustlang.libc.IpcPerm(),
+    public var shmPerm: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.IpcPerm = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.IpcPerm(),
     public var shmSegsz: SizeT = 0uL,
     public var shmAtime: TimeT = 0L,
     public var shmDtime: TimeT = 0L,
     public var shmCtime: TimeT = 0L,
     public var shmCpid: PidT = 0,
     public var shmLpid: PidT = 0,
-    public var shmNattch: ShmattT = 0u,
+    public var shmNattch: ShmattT = 0uL,
     public var unused4: CUlong = 0uL,
     public var unused5: CUlong = 0uL,
 ) {
@@ -635,7 +635,7 @@ public data class ShmidDs(
                         (PrimitiveLayouts.I64).readNative(addr + 72L),
                         (PrimitiveLayouts.I32).readNative(addr + 80L),
                         (PrimitiveLayouts.I32).readNative(addr + 84L),
-                        (PrimitiveLayouts.U16).readNative(addr + 88L),
+                        (PrimitiveLayouts.U64).readNative(addr + 88L),
                         (PrimitiveLayouts.U64).readNative(addr + 96L),
                         (PrimitiveLayouts.U64).readNative(addr + 104L),
                     )
@@ -647,7 +647,7 @@ public data class ShmidDs(
                     (PrimitiveLayouts.I64).writeNative(addr + 72L, value.shmCtime)
                     (PrimitiveLayouts.I32).writeNative(addr + 80L, value.shmCpid)
                     (PrimitiveLayouts.I32).writeNative(addr + 84L, value.shmLpid)
-                    (PrimitiveLayouts.U16).writeNative(addr + 88L, value.shmNattch)
+                    (PrimitiveLayouts.U64).writeNative(addr + 88L, value.shmNattch)
                     (PrimitiveLayouts.U64).writeNative(addr + 96L, value.unused4)
                     (PrimitiveLayouts.U64).writeNative(addr + 104L, value.unused5)
                 }
@@ -660,7 +660,7 @@ public data class ShmidDs(
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 72),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 80),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 84),
-                        (PrimitiveLayouts.U16).readBytes(buf, offset + 88),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 88),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 96),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 104),
                     )
@@ -672,7 +672,7 @@ public data class ShmidDs(
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 72, value.shmCtime)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 80, value.shmCpid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 84, value.shmLpid)
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 88, value.shmNattch)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 88, value.shmNattch)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 96, value.unused4)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 104, value.unused5)
                 }
@@ -751,7 +751,7 @@ public data class McontextT(
     public var psw: PswT = PswT(),
     public var gregs: ULongArray = ULongArray(16),
     public var aregs: UIntArray = UIntArray(16),
-    public var fpregs: FpregsetT = FpregsetT(),
+    public var fpregs: FpregsetT = ULongArray(0),
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -809,7 +809,7 @@ public data class McontextT(
 public class UcontextT internal constructor(
     public var ucFlags: CUlong,
     ucLinkCtorArg: MutPtr,
-    public var ucStack: io.github.kotlinmania.rustlang.libc.StackT,
+    public var ucStack: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT,
     ucMcontextCtorArg: McontextT,
     public var ucSigmask: SigsetT,
 ) {
@@ -822,8 +822,8 @@ public class UcontextT internal constructor(
     public constructor() : this(
         ucFlags = 0uL,
         ucLinkCtorArg = MutPtr(0L),
-        ucStack = io.github.kotlinmania.rustlang.libc.StackT(),
-        ucMcontextCtorArg = McontextT(),
+        ucStack = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT(),
+        ucMcontextCtorArg = MutPtr(0L),
         ucSigmask = SigsetT(),
     )
 
@@ -831,13 +831,13 @@ public class UcontextT internal constructor(
 
     public operator fun component2(): MutPtr = this.ucLink
 
-    public operator fun component3(): io.github.kotlinmania.rustlang.libc.StackT = this.ucStack
+    public operator fun component3(): io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT = this.ucStack
 
     public operator fun component4(): McontextT = this.ucMcontext
 
     public operator fun component5(): SigsetT = this.ucSigmask
 
-    public fun copy(ucFlags: CUlong = this.ucFlags, ucLink: MutPtr = this.ucLink, ucStack: io.github.kotlinmania.rustlang.libc.StackT = this.ucStack, ucMcontext: McontextT = this.ucMcontext, ucSigmask: SigsetT = this.ucSigmask): UcontextT = UcontextT(ucFlags = ucFlags, ucLinkCtorArg = ucLink, ucStack = ucStack, ucMcontextCtorArg = ucMcontext, ucSigmask = ucSigmask)
+    public fun copy(ucFlags: CUlong = this.ucFlags, ucLink: MutPtr = this.ucLink, ucStack: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT = this.ucStack, ucMcontext: McontextT = this.ucMcontext, ucSigmask: SigsetT = this.ucSigmask): UcontextT = UcontextT(ucFlags = ucFlags, ucLinkCtorArg = ucLink, ucStack = ucStack, ucMcontextCtorArg = ucMcontext, ucSigmask = ucSigmask)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -865,8 +865,8 @@ public class UcontextT internal constructor(
         public operator fun invoke(
             ucFlags: CUlong = 0uL,
             ucLink: MutPtr = MutPtr(0L),
-            ucStack: io.github.kotlinmania.rustlang.libc.StackT = io.github.kotlinmania.rustlang.libc.StackT(),
-            ucMcontext: McontextT = McontextT(),
+            ucStack: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT = io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.s390x.StackT(),
+            ucMcontext: McontextT = MutPtr(0L),
             ucSigmask: SigsetT = SigsetT(),
         ): UcontextT = UcontextT(
             ucFlags = ucFlags,

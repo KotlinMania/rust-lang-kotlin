@@ -5,8 +5,8 @@ package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimal
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.Lemire
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
+import io.github.kotlinmania.rustlang.num.imp.dec2flt.Lemire
 
 // Representation of a float as the significant digits and exponent.
 

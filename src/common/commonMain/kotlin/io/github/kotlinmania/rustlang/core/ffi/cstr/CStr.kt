@@ -1,26 +1,26 @@
 // port-lint: source ffi/c_str.rs
 package io.github.kotlinmania.rustlang.core.ffi.cstr
 
-import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.convert.AsRef
-import io.github.kotlinmania.rustlang.core.ffi.primitives.cchardefinition.CChar
-import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.bytestr.ByteStr
+import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.convert.AsRef
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.nichetypes.UsizeNoHighBitMinusOne
-import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.ffi.primitives.CChar
+import io.github.kotlinmania.rustlang.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.num.nichetypes.UsizeNoHighBitMinusOne
+import io.github.kotlinmania.rustlang.ops.range.RangeFrom
+import io.github.kotlinmania.rustlang.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.slice.memchr.memchr
 
 // [CStr] and its related types.
 
@@ -59,8 +59,8 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * Inspecting a foreign C string:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ffi.CChar
- * import io.github.kotlinmania.rustlang.core.ffi.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * fun myString(): ConstPtr = ConstPtr(0L)
@@ -73,8 +73,8 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * Passing a Rust-originating C string:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ffi.CChar
- * import io.github.kotlinmania.rustlang.core.ffi.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * fun work(data: CStr) {
@@ -88,8 +88,8 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * Converting a foreign C string into a Rust `String`:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ffi.CChar
- * import io.github.kotlinmania.rustlang.core.ffi.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * fun myString(): ConstPtr = ConstPtr(0L)
@@ -143,8 +143,8 @@ public open class CStr internal constructor(
      * behavior when `ptr` is used inside the `unchecked` block:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
-     * import io.github.kotlinmania.rustlang.core.ffi.CStr
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
+     * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
      *
      * // 💀 The meaning of this entire program is undefined,
      * // 💀 and nothing about its behavior is guaranteed,
@@ -170,8 +170,8 @@ public open class CStr internal constructor(
      * To fix the problem, bind the `CString` to a local variable:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
-     * import io.github.kotlinmania.rustlang.core.ffi.CStr
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
+     * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
      *
      * val cStr = CString.new(("Hi!").uppercase()).unwrap()
      * val ptr = cStr.asPtr()
@@ -305,7 +305,7 @@ public open class CStr internal constructor(
      * check("foo".toStr() == Result.success("foo"))
      * ```
      */
-    public open fun toStr(): Result<String, Utf8Error> {
+    public open fun toStr(): Result<String, str.Utf8Error> {
         // N.B., when `CStr` is changed to perform the length check in `.toBytes()`
         // instead of in `fromPtr()`, it may be worth considering if this should
         // be rewritten to do the UTF-8 check inline with the length calculation
@@ -358,13 +358,13 @@ public open class CStr internal constructor(
         // in a null.
         return if (index.start < bytes.size) {
             // SAFETY: Non-empty tail of a valid `CStr` is still a valid `CStr`.
-            CStr.fromBytesWithNulUnchecked(((bytes).slice(index.start until bytes.size)))
+            CStr.fromBytesWithNulUnchecked(((bytes).subList(index.start, (bytes).size)))
         } else {
             error("index out of bounds: the len is ${bytes.size} but the index is ${index.start}")
         }
     }
 
-    public open fun index(index: io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
+    public open fun index(index: range.RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
 
     public override fun asRef(): CStr = this
 
@@ -415,8 +415,8 @@ public open class CStr internal constructor(
          * # Examples
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CChar
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
          * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
          *
          * fun myString(): ConstPtr {
@@ -429,8 +429,8 @@ public open class CStr internal constructor(
          * ```
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CChar
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
          * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
          *
          * val HELLO_PTR: ConstPtr = run {
@@ -472,7 +472,7 @@ public open class CStr internal constructor(
          * ```kotlin
          * @file:OptIn(ExperimentalUnsignedTypes.cls)
          *
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
          * import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
          * import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
          * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -522,7 +522,7 @@ public open class CStr internal constructor(
          * # Examples
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
          *
          * val cstr = CStr.fromBytesWithNul("hello\u0000".encodeToByteArray())
          * check(cstr == Result.success("hello"))
@@ -531,7 +531,7 @@ public open class CStr internal constructor(
          * Creating a `CStr` without a trailing nul terminator is an error:
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
          * import std.ffi.FromBytesWithNulError
          *
          * val cstr = CStr.fromBytesWithNul("hello".encodeToByteArray())
@@ -541,7 +541,7 @@ public open class CStr internal constructor(
          * Creating a `CStr` with an interior nul byte is an error:
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
          * import std.ffi.FromBytesWithNulError
          *
          * val cstr = CStr.fromBytesWithNul("he\u0000llo\u0000".encodeToByteArray())
@@ -578,7 +578,7 @@ public open class CStr internal constructor(
          * # Examples
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
          *
          * val bytes = "Hello world!\u0000".encodeToByteArray()
          * val cstr = CStr.fromBytesWithNulUnchecked(bytes)
@@ -605,7 +605,7 @@ public open class CStr internal constructor(
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ffi.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
  * import std.ffi.FromBytesWithNulError
  *
  * val unused: FromBytesWithNulError = CStr.fromBytesWithNul("f\u0000oo".encodeToByteArray()).unwrapErr()

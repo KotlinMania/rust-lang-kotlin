@@ -14,10 +14,12 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.get
 import kotlin.math.sqrt
 
 // s390x vector intrinsics.
@@ -1251,13 +1253,13 @@ public fun testVecMsumU128() {
     val b = VectorUnsignedLongLong(listOf(3, 4))
     run {
         val c: VectorUnsignedChar = transmute(U128(0x0uL, 0x64uL))
-        val d: U128 = transmute(vecMsumU128(a, b, c, 0))
+        val d: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0x0uL)))
         check(d == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) + U128(0x0uL, 0x64uL))
-        val d1: U128 = transmute(vecMsumU128(a, b, c, 4))
+        val d1: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0x4uL)))
         check(d1 == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) * U128(0x0uL, 0x2uL) + U128(0x0uL, 0x64uL))
-        val d2: U128 = transmute(vecMsumU128(a, b, c, 8))
+        val d2: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0x8uL)))
         check(d2 == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) * U128(0x0uL, 0x2uL) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) + U128(0x0uL, 0x64uL))
-        val d3: U128 = transmute(vecMsumU128(a, b, c, 12))
+        val d3: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0xcuL)))
         check(d3 == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) * U128(0x0uL, 0x2uL) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) * U128(0x0uL, 0x2uL) + U128(0x0uL, 0x64uL))
     }
 }

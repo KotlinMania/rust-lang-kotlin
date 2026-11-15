@@ -2,21 +2,19 @@
 package io.github.kotlinmania.rustlang.std.rt
 
 import io.github.kotlinmania.rustlang.core.RustAny
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.std.panic.AssertUnwindSafe
-import io.github.kotlinmania.rustlang.std.panic.catchUnwind
-import io.github.kotlinmania.rustlang.std.process.Termination
-import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sync.once.Once
-import io.github.kotlinmania.rustlang.std.sys.backtrace.rustBeginShortBacktrace
-import io.github.kotlinmania.rustlang.std.sys.exit.uniqueThreadExit
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key.keybased.CLEANUP
-import io.github.kotlinmania.rustlang.std.thread.current.currentId
-import io.github.kotlinmania.rustlang.std.thread.current.dropCurrent
-import io.github.kotlinmania.rustlang.std.thread.mainthread.set
+import io.github.kotlinmania.rustlang.panic.AssertUnwindSafe
+import io.github.kotlinmania.rustlang.panic.catchUnwind
+import io.github.kotlinmania.rustlang.process.Termination
+import io.github.kotlinmania.rustlang.process.abort
+import io.github.kotlinmania.rustlang.sync.once.Once
+import io.github.kotlinmania.rustlang.sys.backtrace.rustBeginShortBacktrace
+import io.github.kotlinmania.rustlang.sys.exit.uniqueThreadExit
+import io.github.kotlinmania.rustlang.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.sys.threadlocal.guard.key.keybased.CLEANUP
+import io.github.kotlinmania.rustlang.thread.current.dropCurrent
+import io.github.kotlinmania.rustlang.thread.mainthread.set
 
 // Runtime services
 //
@@ -32,7 +30,7 @@ public fun rustAbort() {
 }
 
 public inline fun <reified T> handleRtPanic(e: RustAny): T {
-    forget(e)
+    mem.forget(e)
     return run {
         when (val matchVal = panicOutput()) {
             null -> {}
@@ -74,8 +72,8 @@ public inline fun <reified T> handleRtPanic(e: RustAny): T {
 public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
     // Remember the main thread ID to give it the correct name.
     // SAFETY: this is the only time and place where we call this function.
-    set(currentId())
-    io.github.kotlinmania.rustlang.std.sys.args.unix.init(argc, argv, sigpipe)
+    set(thread.currentId())
+    io.github.kotlinmania.rustlang.sys.args.unix.init(argc, argv, sigpipe)
 }
 
 /**
@@ -100,9 +98,9 @@ public fun cleanup() {
     val CLEANUP: Once  = Once.new()
     CLEANUP.callOnce({ run {
         // Flush stdout and disable buffering.
-        io.github.kotlinmania.rustlang.std.io.stdio.cleanup()
+        io.github.kotlinmania.rustlang.io.stdio.cleanup()
         // SAFETY: Only called once during runtime cleanup.
-        io.github.kotlinmania.rustlang.std.sys.pal.unix.cleanup()
+        io.github.kotlinmania.rustlang.sys.pal.unix.cleanup()
     } })
 }
 
@@ -130,7 +128,7 @@ public fun langStartInternal(main: () -> Int, argc: Int, argv: ConstPtr, sigpipe
                 // Carefully dispose of the panic payload.
                 val payload1 = AssertUnwindSafe(payload)
                 catchUnwind({ (payload1.first).let { } }).unwrapOrElse({ e ->
-                    forget(e)
+                    mem.forget(e)
                     run {
                         when (val matchVal = panicOutput()) {
                             null -> {}

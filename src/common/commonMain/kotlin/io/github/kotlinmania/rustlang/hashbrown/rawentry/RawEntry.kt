@@ -1,14 +1,13 @@
 // port-lint: source raw_entry.rs
 package io.github.kotlinmania.rustlang.hashbrown.rawentry
 
-import io.github.kotlinmania.rustlang.core.alloc.Allocator
-import io.github.kotlinmania.rustlang.core.mem.replace
-import io.github.kotlinmania.rustlang.hashbrown.Equivalent
-import io.github.kotlinmania.rustlang.hashbrown.equivalent
-import io.github.kotlinmania.rustlang.hashbrown.makeHash
-import io.github.kotlinmania.rustlang.hashbrown.makeHasher
-import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
-import io.github.kotlinmania.rustlang.hashbrown.raw.RawTable
+import io.github.kotlinmania.rustlang.Equivalent
+import io.github.kotlinmania.rustlang.alloc.Allocator
+import io.github.kotlinmania.rustlang.equivalent
+import io.github.kotlinmania.rustlang.makeHash
+import io.github.kotlinmania.rustlang.makeHasher
+import io.github.kotlinmania.rustlang.raw.Bucket
+import io.github.kotlinmania.rustlang.raw.RawTable
 
 public class DebugStruct(
     private val out: StringBuilder,

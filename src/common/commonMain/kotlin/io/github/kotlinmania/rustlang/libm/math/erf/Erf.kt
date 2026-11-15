@@ -1,10 +1,10 @@
 // port-lint: source math/erf.rs
 package io.github.kotlinmania.rustlang.libm.math.erf
 
-import io.github.kotlinmania.rustlang.libm.math.exp.exp
-import io.github.kotlinmania.rustlang.libm.math.fabs.fabs
-import io.github.kotlinmania.rustlang.libm.math.getHighWord
-import io.github.kotlinmania.rustlang.libm.math.withSetLowWord
+import io.github.kotlinmania.rustlang.math.exp.exp
+import io.github.kotlinmania.rustlang.math.fabs.fabs
+import io.github.kotlinmania.rustlang.math.getHighWord
+import io.github.kotlinmania.rustlang.math.withSetLowWord
 
 // origin: FreeBSD /usr/src/lib/msun/src/sErf.c
 //

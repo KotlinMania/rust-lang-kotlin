@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.FpCategory
-import io.github.kotlinmania.rustlang.core.num.imp.traits.FloatExt
+import io.github.kotlinmania.rustlang.num.FpCategory
+import io.github.kotlinmania.rustlang.num.imp.traits.FloatExt
 
 // Decodes a floating-point value into individual parts and error ranges.
 

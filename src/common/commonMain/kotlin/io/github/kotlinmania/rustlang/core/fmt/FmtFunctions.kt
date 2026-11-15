@@ -1,15 +1,14 @@
 package io.github.kotlinmania.rustlang.core.fmt
 
-import io.github.kotlinmania.rustlang.core.cell.Cell
-import io.github.kotlinmania.rustlang.core.cell.Ref
-import io.github.kotlinmania.rustlang.core.cell.RefCell
-import io.github.kotlinmania.rustlang.core.cell.RefMut
-import io.github.kotlinmania.rustlang.core.cell.SyncUnsafeCell
-import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
+import io.github.kotlinmania.rustlang.cell.Cell
+import io.github.kotlinmania.rustlang.cell.Ref
+import io.github.kotlinmania.rustlang.cell.RefCell
+import io.github.kotlinmania.rustlang.cell.RefMut
+import io.github.kotlinmania.rustlang.cell.SyncUnsafeCell
+import io.github.kotlinmania.rustlang.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.char.methods.EscapeDebugExtArgs
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugStruct
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugTuple
-import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -17,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
+import io.github.kotlinmania.rustlang.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public class DebugStruct(
@@ -146,7 +146,7 @@ public fun write(output: Write, fmt: Arguments): Result {
             // Having this as a separate case improves performance for the common case.
             // SAFETY: We can assume the template only refers to arguments that exist.
             run {
-                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, FormattingOptions.new()))) { is RustResult.Ok<*> -> tryResult.value; is RustResult.Err<*> -> return RustResult.Err(tryResult.error) }
+                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, FormattingOptions.new()))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
             }
             argIndex += 1
         } else {
@@ -189,7 +189,7 @@ public fun write(output: Write, fmt: Arguments): Result {
             }
             // SAFETY: We can assume the template only refers to arguments that exist.
             run {
-                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, opt))) { is RustResult.Ok<*> -> tryResult.value; is RustResult.Err<*> -> return RustResult.Err(tryResult.error) }
+                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, opt))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
             }
             argIndex += 1
         }
@@ -453,10 +453,10 @@ public fun <T : Debug> RefCell<T>.fmt(f: Formatter): Result {
     val d = DebugStruct(f, "RefCell")
     run {
         val matchVal = this.tryBorrow()
-        when (matchVal) { is RustResult.Ok<*> -> {
+        when (matchVal) { is RustResult.Ok<*, *> -> {
             val borrow = matchVal.value
             d.field("value", borrow)
-        }; is RustResult.Err<*> -> {
+        }; is RustResult.Err<*, *> -> {
             d.field("value", "<borrowed>")
         } }
     }

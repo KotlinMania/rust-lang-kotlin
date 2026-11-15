@@ -1,53 +1,56 @@
 // port-lint: source iter/traits/iterator.rs
 package io.github.kotlinmania.rustlang.core.iter.traits.iterator
 
-import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.array.iterNextChunk
-import io.github.kotlinmania.rustlang.core.cmp.KeyAndValue
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.maxBy
-import io.github.kotlinmania.rustlang.core.cmp.minBy
-import io.github.kotlinmania.rustlang.core.iter.adapters.arraychunks.ArrayChunks
-import io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized.ByRefSized
-import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
-import io.github.kotlinmania.rustlang.core.iter.adapters.cloned.Cloned
-import io.github.kotlinmania.rustlang.core.iter.adapters.copied.Copied
-import io.github.kotlinmania.rustlang.core.iter.adapters.cycle.Cycle
-import io.github.kotlinmania.rustlang.core.iter.adapters.enumerate.Enumerate
-import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
-import io.github.kotlinmania.rustlang.core.iter.adapters.filtermap.FilterMap
-import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.FlatMap
-import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.Flatten
-import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.Fuse
-import io.github.kotlinmania.rustlang.core.iter.adapters.inspect.Inspect
-import io.github.kotlinmania.rustlang.core.iter.adapters.intersperse.Intersperse
-import io.github.kotlinmania.rustlang.core.iter.adapters.intersperse.IntersperseWith
-import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
-import io.github.kotlinmania.rustlang.core.iter.adapters.mapwhile.MapWhile
-import io.github.kotlinmania.rustlang.core.iter.adapters.mapwindows.MapWindows
-import io.github.kotlinmania.rustlang.core.iter.adapters.peekable.Peekable
-import io.github.kotlinmania.rustlang.core.iter.adapters.rev.Rev
-import io.github.kotlinmania.rustlang.core.iter.adapters.scan.Scan
-import io.github.kotlinmania.rustlang.core.iter.adapters.skip.Skip
-import io.github.kotlinmania.rustlang.core.iter.adapters.skipwhile.SkipWhile
-import io.github.kotlinmania.rustlang.core.iter.adapters.stepby.StepBy
-import io.github.kotlinmania.rustlang.core.iter.adapters.take.Take
-import io.github.kotlinmania.rustlang.core.iter.adapters.takewhile.TakeWhile
-import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.Zip
-import io.github.kotlinmania.rustlang.core.iter.traits.accum.Product
-import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.array.iter.IntoIter
+import io.github.kotlinmania.rustlang.array.iterNextChunk
+import io.github.kotlinmania.rustlang.cmp.KeyAndValue
+import io.github.kotlinmania.rustlang.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.swap
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
-import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.iter.adapters.arraychunks.ArrayChunks
+import io.github.kotlinmania.rustlang.iter.adapters.byrefsized.ByRefSized
+import io.github.kotlinmania.rustlang.iter.adapters.chain.Chain
+import io.github.kotlinmania.rustlang.iter.adapters.cloned.Cloned
+import io.github.kotlinmania.rustlang.iter.adapters.copied.Copied
+import io.github.kotlinmania.rustlang.iter.adapters.cycle.Cycle
+import io.github.kotlinmania.rustlang.iter.adapters.enumerate.Enumerate
+import io.github.kotlinmania.rustlang.iter.adapters.filter.Filter
+import io.github.kotlinmania.rustlang.iter.adapters.filtermap.FilterMap
+import io.github.kotlinmania.rustlang.iter.adapters.flatten.FlatMap
+import io.github.kotlinmania.rustlang.iter.adapters.flatten.Flatten
+import io.github.kotlinmania.rustlang.iter.adapters.fuse.Fuse
+import io.github.kotlinmania.rustlang.iter.adapters.inspect.Inspect
+import io.github.kotlinmania.rustlang.iter.adapters.intersperse.Intersperse
+import io.github.kotlinmania.rustlang.iter.adapters.intersperse.IntersperseWith
+import io.github.kotlinmania.rustlang.iter.adapters.map.Map
+import io.github.kotlinmania.rustlang.iter.adapters.mapwhile.MapWhile
+import io.github.kotlinmania.rustlang.iter.adapters.mapwindows.MapWindows
+import io.github.kotlinmania.rustlang.iter.adapters.peekable.Peekable
+import io.github.kotlinmania.rustlang.iter.adapters.rev.Rev
+import io.github.kotlinmania.rustlang.iter.adapters.scan.Scan
+import io.github.kotlinmania.rustlang.iter.adapters.skip.Skip
+import io.github.kotlinmania.rustlang.iter.adapters.skipwhile.SkipWhile
+import io.github.kotlinmania.rustlang.iter.adapters.stepby.StepBy
+import io.github.kotlinmania.rustlang.iter.adapters.take.Take
+import io.github.kotlinmania.rustlang.iter.adapters.takewhile.TakeWhile
+import io.github.kotlinmania.rustlang.iter.adapters.tryProcess
+import io.github.kotlinmania.rustlang.iter.adapters.zip.Zip
+import io.github.kotlinmania.rustlang.iter.traits.accum.Product
+import io.github.kotlinmania.rustlang.iter.traits.accum.Sum
+import io.github.kotlinmania.rustlang.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.mem.swap
+import io.github.kotlinmania.rustlang.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.ops.trytrait.ChangeOutputType
+import io.github.kotlinmania.rustlang.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.ops.trytrait.Try
 
 public fun assertIsDynCompatible(arg0: Iterator<Unit>) {}
 
@@ -362,7 +365,7 @@ public interface Iterator<SelfType, Item> {
      *
      * `advanceNAndReturnFirst` is the equivalent of:
      * ```kotlin
-     * fun <I> advanceNAndReturnFirst(iter: I, n: Int): Item? {
+     * fun <Item, I> advanceNAndReturnFirst(iter: I, n: Int): Item? {
      *     val next = iter.next()
      *     if (n > 1) {
      *         iter.nth(n - 2)
@@ -2095,7 +2098,7 @@ public interface Iterator<SelfType, Item> {
             val matchVal = this.next()
             if (matchVal == null) break
             val x = matchVal
-            accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
         }
         return accum
     }
@@ -2791,7 +2794,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun maxBy(compare: (Item, Item) -> Ordering): Item? {
-        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> maxBy(x, y, compare1) }
+        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> cmp.maxBy(x, y, compare1) }
         return this.reduce(fold(compare))
     }
 
@@ -2834,7 +2837,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun minBy(compare: (Item, Item) -> Ordering): Item? {
-        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> minBy(x, y, compare1) }
+        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> cmp.minBy(x, y, compare1) }
         return this.reduce(fold(compare))
     }
 
@@ -3492,7 +3495,7 @@ public fun <Item, I : Iterator<I, Any?>, B, R> I.specTryFold(init: B, f: (B, Ite
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
     }
     return accum
 }

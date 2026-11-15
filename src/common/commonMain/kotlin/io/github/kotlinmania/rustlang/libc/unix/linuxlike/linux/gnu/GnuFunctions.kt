@@ -1,21 +1,21 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.*
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.IdT
-import io.github.kotlinmania.rustlang.libc.MqdT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.Sigval
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.SsizeT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Off64T
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
+import io.github.kotlinmania.rustlang.unix.PidT
+import io.github.kotlinmania.rustlang.unix.Sigval
+import io.github.kotlinmania.rustlang.unix.SizeT
+import io.github.kotlinmania.rustlang.unix.SsizeT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.ClockidT
+import io.github.kotlinmania.rustlang.unix.bsd.apple.IdT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.MqdT
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.Off64T
+import io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.b64.OffT
 
 public fun interface QsortRComparCallback {
     public operator fun invoke(arg0: ConstPtr, arg1: ConstPtr, arg2: MutPtr): CInt
@@ -37,17 +37,17 @@ public expect fun sendmmsg(sockfd: CInt, msgvec: MutPtr, vlen: CUint, flags: CIn
 
 public expect fun recvmmsg(sockfd: CInt, msgvec: MutPtr, vlen: CUint, flags: CInt, timeout: MutPtr): CInt
 
-public expect fun getrlimit64(resource: RlimitResourceT, rlim: MutPtr): CInt
+public expect fun getrlimit64(resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, rlim: MutPtr): CInt
 
-public expect fun setrlimit64(resource: RlimitResourceT, rlim: ConstPtr): CInt
+public expect fun setrlimit64(resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, rlim: ConstPtr): CInt
 
-public expect fun getrlimit(resource: RlimitResourceT, rlim: MutPtr): CInt
+public expect fun getrlimit(resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, rlim: MutPtr): CInt
 
-public expect fun setrlimit(resource: RlimitResourceT, rlim: ConstPtr): CInt
+public expect fun setrlimit(resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, rlim: ConstPtr): CInt
 
-public expect fun prlimit(pid: PidT, resource: RlimitResourceT, newLimit: ConstPtr, oldLimit: MutPtr): CInt
+public expect fun prlimit(pid: PidT, resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, newLimit: ConstPtr, oldLimit: MutPtr): CInt
 
-public expect fun prlimit64(pid: PidT, resource: RlimitResourceT, newLimit: ConstPtr, oldLimit: MutPtr): CInt
+public expect fun prlimit64(pid: PidT, resource: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.RlimitResourceT, newLimit: ConstPtr, oldLimit: MutPtr): CInt
 
 public expect fun utmpname(file: ConstPtr): CInt
 
@@ -121,23 +121,23 @@ public expect fun pthreadAttrGetaffinityNp(attr: ConstPtr, cpusetsize: SizeT, cp
 
 public expect fun pthreadAttrSetaffinityNp(attr: MutPtr, cpusetsize: SizeT, cpuset: ConstPtr): CInt
 
-public expect fun getpriority(which: PriorityWhichT, who: IdT): CInt
+public expect fun getpriority(which: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PriorityWhichT, who: IdT): CInt
 
-public expect fun setpriority(which: PriorityWhichT, who: IdT, prio: CInt): CInt
+public expect fun setpriority(which: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PriorityWhichT, who: IdT, prio: CInt): CInt
 
 public expect fun pthreadRwlockattrGetkindNp(attr: ConstPtr, value: MutPtr): CInt
 
 public expect fun pthreadRwlockattrSetkindNp(attr: MutPtr, value: CInt): CInt
 
-public expect fun pthreadSigqueue(thread: io.github.kotlinmania.rustlang.libc.PthreadT, sig: CInt, value: Sigval): CInt
+public expect fun pthreadSigqueue(thread: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT, sig: CInt, value: Sigval): CInt
 
-public expect fun pthreadTryjoinNp(thread: io.github.kotlinmania.rustlang.libc.PthreadT, retval: MutPtr): CInt
+public expect fun pthreadTryjoinNp(thread: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT, retval: MutPtr): CInt
 
-public expect fun pthreadTimedjoinNp(thread: io.github.kotlinmania.rustlang.libc.PthreadT, retval: MutPtr, abstime: ConstPtr): CInt
+public expect fun pthreadTimedjoinNp(thread: io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.PthreadT, retval: MutPtr, abstime: ConstPtr): CInt
 
-public expect fun mallinfo(): Mallinfo
+public expect fun mallinfo(): io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Mallinfo
 
-public expect fun mallinfo2(): Mallinfo2
+public expect fun mallinfo2(): io.github.kotlinmania.rustlang.unix.linuxlike.linux.gnu.Mallinfo2
 
 public expect fun mallocStats()
 

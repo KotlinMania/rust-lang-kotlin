@@ -1,22 +1,22 @@
 // port-lint: source float/conv.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.conv
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.signed
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u128ToF128Bits
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u128ToF32Bits
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u128ToF64Bits
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u32ToF128Bits
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u32ToF32Bits
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u32ToF64Bits
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u64ToF128Bits
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u64ToF32Bits
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u64ToF64Bits
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.ops.arith.Neg
+import io.github.kotlinmania.rustlang.float.conv.signed
+import io.github.kotlinmania.rustlang.float.conv.u128ToF128Bits
+import io.github.kotlinmania.rustlang.float.conv.u128ToF32Bits
+import io.github.kotlinmania.rustlang.float.conv.u128ToF64Bits
+import io.github.kotlinmania.rustlang.float.conv.u32ToF128Bits
+import io.github.kotlinmania.rustlang.float.conv.u32ToF32Bits
+import io.github.kotlinmania.rustlang.float.conv.u32ToF64Bits
+import io.github.kotlinmania.rustlang.float.conv.u64ToF128Bits
+import io.github.kotlinmania.rustlang.float.conv.u64ToF32Bits
+import io.github.kotlinmania.rustlang.float.conv.u64ToF64Bits
+import io.github.kotlinmania.rustlang.support.Float
+import io.github.kotlinmania.rustlang.support.Int
 
 // Conversions from unsigned integers to floats.
 // Conversions from signed integers to floats.

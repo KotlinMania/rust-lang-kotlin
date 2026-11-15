@@ -1,9 +1,9 @@
 // port-lint: source simd/cmp/eq.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.cmp.eq
 
+import io.github.kotlinmania.rustlang.Mask
+import io.github.kotlinmania.rustlang.Simd
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.coresimd.Mask
-import io.github.kotlinmania.rustlang.coresimd.Simd
 
 /**
  * Parallel `PartialEq`.

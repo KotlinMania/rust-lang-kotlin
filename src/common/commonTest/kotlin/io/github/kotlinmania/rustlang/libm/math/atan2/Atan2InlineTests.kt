@@ -1,7 +1,7 @@
 // port-lint: tests math/atan2.rs
 package io.github.kotlinmania.rustlang.libm.math.atan2
 
-import io.github.kotlinmania.rustlang.libm.math.atan.atan
+import io.github.kotlinmania.rustlang.math.atan.atan
 
 public class Atan2InlineTests {
     @kotlin.test.Test

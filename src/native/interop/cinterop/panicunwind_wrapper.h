@@ -1,5 +1,5 @@
-#ifndef PANICUNWIND_PANICUNWIND_WRAPPER_H
-#define PANICUNWIND_PANICUNWIND_WRAPPER_H
+#ifndef RUSTLANG_PANICUNWIND_PANICUNWIND_WRAPPER_H
+#define RUSTLANG_PANICUNWIND_PANICUNWIND_WRAPPER_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -9,11 +9,11 @@
 extern "C" {
 #endif
 
-void panicunwindRustDropPanic(void);
-void panicunwindRustForeignException(void);
+void rustlangPanicunwindRustDropPanic(void);
+void rustlangPanicunwindRustForeignException(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* PANICUNWIND_PANICUNWIND_WRAPPER_H */
+#endif /* RUSTLANG_PANICUNWIND_PANICUNWIND_WRAPPER_H */

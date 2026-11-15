@@ -3,14 +3,14 @@ package io.github.kotlinmania.rustlang.libm.math.generic.fma
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libm.math.generic.scalbn.scalbn
-import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
-import io.github.kotlinmania.rustlang.libm.math.support.env.Round
-import io.github.kotlinmania.rustlang.libm.math.support.env.Status
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.floattraits.IntTy
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.CastFrom
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
+import io.github.kotlinmania.rustlang.math.generic.scalbn.scalbn
+import io.github.kotlinmania.rustlang.math.support.env.FpResult
+import io.github.kotlinmania.rustlang.math.support.env.Round
+import io.github.kotlinmania.rustlang.math.support.env.Status
+import io.github.kotlinmania.rustlang.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.math.support.floattraits.IntTy
+import io.github.kotlinmania.rustlang.math.support.inttraits.CastFrom
+import io.github.kotlinmania.rustlang.math.support.inttraits.Int
 
 /**
  * Fused multiply-add that works when there is not a larger float size available. Computes
